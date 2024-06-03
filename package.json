@@ -21,11 +21,11 @@
     "productivity"
   ],
   "author": "Pejman Haghighatnia",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
-    "eslint": "^8.0.0",
-    "prettier": "^2.0.0"
+    "express": "^4.19.2",
+    "eslint": "^9.4.0",
+    "prettier": "^3.3.0"
   },
   "type": "module"
 }
