@@ -27,6 +27,7 @@ Bleu.js is a framework designed to solve various coding problems that many devel
 ## Getting Started
 
 1. Install dependencies:
+
    `npm install`
 ## Build and run the Docker container
 `docker-compose up --build`
