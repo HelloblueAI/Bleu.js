@@ -4,7 +4,7 @@
 
 # bleu.js/core
 
-Bleu.js is a framework designed to solve various coding problems that many developers face today. It provides a unified platform combining advanced debugging and real-time optimization suggestions, supports multiple programming languages, offers automated code generation ("eggs") through the HenFarm.js framework built by Helloblue. HenFarm ™ metaphorically generates "eggs," representing new code snippets and optimization suggestions tailored to improve efficiency and solve specific coding challenges. The framework enhances collaboration with a user-friendly interface, automates dependency management, and provides lightweight code quality assurance.
+Bleu.js is a framework designed to solve various coding problems that many developers face today. It provides a unified platform combining advanced debugging and real-time optimization suggestions, supports multiple programming languages, offers automated code generation ("eggs") through the HenFarm.js framework built by Helloblue. HenFarm ™ metaphorically generates "eggs", representing new code snippets and optimization suggestions tailored to improve efficiency and solve specific coding challenges. The framework enhances collaboration with a user-friendly interface, automates dependency management, and provides lightweight code quality assurance.
 
 
 # Bleu.js
@@ -22,6 +22,7 @@ Bleu.js is a framework designed to solve various coding problems that many devel
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions.
 - **docker**: Docker configuration files.
 - **HenFarm.js**: The framework built by Helloblue to generate eggs.
+
 
 ## Getting Started
 
