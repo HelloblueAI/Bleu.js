@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>HenFarm.js User Interface</h1>
-    <p>{{ message }}</p>
+    <img src="@/ui/src/assets/Server.svg" alt="HenFarm.js Logo" />
   </div>
 </template>
 
