@@ -4,7 +4,7 @@
 
 # bleu.js/core
 
-Bleu.js is an advanced JavaScript framework meticulously designed to address the diverse coding challenges faced by developers. This unified platform integrates advanced debugging capabilities and real-time optimization suggestions, supports multiple programming languages, and offers automated code generation through the HenFarm.js framework developed by Helloblue. HenFarm.js metaphorically generates "eggs," which represent new code snippets and optimization suggestions, tailored to enhance efficiency and solve specific coding challenges. The framework further enhances collaboration with a user-friendly interface, automates dependency management, and provides lightweight code quality assurance tools.
+Bleu.js is a JavaScript framework built to tackle the various coding challenges developers face. It brings together advanced debugging, real-time optimization suggestions, and support for multiple programming languages. With the HenFarm.js framework by Helloblue, it automatically generates new code snippets, or "eggs," to help improve efficiency and solve coding problems. Bleu.js also makes collaboration easier with a user-friendly interface, handles dependency management automatically, and provides tools to ensure code quality without weighing you down.
 
 
 # Bleu.js
