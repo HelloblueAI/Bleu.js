@@ -6,18 +6,21 @@
 
 Bleu.js is a framework designed to solve various coding problems that many developers face today. It provides a unified platform combining advanced debugging and real-time optimization suggestions, supports multiple programming languages, offers automated code generation ("eggs"), enhances collaboration with a user-friendly interface, automates dependency management, and provides lightweight code quality assurance.
 
+# Bleu.js
+
 ## Directory Structure
 
 - **core-engine**: Contains the main logic for debugging, optimization, and code generation.
 - **language-plugins**: Modules for different programming languages.
-  - **javascript**: JavaScript-specific tools.
-  - **python**: Python-specific tools.
+- **javascript**: JavaScript-specific tools.
+- **python**: Python-specific tools.
 - **ui**: User interface for interacting with Bleu.js.
 - **collaboration-tools**: Tools for code review, issue tracking, and project management.
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions.
 - **docker**: Docker configuration files.
+- **HenFarm.js**: The framework built by Helloblue to generate eggs.
 
 ## Getting Started
 
