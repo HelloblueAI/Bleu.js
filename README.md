@@ -51,6 +51,7 @@ To generate code using Bleu.js, you can send a POST request to the /generate end
 
 Here's an example of how Bleu.js might be structured:
 
+
 ```javascript
 // Main functionality of Bleu.js
 class BleuJS {
@@ -65,35 +66,26 @@ class BleuJS {
     return newEgg;
   }
 
-  // Method to optimize code in real-time
   optimizeCode(code) {
-    // Optimization logic here
     return optimizedCode;
   }
 
-  // Method to manage dependencies
   manageDependencies(dependencies) {
     // Dependency management logic here
   }
 
-  // Method to ensure code quality
   ensureCodeQuality(code) {
     // Code quality assurance logic here
     return isQualityCode;
   }
 }
 
-export default BleuJS;
+export default BleuJS; 
 
-
-
+```
 
 # License
 Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) 
 
 ## Author
 Pejman Haghighatnia
-
-
-
-
