@@ -26,9 +26,6 @@ Bleu.js is a framework designed to solve various coding problems that many devel
 ## Build and run the Docker container
 `docker-compose up --build`
 
-## Access the application:
-* Navigate to http://localhost:3000 to see the welcome message.
-
 # Example Usage
 ## Debugging Code
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
