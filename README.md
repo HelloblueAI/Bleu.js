@@ -48,7 +48,7 @@ To generate code using Bleu.js, you can send a POST request to the /generate end
 
 
 # License
-Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) - see the LICENSE file for details.
+Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) 
 
 ## Author
 Pejman Haghighatnia
