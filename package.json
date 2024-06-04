@@ -4,7 +4,8 @@
   "description": "A framework for solving coding problems, powered by HenFarm.",
   "main": "core-engine/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-updates": "ncu"
   },
   "keywords": [
     "coding",
@@ -23,9 +24,12 @@
   "author": "Pejman Haghighatnia",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
     "eslint": "^9.4.0",
+    "express": "^4.19.2",
     "prettier": "^3.3.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "npm-check-updates": "^16.14.20"
+  }
 }
