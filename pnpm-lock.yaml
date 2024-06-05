@@ -30,6 +30,9 @@ importers:
 
   backend:
     dependencies:
+      body-parser:
+        specifier: ^1.19.0
+        version: 1.20.2(supports-color@6.1.0)
       express:
         specifier: ^4.17.1
         version: 4.19.2(supports-color@6.1.0)
@@ -38,12 +41,13 @@ importers:
 
   frontend:
     dependencies:
-      '@vue/cli-service':
-        specifier: ^4.5.19
-        version: 4.5.19(lodash@4.17.21)(vue@2.7.16)
       vue:
         specifier: ^2.7.16
         version: 2.7.16
+    devDependencies:
+      '@vue/cli-service':
+        specifier: ^4.5.19
+        version: 4.5.19(lodash@4.17.21)(vue@2.7.16)
 
 packages:
 
