@@ -97,9 +97,9 @@ class BleuJS {
 
 export default BleuJS;
 ```
-
-### Class Constructor:
-* Initializes an empty array eggs to store the generated code 'eggs'.
+### ensureCodeQuality Method:
+* Placeholder for code quality assurance logic.
+* Returns a boolean indicating whether the code meets quality standards.
 
 ### generateEgg Method:
 * Generates a new code 'egg' with a unique ID and description.
@@ -109,12 +109,11 @@ export default BleuJS;
 * Placeholder for code optimization logic.
 * Returns the optimized code.
 
+### Class Constructor:
+* Initializes an empty array eggs to store the generated code 'eggs'.
+
 ### manageDependencies Method:
 * Placeholder for dependency management logic.
-
-### ensureCodeQuality Method:
-* Placeholder for code quality assurance logic.
-* Returns a boolean indicating whether the code meets quality standards.
 
 
 # License
