@@ -98,7 +98,6 @@ class BleuJS {
 export default BleuJS;
 ```
 
-## Explanation:
 ### Class Constructor:
 * Initializes an empty array eggs to store the generated code 'eggs'.
 
