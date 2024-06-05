@@ -2,13 +2,14 @@ version: '3'
 services:
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:8080" # Exposing container port 8080 to host port 3000
+      - "3000:8080"
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.backend
     ports:
-      - "5001:5000" 
+      - "5001:5000"
+    command: ["node", "server.js"]
