@@ -126,4 +126,4 @@ export default BleuJS;
 Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) 
 
 ## Author
-Pejman Haghighatnia
+Pejman H. Nia
