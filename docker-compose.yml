@@ -1,15 +1,14 @@
-version: "3.8"
+version: '3'
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
-    ports:
-      - "5001:5000"
-
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "3000:8080" # Exposing container port 8080 to host port 3000
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5001:5000" 
