@@ -34,9 +34,11 @@ Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to
   
 ## Local Installation:
 install Bleu.js via NPM:
+
 `npm install bleujs`
 
-1. Install dependencies:
+Install dependencies:
+
    `npm install`
    
 ## Build and run the Docker container
