@@ -44,7 +44,7 @@ Run the development server:
 ## Build and run the Docker container
 `docker-compose up --build`
 
-# Example Usage
+# Usage
 ## Generating Code
 To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
 `curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
@@ -58,7 +58,7 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
 
-## Example Structure
+## Structure
 Here's an example of how Bleu.js might be structured:
 
 ```javascript
