@@ -28,6 +28,23 @@ importers:
         specifier: ^5.3.10
         version: 5.3.10(webpack@4.47.0)
 
+  backend:
+    dependencies:
+      express:
+        specifier: ^4.17.1
+        version: 4.19.2(supports-color@6.1.0)
+
+  core-engine: {}
+
+  frontend:
+    dependencies:
+      '@vue/cli-service':
+        specifier: ^4.5.19
+        version: 4.5.19(lodash@4.17.21)(vue@2.7.16)
+      vue:
+        specifier: ^2.7.16
+        version: 2.7.16
+
 packages:
 
   '@achrinza/node-ipc@9.2.2':
