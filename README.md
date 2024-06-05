@@ -17,7 +17,7 @@ Bleu.js is a JavaScript framework built to tackle the various coding challenges 
 
 ### Directory Structure
 
-- **core-engine**: Contains the main logic for debugging, optimization, and code generation.
+- **core-engine**: Contains the main logic for code generation, optimization, and debugging.
 - **language-plugins**: Modules for different programming languages.
   - **javascript**: JavaScript-specific tools.
   - **python**: Python-specific tools.
