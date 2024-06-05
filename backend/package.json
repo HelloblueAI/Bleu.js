@@ -6,7 +6,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "bleu": "file:core-engine",
     "express": "^4.17.1"
   }
 }
