@@ -1,6 +1,12 @@
 {
-    "dependencies": {
-      "bleu": "file:../core-engine"  
-    }
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "bleu": "file:core-engine",
+    "express": "^4.17.1"
   }
-  
+}
