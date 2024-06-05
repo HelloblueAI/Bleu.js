@@ -37,7 +37,7 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 
 ## Optimizing Code
 To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
-`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}`
+`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
 ## Generating Code
 To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
@@ -85,6 +85,26 @@ export default BleuJS;
  
 
 ```
+
+## Explanation:
+### Class Constructor:
+* Initializes an empty array eggs to store the generated code 'eggs'.
+
+### generateEgg Method:
+* Generates a new code 'egg' with a unique ID and description.
+* Adds the new 'egg' to the eggs array and returns it.
+
+### optimizeCode Method:
+* Placeholder for code optimization logic.
+* Returns the optimized code.
+
+### manageDependencies Method:
+* Placeholder for dependency management logic.
+
+### ensureCodeQuality Method:
+* Placeholder for code quality assurance logic.
+* Returns a boolean indicating whether the code meets quality standards.
+
 
 # License
 Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) 
