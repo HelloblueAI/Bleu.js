@@ -1,0 +1,11 @@
+# frontend/Dockerfile.frontend
+FROM node:14 AS build
+WORKDIR /usr/src/app
+COPY frontend/package*.json ./
+COPY ../core-engine ./core-engine
+RUN npm install --legacy-peer-deps
+COPY frontend/ ./
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
