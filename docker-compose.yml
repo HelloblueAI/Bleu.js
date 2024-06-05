@@ -1,34 +1,18 @@
-version: "3.8"
+version: '3'
 services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: backend/Dockerfile
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/usr/src/app
+      - "3000:3000"
     environment:
-      - NODE_ENV=development
-
+      NODE_ENV: development
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
+      dockerfile: frontend/Dockerfile
     ports:
-      - "8080:80"
-    volumes:
-      - .:/usr/src/app
+      - "8080:8080"
     environment:
-      - NODE_ENV=development
-
-  ui:
-    build:
-      context: .
-      dockerfile: Dockerfile.ui
-    ports:
-      - "3000:80"
-    volumes:
-      - .:/usr/src/app
-    environment:
-      - NODE_ENV=development
+      NODE_ENV: development
