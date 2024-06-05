@@ -23,25 +23,29 @@ Bleu.js is a JavaScript framework built to tackle the various coding challenges 
 - **HenFarm.js**: The framework built by Helloblue to generate eggs.
 
 ## Getting Started
+  
+## Local Installation:
+install Bleu.js via NPM:
+`npm install bleujs`
 
 1. Install dependencies:
-
    `npm install`
+   
 ## Build and run the Docker container
 `docker-compose up --build`
 
 # Example Usage
-## Debugging Code
-To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
-`curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
+## Generating Code
+To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
+`curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
 
 ## Optimizing Code
 To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
 `curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
-## Generating Code
-To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
-`curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
+## Debugging Code
+To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
+`curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
 
 ## Example Structure
