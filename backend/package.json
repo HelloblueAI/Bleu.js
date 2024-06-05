@@ -1,0 +1,6 @@
+{
+    "dependencies": {
+      "bleu": "file:../core-engine"  
+    }
+  }
+  

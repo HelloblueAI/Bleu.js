@@ -1,88 +1,42 @@
 <template>
   <div id="app">
-    <header>
-      <h1>Welcome to Bleu.js</h1>
-      <p>Powered by Helloblue, running on HenFarm!</p>
-    </header>
-    <main>
-      <img src="@/ui/src/assets/Server.svg" alt="Bleu.js Logo" />
-      <div class="content">
-        <h2>{{ message }}</h2>
-      </div>
-    </main>
+    <img src="@/assets/Server.svg" alt="Bleu.js Logo">
+    <div>
+      <h2>{{ $store.state.message }}</h2>
+      <button @click="updateMessage">Update Message</button>
+    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      message: 'Your gateway to seamless customer service solutions!'
-    };
+  methods: {
+    updateMessage() {
+      this.$store.dispatch('updateMessage', 'Hello from Bleu.js!');
+    }
   }
-};
+}
 </script>
 
 <style scoped>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+/* Global styles */
+body {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
 }
 
-header {
-  background-color: #34495e;
-  color: white;
-  padding: 20px;
-  width: 100%;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 2.5em;
-}
-
-header p {
-  margin: 0;
-  font-size: 1.2em;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-main img {
-  width: 150px;
+img {
+  max-width: 100%;
   height: auto;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
-.content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  max-width: 600px;
-}
-
-.content h2 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  font-size: 1.5em;
-  color: #2c3e50;
+}
+
+button {
+  cursor: pointer;
 }
 </style>
