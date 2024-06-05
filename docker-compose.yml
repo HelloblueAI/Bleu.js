@@ -1,18 +1,15 @@
-version: '3'
+version: "3.8"
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile.backend
     ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
+      - "5001:5000"
+
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
     ports:
-      - "8080:8080"
-    environment:
-      NODE_ENV: development
+      - "3000:3000"
