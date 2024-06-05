@@ -4,7 +4,8 @@
 
 # Bleu.js/core
 
-Bleu.js is a JavaScript framework built to tackle the various coding challenges developers face. It brings together advanced debugging, real-time optimization suggestions, and support for multiple programming languages. With the HenFarm.js framework by Helloblue, it automatically generates new code snippets, or "eggs," to help improve efficiency and solve coding problems. Bleu.js also makes collaboration easier with a user-friendly interface, handles dependency management automatically, and provides tools to ensure code quality without weighing you down.
+Bleu.js is a JavaScript framework built to tackle the various coding challenges developers face. It brings together advanced debugging, real-time optimization suggestions, and support for multiple programming languages. With the HenFarm.js framework by Helloblue. It automatically generates new code snippets, or "eggs," to help improve efficiency and solve coding problems. Bleu.js also makes collaboration easier with a user-friendly interface, handles dependency management automatically, and provides tools to ensure code quality without weighing you down.
+
 
 ### Features
 * Generate Eggs: Automatically generate code snippets using HenFarm.js.
@@ -96,8 +97,6 @@ class BleuJS {
 }
 
 export default BleuJS;
- 
-
 ```
 
 ## Explanation:
