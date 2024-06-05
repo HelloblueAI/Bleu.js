@@ -1,9 +1,33 @@
-version: '3'
+version: "3.8"
 services:
-  bleujs:
-    build: .
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     ports:
-      - "3000:3000"
+      - "5000:5000"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    ports:
+      - "3000:80"
     volumes:
       - .:/usr/src/app
     environment:
