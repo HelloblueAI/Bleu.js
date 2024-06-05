@@ -2,19 +2,18 @@
 ![Copy of Copy of Copy of Copy of Copy of Copy of Untitled Design (1)](https://github.com/HelloblueAI/Bleu.js/assets/81389644/0ceacd53-5abc-4fed-9bd8-46dccbf40f52)
 
 
-# bleu.js/core
+# Bleu.js/core
 
 Bleu.js is a JavaScript framework built to tackle the various coding challenges developers face. It brings together advanced debugging, real-time optimization suggestions, and support for multiple programming languages. With the HenFarm.js framework by Helloblue, it automatically generates new code snippets, or "eggs," to help improve efficiency and solve coding problems. Bleu.js also makes collaboration easier with a user-friendly interface, handles dependency management automatically, and provides tools to ensure code quality without weighing you down.
 
+## Bleu.js
 
-# Bleu.js
-
-## Directory Structure
+### Directory Structure
 
 - **core-engine**: Contains the main logic for debugging, optimization, and code generation.
 - **language-plugins**: Modules for different programming languages.
-- **javascript**: JavaScript-specific tools.
-- **python**: Python-specific tools.
+  - **javascript**: JavaScript-specific tools.
+  - **python**: Python-specific tools.
 - **ui**: User interface for interacting with Bleu.js.
 - **collaboration-tools**: Tools for code review, issue tracking, and project management.
 - **dependency-management**: Tools for monitoring and managing dependencies.
@@ -22,8 +21,6 @@ Bleu.js is a JavaScript framework built to tackle the various coding challenges 
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions.
 - **docker**: Docker configuration files.
 - **HenFarm.js**: The framework built by Helloblue to generate eggs.
-
-
 
 ## Getting Started
 
@@ -48,9 +45,7 @@ To generate code using Bleu.js, you can send a POST request to the /generate end
 
 
 ## Example Structure
-
 Here's an example of how Bleu.js might be structured:
-
 
 ```javascript
 // Main functionality of Bleu.js
@@ -66,21 +61,28 @@ class BleuJS {
     return newEgg;
   }
 
+  // Method to optimize the provided code
   optimizeCode(code) {
+    // Optimization logic here
+    const optimizedCode = code; // Placeholder for actual optimization logic
     return optimizedCode;
   }
 
+  // Method to manage dependencies
   manageDependencies(dependencies) {
     // Dependency management logic here
   }
 
+  // Method to ensure code quality
   ensureCodeQuality(code) {
     // Code quality assurance logic here
+    const isQualityCode = true; // Placeholder for actual quality check logic
     return isQualityCode;
   }
 }
 
-export default BleuJS; 
+export default BleuJS;
+ 
 
 ```
 
