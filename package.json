@@ -9,13 +9,14 @@
     "lint": "cd ui && pnpm run lint"
   },
   "dependencies": {
-    "@vue/cli-service": "^4.5.19",
-    "vue": "^2.7.16"
+    "@vue/cli-service": "^5.0.8",
+    "mississippi": "^4.0.0",
+    "vue": "^3.4.27"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint": "^9.4.0",
+    "eslint-plugin-vue": "^9.26.0",
     "terser-webpack-plugin": "^5.3.10"
   },
   "browserslist": [
