@@ -26,24 +26,6 @@ Bleu.js is a JavaScript framework built to tackle the various coding challenges 
 
 Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 🪺
 
-## Getting Started 
-  
-## Local Installation:
-install Bleu.js via NPM:
-
-`npm install bleujs`
-
-Install dependencies:
-
-   `npm install`
-
-Run the development server:
-
-`pnpm run serve `
-   
-Build and run the Docker container
-
-`docker-compose up --build`
 
 # Usage
 ## Generating Code
