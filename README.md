@@ -27,7 +27,6 @@ Bleu.js is a JavaScript framework built to tackle the various coding challenges 
 Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 🪺
 
 
-# Usage
 ## Generating Code
 To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
 `curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
@@ -42,7 +41,6 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 
 
 ## Structure
-Here's an example of how Bleu.js might be structured:
 
 ```javascript
 // Main functionality of Bleu.js
