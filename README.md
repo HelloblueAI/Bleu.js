@@ -398,43 +398,6 @@ pnpm run test
 
 ```
 
-
-```javascript
-╰─ pnpm run test                                                                               ─╯
-> eggs-generator@1.0.0 test /User/path/path/Bleu.js/eggs-generator
-> jest
-
- PASS  tests/example.test.js
-  ✓ simple test (1 ms)
-
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        0.254 s
-Ran all test suites.
-
-```
-
-```javascript
-╰─ pnpm run test:backend 
-
-> backend@1.0.0 test:backend /Bleu.js/backend
-> jest --config=jest.backend.config.js
- PASS  tests/example.test.js
-  API Tests
-    ✓ should return Hello, World! on GET / (18 ms)
-    ✓ should create data on POST /data (11 ms)
-    ✓ should return 400 if data is not provided on POST /data (2 ms)
-    ✓ should handle JSON parsing error gracefully (2 ms)
-    ✓ should handle 404 errors (2 ms)
-
-Test Suites: 1 passed, 1 total
-Tests:       5 passed, 5 total
-Snapshots:   0 total
-Time:        0.384 s, estimated 1 s
-Ran all test suites.
-```
-
 # License
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
 
