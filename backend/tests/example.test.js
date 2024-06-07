@@ -43,7 +43,7 @@ module.exports = app;
 // Tests
 describe('API Tests', () => {
   beforeAll(() => {
-    jest.setTimeout(10000); 
+    jest.setTimeout(10000);
   });
 
   it('should return Hello, World! on GET /', async () => {
@@ -55,9 +55,7 @@ describe('API Tests', () => {
   it('should create data on POST /data', async () => {
     const testData = ['Sample Data 1', 'Sample Data 2'];
     const promises = testData.map(async (data) => {
-      const res = await request(app)
-        .post('/data')
-        .send({ data });
+      const res = await request(app).post('/data').send({ data });
       expect(res.statusCode).toEqual(201);
       expect(res.body).toHaveProperty('message', 'Data received');
       expect(res.body).toHaveProperty('data', data);
@@ -66,10 +64,10 @@ describe('API Tests', () => {
   });
 
   it.each`
-    path             | body
-    ${'/data'}       | ${{}}
-    ${'/nonexistent'}| ${null}
-    ${'/data'}       | ${'Invalid JSON'}
+    path              | body
+    ${'/data'}        | ${{}}
+    ${'/nonexistent'} | ${null}
+    ${'/data'}        | ${'Invalid JSON'}
   `('should handle $path with body $body', async ({ path, body }) => {
     const res = await request(app)
       .post(path)
@@ -80,9 +78,7 @@ describe('API Tests', () => {
   });
 
   it('should handle asynchronous errors gracefully', async () => {
-    const res = await request(app)
-      .post('/data')
-      .send({ data: 'Async Error' });
+    const res = await request(app).post('/data').send({ data: 'Async Error' });
     expect(res.statusCode).toEqual(500);
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
   });
@@ -98,7 +94,7 @@ describe('API Tests', () => {
     await request(app).get('/');
     const end = Date.now();
     const duration = end - start;
-    expect(duration).toBeLessThan(100); 
+    expect(duration).toBeLessThan(100);
   });
 
   it('should return 400 for missing data field in POST /data', async () => {
@@ -108,9 +104,7 @@ describe('API Tests', () => {
   });
 
   it('should return 500 for simulated server error in POST /data', async () => {
-    const res = await request(app)
-      .post('/data')
-      .send({ data: 'Async Error' });
+    const res = await request(app).post('/data').send({ data: 'Async Error' });
     expect(res.statusCode).toEqual(500);
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
   });
@@ -126,9 +120,7 @@ describe('API Tests', () => {
 
   it('should handle very large data payloads', async () => {
     const largeData = 'A'.repeat(10000);
-    const res = await request(app)
-      .post('/data')
-      .send({ data: largeData });
+    const res = await request(app).post('/data').send({ data: largeData });
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', largeData);
