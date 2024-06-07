@@ -387,7 +387,7 @@ module.exports = Bleu;
 
 ### manageDependencies Method:
 * Placeholder for dependency management logic.
-* 
+  
 ### ensureCodeQuality Method:
 * Placeholder for code quality assurance logic.
 * Returns a boolean indicating whether the code meets quality standards.
