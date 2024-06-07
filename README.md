@@ -63,6 +63,44 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
 
 
+## Usage
+Create an instance of the BleuJS class and use its methods to manage your code:
+```javascript
+import BleuJS from 'bleu.js';
+
+const bleu = new BleuJS();
+
+// Generate a new code 'egg'
+const newEgg = bleu.generateEgg('This is a description of the new egg.');
+console.log(newEgg);
+
+// Optimize your code
+const code = 'const x = 1; console.log(x);';
+const optimizedCode = bleu.optimizeCode(code);
+console.log(optimizedCode);
+
+// Manage dependencies
+const dependencies = ['express', 'body-parser'];
+bleu.manageDependencies(dependencies);
+
+// Ensure code quality
+const isQualityCode = bleu.ensureCodeQuality(code);
+console.log(`Is the code quality acceptable? ${isQualityCode}`);
+```
+
+
+
+### Class Documentation
+## 'BleuJS'
+The BleuJS class provides several methods to help you manage and optimize your code.
+
+
+
+## Constructor
+çjavascript
+constructor()
+```
+
 
 
 ## Structure
@@ -102,6 +140,10 @@ class BleuJS {
 export default BleuJS;
 
 ```
+
+## Initializes a new instance of the BleuJS class.
+
+### Methods
 
 ### Class Constructor:
 * Initializes an empty array eggs to store the generated code 'eggs'.
