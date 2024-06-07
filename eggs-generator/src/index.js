@@ -2,71 +2,67 @@ class Bleu {
   constructor() {
     this.eggs = [];
   }
-
-  // Method to generate new code 'eggs'
-  generateEgg(description, type = 'default', options = {}) {
-    const newEgg = this.generateCode(type, { description, ...options });
+  
+  generateEgg(description, type, options) {
+    const newEgg = { 
+      id: this.eggs.length + 1, 
+      description: this._generateDescription(description, type, options), 
+      type: type, 
+      code: this._generateCode(type, options) 
+    };
     this.eggs.push(newEgg);
     return newEgg;
   }
 
-  generateCode(type, options) {
+  _generateDescription(description, type, options) {
     switch (type) {
-      case 'default':
-        return { id: this.eggs.length + 1, description: options.description };
       case 'model':
-        return this.generateModel(options.modelName, options.fields);
+        return `Model ${options.modelName} with fields ${options.fields.map(field => field.name).join(', ')}`;
       case 'utility':
-        return this.generateUtility(options.utilityName, options.methods);
+        return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
+      default:
+        return description;
+    }
+  }
+
+  _generateCode(type, options) {
+    switch (type) {
+      case 'model':
+        return this._generateModel(options.modelName, options.fields);
+      case 'utility':
+        return this._generateUtility(options.utilityName, options.methods);
       default:
         throw new Error(`Unknown code type: ${type}`);
     }
   }
 
-  generateModel(modelName, fields) {
-    return {
-      id: this.eggs.length + 1,
-      type: 'model',
-      code: `class ${modelName} {
-        ${fields.map(field => `this.${field.name} = ${field.type === 'string' ? '""' : 0};`).join('\n')}
-      }`,
-      description: `Model ${modelName} with fields ${fields.map(field => field.name).join(', ')}`
-    };
+  _generateModel(modelName, fields) {
+    const fieldsCode = fields.map(field => `  ${field.name}: ${field.type};`).join('\n');
+    return `class ${modelName} {\n${fieldsCode}\n}`;
   }
 
-  generateUtility(name, methods) {
-    return {
-      id: this.eggs.length + 1,
-      name,
-      methods,
-      type: 'utility',
-      code: `class ${name} {
-        ${methods.map(method => `function ${method}() {}`).join('\n')}
-      }`,
-      description: `Utility ${name} with methods ${methods.join(', ')}`
-    };
+  _generateUtility(utilityName, methods) {
+    const methodsCode = methods.map(method => `  ${method}() {\n    // TODO: Implement ${method}\n  }`).join('\n');
+    return `class ${utilityName} {\n${methodsCode}\n}`;
   }
 
-  // Method to optimize the provided code
   optimizeCode(code) {
-    // Optimization logic here
-    const optimizedCode = code; // Placeholder for actual optimization logic
+    // Basic optimization example: removing unnecessary spaces
+    const optimizedCode = code.replace(/\s+/g, ' ').trim().replace(/ ;/g, ';');
     return optimizedCode;
   }
 
-  // Method to manage dependencies
   manageDependencies(dependencies) {
-    dependencies.forEach((dep) => {
+    dependencies.forEach(dep => {
       console.log(`Managing dependency: ${dep}`);
-      // Dependency management logic here
+      // Implement actual dependency management logic here
     });
   }
 
-  // Method to ensure code quality
   ensureCodeQuality(code) {
-    // Code quality assurance logic here
-    const isQualityCode = true; // Placeholder for actual quality check logic
-    return isQualityCode;
+    // Basic code quality check example: checking for unused variables
+    const hasUnusedVariables = /let\s+\w+\s*;/.test(code);
+    return !hasUnusedVariables;
   }
 }
 

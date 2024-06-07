@@ -1,4 +1,3 @@
-// tests/index.test.js
 const Bleu = require('../src/index');
 
 describe('Bleu', () => {
