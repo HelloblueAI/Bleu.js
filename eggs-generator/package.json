@@ -12,6 +12,9 @@
       ],
       "transform": {
         "^.+\\.jsx?$": "babel-jest"
+      },
+      "moduleNameMapper": {
+        "henfarm.js": "<rootDir>/__mocks__/henfarm.js"
       }
     },
     "dependencies": {},
