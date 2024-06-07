@@ -45,7 +45,7 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 > cd ui && pnpm run serve
 
 
-> bleujs-ui@1.0.0 serve /Users/pejmanhaghighatnia/Desktop/Bleu.js/ui
+> bleujs-ui@1.0.0 serve /Users/path/path/Bleu.js/ui
 > vue-cli-service serve
 
  INFO  Starting development server...
