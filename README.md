@@ -430,7 +430,7 @@ The optimizeCode method is designed to optimize the provided code. While current
 ```javascript
 optimizeCode(code) {
   // Optimization logic here
-  const optimizedCode = code.replace(/\s+/g, ' ').trim(); // Example optimization logic
+  const optimizedCode = code.replace(/\s+/g, ' ').trim(); 
   return optimizedCode;
 }
 
