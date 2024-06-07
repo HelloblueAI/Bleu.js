@@ -100,7 +100,7 @@ export default BleuJS;
 * Returns a boolean indicating whether the code meets quality standards.
 
 # License
-Bleu.js is licensed under the [MIT License](https://opensource.org/license/MIT) 
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
 
 ## Author
 Pejman H. Nia
