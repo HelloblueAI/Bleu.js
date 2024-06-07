@@ -103,13 +103,14 @@ Tests:       8 passed, 8 total
 Snapshots:   0 total
 Time:        0.359 s, estimated 1 s
 Ran all test suites.
+
 ```
 
 ### Class Documentation
 ### 'BleuJS'
 
-The BleuJS class provides several methods to help you manage and optimize your code.
 
+The BleuJS class provides several methods to help you manage and optimize your code.
 ```javascript
 class Bleu {
   constructor() {
@@ -234,10 +235,11 @@ class Bleu {
 }
 
 module.exports = Bleu;
+
 ```
 
 ```javascript
- PASS  tests/example.test.js
+
   Bleu
     ✓ should generate a new egg (1 ms)
     ✓ should optimize code
@@ -253,6 +255,7 @@ Tests:       8 passed, 8 total
 Snapshots:   0 total
 Time:        0.358 s, estimated 1 s
 Ran all test suites.
+
 ```
 
 ## Constructor
