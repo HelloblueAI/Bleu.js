@@ -122,7 +122,7 @@ export default BleuJS;
 * Returns a boolean indicating whether the code meets quality standards.
 
 ```javascript
-╰─ pnpm run test:backend                                           ─╯
+╰─ pnpm run test:backend 
 
 
 > backend@1.0.0 test:backend /Bleu.js/backend
