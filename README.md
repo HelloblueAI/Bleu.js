@@ -42,32 +42,32 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 ## Structure
 
 ```javascript
-// Main functionality of Bleu.js
+
 class BleuJS {
   constructor() {
     this.eggs = [];
   }
 
-  // Method to generate new code 'eggs'
+  // To generate new code 'eggs'
   generateEgg(description) {
     const newEgg = { id: this.eggs.length + 1, description: description };
     this.eggs.push(newEgg);
     return newEgg;
   }
 
-  // Method to optimize the provided code
+  // To optimize the provided code
   optimizeCode(code) {
     // Optimization logic here
     const optimizedCode = code; 
     return optimizedCode;
   }
 
-  // Method to manage dependencies
+  // To manage dependencies
   manageDependencies(dependencies) {
     // Dependency management logic here
   }
 
-  // Method to ensure code quality
+  // To ensure code quality
   ensureCodeQuality(code) {
     // Code quality assurance logic here
     const isQualityCode = true; 
