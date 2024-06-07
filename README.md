@@ -38,6 +38,32 @@ To optimize code using Bleu.js, you can send a POST request to the /optimize end
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
+```javascript
+╰─ pnpm run serve                                                  ─╯
+
+> bleujs@1.0.0 serve /Users/path/path/Bleu.js
+> cd ui && pnpm run serve
+
+
+> bleujs-ui@1.0.0 serve /Users/pejmanhaghighatnia/Desktop/Bleu.js/ui
+> vue-cli-service serve
+
+ INFO  Starting development server...
+98% after emitting
+
+ DONE  Compiled successfully in 93660ms                  
+
+
+  App running at:
+  - Local:   http://localhost:8080/ 
+  - Network: http://10.0.0.175:8080/
+```
+
+
+<img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
+
+
+
 
 ## Structure
 ```javascript
@@ -99,7 +125,7 @@ export default BleuJS;
 ╰─ pnpm run test:backend                                           ─╯
 
 
-> backend@1.0.0 test:backend /Users/pejmanhaghighatnia/Desktop/Bleu.js/backend
+> backend@1.0.0 test:backend /Bleu.js/backend
 > jest --config=jest.backend.config.js
 
  PASS  tests/example.test.js
