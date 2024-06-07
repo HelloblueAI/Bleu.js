@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-<<<<<<< HEAD
 
 const app = express();
 app.use(bodyParser.json());
@@ -37,22 +36,3 @@ app.listen(port, () => {
 });
 
 module.exports = app;
-=======
-const app = express();
-const port = 5000;
-
-app.use(bodyParser.json());
-
-app.post('/debug', (req, res) => {
-  const { code } = req.body;
-  console.log('Received code:', code);
-  res.json({
-    message: 'Executed code successfully',
-    code: code
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
->>>>>>> 5bf653fe8871e41c3e51029ea561ce5388cf6f25
