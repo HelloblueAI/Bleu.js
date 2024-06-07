@@ -1,11 +1,7 @@
 FROM node:18
-
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm install -g pnpm
 RUN pnpm install
-
 COPY . .
-
-CMD ["node", "src/index.js"]
+CMD ["node", "server.js"] # Replace server.js with your main server file
