@@ -105,39 +105,41 @@ constructor()
 ## Structure
 
 ```javascript
-class BleuJS {
+// Main functionality of Bleu.js
+class Bleu {
   constructor() {
     this.eggs = [];
   }
 
-  // To generate new code 'eggs'
+  // Method to generate new code 'eggs'
   generateEgg(description) {
     const newEgg = { id: this.eggs.length + 1, description: description };
     this.eggs.push(newEgg);
     return newEgg;
   }
 
-  // To optimize the provided code
+  // Method to optimize the provided code
   optimizeCode(code) {
     // Optimization logic here
-    const optimizedCode = code; 
+    const optimizedCode = code; // Placeholder for actual optimization logic
     return optimizedCode;
   }
 
-  // To manage dependencies
+  // Method to manage dependencies
   manageDependencies(dependencies) {
     // Dependency management logic here
   }
 
-  // To ensure code quality
+  // Method to ensure code quality
   ensureCodeQuality(code) {
     // Code quality assurance logic here
-    const isQualityCode = true; 
+    const isQualityCode = true; // Placeholder for actual quality check logic
     return isQualityCode;
   }
 }
 
-export default BleuJS;
+export default Bleu;
+
 
 ```
 
