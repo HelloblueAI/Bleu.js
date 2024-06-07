@@ -73,12 +73,10 @@ const bleu = new BleuJS();
 const newEgg = bleu.generateEgg('This is a description of the new egg.');
 console.log(newEgg);
 
-// Optimize your code
 const code = 'const x = 1; console.log(x);';
 const optimizedCode = bleu.optimizeCode(code);
 console.log(optimizedCode);
 
-// Manage dependencies
 const dependencies = ['express', 'body-parser'];
 bleu.manageDependencies(dependencies);
 
@@ -86,6 +84,7 @@ bleu.manageDependencies(dependencies);
 const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
+
 ```javascript
 
   Bleu
