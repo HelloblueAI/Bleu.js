@@ -41,8 +41,6 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 
 ## Structure
 
-```javascript
-
 class BleuJS {
   constructor() {
     this.eggs = [];
