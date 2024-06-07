@@ -393,7 +393,7 @@ The generateEgg method is responsible for generating a new code 'egg'. This meth
 
 ```javascript
 generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options); // Use HenFarm.js to generate code
+  const code = this.henFarm.generateCode(type, options); 
   const newEgg = {
     id: this.eggs.length + 1,
     description: this.generateDescription(type, options),
@@ -409,7 +409,7 @@ generateEgg(description, type, options) {
 
 ```javascript
 generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options); // Use HenFarm.js to generate code
+  const code = this.henFarm.generateCode(type, options); 
   const newEgg = {
     id: this.eggs.length + 1,
     description: this.generateDescription(type, options),
