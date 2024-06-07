@@ -111,9 +111,6 @@ Ran all test suites.
 The BleuJS class provides several methods to help you manage and optimize your code.
 
 ```javascript
-/**
- * Bleu class for generating, optimizing, and managing code.
- */
 class Bleu {
   constructor() {
     this.eggs = [];
@@ -239,6 +236,24 @@ class Bleu {
 module.exports = Bleu;
 ```
 
+```javascript
+ PASS  tests/example.test.js
+  Bleu
+    ✓ should generate a new egg (1 ms)
+    ✓ should optimize code
+    ✓ should manage dependencies (10 ms)
+    ✓ should ensure code quality
+    ✓ should generate multiple eggs
+    ✓ should handle large number of eggs (3 ms)
+    ✓ should handle complex optimization
+    ✓ should ensure quality of complex code
+
+Test Suites: 1 passed, 1 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        0.358 s, estimated 1 s
+Ran all test suites.
+```
 
 ## Constructor
 ```javascript
@@ -279,7 +294,6 @@ class Bleu {
     }
   }
 
-  // Method to generate a model
   generateModel(modelName, fields) {
     const classFields = fields.map(field => `  ${field.name}: ${field.type};`).join('\n');
     const classMethods = fields.map(field => `  get${field.name.charAt(0).toUpperCase() + field.name.slice(1)}() { return this.${field.name}; }`).join('\n\n');
@@ -298,7 +312,6 @@ module.exports = ${modelName};
     `;
   }
 
-  // Method to generate a controller
   generateController(controllerName, actions) {
     const actionMethods = actions.map(action => `
   ${action}() {
@@ -313,7 +326,6 @@ module.exports = ${controllerName};
     `;
   }
 
-  // Method to generate a utility class
   generateUtility(utilityName, methods) {
     const utilityMethods = methods.map(method => `
   ${method.name}(${method.params.join(', ')}) {
@@ -353,8 +365,6 @@ module.exports = ${utilityName};
 }
 
 module.exports = Bleu;
-
-
 ```
 
 ## Initializes a new instance of the BleuJS class.

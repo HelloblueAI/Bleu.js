@@ -3,7 +3,7 @@ const Bleu = require('../src/index');
 describe('Bleu', () => {
   let bleu;
 
-  beforeEach(() => {
+  beforeAll(() => {
     bleu = new Bleu();
   });
 
@@ -22,11 +22,11 @@ describe('Bleu', () => {
   });
 
   it('should manage dependencies', () => {
-    const dependencies = ['express', 'lodash'];
+    const dependencies = [{ name: 'express', version: '4.17.1' }, { name: 'lodash', version: '4.17.21' }];
     const spy = jest.spyOn(console, 'log');
     bleu.manageDependencies(dependencies);
-    expect(spy).toHaveBeenCalledWith('Managing dependency: express');
-    expect(spy).toHaveBeenCalledWith('Managing dependency: lodash');
+    expect(spy).toHaveBeenCalledWith('Managing dependency: express@4.17.1');
+    expect(spy).toHaveBeenCalledWith('Managing dependency: lodash@4.17.21');
     spy.mockRestore();
   });
 
@@ -37,6 +37,7 @@ describe('Bleu', () => {
   });
 
   it('should generate multiple eggs', () => {
+    bleu.eggs = []; // Reset eggs array for isolated test
     const egg1 = bleu.generateEgg('Test Egg 1', 'model', { modelName: 'TestModel1', fields: [{ name: 'id', type: 'number' }] });
     const egg2 = bleu.generateEgg('Test Egg 2', 'utility', { utilityName: 'TestUtility', methods: ['method1', 'method2'] });
     expect(bleu.eggs).toHaveLength(2);
@@ -45,6 +46,7 @@ describe('Bleu', () => {
   });
 
   it('should handle large number of eggs', () => {
+    bleu.eggs = []; // Reset eggs array for isolated test
     for (let i = 0; i < 1000; i++) {
       bleu.generateEgg(`Egg ${i}`, 'model', { modelName: `Model${i}`, fields: [{ name: 'id', type: 'number' }] });
     }
