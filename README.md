@@ -40,7 +40,8 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 
 
 ## Structure
-
+```javascript
+// Main functionality of Bleu.js
 class BleuJS {
   constructor() {
     this.eggs = [];
@@ -74,6 +75,7 @@ class BleuJS {
 }
 
 export default BleuJS;
+
 ```
 
 ### Class Constructor:
