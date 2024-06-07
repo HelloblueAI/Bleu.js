@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
+<<<<<<< HEAD
 const port = 5000;
+=======
+const port = 5000;  
+>>>>>>> 5bf653fe8871e41c3e51029ea561ce5388cf6f25
 
 app.use(express.json());
 
