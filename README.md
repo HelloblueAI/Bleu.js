@@ -59,7 +59,6 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
   - Network: http://10.0.0.175:8080/
 ```
 
-
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
 
 
@@ -88,8 +87,6 @@ const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
 
-
-
 ### Class Documentation
 ### 'BleuJS'
 
@@ -112,10 +109,77 @@ class Bleu {
   }
 
   // Method to generate new code 'eggs'
-  generateEgg(description) {
-    const newEgg = { id: this.eggs.length + 1, description: description };
+  generateEgg(description, type, options = {}) {
+    const newEgg = {
+      id: this.eggs.length + 1,
+      description,
+      type,
+      code: this.generateCode(type, options)
+    };
     this.eggs.push(newEgg);
     return newEgg;
+  }
+
+  generateCode(type, options) {
+    switch (type) {
+      case 'model':
+        return this.generateModel(options.modelName, options.fields);
+      case 'controller':
+        return this.generateController(options.controllerName, options.actions);
+      case 'utility':
+        return this.generateUtility(options.utilityName, options.methods);
+      default:
+        throw new Error(`Unknown code type: ${type}`);
+    }
+  }
+
+  // Method to generate a model
+  generateModel(modelName, fields) {
+    const classFields = fields.map(field => `  ${field.name}: ${field.type};`).join('\n');
+    const classMethods = fields.map(field => `  get${field.name.charAt(0).toUpperCase() + field.name.slice(1)}() { return this.${field.name}; }`).join('\n\n');
+    return `
+class ${modelName} {
+${classFields}
+
+  constructor(${fields.map(field => field.name).join(', ')}) {
+    ${fields.map(field => `this.${field.name} = ${field.name};`).join('\n    ')}
+  }
+
+${classMethods}
+}
+
+module.exports = ${modelName};
+    `;
+  }
+
+  // Method to generate a controller
+  generateController(controllerName, actions) {
+    const actionMethods = actions.map(action => `
+  ${action}() {
+    // ${action} logic here
+  }`).join('\n');
+    return `
+class ${controllerName} {
+${actionMethods}
+}
+
+module.exports = ${controllerName};
+    `;
+  }
+
+  // Method to generate a utility class
+  generateUtility(utilityName, methods) {
+    const utilityMethods = methods.map(method => `
+  ${method.name}(${method.params.join(', ')}) {
+    ${method.body}
+  }`).join('\n');
+    return `
+class ${utilityName} {
+${utilityMethods}
+}
+
+module.exports = ${utilityName};
+    `;
   }
 
   // Method to optimize the provided code
@@ -128,6 +192,10 @@ class Bleu {
   // Method to manage dependencies
   manageDependencies(dependencies) {
     // Dependency management logic here
+    dependencies.forEach(dep => {
+      console.log(`Managing dependency: ${dep}`);
+      // Actual dependency management logic here
+    });
   }
 
   // Method to ensure code quality
@@ -138,7 +206,7 @@ class Bleu {
   }
 }
 
-export default Bleu;
+module.exports = Bleu;
 
 
 ```
@@ -154,6 +222,29 @@ export default Bleu;
 * Generates a new code 'egg' with a unique ID and description.
 * Adds the new 'egg' to the eggs array and returns it.
 
+```javascript
+cd eggs-generator
+pnpm run test
+
+```
+
+
+```javascript
+╰─ pnpm run test                                                                               ─╯
+> eggs-generator@1.0.0 test /User/path/path/Bleu.js/eggs-generator
+> jest
+
+ PASS  tests/example.test.js
+  ✓ simple test (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.254 s
+Ran all test suites.
+
+```
+
 ### optimizeCode Method:
 * Placeholder for code optimization logic.
 * Returns the optimized code.
@@ -168,10 +259,8 @@ export default Bleu;
 ```javascript
 ╰─ pnpm run test:backend 
 
-
 > backend@1.0.0 test:backend /Bleu.js/backend
 > jest --config=jest.backend.config.js
-
  PASS  tests/example.test.js
   API Tests
     ✓ should return Hello, World! on GET / (18 ms)
@@ -186,7 +275,6 @@ Snapshots:   0 total
 Time:        0.384 s, estimated 1 s
 Ran all test suites.
 ```
-
 
 # License
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
