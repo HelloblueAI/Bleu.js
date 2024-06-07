@@ -38,6 +38,9 @@ To optimize code using Bleu.js, you can send a POST request to the /optimize end
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
+
+
+
 ```javascript
 ╰─ pnpm run serve                                                  
 
