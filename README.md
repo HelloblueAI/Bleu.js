@@ -39,7 +39,7 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
 ```javascript
-╰─ pnpm run serve                                                  ─╯
+╰─ pnpm run serve                                                  
 
 > bleujs@1.0.0 serve /Users/path/path/Bleu.js
 > cd ui && pnpm run serve
