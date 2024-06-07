@@ -86,12 +86,158 @@ bleu.manageDependencies(dependencies);
 const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
+```javascript
+ PASS  tests/example.test.js
+  Bleu
+    ✓ should generate a new egg (3 ms)
+    ✓ should optimize code
+    ✓ should manage dependencies (15 ms)
+    ✓ should ensure code quality
+    ✓ should generate multiple eggs
+    ✓ should handle large number of eggs (1 ms)
+    ✓ should handle complex optimization
+    ✓ should ensure quality of complex code
+
+Test Suites: 1 passed, 1 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        0.359 s, estimated 1 s
+Ran all test suites.
+```
 
 ### Class Documentation
 ### 'BleuJS'
 
 The BleuJS class provides several methods to help you manage and optimize your code.
 
+```javascript
+/**
+ * Bleu class for generating, optimizing, and managing code.
+ */
+class Bleu {
+  constructor() {
+    this.eggs = [];
+  }
+
+  /**
+   * Generates a new code egg.
+   * @param {string} description - Description of the egg.
+   * @param {string} type - Type of the egg (e.g., 'model', 'utility').
+   * @param {object} options - Options for generating the egg.
+   * @returns {object} The generated egg.
+   */
+  generateEgg(description, type, options) {
+    const code = this.generateCode(type, options);
+    const newEgg = {
+      id: this.eggs.length + 1,
+      description: this.generateDescription(type, options),
+      type,
+      code
+    };
+    this.eggs.push(newEgg);
+    return newEgg;
+  }
+
+  /**
+   * Generates code based on type.
+   * @param {string} type - Type of the code (e.g., 'model', 'utility').
+   * @param {object} options - Options for generating the code.
+   * @returns {string} The generated code.
+   */
+  generateCode(type, options) {
+    switch (type) {
+      case 'model':
+        return this.generateModel(options.modelName, options.fields);
+      case 'utility':
+        return this.generateUtility(options.utilityName, options.methods);
+      default:
+        throw new Error(`Unknown code type: ${type}`);
+    }
+  }
+
+  /**
+   * Generates model code.
+   * @param {string} modelName - Name of the model.
+   * @param {Array} fields - Fields of the model.
+   * @returns {string} The generated model code.
+   */
+  generateModel(modelName, fields) {
+    let code = `class ${modelName} {\n`;
+    fields.forEach(field => {
+      code += `  ${field.name}: ${field.type};\n`;
+    });
+    code += '}';
+    return code;
+  }
+
+  /**
+   * Generates utility code.
+   * @param {string} utilityName - Name of the utility.
+   * @param {Array} methods - Methods of the utility.
+   * @returns {string} The generated utility code.
+   */
+  generateUtility(utilityName, methods) {
+    let code = `class ${utilityName} {\n`;
+    methods.forEach(method => {
+      code += `  ${method}() {\n`;
+      code += `    // TODO: Implement ${method}\n`;
+      code += '  }\n';
+    });
+    code += '}';
+    return code;
+  }
+
+  /**
+   * Generates description based on type.
+   * @param {string} type - Type of the egg.
+   * @param {object} options - Options for generating the description.
+   * @returns {string} The generated description.
+   */
+  generateDescription(type, options) {
+    switch (type) {
+      case 'model':
+        return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+      case 'utility':
+        return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
+      default:
+        throw new Error(`Unknown code type: ${type}`);
+    }
+  }
+
+  /**
+   * Optimizes the provided code.
+   * @param {string} code - The code to optimize.
+   * @returns {string} The optimized code.
+   */
+  optimizeCode(code) {
+    // Basic optimization logic: removing extra spaces
+    return code.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Manages dependencies.
+   * @param {Array} dependencies - List of dependencies.
+   */
+  manageDependencies(dependencies) {
+    dependencies.forEach(dep => {
+      console.log(`Managing dependency: ${dep}`);
+      // Simulate installation
+    });
+  }
+
+  /**
+   * Ensures code quality.
+   * @param {string} code - The code to check.
+   * @returns {boolean} Whether the code is of high quality.
+   */
+  ensureCodeQuality(code) {
+    // Basic quality check: no 'var' keywords allowed
+    return !code.includes('var');
+  }
+}
+
+module.exports = Bleu;
+```
 
 
 ## Constructor
