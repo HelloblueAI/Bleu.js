@@ -380,7 +380,10 @@ module.exports = Bleu;
 ### generateEgg Method:
 * Generates a new code 'egg' with a unique ID and description.
 * Adds the new 'egg' to the eggs array and returns it.
-
+```javascript
+cd eggs-generator
+pnpm run test
+```
 ### optimizeCode Method:
 * Placeholder for code optimization logic.
 * Returns the optimized code.
@@ -392,11 +395,6 @@ module.exports = Bleu;
 * Placeholder for code quality assurance logic.
 * Returns a boolean indicating whether the code meets quality standards.
 
-```javascript
-cd eggs-generator
-pnpm run test
-
-```
 
 # License
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
