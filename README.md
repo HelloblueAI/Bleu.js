@@ -91,19 +91,19 @@ console.log(`Is the code quality acceptable? ${isQualityCode}`);
 
 
 ### Class Documentation
-## 'BleuJS'
+### 'BleuJS'
+
 The BleuJS class provides several methods to help you manage and optimize your code.
 
 
 
 ## Constructor
-çjavascript
+```javascript
 constructor()
 ```
 
-
-
 ## Structure
+
 ```javascript
 class BleuJS {
   constructor() {
