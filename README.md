@@ -374,26 +374,103 @@ module.exports = Bleu;
 ### Methods
 
 ### Class Constructor:
+The class constructor initializes the Bleu object with an empty array eggs to store the generated code 'eggs'. This array acts as a container for all the code snippets, models, utilities, and other structures created using the generateEgg method.
 * Initializes an empty array eggs to store the generated code 'eggs'.
+```javascript
+  constructor() {
+  this.eggs = [];
+  this.henFarm = new HenFarm(); // Initialize HenFarm.js
+}
+```
 
 ### generateEgg Method:
-* Generates a new code 'egg' with a unique ID and description.
-* Adds the new 'egg' to the eggs array and returns it.
+The generateEgg method is responsible for generating a new code 'egg'. This method leverages the HenFarm.js framework to produce code snippets based on the specified type and options. Each generated egg is assigned a unique ID, a description, and the generated code. The egg is then added to the eggs array and returned.
+
+* Utilize HenFarm.js to generate code based on the provided type and options.
+* Create a new egg object with a unique ID, description, type, generated code, and creation timestamp.
+* Append the new egg to the eggs array.
+* Return the newly created egg.
+
+```javascript
+generateEgg(description, type, options) {
+  const code = this.henFarm.generateCode(type, options); // Use HenFarm.js to generate code
+  const newEgg = {
+    id: this.eggs.length + 1,
+    description: this.generateDescription(type, options),
+    type,
+    code,
+    createdAt: new Date()
+  };
+  this.eggs.push(newEgg);
+  return newEgg;
+}
+```
+
+
+```javascript
+generateEgg(description, type, options) {
+  const code = this.henFarm.generateCode(type, options); // Use HenFarm.js to generate code
+  const newEgg = {
+    id: this.eggs.length + 1,
+    description: this.generateDescription(type, options),
+    type,
+    code,
+    createdAt: new Date()
+  };
+  this.eggs.push(newEgg);
+  return newEgg;
+}
+```
+
+### optimizeCode Method:
+The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
+* Placeholder for code optimization logic.
+* Returns the optimized code.
+
+```javascript
+optimizeCode(code) {
+  // Optimization logic here
+  const optimizedCode = code.replace(/\s+/g, ' ').trim(); // Example optimization logic
+  return optimizedCode;
+}
+
+```
+
+### manageDependencies Method:
+The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
+* Placeholder logic for dependency management.
+* Potential logging of managed dependencies.
+
+
+```javascript
+manageDependencies(dependencies) {
+  dependencies.forEach(dep => {
+    console.log(`Managing dependency: ${dep.name}@${dep.version}`);
+    // Dependency management logic here
+  });
+}
+```
+
+  
+### ensureCodeQuality Method:
+The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
+* Placeholder for code quality assurance logic.
+* Returns a boolean indicating whether the code meets quality standards.
+
+
+```javascript
+ensureCodeQuality(code) {
+  // Code quality assurance logic here
+  const isQualityCode = true; // Example placeholder for actual quality check logic
+  return isQualityCode;
+}
+```
+
+### Running Tests
 ```javascript
 cd eggs-generator
 pnpm run test
 ```
-### optimizeCode Method:
-* Placeholder for code optimization logic.
-* Returns the optimized code.
-
-### manageDependencies Method:
-* Placeholder for dependency management logic.
-  
-### ensureCodeQuality Method:
-* Placeholder for code quality assurance logic.
-* Returns a boolean indicating whether the code meets quality standards.
-
 
 # License
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
