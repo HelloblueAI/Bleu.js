@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 5000;  // Update to match Docker internal port
+const port = 5000;
 
 app.use(express.json());
 
