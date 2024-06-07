@@ -87,7 +87,7 @@ const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
 ```javascript
- PASS  tests/example.test.js
+
   Bleu
     ✓ should generate a new egg (3 ms)
     ✓ should optimize code
