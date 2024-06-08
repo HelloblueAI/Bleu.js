@@ -30,7 +30,6 @@ app.post('/data', async (req, res) => {
   }
 });
 
-
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });
 });
@@ -138,7 +137,7 @@ describe('API Tests', () => {
     const end = Date.now();
     const duration = end - start;
     expect(res.statusCode).toEqual(201);
-    expect(duration).toBeLessThan(200); 
+    expect(duration).toBeLessThan(200);
   });
 
   it('should handle simultaneous requests', async () => {
@@ -155,13 +154,18 @@ describe('API Tests', () => {
   it('should validate response schema', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual(expect.objectContaining({
-      message: expect.any(String)
-    }));
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: expect.any(String),
+      }),
+    );
   });
 
   it('should stress test the server', async () => {
-    const stressTestData = Array.from({ length: 100 }, (_, i) => `Stress Test Data ${i + 1}`);
+    const stressTestData = Array.from(
+      { length: 100 },
+      (_, i) => `Stress Test Data ${i + 1}`,
+    );
     const promises = stressTestData.map(async (data) => {
       const res = await request(app).post('/data').send({ data });
       expect(res.statusCode).toEqual(201);
