@@ -364,7 +364,41 @@ module.exports = ${utilityName};
 }
 
 module.exports = Bleu;
+
 ```
+
+cd/backend
+```javascript
+pnpm test 
+```
+
+```javascript
+ PASS  tests/example.test.js
+  API Tests
+    ✓ should return Hello, World! on GET / (13 ms)
+    ✓ should create data on POST /data (113 ms)
+    ✓ should handle /data with body {} (2 ms)
+    ✓ should handle /nonexistent with body null (3 ms)
+    ✓ should handle /data with body Invalid JSON (2 ms)
+    ✓ should handle asynchronous errors gracefully (23 ms)
+    ✓ should handle edge cases (1 ms)
+    ✓ should ensure performance meets expectations (1 ms)
+    ✓ should return 400 for missing data field in POST /data (2 ms)
+    ✓ should return 500 for simulated server error in POST /data (3 ms)
+    ✓ should handle invalid JSON gracefully (2 ms)
+    ✓ should handle very large data payloads (104 ms)
+    ✓ should measure response time for POST /data (104 ms)
+    ✓ should handle simultaneous requests (122 ms)
+    ✓ should validate response schema (3 ms)
+    ✓ should stress test the server (152 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        0.996 s
+Ran all test suites.
+```
+
 
 ## Initializes a new instance of the BleuJS class.
 
@@ -462,6 +496,258 @@ ensureCodeQuality(code) {
   return isQualityCode;
 }
 ```
+# Bleu.js API Documentation
+
+## Introduction
+
+This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
+
+## Getting Started
+
+To set up the project and start the server, follow these steps:
+
+1. **Navigate to the backend directory:**
+```javascript
+   cd backend
+   ```
+
+2. **Install the required packages:**
+
+```javascript
+pnpm add express body-parser swagger-jsdoc swagger-ui-express
+```
+
+3. **Start the server:**
+
+```javascript
+node server.js
+```
+
+4. **Access the Swagger UI:**
+Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
+
+5. **Access the raw Swagger JSON:**
+Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON.
+
+
+### Recent API Updates
+# GET /
+Returns a greeting message.
+
+* URL: /
+* Method: GET
+* Response:
+
+```javascript
+{
+  "message": "Hello, World!"
+}
+```
+
+### Swagger Documentation:
+```javascript
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Returns a greeting message
+ *     responses:
+ *       200:
+ *         description: A JSON object containing a greeting message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Hello, World!
+ */
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Hello, World!' });
+});
+```
+
+## POST /debug
+Handles debug logic.
+
+URL: /debug
+Method: POST
+
+## Response:
+
+```javascript
+"Debugging"
+```
+
+### Swagger Documentation:
+```javascript
+ * @swagger
+ * /debug:
+ *   post:
+ *     summary: Debug logic
+ *     tags: [Debug]
+ *     responses:
+ *       200:
+ *         description: Debugging
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: Debugging
+ */
+router.post('/debug', (req, res) => {
+  res.send('Debugging');
+});
+```
+
+### POST /optimize
+Handles optimization logic.
+
+* URL: /optimize
+* Method: POST
+* Response:
+```javascript
+"Optimizing"
+```
+
+### Swagger Documentation:
+
+```javascript
+/**
+ * @swagger
+ * /optimize:
+ *   post:
+ *     summary: Optimize logic
+ *     tags: [Optimization]
+ *     responses:
+ *       200:
+ *         description: Optimizing
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: Optimizing
+ */
+router.post('/optimize', (req, res) => {
+  res.send('Optimizing');
+});
+```
+
+## POST /generate
+Handles generation logic.
+
+* URL: /generate
+* Method: POST
+* Response:
+
+```javascript
+`"Generating"`
+```
+
+## Swagger Documentation:
+
+```javascript
+/**
+ * @swagger
+ * /generate:
+ *   post:
+ *     summary: Generate logic
+ *     tags: [Generation]
+ *     responses:
+ *       200:
+ *         description: Generating
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: Generating
+ */
+router.post('/generate', (req, res) => {
+  res.send('Generating');
+});
+
+```
+
+## Project Structure
+
+Bleu.js/
+├── backend/
+│   ├── index.js
+│   ├── server.js
+│   ├── swagger.js
+│   └── src/
+│       └── routes.js
+└── ...
+
+### API Documentation
+The API documentation is available at http://localhost:3003/docs and provides detailed information about all available endpoints, request parameters, and response structures.
+
+## Example of Swagger Documentation
+Here is an example of how Swagger documentation is added for an endpoint in the backend/server.js file:
+
+```javascript
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Returns a greeting message
+ *     responses:
+ *       200:
+ *         description: A JSON object containing a greeting message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Hello, World!
+ */
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Hello, World!' });
+});
+
+```
+
+### Security
+The API supports bearer token authentication for secure endpoints. The security schema is defined as follows:
+
+```javascript
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Bleu.js API',
+    version: '1.0.0',
+    description: 'Documentation for the Bleu.js API',
+  },
+  servers: [
+    {
+      url: 'http://localhost:3003',
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+};
+```
+
+### Conclusion
+This document provides an overview of the recent updates and enhancements made to the Bleu.js API. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
+
+
+
 
 ### Running Tests
 ```javascript
