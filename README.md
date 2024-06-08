@@ -59,7 +59,7 @@ To debug code using Bleu.js, you can send a POST request to the /debug endpoint 
 
   App running at:
   - Local:   http://localhost:8080/ 
-  - Network: http://10.0.0.175:8080/
+  - Network: http://10.0.0.0:8080/
 ```
 
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
