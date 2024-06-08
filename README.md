@@ -71,19 +71,13 @@ Create an instance of the BleuJS class and use its methods to manage your code:
 import BleuJS from 'bleu.js';
 
 const bleu = new BleuJS();
-
-// Generate a new code 'egg'
 const newEgg = bleu.generateEgg('This is a description of the new egg.');
 console.log(newEgg);
-
 const code = 'const x = 1; console.log(x);';
 const optimizedCode = bleu.optimizeCode(code);
-console.log(optimizedCode);
-
 const dependencies = ['express', 'body-parser'];
 bleu.manageDependencies(dependencies);
 
-// Ensure code quality
 const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
@@ -409,7 +403,6 @@ generateEgg(description, type, options) {
 }
 ```
 
-
 ```javascript
 generateEgg(description, type, options) {
   const code = this.henFarm.generateCode(type, options); 
@@ -439,6 +432,7 @@ optimizeCode(code) {
 
 ```
 
+
 ### manageDependencies Method:
 The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
 * Placeholder logic for dependency management.
@@ -453,8 +447,8 @@ manageDependencies(dependencies) {
   });
 }
 ```
-
   
+
 ### ensureCodeQuality Method:
 The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
 * Placeholder for code quality assurance logic.
