@@ -134,6 +134,34 @@ describe('API Tests', () => {
     const end = Date.now();
     const duration = end - start;
     expect(res.statusCode).toEqual(201);
-    expect(duration).toBeLessThan(200); // Ensure response time is within 200ms
+    expect(duration).toBeLessThan(200); 
+  });
+
+  it('should handle simultaneous requests', async () => {
+    const testData = Array.from({ length: 10 }, (_, i) => `Data ${i + 1}`);
+    const promises = testData.map(async (data) => {
+      const res = await request(app).post('/data').send({ data });
+      expect(res.statusCode).toEqual(201);
+      expect(res.body).toHaveProperty('message', 'Data received');
+      expect(res.body).toHaveProperty('data', data);
+    });
+    await Promise.all(promises);
+  });
+
+  it('should validate response schema', async () => {
+    const res = await request(app).get('/');
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expect.objectContaining({
+      message: expect.any(String)
+    }));
+  });
+
+  it('should stress test the server', async () => {
+    const stressTestData = Array.from({ length: 100 }, (_, i) => `Stress Test Data ${i + 1}`);
+    const promises = stressTestData.map(async (data) => {
+      const res = await request(app).post('/data').send({ data });
+      expect(res.statusCode).toEqual(201);
+    });
+    await Promise.all(promises);
   });
 });

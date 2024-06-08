@@ -1,36 +1,46 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const swaggerSetup = require('./swagger');
+const { swaggerSpec } = require('./swagger'); // Import swaggerSpec
+const routes = require('./src/routes');
 
 const app = express();
 app.use(bodyParser.json());
 
-// Route handlers
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Returns a greeting message
+ *     responses:
+ *       200:
+ *         description: A JSON object containing a greeting message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Hello, World!
+ */
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello, World!' });
 });
 
-app.post('/data', (req, res) => {
-  const { data } = req.body;
-  if (!data) {
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-  res.status(201).json({ message: 'Data received', data });
+// Integrate routes
+app.use('/', routes);
+
+// Add route to serve raw Swagger JSON for debugging
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
 
-// Handle 404 errors
-app.use((req, res) => {
-  res.status(404).json({ message: 'Not Found' });
-});
+// Setup Swagger
+swaggerSetup(app);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-  next();
-});
-
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3003;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
