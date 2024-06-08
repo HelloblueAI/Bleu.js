@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
 app.post('/data', async (req, res) => {
   try {
     const { data } = req.body;
+
     if (!data) {
       return res.status(400).json({ message: 'Bad Request' });
     }
@@ -19,13 +20,16 @@ app.post('/data', async (req, res) => {
     if (data === 'Async Error') {
       throw new Error('Simulated Async Error');
     }
+
     await new Promise((resolve) => setTimeout(resolve, 100));
+
     res.status(201).json({ message: 'Data received', data });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });
