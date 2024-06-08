@@ -607,6 +607,7 @@ Handles optimization logic.
 * URL: /optimize
 * Method: POST
 * Response:
+
 ```javascript
 "Optimizing"
 ```
