@@ -6,7 +6,7 @@ module.exports = {
     browser: true,
     es2021: true,
     node: true,
-    jest: true, // Add Jest environment
+    jest: true,
   },
   extends: [
     'eslint:recommended',
@@ -19,7 +19,7 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     'prettier/prettier': 'error',
-    'no-console': 'off', // Change this line to 'warn' if you want warnings instead of errors
+    'no-console': 'off', 
     'no-debugger': 'error',
     'eqeqeq': 'error',
     'curly': 'error',
