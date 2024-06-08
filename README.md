@@ -355,7 +355,7 @@ module.exports = ${utilityName};
     });
   }
 
-  // Method to ensure code quality
+  // To ensure code quality
   ensureCodeQuality(code) {
     // Code quality assurance logic here
     const isQualityCode = true;
@@ -367,7 +367,7 @@ module.exports = Bleu;
 
 ```
 
-cd/backend
+`cd/backend`
 ```javascript
 pnpm test 
 ```
@@ -398,7 +398,6 @@ Snapshots:   0 total
 Time:        0.996 s
 Ran all test suites.
 ```
-
 
 ## Initializes a new instance of the BleuJS class.
 
@@ -496,6 +495,8 @@ ensureCodeQuality(code) {
   return isQualityCode;
 }
 ```
+
+
 # Bleu.js API Documentation
 
 ## Introduction
@@ -609,7 +610,7 @@ Handles optimization logic.
 * Response:
 
 ```javascript
-"Optimizing"
+`"Optimizing"`
 ```
 
 ### Swagger Documentation:
@@ -682,7 +683,7 @@ Bleu.js/
 └── ...
 
 ### API Documentation
-The API documentation is available at http://localhost:3003/docs and provides detailed information about all available endpoints, request parameters, and response structures.
+The API documentation is available at `http://localhost:3003/docs` and provides detailed information about all available endpoints, request parameters, and response structures.
 
 ## Example of Swagger Documentation
 Here is an example of how Swagger documentation is added for an endpoint in the backend/server.js file:
@@ -746,8 +747,6 @@ const swaggerDefinition = {
 
 ### Conclusion
 This document provides an overview of the recent updates and enhancements made to the Bleu.js API. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
-
-
 
 
 ### Running Tests
