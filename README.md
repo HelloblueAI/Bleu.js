@@ -451,6 +451,37 @@ generateEgg(description, type, options) {
 }
 ```
 
+`cd eggs-generator`                                                                 
+`pnpm run test`
+
+```javascript
+ PASS  tests/example.test.js
+  API Tests
+    ✓ should return Hello, World! on GET / (9 ms)
+    ✓ should create data on POST /data (111 ms)
+    ✓ should handle /data with body {} (2 ms)
+    ✓ should handle /nonexistent with body null (5 ms)
+    ✓ should handle /data with body Invalid JSON (2 ms)
+    ✓ should handle asynchronous errors gracefully (28 ms)
+    ✓ should handle edge cases (2 ms)
+    ✓ should ensure performance meets expectations (4 ms)
+    ✓ should return 400 for missing data field in POST /data (2 ms)
+    ✓ should return 500 for simulated server error in POST /data (7 ms)
+    ✓ should handle invalid JSON gracefully (2 ms)
+    ✓ should handle very large data payloads (104 ms)
+    ✓ should measure response time for POST /data (103 ms)
+    ✓ should handle simultaneous requests (120 ms)
+    ✓ should validate response schema (3 ms)
+    ✓ should stress test the server (154 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        0.887 s, estimated 1 s
+Ran all test suites.
+
+```
+
 ### optimizeCode Method:
 The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
 * Placeholder for code optimization logic.
@@ -464,7 +495,6 @@ optimizeCode(code) {
 }
 
 ```
-
 
 ### manageDependencies Method:
 The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
@@ -480,7 +510,7 @@ manageDependencies(dependencies) {
   });
 }
 ```
-  
+
 
 ### ensureCodeQuality Method:
 The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
