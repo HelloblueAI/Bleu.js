@@ -373,29 +373,47 @@ pnpm test
 ```
 
 ```javascript
- PASS  tests/example.test.js
+ PASS  tests/bleu.test.js
   API Tests
-    ✓ should return Hello, World! on GET / (13 ms)
+    ✓ should return Hello, World! on GET / (49 ms)
     ✓ should create data on POST /data (113 ms)
-    ✓ should handle /data with body {} (2 ms)
-    ✓ should handle /nonexistent with body null (3 ms)
-    ✓ should handle /data with body Invalid JSON (2 ms)
-    ✓ should handle asynchronous errors gracefully (23 ms)
-    ✓ should handle edge cases (1 ms)
-    ✓ should ensure performance meets expectations (1 ms)
-    ✓ should return 400 for missing data field in POST /data (2 ms)
-    ✓ should return 500 for simulated server error in POST /data (3 ms)
-    ✓ should handle invalid JSON gracefully (2 ms)
-    ✓ should handle very large data payloads (104 ms)
-    ✓ should measure response time for POST /data (104 ms)
-    ✓ should handle simultaneous requests (122 ms)
-    ✓ should validate response schema (3 ms)
-    ✓ should stress test the server (152 ms)
+    ✓ should create multiple data entries on POST /data (114 ms)
+    ✓ should handle /data with body {} (10 ms)
+    ✓ should handle /nonexistent with body null (6 ms)
+    ✓ should handle /data with body Invalid JSON (5 ms)
+    ✓ should handle asynchronous errors gracefully (12 ms)
+    ✓ should handle edge cases (4 ms)
+    ✓ should ensure performance meets expectations (4 ms)
+    ✓ should return 400 for missing data field in POST /data (5 ms)
+    ✓ should return 500 for simulated server error in POST /data (7 ms)
+    ✓ should handle invalid JSON gracefully (3 ms)
+    ✓ should handle very large data payloads (106 ms)
+    ✓ should measure response time for POST /data (110 ms)
+    ✓ should handle simultaneous requests (148 ms)
+    ✓ should validate response schema (6 ms)
+    ✓ should stress test the server (263 ms)
+    ✓ should test with invalid routes (5 ms)
+    ✓ should test JSON parsing error (3 ms)
+    ✓ should test different HTTP methods on /data (5 ms)
+    ✓ should handle very large number of simultaneous requests (1235 ms)
+    ✓ should handle concurrent GET and POST requests (108 ms)
+    ✓ should handle slow network conditions gracefully (110 ms)
+    ✓ should handle invalid request headers (10 ms)
+    ✓ should verify CORS headers (7 ms)
+    ✓ should handle session cookies (116 ms)
+    ✓ should verify content-type for POST /data (9 ms)
+    ✓ should test for memory leaks (274 ms)
+    ✓ should handle different user roles (111 ms)
+    ✓ should handle database connectivity issues (5 ms)
+    ✓ should handle multipart/form-data (110 ms)
+    ✓ should handle application/x-www-form-urlencoded (113 ms)
+    ✓ should handle JSON arrays (11 ms)
+    ✓ should handle deeply nested JSON objects (114 ms)
 
 Test Suites: 1 passed, 1 total
-Tests:       16 passed, 16 total
+Tests:       34 passed, 34 total
 Snapshots:   0 total
-Time:        0.996 s
+Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
@@ -455,29 +473,47 @@ generateEgg(description, type, options) {
 `pnpm run test`
 
 ```javascript
- PASS  tests/example.test.js
+ PASS  tests/bleu.test.js
   API Tests
-    ✓ should return Hello, World! on GET / (9 ms)
-    ✓ should create data on POST /data (111 ms)
-    ✓ should handle /data with body {} (2 ms)
-    ✓ should handle /nonexistent with body null (5 ms)
-    ✓ should handle /data with body Invalid JSON (2 ms)
-    ✓ should handle asynchronous errors gracefully (28 ms)
-    ✓ should handle edge cases (2 ms)
+    ✓ should return Hello, World! on GET / (49 ms)
+    ✓ should create data on POST /data (113 ms)
+    ✓ should create multiple data entries on POST /data (114 ms)
+    ✓ should handle /data with body {} (10 ms)
+    ✓ should handle /nonexistent with body null (6 ms)
+    ✓ should handle /data with body Invalid JSON (5 ms)
+    ✓ should handle asynchronous errors gracefully (12 ms)
+    ✓ should handle edge cases (4 ms)
     ✓ should ensure performance meets expectations (4 ms)
-    ✓ should return 400 for missing data field in POST /data (2 ms)
+    ✓ should return 400 for missing data field in POST /data (5 ms)
     ✓ should return 500 for simulated server error in POST /data (7 ms)
-    ✓ should handle invalid JSON gracefully (2 ms)
-    ✓ should handle very large data payloads (104 ms)
-    ✓ should measure response time for POST /data (103 ms)
-    ✓ should handle simultaneous requests (120 ms)
-    ✓ should validate response schema (3 ms)
-    ✓ should stress test the server (154 ms)
+    ✓ should handle invalid JSON gracefully (3 ms)
+    ✓ should handle very large data payloads (106 ms)
+    ✓ should measure response time for POST /data (110 ms)
+    ✓ should handle simultaneous requests (148 ms)
+    ✓ should validate response schema (6 ms)
+    ✓ should stress test the server (263 ms)
+    ✓ should test with invalid routes (5 ms)
+    ✓ should test JSON parsing error (3 ms)
+    ✓ should test different HTTP methods on /data (5 ms)
+    ✓ should handle very large number of simultaneous requests (1235 ms)
+    ✓ should handle concurrent GET and POST requests (108 ms)
+    ✓ should handle slow network conditions gracefully (110 ms)
+    ✓ should handle invalid request headers (10 ms)
+    ✓ should verify CORS headers (7 ms)
+    ✓ should handle session cookies (116 ms)
+    ✓ should verify content-type for POST /data (9 ms)
+    ✓ should test for memory leaks (274 ms)
+    ✓ should handle different user roles (111 ms)
+    ✓ should handle database connectivity issues (5 ms)
+    ✓ should handle multipart/form-data (110 ms)
+    ✓ should handle application/x-www-form-urlencoded (113 ms)
+    ✓ should handle JSON arrays (11 ms)
+    ✓ should handle deeply nested JSON objects (114 ms)
 
 Test Suites: 1 passed, 1 total
-Tests:       16 passed, 16 total
+Tests:       34 passed, 34 total
 Snapshots:   0 total
-Time:        0.887 s, estimated 1 s
+Time:        3.707 s, estimated 4 s
 Ran all test suites.
 
 ```
@@ -700,17 +736,6 @@ router.post('/generate', (req, res) => {
 });
 
 ```
-
-## Project Structure
-
-Bleu.js/
-├── backend/
-│   ├── index.js
-│   ├── server.js
-│   ├── swagger.js
-│   └── src/
-│       └── routes.js
-└── ...
 
 ### API Documentation
 The API documentation is available at `http://localhost:3003/docs` and provides detailed information about all available endpoints, request parameters, and response structures.
