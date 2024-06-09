@@ -643,7 +643,15 @@ node server.js
 Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
 
 5. **Access the raw Swagger JSON:**
-Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON.
+Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON. Or in a new Terminal use curl test: 
+## Debug endpoint
+`curl -X POST http://localhost:3003/debug -d '{}'`
+
+## Optimize endpoint
+`curl -X POST http://localhost:3003/optimize -d '{}'`
+
+## Generate endpoint
+`curl -X POST http://localhost:3003/generate -d '{}'`
 
 
 ### Recent API Updates
