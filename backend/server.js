@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
 const upload = multer();
 
@@ -25,9 +27,79 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello, World!' });
+// Swagger setup
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Bleu.js API',
+    version: '1.0.0',
+    description: 'Documentation for the Bleu.js API',
+  },
+  servers: [
+    {
+      url: 'http://localhost:3003',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['./server.js'], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Returns a greeting message
+ *     responses:
+ *       200:
+ *         description: A JSON object containing a greeting message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Hello, World!
+ */
+
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Hello, World!' });
+});
+
+/**
+ * @swagger
+ * /data:
+ *   post:
+ *     summary: Handle data posting
+ *     responses:
+ *       201:
+ *         description: Data received
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Data received
+ *                 data:
+ *                   type: string
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
 
 app.post('/data', (req, res) => {
   if (req.body.data === 'Async Error') {
@@ -45,7 +117,35 @@ app.post('/data', (req, res) => {
   res.status(201).json({ message: 'Data received', data: req.body.data });
 });
 
-// Handle multipart/form-data
+/**
+ * @swagger
+ * /upload:
+ *   post:
+ *     summary: Handle file upload
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: data
+ *         type: file
+ *         description: The file to upload.
+ *     responses:
+ *       201:
+ *         description: Data received
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Data received
+ *                 data:
+ *                   type: string
+ *       400:
+ *         description: Bad Request
+ */
+
 app.post('/upload', upload.single('data'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'Bad Request' });
