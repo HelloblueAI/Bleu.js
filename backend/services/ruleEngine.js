@@ -1,5 +1,5 @@
 const { Engine } = require('json-rules-engine');
-const Logger = require('../utils/logger'); // Import the logger
+const Logger = require('../utils/logger'); 
 
 class RulesEngine {
   constructor() {
