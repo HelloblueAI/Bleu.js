@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 
 const aiService = new AIService();
 
-// Middleware for validating and logging requests
+
 const validateRequest = (validations) => {
   return async (req, res, next) => {
     await Promise.all(validations.map(validation => validation.run(req)));
@@ -19,7 +19,7 @@ const validateRequest = (validations) => {
   };
 };
 
-// Route to evaluate rules
+
 router.post('/ai/rules', 
   validateRequest([
     check('data').exists().withMessage('Data is required')
@@ -29,7 +29,7 @@ router.post('/ai/rules',
     res.status(200).json({ result });
 });
 
-// Route to predict decision using decision tree
+
 router.post('/ai/decision', 
   validateRequest([
     check('data').exists().withMessage('Data is required')
@@ -39,7 +39,7 @@ router.post('/ai/decision',
     res.status(200).json({ result });
 });
 
-// Route to process text using NLP
+
 router.post('/ai/nlp', 
   validateRequest([
     check('text').exists().withMessage('Text is required')
@@ -49,7 +49,7 @@ router.post('/ai/nlp',
     res.status(200).json({ result });
 });
 
-// Route to create a new rule
+
 router.post('/rules', 
   validateRequest([
     check('name').isString().withMessage('Name must be a string'),
@@ -68,7 +68,7 @@ router.post('/rules',
     }
 });
 
-// Route to update a rule
+
 router.put('/rules/:id', 
   validateRequest([
     check('name').optional().isString().withMessage('Name must be a string'),
@@ -89,7 +89,7 @@ router.put('/rules/:id',
     }
 });
 
-// Route to delete a rule
+
 router.delete('/rules/:id', async (req, res) => {
   try {
     const rule = await Rule.findByIdAndDelete(req.params.id);
@@ -103,7 +103,7 @@ router.delete('/rules/:id', async (req, res) => {
   }
 });
 
-// Route to fetch all rules
+
 router.get('/rules', async (req, res) => {
   try {
     const rules = await Rule.find();
@@ -114,7 +114,7 @@ router.get('/rules', async (req, res) => {
   }
 });
 
-// Route to fetch a specific rule by ID
+
 router.get('/rules/:id', async (req, res) => {
   try {
     const rule = await Rule.findById(req.params.id);
@@ -128,7 +128,7 @@ router.get('/rules/:id', async (req, res) => {
   }
 });
 
-// Route to fetch logs of a specific rule by ID
+
 router.get('/rules/:id/logs', async (req, res) => {
   try {
     const rule = await Rule.findById(req.params.id);
