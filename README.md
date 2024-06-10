@@ -3,13 +3,19 @@
 
 .js/core
 
-Bleu.js is a JavaScript framework built to tackle the various coding challenges developers face. It brings together advanced debugging, real-time optimization suggestions, support for multiple programming languages. It automates dependency management, streamlines collaboration, and provides tools to maintain code quality without adding extra complexity.
+* Bleu.js is a powerful rules-based AI framework designed to provide intelligent and sharp solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face. 
 
 ### Features
-* Generate Eggs: Automatically generate code snippets.  
-* Optimize Code: Real-time code optimization.
-* Manage Dependencies: Handle project dependencies efficiently.
-* Ensure Code Quality: Tools to ensure the highest code quality.
+* Advanced debugging
+* Automates dependency management
+* Ensure Code Quality: Tools to ensure the highest code quality
+* Generate Eggs: Automatically generate code snippets
+* Provides tools to maintain code quality without adding extra complexity
+* Real-time optimization suggestions
+* Streamlines collaboration
+* Support for multiple programming languages
+* Manage Dependencies: Handle project dependencies efficiently
+
 
 ### Directory Structure
 
@@ -417,6 +423,17 @@ Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
+## Test
+`cd backend`
+
+
+`╰─ curl -X POST http://localhost:3003/ai/nlp -H "Content-Type: application/json" -d '{"text": "This is a test for NLP processing."}'`
+
+## Expected response:
+`{"tokens":["This","is","a","test","for","NLP","processing"]}% ` 
+
+
+
 ## Initializes a new instance of the BleuJS class.
 
 ### Methods
@@ -572,37 +589,37 @@ This document provides detailed information about the API endpoints available in
 `cd backend`
 `npm test`
 ```javascript
-  PASS  backend/tests/bleu.test.js
+ PASS  backend/tests/bleu.test.js
   API Tests
-    ✓ should handle invalid request headers (33 ms)
+    ✓ should handle invalid request headers (28 ms)
     ✓ should handle /data with body {} (2 ms)
     ✓ should handle /nonexistent with body null (2 ms)
-    ✓ should handle /data with body Invalid JSON (3 ms)
-    ✓ should handle asynchronous errors gracefully (1 ms)
-    ✓ should handle edge cases (2 ms)
-    ✓ should ensure performance meets expectations (1 ms)
+    ✓ should handle /data with body Invalid JSON (2 ms)
+    ✓ should handle asynchronous errors gracefully (2 ms)
+    ✓ should handle edge cases (1 ms)
+    ✓ should ensure performance meets expectations (10 ms)
     ✓ should return 400 for missing data field in POST /data (1 ms)
     ✓ should return 500 for simulated server error in POST /data (2 ms)
     ✓ should handle invalid JSON gracefully (1 ms)
     ✓ should handle very large data payloads (1 ms)
-    ✓ should measure response time for POST /data (1 ms)
-    ✓ should handle simultaneous requests (8 ms)
+    ✓ should measure response time for POST /data (2 ms)
+    ✓ should handle simultaneous requests (9 ms)
     ✓ should validate response schema (1 ms)
-    ✓ should stress test the server (38 ms)
+    ✓ should stress test the server (39 ms)
     ✓ should test with invalid routes (1 ms)
-    ✓ should test JSON parsing error (2 ms)
-    ✓ should test different HTTP methods on /data (1 ms)
-    ✓ should handle very large number of simultaneous requests (277 ms)
+    ✓ should test JSON parsing error (1 ms)
+    ✓ should test different HTTP methods on /data (2 ms)
+    ✓ should handle very large number of simultaneous requests (294 ms)
     ✓ should handle concurrent GET and POST requests (1 ms)
     ✓ should handle slow network conditions gracefully
-    ✓ should verify CORS headers (1 ms)
+    ✓ should verify CORS headers
     ✓ should handle session cookies (8 ms)
-    ✓ should verify content-type for POST /data (1 ms)
-    ✓ should test for memory leaks (29 ms)
+    ✓ should verify content-type for POST /data
+    ✓ should test for memory leaks (31 ms)
     ✓ should handle different user roles (2 ms)
     ✓ should handle database connectivity issues (1 ms)
     ✓ should handle application/x-www-form-urlencoded (1 ms)
-    ✓ should handle JSON arrays
+    ✓ should handle JSON arrays (1 ms)
     ✓ should handle deeply nested JSON objects (1 ms)
 
 ----------|---------|----------|---------|---------|-------------------
@@ -613,12 +630,25 @@ All files |       0 |        0 |       0 |       0 |
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
 Snapshots:   0 total
-Time:        5.622 s
+Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 
 ```
-
 ## Getting Started
+
+To set up the project and start the server, follow these steps:
+
+### Navigate to the backend directory:
+
+`cd backend`
+
+Install the required packages:
+
+`pnpm install`
+
+Start the server:
+`node server.js`
+
 
 To set up the project and start the server, follow these steps:
 
@@ -652,6 +682,16 @@ Open your browser and navigate to `http://localhost:3003/swagger.json` to view t
 
 ## Generate endpoint
 `curl -X POST http://localhost:3003/generate -d '{}'`
+
+
+
+Access the Swagger UI:
+
+Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
+
+
+Access the raw Swagger JSON:
+Open your browser and navigate to `http://localhost:3003/swagger`json to view the raw Swagger JSON.
 
 
 ### Recent API Updates
