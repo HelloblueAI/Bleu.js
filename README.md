@@ -210,7 +210,7 @@ class Bleu {
    * @returns {string} The optimized code.
    */
   optimizeCode(code) {
-    // Basic optimization logic: removing extra spaces
+   
     return code.replace(/\s+/g, ' ').trim();
   }
 
@@ -221,7 +221,7 @@ class Bleu {
   manageDependencies(dependencies) {
     dependencies.forEach(dep => {
       console.log(`Managing dependency: ${dep}`);
-      // Simulate installation
+      
     });
   }
 
@@ -231,7 +231,7 @@ class Bleu {
    * @returns {boolean} Whether the code is of high quality.
    */
   ensureCodeQuality(code) {
-    // Basic quality check: no 'var' keywords allowed
+    
     return !code.includes('var');
   }
 }
@@ -268,13 +268,12 @@ constructor()
 ## Structure
 
 ```javascript
-// Main functionality of Bleu.js
 class Bleu {
   constructor() {
     this.eggs = [];
   }
 
-  // Method to generate new code 'eggs'
+
   generateEgg(description, type, options = {}) {
     const newEgg = {
       id: this.eggs.length + 1,
@@ -572,7 +571,7 @@ The ensureCodeQuality method will ensure that the provided code meets predefined
 
 ```javascript
 ensureCodeQuality(code) {
-  // Code quality assurance logic here
+ 
   const isQualityCode = true; 
   return isQualityCode;
 }
