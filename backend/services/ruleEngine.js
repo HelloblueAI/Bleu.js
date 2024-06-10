@@ -7,7 +7,7 @@ class RulesEngine {
     this.logger = new Logger();
   }
 
-  // Add a rule to the engine
+
   addRule(rule) {
     try {
       this.engine.addRule(rule);
@@ -18,10 +18,10 @@ class RulesEngine {
     }
   }
 
-  // Remove a rule from the engine
+ 
   removeRule(rule) {
     try {
-      // Assuming we have a way to remove a rule by name or id
+
       this.engine.removeRule(rule);
       this.logger.info(`Rule removed: ${rule.name || 'Unnamed rule'}`);
     } catch (error) {
@@ -30,7 +30,7 @@ class RulesEngine {
     }
   }
 
-  // Update an existing rule
+
   updateRule(rule) {
     try {
       this.removeRule(rule);
@@ -42,7 +42,7 @@ class RulesEngine {
     }
   }
 
-  // Evaluate the data against the rules
+
   async evaluate(data) {
     try {
       const results = await this.engine.run(data);
@@ -54,7 +54,7 @@ class RulesEngine {
     }
   }
 
-  // Add complex conditions and actions
+ 
   addComplexRule(name, conditions, actions, priority = 1) {
     const rule = {
       name,
@@ -72,10 +72,10 @@ class RulesEngine {
     this.addRule(rule);
   }
 
-  // Advanced error handling and reporting
+
   handleError(error) {
     this.logger.error('Rule engine error:', error);
-    // Further error handling logic (e.g., notify admin, retry mechanism)
+    
   }
 }
 
