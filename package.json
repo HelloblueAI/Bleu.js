@@ -1,7 +1,7 @@
 {
   "name": "bleujs",
   "version": "1.0.0",
-  "description": "Bleu.js Project - The Most Powerful Rules-Based AI Framework",
+  "description": "Bleu.js Project",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
