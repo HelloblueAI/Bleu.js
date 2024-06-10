@@ -17,7 +17,9 @@
     "express-session": "^1.18.0",
     "multer": "1.4.5-lts.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "natural": "^5.0.0",
+    "compromise": "^13.11.3"
   },
   "devDependencies": {
     "babel-jest": "^29.7.0",
