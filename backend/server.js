@@ -3,13 +3,28 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
+const morgan = require('morgan');
+const jwt = require('jsonwebtoken');
 const RulesEngine = require('./ai/rulesEngine');
 const DecisionTree = require('./ai/decisionTree');
 const NLPProcessor = require('./ai/nlpProcessor');
+const apiRoutes = require('./routes/apiRoutes');
+const swagger = require('./swagger');
+require('dotenv').config();
+const Logger = require('./utils/logger');
+const logger = new Logger();
 
 const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
+
+// Security and performance middleware
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined'));
 
 // Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
@@ -20,7 +35,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
 });
 
@@ -33,34 +48,102 @@ app.use((req, res, next) => {
   next();
 });
 
+// JWT authentication middleware
+app.use((req, res, next) => {
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      req.user = decoded;
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
+// Logger middleware for correlation IDs
+app.use((req, res, next) => {
+  const correlationId = logger.setCorrelationId(req);
+  res.setHeader('X-Correlation-Id', correlationId);
+  next();
+});
+
 // Swagger setup
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
     title: 'Bleu.js API',
     version: '1.0.0',
-    description: 'Documentation for the Bleu.js API',
+    description: 'Documentation for the Bleu.js API - A powerful rules-based AI framework',
+    contact: {
+      name: 'Helloblue, Inc.',
+      email: 'info@helloblue.ai',
+    },
+    license: {
+      name: 'MIT',
+      url: 'https://opensource.org/licenses/MIT',
+    },
+    termsOfService: 'http://example.com/terms/',
   },
   servers: [
     {
       url: 'http://localhost:3003',
+      description: 'Development server',
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      apiKeyAuth: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'X-API-KEY',
+      },
+    },
+  },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  tags: [
+    {
+      name: 'General',
+      description: 'General API Endpoints',
+    },
+    {
+      name: 'AI',
+      description: 'AI-related Endpoints',
+    },
+    {
+      name: 'File',
+      description: 'File Handling Endpoints',
     },
   ],
 };
 
 const options = {
   swaggerDefinition,
-  apis: ['./server.js'], // Path to the API docs
+  apis: ['./server.js', './routes/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-// Serve Swagger UI and Swagger JSON
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
+
+// API routes
+app.use('/api', apiRoutes);
 
 // Define API routes with Swagger documentation
 /**
@@ -68,6 +151,7 @@ app.get('/swagger.json', (req, res) => {
  * /:
  *   get:
  *     summary: Returns a greeting message
+ *     tags: [General]
  *     responses:
  *       200:
  *         description: A JSON object containing a greeting message
@@ -81,6 +165,7 @@ app.get('/swagger.json', (req, res) => {
  *                   example: Hello, World!
  */
 app.get('/', (req, res) => {
+  logger.info('Hello, World!', { endpoint: '/' });
   res.status(200).json({ message: 'Hello, World!' });
 });
 
@@ -89,6 +174,17 @@ app.get('/', (req, res) => {
  * /data:
  *   post:
  *     summary: Handle data posting
+ *     tags: [General]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               data:
+ *                 type: string
+ *                 example: "sample data"
  *     responses:
  *       201:
  *         description: Data received
@@ -128,6 +224,7 @@ app.post('/data', (req, res) => {
  * /upload:
  *   post:
  *     summary: Handle file upload
+ *     tags: [File]
  *     consumes:
  *       - multipart/form-data
  *     parameters:
@@ -158,12 +255,22 @@ app.post('/upload', upload.single('data'), (req, res) => {
   res.status(201).json({ message: 'Data received', data: req.file.buffer.toString() });
 });
 
-// Add new AI-related endpoint
 /**
  * @swagger
  * /ai/rules:
  *   post:
  *     summary: Process data using rules-based AI
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               data:
+ *                 type: string
+ *                 example: "example"
  *     responses:
  *       200:
  *         description: AI processing result
@@ -192,6 +299,17 @@ app.post('/ai/rules', (req, res) => {
  * /ai/nlp:
  *   post:
  *     summary: Process text using NLP
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 example: "This is a test for NLP processing."
  *     responses:
  *       200:
  *         description: NLP processing result
@@ -204,6 +322,7 @@ app.post('/ai/rules', (req, res) => {
  *                   type: array
  *                   items:
  *                     type: string
+ *                   example: ["This", "is", "a", "test", "for", "NLP", "processing"]
  */
 app.post('/ai/nlp', (req, res) => {
   const tokens = nlpProcessor.tokenize(req.body.text);
@@ -213,6 +332,7 @@ app.post('/ai/nlp', (req, res) => {
 // Error handling middleware for JSON syntax errors
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    logger.error('JSON Syntax Error', { error: err.message });
     return res.status(400).json({ message: 'Bad Request' });
   }
   next();
@@ -223,11 +343,18 @@ app.use((req, res, next) => {
   res.status(404).json({ message: 'Not Found' });
 });
 
+// Middleware for handling other errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  logger.error('Internal Server Error', { error: err.stack });
+  res.status(500).json({ message: 'Internal Server Error' });
+});
+
 // Start the server
 if (require.main === module) {
   const port = process.env.PORT || 3003;
   app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    logger.info(`Server running on port ${port}`);
   });
 }
 
