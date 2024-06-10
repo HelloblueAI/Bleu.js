@@ -21,17 +21,17 @@ const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
 
-// Security and performance middleware
+
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
 
-// Middleware to parse JSON and URL-encoded bodies
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// CORS middleware for handling cross-origin requests
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -39,7 +39,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to validate headers
+
 app.use((req, res, next) => {
   const invalidHeader = req.headers['invalid-header'];
   if (invalidHeader) {
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// JWT authentication middleware
+
 app.use((req, res, next) => {
   if (req.headers.authorization) {
     const token = req.headers.authorization.split(' ')[1];
@@ -64,14 +64,14 @@ app.use((req, res, next) => {
   }
 });
 
-// Logger middleware for correlation IDs
+
 app.use((req, res, next) => {
   const correlationId = logger.setCorrelationId(req);
   res.setHeader('X-Correlation-Id', correlationId);
   next();
 });
 
-// Swagger setup
+
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
@@ -142,7 +142,7 @@ app.get('/swagger.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
-// API routes
+
 app.use('/api', apiRoutes);
 
 // Define API routes with Swagger documentation
@@ -329,7 +329,7 @@ app.post('/ai/nlp', (req, res) => {
   res.status(200).json({ tokens });
 });
 
-// Error handling middleware for JSON syntax errors
+
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     logger.error('JSON Syntax Error', { error: err.message });
@@ -338,19 +338,19 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// Middleware for handling 404 errors
+
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not Found' });
 });
 
-// Middleware for handling other errors
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   logger.error('Internal Server Error', { error: err.stack });
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-// Start the server
+
 if (require.main === module) {
   const port = process.env.PORT || 3003;
   app.listen(port, () => {
