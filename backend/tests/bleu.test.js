@@ -5,7 +5,7 @@ const net = require('net');
 let server;
 let port;
 
-
+// Function to find an available port for the server
 const findAvailablePort = () => {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
@@ -17,13 +17,15 @@ const findAvailablePort = () => {
   });
 };
 
+// Before all tests, find an available port and start the server
 beforeAll(async () => {
   port = await findAvailablePort();
   server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
-}, 10000); 
+}, 10000);
 
+// After all tests, close the server
 afterAll((done) => {
   if (server) {
     server.close(() => {
@@ -35,6 +37,7 @@ afterAll((done) => {
   }
 });
 
+// Helper function to retry requests in case of transient errors
 const retryRequest = async (fn, retries = 5, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -50,7 +53,9 @@ const retryRequest = async (fn, retries = 5, delay = 1000) => {
   throw new Error('Exceeded maximum retries');
 };
 
+// Test suite for API tests
 describe('API Tests', () => {
+  // Test handling of invalid request headers
   it('should handle invalid request headers', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -62,6 +67,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Invalid Header');
   });
 
+  // Test handling of different paths and bodies
   it.each`
     path              | body
     ${'/data'}        | ${{}}
@@ -78,6 +84,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Bad Request');
   });
 
+  // Test handling of asynchronous errors
   it('should handle asynchronous errors gracefully', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).post('/data').send({ data: 'Async Error' })
@@ -86,6 +93,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
   });
 
+  // Test handling of edge cases
   it('should handle edge cases', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).get('/nonexistent')
@@ -94,6 +102,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Not Found');
   });
 
+  // Test performance
   it('should ensure performance meets expectations', async () => {
     const start = Date.now();
     await retryRequest(() => request(`http://localhost:${port}`).get('/'));
@@ -102,6 +111,7 @@ describe('API Tests', () => {
     expect(duration).toBeLessThan(100);
   });
 
+  // Test for missing data field in POST /data
   it('should return 400 for missing data field in POST /data', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).post('/data').send({})
@@ -110,6 +120,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Bad Request');
   });
 
+  // Test for simulated server error in POST /data
   it('should return 500 for simulated server error in POST /data', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).post('/data').send({ data: 'Async Error' })
@@ -118,6 +129,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
   });
 
+  // Test handling of invalid JSON
   it('should handle invalid JSON gracefully', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -129,6 +141,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Bad Request');
   });
 
+  // Test handling of very large data payloads
   it('should handle very large data payloads', async () => {
     const largeData = 'A'.repeat(10000);
     const res = await retryRequest(() =>
@@ -139,6 +152,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('data', largeData);
   });
 
+  // Test response time for POST /data
   it('should measure response time for POST /data', async () => {
     const start = Date.now();
     const res = await retryRequest(() =>
@@ -152,6 +166,7 @@ describe('API Tests', () => {
     expect(duration).toBeLessThan(200);
   });
 
+  // Test handling of simultaneous requests
   it('should handle simultaneous requests', async () => {
     const testData = Array.from({ length: 10 }, (_, i) => `Data ${i + 1}`);
     const promises = testData.map((data) =>
@@ -167,6 +182,7 @@ describe('API Tests', () => {
     });
   });
 
+  // Test validation of response schema
   it('should validate response schema', async () => {
     const res = await retryRequest(() => request(`http://localhost:${port}`).get('/'));
     expect(res.statusCode).toEqual(200);
@@ -177,6 +193,7 @@ describe('API Tests', () => {
     );
   });
 
+  // Stress test the server
   it('should stress test the server', async () => {
     const stressTestData = Array.from(
       { length: 100 },
@@ -191,15 +208,18 @@ describe('API Tests', () => {
     results.forEach((res, i) => {
       expect(res.statusCode).toEqual(201);
     });
-  }, 30000); 
+  }, 30000);
 
+  // Test invalid routes
   it('should test with invalid routes', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).get('/invalid-route')
     );
     expect(res.statusCode).toEqual(404);
     expect(res.body).toHaveProperty('message', 'Not Found');
-  }, 10000); 
+  }, 10000);
+
+  // Test JSON parsing error
   it('should test JSON parsing error', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -209,8 +229,9 @@ describe('API Tests', () => {
     );
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('message', 'Bad Request');
-  }, 10000); 
+  }, 10000);
 
+  // Test different HTTP methods on /data
   it('should test different HTTP methods on /data', async () => {
     const resPut = await retryRequest(() =>
       request(`http://localhost:${port}`).put('/data').send({ data: 'PUT data' })
@@ -221,8 +242,9 @@ describe('API Tests', () => {
       request(`http://localhost:${port}`).delete('/data').send({ data: 'DELETE data' })
     );
     expect(resDelete.statusCode).toEqual(404);
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of very large number of simultaneous requests
   it('should handle very large number of simultaneous requests', async () => {
     const testData = Array.from({ length: 500 }, (_, i) => `Bulk Data ${i + 1}`);
     const promises = testData.map((data) =>
@@ -234,8 +256,9 @@ describe('API Tests', () => {
     results.forEach((res, i) => {
       expect(res.statusCode).toEqual(201);
     });
-  }, 30000); 
+  }, 30000);
 
+  // Test concurrent GET and POST requests
   it('should handle concurrent GET and POST requests', async () => {
     const postData = 'Concurrent Data';
     const [getRes, postRes] = await Promise.all([
@@ -248,8 +271,9 @@ describe('API Tests', () => {
     expect(postRes.statusCode).toEqual(201);
     expect(postRes.body).toHaveProperty('message', 'Data received');
     expect(postRes.body).toHaveProperty('data', postData);
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of slow network conditions
   it('should handle slow network conditions gracefully', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -261,13 +285,15 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Slow Network');
-  }, 10000); 
+  }, 10000);
 
+  // Test CORS headers
   it('should verify CORS headers', async () => {
     const res = await retryRequest(() => request(`http://localhost:${port}`).get('/'));
     expect(res.headers).toHaveProperty('access-control-allow-origin', '*');
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of session cookies
   it('should handle session cookies', async () => {
     const agent = request.agent(`http://localhost:${port}`);
 
@@ -277,8 +303,9 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Session Data');
-  }, 10000); 
+  }, 10000);
 
+  // Test content-type validation for POST /data
   it('should verify content-type for POST /data', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -288,8 +315,9 @@ describe('API Tests', () => {
     );
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('message', 'Bad Request');
-  }, 10000); // Increase timeout to 10 seconds
+  }, 10000);
 
+  // Test for memory leaks
   it('should test for memory leaks', async () => {
     const heapUsedBefore = process.memoryUsage().heapUsed;
     const promises = Array.from({ length: 100 }, () =>
@@ -301,8 +329,9 @@ describe('API Tests', () => {
     const heapUsedAfter = process.memoryUsage().heapUsed;
 
     expect(heapUsedAfter - heapUsedBefore).toBeLessThan(100 * 1024 * 1024); // less than 100MB increase
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of different user roles
   it('should handle different user roles', async () => {
     const roles = ['admin', 'user', 'guest'];
     const promises = roles.map(async (role) => {
@@ -318,12 +347,12 @@ describe('API Tests', () => {
       expect(res.body).toHaveProperty('data', `Role: ${role}`);
     });
     await Promise.all(promises);
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of database connectivity issues
   it('should handle database connectivity issues', async () => {
     jest.spyOn(global, 'setTimeout').mockImplementation((cb) => cb());
 
-    
     const originalImplementation = app.post;
     app.post = (path, handler) => {
       if (path === '/data') {
@@ -341,8 +370,9 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
 
     jest.restoreAllMocks();
-  }, 10000); 
+  }, 10000);
 
+  // Test handling of application/x-www-form-urlencoded
   it('should handle application/x-www-form-urlencoded', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
@@ -353,17 +383,19 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Form Data');
-  }, 10000); // Increase timeout to 10 seconds
+  }, 10000);
 
+  // Test handling of JSON arrays
   it('should handle JSON arrays', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`)
         .post('/data')
         .send([{ data: 'Array Data 1' }, { data: 'Array Data 2' }])
     );
-    expect(res.statusCode).toEqual(400); 
-  }, 10000); 
+    expect(res.statusCode).toEqual(400);
+  }, 10000);
 
+  // Test handling of deeply nested JSON objects
   it('should handle deeply nested JSON objects', async () => {
     const nestedData = { level1: { level2: { level3: { level4: 'Deep Data' } } } };
     const res = await retryRequest(() =>
@@ -372,7 +404,7 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body.data).toEqual(nestedData);
-  }, 10000); 
+  }, 10000);
 });
 
 module.exports = server;
