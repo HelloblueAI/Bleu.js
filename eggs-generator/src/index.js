@@ -1,24 +1,24 @@
-const HenFarm = require('./HenFarm'); // Assuming HenFarm.js is in the same directory
+const HenFarm = require('./HenFarm'); 
 
 class Bleu {
   constructor() {
     this.eggs = [];
-    this.henFarm = new HenFarm(); // Initialize HenFarm.js
+    this.henFarm = new HenFarm(); 
   }
 
-  // Method to generate a description for the egg
   generateDescription(type, options) {
     switch (type) {
       case 'model':
         return `Model ${options.modelName} with fields ${options.fields.map(field => field.name).join(', ')}`;
       case 'utility':
         return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
+      case 'service':
+        return `Service ${options.serviceName} with endpoints ${options.endpoints.map(endpoint => endpoint.name).join(', ')}`;
       default:
         throw new Error(`Unknown code type: ${type}`);
     }
   }
 
-  // Method to generate a new code egg using HenFarm.js
   generateEgg(description, type, options) {
     const code = this.henFarm.generateCode(type, options); // Use HenFarm.js to generate code
     const newEgg = {
@@ -32,26 +32,23 @@ class Bleu {
     return newEgg;
   }
 
-  // Method to optimize the provided code
   optimizeCode(code) {
     // Remove extra spaces and trim the code
     const optimizedCode = code.replace(/\s+/g, ' ').trim().replace(/ ;/g, ';');
     return optimizedCode;
   }
 
-  // Method to manage dependencies
   manageDependencies(dependencies) {
-    // Dependency management logic here
     dependencies.forEach(dep => {
-      console.log(`Managing dependency: ${dep.name}@${dep.version}`);
+      console.log(`Managing dependency: ${dep}`);
+      // Simulate installation
+      // In a real scenario, you might use child_process to run npm or yarn commands
     });
   }
 
-  // Method to ensure code quality
   ensureCodeQuality(code) {
-    // Code quality assurance logic here
-    const isQualityCode = !code.includes('var'); // Simplistic quality check
-    return isQualityCode;
+    // Basic code quality check
+    return !code.includes('var'); // Simplistic quality check
   }
 }
 

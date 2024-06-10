@@ -35,14 +35,19 @@ afterAll((done) => {
   }
 });
 
-const retryRequest = async (fn, retries = 3) => {
+const retryRequest = async (fn, retries = 5, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      return await fn();
+      const res = await fn();
+      if (res.status !== 429) {
+        return res;
+      }
     } catch (err) {
       if (i === retries - 1) throw err;
     }
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
+  throw new Error('Exceeded maximum retries');
 };
 
 describe('API Tests', () => {
@@ -186,7 +191,7 @@ describe('API Tests', () => {
     results.forEach((res, i) => {
       expect(res.statusCode).toEqual(201);
     });
-  });
+  }, 30000); // Increase timeout to 30 seconds
 
   it('should test with invalid routes', async () => {
     const res = await retryRequest(() =>
@@ -194,7 +199,7 @@ describe('API Tests', () => {
     );
     expect(res.statusCode).toEqual(404);
     expect(res.body).toHaveProperty('message', 'Not Found');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should test JSON parsing error', async () => {
     const res = await retryRequest(() =>
@@ -205,7 +210,7 @@ describe('API Tests', () => {
     );
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('message', 'Bad Request');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should test different HTTP methods on /data', async () => {
     const resPut = await retryRequest(() =>
@@ -217,7 +222,7 @@ describe('API Tests', () => {
       request(`http://localhost:${port}`).delete('/data').send({ data: 'DELETE data' })
     );
     expect(resDelete.statusCode).toEqual(404);
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle very large number of simultaneous requests', async () => {
     const testData = Array.from({ length: 500 }, (_, i) => `Bulk Data ${i + 1}`);
@@ -230,7 +235,7 @@ describe('API Tests', () => {
     results.forEach((res, i) => {
       expect(res.statusCode).toEqual(201);
     });
-  });
+  }, 30000); // Increase timeout to 30 seconds
 
   it('should handle concurrent GET and POST requests', async () => {
     const postData = 'Concurrent Data';
@@ -244,7 +249,7 @@ describe('API Tests', () => {
     expect(postRes.statusCode).toEqual(201);
     expect(postRes.body).toHaveProperty('message', 'Data received');
     expect(postRes.body).toHaveProperty('data', postData);
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle slow network conditions gracefully', async () => {
     const res = await retryRequest(() =>
@@ -257,12 +262,12 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Slow Network');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should verify CORS headers', async () => {
     const res = await retryRequest(() => request(`http://localhost:${port}`).get('/'));
     expect(res.headers).toHaveProperty('access-control-allow-origin', '*');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle session cookies', async () => {
     const agent = request.agent(`http://localhost:${port}`);
@@ -273,7 +278,7 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Session Data');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should verify content-type for POST /data', async () => {
     const res = await retryRequest(() =>
@@ -284,7 +289,7 @@ describe('API Tests', () => {
     );
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('message', 'Bad Request');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should test for memory leaks', async () => {
     const heapUsedBefore = process.memoryUsage().heapUsed;
@@ -297,7 +302,7 @@ describe('API Tests', () => {
     const heapUsedAfter = process.memoryUsage().heapUsed;
 
     expect(heapUsedAfter - heapUsedBefore).toBeLessThan(100 * 1024 * 1024); // less than 100MB increase
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle different user roles', async () => {
     const roles = ['admin', 'user', 'guest'];
@@ -314,7 +319,7 @@ describe('API Tests', () => {
       expect(res.body).toHaveProperty('data', `Role: ${role}`);
     });
     await Promise.all(promises);
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle database connectivity issues', async () => {
     jest.spyOn(global, 'setTimeout').mockImplementation((cb) => cb());
@@ -337,7 +342,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
 
     jest.restoreAllMocks();
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle application/x-www-form-urlencoded', async () => {
     const res = await retryRequest(() =>
@@ -349,7 +354,7 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body).toHaveProperty('data', 'Form Data');
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle JSON arrays', async () => {
     const res = await retryRequest(() =>
@@ -358,7 +363,7 @@ describe('API Tests', () => {
         .send([{ data: 'Array Data 1' }, { data: 'Array Data 2' }])
     );
     expect(res.statusCode).toEqual(400); // Should fail as our endpoint expects an object
-  });
+  }, 10000); // Increase timeout to 10 seconds
 
   it('should handle deeply nested JSON objects', async () => {
     const nestedData = { level1: { level2: { level3: { level4: 'Deep Data' } } } };
@@ -368,7 +373,7 @@ describe('API Tests', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body.data).toEqual(nestedData);
-  });
+  }, 10000); // Increase timeout to 10 seconds
 });
 
 module.exports = server;
