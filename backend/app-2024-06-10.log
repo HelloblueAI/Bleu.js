@@ -28,3 +28,22 @@
 2024-06-10T09:23:26.032Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-10T09:23:26.045Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-10T09:25:10.945Z [info]: Server running on port 3003 
+2024-06-10T18:38:13.439Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T18:38:13.447Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T18:38:13.463Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T18:38:13.480Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T18:38:13.532Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T18:38:13.833Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-10T18:38:15.696Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T18:38:15.708Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T18:38:15.722Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T19:27:12.267Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-10T19:27:12.346Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T19:27:12.358Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T19:27:12.377Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T19:27:12.394Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T19:27:12.446Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T19:27:12.745Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-10T19:27:14.656Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T19:27:14.669Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T19:27:14.683Z [info]: Hello, World! {"endpoint":"/"}

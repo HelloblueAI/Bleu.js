@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
-const RulesEngine = require('./ai/rulesEngine');
+const RulesEngine = require('./services/ruleEngine'); // Updated import path
 const DecisionTree = require('./ai/decisionTree');
 const NLPProcessor = require('./ai/nlpProcessor');
 const apiRoutes = require('./routes/apiRoutes');
@@ -20,17 +20,35 @@ const logger = new Logger();
 const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
+const rulesEngine = new RulesEngine();
 
+// Add a default rule for testing
+rulesEngine.addRule({
+  name: 'Test Rule',
+  conditions: {
+    all: [
+      {
+        fact: 'data',
+        operator: 'equal',
+        value: 'example',
+      },
+    ],
+  },
+  event: {
+    type: 'ruleTriggered',
+    params: {
+      message: 'Test rule has been triggered',
+    },
+  },
+});
 
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
 
-
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -39,7 +57,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use((req, res, next) => {
   const invalidHeader = req.headers['invalid-header'];
   if (invalidHeader) {
@@ -47,7 +64,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
 
 app.use((req, res, next) => {
   if (req.headers.authorization) {
@@ -64,13 +80,11 @@ app.use((req, res, next) => {
   }
 });
 
-
 app.use((req, res, next) => {
   const correlationId = logger.setCorrelationId(req);
   res.setHeader('X-Correlation-Id', correlationId);
   next();
 });
-
 
 const swaggerDefinition = {
   openapi: '3.0.0',
@@ -141,7 +155,6 @@ app.get('/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
-
 
 app.use('/api', apiRoutes);
 
@@ -284,7 +297,6 @@ app.post('/upload', upload.single('data'), (req, res) => {
  *                   example: AI result
  */
 app.post('/ai/rules', (req, res) => {
-  const rulesEngine = new RulesEngine();
   rulesEngine.addRule({
     condition: (data) => data === 'example',
     action: (data) => `Processed ${data}`,
@@ -329,7 +341,6 @@ app.post('/ai/nlp', (req, res) => {
   res.status(200).json({ tokens });
 });
 
-
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     logger.error('JSON Syntax Error', { error: err.message });
@@ -338,18 +349,15 @@ app.use((err, req, res, next) => {
   next();
 });
 
-
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not Found' });
 });
-
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   logger.error('Internal Server Error', { error: err.stack });
   res.status(500).json({ message: 'Internal Server Error' });
 });
-
 
 if (require.main === module) {
   const port = process.env.PORT || 3003;

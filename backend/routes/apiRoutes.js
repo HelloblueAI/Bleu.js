@@ -6,7 +6,6 @@ const { check, validationResult } = require('express-validator');
 
 const aiService = new AIService();
 
-
 const validateRequest = (validations) => {
   return async (req, res, next) => {
     await Promise.all(validations.map(validation => validation.run(req)));
@@ -19,7 +18,6 @@ const validateRequest = (validations) => {
   };
 };
 
-
 router.post('/ai/rules', 
   validateRequest([
     check('data').exists().withMessage('Data is required')
@@ -28,7 +26,6 @@ router.post('/ai/rules',
     const result = aiService.evaluateRules(req.body.data);
     res.status(200).json({ result });
 });
-
 
 router.post('/ai/decision', 
   validateRequest([
@@ -39,7 +36,6 @@ router.post('/ai/decision',
     res.status(200).json({ result });
 });
 
-
 router.post('/ai/nlp', 
   validateRequest([
     check('text').exists().withMessage('Text is required')
@@ -48,7 +44,6 @@ router.post('/ai/nlp',
     const result = aiService.processText(req.body.text);
     res.status(200).json({ result });
 });
-
 
 router.post('/rules', 
   validateRequest([
@@ -67,7 +62,6 @@ router.post('/rules',
       res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
 
 router.put('/rules/:id', 
   validateRequest([
@@ -89,7 +83,6 @@ router.put('/rules/:id',
     }
 });
 
-
 router.delete('/rules/:id', async (req, res) => {
   try {
     const rule = await Rule.findByIdAndDelete(req.params.id);
@@ -103,7 +96,6 @@ router.delete('/rules/:id', async (req, res) => {
   }
 });
 
-
 router.get('/rules', async (req, res) => {
   try {
     const rules = await Rule.find();
@@ -113,7 +105,6 @@ router.get('/rules', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 
 router.get('/rules/:id', async (req, res) => {
   try {
@@ -127,7 +118,6 @@ router.get('/rules/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 
 router.get('/rules/:id/logs', async (req, res) => {
   try {
