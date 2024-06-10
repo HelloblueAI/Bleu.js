@@ -345,25 +345,24 @@ module.exports = ${utilityName};
     `;
   }
 
-  // Method to optimize the provided code
+  
   optimizeCode(code) {
-    // Optimization logic here
+
     const optimizedCode = code; 
     return optimizedCode;
   }
 
-  // Method to manage dependencies
   manageDependencies(dependencies) {
-    // Dependency management logic here
+  
     dependencies.forEach(dep => {
       console.log(`Managing dependency: ${dep}`);
       // Actual dependency management logic here
     });
   }
 
-  // To ensure code quality
+
   ensureCodeQuality(code) {
-    // Code quality assurance logic here
+
     const isQualityCode = true;
     return isQualityCode;
   }
@@ -375,7 +374,8 @@ module.exports = Bleu;
 
 `cd/backend`
 ```javascript
-pnpm test 
+`pnpm test`
+`pnpm -w run test:backend`
 ```
 
 ```javascript
@@ -431,7 +431,6 @@ Ran all test suites.
 
 ## Expected response:
 `{"tokens":["This","is","a","test","for","NLP","processing"]}% ` 
-
 
 
 ## Initializes a new instance of the BleuJS class.
@@ -682,7 +681,6 @@ Open your browser and navigate to `http://localhost:3003/swagger.json` to view t
 
 ## Generate endpoint
 `curl -X POST http://localhost:3003/generate -d '{}'`
-
 
 
 Access the Swagger UI:
