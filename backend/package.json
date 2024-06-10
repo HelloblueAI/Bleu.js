@@ -1,21 +1,36 @@
 {
-  "name": "bleujs",
+  "name": "bleujs-backend",
   "version": "1.0.0",
-  "description": "Bleu.js Project",
+  "description": "Backend for Bleu.js Project - The Most Powerful Rules-Based AI Framework",
   "main": "index.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles --forceExit",
+    "start": "node server.js",
+    "start:dev": "nodemon server.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write ."
+  },
   "dependencies": {
     "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
     "compromise": "^14.13.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "express-session": "^1.18.0",
+    "express-validator": "^7.1.0",
     "get-port": "^7.1.0",
-    "jest-tobetype": "^1.2.3",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "natural": "^7.0.6",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "wink-nlp": "^2.3.0",
+    "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -35,14 +50,16 @@
     "supertest": "^7.0.0",
     "vue": "^3.4.27"
   },
-  "scripts": {
-    "test": "jest --detectOpenHandles --forceExit",
-    "start": "node server.js"
-  },
   "directories": {
     "test": "tests"
   },
-  "keywords": [],
+  "keywords": [
+    "AI",
+    "rules-engine",
+    "NLP",
+    "backend",
+    "framework"
+  ],
   "author": "Pejman Haghighatnia",
   "license": "MIT"
 }

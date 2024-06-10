@@ -3,7 +3,7 @@
 
 .js/core
 
-* Bleu.js is a powerful rules-based AI framework designed to provide intelligent and sharp solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face. 
+* Bleu.js is a rules-based AI framework designed to provide intelligent and sharp solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face. 
 
 ### Features
 * Advanced debugging
