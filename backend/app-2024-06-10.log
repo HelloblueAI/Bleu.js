@@ -1,0 +1,30 @@
+2024-06-10T09:09:00.447Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:09:00.455Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:00.473Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:09:00.488Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:00.536Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:09:13.073Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:09:13.080Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:13.095Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:09:13.109Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:13.155Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:13:36.679Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:13:36.686Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:13:36.700Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:13:36.715Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:13:36.762Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:19:52.200Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:19:52.207Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:19:52.221Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:19:52.235Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:19:52.286Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:23:23.666Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:23:23.679Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:23:23.695Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:23:23.711Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:23:23.772Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:23:24.066Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-10T09:23:26.019Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:23:26.032Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:23:26.045Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:25:10.945Z [info]: Server running on port 3003 

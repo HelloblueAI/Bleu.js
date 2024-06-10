@@ -1,0 +1,5 @@
+2024-06-10T09:09:22.689Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-10T09:09:22.692Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:22.698Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-10T09:09:22.704Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-10T09:09:22.721Z [info]: Hello, World! {"endpoint":"/"}

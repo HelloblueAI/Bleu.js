@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer();
+const Logger = require('../utils/logger');
+
+const logger = new Logger();
 
 /**
  * @swagger
@@ -12,6 +15,10 @@ const upload = multer();
  *     description: Optimization operations
  *   - name: Generation
  *     description: Generation operations
+ *   - name: Data
+ *     description: Data handling operations
+ *   - name: Root
+ *     description: Root endpoint
  */
 
 /**
@@ -30,6 +37,7 @@ const upload = multer();
  *               example: Debugging
  */
 router.post('/debug', (req, res) => {
+  logger.info('Debug endpoint hit', { endpoint: '/debug' });
   res.send('Debugging');
 });
 
@@ -49,6 +57,7 @@ router.post('/debug', (req, res) => {
  *               example: Optimizing
  */
 router.post('/optimize', (req, res) => {
+  logger.info('Optimize endpoint hit', { endpoint: '/optimize' });
   res.send('Optimizing');
 });
 
@@ -68,6 +77,7 @@ router.post('/optimize', (req, res) => {
  *               example: Generating
  */
 router.post('/generate', (req, res) => {
+  logger.info('Generate endpoint hit', { endpoint: '/generate' });
   res.send('Generating');
 });
 
@@ -99,16 +109,22 @@ router.post('/generate', (req, res) => {
  *                   example: Data received
  *                 data:
  *                   type: string
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.post('/data', upload.none(), async (req, res) => {
   try {
     const { data } = req.body;
 
     if (!data) {
+      logger.warn('Bad Request: No data provided', { endpoint: '/data' });
       return res.status(400).json({ message: 'Bad Request' });
     }
 
     if (req.headers['invalid-header']) {
+      logger.warn('Bad Request: Invalid header', { endpoint: '/data' });
       return res.status(400).json({ message: 'Bad Request' });
     }
 
@@ -117,14 +133,16 @@ router.post('/data', upload.none(), async (req, res) => {
     }
 
     if (data === 'DB Test') {
+      logger.error('Internal Server Error: DB Test error', { endpoint: '/data' });
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
+    logger.info('Data received', { endpoint: '/data', data });
     res.status(201).json({ message: 'Data received', data });
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Internal Server Error', { endpoint: '/data', error: error.message });
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -148,6 +166,7 @@ router.post('/data', upload.none(), async (req, res) => {
  *                   example: Hello, World!
  */
 router.get('/', (req, res) => {
+  logger.info('Root endpoint hit', { endpoint: '/' });
   res.status(200).json({ message: 'Hello, World!' });
 });
 
