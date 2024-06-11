@@ -1,5 +1,5 @@
 {
-  "name": "bleujs",
+  "name": "@bleu.js/bleujs",
   "version": "1.0.0",
   "description": "Bleu.js Project",
   "main": "index.js",
@@ -57,5 +57,13 @@
     "framework"
   ],
   "author": "Pejman Haghighatnia",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HelloblueAI/Bleu.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HelloblueAI/Bleu.js/issues"
+  },
+  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme"
 }

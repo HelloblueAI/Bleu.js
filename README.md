@@ -17,6 +17,12 @@
 * Manage Dependencies: Handle project dependencies efficiently
 
 
+## Installation
+```javascript
+npm install @bleu.js/bleujs
+```
+
+
 ### Directory Structure
 
 - **core-engine**: Contains the main logic for code generation, optimization, and debugging.
