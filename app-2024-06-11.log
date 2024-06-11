@@ -8,3 +8,22 @@
 2024-06-11T12:26:50.406Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-11T12:26:50.408Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-11T12:26:50.416Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-11T13:08:23.231Z [info]: Server running on port 3000 
+2024-06-11T13:08:23.211Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T15:10:53.522Z [info]: Server running on port 3000 
+2024-06-11T15:10:53.506Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T16:32:05.100Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-11T16:37:21.275Z [info]: Server running on port 3000 
+2024-06-11T16:37:21.261Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T16:38:45.795Z [info]: Server running on port 3000 
+2024-06-11T16:38:45.764Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T16:55:36.283Z [info]: Server running on port 3000 
+2024-06-11T16:55:36.269Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T16:58:15.231Z [info]: Server running on port 3000 
+2024-06-11T16:58:15.213Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T17:34:17.407Z [info]: Server running on port 3000 
+2024-06-11T17:34:17.387Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T17:38:32.134Z [info]: Server running on port 3000 
+2024-06-11T17:38:32.115Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T17:39:10.237Z [info]: Server running on port 3000 
+2024-06-11T17:39:10.221Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
