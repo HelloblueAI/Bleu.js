@@ -1,46 +1,57 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
-const morgan = require('morgan');
-const jwt = require('jsonwebtoken');
-const RulesEngine = require('./services/ruleEngine'); // Updated import path
-const DecisionTree = require('./ai/decisionTree');
-const NLPProcessor = require('./ai/nlpProcessor');
-const apiRoutes = require('./routes/apiRoutes');
-const swagger = require('./swagger');
-require('dotenv').config();
-const Logger = require('./utils/logger');
-const logger = new Logger();
+import express from 'express';
+import bodyParser from 'body-parser';
+import multer from 'multer';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import morgan from 'morgan';
+import jwt from 'jsonwebtoken';
+import RulesEngine from './services/ruleEngine.js';
+import DecisionTree from './ai/decisionTree.js';
+import NLPProcessor from './ai/nlpProcessor.js';
+import apiRoutes from './routes/apiRoutes.js';
+import swagger from './swagger.js';
+import dotenv from 'dotenv';
+import Logger from './utils/logger.js';
 
+dotenv.config();
+const logger = new Logger();
 const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
 const rulesEngine = new RulesEngine();
 
-// Add a default rule for testing
-rulesEngine.addRule({
-  name: 'Test Rule',
-  conditions: {
-    all: [
-      {
-        fact: 'data',
-        operator: 'equal',
-        value: 'example',
-      },
-    ],
-  },
-  event: {
-    type: 'ruleTriggered',
-    params: {
-      message: 'Test rule has been triggered',
+app.post('/ai/rules', (req, res) => {
+  console.log('POST /ai/rules called');
+  const data = req.body.data;
+
+  rulesEngine.addRule({
+    name: 'Another Test Rule',
+    conditions: {
+      all: [
+        {
+          fact: 'data',
+          operator: 'equal',
+          value: 'another example',
+        },
+      ],
     },
-  },
+    event: {
+      type: 'ruleTriggered',
+      params: {
+        message: 'Another test rule has been triggered',
+      },
+    },
+  });
+  
+
+  const result = rulesEngine.evaluate(data);
+  res.status(200).json({ result: result || 'No matching rule found' });
 });
+
+
 
 app.use(helmet());
 app.use(compression());
@@ -158,64 +169,11 @@ app.get('/swagger.json', (req, res) => {
 
 app.use('/api', apiRoutes);
 
-// Define API routes with Swagger documentation
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Returns a greeting message
- *     tags: [General]
- *     responses:
- *       200:
- *         description: A JSON object containing a greeting message
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Hello, World!
- */
 app.get('/', (req, res) => {
   logger.info('Hello, World!', { endpoint: '/' });
   res.status(200).json({ message: 'Hello, World!' });
 });
 
-/**
- * @swagger
- * /data:
- *   post:
- *     summary: Handle data posting
- *     tags: [General]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               data:
- *                 type: string
- *                 example: "sample data"
- *     responses:
- *       201:
- *         description: Data received
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Data received
- *                 data:
- *                   type: string
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
- */
 app.post('/data', (req, res) => {
   if (req.body.data === 'Async Error') {
     return res.status(500).json({ message: 'Internal Server Error' });
@@ -232,35 +190,6 @@ app.post('/data', (req, res) => {
   res.status(201).json({ message: 'Data received', data: req.body.data });
 });
 
-/**
- * @swagger
- * /upload:
- *   post:
- *     summary: Handle file upload
- *     tags: [File]
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: data
- *         type: file
- *         description: The file to upload.
- *     responses:
- *       201:
- *         description: Data received
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Data received
- *                 data:
- *                   type: string
- *       400:
- *         description: Bad Request
- */
 app.post('/upload', upload.single('data'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'Bad Request' });
@@ -268,74 +197,16 @@ app.post('/upload', upload.single('data'), (req, res) => {
   res.status(201).json({ message: 'Data received', data: req.file.buffer.toString() });
 });
 
-/**
- * @swagger
- * /ai/rules:
- *   post:
- *     summary: Process data using rules-based AI
- *     tags: [AI]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               data:
- *                 type: string
- *                 example: "example"
- *     responses:
- *       200:
- *         description: AI processing result
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: AI result
- */
 app.post('/ai/rules', (req, res) => {
-  rulesEngine.addRule({
-    condition: (data) => data === 'example',
-    action: (data) => `Processed ${data}`,
-  });
+  console.log('POST /ai/rules called');
+  console.log(`Request received at /api/ai/rules with data: ${JSON.stringify(req.body)}`);
 
   const result = rulesEngine.evaluate(req.body.data);
+  console.log(`Rules evaluated: ${JSON.stringify(result)}`);
+  
   res.status(200).json({ result: result || 'No matching rule found' });
 });
 
-/**
- * @swagger
- * /ai/nlp:
- *   post:
- *     summary: Process text using NLP
- *     tags: [AI]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               text:
- *                 type: string
- *                 example: "This is a test for NLP processing."
- *     responses:
- *       200:
- *         description: NLP processing result
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 tokens:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ["This", "is", "a", "test", "for", "NLP", "processing"]
- */
 app.post('/ai/nlp', (req, res) => {
   const tokens = nlpProcessor.tokenize(req.body.text);
   res.status(200).json({ tokens });
@@ -366,4 +237,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = app;
+export default app;

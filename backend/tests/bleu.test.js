@@ -5,7 +5,7 @@ const net = require('net');
 let server;
 let port;
 
-// Function to find an available port for the server
+
 const findAvailablePort = () => {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
@@ -17,7 +17,7 @@ const findAvailablePort = () => {
   });
 };
 
-// Before all tests, find an available port and start the server
+
 beforeAll(async () => {
   port = await findAvailablePort();
   server = app.listen(port, () => {
@@ -53,7 +53,7 @@ const retryRequest = async (fn, retries = 5, delay = 1000) => {
   throw new Error('Exceeded maximum retries');
 };
 
-// Test suite for API tests
+
 describe('API Tests', () => {
   // Test handling of invalid request headers
   it('should handle invalid request headers', async () => {
@@ -93,7 +93,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Internal Server Error');
   });
 
-  // Test handling of edge cases
+
   it('should handle edge cases', async () => {
     const res = await retryRequest(() =>
       request(`http://localhost:${port}`).get('/nonexistent')
@@ -102,7 +102,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Not Found');
   });
 
-  // Test performance
+
   it('should ensure performance meets expectations', async () => {
     const start = Date.now();
     await retryRequest(() => request(`http://localhost:${port}`).get('/'));
@@ -152,7 +152,7 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('data', largeData);
   });
 
-  // Test response time for POST /data
+  
   it('should measure response time for POST /data', async () => {
     const start = Date.now();
     const res = await retryRequest(() =>
