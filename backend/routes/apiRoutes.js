@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const AIService = require('../services/aiService');
-const Rule = require('../models/ruleModel');
-const { check, validationResult } = require('express-validator');
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import AIService from '../services/aiService';
+import Rule from '../models/ruleModel';
 
+const router = express.Router();
 const aiService = new AIService();
 
 const validateRequest = (validations) => {
@@ -132,4 +132,4 @@ router.get('/rules/:id/logs', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
