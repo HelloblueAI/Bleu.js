@@ -70,6 +70,7 @@
   },
   "homepage": "https://github.com/HelloblueAI/Bleu.js#readme",
   "dependencies": {
+    "json-rules-engine": "^6.5.0",
     "mongoose": "^8.4.1"
   }
 }
