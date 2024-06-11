@@ -1,7 +1,7 @@
 {
   "name": "bleujs",
   "version": "1.0.2",
-  "description": "Backend for Bleu.js Project",
+  "description": "Bleu.js Project",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {

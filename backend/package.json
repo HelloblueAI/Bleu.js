@@ -1,7 +1,7 @@
 {
   "name": "bleujs-backend",
   "version": "1.0.0",
-  "description": "Backend for Bleu.js Project - The Most Powerful Rules-Based AI Framework",
+  "description": "Backend for Bleu.js Project",
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
