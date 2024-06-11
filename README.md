@@ -19,7 +19,7 @@
 
 ## Installation
 ```javascript
-npm install @bleu.js/bleujs
+npm install bleu
 ```
 
 
@@ -915,4 +915,4 @@ This document provides an overview of the recent updates and enhancements made t
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
 
 ## Author
-Pejman H. Nia
+Pejman Haghighatnia
