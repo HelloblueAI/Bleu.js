@@ -4,6 +4,7 @@
   "description": "Backend for Bleu.js Project",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'No build step defined'",
     "test": "jest --detectOpenHandles --forceExit",
     "start": "node server.js",
     "start:dev": "nodemon server.js",
@@ -67,5 +68,8 @@
   "bugs": {
     "url": "https://github.com/HelloblueAI/Bleu.js/issues"
   },
-  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme"
+  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme",
+  "dependencies": {
+    "mongoose": "^8.4.1"
+  }
 }

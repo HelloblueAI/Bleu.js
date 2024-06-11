@@ -12,3 +12,7 @@
 2024-06-11T12:41:44.224Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
 2024-06-11T12:46:26.440Z [info]: Server running on port 3004 
 2024-06-11T12:46:26.432Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T12:56:31.374Z [info]: Server running on port 3004 
+2024-06-11T12:56:31.359Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T12:57:24.417Z [info]: Server running on port 3004 
+2024-06-11T12:57:24.408Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
