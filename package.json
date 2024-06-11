@@ -30,7 +30,8 @@
     "swagger-ui-express": "^5.0.1",
     "wink-nlp": "^2.3.0",
     "compression": "^1.7.4",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.4.1"
   },
   "devDependencies": {
     "babel-jest": "^29.7.0",
