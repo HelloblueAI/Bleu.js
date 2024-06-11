@@ -50,8 +50,9 @@ To optimize code using Bleu.js, you can send a POST request to the /optimize end
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
-
-
+```javascript
+cd frontend
+```
 
 ```javascript
 ╰─ pnpm run serve                                                  
@@ -647,7 +648,6 @@ To set up the project and start the server, follow these steps:
 `cd backend`
 
 Install the required packages:
-
 `pnpm install`
 
 Start the server:
@@ -675,6 +675,13 @@ node server.js
 
 4. **Access the Swagger UI:**
 Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
+
+
+## API Endpoint test:
+```javascript
+cd backend
+pnpm run start:dev
+```
 
 5. **Access the raw Swagger JSON:**
 Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON. Or in a new Terminal use curl test: 
