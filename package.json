@@ -1,6 +1,6 @@
 {
   "name": "bleujs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Bleu.js Project",
   "main": "index.js",
   "type": "commonjs",
