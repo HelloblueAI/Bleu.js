@@ -1,6 +1,6 @@
 {
-  "name": "bleu",
-  "version": "1.0.1", 
+  "name": "bleujs",
+  "version": "1.0.1",
   "description": "Backend for Bleu.js Project",
   "main": "index.js",
   "type": "commonjs",

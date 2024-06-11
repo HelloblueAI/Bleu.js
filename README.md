@@ -19,7 +19,7 @@
 
 ## Installation
 ```javascript
-npm install bleu
+npm install bleujs
 ```
 
 
