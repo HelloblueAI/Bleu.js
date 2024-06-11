@@ -8,3 +8,7 @@
 2024-06-11T11:27:05.057Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-11T11:27:05.072Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-11T11:27:05.084Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-11T12:41:44.233Z [info]: Server running on port 3004 
+2024-06-11T12:41:44.224Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}
+2024-06-11T12:46:26.440Z [info]: Server running on port 3004 
+2024-06-11T12:46:26.432Z [info]: Rule added: Test Rule {"name":"Test Rule","conditions":{"all":[{"fact":"data","operator":"equal","value":"example"}]},"event":{"type":"ruleTriggered","params":{"message":"Test rule has been triggered"}}}

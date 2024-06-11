@@ -360,7 +360,7 @@ app.use((err, req, res, next) => {
 });
 
 if (require.main === module) {
-  const port = process.env.PORT || 3003;
+  const port = process.env.PORT || 3004;
   app.listen(port, () => {
     logger.info(`Server running on port ${port}`);
   });
