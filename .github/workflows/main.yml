@@ -50,7 +50,7 @@ jobs:
         username: ${{ secrets.DROPLET_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /home/ubuntu/Bleu.js  # Update this to your actual project path
+          cd /root/Bleu.js
           git pull origin main
           docker-compose down
           docker-compose up --build -d
