@@ -47,7 +47,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: user/repo:latest
+          tags: your-dockerhub-username/your-repo:latest
 
   deploy:
     runs-on: ubuntu-latest
