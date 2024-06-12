@@ -1,7 +1,7 @@
 {
-  "name": "bleujs",
+  "name": "bleu.js",
   "version": "1.0.5",
-  "description": "Bleu.js Project",
+  "description": "Rule-based AI framework to provide pinpoint solutions for devs",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -34,6 +34,8 @@
     "wink-nlp": "^2.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
     "babel-jest": "^29.7.0",
     "esbuild": "^0.13.15",
     "esbuild-loader": "^2.21.0",

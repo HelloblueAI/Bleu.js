@@ -6,8 +6,8 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const Logger = require('./utils/logger');
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger'); // Assuming swagger setup is in swagger.js
-const apiRoutes = require('./routes'); // Assuming apiRoutes is in routes directory
+const swaggerSpec = require('./swagger'); 
+const apiRoutes = require('./routes'); 
 
 const app = express();
 const logger = new Logger();
