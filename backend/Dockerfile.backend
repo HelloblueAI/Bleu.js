@@ -1,15 +1,18 @@
 FROM node:20
 
-
-ENV NODE_OPTIONS=--openssl-legacy-provider
-
 WORKDIR /usr/src/app
 
+# Copy only package.json and package-lock.json initially
 COPY package*.json ./
 
+# Perform the pnpm install in a separate step to cache dependencies layer
 RUN npm install -g pnpm
 RUN pnpm install
 
+# Copy the rest of the application code
 COPY . .
+
+# Build the backend if there's a build step (uncomment if necessary)
+# RUN pnpm run build
 
 CMD ["node", "server.js"]
