@@ -18,9 +18,20 @@ module.exports = {
         loader: 'esbuild-loader',
         options: {
           loader: 'jsx', 
-          target: 'es2015' 
+          target: 'es2015'
         }
-      }
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          },
+        ],
+      },
     ]
   },
   plugins: [

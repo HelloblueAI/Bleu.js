@@ -11,6 +11,7 @@
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
     "esbuild-loader": "^2.13.1",
+    "file-loader": "^6.2.0",
     "vue-loader": "^17.4.2"
   }
 }
