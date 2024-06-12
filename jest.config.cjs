@@ -9,7 +9,7 @@ module.exports = {
   transform: {
     "^.+\\.js$": "babel-jest"
   },
-  setupFilesAfterEnv: ["<rootDir>/backend/tests/setup.js"], // Update this path
+  setupFilesAfterEnv: ["<rootDir>/backend/tests/setup.js"],
   testTimeout: 10000,
   transformIgnorePatterns: ["<rootDir>/node_modules/"],
   globals: {
