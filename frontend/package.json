@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
@@ -9,6 +9,6 @@
     "vue": "^2.7.16"
   },
   "devDependencies": {
-    "@vue/cli-service": "^4.5.19"
+    "@vue/cli-service": "^5.0.8"
   }
 }
