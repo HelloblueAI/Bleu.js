@@ -6,7 +6,7 @@ const swaggerDefinition = {
   info: {
     title: 'Bleu.js API',
     version: '1.0.0',
-    description: 'Documentation for the Bleu.js API - A powerful rules-based AI framework',
+    description: 'Documentation for the Bleu.js API',
     contact: {
       name: 'Helloblue, Inc.',
       email: 'info@helloblue.ai',
@@ -264,12 +264,12 @@ const swaggerDefinition = {
         },
       },
     },
-  },
+  }
 };
 
 const options = {
   swaggerDefinition,
-  apis: ['./server.js', './backend/routes/*.js'], // Path to the API docs
+  apis: ['./server.js', './backend/routes/*.js'], 
 };
 
 const swaggerSpec = swaggerJsdoc(options);

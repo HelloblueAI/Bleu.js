@@ -8,13 +8,11 @@ import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import morgan from 'morgan';
 import jwt from 'jsonwebtoken';
-import RulesEngine from './services/ruleEngine.js';
-import DecisionTree from './ai/decisionTree.js';
-import NLPProcessor from './ai/nlpProcessor.js';
-import apiRoutes from './routes/apiRoutes.js';
-import swagger from './swagger.js';
 import dotenv from 'dotenv';
 import Logger from './utils/logger.js';
+import apiRoutes from './routes/apiRoutes.js';
+import RulesEngine from './services/ruleEngine.js';
+import NLPProcessor from './ai/nlpProcessor.js';
 
 dotenv.config();
 const logger = new Logger();
@@ -22,36 +20,6 @@ const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
 const rulesEngine = new RulesEngine();
-
-app.post('/ai/rules', (req, res) => {
-  console.log('POST /ai/rules called');
-  const data = req.body.data;
-
-  rulesEngine.addRule({
-    name: 'Another Test Rule',
-    conditions: {
-      all: [
-        {
-          fact: 'data',
-          operator: 'equal',
-          value: 'another example',
-        },
-      ],
-    },
-    event: {
-      type: 'ruleTriggered',
-      params: {
-        message: 'Another test rule has been triggered',
-      },
-    },
-  });
-  
-
-  const result = rulesEngine.evaluate(data);
-  res.status(200).json({ result: result || 'No matching rule found' });
-});
-
-
 
 app.use(helmet());
 app.use(compression());
@@ -198,12 +166,7 @@ app.post('/upload', upload.single('data'), (req, res) => {
 });
 
 app.post('/ai/rules', (req, res) => {
-  console.log('POST /ai/rules called');
-  console.log(`Request received at /api/ai/rules with data: ${JSON.stringify(req.body)}`);
-
   const result = rulesEngine.evaluate(req.body.data);
-  console.log(`Rules evaluated: ${JSON.stringify(result)}`);
-  
   res.status(200).json({ result: result || 'No matching rule found' });
 });
 

@@ -1,35 +1,35 @@
 {
-    "name": "eggs-generator",
-    "version": "1.0.0",
-    "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
-    "main": "src/index.js",
-    "scripts": {
-      "test": "jest"
-    },
-    "jest": {
-      "testMatch": [
-        "**/tests/**/*.test.js"
-      ],
-      "transform": {
-        "^.+\\.jsx?$": "babel-jest"
-      },
-      "moduleNameMapper": {
-        "henfarm.js": "<rootDir>/__mocks__/henfarm.js"
-      }
-    },
-    "dependencies": {},
-    "devDependencies": {
-      "jest": "^29.7.0",
-      "@babel/preset-env": "^7.14.5",
-      "babel-jest": "^29.7.0"
-    },
-    "keywords": [
-      "code-generation",
-      "optimization",
-      "dependency-management",
-      "quality-assurance"
+  "name": "eggs-generator",
+  "version": "1.0.0",
+  "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testMatch": [
+      "**/tests/**/*.test.js"
     ],
-    "author": "Helloblue",
-    "license": "Apache-2.0"
-  }
-  
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "henfarm.js": "<rootDir>/__mocks__/henfarm.js"
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
+  },
+  "keywords": [
+    "code-generation",
+    "optimization",
+    "dependency-management",
+    "quality-assurance"
+  ],
+  "author": "Helloblue",
+  "license": "Apache-2.0"
+}

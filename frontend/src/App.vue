@@ -12,7 +12,7 @@
   </script>
   
   <style>
-  /* Add any styling you need for your image */
+  
   img {
     display: block;
     margin: 0 auto;

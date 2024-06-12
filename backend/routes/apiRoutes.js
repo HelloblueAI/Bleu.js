@@ -2,6 +2,7 @@ import express from 'express';
 import { check, validationResult } from 'express-validator';
 import AIService from '../services/aiService';
 import Rule from '../models/ruleModel';
+import User from '../models/userModel'; // Assuming there's a User model
 
 const router = express.Router();
 const aiService = new AIService();
@@ -13,11 +14,11 @@ const validateRequest = (validations) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    console.log(`Request received at ${req.originalUrl} with data:`, req.body);
     next();
   };
 };
 
+// AI Routes
 router.post('/ai/rules', 
   validateRequest([
     check('data').exists().withMessage('Data is required')
@@ -41,10 +42,11 @@ router.post('/ai/nlp',
     check('text').exists().withMessage('Text is required')
   ]), 
   (req, res) => {
-    const result = aiService.processText(req.body.text);
-    res.status(200).json({ result });
+    const tokens = aiService.processText(req.body.text);
+    res.status(200).json({ tokens });
 });
 
+// Rule Routes
 router.post('/rules', 
   validateRequest([
     check('name').isString().withMessage('Name must be a string'),
@@ -131,5 +133,79 @@ router.get('/rules/:id/logs', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+// User Routes
+router.post('/users', 
+  validateRequest([
+    check('name').isString().withMessage('Name must be a string'),
+    check('email').isEmail().withMessage('Email must be valid'),
+    check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+  ]), 
+  async (req, res) => {
+    try {
+      const user = new User(req.body);
+      await user.save();
+      res.status(201).json({ message: 'User created', user });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.put('/users/:id', 
+  validateRequest([
+    check('name').optional().isString().withMessage('Name must be a string'),
+    check('email').optional().isEmail().withMessage('Email must be valid'),
+    check('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+  ]), 
+  async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User updated', user });
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User deleted' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.get('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 export default router;
