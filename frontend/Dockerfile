@@ -1,5 +1,7 @@
 FROM node:18
 
+FROM node:18
+
 # Set the environment variable
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
@@ -12,4 +14,7 @@ RUN pnpm install
 
 COPY . .
 
-CMD [ "pnpm", "run", "serve" ]
+RUN pnpm run build
+
+CMD ["pnpm", "run", "serve"]
+
