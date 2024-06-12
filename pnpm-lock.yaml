@@ -92,7 +92,7 @@ importers:
         version: 0.4.5
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)
+        version: 29.7.0(@types/node@20.14.1)
       jest-tobetype:
         specifier: ^1.2.3
         version: 1.2.3
@@ -189,7 +189,7 @@ importers:
         version: 7.1.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.1)
+        version: 29.7.0(@types/node@20.14.2)
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
