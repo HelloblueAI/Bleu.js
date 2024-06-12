@@ -1,6 +1,6 @@
 {
   "name": "bleujs-backend",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Backend for Bleu.js Project",
   "main": "index.js",
   "scripts": {
