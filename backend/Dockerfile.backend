@@ -1,7 +1,15 @@
-FROM node:18
-WORKDIR /app
+FROM node:20
+
+
+ENV NODE_OPTIONS=--openssl-legacy-provider
+
+WORKDIR /usr/src/app
+
 COPY package*.json ./
+
 RUN npm install -g pnpm
 RUN pnpm install
+
 COPY . .
-CMD ["node", "server.js"] # Replace server.js with your main server file
+
+CMD ["node", "server.js"]
