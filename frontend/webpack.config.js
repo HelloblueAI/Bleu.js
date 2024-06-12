@@ -17,8 +17,8 @@ module.exports = {
         test: /\.js$/,
         loader: 'esbuild-loader',
         options: {
-          loader: 'jsx', // Remove this if you're not using JSX
-          target: 'es2015' // Syntax to compile to (see options below for possible values)
+          loader: 'jsx', 
+          target: 'es2015' 
         }
       }
     ]

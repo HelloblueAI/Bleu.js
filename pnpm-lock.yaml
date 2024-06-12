@@ -244,6 +244,12 @@ importers:
       '@vue/cli-service':
         specifier: ^5.0.8
         version: 5.0.8(@vue/compiler-sfc@3.4.27)(esbuild@0.13.15)(handlebars@4.7.8)(lodash@4.17.21)(prettier@3.3.2)(underscore@1.13.6)(vue@2.7.16)(webpack-sources@3.2.3)
+      esbuild-loader:
+        specifier: ^2.13.1
+        version: 2.21.0(webpack@5.91.0(esbuild@0.13.15))
+      vue-loader:
+        specifier: ^17.4.2
+        version: 17.4.2(@vue/compiler-sfc@3.4.27)(vue@2.7.16)(webpack@5.91.0(esbuild@0.13.15))
 
 packages:
 
