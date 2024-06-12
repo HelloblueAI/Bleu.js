@@ -1,6 +1,6 @@
 class HenFarm {
     generateCode(type, options) {
-      // Mock implementation of generateCode method
+     
       switch (type) {
         case 'model':
           return `class ${options.modelName} {\n  ${options.fields.map(field => `${field.name}: ${field.type};`).join('\n  ')}\n}`;

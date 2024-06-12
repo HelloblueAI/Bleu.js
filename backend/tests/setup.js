@@ -1,7 +1,7 @@
 module.exports = () => {
   process.env.NODE_ENV = 'test';
 
-  // Mock console methods to avoid cluttering test output
+ 
   global.console = {
     log: jest.fn(),
     error: jest.fn(),
@@ -10,18 +10,18 @@ module.exports = () => {
     debug: jest.fn(),
   };
 
-  // Extend Jest matchers with powerful matchers from jest-extended
+ 
   const jestExtended = require('jest-extended');
   expect.extend(jestExtended);
 
-  // Mocking common modules or utilities
+  
   jest.mock('some-module', () => {
     return {
       someMethod: jest.fn().mockReturnValue('mocked value'),
     };
   });
 
-  // Clear all mocks before each test to ensure isolation
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -33,7 +33,7 @@ module.exports = () => {
     email: 'testuser@example.com',
   };
 
-  // Use a library like faker.js for generating random data
+
   const faker = require('faker');
   global.faker = faker;
 
