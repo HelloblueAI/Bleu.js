@@ -28,14 +28,10 @@ jobs:
         run: pnpm install
 
       - name: Build frontend
-        run: |
-          export NODE_OPTIONS=--openssl-legacy-provider
-          cd frontend && pnpm run build
+        run: cd frontend && pnpm run build
 
       - name: Build backend
-        run: |
-          export NODE_OPTIONS=--openssl-legacy-provider
-          cd backend && pnpm run build
+        run: cd backend && pnpm run build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
