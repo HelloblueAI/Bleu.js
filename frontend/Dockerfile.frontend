@@ -1,18 +1,17 @@
-# Use the official Node.js image.
-FROM node:18
+FROM node:20
 
-# Create and change to the app directory.
-WORKDIR /app
+# Set the environment variable
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
-# Copy application dependency manifests to the container image.
+WORKDIR /usr/src/app
+
 COPY package*.json ./
 
-# Install production dependencies.
 RUN npm install -g pnpm
 RUN pnpm install
 
-# Copy local code to the container image.
 COPY . .
 
-# Run the web service on container startup.
-CMD [ "pnpm", "run", "serve" ]
+RUN pnpm run build
+
+CMD ["pnpm", "run", "serve"]
