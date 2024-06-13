@@ -1,41 +1,32 @@
-require('dotenv').config(); // Load environment variables
-const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
-const morgan = require('morgan');
-const jwt = require('jsonwebtoken');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger'); // Assuming swagger setup is in swagger.js
-const apiRoutes = require('./routes/apiRoutes'); // Assuming apiRoutes is in routes directory
-const Logger = require('./utils/logger');
+import express from 'express';
+import bodyParser from 'body-parser';
+import multer from 'multer';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import morgan from 'morgan';
+import jwt from 'jsonwebtoken';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger.js'; // Ensure correct relative path
+import apiRoutes from './routes/apiRoutes.js'; // Ensure correct relative path
+import Logger from './utils/logger.js';
 
 const app = express();
 const upload = multer();
 const logger = new Logger();
 
-
 app.use(helmet());
-
-
 app.use(compression());
-
-
 app.use(morgan('combined'));
 
-
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 app.use(limiter);
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -43,7 +34,6 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
 });
-
 
 app.use((req, res, next) => {
   if (req.headers.authorization) {
@@ -60,13 +50,11 @@ app.use((req, res, next) => {
   }
 });
 
-
 app.use((req, res, next) => {
   const correlationId = logger.setCorrelationId(req);
   res.setHeader('X-Correlation-Id', correlationId);
   next();
 });
-
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/swagger.json', (req, res) => {
@@ -74,15 +62,12 @@ app.get('/swagger.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
-
 app.use('/api', apiRoutes);
-
 
 app.get('/', (req, res) => {
   logger.info('Hello, World!', { endpoint: '/' });
   res.status(200).json({ message: 'Hello, World!' });
 });
-
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
@@ -92,22 +77,19 @@ app.use((err, req, res, next) => {
   next();
 });
 
-
 app.use((req, res, next) => {
   logger.warn('Endpoint not found', { url: req.originalUrl });
   res.status(404).json({ message: 'Not Found' });
 });
-
 
 app.use((err, req, res, next) => {
   logger.error('Internal Server Error', { error: err.stack });
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-
 const port = process.env.PORT || 3003;
 app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
 });
 
-module.exports = app;
+export default app;

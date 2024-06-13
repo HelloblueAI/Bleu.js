@@ -2,17 +2,17 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
+# Set environment variable for more detailed logs
+ENV PNPM_LOG_LEVEL=debug
 
-COPY package*.json ./
-
+# Copy only the relevant files
+COPY package*.json pnpm-workspace.yaml pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
-
+# Copy only the necessary files from frontend
 COPY . .
 
-
-RUN pnpm run build
-
-CMD ["pnpm", "run", "serve"]
+EXPOSE 8080
+CMD ["npm", "run", "serve"]

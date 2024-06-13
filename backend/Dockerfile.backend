@@ -2,17 +2,37 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Copy only package.json and package-lock.json initially
-COPY package*.json ./
+# Set environment variable for more detailed logs
+ENV PNPM_LOG_LEVEL=debug
 
-# Perform the pnpm install in a separate step to cache dependencies layer
+# Copy only the relevant files from the root
+COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
 RUN npm install -g pnpm
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
-COPY . .
+# Copy only the necessary files from backend
+COPY backend/ai ./ai
+COPY backend/controllers ./controllers
+COPY backend/coverage ./coverage
+COPY backend/models ./models
+COPY backend/routes ./routes
+COPY backend/services ./services
+COPY backend/src ./src
+COPY backend/tests ./tests
+COPY backend/utils ./utils
+COPY backend/.dockerignore ./
+COPY backend/.eslintrc.json.bak ./
+COPY backend/app-*.log ./
+COPY backend/Dockerfile.backend ./
+COPY backend/eslint.config.js ./
+COPY backend/index.js ./
+COPY backend/jest.backend.config.cjs ./
+COPY backend/jest.setup.js ./
+COPY backend/package-lock.json ./
+COPY backend/package.json ./
+COPY backend/server.js ./
+COPY backend/swagger.js ./
 
-# Build the backend if there's a build step (uncomment if necessary)
-# RUN pnpm run build
-
-CMD ["node", "server.js"]
+EXPOSE 3005
+CMD ["npm", "start"]
