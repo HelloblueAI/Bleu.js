@@ -1,3 +1,22 @@
-node_modules
+# Node modules
+node_modules/
+
+# Coverage directories and files
+coverage/
+backend/coverage/
 coverage/**/*.html
 backend/coverage/**/*.html
+
+# Build directories and files
+dist/
+build/
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
