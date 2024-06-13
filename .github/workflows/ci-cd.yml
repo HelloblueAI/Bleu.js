@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install pnpm
+    - name: Install pnpm locally
       run: npm install -g pnpm
 
     - name: Install dependencies
@@ -33,6 +33,9 @@ jobs:
       run: |
         cd backend
         pnpm run build
+
+    - name: Run all tests
+      run: pnpm run test:all
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
