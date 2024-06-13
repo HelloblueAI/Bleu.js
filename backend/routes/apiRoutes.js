@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import Logger from '../utils/logger.js';
+import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
 const upload = multer();
@@ -114,37 +115,41 @@ router.post('/generate', (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.post('/data', upload.none(), async (req, res) => {
-  try {
-    const { data } = req.body;
-
-    if (!data) {
-      logger.warn('Bad Request: No data provided', { endpoint: '/data' });
-      return res.status(400).json({ message: 'Bad Request' });
+router.post('/data', 
+  upload.none(), 
+  body('data').notEmpty().withMessage('Data is required').isString().withMessage('Data must be a string'),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.warn('Validation failed', { endpoint: '/data', errors: errors.array() });
+      return res.status(400).json({ message: 'Bad Request', errors: errors.array() });
     }
 
-    if (req.headers['invalid-header']) {
-      logger.warn('Bad Request: Invalid header', { endpoint: '/data' });
-      return res.status(400).json({ message: 'Bad Request' });
+    try {
+      const { data } = req.body;
+
+      if (req.headers['invalid-header']) {
+        logger.warn('Bad Request: Invalid header', { endpoint: '/data' });
+        return res.status(400).json({ message: 'Bad Request' });
+      }
+
+      if (data === 'Async Error') {
+        throw new Error('Simulated Async Error');
+      }
+
+      if (data === 'DB Test') {
+        logger.error('Internal Server Error: DB Test error', { endpoint: '/data' });
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      logger.info('Data received', { endpoint: '/data', data });
+      res.status(201).json({ message: 'Data received', data });
+    } catch (error) {
+      logger.error('Internal Server Error', { endpoint: '/data', error: error.message });
+      res.status(500).json({ message: 'Internal Server Error' });
     }
-
-    if (data === 'Async Error') {
-      throw new Error('Simulated Async Error');
-    }
-
-    if (data === 'DB Test') {
-      logger.error('Internal Server Error: DB Test error', { endpoint: '/data' });
-      return res.status(500).json({ message: 'Internal Server Error' });
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    logger.info('Data received', { endpoint: '/data', data });
-    res.status(201).json({ message: 'Data received', data });
-  } catch (error) {
-    logger.error('Internal Server Error', { endpoint: '/data', error: error.message });
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
 });
 
 /**

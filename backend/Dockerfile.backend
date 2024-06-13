@@ -2,37 +2,33 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Set environment variable for more detailed logs
-ENV PNPM_LOG_LEVEL=debug
-
-# Copy only the relevant files from the root
-COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
+# Copy package files from the project root
+COPY ../../package*.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ./
 RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
 
-# Copy only the necessary files from backend
-COPY backend/ai ./ai
-COPY backend/controllers ./controllers
-COPY backend/coverage ./coverage
-COPY backend/models ./models
-COPY backend/routes ./routes
-COPY backend/services ./services
-COPY backend/src ./src
-COPY backend/tests ./tests
-COPY backend/utils ./utils
-COPY backend/.dockerignore ./
-COPY backend/.eslintrc.json.bak ./
-COPY backend/app-*.log ./
-COPY backend/Dockerfile.backend ./
-COPY backend/eslint.config.js ./
-COPY backend/index.js ./
-COPY backend/jest.backend.config.cjs ./
-COPY backend/jest.setup.js ./
-COPY backend/package-lock.json ./
-COPY backend/package.json ./
-COPY backend/server.js ./
-COPY backend/swagger.js ./
+# Copy backend specific files
+COPY ai ./ai
+COPY controllers ./controllers
+COPY coverage ./coverage
+COPY models ./models
+COPY routes ./routes
+COPY services ./services
+COPY src ./src
+COPY tests ./tests
+COPY utils ./utils
+COPY .dockerignore ./
+COPY .eslintrc.json.bak ./
+COPY app-*.log ./
+COPY eslint.config.js ./
+COPY index.js ./
+COPY jest.backend.config.cjs ./
+COPY jest.setup.js ./
+COPY package-lock.json ./
+COPY package.json ./
+COPY server.js ./
+COPY swagger.js ./
+COPY ../../babel.config.cjs ./babel.config.cjs
 
 EXPOSE 3005
 CMD ["npm", "start"]

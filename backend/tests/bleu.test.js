@@ -2,7 +2,6 @@ import request from 'supertest';
 import app from '../server';
 import net from 'net';
 
-
 let server;
 let port;
 
@@ -591,7 +590,126 @@ describe('API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Data received');
     expect(res.body.data).toEqual(complexData);
   }, 10000);
+
+
+
+  it('should handle invalid HTTP methods', async () => {
+    const res = await retryRequest(() => request(`http://localhost:${port}`).trace('/data'));
+    expect(res.statusCode).toEqual(405);
+    expect(res.body).toHaveProperty('message', 'Method Not Allowed');
+  }, 10000);
+
+  it('should handle invalid MIME types', async () => {
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .post('/data')
+        .set('Content-Type', 'application/xml')
+        .send('<data>Invalid MIME type</data>')
+    );
+    expect(res.statusCode).toEqual(415);
+    expect(res.body).toHaveProperty('message', 'Unsupported Media Type');
+  }, 10000);
+
+  it('should validate maximum payload size', async () => {
+    const largePayload = 'A'.repeat(1024 * 1024 * 2); // 2MB payload
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`).post('/data').send({ data: largePayload })
+    );
+    expect(res.statusCode).toEqual(413);
+    expect(res.body).toHaveProperty('message', 'Payload Too Large');
+  }, 10000);
+
+  it('should test rate limiting with bursts', async () => {
+    const promises = Array.from({ length: 10 }, () =>
+      retryRequest(() => request(`http://localhost:${port}`).get('/'))
+    );
+    const results = await Promise.all(promises);
+    results.slice(0, 5).forEach((res) => {
+      expect(res.statusCode).toEqual(200);
+    });
+    results.slice(5).forEach((res) => {
+      expect(res.statusCode).toEqual(429);
+    });
+  }, 10000);
+
+  it('should handle chained requests', async () => {
+    const res1 = await retryRequest(() => request(`http://localhost:${port}`).get('/'));
+    const res2 = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .post('/data')
+        .send({ data: 'Chained Request' })
+    );
+    const res3 = await retryRequest(() => request(`http://localhost:${port}`).get('/'));
+    expect(res1.statusCode).toEqual(200);
+    expect(res2.statusCode).toEqual(201);
+    expect(res2.body).toHaveProperty('message', 'Data received');
+    expect(res3.statusCode).toEqual(200);
+  }, 10000);
+
+  it('should handle varying response types', async () => {
+    const jsonRes = await retryRequest(() => request(`http://localhost:${port}`).get('/data/json'));
+    const textRes = await retryRequest(() => request(`http://localhost:${port}`).get('/data/text'));
+    const htmlRes = await retryRequest(() => request(`http://localhost:${port}`).get('/data/html'));
+
+    expect(jsonRes.statusCode).toEqual(200);
+    expect(jsonRes.type).toEqual('application/json');
+    expect(jsonRes.body).toHaveProperty('message', 'JSON Data');
+
+    expect(textRes.statusCode).toEqual(200);
+    expect(textRes.type).toEqual('text/plain');
+    expect(textRes.text).toEqual('Text Data');
+
+    expect(htmlRes.statusCode).toEqual(200);
+    expect(htmlRes.type).toEqual('text/html');
+    expect(htmlRes.text).toContain('<html>');
+  }, 10000);
+
+  it('should validate nested fields', async () => {
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .post('/data')
+        .send({ nested: { level1: { level2: 'Nested Field' } } })
+    );
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('message', 'Data received');
+    expect(res.body.nested).toHaveProperty('level1.level2', 'Nested Field');
+  }, 10000);
+
+  it('should handle file uploads with metadata', async () => {
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .post('/upload')
+        .field('metadata', JSON.stringify({ author: 'John Doe', date: '2024-06-13' }))
+        .attach('data', Buffer.from('File Content with Metadata'), 'testfile.txt')
+    );
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('message', 'File uploaded');
+    expect(res.body).toHaveProperty('metadata', { author: 'John Doe', date: '2024-06-13' });
+    expect(res.body).toHaveProperty('data', 'File Content with Metadata');
+  }, 10000);
+
+  it('should handle base64 encoded data', async () => {
+    const base64Data = Buffer.from('Base64 Encoded Data').toString('base64');
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .post('/data')
+        .send({ data: base64Data })
+    );
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('message', 'Data received');
+    expect(res.body).toHaveProperty('data', base64Data);
+  }, 10000);
+
+  it('should handle complex query parameters', async () => {
+    const res = await retryRequest(() =>
+      request(`http://localhost:${port}`)
+        .get('/data/query')
+        .query({ filter: 'test', sort: 'desc', limit: 10 })
+    );
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('message', 'Query received');
+    expect(res.body).toHaveProperty('query', { filter: 'test', sort: 'desc', limit: 10 });
+  }, 10000);
 });
 
 export default server;
-
