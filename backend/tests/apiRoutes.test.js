@@ -3,6 +3,8 @@ import express from 'express';
 import apiRoutes from '../routes/apiRoutes';
 import mongoose from 'mongoose';
 import Rule from '../models/ruleModel';
+import User from '../models/userModel'; // Assuming you have a user model
+import jwt from 'jsonwebtoken'; // For token-based tests
 
 const app = express();
 app.use(express.json());
@@ -14,7 +16,8 @@ describe('API Routes Integration Tests', () => {
   beforeAll(async () => {
     const url = 'mongodb://127.0.0.1/test_database';
     try {
-      await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+      await mongoose.connect(url);
+      
       console.log('Connected to MongoDB');
     } catch (error) {
       console.error('Error connecting to MongoDB:', error);
@@ -57,9 +60,14 @@ describe('API Routes Integration Tests', () => {
     });
 
     it('should handle server errors gracefully', async () => {
+      const originalEvaluateRules = Rule.evaluateRules;
+      Rule.evaluateRules = jest.fn().mockImplementation(() => {
+        throw new Error('Async Error');
+      });
       const response = await request(app)
         .post('/api/ai/rules')
-        .send({ data: 'Async Error' });
+        .send({ data: { type: 'error', name: 'Test Error' } });
+      Rule.evaluateRules = originalEvaluateRules;
       expect(response.status).toBe(500);
       expect(response.body.message).toBe('Internal Server Error');
     });
@@ -90,11 +98,25 @@ describe('API Routes Integration Tests', () => {
   });
 
   describe('User Authentication and Management', () => {
+    let token;
+    let userId;
+
+    beforeAll(async () => {
+      const user = new User({ username: 'testuser', password: 'testpassword' });
+      await user.save();
+      token = jwt.sign({ id: user._id }, 'secret', { expiresIn: '1h' });
+      userId = user._id;
+    });
+
+    afterAll(async () => {
+      await User.deleteMany({});
+    });
+
     describe('POST /api/login', () => {
       it('should authenticate user and return a token', async () => {
         const response = await request(app)
           .post('/api/login')
-          .send({ username: 'test', password: 'test' });
+          .send({ username: 'testuser', password: 'testpassword' });
         expect(response.status).toBe(200);
         expect(response.body.token).toBeDefined();
       });
@@ -128,7 +150,7 @@ describe('API Routes Integration Tests', () => {
 
     describe('GET /api/users', () => {
       it('should return a list of users', async () => {
-        const response = await request(app).get('/api/users');
+        const response = await request(app).get('/api/users').set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(200);
         expect(response.body.users).toBeInstanceOf(Array);
       });
@@ -136,17 +158,13 @@ describe('API Routes Integration Tests', () => {
 
     describe('GET /api/users/:id', () => {
       it('should return user by id', async () => {
-        const user = { username: 'testuser', password: 'testpassword' };
-        const response1 = await request(app).post('/api/register').send(user);
-        const userId = response1.body.userId;
-
-        const response2 = await request(app).get(`/api/users/${userId}`);
-        expect(response2.status).toBe(200);
-        expect(response2.body.user.username).toBe('testuser');
+        const response = await request(app).get(`/api/users/${userId}`).set('Authorization', `Bearer ${token}`);
+        expect(response.status).toBe(200);
+        expect(response.body.user.username).toBe('testuser');
       });
 
       it('should return 404 for non-existent user', async () => {
-        const response = await request(app).get('/api/users/609b8ddf9b1c431ce8a5a1f5');
+        const response = await request(app).get('/api/users/609b8ddf9b1c431ce8a5a1f5').set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('User not found');
       });
@@ -154,20 +172,18 @@ describe('API Routes Integration Tests', () => {
 
     describe('PUT /api/users/:id', () => {
       it('should update user details', async () => {
-        const user = { username: 'testuser', password: 'testpassword' };
-        const response1 = await request(app).post('/api/register').send(user);
-        const userId = response1.body.userId;
-
-        const response2 = await request(app)
+        const response = await request(app)
           .put(`/api/users/${userId}`)
+          .set('Authorization', `Bearer ${token}`)
           .send({ username: 'updateduser' });
-        expect(response2.status).toBe(200);
-        expect(response2.body.user.username).toBe('updateduser');
+        expect(response.status).toBe(200);
+        expect(response.body.user.username).toBe('updateduser');
       });
 
       it('should return 404 for non-existent user', async () => {
         const response = await request(app)
           .put('/api/users/609b8ddf9b1c431ce8a5a1f5')
+          .set('Authorization', `Bearer ${token}`)
           .send({ username: 'updateduser' });
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('User not found');
@@ -176,17 +192,13 @@ describe('API Routes Integration Tests', () => {
 
     describe('DELETE /api/users/:id', () => {
       it('should delete a user', async () => {
-        const user = { username: 'testuser', password: 'testpassword' };
-        const response1 = await request(app).post('/api/register').send(user);
-        const userId = response1.body.userId;
-
-        const response2 = await request(app).delete(`/api/users/${userId}`);
-        expect(response2.status).toBe(200);
-        expect(response2.body.message).toBe('User deleted');
+        const response = await request(app).delete(`/api/users/${userId}`).set('Authorization', `Bearer ${token}`);
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe('User deleted');
       });
 
       it('should return 404 for non-existent user', async () => {
-        const response = await request(app).delete('/api/users/609b8ddf9b1c431ce8a5a1f5');
+        const response = await request(app).delete('/api/users/609b8ddf9b1c431ce8a5a1f5').set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('User not found');
       });

@@ -1,1 +1,13 @@
-{}
+{
+    "name": "python-processor",
+    "version": "1.0.0",
+    "description": "A powerful Python code processor",
+    "main": "src/index.py",
+    "scripts": {
+      "test": "pytest"
+    },
+    "dependencies": {
+      "astor": "^0.8.1"
+    }
+  }
+  
