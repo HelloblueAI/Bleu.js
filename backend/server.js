@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import Logger from './utils/logger.js';
 import apiRoutes from './routes/apiRoutes.js';
-import RulesEngine from './services/ruleEngine.js';
+import RulesEngine from './services/rulesEngine.js'; 
 import NLPProcessor from './ai/nlpProcessor.js';
 
 dotenv.config();
@@ -20,6 +20,7 @@ const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
 const rulesEngine = new RulesEngine();
+
 
 app.use(helmet());
 app.use(compression());
@@ -165,8 +166,8 @@ app.post('/upload', upload.single('data'), (req, res) => {
   res.status(201).json({ message: 'Data received', data: req.file.buffer.toString() });
 });
 
-app.post('/ai/rules', (req, res) => {
-  const result = rulesEngine.evaluate(req.body.data);
+app.post('/ai/rules', async (req, res) => {
+  const result = await rulesEngine.evaluate(req.body.data);
   res.status(200).json({ result: result || 'No matching rule found' });
 });
 
@@ -193,11 +194,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-if (require.main === module) {
-  const port = process.env.PORT || 3004;
-  app.listen(port, () => {
-    logger.info(`Server running on port ${port}`);
-  });
-}
+const port = process.env.PORT || 3005;
+app.listen(port, () => {
+  logger.info(`Server running on port ${port}`);
+});
 
 export default app;

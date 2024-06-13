@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const upload = multer();
-const Logger = require('../utils/logger');
+import express from 'express';
+import multer from 'multer';
+import Logger from '../utils/logger.js';
 
+const router = express.Router();
+const upload = multer();
 const logger = new Logger();
 
 /**
@@ -170,4 +170,4 @@ router.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello, World!' });
 });
 
-module.exports = router;
+export default router;
