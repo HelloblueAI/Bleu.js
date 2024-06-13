@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const ruleSchema = new Schema({
@@ -57,18 +57,14 @@ const ruleSchema = new Schema({
   },
 });
 
-
 ruleSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-
 ruleSchema.statics.evaluateConditions = function (conditions, data) {
-  
   return conditions.every(condition => {
     try {
-      // eslint-disable-next-line no-eval
       return eval(condition);
     } catch (error) {
       console.error(`Error evaluating condition: ${condition}`, error);
@@ -77,15 +73,12 @@ ruleSchema.statics.evaluateConditions = function (conditions, data) {
   });
 };
 
-
 ruleSchema.statics.executeActions = function (actions, data) {
-
   return actions.map(action => {
     console.log(`Executing action: ${action} with data:`, data);
     return `Executed: ${action}`;
   });
 };
-
 
 ruleSchema.methods.applyRule = async function (data) {
   if (!this.active) {
@@ -107,5 +100,4 @@ ruleSchema.methods.applyRule = async function (data) {
 };
 
 const Rule = mongoose.model('Rule', ruleSchema);
-
-module.exports = Rule;
+export default Rule;

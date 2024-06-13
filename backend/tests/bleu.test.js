@@ -593,4 +593,5 @@ describe('API Tests', () => {
   }, 10000);
 });
 
-module.exports = server;
+export default server;
+

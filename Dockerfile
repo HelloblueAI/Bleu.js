@@ -2,10 +2,11 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Copy only package.json and package-lock.json initially
+# Copy only package.json and pnpm-lock.yaml initially
 COPY package*.json ./
+COPY pnpm-lock.yaml ./
 
-# Perform the pnpm install in a separate step to cache dependencies layer
+# Install pnpm globally and install dependencies
 RUN npm install -g pnpm
 RUN pnpm install
 
@@ -15,6 +16,6 @@ COPY . .
 # If there is a build step, add it here
 # RUN pnpm run build
 
-CMD ["node", "index.js"]
-
 EXPOSE 3000
+
+CMD ["node", "index.js"]

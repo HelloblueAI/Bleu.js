@@ -1,8 +1,8 @@
-const NLPProcessor = require('../ai/nlpProcessor');
-const RulesEngine = require('../ai/rulesEngine');
-const DecisionTree = require('../ai/decisionTree');
-const Rule = require('../models/ruleModel');
-const Logger = require('../utils/logger'); 
+import NLPProcessor from '../ai/nlpProcessor.js';
+import RulesEngine from './rulesEngine.js';
+import DecisionTree from '../ai/decisionTree.js';
+import Rule from '../models/ruleModel.js';
+import Logger from '../utils/logger.js';
 
 const sampleTree = {
   isLeaf: false,
@@ -40,7 +40,7 @@ class AIService {
     try {
       const rule = await Rule.findByIdAndDelete(ruleId);
       if (rule) {
-        this.rulesEngine.removeRule(rule);
+        this.rulesEngine.removeRule(rule.name);
         this.logger.info(`Rule removed: ${rule.name}`);
       } else {
         this.logger.warn(`Rule not found: ${ruleId}`);
@@ -55,7 +55,7 @@ class AIService {
     try {
       const rule = await Rule.findByIdAndUpdate(ruleId, updates, { new: true });
       if (rule) {
-        this.rulesEngine.updateRule(rule);
+        this.rulesEngine.updateRule(rule.name, updates);
         this.logger.info(`Rule updated: ${rule.name}`);
       } else {
         this.logger.warn(`Rule not found: ${ruleId}`);
@@ -101,7 +101,7 @@ class AIService {
 
   async processTextAdvanced(text, options) {
     try {
-      // Assume advanced NLP processing logic
+      
       const result = NLPProcessor.processTextAdvanced(text, options);
       this.logger.info('Text processed with advanced options:', result);
       return result;
@@ -112,4 +112,4 @@ class AIService {
   }
 }
 
-module.exports = AIService;
+export default AIService;

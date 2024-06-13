@@ -1,0 +1,78 @@
+2024-06-12T22:01:20.471Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-12T22:01:20.473Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:01:20.478Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:20.483Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:01:20.501Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:20.566Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:01:21.781Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.785Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.795Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.854Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.854Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.855Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.856Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.857Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.857Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.859Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:01:21.863Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.864Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:01:21.878Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:56.641Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-12T22:03:56.647Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:03:56.655Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:56.660Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:03:56.679Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:56.775Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:03:57.993Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:57.996Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.008Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.091Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.092Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.093Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.093Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.094Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.095Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.097Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:03:58.106Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.107Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:03:58.121Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:57.327Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-12T22:08:57.330Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:08:57.336Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:57.342Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:08:57.361Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:57.425Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:08:58.634Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.637Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.648Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.705Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.706Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.707Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.708Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.708Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.709Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.711Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:08:58.715Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.716Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:08:58.730Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.262Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-12T22:15:28.265Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:15:28.274Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.286Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-12T22:15:28.305Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.370Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:15:28.689Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.692Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.703Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.759Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.760Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.760Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.761Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.762Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.762Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.764Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-12T22:15:28.768Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.770Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:28.783Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-12T22:15:58.288Z [info]: Rules evaluated: {"0":"No matching rule found"}
+2024-06-12T22:15:58.296Z [info]: Rules evaluated: {"0":"No matching rule found"}

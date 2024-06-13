@@ -1,20 +1,32 @@
 version: '3.8'
 
 services:
-  backend:
-    build: ./backend
+  mongo:
+    image: mongo:4.4
     ports:
-      - "5001:3004"
-    networks:
-      - bleujs-network
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.backend
+    container_name: bleujs-backend
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongo
 
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.frontend
+    container_name: bleujs-frontend
     ports:
-      - "3000:8080"
-    networks:
-      - bleujs-network
+      - "8080:8080"
+    depends_on:
+      - backend
 
-networks:
-  bleujs-network:
-    driver: bridge
+volumes:
+  mongo-data:
