@@ -1,0 +1,20 @@
+2024-06-13T09:25:32.044Z [info]: Server running on port 3005 
+2024-06-13T09:25:32.081Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-13T09:25:32.083Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T09:25:32.088Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:32.094Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T09:25:32.111Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:32.197Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T09:25:33.418Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.421Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.433Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.491Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.492Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.493Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.493Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.494Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.495Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.497Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T09:25:33.501Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.502Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T09:25:33.516Z [info]: Hello, World! {"endpoint":"/"}
