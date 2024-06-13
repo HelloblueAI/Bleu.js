@@ -4,7 +4,6 @@ import multer from 'multer';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import morgan from 'morgan';
 import jwt from 'jsonwebtoken';
@@ -20,7 +19,6 @@ const app = express();
 const upload = multer();
 const nlpProcessor = new NLPProcessor();
 const rulesEngine = new RulesEngine();
-
 
 app.use(helmet());
 app.use(compression());
@@ -84,7 +82,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'http://localhost:3003',
+      url: 'http://localhost:3007',
       description: 'Development server',
     },
   ],
@@ -194,8 +192,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-const port = process.env.PORT || 3005;
+const port = process.env.PORT || 3007;
+console.log(`Starting server on port ${port}`);
 app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
   logger.info(`Server running on port ${port}`);
 });
 
