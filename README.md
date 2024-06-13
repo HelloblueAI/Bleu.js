@@ -116,7 +116,10 @@ Ran all test suites.
 ```
 
 test backend
-
+```javascript
+cd desktop 
+pnpm run test:backend -- --detectOpenHandles
+```
 
 ### Class Documentation
 ### 'BleuJS'
