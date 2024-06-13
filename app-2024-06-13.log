@@ -58,3 +58,67 @@
 2024-06-13T10:04:52.238Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-13T10:04:52.239Z [info]: Hello, World! {"endpoint":"/"}
 2024-06-13T10:04:52.253Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:13.080Z [info]: Server running on port 3007 
+2024-06-13T14:57:13.103Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-13T14:57:13.112Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T14:57:13.124Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:13.138Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T14:57:13.190Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:13.519Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T14:57:15.512Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.525Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.548Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.887Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.893Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.899Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.906Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.911Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.917Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.925Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T14:57:15.946Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.953Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:15.985Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.055Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.059Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.064Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.068Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.073Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.077Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.081Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.085Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.089Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.093Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.099Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T14:57:16.107Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:44.495Z [info]: Server running on port 3007 
+2024-06-13T15:18:44.553Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
+2024-06-13T15:18:44.560Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T15:18:44.574Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:44.591Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
+2024-06-13T15:18:44.647Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:44.949Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T15:18:46.949Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:46.961Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:46.978Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.311Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.317Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.321Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.326Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.331Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.337Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.343Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
+2024-06-13T15:18:47.359Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.367Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.398Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.470Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.474Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.478Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.482Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.486Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.490Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.494Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.498Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.503Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.507Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.513Z [info]: Hello, World! {"endpoint":"/"}
+2024-06-13T15:18:47.521Z [info]: Hello, World! {"endpoint":"/"}

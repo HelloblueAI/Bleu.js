@@ -10,19 +10,19 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile.backend
-    container_name: bleujs-backend
+      context: ./backend
+      dockerfile: Dockerfile.backend
     ports:
       - "3005:3005"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/your-database
     depends_on:
       - mongo
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile.frontend
-    container_name: bleujs-frontend
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
     ports:
       - "8080:8080"
     depends_on:
