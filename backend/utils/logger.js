@@ -1,5 +1,5 @@
-const { createLogger, transports, format } = require('winston');
-const DailyRotateFile = require('winston-daily-rotate-file');
+import { createLogger, transports, format } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 class Logger {
   constructor() {
@@ -56,4 +56,4 @@ class Logger {
   }
 }
 
-module.exports = Logger;
+export default Logger;

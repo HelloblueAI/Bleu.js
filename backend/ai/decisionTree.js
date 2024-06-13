@@ -138,4 +138,5 @@ class DecisionTree {
   }
 }
 
-module.exports = DecisionTree;
+export default DecisionTree;
+
