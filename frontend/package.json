@@ -1,6 +1,7 @@
 {
   "name": "bleujs-frontend",
-  "version": "1.0.0",
+  "version": "1.0.5",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,14 +11,18 @@
     "test": "jest"
   },
   "dependencies": {
-    "vue": "^2.6.11",
+    "vue": "^3.4.29",
     "vue-template-compiler": "^2.7.16",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
-    "esbuild-loader": "^2.13.1",
+    "esbuild-loader": "^4.1.0",
     "file-loader": "^6.2.0",
-    "vue-loader": "^17.4.2"
+    "vue-loader": "^17.4.2",
+    "jest": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7"
   }
 }
