@@ -1,6 +1,6 @@
 module.exports = {
     configureWebpack: {
-      entry: './src/main.cjs'
+      entry: './src/main.mjs'
     }
   };
   
