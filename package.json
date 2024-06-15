@@ -5,6 +5,8 @@
   "main": "index.mjs",
   "license": "MIT",
   "scripts": {
+    "serve": "vue-cli-service serve --entry ./frontend/src/main.cjs",
+    "build": "vue-cli-service build --entry ./frontend/src/main.cjs",
     "test": "jest --detectOpenHandles",
     "test:coverage": "nyc jest --detectOpenHandles",
     "test:backend": "nyc jest --config=./backend/jest.backend.config.cjs --detectOpenHandles",
