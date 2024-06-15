@@ -8,10 +8,11 @@ import compression from 'compression';
 import morgan from 'morgan';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Logger from './utils/logger.js';
-import apiRoutes from './routes/apiRoutes.js';
-import RulesEngine from './services/rulesEngine.js'; 
-import NLPProcessor from './ai/nlpProcessor.js';
+import mongoose from 'mongoose'; // Added mongoose import
+import Logger from './utils/logger.mjs';
+import apiRoutes from './routes/apiRoutes.mjs';
+import RulesEngine from './services/rulesEngine.mjs'; 
+import NLPProcessor from './ai/nlpProcessor.mjs';
 
 dotenv.config();
 const logger = new Logger();
