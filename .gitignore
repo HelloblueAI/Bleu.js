@@ -20,3 +20,6 @@ build/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# Ignore .env file
+.env
