@@ -1,1 +1,18 @@
-{}
+{
+    "name": "bleujs-code-quality-assurance",
+    "version": "1.0.5",
+    "type": "module",
+    "main": "src/index.mjs",
+    "directories": {
+      "src": "src",
+      "test": "tests"
+    },
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "description": "Module for analyzing code quality and generating quality reports"
+  }
+  
