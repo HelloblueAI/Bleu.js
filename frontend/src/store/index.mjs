@@ -3,23 +3,17 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
-      message: 'Hello, Vuex!'
+      // Define your state here
     };
   },
   mutations: {
-    setMessage(state, newMessage) {
-      state.message = newMessage;
-    }
+    // Define your mutations here
   },
   actions: {
-    updateMessage({ commit }, newMessage) {
-      commit('setMessage', newMessage);
-    }
+    // Define your actions here
   },
   getters: {
-    message(state) {
-      return state.message;
-    }
+    // Define your getters here
   }
 });
 
