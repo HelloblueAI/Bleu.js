@@ -23,3 +23,9 @@ Thumbs.db
 
 # Ignore .env file
 .env
+
+# Ignore Python bytecode cache
+__pycache__/
+
+# Ignore virtual environment directory
+language-plugins/python/venv/

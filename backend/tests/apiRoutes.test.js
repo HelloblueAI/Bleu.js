@@ -12,6 +12,10 @@ afterAll(async () => {
 });
 
 describe('API Routes', () => {
+  beforeAll(async () => {
+      await Rule.deleteMany({});
+  });
+  
   beforeEach(async () => {
     
     await Rule.deleteMany({});

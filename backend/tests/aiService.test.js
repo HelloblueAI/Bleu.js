@@ -1,5 +1,6 @@
 const AIService = require('../services/aiService');
 const logger = require('../src/utils/logger');
+jest.mock('../src/utils/logger');
 
 describe('AIService', () => {
   let aiService;

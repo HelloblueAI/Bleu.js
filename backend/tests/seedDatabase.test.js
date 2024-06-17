@@ -23,5 +23,22 @@ module.exports = async () => {
 
 test('seed database', async () => {
   await require('./seedDatabase.test.js')();
-  expect(true).toBe(true);
+  test('seed database', async () => {
+    
+    await require('./seedDatabase.test.js')();
+
+    
+    const rules = await Rule.find({});
+    expect(rules.length).toBe(seedData.length);
+
+    
+    for (let i = 0; i < seedData.length; i++) {
+      const { name, conditions, actions } = seedData[i];
+      const rule = rules[i];
+
+      expect(rule.name).toBe(name);
+      expect(rule.conditions).toEqual(conditions);
+      expect(rule.actions).toEqual(actions);
+    }
+  });
 });
