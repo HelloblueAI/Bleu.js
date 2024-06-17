@@ -1,17 +1,23 @@
 {
-    "name": "bleujs-core-engine",
-    "version": "1.0.5",
-    "type": "module",
-    "main": "src/index.mjs",
-    "directories": {
-      "test": "tests"
-    },
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "MIT",
-    "description": ""
+  "name": "bleujs-core-engine",
+  "version": "1.0.5",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "core",
+    "engine",
+    "bleujs"
+  ],
+  "author": "Pejman Haghighatnia",
+  "license": "MIT",
+  "description": "Core engine for Bleu.js, providing essential functionalities and integrations.",
+  "dependencies": {
+    "express": "^4.18.2"  
   }
-  
+}

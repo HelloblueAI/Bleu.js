@@ -1,203 +1,55 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import multer from 'multer';
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
-import helmet from 'helmet';
-import compression from 'compression';
-import morgan from 'morgan';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose'; // Added mongoose import
-import Logger from './utils/logger.mjs';
-import apiRoutes from './routes/apiRoutes.mjs';
-import RulesEngine from './services/rulesEngine.mjs'; 
-import NLPProcessor from './ai/nlpProcessor.mjs';
+const mongoose = require('mongoose');
+const express = require('express');
+const apiRoutes = require('./routes/apiRoutes');
+const { createLogger, format, transports } = require('winston');
 
-dotenv.config();
-const logger = new Logger();
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.json()
+  ),
+  transports: [
+    new transports.Console()
+  ],
+});
+
 const app = express();
-const upload = multer();
-const nlpProcessor = new NLPProcessor();
-const rulesEngine = new RulesEngine();
-
-app.use(helmet());
-app.use(compression());
-app.use(morgan('combined'));
+const PORT = process.env.PORT || 3007;
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  next();
-});
-
-app.use((req, res, next) => {
-  const invalidHeader = req.headers['invalid-header'];
-  if (invalidHeader) {
-    return res.status(400).json({ message: 'Invalid Header' });
-  }
-  next();
-});
-
-app.use((req, res, next) => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-      req.user = decoded;
-      next();
-    });
-  } else {
-    next();
-  }
-});
-
-app.use((req, res, next) => {
-  const correlationId = logger.setCorrelationId(req);
-  res.setHeader('X-Correlation-Id', correlationId);
-  next();
-});
-
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'Bleu.js API',
-    version: '1.0.0',
-    description: 'Documentation for the Bleu.js API - A powerful rules-based AI framework',
-    contact: {
-      name: 'Helloblue, Inc.',
-      email: 'info@helloblue.ai',
-    },
-    license: {
-      name: 'MIT',
-      url: 'https://opensource.org/licenses/MIT',
-    },
-    termsOfService: 'http://example.com/terms/',
-  },
-  servers: [
-    {
-      url: 'http://localhost:3007',
-      description: 'Development server',
-    },
-  ],
-  components: {
-    securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      apiKeyAuth: {
-        type: 'apiKey',
-        in: 'header',
-        name: 'X-API-KEY',
-      },
-    },
-  },
-  security: [
-    {
-      bearerAuth: [],
-    },
-  ],
-  tags: [
-    {
-      name: 'General',
-      description: 'General API Endpoints',
-    },
-    {
-      name: 'AI',
-      description: 'AI-related Endpoints',
-    },
-    {
-      name: 'File',
-      description: 'File Handling Endpoints',
-    },
-  ],
-};
-
-const options = {
-  swaggerDefinition,
-  apis: ['./server.js', './routes/*.js'],
-};
-
-const swaggerSpec = swaggerJsdoc(options);
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get('/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerSpec);
-});
-
 app.use('/api', apiRoutes);
 
-app.get('/', (req, res) => {
-  logger.info('Hello, World!', { endpoint: '/' });
-  res.status(200).json({ message: 'Hello, World!' });
+const server = app.listen(PORT, () => {
+  logger.info(`Server running on port ${PORT}`);
 });
 
-app.post('/data', (req, res) => {
-  if (req.body.data === 'Async Error') {
-    return res.status(500).json({ message: 'Internal Server Error' });
+mongoose.connect('mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  logger.info('Successfully connected to MongoDB');
+}).catch(err => {
+  logger.error('Error connecting to MongoDB', err);
+});
+
+// Function to gracefully close MongoDB and server
+const closeServer = async () => {
+  try {
+    await mongoose.connection.close();
+    logger.info('MongoDB connection closed');
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(0); // Exit process after server is closed
+    });
+  } catch (err) {
+    logger.error('Error closing MongoDB connection', err);
+    process.exit(1); // Exit with error if MongoDB or server close encounters an error
   }
+};
 
-  if (req.body.data === 'DB Test') {
-    return res.status(500).json({ message: 'Internal Server Error' });
-  }
+// Handle SIGINT (Ctrl+C) and SIGTERM signals for graceful shutdown
+process.on('SIGINT', closeServer);
+process.on('SIGTERM', closeServer);
 
-  if (!req.body.data) {
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-
-  res.status(201).json({ message: 'Data received', data: req.body.data });
-});
-
-app.post('/upload', upload.single('data'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-  res.status(201).json({ message: 'Data received', data: req.file.buffer.toString() });
-});
-
-app.post('/ai/rules', async (req, res) => {
-  const result = await rulesEngine.evaluate(req.body.data);
-  res.status(200).json({ result: result || 'No matching rule found' });
-});
-
-app.post('/ai/nlp', (req, res) => {
-  const tokens = nlpProcessor.tokenize(req.body.text);
-  res.status(200).json({ tokens });
-});
-
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    logger.error('JSON Syntax Error', { error: err.message });
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-  next();
-});
-
-app.use((req, res, next) => {
-  res.status(404).json({ message: 'Not Found' });
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  logger.error('Internal Server Error', { error: err.stack });
-  res.status(500).json({ message: 'Internal Server Error' });
-});
-
-const port = process.env.PORT || 3007;
-console.log(`Starting server on port ${port}`);
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-  logger.info(`Server running on port ${port}`);
-});
-
-export default app;
+module.exports = { app, server, closeServer };
