@@ -3,7 +3,6 @@
   "version": "1.0.5",
   "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
   "main": "src/index.js",
-  "type": "module",
   "scripts": {
     "test": "jest"
   },
@@ -31,5 +30,9 @@
     "quality-assurance"
   ],
   "author": "Helloblue",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.19.2",
+    "lodash": "^4.17.21"
+  }
 }

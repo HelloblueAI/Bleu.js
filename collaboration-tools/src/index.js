@@ -8,4 +8,3 @@ module.exports = {
     return `Tracking issue: ${issue}`;
   }
 };
-  

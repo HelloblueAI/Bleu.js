@@ -1,1 +1,13 @@
-{}
+{
+    "name": "collaboration-tools",
+    "version": "1.0.5",
+    "main": "src/index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "description": "Module for code review and issue tracking"
+  }
+  
