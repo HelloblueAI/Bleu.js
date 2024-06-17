@@ -1,14 +1,21 @@
 {
-    "name": "dependency-management",
-    "version": "1.0.5",
-    "type": "module",
-    "main": "src/index.mjs",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "MIT",
-    "description": ""
-  }
-  
+  "name": "bleujs-dependency-management",
+  "version": "1.0.5",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dependency",
+    "management",
+    "bleujs"
+  ],
+  "author": "Pejman Haghighatnia",
+  "license": "MIT",
+  "description": "Module for managing and resolving dependencies for Bleu.js."
+}

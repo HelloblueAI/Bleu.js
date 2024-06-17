@@ -1,0 +1,12 @@
+{
+  "name": "language-plugins",
+  "version": "1.0.5",
+  "private": true,
+  "workspaces": [
+    "javascript",
+    "python"
+  ],
+  "dependencies": {
+    "force": "^0.0.3"
+  }
+}

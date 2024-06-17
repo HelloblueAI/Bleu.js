@@ -1,0 +1,17 @@
+# Use an appropriate base image
+FROM node:18
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Copy the rest of your app
+COPY . .
+
+# Run tests
+CMD ["pnpm", "run", "test"]

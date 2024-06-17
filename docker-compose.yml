@@ -2,31 +2,28 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo:4.4
+    image: mongo
     ports:
       - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
-    ports:
-      - "3005:3005"
     environment:
-      - MONGO_URL=mongodb://mongo:27017/your-database
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: pass
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: pass
     depends_on:
       - mongo
 
-  frontend:
+  test:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "8080:8080"
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/bleujs
     depends_on:
-      - backend
-
-volumes:
-  mongo-data:
+      - mongo
