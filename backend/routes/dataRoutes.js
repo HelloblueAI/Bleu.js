@@ -1,8 +1,7 @@
-// backend/routes/dataRoutes.js
 const express = require('express');
 const router = express.Router();
 
-// Define your routes here
+
 router.post('/', (req, res) => {
   res.status(201).send({ message: 'Data received', data: req.body.data });
 });

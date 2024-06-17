@@ -1,4 +1,3 @@
-// backend/src/utils/logger.js
 const { createLogger, format, transports } = require('winston');
 
 const logger = createLogger({
@@ -9,7 +8,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    // Add other transports here, like File transport
+    
   ],
 });
 

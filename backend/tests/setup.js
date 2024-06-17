@@ -1,4 +1,3 @@
-// backend/tests/setup.js
 const axios = require('axios');
 const dotenv = require('dotenv');
 const jestExtended = require('jest-extended');
@@ -20,7 +19,7 @@ global.console = {
 global.faker = faker;
 
 global.axios = axios.create({
-  baseURL: 'http://localhost:8085', // Ensure this matches the port your server uses
+  baseURL: 'http://localhost:8085',  
 });
 
 MockDate.set('2024-01-01');
