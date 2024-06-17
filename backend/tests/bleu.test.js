@@ -4,10 +4,7 @@ const mongoose = require('mongoose');
 
 describe('Bleu API Tests', () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect('mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs');
   });
 
   afterAll(async () => {
@@ -16,13 +13,13 @@ describe('Bleu API Tests', () => {
   });
 
   it('should handle invalid HTTP methods', async () => {
-    const res = await request(app).trace('/api/rules');
+    const res = await request(app).get('/api/rules');
     console.log('Response:', res.body);
     expect(res.statusCode).toEqual(405);
     expect(res.body).toHaveProperty('message', 'Method Not Allowed');
   });
 
-  /*
+
   it('should handle invalid MIME types', async () => {
     const res = await request(app).post('/api/rules').send('<data>Invalid MIME type</data>');
     console.log('Response:', res.body);
@@ -39,7 +36,7 @@ describe('Bleu API Tests', () => {
   });
 
   it('should test rate limiting with bursts', async () => {
-    const promises = Array(10).fill(request(app).post('/api/rules').send({ name: 'Rate Limit Test' }));
+    const promises = Array(10).fill().map(() => request(app).post('/api/rules').send({ name: 'Rate Limit Test' }));
     const results = await Promise.all(promises);
     console.log('Results:', results.map(res => res.statusCode));
     results.slice(0, 5).forEach((res) => {
@@ -82,6 +79,6 @@ describe('Bleu API Tests', () => {
     expect(res.body).toHaveProperty('message', 'Query received');
     expect(res.body.query).toEqual({ filter: 'test', sort: 'desc', limit: 10 });
   });
-  */
+
 
 });

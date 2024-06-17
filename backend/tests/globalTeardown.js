@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
+const { logger } = require('../src/utils/logger');
 
 module.exports = async () => {
-  console.log('Global teardown: Closing environment...');
-  await mongoose.disconnect();
-  console.log('Global teardown: MongoDB connection closed.');
+  await mongoose.connection.close();
+  logger.info('MongoDB connection closed');
 };

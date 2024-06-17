@@ -24,6 +24,13 @@ describe('DecisionTree', () => {
     const result2 = decisionTree.evaluate({ feature1: 'B', feature2: 2 });
 
     expect(result1).toBe('yes');
+
+   
+    expect(tree).toBeDefined();
+    expect(tree).toHaveProperty('feature');
+    expect(tree).toHaveProperty('value');
+    expect(tree).toHaveProperty('trueBranch');
+    expect(tree).toHaveProperty('falseBranch');
     expect(result2).toBe('yes');
   });
 
