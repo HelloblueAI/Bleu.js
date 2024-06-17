@@ -21,7 +21,7 @@ const resolveConflicts = () => {
 
   const resolved = conflicts.map(conflict => ({
     name: conflict.name,
-    resolvedVersion: conflict.versions[0] // Assume the first version is the resolved one
+    resolvedVersion: conflict.versions[0] 
   }));
 
   return {

@@ -15,8 +15,8 @@ const logger = winston.createLogger({
 });
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
   message: 'Too many requests, please try again later.',
 });
 
@@ -86,7 +86,7 @@ router.put('/rules/:id', async (req, res) => {
 
 router.post('/rules/evaluate', (req, res) => {
   logger.info('POST /rules/evaluate request received');
-  // Your evaluation logic here
+  
   res.status(200).json({ result: 'Evaluation result' });
 });
 

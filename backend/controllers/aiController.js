@@ -1,7 +1,7 @@
 // backend/controllers/aiController.js
 const NLPProcessor = require('../ai/nlpProcessor.js');
 const RulesEngine = require('../services/rulesEngine.js');
-const DecisionTree = require('../ai/decisionTree.js'); // Fix this import
+const DecisionTree = require('../ai/decisionTree.js'); 
 
 const sampleTree = {
     isLeaf: false,

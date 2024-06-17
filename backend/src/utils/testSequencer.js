@@ -1,4 +1,3 @@
-// backend/src/utils/testSequencer.js
 const { writeFileSync } = require('fs');
 
 class CustomSequencer {

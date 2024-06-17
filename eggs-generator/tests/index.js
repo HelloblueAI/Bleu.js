@@ -18,7 +18,7 @@ describe('Bleu', () => {
   it('should optimize code', () => {
     const code = 'let a = 1;';
     const optimizedCode = bleu.optimizeCode(code);
-    expect(optimizedCode).toBe(code); // Placeholder test
+    expect(optimizedCode).toBe(code); 
   });
 
   it('should manage dependencies', () => {
@@ -33,6 +33,6 @@ describe('Bleu', () => {
   it('should ensure code quality', () => {
     const code = 'let a = 1;';
     const isQualityCode = bleu.ensureCodeQuality(code);
-    expect(isQualityCode).toBe(true); // Placeholder test
+    expect(isQualityCode).toBe(true); 
   });
 });

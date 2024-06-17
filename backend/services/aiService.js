@@ -1,4 +1,3 @@
-// backend/services/aiService.js
 const logger = require('../src/utils/logger');
 
 class AIService {
