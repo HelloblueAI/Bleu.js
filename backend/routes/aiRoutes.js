@@ -22,6 +22,8 @@ const limiter = rateLimit({
 
 router.use('/rules', limiter);
 
+router.use('/rules', limiter);
+
 router.get('/rules', async (req, res) => {
   logger.info('GET /rules request received');
   try {

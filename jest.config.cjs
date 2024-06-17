@@ -11,7 +11,7 @@ module.exports = {
   testSequencer: '<rootDir>/backend/tests/customSequencer.js',
   globalSetup: '<rootDir>/backend/tests/globalSetup.js',
   globalTeardown: '<rootDir>/backend/tests/globalTeardown.js',
-  testTimeout: 10000, 
+  testTimeout: 10000, // Increase the global timeout to 10000 ms
   projects: [
     {
       displayName: 'backend',

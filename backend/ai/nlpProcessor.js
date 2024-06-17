@@ -64,7 +64,7 @@ class NLPProcessor {
     return doc.topics().out('array');
   }
 
-  
+
   processText(text) {
     
     const tokens = this.tokenize(text);
