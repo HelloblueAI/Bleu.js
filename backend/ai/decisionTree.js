@@ -3,7 +3,7 @@ class DecisionTree {
     this.tree = tree;
   }
 
-  // Traverse the tree based on the data provided
+  
   traverse(node, data) {
     if (node.isLeaf) {
       return node.result;
@@ -11,7 +11,7 @@ class DecisionTree {
     return this.traverse(node[node.condition(data) ? 'trueBranch' : 'falseBranch'], data);
   }
 
-  // Evaluate the data using the decision tree
+  
   evaluate(data) {
     return this.traverse(this.tree, data);
   }
@@ -36,7 +36,7 @@ class DecisionTree {
     };
   }
 
-  // Find the majority class in the dataset
+  
   majorityClass(data, target) {
     if (data.length === 0) return null;
     const counts = data.reduce((acc, item) => {
@@ -46,7 +46,7 @@ class DecisionTree {
     return Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
   }
 
-  // Get the best feature and split point for the data
+  
   getBestSplit(data, features, target) {
     let bestFeature = null;
     let bestSplit = null;
@@ -69,12 +69,12 @@ class DecisionTree {
     return { bestFeature, bestSplit, subsets: bestSubsets };
   }
 
-  // Get unique split points for a feature
+
   getSplits(data, feature) {
     return [...new Set(data.map((item) => item[feature]))];
   }
 
-  // Split the data based on a feature and split point
+  
   splitData(data, feature, split) {
     return data.reduce(
       (acc, item) => {
@@ -85,7 +85,7 @@ class DecisionTree {
     );
   }
 
-  // Calculate the Gini impurity of the split
+  
   calculateGini(trueSubset, falseSubset, target) {
     const totalSize = trueSubset.length + falseSubset.length;
     const trueGini = this.giniImpurity(trueSubset, target);
@@ -93,7 +93,7 @@ class DecisionTree {
     return (trueSubset.length / totalSize) * trueGini + (falseSubset.length / totalSize) * falseGini;
   }
 
-  // Calculate the Gini impurity for a subset
+  
   giniImpurity(subset, target) {
     const counts = subset.reduce((acc, item) => {
       acc[item[target]] = (acc[item[target]] || 0) + 1;
@@ -102,7 +102,7 @@ class DecisionTree {
     return 1 - Object.values(counts).reduce((sum, count) => sum + (count / subset.length) ** 2, 0);
   }
 
-  // Visualize the decision tree
+  
   visualize(node = this.tree, indent = '') {
     if (node.isLeaf) {
       console.log(`${indent}Leaf: ${node.result}`);
@@ -115,14 +115,14 @@ class DecisionTree {
     }
   }
 
-  // Calculate feature importance
+  
   calculateFeatureImportance() {
     const importance = {};
     this.traverseFeatureImportance(this.tree, importance);
     return importance;
   }
 
-  // Traverse the tree to calculate feature importance
+  
   traverseFeatureImportance(node, importance) {
     if (!node.isLeaf) {
       const feature = this.getFeatureFromCondition(node.condition);
@@ -132,7 +132,7 @@ class DecisionTree {
     }
   }
 
-  // Extract the feature name from a condition function
+  
   getFeatureFromCondition(condition) {
     const match = condition.toString().match(/data\[(\w+)\]/);
     return match ? match[1] : null;

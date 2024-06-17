@@ -70,7 +70,7 @@ describe('DecisionTree', () => {
 
     const gini = decisionTree.calculateGini(trueSubset, falseSubset, 'label');
 
-    // The expected Gini impurity value is 0.5 in this case
+    
     expect(gini).toBe(0.5);
   });
 });

@@ -33,22 +33,22 @@ mongoose.connect('mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs', {
   logger.error('Error connecting to MongoDB', err);
 });
 
-// Function to gracefully close MongoDB and server
+
 const closeServer = async () => {
   try {
     await mongoose.connection.close();
     logger.info('MongoDB connection closed');
     server.close(() => {
       logger.info('Server closed');
-      process.exit(0); // Exit process after server is closed
+      process.exit(0); 
     });
   } catch (err) {
     logger.error('Error closing MongoDB connection', err);
-    process.exit(1); // Exit with error if MongoDB or server close encounters an error
+    process.exit(1); 
   }
 };
 
-// Handle SIGINT (Ctrl+C) and SIGTERM signals for graceful shutdown
+
 process.on('SIGINT', closeServer);
 process.on('SIGTERM', closeServer);
 

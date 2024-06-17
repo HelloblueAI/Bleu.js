@@ -1,4 +1,3 @@
-// backend/controllers/dataController.js
 exports.handlePost = (req, res) => {
     res.status(201).json({ message: 'Data received' });
 };

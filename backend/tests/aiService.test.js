@@ -1,4 +1,3 @@
-// backend/tests/aiService.test.js
 const AIService = require('../services/aiService');
 const logger = require('../src/utils/logger');
 
