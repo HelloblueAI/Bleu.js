@@ -1,1 +1,5 @@
-jest.setTimeout(30000); 
+const seedDatabase = require('./backend/tests/seedDatabase.test');
+
+beforeAll(async () => {
+  await seedDatabase();
+});

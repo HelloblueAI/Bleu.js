@@ -1,6 +1,5 @@
 module.exports = {
-    configureWebpack: {
-      entry: './src/main.mjs'
-    }
-  };
-  
+  configureWebpack: {
+    entry: './src/main.js',
+  },
+};

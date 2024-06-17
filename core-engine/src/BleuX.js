@@ -11,14 +11,22 @@ class Store {
   }
 
   commit(mutation, payload) {
-    this.mutations[mutation](this.state, payload);
+    if (this.mutations[mutation]) {
+      this.mutations[mutation](this.state, payload);
+    } else {
+      console.error(`Mutation ${mutation} does not exist`);
+    }
   }
 
   dispatch(action, payload) {
-    return this.actions[action]({
-      commit: this.commit.bind(this),
-      state: this.state
-    }, payload);
+    if (this.actions[action]) {
+      return this.actions[action]({
+        commit: this.commit.bind(this),
+        state: this.state
+      }, payload);
+    } else {
+      console.error(`Action ${action} does not exist`);
+    }
   }
 }
 
@@ -35,5 +43,4 @@ const BleuX = {
   }
 };
 
-export { Store };
-export default BleuX;
+module.exports = { Store, BleuX };
