@@ -3,17 +3,17 @@ const { app, server } = require('../server');
 const Rule = require('../models/ruleModel'); // Ensure the correct path
 
 beforeAll(async () => {
-  // Connect to your test database
+  
 });
 
 afterAll(async () => {
-  // Disconnect from your test database
+  
   await server.close();
 });
 
 describe('API Routes', () => {
   beforeEach(async () => {
-    // Clear the database before each test
+    
     await Rule.deleteMany({});
   });
 

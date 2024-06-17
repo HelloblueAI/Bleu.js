@@ -1,4 +1,3 @@
-// backend/tests/globalTeardown.js
 const mongoose = require('mongoose');
 
 module.exports = async () => {
