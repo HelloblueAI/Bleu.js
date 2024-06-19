@@ -56,5 +56,10 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/bleujs:latest
 
+    - name: Publish to npm
+      run: pnpm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.BLEUJS_NPM_TOKEN }}
+
     - name: Complete job
       run: echo "CI/CD pipeline completed successfully."
