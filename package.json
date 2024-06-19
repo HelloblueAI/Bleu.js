@@ -15,6 +15,8 @@
   "lint": "eslint . --cache",
   "lint:ci": "eslint . --cache --max-warnings=0",
   "lint:fix": "eslint . --cache --fix",
+  "lint:frontend": "eslint frontend --cache --max-warnings=0",
+  "lint:backend": "eslint backend --cache --max-warnings=0",
   "ci:lint": "pnpm run lint:ci",
   "ci:test": "pnpm run test:all",
   "ci:build": "pnpm run build",
