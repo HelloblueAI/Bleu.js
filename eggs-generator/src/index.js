@@ -1,1 +1,1 @@
-console.log("Eggs Generator running");
+console.log('Eggs Generator running');

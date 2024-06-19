@@ -1,35 +1,35 @@
 {
-    "keep": {
-        "days": true,
-        "amount": 14
+  "keep": {
+    "days": true,
+    "amount": 14
+  },
+  "auditLog": ".04f64bbbc4916245f2da6b94e9e04632efa9d71a-audit.json",
+  "files": [
+    {
+      "date": 1718010540328,
+      "name": "app-2024-06-10.log",
+      "hash": "11238abeccf767933fa4ad2f62b4fdc7aa3e756f7b00e6220e76d13ea37160b5"
     },
-    "auditLog": ".04f64bbbc4916245f2da6b94e9e04632efa9d71a-audit.json",
-    "files": [
-        {
-            "date": 1718010540328,
-            "name": "app-2024-06-10.log",
-            "hash": "11238abeccf767933fa4ad2f62b4fdc7aa3e756f7b00e6220e76d13ea37160b5"
-        },
-        {
-            "date": 1718105222579,
-            "name": "app-2024-06-11.log",
-            "hash": "0faeb022bc236061b2aaf478c1a90a538db9547a53a3d1e4fbde9735a841baef"
-        },
-        {
-            "date": 1718217641057,
-            "name": "app-2024-06-12.log",
-            "hash": "44dab3a53e3e2a6308984c088331eac87f3f4a3ef33453f526847d35995bb0bd"
-        },
-        {
-            "date": 1718250700321,
-            "name": "app-2024-06-13.log",
-            "hash": "f44e52eb288fdea783b6a2802f1a5867f3ade01bf976c39c86ebd8f610d4e35b"
-        },
-        {
-            "date": 1704067200000,
-            "name": "app-2023-12-31.log",
-            "hash": "12a019482ff19b38561e1fee1ed8fc7a3f3a007b899e99d1f847146d2f74bce7"
-        }
-    ],
-    "hashType": "sha256"
+    {
+      "date": 1718105222579,
+      "name": "app-2024-06-11.log",
+      "hash": "0faeb022bc236061b2aaf478c1a90a538db9547a53a3d1e4fbde9735a841baef"
+    },
+    {
+      "date": 1718217641057,
+      "name": "app-2024-06-12.log",
+      "hash": "44dab3a53e3e2a6308984c088331eac87f3f4a3ef33453f526847d35995bb0bd"
+    },
+    {
+      "date": 1718250700321,
+      "name": "app-2024-06-13.log",
+      "hash": "f44e52eb288fdea783b6a2802f1a5867f3ade01bf976c39c86ebd8f610d4e35b"
+    },
+    {
+      "date": 1704067200000,
+      "name": "app-2023-12-31.log",
+      "hash": "12a019482ff19b38561e1fee1ed8fc7a3f3a007b899e99d1f847146d2f74bce7"
+    }
+  ],
+  "hashType": "sha256"
 }

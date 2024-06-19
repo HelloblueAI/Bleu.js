@@ -1,1 +1,20 @@
-{"parent":null,"pid":48818,"argv":["/Users/pejmanhaghighatnia/.nvm/versions/node/v20.12.2/bin/node","/Users/pejmanhaghighatnia/Bleu.js/backend/node_modules/jest/bin/jest.js","--config=./jest.backend.config.cjs","--detectOpenHandles","--","--detectOpenHandles"],"execArgv":[],"cwd":"/Users/pejmanhaghighatnia/Bleu.js/backend","time":1718497160471,"ppid":48812,"coverageFilename":"/Users/pejmanhaghighatnia/Bleu.js/backend/.nyc_output/4ca55dff-2e60-459c-af65-b244753b4662.json","externalId":"","uuid":"4ca55dff-2e60-459c-af65-b244753b4662","files":["/Users/pejmanhaghighatnia/Bleu.js/backend/jest.backend.config.cjs"]}
+{
+  "parent": null,
+  "pid": 48818,
+  "argv": [
+    "/Users/pejmanhaghighatnia/.nvm/versions/node/v20.12.2/bin/node",
+    "/Users/pejmanhaghighatnia/Bleu.js/backend/node_modules/jest/bin/jest.js",
+    "--config=./jest.backend.config.cjs",
+    "--detectOpenHandles",
+    "--",
+    "--detectOpenHandles"
+  ],
+  "execArgv": [],
+  "cwd": "/Users/pejmanhaghighatnia/Bleu.js/backend",
+  "time": 1718497160471,
+  "ppid": 48812,
+  "coverageFilename": "/Users/pejmanhaghighatnia/Bleu.js/backend/.nyc_output/4ca55dff-2e60-459c-af65-b244753b4662.json",
+  "externalId": "",
+  "uuid": "4ca55dff-2e60-459c-af65-b244753b4662",
+  "files": ["/Users/pejmanhaghighatnia/Bleu.js/backend/jest.backend.config.cjs"]
+}

@@ -1,4 +1,4 @@
-const CustomSequencer = require('./CustomSequencer'); 
+const CustomSequencer = require('./CustomSequencer');
 const { Test } = require('@jest/test-sequencer');
 
 describe('CustomSequencer', () => {

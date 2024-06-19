@@ -10,65 +10,59 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up job
-      uses: actions/checkout@v2
+      - name: Set up job
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
 
-    - name: Install pnpm locally
-      run: npm install -g pnpm
+      - name: Install pnpm locally
+        run: npm install -g pnpm
 
-    - name: Install dependencies
-      run: pnpm install --no-frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
-    - name: Lint frontend code
-      run: |
-        echo "Linting frontend code..."
-        pnpm run lint:frontend
-        echo "Finished linting frontend code."
+      - name: Lint frontend
+        run: pnpm run lint:frontend
 
-    - name: Lint backend code
-      run: |
-        echo "Linting backend code..."
-        pnpm run lint:backend
-        echo "Finished linting backend code."
+      - name: Lint backend
+        run: pnpm run lint:backend
 
-    - name: Build frontend
-      run: |
-        cd frontend
-        pnpm run build
+      - name: Build frontend
+        run: |
+          cd frontend
+          pnpm run build
 
-    - name: Build backend
-      run: |
-        cd backend
-        pnpm run build
+      - name: Build backend
+        run: |
+          cd backend
+          pnpm run build
 
-    - name: Run all tests
-      run: pnpm run test:all
+      - name: Run all tests
+        run: pnpm run test:all
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/bleujs:latest
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/bleujs:latest
 
-    - name: Publish to npm
-      run: pnpm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.BLEUJS_NPM_TOKEN }}
+      - name: Publish to npm
+        run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.BLEUJS_NPM_TOKEN }}
 
-    - name: Complete job
-      run: echo "CI/CD pipeline completed successfully."
+      - name: Complete job
+        run: echo "CI/CD pipeline completed successfully."

@@ -42,7 +42,9 @@ router.post('/data', upload.none(), async (req, res) => {
     }
 
     if (data === 'DB Test') {
-      logger.error('Internal Server Error: DB Test error', { endpoint: '/data' });
+      logger.error('Internal Server Error: DB Test error', {
+        endpoint: '/data',
+      });
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 
@@ -51,7 +53,10 @@ router.post('/data', upload.none(), async (req, res) => {
     logger.info('Data received', { endpoint: '/data', data });
     res.status(201).json({ message: 'Data received', data });
   } catch (error) {
-    logger.error('Internal Server Error', { endpoint: '/data', error: error.message });
+    logger.error('Internal Server Error', {
+      endpoint: '/data',
+      error: error.message,
+    });
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -66,7 +71,9 @@ router.post('/api/rules', async (req, res) => {
     await aiService.addRule(req.body);
     res.status(201).json({ message: 'Rule added successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding rule', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error adding rule', error: error.message });
   }
 });
 
@@ -75,7 +82,9 @@ router.delete('/api/rules/:id', async (req, res) => {
     await aiService.removeRule(req.params.id);
     res.status(200).json({ message: 'Rule removed successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error removing rule', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error removing rule', error: error.message });
   }
 });
 
@@ -84,7 +93,9 @@ router.put('/api/rules/:id', async (req, res) => {
     await aiService.updateRule(req.params.id, req.body);
     res.status(200).json({ message: 'Rule updated successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating rule', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error updating rule', error: error.message });
   }
 });
 
@@ -93,7 +104,9 @@ router.post('/api/rules/evaluate', async (req, res) => {
     const result = await aiService.evaluateRules(req.body);
     res.status(200).json({ result });
   } catch (error) {
-    res.status(500).json({ message: 'Error evaluating rules', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error evaluating rules', error: error.message });
   }
 });
 
@@ -102,7 +115,9 @@ router.post('/api/ai/predict', async (req, res) => {
     const result = await aiService.predictDecision(req.body);
     res.status(200).json({ result });
   } catch (error) {
-    res.status(500).json({ message: 'Error predicting decision', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error predicting decision', error: error.message });
   }
 });
 
@@ -111,16 +126,24 @@ router.post('/api/ai/process-text', async (req, res) => {
     const result = await aiService.processText(req.body.text);
     res.status(200).json({ result });
   } catch (error) {
-    res.status(500).json({ message: 'Error processing text', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Error processing text', error: error.message });
   }
 });
 
 router.post('/api/ai/process-text-advanced', async (req, res) => {
   try {
-    const result = await aiService.processTextAdvanced(req.body.text, req.body.options);
+    const result = await aiService.processTextAdvanced(
+      req.body.text,
+      req.body.options,
+    );
     res.status(200).json({ result });
   } catch (error) {
-    res.status(500).json({ message: 'Error processing text with advanced options', error: error.message });
+    res.status(500).json({
+      message: 'Error processing text with advanced options',
+      error: error.message,
+    });
   }
 });
 
