@@ -1,4 +1,10 @@
 packages:
-  - 'backend'
-  - 'frontend'
-  - 'core-engine'
+  - 'backend/**'
+  - 'frontend/**'
+  - 'core-engine/**'
+  - 'ui/**'
+  - 'code-quality-assurance/**'
+  - 'collaboration-tools/**'
+  - 'dependency-management/**'
+  - 'eggs-generator/**'
+  - 'language-plugins/**'
