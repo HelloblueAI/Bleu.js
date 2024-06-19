@@ -50,4 +50,3 @@ module.exports = [
   ...compat.extends('plugin:vue/vue3-recommended'),
   ...compat.extends('plugin:prettier/recommended'),
 ];
-
