@@ -18,10 +18,25 @@
 
 
 ## Installation
+Install the package using pnpm.
 ```javascript
-npm install bleujs
+pnpm install bleujs
 ```
 
+## Running the Application
+```javascript
+pnpm run serve
+```
+
+## Building the Application
+```javascript
+pnpm run build
+```
+
+## Testing
+```javascript
+pnpm run test:all
+```
 
 ### Directory Structure
 
@@ -76,6 +91,41 @@ cd frontend
 ```
 
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
+
+
+The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
+
+## Comprehensive AI Tools
+With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
+
+## Backend Efficiency
+The package includes a well-structured backend setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
+
+## Testing and Quality Assurance
+bleujs integrates comprehensive testing frameworks, including Jest for unit and integration tests, and Cypress for end-to-end tests. This ensures that applications built with this package are reliable and maintain high quality standards.
+
+
+## Code Linting and Formatting
+By including ESLint and Prettier configurations, bleujs helps developers maintain consistent coding standards and formatting, reducing errors and improving code readability.
+
+## TypeScript Support
+The package supports TypeScript, allowing developers to write safer and more maintainable code with type checking.
+
+## Frontend Integration
+With Vue.js as the frontend framework, developers can create modern, reactive user interfaces. The package includes scripts for building and serving Vue applications, making it easy to integrate the frontend with the backend.
+
+## Swagger Documentation
+The package includes tools for generating Swagger API documentation, making it easier for developers to document and share their API specifications.
+
+## Continuous Integration/Continuous Deployment (CI/CD)
+The package comes with a CI/CD pipeline configuration for automated testing, linting, building, and deployment. This helps teams to integrate changes continuously and deploy applications reliably.
+
+## Docker Support
+With Docker integration, developers can containerize their applications for consistent deployment across different environments. This ensures that the application runs seamlessly regardless of where it is deployed.
+
+## Real-time Features
+With WebSocket support (ws), developers can add real-time features like live notifications and updates to their applications.
+
 
 
 ## Usage

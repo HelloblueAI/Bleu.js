@@ -19,7 +19,7 @@ global.console = {
 global.faker = faker;
 
 global.axios = axios.create({
-  baseURL: 'http://localhost:8085',  
+  baseURL: process.env.BASE_URL || 'http://localhost:8085',
 });
 
 MockDate.set('2024-01-01');
