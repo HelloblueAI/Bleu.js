@@ -77,12 +77,12 @@ module.exports = [
       'arrow-spacing': ['error', { before: true, after: true }],
       'no-multi-spaces': 'error',
       'import/order': ['error', { 'newlines-between': 'always' }],
-      'import/newline-after-import': 'off',
-      'import/no-unresolved': 'off',
+      'import/newline-after-import': 'off', // Temporarily disable this rule
+      'import/no-unresolved': 'off', // Temporarily disable this rule to prevent issues with import resolution
       'import/no-duplicates': 'error',
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      'react/react-in-jsx-scope': 'off',
+      'react/react-in-jsx-scope': 'off', // Assuming React 17+
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'jsx-a11y/accessible-emoji': 'warn',
