@@ -1,33 +1,52 @@
-module.exports = {
-  verbose: true,
-  testEnvironment: 'node',
-  transform: {
-    '^.+\\.js$': 'babel-jest',
-  },
-  moduleFileExtensions: ['js', 'json'],
-  moduleDirectories: ['node_modules', 'src'],
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  testPathIgnorePatterns: ['/node_modules/'],
-  setupFilesAfterEnv: ['<rootDir>/backend/tests/setupTests.js'],
-  testSequencer: '<rootDir>/backend/tests/customSequencer.js',
-  globalSetup: '<rootDir>/backend/tests/globalSetup.js',
-  globalTeardown: '<rootDir>/backend/tests/globalTeardown.js',
-  testTimeout: 30000,
-  projects: [
-    {
-      displayName: 'backend',
-      testMatch: ['<rootDir>/backend/tests/**/*.test.js'],
-      testEnvironment: 'node',
-    },
-    {
-      displayName: 'frontend',
-      testMatch: ['<rootDir>/frontend/tests/**/*.test.js'],
-      testEnvironment: 'jsdom',
-      transform: {
-        '^.+\\.vue$': 'vue-jest',
-        '^.+\\.js$': 'babel-jest',
+const { FlatCompat } = require('@eslint/eslintrc');
+const compat = new FlatCompat();
+
+module.exports = [
+  {
+    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.cjs'],
+    languageOptions: {
+      parser: require('@babel/eslint-parser'),
+      parserOptions: {
+        requireConfigFile: false,
+        ecmaVersion: 2021,
+        sourceType: 'module',
       },
     },
-  ],
-};
+    rules: {
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      indent: ['error', 2],
+      'linebreak-style': ['error', 'unix'],
+      eqeqeq: ['error', 'always'],
+      'no-trailing-spaces': 'error',
+      'space-before-blocks': 'error',
+      'keyword-spacing': ['error', { before: true, after: true }],
+      'space-infix-ops': 'error',
+      'comma-spacing': ['error', { before: false, after: true }],
+      'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+      'space-unary-ops': ['error', { words: true, nonwords: false }],
+    },
+  },
+  {
+    files: ['**/*.vue'],
+    plugins: {
+      vue: require('eslint-plugin-vue'),
+    },
+    languageOptions: {
+      parser: require('vue-eslint-parser'),
+      parserOptions: {
+        parser: require('@babel/eslint-parser'),
+        ecmaVersion: 2021,
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'vue/no-unused-vars': 'warn',
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    },
+  },
+  ...compat.extends('plugin:vue/vue3-recommended'),
+  ...compat.extends('plugin:prettier/recommended'),
+];
