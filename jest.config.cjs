@@ -47,6 +47,8 @@ module.exports = [
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
+  // Extend Vue 3 recommended configuration
   ...compat.extends('plugin:vue/vue3-recommended'),
+  // Extend Prettier recommended configuration
   ...compat.extends('plugin:prettier/recommended'),
 ];
