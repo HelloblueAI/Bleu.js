@@ -24,8 +24,11 @@ jobs:
     - name: Install dependencies
       run: pnpm install --no-frozen-lockfile
 
-    - name: Lint and format code
-      run: pnpm run lint:ci
+    - name: Lint frontend code
+      run: pnpm run lint -- frontend
+
+    - name: Lint backend code
+      run: pnpm run lint -- backend
 
     - name: Build frontend
       run: |
