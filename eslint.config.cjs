@@ -41,6 +41,10 @@ module.exports = [
         browser: true,
         node: true,
         es2021: true,
+        require: 'readonly',
+        module: 'readonly',
+        __dirname: 'readonly',
+        process: 'readonly',
       },
     },
     plugins: {
