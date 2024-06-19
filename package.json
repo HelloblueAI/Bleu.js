@@ -1,22 +1,19 @@
 {
   "name": "bleujs",
   "version": "1.0.5",
-  "description": "The most robust and powerful npm package for AI and backend services",
-  "main": "backend/server.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "node backend/server.js",
     "serve": "vue-cli-service serve --entry ./frontend/src/main.js",
-    "build": "pnpm run build:frontend && pnpm run build:backend",
-    "build:frontend": "vue-cli-service build --entry ./frontend/src/main.js",
-    "build:backend": "babel backend --out-dir dist/backend",
+    "build": "vue-cli-service build --entry ./frontend/src/main.js",
     "test": "jest --detectOpenHandles --config jest.config.cjs",
     "test:coverage": "nyc jest --detectOpenHandles --config jest.config.cjs",
     "test:backend": "jest --config jest.config.cjs --detectOpenHandles --projects backend",
     "test:frontend": "jest --config jest.config.cjs --detectOpenHandles --projects frontend",
     "test:all": "jest --config jest.config.cjs --detectOpenHandles --projects backend frontend",
-    "lint": "eslint . --cache",
-    "lint:fix": "eslint . -c .eslintrc.cjs --fix",
+    "lint": "eslint . --cache --max-warnings=0",
+    "lint:fix": "eslint . --cache --fix",
     "ci:lint": "pnpm run lint",
     "ci:test": "pnpm run test:all",
     "ci:build": "pnpm run build",
@@ -56,14 +53,9 @@
     "ws": "^8.17.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
-    "@babel/eslint-parser": "^7.24.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/plugin-syntax-jsx": "^7.24.7",
-    "@babel/plugin-transform-runtime": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
-    "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@eslint/eslintrc": "^3.1.0",
     "@faker-js/faker": "^8.4.1",
@@ -115,12 +107,7 @@
             "node": "current"
           }
         }
-      ],
-      "@babel/preset-typescript"
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-object-rest-spread",
-      "@babel/plugin-transform-runtime"
+      ]
     ]
   },
   "eslintConfig": {
@@ -138,63 +125,19 @@
       "no-console": "warn",
       "no-debugger": "warn",
       "vue/no-unused-vars": "warn",
-      "prettier/prettier": [
-        "error",
-        {
-          "endOfLine": "auto"
-        }
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "indent": [
-        "error",
-        2
-      ],
-      "linebreak-style": [
-        "error",
-        "unix"
-      ],
-      "eqeqeq": [
-        "error",
-        "always"
-      ],
+      "prettier/prettier": ["error", { "endOfLine": "auto" }],
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"],
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "eqeqeq": ["error", "always"],
       "no-trailing-spaces": "error",
       "space-before-blocks": "error",
-      "keyword-spacing": [
-        "error",
-        {
-          "before": true,
-          "after": true
-        }
-      ],
+      "keyword-spacing": ["error", { "before": true, "after": true }],
       "space-infix-ops": "error",
-      "comma-spacing": [
-        "error",
-        {
-          "before": false,
-          "after": true
-        }
-      ],
-      "key-spacing": [
-        "error",
-        {
-          "beforeColon": false,
-          "afterColon": true
-        }
-      ],
-      "space-unary-ops": [
-        "error",
-        {
-          "words": true,
-          "nonwords": false
-        }
-      ]
+      "comma-spacing": ["error", { "before": false, "after": true }],
+      "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
+      "space-unary-ops": ["error", { "words": true, "nonwords": false }]
     }
   },
   "prettier": {
@@ -203,16 +146,5 @@
     "printWidth": 80,
     "tabWidth": 2,
     "semi": true
-  },
-  "nyc": {
-    "exclude": [
-      "**/tests/**",
-      "**/*.test.js",
-      "**/*.spec.js"
-    ],
-    "reporter": [
-      "html",
-      "text-summary"
-    ]
   }
 }
