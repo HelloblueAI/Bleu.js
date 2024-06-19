@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
@@ -96,6 +97,7 @@
     "ts-jest": "^29.1.5",
     "typescript": "^5.4.5",
     "vue-cli-service": "^5.0.9",
+    "vue-eslint-parser": "^9.4.3",
     "vue-jest": "5.0.0-alpha.10"
   },
   "babel": {
@@ -125,19 +127,63 @@
       "no-console": "warn",
       "no-debugger": "warn",
       "vue/no-unused-vars": "warn",
-      "prettier/prettier": ["error", { "endOfLine": "auto" }],
-      "semi": ["error", "always"],
-      "quotes": ["error", "single"],
-      "indent": ["error", 2],
-      "linebreak-style": ["error", "unix"],
-      "eqeqeq": ["error", "always"],
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "eqeqeq": [
+        "error",
+        "always"
+      ],
       "no-trailing-spaces": "error",
       "space-before-blocks": "error",
-      "keyword-spacing": ["error", { "before": true, "after": true }],
+      "keyword-spacing": [
+        "error",
+        {
+          "before": true,
+          "after": true
+        }
+      ],
       "space-infix-ops": "error",
-      "comma-spacing": ["error", { "before": false, "after": true }],
-      "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
-      "space-unary-ops": ["error", { "words": true, "nonwords": false }]
+      "comma-spacing": [
+        "error",
+        {
+          "before": false,
+          "after": true
+        }
+      ],
+      "key-spacing": [
+        "error",
+        {
+          "beforeColon": false,
+          "afterColon": true
+        }
+      ],
+      "space-unary-ops": [
+        "error",
+        {
+          "words": true,
+          "nonwords": false
+        }
+      ]
     }
   },
   "prettier": {
