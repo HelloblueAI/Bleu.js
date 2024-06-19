@@ -77,12 +77,12 @@ module.exports = [
       'arrow-spacing': ['error', { before: true, after: true }],
       'no-multi-spaces': 'error',
       'import/order': ['error', { 'newlines-between': 'always' }],
-      'import/newline-after-import': 'off', // Temporarily disable this rule
-      'import/no-unresolved': 'off', // Temporarily disable this rule to prevent issues with import resolution
+      'import/newline-after-import': 'off',
+      'import/no-unresolved': 'off',
       'import/no-duplicates': 'error',
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      'react/react-in-jsx-scope': 'off', // Assuming React 17+
+      'react/react-in-jsx-scope': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'jsx-a11y/accessible-emoji': 'warn',
@@ -132,6 +132,13 @@ module.exports = [
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue', '.json'],
         },
       },
+    },
+  },
+  {
+    files: ['backend/**/*.js'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
     },
   },
   ...compat.extends('plugin:vue/vue3-recommended'),
