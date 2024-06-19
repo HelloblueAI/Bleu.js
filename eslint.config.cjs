@@ -1,4 +1,3 @@
-// eslint.config.cjs
 const { FlatCompat } = require('@eslint/eslintrc');
 const compat = new FlatCompat();
 
@@ -12,19 +11,45 @@ module.exports = [
       'coverage/**',
       '*.min.js',
       'language-plugins/**',
-      'static/**', // Assuming you have a static directory to ignore
-      'logs/**', // Assuming you might have a logs directory
-      '**/*.d.ts', // Ignoring TypeScript declaration files if present
-      '**/*.min.css', // Ignoring minified CSS files
-      'src/**/*.min.js', // Ignoring minified JS files in src
-      'docs/**', // Ignoring documentation directory
-      'public/**', // Ignoring public directory for static assets
-      // Add more patterns as needed
+      'static/**',
+      'logs/**',
+      '**/*.d.ts',
+      '**/*.min.css',
+      'src/**/*.min.js',
+      'docs/**',
+      'public/**',
     ],
-    files: ['**/*.js', '**/*.cjs', '**/*.vue'],
+    files: [
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.vue',
+      '**/*.cjs',
+    ],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
+      parser: require('@babel/eslint-parser'),
+      parserOptions: {
+        requireConfigFile: false,
+        babelOptions: {
+          configFile: './babel.config.cjs',
+        },
+      },
+      globals: {
+        browser: true,
+        node: true,
+        es2021: true,
+      },
+    },
+    plugins: {
+      import: require('eslint-plugin-import'),
+      react: require('eslint-plugin-react'),
+      'react-hooks': require('eslint-plugin-react-hooks'),
+      'jsx-a11y': require('eslint-plugin-jsx-a11y'),
+      prettier: require('eslint-plugin-prettier'),
+      vue: require('eslint-plugin-vue'),
     },
     rules: {
       'no-console': 'warn',
@@ -41,24 +66,71 @@ module.exports = [
       'comma-spacing': ['error', { before: false, after: true }],
       'key-spacing': ['error', { beforeColon: false, afterColon: true }],
       'space-unary-ops': ['error', { words: true, nonwords: false }],
-    },
-  },
-  {
-    files: ['**/*.vue'],
-    plugins: {
-      vue: require('eslint-plugin-vue'),
-    },
-    languageOptions: {
-      parser: require('vue-eslint-parser'),
-      parserOptions: {
-        parser: require('@babel/eslint-parser'),
-        ecmaVersion: 2021,
-        sourceType: 'module',
-      },
-    },
-    rules: {
-      'vue/no-unused-vars': 'warn',
+      'no-unused-vars': 'warn',
+      'no-undef': 'error',
+      'consistent-return': 'error',
+      'no-param-reassign': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-use-before-define': 'error',
+      'arrow-spacing': ['error', { before: true, after: true }],
+      'no-multi-spaces': 'error',
+      'import/order': ['error', { 'newlines-between': 'always' }],
+      'import/newline-after-import': 'off', // Temporarily disable this rule
+      'import/no-unresolved': 'off', // Temporarily disable this rule to prevent issues with import resolution
+      'import/no-duplicates': 'error',
+      'react/jsx-uses-react': 'error',
+      'react/jsx-uses-vars': 'error',
+      'react/react-in-jsx-scope': 'off', // Assuming React 17+
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'jsx-a11y/accessible-emoji': 'warn',
+      'jsx-a11y/alt-text': 'warn',
+      'jsx-a11y/anchor-has-content': 'warn',
+      'jsx-a11y/anchor-is-valid': 'warn',
+      'jsx-a11y/aria-activedescendant-has-tabindex': 'warn',
+      'jsx-a11y/aria-props': 'warn',
+      'jsx-a11y/aria-proptypes': 'warn',
+      'jsx-a11y/aria-role': 'warn',
+      'jsx-a11y/aria-unsupported-elements': 'warn',
+      'jsx-a11y/heading-has-content': 'warn',
+      'jsx-a11y/html-has-lang': 'warn',
+      'jsx-a11y/iframe-has-title': 'warn',
+      'jsx-a11y/img-redundant-alt': 'warn',
+      'jsx-a11y/no-access-key': 'warn',
+      'jsx-a11y/no-distracting-elements': 'warn',
+      'jsx-a11y/no-redundant-roles': 'warn',
+      'jsx-a11y/role-has-required-aria-props': 'warn',
+      'jsx-a11y/role-supports-aria-props': 'warn',
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      'vue/no-unused-vars': 'warn',
+      'vue/html-indent': ['error', 2],
+      'vue/max-attributes-per-line': ['error', { singleline: 1, multiline: 1 }],
+      'vue/multiline-html-element-content-newline': [
+        'error',
+        { ignoreWhenEmpty: true, allowEmptyLines: false },
+      ],
+      'vue/singleline-html-element-content-newline': 'error',
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'always',
+            normal: 'never',
+            component: 'always',
+          },
+        },
+      ],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue', '.json'],
+        },
+      },
     },
   },
   ...compat.extends('plugin:vue/vue3-recommended'),
