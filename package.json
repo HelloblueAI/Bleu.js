@@ -1,24 +1,33 @@
 {
   "name": "bleujs",
   "version": "1.0.5",
-  "main": "index.js",
+  "description": "The most robust and powerful npm package for AI and backend services",
+  "main": "backend/server.js",
   "license": "MIT",
   "scripts": {
     "start": "node backend/server.js",
     "serve": "vue-cli-service serve --entry ./frontend/src/main.js",
-    "build": "vue-cli-service build --entry ./frontend/src/main.js",
+    "build": "pnpm run build:frontend && pnpm run build:backend",
+    "build:frontend": "vue-cli-service build --entry ./frontend/src/main.js",
+    "build:backend": "babel backend --out-dir dist/backend",
     "test": "jest --detectOpenHandles --config jest.config.cjs",
     "test:coverage": "nyc jest --detectOpenHandles --config jest.config.cjs",
     "test:backend": "jest --config jest.config.cjs --detectOpenHandles --projects backend",
     "test:frontend": "jest --config jest.config.cjs --detectOpenHandles --projects frontend",
     "test:all": "jest --config jest.config.cjs --detectOpenHandles --projects backend frontend",
     "lint": "eslint . -c .eslintrc.cjs",
-    "lint:fix": "eslint . -c .eslintrc.cjs --fix"
+    "lint:fix": "eslint . -c .eslintrc.cjs --fix",
+    "ci:lint": "pnpm run lint",
+    "ci:test": "pnpm run test:all",
+    "ci:build": "pnpm run build",
+    "ci:deploy": "echo 'Deploying...'",
+    "ci:report": "nyc report --reporter=html"
   },
   "dependencies": {
     "@jest/test-sequencer": "^29.7.0",
     "body-parser": "^1.20.2",
     "braces": "3.0.3",
+    "celebrate": "^15.0.3",
     "compression": "^1.7.4",
     "compromise": "^14.13.0",
     "cors": "^2.8.5",
@@ -28,11 +37,10 @@
     "glob-parent": "6.0.2",
     "helmet": "^7.1.0",
     "jest-environment-node": "^29.7.0",
-    "jest-html-reporters": "^3.1.7",
     "jest-mock": "^29.7.0",
     "json-rules-engine": "^6.5.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.4.1",
+    "mongoose": "^8.4.3",
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "natural": "^7.0.6",
@@ -44,21 +52,29 @@
     "update": "^0.7.4",
     "wink-nlp": "^2.3.0",
     "winston": "^3.13.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "ws": "^8.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@babel/plugin-transform-runtime": "^7.24.7",
     "@eslint/eslintrc": "^3.1.0",
     "@faker-js/faker": "^8.4.1",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.5",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
     "axios": "^1.7.2",
-    "babel-jest": "^26.6.3",
+    "babel-jest": "^29.7.0",
     "cypress": "^13.11.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.21.5",
-    "esbuild-loader": "^4.1.0",
+    "esbuild-loader": "^4.2.0",
     "eslint": "^9.5.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
@@ -69,7 +85,9 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-extended": "^4.0.2",
     "jest-html-reporter": "^3.10.2",
+    "jest-html-reporters": "^3.1.7",
     "jest-junit": "^16.0.0",
+    "jest-spec-reporter": "^1.0.19",
     "jest-tobetype": "^1.2.3",
     "jest-watch-typeahead": "^2.2.2",
     "mississippi": "^4.0.0",
@@ -79,6 +97,8 @@
     "nyc": "^17.0.0",
     "prettier": "^3.3.2",
     "supertest": "^7.0.0",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.4.5",
     "vue-cli-service": "^5.0.9",
     "vue-jest": "5.0.0-alpha.10"
   },
@@ -91,7 +111,60 @@
             "node": "current"
           }
         }
-      ]
+      ],
+      "@babel/preset-typescript"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-transform-runtime"
+    ]
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "plugin:vue/vue3-recommended",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "no-console": "warn",
+      "no-debugger": "warn",
+      "vue/no-unused-vars": "warn",
+      "prettier/prettier": ["error", { "endOfLine": "auto" }],
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"],
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "eqeqeq": ["error", "always"],
+      "no-trailing-spaces": "error",
+      "space-before-blocks": "error",
+      "keyword-spacing": ["error", { "before": true, "after": true }],
+      "space-infix-ops": "error",
+      "comma-spacing": ["error", { "before": false, "after": true }],
+      "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
+      "space-unary-ops": ["error", { "words": true, "nonwords": false }]
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 80,
+    "tabWidth": 2,
+    "semi": true
+  },
+  "nyc": {
+    "exclude": [
+      "**/tests/**",
+      "**/*.test.js",
+      "**/*.spec.js"
+    ],
+    "reporter": [
+      "html",
+      "text-summary"
     ]
   }
 }

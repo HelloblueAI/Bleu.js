@@ -5,6 +5,12 @@ dotenv.config();
 
 module.exports = async () => {
   const mongoUri = process.env.MONGODB_URI;
+  
+  if (!mongoUri) {
+    console.error('MONGODB_URI is not defined');
+    process.exit(1);
+  }
+  
   console.log(`Connecting to MongoDB at ${mongoUri}`);
 
   try {

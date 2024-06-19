@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
-const { logger } = require('../src/utils/logger');
+
 
 module.exports = async () => {
-  await mongoose.connection.close();
-  logger.info('MongoDB connection closed');
+  try {
+    await mongoose.disconnect();
+    console.log('Successfully disconnected from MongoDB');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB:', error);
+  }
 };

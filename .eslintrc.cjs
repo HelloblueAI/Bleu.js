@@ -1,38 +1,45 @@
-// Import FlatCompat class from @eslint/eslintrc package
 const { FlatCompat } = require('@eslint/eslintrc');
-
-// Initialize FlatCompat with recommended configs
 const compat = new FlatCompat({
-  baseDirectory: __dirname, // Ensure this is set to the directory of your config file
+  baseDirectory: __dirname,
   recommendedConfig: { extends: ["eslint:recommended"] }
 });
 
 module.exports = [
   {
+    files: ['*.js', '*.vue'],
+    ignores: ['node_modules/**'],
     languageOptions: {
-      ecmaVersion: 12,
+      ecmaVersion: 2021,
       sourceType: 'module',
       globals: {
         browser: true,
-        es2021: true,
         node: true,
+        es2021: true,
       },
+    },
+    plugins: {
+      vue: require('eslint-plugin-vue'),
+      prettier: require('eslint-plugin-prettier'),
+    },
+    rules: {
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+      'vue/no-unused-vars': 'warn',
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      'semi': ['error', 'always'],
+      'quotes': ['error', 'single'],
+      'indent': ['error', 2],
+      'linebreak-style': ['error', 'unix'],
+      'eqeqeq': ['error', 'always'],
+      'no-trailing-spaces': 'error',
+      'space-before-blocks': 'error',
+      'keyword-spacing': ['error', { before: true, after: true }],
+      'space-infix-ops': 'error',
+      'comma-spacing': ['error', { before: false, after: true }],
+      'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+      'space-unary-ops': ['error', { words: true, nonwords: false }],
     },
   },
   ...compat.extends('plugin:vue/vue3-recommended'),
   ...compat.extends('plugin:prettier/recommended'),
-  {
-    rules: {
-      // Your custom rules
-    },
-  },
-  {
-    settings: {
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-        },
-      },
-    },
-  },
 ];

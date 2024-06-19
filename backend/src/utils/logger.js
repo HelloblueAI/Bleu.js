@@ -1,15 +1,7 @@
-const { createLogger, format, transports } = require('winston');
-
-const logger = createLogger({
-  level: 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.json()
-  ),
-  transports: [
-    new transports.Console(),
-    
-  ],
-});
+const logger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+};
 
 module.exports = logger;
