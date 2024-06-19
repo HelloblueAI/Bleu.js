@@ -25,8 +25,7 @@ jobs:
       run: pnpm install --no-frozen-lockfile
 
     - name: Lint and format code
-      run: pnpm run lint -- --max-warnings=0
-      timeout-minutes: 5
+      run: pnpm run lint:ci
 
     - name: Build frontend
       run: |
