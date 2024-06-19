@@ -1,4 +1,4 @@
-const Rule = require('../models/ruleModel'); 
+const Rule = require('../models/ruleModel');
 
 const seedDatabase = async () => {
   const data = [

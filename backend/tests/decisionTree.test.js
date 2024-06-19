@@ -26,7 +26,6 @@ describe('DecisionTree', () => {
     expect(result1).toBe('yes');
     expect(tree).toBeDefined();
 
-    
     expect(tree).toHaveProperty('condition');
     expect(tree).toHaveProperty('trueBranch');
     expect(tree).toHaveProperty('falseBranch');
@@ -74,12 +73,11 @@ describe('DecisionTree', () => {
       { feature1: 'B', label: 'no' },
       { feature1: 'B', label: 'yes' },
     ];
-    const trueSubset = data.filter(item => item.feature1 === 'A');
-    const falseSubset = data.filter(item => item.feature1 === 'B');
+    const trueSubset = data.filter((item) => item.feature1 === 'A');
+    const falseSubset = data.filter((item) => item.feature1 === 'B');
 
     const gini = decisionTree.calculateGini(trueSubset, falseSubset, 'label');
 
-    
     expect(gini).toBe(0.5);
   });
 });

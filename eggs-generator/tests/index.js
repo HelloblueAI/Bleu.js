@@ -8,7 +8,13 @@ describe('Bleu', () => {
   });
 
   it('should generate a new egg', () => {
-    const egg = bleu.generateEgg('Test Egg', 'model', { modelName: 'TestModel', fields: [{ name: 'id', type: 'number' }, { name: 'name', type: 'string' }] });
+    const egg = bleu.generateEgg('Test Egg', 'model', {
+      modelName: 'TestModel',
+      fields: [
+        { name: 'id', type: 'number' },
+        { name: 'name', type: 'string' },
+      ],
+    });
     expect(egg).toHaveProperty('id');
     expect(egg).toHaveProperty('description', 'Test Egg');
     expect(egg).toHaveProperty('type', 'model');
@@ -18,7 +24,7 @@ describe('Bleu', () => {
   it('should optimize code', () => {
     const code = 'let a = 1;';
     const optimizedCode = bleu.optimizeCode(code);
-    expect(optimizedCode).toBe(code); 
+    expect(optimizedCode).toBe(code);
   });
 
   it('should manage dependencies', () => {
@@ -33,6 +39,6 @@ describe('Bleu', () => {
   it('should ensure code quality', () => {
     const code = 'let a = 1;';
     const isQualityCode = bleu.ensureCodeQuality(code);
-    expect(isQualityCode).toBe(true); 
+    expect(isQualityCode).toBe(true);
   });
 });

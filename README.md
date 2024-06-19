@@ -3,37 +3,42 @@
 
 .js/core
 
-* Bleu.js is a Rule-based AI framework designed to provide pinpoint solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face. 
+- Bleu.js is a Rule-based AI framework designed to provide pinpoint solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face.
 
 ### Features
-* Advanced debugging
-* Automates dependency management
-* Ensure Code Quality: Tools to ensure the highest code quality
-* Generate Eggs: Automatically generate code snippets
-* Provides tools to maintain code quality without adding extra complexity
-* Real-time optimization suggestions
-* Streamlines collaboration
-* Support for multiple programming languages
-* Manage Dependencies: Handle project dependencies efficiently
 
+- Advanced debugging
+- Automates dependency management
+- Ensure Code Quality: Tools to ensure the highest code quality
+- Generate Eggs: Automatically generate code snippets
+- Provides tools to maintain code quality without adding extra complexity
+- Real-time optimization suggestions
+- Streamlines collaboration
+- Support for multiple programming languages
+- Manage Dependencies: Handle project dependencies efficiently
 
 ## Installation
+
 Install the package using pnpm.
+
 ```javascript
 pnpm install bleujs
 ```
 
 ## Running the Application
+
 ```javascript
 pnpm run serve
 ```
 
 ## Building the Application
+
 ```javascript
 pnpm run build
 ```
 
 ## Testing
+
 ```javascript
 pnpm run test:all
 ```
@@ -47,21 +52,23 @@ pnpm run test:all
 - **collaboration-tools**: Tools for code review, issue tracking, and project management.
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
-- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue. 
+- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
 - **docker**: Docker configuration files.
 
 Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 🪺
 
-
 ## Generating Code
+
 To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
 `curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
 
 ## Optimizing Code
+
 To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
 `curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
 ## Debugging Code
+
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
 
@@ -70,7 +77,7 @@ cd frontend
 ```
 
 ```javascript
-╰─ pnpm run serve                                                  
+╰─ pnpm run serve
 
 > bleujs@1.0.0 serve /Users/path/path/Bleu.js
 > cd ui && pnpm run serve
@@ -82,54 +89,62 @@ cd frontend
  INFO  Starting development server...
 98% after emitting
 
- DONE  Compiled successfully in 93660ms                  
+ DONE  Compiled successfully in 93660ms
 
 
   App running at:
-  - Local:   http://localhost:8080/ 
+  - Local:   http://localhost:8080/
   - Network: http://10.0.0.0:8080/
 ```
 
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
 
-
 The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
 
 ## Comprehensive AI Tools
+
 With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
 
 ## Backend Efficiency
+
 The package includes a well-structured backend setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
 
 ## Testing and Quality Assurance
+
 bleujs integrates comprehensive testing frameworks, including Jest for unit and integration tests, and Cypress for end-to-end tests. This ensures that applications built with this package are reliable and maintain high quality standards.
 
-
 ## Code Linting and Formatting
+
 By including ESLint and Prettier configurations, bleujs helps developers maintain consistent coding standards and formatting, reducing errors and improving code readability.
 
 ## TypeScript Support
+
 The package supports TypeScript, allowing developers to write safer and more maintainable code with type checking.
 
 ## Frontend Integration
+
 With Vue.js as the frontend framework, developers can create modern, reactive user interfaces. The package includes scripts for building and serving Vue applications, making it easy to integrate the frontend with the backend.
 
 ## Swagger Documentation
+
 The package includes tools for generating Swagger API documentation, making it easier for developers to document and share their API specifications.
 
 ## Continuous Integration/Continuous Deployment (CI/CD)
+
 The package comes with a CI/CD pipeline configuration for automated testing, linting, building, and deployment. This helps teams to integrate changes continuously and deploy applications reliably.
 
 ## Docker Support
+
 With Docker integration, developers can containerize their applications for consistent deployment across different environments. This ensures that the application runs seamlessly regardless of where it is deployed.
 
 ## Real-time Features
+
 With WebSocket support (ws), developers can add real-time features like live notifications and updates to their applications.
 
-
-
 ## Usage
+
 Create an instance of the BleuJS class and use its methods to manage your code:
+
 ```javascript
 import BleuJS from 'bleu.js';
 
@@ -166,16 +181,18 @@ Ran all test suites.
 ```
 
 test backend
+
 ```javascript
-cd desktop 
+cd desktop
 pnpm run test:backend -- --detectOpenHandles
 ```
 
 ### Class Documentation
+
 ### 'BleuJS'
 
-
 The BleuJS class provides several methods to help you manage and optimize your code.
+
 ```javascript
 class Bleu {
   constructor() {
@@ -195,7 +212,7 @@ class Bleu {
       id: this.eggs.length + 1,
       description: this.generateDescription(type, options),
       type,
-      code
+      code,
     };
     this.eggs.push(newEgg);
     return newEgg;
@@ -226,7 +243,7 @@ class Bleu {
    */
   generateModel(modelName, fields) {
     let code = `class ${modelName} {\n`;
-    fields.forEach(field => {
+    fields.forEach((field) => {
       code += `  ${field.name}: ${field.type};\n`;
     });
     code += '}';
@@ -241,7 +258,7 @@ class Bleu {
    */
   generateUtility(utilityName, methods) {
     let code = `class ${utilityName} {\n`;
-    methods.forEach(method => {
+    methods.forEach((method) => {
       code += `  ${method}() {\n`;
       code += `    // TODO: Implement ${method}\n`;
       code += '  }\n';
@@ -259,7 +276,7 @@ class Bleu {
   generateDescription(type, options) {
     switch (type) {
       case 'model':
-        return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+        return `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`;
       case 'utility':
         return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
       default:
@@ -273,7 +290,6 @@ class Bleu {
    * @returns {string} The optimized code.
    */
   optimizeCode(code) {
-   
     return code.replace(/\s+/g, ' ').trim();
   }
 
@@ -282,9 +298,8 @@ class Bleu {
    * @param {Array} dependencies - List of dependencies.
    */
   manageDependencies(dependencies) {
-    dependencies.forEach(dep => {
+    dependencies.forEach((dep) => {
       console.log(`Managing dependency: ${dep}`);
-      
     });
   }
 
@@ -294,13 +309,11 @@ class Bleu {
    * @returns {boolean} Whether the code is of high quality.
    */
   ensureCodeQuality(code) {
-    
     return !code.includes('var');
   }
 }
 
 module.exports = Bleu;
-
 ```
 
 ```javascript
@@ -324,8 +337,9 @@ Ran all test suites.
 ```
 
 ## Constructor
+
 ```javascript
-constructor()
+constructor();
 ```
 
 ## Structure
@@ -336,13 +350,12 @@ class Bleu {
     this.eggs = [];
   }
 
-
   generateEgg(description, type, options = {}) {
     const newEgg = {
       id: this.eggs.length + 1,
       description,
       type,
-      code: this.generateCode(type, options)
+      code: this.generateCode(type, options),
     };
     this.eggs.push(newEgg);
     return newEgg;
@@ -362,14 +375,21 @@ class Bleu {
   }
 
   generateModel(modelName, fields) {
-    const classFields = fields.map(field => `  ${field.name}: ${field.type};`).join('\n');
-    const classMethods = fields.map(field => `  get${field.name.charAt(0).toUpperCase() + field.name.slice(1)}() { return this.${field.name}; }`).join('\n\n');
+    const classFields = fields
+      .map((field) => `  ${field.name}: ${field.type};`)
+      .join('\n');
+    const classMethods = fields
+      .map(
+        (field) =>
+          `  get${field.name.charAt(0).toUpperCase() + field.name.slice(1)}() { return this.${field.name}; }`,
+      )
+      .join('\n\n');
     return `
 class ${modelName} {
 ${classFields}
 
-  constructor(${fields.map(field => field.name).join(', ')}) {
-    ${fields.map(field => `this.${field.name} = ${field.name};`).join('\n    ')}
+  constructor(${fields.map((field) => field.name).join(', ')}) {
+    ${fields.map((field) => `this.${field.name} = ${field.name};`).join('\n    ')}
   }
 
 ${classMethods}
@@ -380,10 +400,14 @@ module.exports = ${modelName};
   }
 
   generateController(controllerName, actions) {
-    const actionMethods = actions.map(action => `
+    const actionMethods = actions
+      .map(
+        (action) => `
   ${action}() {
     // ${action} logic here
-  }`).join('\n');
+  }`,
+      )
+      .join('\n');
     return `
 class ${controllerName} {
 ${actionMethods}
@@ -394,10 +418,14 @@ module.exports = ${controllerName};
   }
 
   generateUtility(utilityName, methods) {
-    const utilityMethods = methods.map(method => `
+    const utilityMethods = methods
+      .map(
+        (method) => `
   ${method.name}(${method.params.join(', ')}) {
     ${method.body}
-  }`).join('\n');
+  }`,
+      )
+      .join('\n');
     return `
 class ${utilityName} {
 ${utilityMethods}
@@ -407,37 +435,30 @@ module.exports = ${utilityName};
     `;
   }
 
-  
   optimizeCode(code) {
-
-    const optimizedCode = code; 
+    const optimizedCode = code;
     return optimizedCode;
   }
 
   manageDependencies(dependencies) {
-  
-    dependencies.forEach(dep => {
+    dependencies.forEach((dep) => {
       console.log(`Managing dependency: ${dep}`);
-      
     });
   }
 
-
   ensureCodeQuality(code) {
-
     const isQualityCode = true;
     return isQualityCode;
   }
 }
 
 module.exports = Bleu;
-
 ```
 
 `cd/backend`
+
 ```javascript
-`pnpm test`
-`pnpm -w run test:backend`
+`pnpm test``pnpm -w run test:backend`;
 ```
 
 ```javascript
@@ -486,22 +507,25 @@ Ran all test suites.
 ```
 
 ## Test
-`cd backend`
 
+`cd backend`
 
 `╰─ curl -X POST http://localhost:3003/ai/nlp -H "Content-Type: application/json" -d '{"text": "This is a test for NLP processing."}'`
 
 ## Expected response:
-`{"tokens":["This","is","a","test","for","NLP","processing"]}% ` 
 
+`{"tokens":["This","is","a","test","for","NLP","processing"]}% `
 
 ## Initializes a new instance of the BleuJS class.
 
 ### Methods
 
 ### Class Constructor:
+
 The class constructor initializes the Bleu object with an empty array eggs to store the generated code 'eggs'. This array acts as a container for all the code snippets, models, utilities, and other structures created using the generateEgg method.
-* Initializes an empty array eggs to store the generated code 'eggs'.
+
+- Initializes an empty array eggs to store the generated code 'eggs'.
+
 ```javascript
   constructor() {
   this.eggs = [];
@@ -510,16 +534,17 @@ The class constructor initializes the Bleu object with an empty array eggs to st
 ```
 
 ### generateEgg Method:
+
 The generateEgg method is responsible for generating a new code 'egg'. This method leverages the HenFarm.js framework to produce code snippets based on the specified type and options. Each generated egg is assigned a unique ID, a description, and the generated code. The egg is then added to the eggs array and returned.
 
-* Utilize HenFarm.js to generate code based on the provided type and options.
-* Create a new egg object with a unique ID, description, type, generated code, and creation timestamp.
-* Append the new egg to the eggs array.
-* Return the newly created egg.
+- Utilize HenFarm.js to generate code based on the provided type and options.
+- Create a new egg object with a unique ID, description, type, generated code, and creation timestamp.
+- Append the new egg to the eggs array.
+- Return the newly created egg.
 
 ```javascript
 generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options); 
+  const code = this.henFarm.generateCode(type, options);
   const newEgg = {
     id: this.eggs.length + 1,
     description: this.generateDescription(type, options),
@@ -534,7 +559,7 @@ generateEgg(description, type, options) {
 
 ```javascript
 generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options); 
+  const code = this.henFarm.generateCode(type, options);
   const newEgg = {
     id: this.eggs.length + 1,
     description: this.generateDescription(type, options),
@@ -547,7 +572,7 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`                                                                 
+`cd eggs-generator`  
 `pnpm run test`
 
 ```javascript
@@ -597,49 +622,51 @@ Ran all test suites.
 ```
 
 ### optimizeCode Method:
+
 The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
-* Placeholder for code optimization logic.
-* Returns the optimized code.
+
+- Placeholder for code optimization logic.
+- Returns the optimized code.
 
 ```javascript
 optimizeCode(code) {
   // Optimization logic here
-  const optimizedCode = code.replace(/\s+/g, ' ').trim(); 
+  const optimizedCode = code.replace(/\s+/g, ' ').trim();
   return optimizedCode;
 }
 
 ```
 
 ### manageDependencies Method:
-The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
-* Placeholder logic for dependency management.
-* Potential logging of managed dependencies.
 
+The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
+
+- Placeholder logic for dependency management.
+- Potential logging of managed dependencies.
 
 ```javascript
 manageDependencies(dependencies) {
   dependencies.forEach(dep => {
     console.log(`Managing dependency: ${dep.name}@${dep.version}`);
-    
+
   });
 }
 ```
 
-
 ### ensureCodeQuality Method:
-The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
-* Placeholder for code quality assurance logic.
-* Returns a boolean indicating whether the code meets quality standards.
 
+The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
+
+- Placeholder for code quality assurance logic.
+- Returns a boolean indicating whether the code meets quality standards.
 
 ```javascript
 ensureCodeQuality(code) {
- 
-  const isQualityCode = true; 
+
+  const isQualityCode = true;
   return isQualityCode;
 }
 ```
-
 
 # Bleu.js API Documentation
 
@@ -649,6 +676,7 @@ This document provides detailed information about the API endpoints available in
 
 `cd backend`
 `npm test`
+
 ```javascript
  PASS  backend/tests/bleu.test.js
   API Tests
@@ -684,9 +712,9 @@ This document provides detailed information about the API endpoints available in
     ✓ should handle deeply nested JSON objects (1 ms)
 
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |                   
+All files |       0 |        0 |       0 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
@@ -695,6 +723,7 @@ Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 
 ```
+
 ## Getting Started
 
 To set up the project and start the server, follow these steps:
@@ -709,13 +738,13 @@ Install the required packages:
 Start the server:
 `node server.js`
 
-
 To set up the project and start the server, follow these steps:
 
 1. **Navigate to the backend directory:**
+
 ```javascript
    cd backend
-   ```
+```
 
 2. **Install the required packages:**
 
@@ -730,43 +759,46 @@ node server.js
 ```
 
 4. **Access the Swagger UI:**
-Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
-
+   Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
 
 ## API Endpoint test:
+
 ```javascript
 cd backend
 pnpm run start:dev
 ```
 
 5. **Access the raw Swagger JSON:**
-Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON. Or in a new Terminal use curl test: 
+   Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON. Or in a new Terminal use curl test:
+
 ## Debug endpoint
+
 `curl -X POST http://localhost:3003/debug -d '{}'`
 
 ## Optimize endpoint
+
 `curl -X POST http://localhost:3003/optimize -d '{}'`
 
 ## Generate endpoint
-`curl -X POST http://localhost:3003/generate -d '{}'`
 
+`curl -X POST http://localhost:3003/generate -d '{}'`
 
 Access the Swagger UI:
 
 Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
 
-
 Access the raw Swagger JSON:
 Open your browser and navigate to `http://localhost:3003/swagger`json to view the raw Swagger JSON.
 
-
 ### Recent API Updates
+
 # GET /
+
 Returns a greeting message.
 
-* URL: /
-* Method: GET
-* Response:
+- URL: /
+- Method: GET
+- Response:
 
 ```javascript
 {
@@ -775,6 +807,7 @@ Returns a greeting message.
 ```
 
 ### Swagger Documentation:
+
 ```javascript
 /**
  * @swagger
@@ -799,6 +832,7 @@ app.get('/', (req, res) => {
 ```
 
 ## POST /debug
+
 Handles debug logic.
 
 URL: /debug
@@ -807,10 +841,11 @@ Method: POST
 ## Response:
 
 ```javascript
-"Debugging"
+'Debugging';
 ```
 
 ### Swagger Documentation:
+
 ```javascript
  * @swagger
  * /debug:
@@ -832,14 +867,15 @@ router.post('/debug', (req, res) => {
 ```
 
 ### POST /optimize
+
 Handles optimization logic.
 
-* URL: /optimize
-* Method: POST
-* Response:
+- URL: /optimize
+- Method: POST
+- Response:
 
 ```javascript
-`"Optimizing"`
+`"Optimizing"`;
 ```
 
 ### Swagger Documentation:
@@ -866,14 +902,15 @@ router.post('/optimize', (req, res) => {
 ```
 
 ## POST /generate
+
 Handles generation logic.
 
-* URL: /generate
-* Method: POST
-* Response:
+- URL: /generate
+- Method: POST
+- Response:
 
 ```javascript
-`"Generating"`
+`"Generating"`;
 ```
 
 ## Swagger Documentation:
@@ -897,13 +934,14 @@ Handles generation logic.
 router.post('/generate', (req, res) => {
   res.send('Generating');
 });
-
 ```
 
 ### API Documentation
+
 The API documentation is available at `http://localhost:3003/docs` and provides detailed information about all available endpoints, request parameters, and response structures.
 
 ## Example of Swagger Documentation
+
 Here is an example of how Swagger documentation is added for an endpoint in the backend/server.js file:
 
 ```javascript
@@ -927,10 +965,10 @@ Here is an example of how Swagger documentation is added for an endpoint in the 
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello, World!' });
 });
-
 ```
 
 ### Security
+
 The API supports bearer token authentication for secure endpoints. The security schema is defined as follows:
 
 ```javascript
@@ -964,18 +1002,20 @@ const swaggerDefinition = {
 ```
 
 ### Running Tests
+
 ```javascript
 cd eggs-generator
 pnpm run test
 ```
 
-
 ### Conclusion
+
 This document provides an overview of the recent updates and enhancements made to the Bleu.js. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
 
-
 # License
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md) 
+
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
 ## Author
+
 Pejman Haghighatnia

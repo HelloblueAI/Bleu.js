@@ -3,7 +3,7 @@ const HenFarm = require('../../eggs-generator/src/HenFarm');
 class Bleu {
   constructor() {
     this.eggs = [];
-    this.henFarm = new HenFarm(); 
+    this.henFarm = new HenFarm();
   }
 
   generateEgg(description, type, options) {
@@ -12,7 +12,7 @@ class Bleu {
       id: this.eggs.length + 1,
       description: this.generateDescription(type, options),
       type,
-      code
+      code,
     };
     this.eggs.push(newEgg);
     return newEgg;
@@ -25,7 +25,7 @@ class Bleu {
   generateDescription(type, options) {
     switch (type) {
       case 'model':
-        return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+        return `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`;
       case 'utility':
         return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
       default:
@@ -38,7 +38,7 @@ class Bleu {
   }
 
   manageDependencies(dependencies) {
-    dependencies.forEach(dep => {
+    dependencies.forEach((dep) => {
       console.log(`Managing dependency: ${dep.name}@${dep.version}`);
     });
   }

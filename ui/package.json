@@ -1,22 +1,22 @@
 {
-    "name": "bleujs-ui",
-    "version": "1.0.5",
-    "description": "UI for Bleu.js framework",
-    "main": "main.js",
-    "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build"
-    },
-    "dependencies": {
-        "fsevents": "^2.3.3",
-        "vue": "^2.6.14",
-        "vue-router": "^3.6.5"
-    },
-    "devDependencies": {
-        "@vue/cli-service": "^4.5.13",
-        "babel-eslint": "^10.1.0"
-    },
-    "keywords": [],
-    "author": "Your Name",
-    "license": "MIT"
+  "name": "bleujs-ui",
+  "version": "1.0.5",
+  "description": "UI for Bleu.js framework",
+  "main": "main.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "fsevents": "^2.3.3",
+    "vue": "^2.6.14",
+    "vue-router": "^3.6.5"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^4.5.13",
+    "babel-eslint": "^10.1.0"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT"
 }

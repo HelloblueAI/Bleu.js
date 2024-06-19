@@ -3,7 +3,7 @@ const { writeFileSync } = require('fs');
 class CustomSequencer {
   sort(tests) {
     return tests.sort((a, b) => {
-      const priorities = { 'critical': 1, 'high': 2, 'normal': 3 };
+      const priorities = { critical: 1, high: 2, normal: 3 };
       return priorities[a.priority] - priorities[b.priority];
     });
   }

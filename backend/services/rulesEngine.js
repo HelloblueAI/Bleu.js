@@ -12,32 +12,42 @@ class RulesEngine {
   addRules() {
     this.rules.push({
       conditions: {
-        any: [{
-          fact: 'temperature',
-          operator: 'greaterThanInclusive',
-          value: 100,
-        }],
+        any: [
+          {
+            fact: 'temperature',
+            operator: 'greaterThanInclusive',
+            value: 100,
+          },
+        ],
       },
-      event: { type: 'High temperature detected', params: { message: 'High temperature detected' } },
+      event: {
+        type: 'High temperature detected',
+        params: { message: 'High temperature detected' },
+      },
     });
 
     this.rules.push({
       conditions: {
-        any: [{
-          fact: 'temperature',
-          operator: 'greaterThanInclusive',
-          value: 120,
-        }],
+        any: [
+          {
+            fact: 'temperature',
+            operator: 'greaterThanInclusive',
+            value: 120,
+          },
+        ],
       },
-      event: { type: 'Extremely high temperature detected', params: { message: 'Extremely high temperature detected' } },
+      event: {
+        type: 'Extremely high temperature detected',
+        params: { message: 'Extremely high temperature detected' },
+      },
     });
 
-    this.rules.forEach(rule => this.engine.addRule(rule));
+    this.rules.forEach((rule) => this.engine.addRule(rule));
   }
 
   async evaluate(data) {
     const results = await this.engine.run(data);
-    return results.events.map(event => event.params);
+    return results.events.map((event) => event.params);
   }
 }
 

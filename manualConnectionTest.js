@@ -8,10 +8,13 @@ const TestModel = mongoose.model('Test', testSchema);
 
 async function runTest() {
   try {
-    await mongoose.connect('mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(
+      'mongodb://bleujsUser:bleujsPassword@localhost:27017/bleujs',
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    );
     console.log('Successfully connected to MongoDB');
 
     const testDoc = new TestModel({ name: 'Test Document' });
@@ -29,4 +32,3 @@ async function runTest() {
 }
 
 runTest();
-
