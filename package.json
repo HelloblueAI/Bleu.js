@@ -3,26 +3,26 @@
   "version": "1.0.5",
   "main": "index.js",
   "license": "MIT",
-"scripts": {
-  "start": "node backend/server.js",
-  "serve": "vue-cli-service serve --entry ./frontend/src/main.js",
-  "build": "vue-cli-service build --entry ./frontend/src/main.js",
-  "test": "jest --detectOpenHandles --config jest.config.cjs",
-  "test:coverage": "nyc jest --detectOpenHandles --config jest.config.cjs",
-  "test:backend": "jest --config jest.config.cjs --detectOpenHandles --projects backend",
-  "test:frontend": "jest --config jest.config.cjs --detectOpenHandles --projects frontend",
-  "test:all": "jest --config jest.config.cjs --detectOpenHandles --projects backend frontend",
-  "lint": "eslint . --cache",
-  "lint:ci": "eslint . --cache --max-warnings=0",
-  "lint:fix": "eslint . --cache --fix",
-  "lint:frontend": "eslint frontend --cache --max-warnings=0",
-  "lint:backend": "eslint backend --cache --max-warnings=0",
-  "ci:lint": "pnpm run lint:ci",
-  "ci:test": "pnpm run test:all",
-  "ci:build": "pnpm run build",
-  "ci:deploy": "echo 'Deploying...'",
-  "ci:report": "nyc report --reporter=html"
-},
+  "scripts": {
+    "start": "node backend/server.js",
+    "serve": "vue-cli-service serve --entry ./frontend/src/main.js",
+    "build": "vue-cli-service build --entry ./frontend/src/main.js",
+    "test": "jest --detectOpenHandles --config jest.config.cjs",
+    "test:coverage": "nyc jest --detectOpenHandles --config jest.config.cjs",
+    "test:backend": "jest --config jest.config.cjs --detectOpenHandles --projects backend",
+    "test:frontend": "jest --config jest.config.cjs --detectOpenHandles --projects frontend",
+    "test:all": "jest --config jest.config.cjs --detectOpenHandles --projects backend frontend",
+    "lint": "eslint . --cache",
+    "lint:ci": "eslint . --cache --max-warnings=0",
+    "lint:fix": "eslint . --cache --fix",
+    "lint:frontend": "eslint 'frontend/**/*.js' 'frontend/**/*.vue' --cache --max-warnings=0",
+    "lint:backend": "eslint 'backend/**/*.js' --cache --max-warnings=0",
+    "ci:lint": "pnpm run lint:ci",
+    "ci:test": "pnpm run test:all",
+    "ci:build": "pnpm run build",
+    "ci:deploy": "echo 'Deploying...'",
+    "ci:report": "nyc report --reporter=html"
+  },
   "dependencies": {
     "@jest/test-sequencer": "^29.7.0",
     "body-parser": "^1.20.2",
@@ -57,9 +57,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
-    "@babel/eslint-parser": "^7.24.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@eslint/eslintrc": "^3.1.0",
     "@faker-js/faker": "^8.4.1",
@@ -114,80 +114,6 @@
         }
       ]
     ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true,
-      "browser": true,
-      "es2021": true
-    },
-    "extends": [
-      "plugin:vue/vue3-recommended",
-      "plugin:prettier/recommended"
-    ],
-    "rules": {
-      "no-console": "warn",
-      "no-debugger": "warn",
-      "vue/no-unused-vars": "warn",
-      "prettier/prettier": [
-        "error",
-        {
-          "endOfLine": "auto"
-        }
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "indent": [
-        "error",
-        2
-      ],
-      "linebreak-style": [
-        "error",
-        "unix"
-      ],
-      "eqeqeq": [
-        "error",
-        "always"
-      ],
-      "no-trailing-spaces": "error",
-      "space-before-blocks": "error",
-      "keyword-spacing": [
-        "error",
-        {
-          "before": true,
-          "after": true
-        }
-      ],
-      "space-infix-ops": "error",
-      "comma-spacing": [
-        "error",
-        {
-          "before": false,
-          "after": true
-        }
-      ],
-      "key-spacing": [
-        "error",
-        {
-          "beforeColon": false,
-          "afterColon": true
-        }
-      ],
-      "space-unary-ops": [
-        "error",
-        {
-          "words": true,
-          "nonwords": false
-        }
-      ]
-    }
   },
   "prettier": {
     "singleQuote": true,
