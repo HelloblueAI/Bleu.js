@@ -1,10 +1,8 @@
-const AIService = require('../services/aiService');
 const logger = require('../src/utils/logger');
-jest.mock('../src/utils/logger');
+const AIService = require('../services/aiService');
+let aiService;
 
 describe('AIService', () => {
-  let aiService;
-
   beforeAll(() => {
     aiService = new AIService();
   });
