@@ -5,9 +5,9 @@ const ruleSchema = new mongoose.Schema({
   data: { type: String },
   nested: {
     level1: {
-      level2: { type: String }
-    }
-  }
+      level2: { type: String },
+    },
+  },
 });
 
 const Rule = mongoose.model('Rule', ruleSchema);

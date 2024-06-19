@@ -1,17 +1,16 @@
 {
-    "name": "bleujs-code-quality-assurance",
-    "version": "1.0.5",
-    "main": "src/index.js",
-    "directories": {
-      "src": "src",
-      "test": "tests"
-    },
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "MIT",
-    "description": "Module for analyzing code quality and generating quality reports"
-  }
-  
+  "name": "bleujs-code-quality-assurance",
+  "version": "1.0.5",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "Module for analyzing code quality and generating quality reports"
+}

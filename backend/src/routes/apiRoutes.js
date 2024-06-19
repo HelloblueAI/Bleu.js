@@ -8,7 +8,7 @@ router.post('/data', (req, res) => {
 });
 
 router.get('/rules', (req, res) => {
-  res.status(200).send([]); 
+  res.status(200).send([]);
 });
 
 module.exports = router;

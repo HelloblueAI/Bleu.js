@@ -1,1 +1,7 @@
-{"processes":{"c3f052bc-9a01-422b-82f4-8c9132046243":{"parent":null,"children":[]}},"files":{},"externalIds":{}}
+{
+  "processes": {
+    "c3f052bc-9a01-422b-82f4-8c9132046243": { "parent": null, "children": [] }
+  },
+  "files": {},
+  "externalIds": {}
+}

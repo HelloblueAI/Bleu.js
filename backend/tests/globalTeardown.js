@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 module.exports = async () => {
   try {
     await mongoose.disconnect();

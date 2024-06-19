@@ -10,7 +10,7 @@ class JSProcessor {
         if (path.node.kind === 'var') {
           path.node.kind = 'let';
         }
-      }
+      },
     });
     return ast;
   }

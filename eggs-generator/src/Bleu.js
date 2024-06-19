@@ -13,7 +13,7 @@ class Bleu {
       description: this.generateDescription(type, options),
       type,
       code,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     this.eggs.push(newEgg);
     return newEgg;
@@ -32,7 +32,7 @@ class Bleu {
 
   generateModel(modelName, fields) {
     let code = `class ${modelName} {\n`;
-    fields.forEach(field => {
+    fields.forEach((field) => {
       code += `  ${field.name}: ${field.type};\n`;
     });
     code += '}';
@@ -41,7 +41,7 @@ class Bleu {
 
   generateUtility(utilityName, methods) {
     let code = `class ${utilityName} {\n`;
-    methods.forEach(method => {
+    methods.forEach((method) => {
       code += `  ${method}() {\n`;
       code += `    // TODO: Implement ${method}\n`;
       code += '  }\n';
@@ -53,7 +53,7 @@ class Bleu {
   generateDescription(type, options) {
     switch (type) {
       case 'model':
-        return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+        return `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`;
       case 'utility':
         return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
       default:
@@ -69,7 +69,7 @@ class Bleu {
   }
 
   manageDependencies(dependencies) {
-    dependencies.forEach(dep => {
+    dependencies.forEach((dep) => {
       console.log(`Managing dependency: ${dep}`);
     });
   }
