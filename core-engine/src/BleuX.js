@@ -4,7 +4,7 @@ class Store {
       set: (target, key, value) => {
         target[key] = value;
         return true;
-      }
+      },
     });
     this.mutations = options.mutations;
     this.actions = options.actions;
@@ -20,10 +20,13 @@ class Store {
 
   dispatch(action, payload) {
     if (this.actions[action]) {
-      return this.actions[action]({
-        commit: this.commit.bind(this),
-        state: this.state
-      }, payload);
+      return this.actions[action](
+        {
+          commit: this.commit.bind(this),
+          state: this.state,
+        },
+        payload,
+      );
     } else {
       console.error(`Action ${action} does not exist`);
     }
@@ -38,9 +41,9 @@ const BleuX = {
         if (this.$options.store) {
           Bleu.prototype.$store = this.$options.store;
         }
-      }
+      },
     });
-  }
+  },
 };
 
 module.exports = { Store, BleuX };

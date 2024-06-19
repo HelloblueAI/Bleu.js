@@ -22,7 +22,13 @@ router.head('/', (req, res) => {
 });
 
 router.options('/', (req, res) => {
-  res.status(204).set('access-control-allow-methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS').send();
+  res
+    .status(204)
+    .set(
+      'access-control-allow-methods',
+      'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+    )
+    .send();
 });
 
 module.exports = router;

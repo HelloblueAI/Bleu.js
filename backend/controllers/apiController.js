@@ -1,6 +1,5 @@
 const Rule = require('../models/ruleModel');
 
-
 exports.predict = (req, res) => {
   // Implementation
 };

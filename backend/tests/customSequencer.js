@@ -76,7 +76,7 @@ class CustomSequencer extends Sequencer {
 
   logResults(results) {
     const logFilePath = path.join(__dirname, 'test-results.log');
-    const logData = results.map(result => ({
+    const logData = results.map((result) => ({
       testPath: result.path,
       status: result.status,
       duration: result.duration,

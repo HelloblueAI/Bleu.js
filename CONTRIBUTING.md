@@ -1,8 +1,9 @@
-### Local Installation: 
+### Local Installation:
+
 install Bleu.js via NPM:
 `npm install bleujs`
 
-Install dependencies: 
+Install dependencies:
 `npm install`
 
 Run the development server:

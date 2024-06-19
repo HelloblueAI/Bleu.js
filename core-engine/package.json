@@ -18,6 +18,6 @@
   "license": "MIT",
   "description": "Core engine for Bleu.js, providing essential functionalities and integrations.",
   "dependencies": {
-    "express": "^4.18.2"  
+    "express": "^4.18.2"
   }
 }

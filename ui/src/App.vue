@@ -1,12 +1,11 @@
 <template>
   <div id="app">
-    <img src="@/assets/Server.svg" alt="Bleu.js Logo">
+    <img src="@/assets/Server.svg" alt="Bleu.js Logo" />
   </div>
 </template>
 
 <script>
-export default {
-}
+export default {};
 </script>
 
 <style scoped>
