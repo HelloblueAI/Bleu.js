@@ -1,0 +1,9 @@
+node_modules
+dist
+frontend
+backend
+tests
+.git
+.gitignore
+.eslintrc.cjs
+.babelrc
