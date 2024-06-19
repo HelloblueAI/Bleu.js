@@ -1,3 +1,6 @@
+const { FlatCompat } = require('@eslint/eslintrc');
+const compat = new FlatCompat();
+
 module.exports = [
   {
     files: ["**/*.js", "**/*.cjs"],
@@ -24,12 +27,22 @@ module.exports = [
   },
   {
     files: ["**/*.vue"],
-    extends: [
-      "plugin:vue/vue3-recommended",
-      "plugin:prettier/recommended"
-    ],
+    plugins: {
+      vue: require("eslint-plugin-vue")
+    },
+    languageOptions: {
+      parser: require("vue-eslint-parser"),
+      parserOptions: {
+        parser: require("@babel/eslint-parser"),
+        ecmaVersion: 2021,
+        sourceType: "module"
+      }
+    },
     rules: {
-      "vue/no-unused-vars": "warn"
+      "vue/no-unused-vars": "warn",
+      "prettier/prettier": ["error", { "endOfLine": "auto" }]
     }
-  }
+  },
+  ...compat.extends('plugin:vue/vue3-recommended'),
+  ...compat.extends('plugin:prettier/recommended')
 ];
