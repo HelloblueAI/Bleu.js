@@ -27,7 +27,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      vue$: 'vue/dist/vue.esm.js',
+      vue$: 'vue/dist/vue.esm-browser.js', // Ensure this is correct for Vue 3
     },
     extensions: ['*', '.js', '.vue', '.json'],
   },
