@@ -1,13 +1,14 @@
-const CustomSequencer = require('./CustomSequencer');
+// backend/tests/testSequencer.test.js
+/* eslint-env node, jest */
+
 const { Test } = require('@jest/test-sequencer');
 
-describe('CustomSequencer', () => {
+const CustomSequencer = require('../services/CustomSequencer');
+
+describe('Custom Sequencer Tests', () => {
   it('should sequence tests correctly', () => {
     const sequencer = new CustomSequencer();
-    const tests = [
-      { path: 'test1', context: { order: 1 } },
-      { path: 'test2', context: { order: 2 } },
-    ];
+    const tests = [new Test('test1'), new Test('test2')];
     const sequencedTests = sequencer.sort(tests);
     expect(sequencedTests).toEqual(tests);
   });

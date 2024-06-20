@@ -1,5 +1,7 @@
+/* eslint-env node */
 const express = require('express');
 const multer = require('multer');
+
 const Logger = require('../utils/logger');
 const AIService = require('../services/aiService');
 
@@ -51,13 +53,13 @@ router.post('/data', upload.none(), async (req, res) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     logger.info('Data received', { endpoint: '/data', data });
-    res.status(201).json({ message: 'Data received', data });
+    return res.status(201).json({ message: 'Data received', data });
   } catch (error) {
     logger.error('Internal Server Error', {
       endpoint: '/data',
       error: error.message,
     });
-    res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 

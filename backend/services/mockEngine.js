@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 class Engine {
   evaluate(data) {
     if (data.temperature > 100) {

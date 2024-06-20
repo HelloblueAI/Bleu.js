@@ -1,6 +1,8 @@
-const Sequencer = require('@jest/test-sequencer').default;
+/* eslint-env node */
 const fs = require('fs');
 const path = require('path');
+
+const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
   constructor() {
@@ -68,7 +70,8 @@ class CustomSequencer extends Sequencer {
     return results;
   }
 
-  async run(tests, watcher) {
+  async run(tests) {
+    // Removed watcher parameter
     const sortedTests = this.sort(tests);
     const results = await this.executeTests(sortedTests);
     return results;
@@ -85,8 +88,8 @@ class CustomSequencer extends Sequencer {
     fs.writeFileSync(logFilePath, JSON.stringify(logData, null, 2));
   }
 
-  async all(tests, watcher) {
-    const results = await super.run(tests, watcher);
+  async all(tests) {
+    const results = await super.run(tests);
     this.logResults(results);
     return results;
   }

@@ -1,3 +1,4 @@
+/* eslint-env node, jest */
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
@@ -17,7 +18,7 @@ module.exports = async () => {
     await mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // Increased timeout
+      serverSelectionTimeoutMS: 10000,
     });
     console.log('Successfully connected to MongoDB');
   } catch (error) {
