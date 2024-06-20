@@ -20,11 +20,12 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@300;400;700&display=swap');
 
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Lato', sans-serif;
+  background-color: #f5f5f5;
 }
 
 .container {
@@ -40,11 +41,15 @@ header {
 
 header h1 {
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 header p {
   margin: 0;
+  font-family: 'Lato', sans-serif;
   font-size: 1.2em;
+  font-weight: 300;
 }
 
 main {
@@ -62,6 +67,7 @@ main {
 }
 
 footer {
+  font-family: 'Lato', sans-serif;
   font-size: 0.9em;
   color: #888;
 }
