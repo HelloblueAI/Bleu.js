@@ -1,6 +1,6 @@
 /* eslint-env node */
 const Rule = require('../models/ruleModel');
-const logger = require('../src/utils/logger'); // Ensure logger is defined
+const logger = require('../src/utils/logger');
 
 const seedDatabase = async () => {
   const data = [

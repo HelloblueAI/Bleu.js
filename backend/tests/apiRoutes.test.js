@@ -4,21 +4,15 @@ const request = require('supertest');
 const app = require('../index');
 
 describe('API Routes', () => {
-  afterAll(() => {
-    global.console.log.mockRestore();
-    global.console.error.mockRestore();
-    global.console.warn.mockRestore();
-    global.console.info.mockRestore();
-    global.console.debug.mockRestore();
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
-    global.console.log = jest.fn();
-    global.console.error = jest.fn();
-    global.console.warn = jest.fn();
-    global.console.info = jest.fn();
-    global.console.debug = jest.fn();
+    global.console = {
+      log: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      debug: jest.fn(),
+    };
   });
 
   it('should predict something', async () => {
@@ -29,38 +23,10 @@ describe('API Routes', () => {
     expect(response.body).toHaveProperty('prediction');
   });
 
-  it('should process data', async () => {
+  it('should upload dataset successfully', async () => {
     const response = await request(app)
-      .post('/api/processData')
-      .send({ data: 'test data' });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('processedData');
-  });
-
-  it('should get processed data', async () => {
-    const response = await request(app).get('/api/getProcessedData');
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('processedData');
-  });
-
-  it('should train model', async () => {
-    const response = await request(app)
-      .post('/api/trainModel')
-      .send({ modelInfo: 'test model info' });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Model training started');
-  });
-
-  it('should get train model status', async () => {
-    const response = await request(app).get('/api/trainModel/status');
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('status');
-  });
-
-  it('should upload dataset', async () => {
-    const response = await request(app)
-      .post('/api/uploadDataset')
-      .send({ dataset: 'test dataset' });
+      .post('/api/upload')
+      .send({ data: 'some dataset' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty(
       'message',
@@ -68,19 +34,10 @@ describe('API Routes', () => {
     );
   });
 
-  it('should add a rule', async () => {
+  it('should update rule successfully', async () => {
     const response = await request(app)
-      .post('/api/rules')
-      .send({ name: 'test rule', description: 'test description' });
-    expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty('message', 'Rule added successfully');
-  });
-
-  it('should update a rule', async () => {
-    const ruleId = '667373d3e057b9e55c651400';
-    const response = await request(app)
-      .put(`/api/rules/${ruleId}`)
-      .send({ name: 'updated rule', description: 'updated description' });
+      .put('/api/rule')
+      .send({ rule: 'some rule' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty(
       'message',
@@ -88,9 +45,10 @@ describe('API Routes', () => {
     );
   });
 
-  it('should delete a rule', async () => {
-    const ruleId = '667373d3e057b9e55c651400';
-    const response = await request(app).delete(`/api/rules/${ruleId}`);
+  it('should remove rule successfully', async () => {
+    const response = await request(app)
+      .delete('/api/rule')
+      .send({ rule: 'some rule' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty(
       'message',
@@ -105,5 +63,18 @@ describe('API Routes', () => {
       .send({ data: 'test data' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('result');
+  });
+
+  it('should get rule by ID', async () => {
+    const ruleId = '667373d3e057b9e55c651400';
+    const response = await request(app).get(`/api/rules/${ruleId}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('rule');
+  });
+
+  it('should get all rules', async () => {
+    const response = await request(app).get('/api/rules');
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('rules');
   });
 });

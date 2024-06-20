@@ -1,79 +1,32 @@
-require('dotenv').config();
 const express = require('express');
-const helmet = require('helmet');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 const morgan = require('morgan');
-const swaggerUi = require('swagger-ui-express');
+const bodyParser = require('body-parser');
 
-const Logger = require('./src/utils/logger');
-const swaggerSpec = require('./swagger');
-const apiRoutes = require('./routes/index');
+const routes = require('./routes'); // Move this line down
 
 const app = express();
-const logger = new Logger();
-const port = process.env.PORT || 5000;
 
-app.use(helmet());
-app.use(compression());
-app.use(morgan('combined'));
+app.use(cors());
+app.use(morgan('dev'));
+app.use(bodyParser.json());
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-app.use(limiter);
-app.use(express.json());
+const headers = [
+  'Access-Control-Allow-Headers',
+  'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+];
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  );
+  res.header('Access-Control-Allow-Headers', headers.join(',\n'));
   next();
 });
 
-app.use((req, res, next) => {
-  const correlationId = logger.setCorrelationId(req);
-  res.setHeader('X-Correlation-Id', correlationId);
-  next();
-});
+app.use('/', routes); // Place this line here
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get('/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerSpec);
-});
-
-app.use('/api', apiRoutes);
-
-app.get('/', (req, res) => {
-  logger.info('Root endpoint hit', { endpoint: '/' });
-  res.status(200).json({ message: 'Hello, World!' });
-});
-
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    logger.error('JSON syntax error', { error: err.message });
-    return res.status(400).json({ message: 'Bad Request' });
-  }
-  return next();
-});
-
-app.use((req, res) => {
-  logger.warn('Endpoint not found', { url: req.originalUrl });
-  res.status(404).json({ message: 'Not Found' });
-});
-
-app.use((err, req, res, next) => {
-  logger.error('Internal Server Error', { error: err.stack });
-  res.status(500).json({ message: 'Internal Server Error' });
-});
-
-app.listen(port, () => {
-  logger.info(`Server running on port ${port}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;

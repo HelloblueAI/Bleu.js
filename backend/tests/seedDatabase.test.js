@@ -1,17 +1,26 @@
 /* eslint-env node, jest */
-const { seedDatabase } = require('../services/seedDatabase');
+const request = require('supertest');
 
-beforeAll(() => {
-  console.log = jest.fn();
-  console.error = jest.fn();
-});
+const app = require('../index');
 
-afterAll(() => {
-  console.log.mockRestore();
-  console.error.mockRestore();
-});
+describe('Seed Database', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.console = {
+      log: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      debug: jest.fn(),
+    };
+  });
 
-test('should seed the database', async () => {
-  await seedDatabase();
-  expect(console.log).toHaveBeenCalledWith('Database seeded successfully');
+  it('should seed database successfully', async () => {
+    const response = await request(app).post('/api/seedDatabase');
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty(
+      'message',
+      'Database seeded successfully',
+    );
+  });
 });
