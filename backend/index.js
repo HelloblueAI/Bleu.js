@@ -4,8 +4,9 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
-const Logger = require('./src/utils/logger');
 const swaggerUi = require('swagger-ui-express');
+
+const Logger = require('./src/utils/logger');
 const swaggerSpec = require('./swagger');
 const apiRoutes = require('./routes/index');
 
@@ -58,10 +59,10 @@ app.use((err, req, res, next) => {
     logger.error('JSON syntax error', { error: err.message });
     return res.status(400).json({ message: 'Bad Request' });
   }
-  next();
+  return next();
 });
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   logger.warn('Endpoint not found', { url: req.originalUrl });
   res.status(404).json({ message: 'Not Found' });
 });

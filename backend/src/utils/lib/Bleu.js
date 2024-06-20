@@ -1,7 +1,10 @@
+/* eslint-env node */
+const logger = require('../logger');
+
 class Bleu {
   manageDependencies(dependencies) {
     dependencies.forEach((dependency) => {
-      console.log(
+      logger.info(
         `Managing dependency: ${dependency.name}@${dependency.version}`,
       );
     });
