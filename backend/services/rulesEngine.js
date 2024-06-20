@@ -1,4 +1,6 @@
+/* eslint-env node */
 const { Engine } = require('json-rules-engine');
+
 const logger = require('../src/utils/logger');
 
 class RulesEngine {
@@ -46,8 +48,13 @@ class RulesEngine {
   }
 
   async evaluate(data) {
-    const results = await this.engine.run(data);
-    return results.events.map((event) => event.params);
+    try {
+      const results = await this.engine.run(data);
+      return results.events.map((event) => event.params);
+    } catch (error) {
+      this.logger.error('Error evaluating rules:', error);
+      throw error;
+    }
   }
 }
 

@@ -77,12 +77,12 @@ module.exports = [
       'arrow-spacing': ['error', { before: true, after: true }],
       'no-multi-spaces': 'error',
       'import/order': ['error', { 'newlines-between': 'always' }],
-      'import/newline-after-import': 'off',
-      'import/no-unresolved': 'off',
+      'import/newline-after-import': 'off', // Temporarily disable this rule
+      'import/no-unresolved': 'off', // Temporarily disable this rule to prevent issues with import resolution
       'import/no-duplicates': 'error',
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      'react/react-in-jsx-scope': 'off',
+      'react/react-in-jsx-scope': 'off', // Assuming React 17+
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'jsx-a11y/accessible-emoji': 'warn',
@@ -134,13 +134,64 @@ module.exports = [
       },
     },
   },
-  {
-    files: ['backend/**/*.js'],
-    rules: {
-      'react-hooks/rules-of-hooks': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-    },
-  },
   ...compat.extends('plugin:vue/vue3-recommended'),
   ...compat.extends('plugin:prettier/recommended'),
+  {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '*.min.js',
+    ],
+    files: ['backend/**/*.js', 'backend/**/*.cjs', 'backend/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      globals: {
+        node: true,
+        jest: true,
+        require: true,
+        module: true,
+        process: true,
+        __dirname: true,
+        exports: true,
+        beforeAll: true,
+        describe: true,
+        it: true,
+        expect: true,
+        test: true,
+      },
+    },
+    plugins: {
+      node: require('eslint-plugin-node'),
+      jest: require('eslint-plugin-jest'),
+    },
+    rules: {
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+      'no-unused-vars': 'warn',
+      'no-undef': 'error',
+      'consistent-return': 'error',
+      'no-param-reassign': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-use-before-define': 'error',
+      'arrow-spacing': ['error', { before: true, after: true }],
+      'no-multi-spaces': 'error',
+      'node/no-missing-require': 'off', // Disable this rule temporarily
+      'node/no-unpublished-require': 'off',
+      'node/no-extraneous-require': 'off',
+      'jest/no-disabled-tests': 'warn',
+      'jest/no-focused-tests': 'error',
+      'jest/no-identical-title': 'error',
+      'jest/prefer-to-have-length': 'warn',
+      'jest/valid-expect': 'error',
+    },
+    settings: {
+      node: {
+        tryExtensions: ['.js', '.json', '.node', '.cjs', '.mjs'],
+      },
+    },
+  },
 ];

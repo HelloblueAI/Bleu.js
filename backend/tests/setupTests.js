@@ -1,3 +1,4 @@
+/* eslint-env node, jest */
 const axios = require('axios');
 const dotenv = require('dotenv');
 const jestExtended = require('jest-extended');

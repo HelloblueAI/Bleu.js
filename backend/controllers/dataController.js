@@ -1,19 +1,4 @@
-const NLPProcessor = require('../ai/nlpProcessor.js');
-const RulesEngine = require('../services/rulesEngine.js');
-const DecisionTree = require('../ai/decisionTree.js');
-
-const sampleTree = {
-  isLeaf: false,
-  question: 'Is it sunny?',
-  yes: {
-    isLeaf: true,
-    prediction: 'Go outside',
-  },
-  no: {
-    isLeaf: true,
-    prediction: 'Stay inside',
-  },
-};
+/* eslint-env node */
 
 exports.handlePost = (req, res) => {
   if (req.url.includes('predict')) {
@@ -33,7 +18,7 @@ exports.handlePost = (req, res) => {
   if (req.url.includes('uploadDataset')) {
     return res.status(413).json({ error: 'Payload Too Large' });
   }
-  res.status(201).json({ message: 'Data received' });
+  return res.status(201).json({ message: 'Data received' });
 };
 
 exports.handlePut = (req, res) => {
@@ -69,7 +54,7 @@ exports.handleGet = (req, res) => {
   if (req.url.includes('trainModel/status')) {
     return res.status(200).json({ status: 'in progress' });
   }
-  res.status(200).json({ message: 'Data fetched' });
+  return res.status(200).json({ message: 'Data fetched' });
 };
 
 exports.handleGetJson = (req, res) => {
