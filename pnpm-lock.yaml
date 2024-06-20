@@ -88,6 +88,9 @@ importers:
       vue-router:
         specifier: ^4.3.3
         version: 4.3.3(vue@3.4.29(typescript@5.4.5))
+      vuex:
+        specifier: ^4.0.2
+        version: 4.0.2(vue@3.4.29(typescript@5.4.5))
       wink-nlp:
         specifier: ^2.3.0
         version: 2.3.0
@@ -394,9 +397,15 @@ importers:
       vue:
         specifier: ^3.4.29
         version: 3.4.29(typescript@5.4.5)
+      vue-router:
+        specifier: ^4.3.3
+        version: 4.3.3(vue@3.4.29(typescript@5.4.5))
       vuex:
         specifier: ^4.0.2
         version: 4.0.2(vue@3.4.29(typescript@5.4.5))
+      yargs:
+        specifier: ^17.7.2
+        version: 17.7.2
     devDependencies:
       '@babel/core':
         specifier: ^7.24.7
