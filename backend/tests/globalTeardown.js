@@ -1,6 +1,7 @@
-/* eslint-env node, jest */
 const mongoose = require('mongoose');
 
-afterAll(async () => {
+module.exports = async () => {
+  // console.log('Disconnecting from MongoDB');
   await mongoose.disconnect();
-});
+  // console.log('Successfully disconnected from MongoDB');
+};
