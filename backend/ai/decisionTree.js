@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 class DecisionTree {
   constructor(tree = null) {
     this.tree = tree;
@@ -17,7 +19,6 @@ class DecisionTree {
     return this.traverse(this.tree, data);
   }
 
-  // Build the tree dynamically
   buildTree(data, features, target, maxDepth = 10, minSize = 1) {
     if (data.length <= minSize || maxDepth === 0) {
       return { isLeaf: true, result: this.majorityClass(data, target) };
@@ -130,12 +131,12 @@ class DecisionTree {
 
   visualize(node = this.tree, indent = '') {
     if (node.isLeaf) {
-      console.log(`${indent}Leaf: ${node.result}`);
+      // console.log(`${indent}Leaf: ${node.result}`);
     } else {
-      console.log(`${indent}Condition: ${node.condition.toString()}`);
-      console.log(`${indent}True Branch:`);
+      // console.log(`${indent}Condition: ${node.condition.toString()}`);
+      // console.log(`${indent}True Branch:`);
       this.visualize(node.trueBranch, indent + '  ');
-      console.log(`${indent}False Branch:`);
+      // console.log(`${indent}False Branch:`);
       this.visualize(node.falseBranch, indent + '  ');
     }
   }

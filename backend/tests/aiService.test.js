@@ -1,3 +1,4 @@
+/* eslint-env node, jest */
 const logger = require('../src/utils/logger');
 const AIService = require('../services/aiService');
 let aiService;

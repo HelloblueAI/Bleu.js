@@ -1,3 +1,4 @@
+/* eslint-env node, jest */
 const DecisionTree = require('../ai/decisionTree.js');
 
 describe('DecisionTree', () => {
@@ -25,7 +26,6 @@ describe('DecisionTree', () => {
 
     expect(result1).toBe('yes');
     expect(tree).toBeDefined();
-
     expect(tree).toHaveProperty('condition');
     expect(tree).toHaveProperty('trueBranch');
     expect(tree).toHaveProperty('falseBranch');
@@ -45,12 +45,12 @@ describe('DecisionTree', () => {
     const features = ['feature1', 'feature2'];
     const target = 'label';
 
-    const tree = decisionTree.buildTree(data, features, target, 1); // max depth set to 1
+    const tree = decisionTree.buildTree(data, features, target, 1);
     decisionTree.tree = tree;
 
     const result = decisionTree.evaluate({ feature1: 'A', feature2: 1 });
 
-    expect(result).toBe('yes'); // Majority class is 'yes' in the data provided
+    expect(result).toBe('yes');
   });
 
   test('should return null for empty data', () => {

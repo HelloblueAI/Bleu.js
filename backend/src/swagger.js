@@ -1,3 +1,4 @@
+/* eslint-env node */
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const swaggerDefinition = {

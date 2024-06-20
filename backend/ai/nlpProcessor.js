@@ -1,3 +1,4 @@
+/* eslint-env node */
 const natural = require('natural');
 const compromise = require('compromise');
 
@@ -80,7 +81,7 @@ class NLPProcessor {
     };
   }
 
-  processTextAdvanced(text, options = {}) {
+  processTextAdvanced(text) {
     const sentiment = this.analyzeSentiment(text);
     const entities = this.namedEntityRecognition(text);
     return {
