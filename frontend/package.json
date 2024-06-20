@@ -8,11 +8,15 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "jest"
+    "test": "jest",
+    "prettier:fix": "prettier --write 'src/**/*.vue' 'src/**/*.js'"
   },
   "dependencies": {
     "force": "^0.0.3",
-    "vue": "^3.4.29"
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3",
+    "vuex": "^4.0.2",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
