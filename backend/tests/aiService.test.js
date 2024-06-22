@@ -1,16 +1,38 @@
 /* eslint-env node, jest */
-const logger = require('../src/utils/logger');
-const AIService = require('../services/aiService');
-let aiService;
+const request = require('supertest');
 
-describe('AIService', () => {
-  beforeAll(() => {
-    aiService = new AIService();
+const app = require('../index');
+
+describe('AIService API', () => {
+  let server;
+
+  beforeAll((done) => {
+    server = app.listen(4006, () => {
+      global.agent = request.agent(server);
+      done();
+    });
   });
 
-  it('should do something', () => {
-    const spy = jest.spyOn(logger, 'info');
-    aiService.doSomething();
-    expect(spy).toHaveBeenCalled();
+  afterAll((done) => {
+    server.close(done);
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.console = {
+      log: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      debug: jest.fn(),
+    };
+  });
+
+  it('should respond with 200 for /api/aiService', async () => {
+    const response = await request(app)
+      .post('/api/aiService')
+      .send({ input: 'test input' });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('result');
   });
 });

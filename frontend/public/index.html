@@ -3,9 +3,174 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bleu.js Server</title>
+    <title>Welcome to Bleu.js Server</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&display=swap');
+
+      body {
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      header {
+        padding: 20px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5em;
+      }
+
+      header p {
+        margin: 10px 0 0;
+        font-size: 1.2em;
+        font-weight: 300;
+      }
+
+      main {
+        margin: 20px 0;
+      }
+
+      .server-image {
+        width: 200px;
+        height: 200px;
+        transition:
+          transform 0.3s,
+          filter 0.3s;
+        filter: drop-shadow(0 0 20px #ffffff);
+      }
+
+      .server-image:hover {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 30px #ffffff);
+      }
+
+      footer {
+        font-size: 0.9em;
+        color: #888;
+      }
+
+      footer p {
+        margin: 10px 0 0;
+      }
+
+      .fetch-data-button,
+      .debug-code-button,
+      .generate-egg-button,
+      .monitor-dependencies-button,
+      .resolve-conflicts-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1em;
+        color: #fff;
+        background-color: #ff4081;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .fetch-data-button:hover,
+      .debug-code-button:hover,
+      .generate-egg-button:hover,
+      .monitor-dependencies-button:hover,
+      .resolve-conflicts-button:hover {
+        background-color: #ff79b0;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #312e2f, #4f4f4f);
+        margin: 20px 0;
+        border-radius: 2.5px;
+        animation: loading 2s infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: 100% 0;
+        }
+      }
+
+      #dataContainer,
+      #debugContainer,
+      #eggContainer,
+      #dependenciesContainer,
+      #conflictsContainer {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .code-input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div class="container">
+      <header>
+        <h1>Welcome to Bleu.js Server</h1>
+        <p>Efficient and reliable server management</p>
+      </header>
+      <main>
+        <img src="assets/Server.svg" alt="Server" class="server-image" />
+        <div class="progress-bar"></div>
+        <button id="fetchDataButton" class="fetch-data-button">
+          Fetch Data
+        </button>
+        <input
+          id="codeInput"
+          class="code-input"
+          type="text"
+          placeholder="Enter code to debug"
+        />
+        <button id="debugCodeButton" class="debug-code-button">
+          Debug Code
+        </button>
+        <button id="generateEggButton" class="generate-egg-button">
+          Generate Egg
+        </button>
+        <button
+          id="monitorDependenciesButton"
+          class="monitor-dependencies-button"
+        >
+          Monitor Dependencies
+        </button>
+        <button id="resolveConflictsButton" class="resolve-conflicts-button">
+          Resolve Conflicts
+        </button>
+      </main>
+      <footer>
+        <p>&copy; 2024 Bleu.js. All rights reserved.</p>
+      </footer>
+    </div>
+    <div id="dataContainer"></div>
+    <div id="debugContainer"></div>
+    <div id="eggContainer"></div>
+    <div id="dependenciesContainer"></div>
+    <div id="conflictsContainer"></div>
+    <script src="app.js"></script>
   </body>
 </html>

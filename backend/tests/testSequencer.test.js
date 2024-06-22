@@ -1,4 +1,3 @@
-// backend/tests/testSequencer.test.js
 /* eslint-env node, jest */
 
 const { Test } = require('@jest/test-sequencer');

@@ -1,13 +1,15 @@
 const { FlatCompat } = require('@eslint/eslintrc');
 const compat = new FlatCompat();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = [
   {
     ignores: [
       'node_modules/**',
       'dist/**',
       'build/**',
-      'venv/**',
+      'new_venv/**', // Ensure new_venv is excluded
       'coverage/**',
       '*.min.js',
       'language-plugins/**',
@@ -15,10 +17,10 @@ module.exports = [
       'logs/**',
       '**/*.d.ts',
       '**/*.min.css',
-      'src/**/*.min.js',
       'docs/**',
       'public/**',
       'html-report/**',
+      'reports/jest-html-reporters-attach/report/**',
     ],
     files: [
       '**/*.js',
@@ -53,8 +55,12 @@ module.exports = [
         it: true,
         expect: true,
         jest: true,
-        beforeEach: true, // Added this to resolve the 'beforeEach' is not defined error
-        global: true, // Added this to resolve the 'global' is not defined error
+        beforeEach: true,
+        afterEach: true,
+        global: true,
+        window: true,
+        document: true,
+        console: true,
       },
     },
     plugins: {
@@ -68,7 +74,7 @@ module.exports = [
       jest: require('eslint-plugin-jest'),
     },
     rules: {
-      'no-console': 'warn',
+      'no-console': isProduction ? 'warn' : 'off',
       'no-debugger': 'warn',
       semi: ['error', 'always'],
       quotes: ['error', 'single'],

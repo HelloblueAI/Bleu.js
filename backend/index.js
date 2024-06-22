@@ -3,29 +3,60 @@ const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const routes = require('./routes'); // Move this line down
+const {
+  monitorDependencies,
+  resolveConflicts,
+} = require('../dependency-management/src/index');
+const { generateEgg } = require('../eggs-generator/src/index');
+
+const routes = require('./routes');
+
+require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:4002',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 
-const headers = [
-  'Access-Control-Allow-Headers',
-  'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-];
-
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Headers', headers.join(',\n'));
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  );
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   next();
 });
 
-app.use('/', routes); // Place this line here
+app.use('/', routes);
 
-const PORT = process.env.PORT || 5000;
+app.get('/api/dependencies', (req, res) => {
+  const { dependencies, outdated } = monitorDependencies();
+  res.json({ dependencies, outdated });
+});
+
+app.get('/api/dependencies/conflicts', (req, res) => {
+  const { resolved, conflicts } = resolveConflicts();
+  res.json({ resolved, conflicts });
+});
+
+app.post('/api/generate-egg', (req, res) => {
+  const eggOptions = req.body;
+  const generatedEgg = generateEgg(eggOptions);
+  res.json(generatedEgg);
+});
+
+const PORT = process.env.PORT || 4002;
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`Server is running on port ${PORT}`);
 });
 

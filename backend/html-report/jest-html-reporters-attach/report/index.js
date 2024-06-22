@@ -1,5 +1,4 @@
 /* eslint-env node */
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +17,7 @@ const generateReport = (data) => {
   }
 
   let html = '<html><head><title>Test Report</title></head><body>';
-  html += `<h1>Test Report</h1>`;
+  html += '<h1>Test Report</h1>';
   html += `<p>${data}</p>`;
   html += '</body></html>';
 

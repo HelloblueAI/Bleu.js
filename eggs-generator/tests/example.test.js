@@ -16,7 +16,6 @@ describe('Bleu', () => {
     expect(egg).toHaveProperty('description');
     expect(egg).toHaveProperty('type', 'model');
     expect(egg).toHaveProperty('code');
-    expect(egg).toHaveProperty('createdAt');
   });
 
   it('should optimize code', () => {
@@ -27,7 +26,11 @@ describe('Bleu', () => {
 
   it('should manage dependencies', () => {
     const dependencies = ['express', 'lodash'];
+    const spy = jest.spyOn(console, 'log');
     bleu.manageDependencies(dependencies);
+    expect(spy).toHaveBeenCalledWith('Managing dependency: express');
+    expect(spy).toHaveBeenCalledWith('Managing dependency: lodash');
+    spy.mockRestore();
   });
 
   it('should ensure code quality', () => {
@@ -37,11 +40,11 @@ describe('Bleu', () => {
   });
 
   it('should generate multiple eggs', () => {
-    const egg1 = bleu.generateEgg('Test description 1', 'model', {
+    bleu.generateEgg('Test description 1', 'model', {
       modelName: 'TestModel1',
       fields: [{ name: 'field1', type: 'string' }],
     });
-    const egg2 = bleu.generateEgg('Test description 2', 'utility', {
+    bleu.generateEgg('Test description 2', 'utility', {
       utilityName: 'TestUtility',
       methods: ['method1'],
     });

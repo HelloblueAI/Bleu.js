@@ -1,9 +1,0 @@
-2024-06-12T18:40:41.130Z [error]: JSON Syntax Error {"error":"Unexpected token 'n', \"null\" is not valid JSON"}
-2024-06-12T18:40:41.132Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
-2024-06-12T18:40:41.138Z [info]: Hello, World! {"endpoint":"/"}
-2024-06-12T18:40:41.142Z [error]: JSON Syntax Error {"error":"Unexpected token 'I', \"Invalid JSON\" is not valid JSON"}
-2024-06-12T18:40:41.160Z [info]: Hello, World! {"endpoint":"/"}
-2024-06-12T18:40:41.226Z [error]: JSON Syntax Error {"error":"Expected property name or '}' in JSON at position 2"}
-2024-06-12T18:40:42.416Z [info]: Hello, World! {"endpoint":"/"}
-2024-06-12T18:40:42.419Z [info]: Hello, World! {"endpoint":"/"}
-2024-06-12T18:40:42.427Z [info]: Hello, World! {"endpoint":"/"}
