@@ -1,1 +1,1 @@
-console.log('Hello from Bleu.js!');
+console.log('This is an index file');

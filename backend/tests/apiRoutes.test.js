@@ -4,6 +4,19 @@ const request = require('supertest');
 const app = require('../index');
 
 describe('API Routes', () => {
+  let server;
+
+  beforeAll((done) => {
+    server = app.listen(4002, () => {
+      global.agent = request.agent(server);
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    server.close(done);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     global.console = {

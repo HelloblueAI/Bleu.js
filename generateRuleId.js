@@ -1,5 +1,8 @@
-const { ObjectId } = require('mongodb');
+const { v4: uuidv4 } = require('uuid');
 
-const newRuleId = new ObjectId().toString();
+const generateRuleId = () => {
+  console.log('Generating rule ID');
+  return uuidv4();
+};
 
-console.log('New Rule ID:', newRuleId);
+module.exports = generateRuleId;

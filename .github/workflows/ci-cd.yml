@@ -39,13 +39,7 @@ jobs:
         run: pnpm run lint:frontend
 
       - name: Lint backend
-        run: pnpm run lint:backend
-
-      - name: Build frontend
-        run: pnpm --filter frontend run build
-
-      - name: Build backend
-        run: pnpm --filter backend run build
+        run: pnpm run lint:ci
 
       - name: Run all tests
         run: pnpm run test:all
