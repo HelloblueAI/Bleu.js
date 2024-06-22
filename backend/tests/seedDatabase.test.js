@@ -5,7 +5,6 @@ const { startServer, stopServer } = require('../index');
 
 let app, server;
 
-// Define a sample model for testing
 const TestModel = mongoose.model(
   'Test',
   new mongoose.Schema({
