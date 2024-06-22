@@ -5,7 +5,7 @@ const winston = require('winston');
 const { createLogger, transports, format } = winston;
 
 const app = express();
-const port = 6000;
+const port = 3000; // Ensure this matches your core engine port
 
 const logger = createLogger({
   level: 'info',
@@ -25,8 +25,27 @@ const logger = createLogger({
   ],
 });
 
+function debugCode(code) {
+  return `Debugged code: ${code}`;
+}
+
+function optimizeCode(code) {
+  return code.replace(/\s+/g, ' ').trim();
+}
+
+function generateCode(template) {
+  return `Generated code from template: ${template}`;
+}
+
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: 'http://localhost:4002',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }),
+);
 
 app.use((req, res, next) => {
   logger.info(`Received ${req.method} request for ${req.url}`, {
@@ -73,16 +92,7 @@ app.post('/generate', (req, res) => {
 
 app.listen(port, () => {
   logger.info(`Core Engine running on port ${port}`);
+  console.log(`Core Engine running on port ${port}`);
 });
 
-function debugCode(code) {
-  return `Debugged code: ${code}`;
-}
-
-function optimizeCode(code) {
-  return `Optimized code: ${code}`;
-}
-
-function generateCode(template) {
-  return `Generated code from template: ${template}`;
-}
+module.exports = app;

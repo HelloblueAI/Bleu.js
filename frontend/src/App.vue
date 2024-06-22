@@ -5,7 +5,7 @@
       <p>Efficient and reliable server management</p>
     </header>
     <main>
-      <img src="./assets/Server.svg" alt="Server" class="server-image" />
+      <img src="/assets/Server.svg" alt="Server" class="server-image" />
     </main>
     <footer>
       <p>&copy; 2024 Bleu.js. All rights reserved.</p>

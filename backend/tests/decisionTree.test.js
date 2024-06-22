@@ -4,6 +4,19 @@ const request = require('supertest');
 const app = require('../index');
 
 describe('Decision Tree', () => {
+  let server;
+
+  beforeAll((done) => {
+    server = app.listen(4003, () => {
+      global.agent = request.agent(server);
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    server.close(done);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     global.console = {

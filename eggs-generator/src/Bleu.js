@@ -13,41 +13,13 @@ class Bleu {
       description: this.generateDescription(type, options),
       type,
       code,
-      createdAt: new Date(),
     };
     this.eggs.push(newEgg);
     return newEgg;
   }
 
   generateCode(type, options) {
-    switch (type) {
-      case 'model':
-        return this.generateModel(options.modelName, options.fields);
-      case 'utility':
-        return this.generateUtility(options.utilityName, options.methods);
-      default:
-        throw new Error(`Unknown code type: ${type}`);
-    }
-  }
-
-  generateModel(modelName, fields) {
-    let code = `class ${modelName} {\n`;
-    fields.forEach((field) => {
-      code += `  ${field.name}: ${field.type};\n`;
-    });
-    code += '}';
-    return code;
-  }
-
-  generateUtility(utilityName, methods) {
-    let code = `class ${utilityName} {\n`;
-    methods.forEach((method) => {
-      code += `  ${method}() {\n`;
-      code += `    // TODO: Implement ${method}\n`;
-      code += '  }\n';
-    });
-    code += '}';
-    return code;
+    return this.henFarm.generateCode(type, options);
   }
 
   generateDescription(type, options) {
@@ -62,10 +34,11 @@ class Bleu {
   }
 
   optimizeCode(code) {
+    // Remove spaces between brackets and operators
     return code
       .replace(/\s+/g, ' ')
-      .replace(/\s*([{};=,+*/()-])\s*/g, '$1')
-      .trim();
+      .trim()
+      .replace(/\s*([{};=(),+*/-])\s*/g, '$1');
   }
 
   manageDependencies(dependencies) {
@@ -76,6 +49,16 @@ class Bleu {
 
   ensureCodeQuality(code) {
     return !code.includes('var');
+  }
+
+  debugCode(code) {
+    console.log(`Debugging code: ${code}`);
+  }
+
+  generateEggs(count, description, type, options) {
+    for (let i = 0; i < count; i++) {
+      this.generateEgg(`${description} ${i + 1}`, type, options);
+    }
   }
 }
 
