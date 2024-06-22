@@ -4,6 +4,7 @@ dist/
 frontend/
 backend/
 tests/
+venv/
 
 # Version control
 .git/
