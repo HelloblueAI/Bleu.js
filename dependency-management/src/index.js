@@ -7,18 +7,19 @@ const { createLogger, transports, format } = winston;
 const {
   monitorDependencies,
   resolveConflicts,
-} = require('./dependencyManager'); // Ensure this path is correct
+} = require('./dependencyManager');
 
 const app = express();
-const port = 3002; // Ensure this matches your dependency management port
+const port = 3002;
 
 const logger = createLogger({
   level: 'info',
   format: format.combine(
     format.timestamp(),
-    format.printf(({ timestamp, level, message, ...meta }) => {
-      return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
-    }),
+    format.printf(
+      ({ timestamp, level, message, ...meta }) =>
+        `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`,
+    ),
   ),
   transports: [
     new transports.Console(),
@@ -41,20 +42,24 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  logger.info(`Received ${req.method} request for ${req.url}`, {
-    body: req.body,
-  });
-  next();
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  return next();
 });
 
 app.get('/api/dependencies', (req, res) => {
   try {
     const result = monitorDependencies();
     logger.info('Dependencies monitored successfully', { result });
-    res.status(200).send(result);
+    return res.status(200).send(result);
   } catch (error) {
     logger.error('Error monitoring dependencies', { error: error.message });
-    res.status(500).send('Error monitoring dependencies');
+    return res.status(500).send('Error monitoring dependencies');
   }
 });
 
@@ -62,10 +67,10 @@ app.get('/api/dependencies/conflicts', (req, res) => {
   try {
     const result = resolveConflicts();
     logger.info('Conflicts resolved successfully', { result });
-    res.status(200).send(result);
+    return res.status(200).send(result);
   } catch (error) {
     logger.error('Error resolving conflicts', { error: error.message });
-    res.status(500).send('Error resolving conflicts');
+    return res.status(500).send('Error resolving conflicts');
   }
 });
 

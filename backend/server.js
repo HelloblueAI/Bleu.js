@@ -75,20 +75,16 @@ const startServer = async () => {
 };
 
 const stopServer = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      if (server) {
-        server.close(() => {
-          logger.info('Server stopped');
-          console.log('Server stopped');
-          server = null;
-          resolve();
-        });
-      }
-    } catch (error) {
-      logger.error('Error stopping the server', { error });
-      console.error('Error stopping the server:', error);
-      reject(error);
+  return new Promise((resolve) => {
+    if (server) {
+      server.close(() => {
+        logger.info('Server stopped');
+        console.log('Server stopped');
+        server = null;
+        resolve();
+      });
+    } else {
+      resolve();
     }
   });
 };
