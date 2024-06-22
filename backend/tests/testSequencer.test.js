@@ -1,4 +1,5 @@
 const request = require('supertest');
+const getPort = require('get-port');
 
 const { startServer, stopServer } = require('../index');
 
