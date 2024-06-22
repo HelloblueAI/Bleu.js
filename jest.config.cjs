@@ -5,9 +5,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     '^.+\\.vue$': '@vue/vue3-jest',
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(get-port)/)', // Transform get-port module
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(get-port)/)'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'vue'],
   testMatch: [
     '**/tests/**/*.test.(js|jsx|ts|tsx)',
