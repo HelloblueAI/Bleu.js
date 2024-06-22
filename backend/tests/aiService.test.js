@@ -1,38 +1,45 @@
-/* eslint-env node, jest */
 const request = require('supertest');
 
-const app = require('../index');
+const { startServer, stopServer } = require('../index');
+const decisionTreeService = require('../services/decisionTreeService');
 
-describe('AIService API', () => {
-  let server;
+let app, server;
 
-  beforeAll((done) => {
-    server = app.listen(4006, () => {
-      global.agent = request.agent(server);
-      done();
-    });
-  });
+beforeAll(async () => {
+  ({ app, server } = await startServer(0));
 
-  afterAll((done) => {
-    server.close(done);
-  });
+  // Build a sample decision tree
+  const trainingData = [
+    { feature1: 'A', feature2: 'X', result: 'positive' },
+    { feature1: 'A', feature2: 'Y', result: 'negative' },
+    { feature1: 'B', feature2: 'X', result: 'negative' },
+    { feature1: 'B', feature2: 'Y', result: 'positive' },
+  ];
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    global.console = {
-      log: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
-    };
-  });
+  decisionTreeService.buildDecisionTree(trainingData, 'result', [
+    'feature1',
+    'feature2',
+  ]);
+});
 
-  it('should respond with 200 for /api/aiService', async () => {
+afterAll(async () => {
+  await stopServer(server);
+});
+
+describe('AI Service API', () => {
+  it('should process input and return AI-generated result', async () => {
     const response = await request(app)
       .post('/api/aiService')
-      .send({ input: 'test input' });
+      .send({ input: { feature1: 'A', feature2: 'X' } });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('result');
+    expect(['positive', 'negative']).toContain(response.body.result);
+  });
+
+  it('should handle invalid input gracefully', async () => {
+    const response = await request(app).post('/api/aiService').send({});
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toBe('Missing input');
   });
 });

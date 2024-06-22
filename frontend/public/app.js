@@ -1,16 +1,15 @@
-// Fetch data button event listener
 document.getElementById('fetchDataButton').addEventListener('click', () => {
   console.log('Fetch Data button clicked'); // Debug log
-  fetch('http://localhost:4003/api/data') // Correct endpoint
+  fetch('http://localhost:4003/api/data')
     .then((response) => {
+      console.log('Response status:', response.status); // Debug log
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      console.log('Response received:', response); // Debug log
       return response.json();
     })
     .then((data) => {
-      console.log('Data:', data); // Debug log
+      console.log('Data received:', data); // Debug log
       const dataContainer = document.getElementById('dataContainer');
       dataContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     })
@@ -68,7 +67,6 @@ document.getElementById('generateEggButton').addEventListener('click', () => {
 
   console.log('Generate Egg button clicked'); // Debug log
   fetch('http://localhost:3001/api/generate-egg', {
-    // Correct endpoint
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -76,6 +74,7 @@ document.getElementById('generateEggButton').addEventListener('click', () => {
     body: JSON.stringify(eggOptions),
   })
     .then((response) => {
+      console.log('Response status:', response.status); // Debug log
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -94,12 +93,11 @@ document.getElementById('generateEggButton').addEventListener('click', () => {
     });
 });
 
-// Monitor dependencies button event listener
 document
   .getElementById('monitorDependenciesButton')
   .addEventListener('click', () => {
     console.log('Monitor Dependencies button clicked'); // Debug log
-    fetch('http://localhost:3002/api/dependencies') // Correct endpoint
+    fetch('http://localhost:3002/api/dependencies')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -123,7 +121,6 @@ document
       });
   });
 
-// Resolve conflicts button event listener
 document
   .getElementById('resolveConflictsButton')
   .addEventListener('click', () => {
