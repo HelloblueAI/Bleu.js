@@ -27,8 +27,31 @@ pnpm install bleujs
 
 ## Running the Application
 
+ROOT:
+
 ```javascript
-pnpm run serve
+pnpm run start:backend
+```
+
+In another terminal: ROOT:
+
+```javascript
+pnpm run start:frontend
+```
+
+```javascript
+cd core-engine
+pnpm run start
+```
+
+```javascript
+cd Dependency-management
+pnpm start
+```
+
+```javascript
+cd eggs-generator
+pnpm run start
 ```
 
 ## Building the Application
@@ -183,8 +206,8 @@ Ran all test suites.
 test backend
 
 ```javascript
-cd desktop
-pnpm run test:backend -- --detectOpenHandles
+cd bleu.js
+pnpm run test:backend
 ```
 
 ### Class Documentation
