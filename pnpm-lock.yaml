@@ -81,6 +81,9 @@ importers:
       '@babel/plugin-proposal-object-rest-spread':
         specifier: ^7.20.7
         version: 7.20.7(@babel/core@7.24.7)
+      '@babel/plugin-transform-modules-commonjs':
+        specifier: ^7.24.7
+        version: 7.24.7(@babel/core@7.24.7)
       '@babel/plugin-transform-runtime':
         specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
@@ -195,6 +198,9 @@ importers:
       vue-eslint-parser:
         specifier: ^9.4.3
         version: 9.4.3(eslint@9.5.0)
+      vue-jest:
+        specifier: 5.0.0-alpha.10
+        version: 5.0.0-alpha.10(@babel/core@7.24.7)(babel-jest@29.7.0(@babel/core@7.24.7))(jest@29.7.0(@types/node@20.14.7))(ts-jest@29.1.5(@babel/core@7.24.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.7))(jest@29.7.0(@types/node@20.14.7))(typescript@5.5.2))(typescript@5.5.2)(vue@3.4.29(typescript@5.5.2))
       webpack:
         specifier: ^5.92.0
         version: 5.92.1(webpack-cli@5.1.4)
