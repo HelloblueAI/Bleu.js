@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
+const { teardown: teardownPuppeteer } = require('jest-environment-puppeteer');
 
-module.exports = async () => {
-  // console.log('Disconnecting from MongoDB');
-  await mongoose.disconnect();
-  // console.log('Successfully disconnected from MongoDB');
+const { teardownDatabase } = require('../path/to/your/db/teardown'); // Custom teardown function for database
+
+module.exports = async function globalTeardown(globalConfig) {
+  await teardownPuppeteer(globalConfig);
+  await teardownDatabase();
+  delete process.env.TEST_GLOBAL_VARIABLE;
+  console.log('Global teardown completed.');
 };

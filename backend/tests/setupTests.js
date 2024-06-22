@@ -1,11 +1,7 @@
-/* eslint-env node, jest */
-beforeEach(() => {
-  jest.clearAllMocks();
-  global.console = {
-    log: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
-  };
+afterEach(() => {
+  if (global.server) {
+    global.server.close(() => {
+      console.log('Server closed after test suite.');
+    });
+  }
 });

@@ -1,46 +1,145 @@
-/* eslint-env node, jest */
 const request = require('supertest');
 
-const app = require('../index');
+const { startServer, stopServer } = require('../index');
+const decisionTreeService = require('../services/decisionTreeService');
+
+let app, server;
+
+beforeAll(async () => {
+  ({ app, server } = await startServer(0));
+
+  const trainingData = [
+    {
+      outlook: 'sunny',
+      temperature: 'hot',
+      humidity: 'high',
+      windy: 'false',
+      play: 'no',
+    },
+    {
+      outlook: 'sunny',
+      temperature: 'hot',
+      humidity: 'high',
+      windy: 'true',
+      play: 'no',
+    },
+    {
+      outlook: 'overcast',
+      temperature: 'hot',
+      humidity: 'high',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'rainy',
+      temperature: 'mild',
+      humidity: 'high',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'rainy',
+      temperature: 'cool',
+      humidity: 'normal',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'rainy',
+      temperature: 'cool',
+      humidity: 'normal',
+      windy: 'true',
+      play: 'no',
+    },
+    {
+      outlook: 'overcast',
+      temperature: 'cool',
+      humidity: 'normal',
+      windy: 'true',
+      play: 'yes',
+    },
+    {
+      outlook: 'sunny',
+      temperature: 'mild',
+      humidity: 'high',
+      windy: 'false',
+      play: 'no',
+    },
+    {
+      outlook: 'sunny',
+      temperature: 'cool',
+      humidity: 'normal',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'rainy',
+      temperature: 'mild',
+      humidity: 'normal',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'sunny',
+      temperature: 'mild',
+      humidity: 'normal',
+      windy: 'true',
+      play: 'yes',
+    },
+    {
+      outlook: 'overcast',
+      temperature: 'mild',
+      humidity: 'high',
+      windy: 'true',
+      play: 'yes',
+    },
+    {
+      outlook: 'overcast',
+      temperature: 'hot',
+      humidity: 'normal',
+      windy: 'false',
+      play: 'yes',
+    },
+    {
+      outlook: 'rainy',
+      temperature: 'mild',
+      humidity: 'high',
+      windy: 'true',
+      play: 'no',
+    },
+  ];
+
+  decisionTreeService.buildDecisionTree(trainingData, 'play', [
+    'outlook',
+    'temperature',
+    'humidity',
+    'windy',
+  ]);
+});
+
+afterAll(async () => {
+  await stopServer(server);
+});
 
 describe('Decision Tree', () => {
-  let server;
-
-  beforeAll((done) => {
-    server = app.listen(4003, () => {
-      global.agent = request.agent(server);
-      done();
-    });
+  it('should pass a basic test', async () => {
+    const response = await request(app).get('/api/basic-test');
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe('Basic test passed');
   });
 
-  afterAll((done) => {
-    server.close(done);
-  });
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    global.console = {
-      log: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
+  it('should handle decision tree requests', async () => {
+    const testData = {
+      outlook: 'sunny',
+      temperature: 'mild',
+      humidity: 'normal',
+      windy: 'true',
     };
-  });
-
-  it('should evaluate decision tree', async () => {
     const response = await request(app)
-      .post('/api/decisionTree')
-      .send({ input: 'test input' });
+      .post('/api/aiService')
+      .send({ input: testData });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('result');
-  });
-
-  it('should get decision tree', async () => {
-    const response = await request(app)
-      .post('/api/decisionTree')
-      .send({ input: 'test input' });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('result');
+    expect(['yes', 'no']).toContain(response.body.result);
   });
 });

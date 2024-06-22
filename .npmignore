@@ -1,9 +1,41 @@
-node_modules
-dist
-frontend
-backend
-tests
-.git
+# Directories
+node_modules/
+dist/
+frontend/
+backend/
+tests/
+
+# Version control
+.git/
 .gitignore
+
+# Configuration files
 .eslintrc.cjs
 .babelrc
+
+# Additional files typically ignored
+*.log
+*.lock
+*.yml
+*.yaml
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment variables
+.env
+.env.*

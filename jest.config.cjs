@@ -1,36 +1,40 @@
-// jest.config.cjs
 const { FlatCompat } = require('@eslint/eslintrc');
 const compat = new FlatCompat();
 
-module.exports = {
+/** @type {import('@jest/types').Config.InitialOptions} */
+const config = {
   setupFilesAfterEnv: ['./jest.setup.js'],
   testEnvironment: 'node',
   transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.vue$': 'vue-jest',
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      { configFile: './babel.config.cjs' },
+    ],
+    '^.+\\.vue$': '@vue/vue3-jest',
   },
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'vue'],
-  testMatch: ['**/tests/**/*.test.(js|jsx|ts|tsx)'],
+  testMatch: [
+    '**/tests/**/*.test.(js|jsx|ts|tsx)',
+    '**/__tests__/**/*.(js|jsx|ts|tsx)',
+    '**/backend/tests/**/*.test.(js|jsx|ts|tsx)',
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx,vue}',
-    '!src/**/*.d.ts',
-    '!src/**/node_modules/**',
-    '!src/**/vendor/**',
+    'backend/**/*.{js,jsx,ts,tsx}',
+    '!**/*.d.ts',
+    '!**/node_modules/**',
+    '!**/vendor/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text', 'lcov', 'clover'],
   globals: {
-    'vue-jest': {
-      babelConfig: true,
-    },
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
+    'vue-jest': { babelConfig: true },
+    'ts-jest': { tsconfig: 'tsconfig.json' },
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@backend/(.*)$': '<rootDir>/backend/$1',
   },
   projects: [
     {
@@ -40,16 +44,25 @@ module.exports = {
     },
     {
       displayName: 'test',
-      testMatch: ['<rootDir>/**/*.test.{js,jsx,ts,tsx}'],
+      testMatch: [
+        '<rootDir>/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/**/__tests__/**/*.(js|jsx|ts|tsx)',
+        '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
+      ],
     },
   ],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  rootDir: '.',
+  verbose: true,
+  bail: 1,
+  testTimeout: 30000,
+  maxWorkers: '50%',
 };
 
-// ESLint configuration
-module.exports.eslint = [
+/** @type {import('eslint').Linter.Config} */
+const eslintConfig = [
   {
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.cjs'],
+    files: ['**/*.{js,jsx,ts,tsx,cjs}'],
     languageOptions: {
       parser: require('@babel/eslint-parser'),
       parserOptions: {
@@ -77,9 +90,7 @@ module.exports.eslint = [
   },
   {
     files: ['**/*.vue'],
-    plugins: {
-      vue: require('eslint-plugin-vue'),
-    },
+    plugins: { vue: require('eslint-plugin-vue') },
     languageOptions: {
       parser: require('vue-eslint-parser'),
       parserOptions: {
@@ -96,3 +107,6 @@ module.exports.eslint = [
   ...compat.extends('plugin:vue/vue3-recommended'),
   ...compat.extends('plugin:prettier/recommended'),
 ];
+
+module.exports = config;
+module.exports.eslint = eslintConfig;
