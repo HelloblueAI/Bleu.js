@@ -125,13 +125,13 @@
     "mongodb",
     "natural-language-processing"
   ],
-  "author": "Your Name",
+  "author": "Pejman Haghighatnia",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/bleujs.git"
+    "url": "https://github.com/HelloblueAI/Bleu.js.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/bleujs/issues"
+    "url": "https://github.com/HelloblueAI/Bleu.js/issues"
   },
-  "homepage": "https://github.com/yourusername/bleujs#readme"
+  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme"
 }
