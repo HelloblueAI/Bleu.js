@@ -29,3 +29,9 @@ __pycache__/
 
 # Ignore virtual environment directory
 language-plugins/python/venv/
+new_venv/
+venv/
+
+# Lock files
+pnpm-lock.yaml
+pnpm-lock.yaml.bak

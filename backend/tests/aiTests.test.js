@@ -9,7 +9,7 @@ describe('AIService', () => {
     aiService = new AIService();
   });
 
-  it('should do something', () => {
+  it('should log info when doSomething is called', () => {
     const spy = jest.spyOn(logger, 'info');
     aiService.doSomething();
     expect(spy).toHaveBeenCalled();

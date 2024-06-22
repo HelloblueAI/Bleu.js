@@ -1,11 +1,11 @@
-/* eslint-env node */
-
 const logger = require('../src/utils/logger');
 const NLPProcessor = require('../ai/nlpProcessor');
+const ModelManager = require('../ml/modelManager');
 
 class AIService {
   constructor() {
     this.nlpProcessor = new NLPProcessor();
+    this.modelManager = new ModelManager();
   }
 
   analyzeText(text) {
@@ -46,6 +46,26 @@ class AIService {
       logger.error(`Error during text analysis: ${error.message}`);
       throw error;
     }
+  }
+
+  async trainModel(modelInfo) {
+    logger.info('Training model with info:', modelInfo);
+    return this.modelManager.trainModel(modelInfo);
+  }
+
+  async getTrainModelStatus() {
+    logger.info('Getting train model status');
+    return this.modelManager.getTrainModelStatus();
+  }
+
+  async uploadDataset(dataset) {
+    logger.info('Uploading dataset:', dataset);
+    return this.modelManager.uploadDataset(dataset);
+  }
+
+  async evaluateRule(ruleId, inputData) {
+    logger.info('Evaluating rule:', ruleId, inputData);
+    return this.modelManager.evaluateRule(ruleId, inputData);
   }
 }
 
