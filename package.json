@@ -26,17 +26,18 @@
     "ci:deploy": "echo 'Deploying...'",
     "ci:report": "jest --coverage --coverageReporters=text-lcov > coverage.lcov && codecov",
     "prepare": "husky install",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {
     "@jest/test-sequencer": "^29.7.0",
+    "axios": "^1.7.2",
     "body-parser": "^1.20.2",
     "braces": "^3.0.3",
     "celebrate": "^15.0.3",
     "compression": "^1.7.4",
     "compromise": "^14.13.0",
     "cors": "^2.8.5",
-    "defaults-deep": "^0.2.4",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "get-port": "^7.1.0",
@@ -45,11 +46,11 @@
     "ip": "^2.0.1",
     "json-rules-engine": "^6.5.0",
     "jsonwebtoken": "^9.0.2",
+    "mime": "^4.0.3",
     "mongoose": "^8.4.3",
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "natural": "^7.0.6",
-    "request": "^2.88.2",
     "set-value": "^4.1.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
@@ -110,7 +111,14 @@
     "vue-jest": "5.0.0-alpha.10",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-middleware": "^7.2.1"
+    "webpack-dev-middleware": "^7.2.1",
+    "npm-force-resolutions": "^0.0.8"
+  },
+  "resolutions": {
+    "mime": "4.0.3",
+    "ip": "latest",
+    "request": "latest",
+    "tough-cookie": "latest"
   },
   "peerDependencies": {
     "mongodb": "^6.7.0"
