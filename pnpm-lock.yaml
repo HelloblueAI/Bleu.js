@@ -229,8 +229,8 @@ importers:
         specifier: ^3.1.4
         version: 3.1.4
       npm-force-resolutions:
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.10
+        version: 0.0.10
       postcss:
         specifier: ^8.4.38
         version: 8.4.38
@@ -4822,8 +4822,8 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  npm-force-resolutions@0.0.8:
-    resolution: {integrity: sha512-BOy8ybEpYHZRl6aZa0KeRqbqV2tU1OnA5DMnxItuG9E80B8/nI9Z8BeuRFaeqFfte9x8N9q4edpNSNAK/ptzuQ==}
+  npm-force-resolutions@0.0.10:
+    resolution: {integrity: sha512-Jscex+xIU6tw3VsyrwxM1TeT+dd9Fd3UOMAjy6J1TMpuYeEqg4LQZnATQO5vjPrsARm3und6zc6Dii/GUyRE5A==}
     hasBin: true
 
   npm-run-path@4.0.1:
@@ -11935,7 +11935,7 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  npm-force-resolutions@0.0.8:
+  npm-force-resolutions@0.0.10:
     dependencies:
       json-format: 1.0.1
       source-map-support: 0.5.21
