@@ -112,7 +112,7 @@
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-middleware": "^7.2.1",
-    "npm-force-resolutions": "^0.0.8"
+    "npm-force-resolutions": "^0.0.10"
   },
   "resolutions": {
     "mime": "4.0.3",
