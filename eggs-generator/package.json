@@ -1,28 +1,104 @@
 {
   "name": "eggs-generator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest",
+    "prettier:fix": "prettier --write '**/*.js'"
   },
   "jest": {
-    "testMatch": [
-      "**/tests/**/*.test.js"
+    "setupFilesAfterEnv": [
+      "<rootDir>/../jest.setup.js"
     ],
+    "testEnvironment": "node",
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+      "^.+\\.vue$": "@vue/vue3-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(get-port)/)"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx",
+      "json",
+      "vue"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.(js|jsx|ts|tsx)",
+      "**/__tests__/**/*.(js|jsx|ts|tsx)",
+      "**/backend/tests/**/*.test.(js|jsx|ts|tsx)"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx,vue}",
+      "backend/**/*.{js,jsx,ts,tsx}",
+      "!**/*.d.ts",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "html",
+      "text",
+      "lcov",
+      "clover"
+    ],
+    "globals": {
+      "vue-jest": {
+        "babelConfig": true
+      },
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      }
     },
     "moduleNameMapper": {
-      "henfarm.js": "<rootDir>/__mocks__/henfarm.js"
-    }
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^@backend/(.*)$": "<rootDir>/backend/$1"
+    },
+    "projects": [
+      {
+        "displayName": "lint",
+        "runner": "jest-runner-eslint",
+        "testMatch": [
+          "<rootDir>/**/*.{js,jsx,ts,tsx,vue}"
+        ]
+      },
+      {
+        "displayName": "test",
+        "testMatch": [
+          "<rootDir>/**/*.test.{js,jsx,ts,tsx}",
+          "<rootDir>/**/__tests__/**/*.(js|jsx|ts|tsx)",
+          "<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}"
+        ]
+      }
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "rootDir": ".",
+    "verbose": true,
+    "bail": 1,
+    "testTimeout": 30000,
+    "maxWorkers": "50%"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.24.7",
     "babel-jest": "^29.7.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "prettier": "^3.3.2"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "lodash": "^4.17.21",
+    "uuid": "^10.0.0"
   },
   "keywords": [
     "code-generation",
@@ -31,9 +107,5 @@
     "quality-assurance"
   ],
   "author": "Helloblue",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "express": "^4.19.2",
-    "lodash": "^4.17.21"
-  }
+  "license": "Apache-2.0"
 }
