@@ -7,7 +7,7 @@ const { createLogger, transports, format } = winston;
 const { generateEgg } = require('./generateEgg');
 
 const app = express();
-const port = 3001;
+const port = 3003;
 
 const logger = createLogger({
   level: 'info',

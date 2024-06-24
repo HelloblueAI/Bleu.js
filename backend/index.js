@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const getPort = require('get-port');
 
+const apiRoutes = require('./routes/apiRoutes');
 const {
   monitorDependencies,
   resolveConflicts,
@@ -20,9 +21,7 @@ const createApp = () => {
   app.use(morgan('dev'));
   app.use(bodyParser.json());
 
-  app.get('/api/basic-test', (req, res) => {
-    res.status(200).send('Basic test passed');
-  });
+  app.use('/api', apiRoutes); // Use the routes defined in apiRoutes
 
   app.post('/api/aiService', async (req, res) => {
     try {
@@ -84,7 +83,7 @@ const createApp = () => {
   return app;
 };
 
-const startServer = async (preferredPort = process.env.PORT || 4002) => {
+const startServer = async (preferredPort = process.env.PORT || 4003) => {
   const app = createApp();
   const port = await getPort({ port: preferredPort });
   return new Promise((resolve) => {
