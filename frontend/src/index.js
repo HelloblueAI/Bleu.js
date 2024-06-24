@@ -25,8 +25,8 @@ document.getElementById('fetchDataButton').addEventListener('click', () => {
 document.getElementById('debugCodeButton').addEventListener('click', () => {
   const code = document.getElementById('codeInput').value;
   console.log('Debug Code button clicked'); // Debug log
-  fetch('http://localhost:3000/debug', {
-    // Ensure correct core-engine port
+  fetch('http://localhost:3001/debug', {
+    // Updated to correct core-engine port
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -67,8 +67,8 @@ document.getElementById('generateEggButton').addEventListener('click', () => {
   };
 
   console.log('Generate Egg button clicked'); // Debug log
-  fetch('http://localhost:3001/generate-egg', {
-    // Ensure correct eggs-generator port
+  fetch('http://localhost:3003/api/generate-egg', {
+    // Updated to correct eggs-generator port and path
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

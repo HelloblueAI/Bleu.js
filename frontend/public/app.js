@@ -24,8 +24,7 @@ document.getElementById('fetchDataButton').addEventListener('click', () => {
 document.getElementById('debugCodeButton').addEventListener('click', () => {
   const code = document.getElementById('codeInput').value;
   console.log('Debug Code button clicked'); // Debug log
-  fetch('http://localhost:3000/debug', {
-    // Correct endpoint
+  fetch('http://localhost:4003/api/debug', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -66,7 +65,7 @@ document.getElementById('generateEggButton').addEventListener('click', () => {
   };
 
   console.log('Generate Egg button clicked'); // Debug log
-  fetch('http://localhost:3001/api/generate-egg', {
+  fetch('http://localhost:4003/api/generate-egg', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -97,7 +96,7 @@ document
   .getElementById('monitorDependenciesButton')
   .addEventListener('click', () => {
     console.log('Monitor Dependencies button clicked'); // Debug log
-    fetch('http://localhost:3002/api/dependencies')
+    fetch('http://localhost:4003/api/dependencies')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -125,7 +124,7 @@ document
   .getElementById('resolveConflictsButton')
   .addEventListener('click', () => {
     console.log('Resolve Conflicts button clicked'); // Debug log
-    fetch('http://localhost:3002/api/dependencies/conflicts') // Correct endpoint
+    fetch('http://localhost:4003/api/dependencies/conflicts')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
