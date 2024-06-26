@@ -18,7 +18,8 @@
     "test:all": "jest --detectOpenHandles",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:frontend": "eslint frontend/**/*.js frontend/**/*.vue",
+    "lint:frontend": "eslint 'frontend/**/*.{js,vue}' --ignore-pattern 'frontend/dist/'",
+    "lint:ci": "eslint . --max-warnings=0",
     "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --check .",
     "ci:lint": "eslint . --max-warnings=0",
@@ -148,5 +149,8 @@
   "bugs": {
     "url": "https://github.com/HelloblueAI/Bleu.js/issues"
   },
-  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme"
+  "homepage": "https://github.com/HelloblueAI/Bleu.js#readme",
+  "eslintConfig": {
+    "ignorePatterns": ["**/dist/**"]
+  }
 }
