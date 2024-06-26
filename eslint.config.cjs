@@ -9,7 +9,7 @@ module.exports = [
       '**/node_modules/**',
       '**/dist/**',
       '**/build/**',
-      '**/new_venv/**', 
+      '**/new_venv/**',
       '**/coverage/**',
       '**/*.min.js',
       '**/language-plugins/**',
