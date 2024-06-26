@@ -13,6 +13,7 @@ module.exports = {
     '**/tests/**/*.test.(js|jsx|ts|tsx)',
     '**/__tests__/**/*.(js|jsx|ts|tsx)',
     '**/backend/tests/**/*.test.(js|jsx|ts|tsx)',
+    '**/*.test.(js|jsx|ts|tsx)',
   ],
   collectCoverage: true,
   collectCoverageFrom: [
@@ -21,6 +22,7 @@ module.exports = {
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/vendor/**',
+    '!**/dist/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text', 'lcov', 'clover'],
@@ -37,6 +39,7 @@ module.exports = {
       displayName: 'lint',
       runner: 'jest-runner-eslint',
       testMatch: ['<rootDir>/**/*.{js,jsx,ts,tsx,vue}'],
+      testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     },
     {
       displayName: 'test',
