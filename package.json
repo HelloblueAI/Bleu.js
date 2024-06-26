@@ -151,6 +151,8 @@
   },
   "homepage": "https://github.com/HelloblueAI/Bleu.js#readme",
   "eslintConfig": {
-    "ignorePatterns": ["**/dist/**"]
+    "ignorePatterns": [
+      "**/dist/**"
+    ]
   }
 }

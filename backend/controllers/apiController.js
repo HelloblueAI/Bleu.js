@@ -52,7 +52,7 @@ const evaluateRule = (req, res) => {
 };
 
 const generateEgg = (req, res) => {
-  const { description, type, options } = req.body;
+  const { type, options } = req.body;
   try {
     const egg = {
       id: 1,
