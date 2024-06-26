@@ -3,9 +3,7 @@ const path = require('path');
 module.exports = {
   setupFilesAfterEnv: [path.join(__dirname, 'jest.setup.js')],
   testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    resources: 'usable',
-  },
+  testEnvironmentOptions: {},
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     '^.+\\.vue$': '@vue/vue3-jest',
@@ -75,7 +73,6 @@ module.exports = {
       ],
     },
   ],
-
   rootDir: '.',
   verbose: true,
   bail: 1,
