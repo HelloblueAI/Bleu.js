@@ -8,6 +8,7 @@ module.exports = [
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/frontend/dist/**',
       '**/build/**',
       '**/new_venv/**',
       '**/coverage/**',
@@ -21,7 +22,6 @@ module.exports = [
       '**/public/**',
       '**/html-report/**',
       '**/reports/jest-html-reporters-attach/report/**',
-      '**/frontend/dist/**',
     ],
     files: [
       '**/*.js',
