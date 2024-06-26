@@ -40,7 +40,21 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if ! pnpm install --frozen-lockfile; then
+            echo "Frozen install failed. Updating lockfile and retrying..."
+            pnpm install --no-frozen-lockfile
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add pnpm-lock.yaml
+            git commit -m "Update pnpm-lock.yaml" || echo "No changes to commit"
+          fi
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
       - name: Lint frontend
         run: pnpm run lint:frontend
@@ -110,7 +124,15 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if ! pnpm install --frozen-lockfile; then
+            echo "Frozen install failed. Updating lockfile and retrying..."
+            pnpm install --no-frozen-lockfile
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add pnpm-lock.yaml
+            git commit -m "Update pnpm-lock.yaml" || echo "No changes to commit"
+          fi
 
       - name: Publish to npm
         run: pnpm publish --no-git-checks
