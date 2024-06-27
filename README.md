@@ -354,7 +354,7 @@ module.exports = Bleu;
 Test Suites: 1 passed, 1 total
 Tests:       8 passed, 8 total
 Snapshots:   0 total
-Time:        0.359 s, estimated 1 s
+Time:        0.349 s, estimated 1 s
 Ran all test suites.
 
 ```
