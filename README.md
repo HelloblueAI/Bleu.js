@@ -856,7 +856,7 @@ app.get('/', (req, res) => {
 
 ## POST /debug
 
-Handles debug logic.
+Handles debug logic
 
 URL: /debug
 Method: POST
