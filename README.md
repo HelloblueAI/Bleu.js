@@ -697,8 +697,8 @@ ensureCodeQuality(code) {
 
 This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
 
-`cd backend`
-`npm test`
+`ROOT`
+`pnpm run start:backend `
 
 ```javascript
  PASS  backend/tests/bleu.test.js
