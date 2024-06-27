@@ -138,9 +138,9 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.BLEUJS_NPM_TOKEN }}" > .npmrc
-          pnpm publish --no-git-checks --otp=${{ secrets.NPM_OTP }}
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Complete job
         run: echo "CI/CD pipeline completed successfully."
