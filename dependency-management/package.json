@@ -1,6 +1,6 @@
 {
   "name": "bleujs-dependency-management",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "commonjs",
   "main": "src/index.js",
   "directories": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "dependency",
@@ -18,5 +18,8 @@
   ],
   "author": "Pejman Haghighatnia",
   "license": "MIT",
-  "description": "Module for managing and resolving dependencies for Bleu.js."
+  "description": "Module for managing and resolving dependencies for Bleu.js.",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }

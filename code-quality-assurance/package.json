@@ -7,10 +7,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Pejman Haghighatnia",
   "license": "MIT",
-  "description": "Module for analyzing code quality and generating quality reports"
+  "description": "Module for analyzing code quality and generating quality reports",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
