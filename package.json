@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "workspaces": [
     "packages/*"
   ],
