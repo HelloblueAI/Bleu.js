@@ -1028,7 +1028,7 @@ const swaggerDefinition = {
 
 ```javascript
 cd eggs-generator
-pnpm run test
+pnpm run start
 ```
 
 ### Conclusion
