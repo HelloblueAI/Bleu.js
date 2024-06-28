@@ -1,6 +1,6 @@
 {
   "name": "bleujs",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A production-ready AI and decision tree service",
   "main": "index.js",
   "type": "commonjs",
@@ -32,8 +32,6 @@
     "ci:report": "jest --coverage --coverageReporters=text-lcov > coverage.lcov",
     "prepare": "husky install",
     "prepublishOnly": "pnpm run build",
-    "preinstall": "node preinstall.js",
-    "postinstall": "node preinstall.js",
     "prettier": "prettier --write ."
   },
   "dependencies": {
@@ -112,7 +110,6 @@
     "mongodb-memory-server": "^9.4.0",
     "node-forge": "^1.3.1",
     "nodemon": "^3.1.4",
-    "npm-force-resolutions": "^0.0.10",
     "postcss": "^8.4.38",
     "prettier": "^3.3.2",
     "supertest": "^7.0.0",
