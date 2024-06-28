@@ -137,8 +137,26 @@ jobs:
             git commit -m "Update pnpm-lock.yaml" || echo "No changes to commit"
           fi
 
+      - name: Get current version
+        id: current-version
+        run: echo "CURRENT_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
+      - name: Bump version
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          if [ "${CURRENT_VERSION}" == "1.0.9" ]; then
+            NEW_VERSION=$(npm version patch)
+            git add package.json
+            git commit -m "Bump version to $NEW_VERSION"
+            git push origin main
+          fi
+
       - name: Publish to npm
-        run: pnpm publish --no-git-checks
+        run: |
+          if [ "${CURRENT_VERSION}" != "1.0.9" ]; then
+            pnpm publish --no-git-checks
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
