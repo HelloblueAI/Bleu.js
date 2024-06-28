@@ -32,8 +32,8 @@
     "ci:report": "jest --coverage --coverageReporters=text-lcov > coverage.lcov",
     "prepare": "husky install",
     "prepublishOnly": "pnpm run build",
-    "preinstall": "npx npm-force-resolutions",
-    "postinstall": "npx npm-force-resolutions",
+    "preinstall": "node ./scripts/preinstall.js",
+    "postinstall": "node ./scripts/preinstall.js",
     "prettier": "prettier --write ."
   },
   "dependencies": {
