@@ -478,10 +478,40 @@ module.exports = ${utilityName};
 module.exports = Bleu;
 ```
 
-`cd/backend`
+```javascript
+const Bleu = require('./Bleu');
+
+const bleu = new Bleu();
+
+console.log('This is an index file');
+
+// Test generateEgg method
+const newEgg = bleu.generateEgg('This is a test egg', 'model', {
+  modelName: 'TestModel',
+  fields: [
+    { name: 'field1', type: 'string' },
+    { name: 'field2', type: 'number' },
+  ],
+});
+
+console.log('Generated Egg:', newEgg);
+
+// Test optimizeCode method
+const code = 'const x = 1;   console.log(x);';
+const optimizedCode = bleu.optimizeCode(code);
+console.log('Optimized Code:', optimizedCode);
+
+// Test ensureCodeQuality method
+const isQualityCode = bleu.ensureCodeQuality(code);
+console.log('Is the code quality acceptable?', isQualityCode);
+
+// Test manageDependencies method
+const dependencies = ['express', 'body-parser'];
+bleu.manageDependencies(dependencies);
+```
 
 ```javascript
-`pnpm test``pnpm -w run test:backend`;
+`pnpm run test:all`;
 ```
 
 ```javascript
@@ -753,7 +783,52 @@ To set up the project and start the server, follow these steps:
 
 ### Navigate to the backend directory:
 
-`cd backend`
+```javascript
+pnpm install express body-parser swagger-jsdoc swagger-ui-express
+```
+
+Create server.js
+
+```javascript
+const express = require('express');
+const bodyParser = require('body-parser');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const app = express();
+app.use(bodyParser.json());
+
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Bleu.js API',
+    version: '1.0.0',
+    description: 'Documentation for the Bleu.js API',
+  },
+  servers: [
+    {
+      url: 'http://localhost:3003',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['./server.js'], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Hello, World!' });
+});
+
+app.listen(3003, () => {
+  console.log('Server is running on http://localhost:3003');
+});
+```
 
 Install the required packages:
 `pnpm install`
