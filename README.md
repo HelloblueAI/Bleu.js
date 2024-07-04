@@ -45,7 +45,7 @@ pnpm run start
 ```
 
 ```javascript
-cd Dependency-management
+cd dependency-management
 pnpm start
 ```
 
