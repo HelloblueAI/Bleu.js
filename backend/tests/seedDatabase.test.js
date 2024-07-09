@@ -40,7 +40,6 @@ describe('Seed Database', () => {
     );
     expect(response.body).toHaveProperty('insertedCount', 2);
 
-    // Verify data was actually inserted
     const insertedData = await TestModel.find();
     expect(insertedData).toHaveLength(2);
     expect(insertedData[0].name).toBe('Item 1');

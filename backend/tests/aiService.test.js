@@ -8,7 +8,6 @@ let app, server;
 beforeAll(async () => {
   ({ app, server } = await startServer(0));
 
-  // Build a sample decision tree
   const trainingData = [
     { feature1: 'A', feature2: 'X', result: 'positive' },
     { feature1: 'A', feature2: 'Y', result: 'negative' },
