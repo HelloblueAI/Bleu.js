@@ -62,6 +62,8 @@ const generateEgg = (req, res) => {
     };
     res.status(200).json(egg);
   } catch (error) {
+    // Handle the error or log it to avoid the ESLint warning
+    console.error('Error generating egg:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -76,6 +78,8 @@ const monitorDependencies = (req, res) => {
     const outdated = dependencies.filter((dep) => dep.version !== dep.latest);
     res.status(200).json({ dependencies, outdated });
   } catch (error) {
+    // Handle the error or log it to avoid the ESLint warning
+    console.error('Error monitoring dependencies:', error);
     res.status(500).json({ error: 'Error monitoring dependencies' });
   }
 };
@@ -92,6 +96,8 @@ const resolveConflicts = (req, res) => {
     ];
     res.status(200).json({ resolved, conflicts });
   } catch (error) {
+    // Handle the error or log it to avoid the ESLint warning
+    console.error('Error resolving conflicts:', error);
     res.status(500).json({ error: 'Error resolving conflicts' });
   }
 };
