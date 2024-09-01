@@ -21,8 +21,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       axios:
-        specifier: ^1.7.5
-        version: 1.7.5
+        specifier: ^1.7.7
+        version: 1.7.7
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -73,11 +73,7 @@ importers:
         version: 6.8.0(socks@2.8.3)
       mongoose:
         specifier: ^8.6.0
-<<<<<<< HEAD
-        version: 8.6.0
-=======
         version: 8.6.0(socks@2.8.3)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
@@ -120,7 +116,7 @@ importers:
         version: 7.25.2
       '@babel/eslint-parser':
         specifier: ^7.25.1
-        version: 7.25.1(@babel/core@7.25.2)(eslint@8.57.0)
+        version: 7.25.1(@babel/core@7.25.2)(eslint@9.9.1)
       '@babel/plugin-transform-modules-commonjs':
         specifier: ^7.24.8
         version: 7.24.8(@babel/core@7.25.2)
@@ -152,44 +148,26 @@ importers:
         specifier: ^6.5.0
         version: 6.5.0
       '@testing-library/react':
-        specifier: ^16.0.0
-        version: 16.0.0(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^16.0.1
+        version: 16.0.1(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
       '@types/node':
-        specifier: ^22.5.1
-        version: 22.5.1
+        specifier: ^22.5.2
+        version: 22.5.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.3.0
-<<<<<<< HEAD
-        version: 8.3.0(@typescript-eslint/parser@8.3.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^8.3.0
-        version: 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-=======
-<<<<<<< HEAD
-        version: 8.3.0(@typescript-eslint/parser@8.3.0)(eslint@9.9.1)(typescript@5.5.4)
+        version: 8.3.0(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(typescript@5.5.4)
       '@typescript-eslint/parser':
         specifier: ^8.3.0
         version: 8.3.0(eslint@9.9.1)(typescript@5.5.4)
-=======
-        version: 8.3.0(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^8.3.0
-        version: 8.3.0(eslint@8.57.0)(typescript@5.5.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.4.6
       '@vue/vue3-jest':
         specifier: ^29.2.6
-<<<<<<< HEAD
-        version: 29.2.6(@babel/core@7.25.2)(babel-jest@26.6.3)(jest@26.6.3)(typescript@5.5.4)(vue@3.4.38)
-=======
         version: 29.2.6(@babel/core@7.25.2)(babel-jest@26.6.3(@babel/core@7.25.2))(jest@26.6.3)(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       babel-jest:
         specifier: ^26.6.3
         version: 26.6.3(@babel/core@7.25.2)
@@ -197,53 +175,35 @@ importers:
         specifier: ^3.1.10
         version: 3.1.10
       eslint:
-        specifier: ^8.57.0
-        version: 8.57.0
+        specifier: ^9.9.1
+        version: 9.9.1
       eslint-config-prettier:
         specifier: ^9.1.0
-        version: 9.1.0(eslint@8.57.0)
+        version: 9.1.0(eslint@9.9.1)
       eslint-plugin-import:
         specifier: ^2.29.1
-<<<<<<< HEAD
-        version: 2.29.1(@typescript-eslint/parser@8.3.0)(eslint@8.57.0)
+        version: 2.29.1(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)
       eslint-plugin-jest:
-        specifier: ^28.8.0
-        version: 28.8.0(@typescript-eslint/eslint-plugin@8.3.0)(eslint@8.57.0)(jest@26.6.3)(typescript@5.5.4)
-=======
-<<<<<<< HEAD
-        version: 2.29.1(@typescript-eslint/parser@8.3.0)(eslint@9.9.1)
-      eslint-plugin-jest:
-        specifier: ^28.8.0
-        version: 28.8.0(@typescript-eslint/eslint-plugin@8.3.0)(eslint@9.9.1)(jest@26.6.3)(typescript@5.5.4)
-=======
-        version: 2.29.1(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)
-      eslint-plugin-jest:
-        specifier: ^28.8.0
-        version: 28.8.0(@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(jest@26.6.3)(typescript@5.5.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+        specifier: ^28.8.1
+        version: 28.8.1(@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(jest@26.6.3)(typescript@5.5.4)
       eslint-plugin-jsx-a11y:
         specifier: ^6.9.0
-        version: 6.9.0(eslint@8.57.0)
+        version: 6.9.0(eslint@9.9.1)
       eslint-plugin-node:
         specifier: ^11.1.0
-        version: 11.1.0(eslint@8.57.0)
+        version: 11.1.0(eslint@9.9.1)
       eslint-plugin-prettier:
         specifier: ^5.2.1
-<<<<<<< HEAD
-        version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.3.3)
-=======
-        version: 5.2.1(@types/eslint@9.6.0)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.3)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+        version: 5.2.1(@types/eslint@9.6.0)(eslint-config-prettier@9.1.0(eslint@9.9.1))(eslint@9.9.1)(prettier@3.3.3)
       eslint-plugin-react:
         specifier: ^7.35.0
-        version: 7.35.0(eslint@8.57.0)
+        version: 7.35.0(eslint@9.9.1)
       eslint-plugin-react-hooks:
         specifier: ^4.6.2
-        version: 4.6.2(eslint@8.57.0)
+        version: 4.6.2(eslint@9.9.1)
       eslint-plugin-vue:
         specifier: ^9.27.0
-        version: 9.27.0(eslint@8.57.0)
+        version: 9.27.0(eslint@9.9.1)
       http-server:
         specifier: ^14.1.1
         version: 14.1.1
@@ -261,7 +221,7 @@ importers:
         version: 3.1.7
       jest-runner-eslint:
         specifier: ^2.2.0
-        version: 2.2.0(eslint@8.57.0)(jest@26.6.3)
+        version: 2.2.0(eslint@9.9.1)(jest@26.6.3)
       json5:
         specifier: ^2.2.3
         version: 2.2.3
@@ -281,8 +241,8 @@ importers:
         specifier: ^3.1.4
         version: 3.1.4
       postcss:
-        specifier: ^8.4.41
-        version: 8.4.41
+        specifier: ^8.4.43
+        version: 8.4.43
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -297,14 +257,10 @@ importers:
         version: 5.5.4
       vue-eslint-parser:
         specifier: ^9.4.3
-        version: 9.4.3(eslint@8.57.0)
+        version: 9.4.3(eslint@9.9.1)
       vue-jest:
         specifier: ^5.0.0-alpha.10
-<<<<<<< HEAD
-        version: 5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3)(jest@26.6.3)(ts-jest@26.5.6)(typescript@5.5.4)(vue@3.4.38)
-=======
         version: 5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3(@babel/core@7.25.2))(jest@26.6.3)(ts-jest@26.5.6(jest@26.6.3)(typescript@5.5.4))(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       webpack:
         specifier: ^5.94.0
         version: 5.94.0(webpack-cli@5.1.4)
@@ -383,13 +339,13 @@ importers:
         version: 7.25.2
       '@babel/preset-env':
         specifier: ^7.24.7
-        version: 7.25.4(@babel/core@7.25.2)
+        version: 7.25.3(@babel/core@7.25.2)
       babel-jest:
         specifier: ^26.6.3
         version: 26.6.3(@babel/core@7.25.2)
       eslint:
         specifier: ^9.5.0
-        version: 9.9.1
+        version: 9.9.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -404,11 +360,7 @@ importers:
         version: 7.0.0
       vue-jest:
         specifier: ^5.0.0-alpha.10
-<<<<<<< HEAD
-        version: 5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3)(jest@26.6.3)(ts-jest@26.5.6)(typescript@5.5.4)(vue@3.4.38)
-=======
         version: 5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3(@babel/core@7.25.2))(jest@26.6.3)(ts-jest@26.5.6(jest@26.6.3)(typescript@5.5.4))(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   code-quality-assurance:
     devDependencies:
@@ -463,7 +415,7 @@ importers:
         version: 7.20.7(@babel/core@7.25.2)
       '@babel/preset-env':
         specifier: ^7.24.7
-        version: 7.25.4(@babel/core@7.25.2)
+        version: 7.25.3(@babel/core@7.25.2)
       babel-jest:
         specifier: ^26.6.3
         version: 26.6.3(@babel/core@7.25.2)
@@ -478,7 +430,7 @@ importers:
     dependencies:
       axios:
         specifier: ^1.7.2
-        version: 1.7.5
+        version: 1.7.4
       force:
         specifier: ^0.0.3
         version: 0.0.3
@@ -491,30 +443,12 @@ importers:
         version: 7.25.2
       '@babel/preset-env':
         specifier: ^7.24.7
-        version: 7.25.4(@babel/core@7.25.2)
+        version: 7.25.3(@babel/core@7.25.2)
       babel-jest:
         specifier: ^26.6.3
         version: 26.6.3(@babel/core@7.25.2)
       copy-webpack-plugin:
         specifier: ^12.0.2
-<<<<<<< HEAD
-        version: 12.0.2(webpack@5.94.0)
-      css-loader:
-        specifier: ^7.1.2
-        version: 7.1.2(webpack@5.94.0)
-      esbuild-loader:
-        specifier: ^4.1.0
-        version: 4.2.2(webpack@5.94.0)
-      file-loader:
-        specifier: ^6.2.0
-        version: 6.2.0(webpack@5.94.0)
-      html-loader:
-        specifier: ^5.0.0
-        version: 5.1.0(webpack@5.94.0)
-      html-webpack-plugin:
-        specifier: ^5.6.0
-        version: 5.6.0(webpack@5.94.0)
-=======
         version: 12.0.2(webpack@5.93.0(webpack-cli@5.1.4))
       css-loader:
         specifier: ^7.1.2
@@ -531,7 +465,6 @@ importers:
       html-webpack-plugin:
         specifier: ^5.6.0
         version: 5.6.0(webpack@5.93.0(webpack-cli@5.1.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       identity-obj-proxy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -540,20 +473,16 @@ importers:
         version: 26.6.3
       style-loader:
         specifier: ^4.0.0
-<<<<<<< HEAD
-        version: 4.0.0(webpack@5.94.0)
-=======
         version: 4.0.0(webpack@5.93.0(webpack-cli@5.1.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       webpack:
         specifier: ^5.92.0
-        version: 5.94.0(webpack-cli@5.1.4)
+        version: 5.93.0(webpack-cli@5.1.4)
       webpack-cli:
         specifier: ^5.1.4
-        version: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.94.0)
+        version: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0)
       webpack-dev-server:
         specifier: ^4.15.2
-        version: 4.15.2(webpack-cli@5.1.4)(webpack@5.94.0)
+        version: 4.15.2(webpack-cli@5.1.4)(webpack@5.93.0)
 
   language-plugins:
     dependencies:
@@ -568,16 +497,16 @@ importers:
         version: 7.25.2
       '@babel/generator':
         specifier: ^7.14.5
-        version: 7.25.5
+        version: 7.25.0
       '@babel/preset-env':
         specifier: ^7.14.5
-        version: 7.25.4(@babel/core@7.25.2)
+        version: 7.25.3(@babel/core@7.25.2)
       '@babel/traverse':
         specifier: ^7.14.5
-        version: 7.25.4
+        version: 7.25.3
       '@babel/types':
         specifier: ^7.14.5
-        version: 7.25.4
+        version: 7.25.2
     devDependencies:
       jest:
         specifier: ^26.6.3
@@ -590,16 +519,16 @@ importers:
         version: 7.25.2
       '@babel/generator':
         specifier: ^7.14.5
-        version: 7.25.5
+        version: 7.25.0
       '@babel/preset-env':
         specifier: ^7.14.5
-        version: 7.25.4(@babel/core@7.25.2)
+        version: 7.25.3(@babel/core@7.25.2)
       '@babel/traverse':
         specifier: ^7.14.5
-        version: 7.25.4
+        version: 7.25.3
       '@babel/types':
         specifier: ^7.14.5
-        version: 7.25.4
+        version: 7.25.2
     devDependencies:
       jest:
         specifier: ^26.6.3
@@ -1523,20 +1452,20 @@ packages:
     resolution: {integrity: sha512-BlYOpej8AQ8Ev9xVqroV7a02JK3SkBAaN9GfMMH9W6Ch8FlQlkjGw4Ir7+FgYwfirivAf4t+GtzuAxqfukmISA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/eslintrc@2.1.4':
-    resolution: {integrity: sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+  '@eslint/config-array@0.18.0':
+    resolution: {integrity: sha512-fTxvnS1sRMu3+JjXwJG0j/i4RT9u4qJ+lqS/yCGap4lH4zZGzQ7tu+xZqQmcMZq5OBZDL4QRxQzRjkWcGt8IVw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/eslintrc@3.1.0':
     resolution: {integrity: sha512-4Bfj15dVJdoy3RfZmmo86RK1Fwzn6SstsvK9JS+BaVKqC6QQQQyXekNaC+g+LKNgkQ+2VhGAzm6hO40AhMR3zQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/js@8.57.0':
-    resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
   '@eslint/js@9.9.0':
     resolution: {integrity: sha512-hhetes6ZHP3BlXLxmd8K2SNgkhNSi+UcecbnwWKwpP7kyi/uC75DJ1lOOBO3xrC4jyojtGE3YxKZPHfk4yrgug==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/js@9.9.1':
+    resolution: {integrity: sha512-xIDQRsfg5hNBqHz04H1R3scSVwmI+KUbqjsQKHKQ1DAUSaUjYPReZZmS/5PNiKu1fUvzDd6H7DEDKACSEhu+TQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.4':
@@ -1553,18 +1482,9 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@humanwhocodes/config-array@0.11.14':
-    resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
-    engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
-
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
     engines: {node: '>=12.22'}
-
-  '@humanwhocodes/object-schema@2.0.3':
-    resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
-    deprecated: Use @eslint/object-schema instead
 
   '@humanwhocodes/retry@0.3.0':
     resolution: {integrity: sha512-d2CGZR2o7fS6sWB7DG/3a95bGKQyHMACZ5aW8qGkkqQpUoZV6C0X7Pc7l4ZNMZkfNBf4VWNe9E1jRsf0G146Ew==}
@@ -1793,74 +1713,74 @@ packages:
     resolution: {integrity: sha512-y7efHHwghQfk28G2z3tlZ67pLG0XdfYbcVG26r7YIXALRsrVQcTq4/tdenSmdOrEsNahIYA/eh8aEVROWGFUDg==}
     engines: {node: ^16.14.0 || >=18.0.0}
 
-  '@nrwl/devkit@19.6.4':
-    resolution: {integrity: sha512-jpr+T5/+21W/fwAMB6zDLZKO+ReYAfOOMIeM8CpeBi/r9nWmjGXaXN9YKwEOYS1fath62Y5ldGK4yZUttv1tkw==}
+  '@nrwl/devkit@19.6.3':
+    resolution: {integrity: sha512-zrAboArNfrEMjimBl/0YeM08HfjqOEG/VHdCHKO+5QMDg65w7vDJ2flwyNhlmnMl8BMJSy9fNo6PNGhboOf3+w==}
 
-  '@nrwl/tao@19.6.4':
-    resolution: {integrity: sha512-1J8cD+MFzsmboiGe03VlQZ8gt64k/TaYYPZivnnhOJolPPs75nz1JyJX55uWcKKRy/b7FZNKWIu/6Wp9JDhJrQ==}
+  '@nrwl/tao@19.6.3':
+    resolution: {integrity: sha512-j4vPU87yBhTrdyPFSNhlUkN29w4BQ+M14khT8PFGe+Y26gHMxNRNXNFUCwtVARYAc6IwxS8Uvlwy7AwXG2ETPA==}
     hasBin: true
 
-  '@nx/devkit@19.6.4':
-    resolution: {integrity: sha512-mBitFwb/gcz8MR7STt7KQG0vf+QcsasDXiSYcf3OWpc6lGE5wn1q5jg6Iabp49Bd/mdHXVLQnP1aV5A+QqFIOQ==}
+  '@nx/devkit@19.6.3':
+    resolution: {integrity: sha512-/d8Z5/Cy/H/1rIHxW3VjeK5dlvHwRxRj8rCm8/sj5Pz3GmGX03uuEK+J/p+VlP3gP8dAYMgZu3ImeqTAu6rBtw==}
     peerDependencies:
       nx: '>= 17 <= 20'
 
-  '@nx/nx-darwin-arm64@19.6.4':
-    resolution: {integrity: sha512-kRn2FLvhwJA/TJrNlsCSqqQTrguNZLmiRsiXhvjkfUMbUKwyQfVMgJlvkZ+KoqraUSG+Qyb0FmrGur1I/Mld0Q==}
+  '@nx/nx-darwin-arm64@19.6.3':
+    resolution: {integrity: sha512-P7WlX5YDZOABAlyfpR6eObigQTNuUuy3iJVUuGwp1Nuo3VPMPkpK1GMWKWLwOR9+2jGnF5MzuqWHk7CdF33uqQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@nx/nx-darwin-x64@19.6.4':
-    resolution: {integrity: sha512-3uABBUhxVk+SdRwpUu30iuBlgRWm3tA/G9seG+wt7oN2R+fOu8zzRCYa+Blvoh1Ef+D9743Ir4rDc9Mhzl2B2g==}
+  '@nx/nx-darwin-x64@19.6.3':
+    resolution: {integrity: sha512-HF28dPc7h0EmEGYJWJUPA3cBvjXyHbSbGQP5oP885gos9zcyVBjQ2kdJEUZDNMHB9KlZraeXbmV1umFkikjn6A==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@nx/nx-freebsd-x64@19.6.4':
-    resolution: {integrity: sha512-OG83MiEk5L54/vAldmwZJBKEvZaM+DEIDqn2yZLTToBRj5Z9jwKJX3jKP60xbHiaT/hzsb1xPlwhOHJnYd80EQ==}
+  '@nx/nx-freebsd-x64@19.6.3':
+    resolution: {integrity: sha512-y52dWxQ/x2ccyPqA4Vou4CnTqZX4gr/wV9myJX56G1CyEpWasmcqmPFeOKQd6dj7llGM/KJ/4Gz29RYxcWffcA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [freebsd]
 
-  '@nx/nx-linux-arm-gnueabihf@19.6.4':
-    resolution: {integrity: sha512-hQ9x4qSKUh9mIVDuD270ULrBnmYfDTjXq7LnIwECw1AuP4LkKzKxULhsbqVnFQ/k3xxyFkwyGTIu2mfDcw16Gw==}
+  '@nx/nx-linux-arm-gnueabihf@19.6.3':
+    resolution: {integrity: sha512-RneCg1tglLbP4cmGnGUs4FgZVT0aOA9wA53tO4IbyxLnlRXNY9OE452YLgqv3H7sLtNjsey2Lkq1seBHtr3p/Q==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
 
-  '@nx/nx-linux-arm64-gnu@19.6.4':
-    resolution: {integrity: sha512-OFKpAHiaVg3YGFIMBmi/JshciP9buwtOPiHDXcQdzQgE22jyYzKEiFxfcpG0nCT8PlMYAbHPAda15WfWkfVGVQ==}
+  '@nx/nx-linux-arm64-gnu@19.6.3':
+    resolution: {integrity: sha512-Y+vgqaxrPQUEtCzxK25QY4ahO90l0eWgVrvCALexGmq0lW41JrVpfTTsbH/BAPLsx+u8A/GPAQAgrmg7d5lSxw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@nx/nx-linux-arm64-musl@19.6.4':
-    resolution: {integrity: sha512-ZIR9u+mN0A7SmNd6vDxmPV1QVTgYPTdfBSM5TEnKl3q2fHw2Nkui81QBxA4d7VopJoJUz/pRHiUV+dlgEEZ6nA==}
+  '@nx/nx-linux-arm64-musl@19.6.3':
+    resolution: {integrity: sha512-o/99DBgafbjiJ4e9KFxaldvtlZta/FdzEiQQW+SQQ0JGSYlLCZZ8tIT6t3edV7cmG+gQLNMwolJzgpY53O9wjA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@nx/nx-linux-x64-gnu@19.6.4':
-    resolution: {integrity: sha512-AUMPvLs9KeCUuWD5DdlpbP3VfVsiD0IlptS2b3ul336rsQ7LwwdvE7jTVO5CixFOsiRZxP72fKJhaEargMn5Aw==}
+  '@nx/nx-linux-x64-gnu@19.6.3':
+    resolution: {integrity: sha512-ppp0NBOhwJ39U1vR7h8jhFSfiur6CZPSUYjXsV44BlaNGc1wHZ+7FDXhzOTokgTNWHavYgYOJuVan5LtTLKJkA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@nx/nx-linux-x64-musl@19.6.4':
-    resolution: {integrity: sha512-PU7AaBlrgnJnDxTiV/PNCu0pHUCzaogm6uNcbzCyFJLGn7DoQK9rkqUMPJjb3CnJkAj9XrrhuZwmOdbrhvHAvA==}
+  '@nx/nx-linux-x64-musl@19.6.3':
+    resolution: {integrity: sha512-H7xgsT5OTtVYCXjXBLZu28v+rIInhbUggrgVJ2iQJFGBT2A2qmvGmDJdcDz8+K90ku1f4VuWmm8i+TEyDEcBuQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@nx/nx-win32-arm64-msvc@19.6.4':
-    resolution: {integrity: sha512-6CCmGWwH/J2k+Uxeci48w4QVhtcQ3hRZ5Z2jh26HI8YzH4wqZyA7QPgLBE6sNCPVLoGW5cBgTsfnyEdr+xarQA==}
+  '@nx/nx-win32-arm64-msvc@19.6.3':
+    resolution: {integrity: sha512-o9O6lSmx67zUnqOtlDC4YpC++fiUkixgIsQEG8J/2jdNgAATqOtERcqCNra/uke/Q94Vht2tVXjXF3uj92APhw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@nx/nx-win32-x64-msvc@19.6.4':
-    resolution: {integrity: sha512-jTNrlaFaKtbL2mYOcfPAiljtpF5CI7vbHIqYqBFYLUQXOwW9lOHlO+SeQnft6JYZs0FIr1IdHaCfdOw/hpnCiQ==}
+  '@nx/nx-win32-x64-msvc@19.6.3':
+    resolution: {integrity: sha512-6NQhc7jYQ/sqPt5fDy8C+br73kTd5jhb8ZkPtEy2Amr1aA1K9SAxZAYfyvxLHS2z1nBEelNFgXe6HBmDX92FkA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2025,8 +1945,8 @@ packages:
     resolution: {integrity: sha512-xGGHpBXYSHUUr6XsKBfs85TWlYKpTc37cSBBVrXcib2MkHLboWlkClhWF37JKlDb9KEq3dHs+f2xR7XJEWGBxA==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
-  '@testing-library/react@16.0.0':
-    resolution: {integrity: sha512-guuxUKRWQ+FgNX0h0NS0FIq3Q3uLtWVpBzcLOggmfMoUpgBnzBzvLLd4fbm6yS8ydJd94cIfY4yP9qUQjM2KwQ==}
+  '@testing-library/react@16.0.1':
+    resolution: {integrity: sha512-dSmwJVtJXmku+iocRhWOUFbrERC76TX2Mnf0ATODz8brzAZrMBbzLwQixlBSanZxR6LddK3eiwpSFZgDET1URg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@testing-library/dom': ^10.0.0
@@ -2146,8 +2066,8 @@ packages:
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
-  '@types/node@22.5.1':
-    resolution: {integrity: sha512-KkHsxej0j9IW1KKOOAA/XBA0z08UFSrRQHErzEfA3Vgq57eXIMYboIlHJuYIfd+lwCQjtKqUu3UnmKbtUc9yRw==}
+  '@types/node@22.5.2':
+    resolution: {integrity: sha512-acJsPTEqYqulZS/Yp/S3GgeE6GZ0qYODUR8aVr/DkhHQ8l9nd4j5x1/ZJy9/gHrRlFMqkO6i0I3E27Alu4jjPg==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2271,9 +2191,6 @@ packages:
   '@typescript-eslint/visitor-keys@8.3.0':
     resolution: {integrity: sha512-RmZwrTbQ9QveF15m/Cl28n0LXD6ea2CjkhH5rQ55ewz3H24w+AMCJHPVYaZ8/0HoG8Z3cLLFFycRXxeO2tz9FA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@ungap/structured-clone@1.2.0':
-    resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
   '@vue/compiler-core@3.4.38':
     resolution: {integrity: sha512-8IQOTCWnLFqfHzOGm9+P8OPSEDukgg3Huc92qSG49if/xI2SAwLHQO2qaPQbjCWPBcQoO1WYfXfTACUrWV3c5A==}
@@ -2696,8 +2613,8 @@ packages:
   axios@1.7.4:
     resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
 
-  axios@1.7.5:
-    resolution: {integrity: sha512-fZu86yCo+svH3uqJ/yTdQ0QHpQu5oL+/QE+QPSv6BZSkDAoky9vytxp7u5qk83OJFS3kEBcesWni9WTZAv3tSw==}
+  axios@1.7.7:
+    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
 
   axobject-query@3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
@@ -3717,8 +3634,8 @@ packages:
   eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
 
-  eslint-module-utils@2.8.2:
-    resolution: {integrity: sha512-3XnC5fDyc8M4J2E8pt8pmSVRX2M+5yWMCfI/kDZwauQeFgzQOuhcRBFKjTeJagqgk4sFKxe1mvNVnaWwImx/Tg==}
+  eslint-module-utils@2.8.1:
+    resolution: {integrity: sha512-rXDXR3h7cs7dy9RNpUlQf80nX31XWJEyGq1tRMo+6GsO5VmTe4UTwtmonAD4ZkAsrfMVDA2wlGJ3790Ys+D49Q==}
     engines: {node: '>=4'}
     peerDependencies:
       '@typescript-eslint/parser': '*'
@@ -3754,8 +3671,8 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-jest@28.8.0:
-    resolution: {integrity: sha512-Tubj1hooFxCl52G4qQu0edzV/+EZzPUeN8p2NnW5uu4fbDs+Yo7+qDVDc4/oG3FbCqEBmu/OC3LSsyiU22oghw==}
+  eslint-plugin-jest@28.8.1:
+    resolution: {integrity: sha512-G46XMyYu6PtSNJUkQ0hsPjzXYpzq/O4vpCciMizTKRJG8kNsRreGoMRDG6H9FIB/xVgfFuclVnuX4XRvFUzrZQ==}
     engines: {node: ^16.10.0 || ^18.12.0 || >=20.0.0}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -3843,13 +3760,18 @@ packages:
     resolution: {integrity: sha512-OtIRv/2GyiF6o/d8K7MYKKbXrOUBIK6SfkIRM4Z0dY3w+LiQ0vy3F57m0Z71bjbyeiWFiHJ8brqnmE6H6/jEuw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  eslint@8.57.0:
-    resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    hasBin: true
-
   eslint@9.9.0:
     resolution: {integrity: sha512-JfiKJrbx0506OEerjK2Y1QlldtBxkAlLxT5OEcRF8uaQ86noDe2k31Vw9rnSWv+MXZHj7OOUV/dA0AhdLFcyvA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    hasBin: true
+    peerDependencies:
+      jiti: '*'
+    peerDependenciesMeta:
+      jiti:
+        optional: true
+
+  eslint@9.9.1:
+    resolution: {integrity: sha512-dHvhrbfr4xFQ9/dq+jcVneZMyRYLjggWjk6RVsIiHsP8Rz6yZ8LvZ//iU4TrZF+SXWG+JkNF2OyiZRvzgRDqMg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
     peerDependencies:
@@ -4043,10 +3965,6 @@ packages:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
 
-  file-entry-cache@6.0.1:
-    resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
-    engines: {node: ^10.12.0 || >=12.0.0}
-
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
@@ -4090,10 +4008,6 @@ packages:
   find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
-
-  flat-cache@3.2.0:
-    resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
-    engines: {node: ^10.12.0 || >=12.0.0}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -5991,8 +5905,8 @@ packages:
   nwsapi@2.2.12:
     resolution: {integrity: sha512-qXDmcVlZV4XRtKFzddidpfVP4oMSGhga+xdMc25mv8kaLUHtgzCDhUxkrN8exkGdTlLNaXj7CV3GtON7zuGZ+w==}
 
-  nx@19.6.4:
-    resolution: {integrity: sha512-yudYlBd3cMchRd8c0ZNan1SfT19AYK2zYOp77XVqVVwgqb6rJVxz6StFGFluUQ7Q7uSpkeT/8PsjwPVLt85EoQ==}
+  nx@19.6.3:
+    resolution: {integrity: sha512-JbgrEKaIBvTfhw3mG3GeyyzJHBAMfuQkMNrxxIto1fn94gxdjXdMfqUnAzrW6xRAt5OEEU+rf7v2OA3vEXYc3A==}
     hasBin: true
     peerDependencies:
       '@swc-node/register': ^1.8.0
@@ -6405,8 +6319,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.4.41:
-    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
+  postcss@8.4.43:
+    resolution: {integrity: sha512-gJAQVYbh5R3gYm33FijzCZj7CHyQ3hWMgJMprLUlIYqCwTeZhBQ19wp0e9mA25BUbEvY5+EXuuaAjqQsrBxQBQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   postgres-array@2.0.0:
@@ -7664,8 +7578,8 @@ packages:
     resolution: {integrity: sha512-ZZKSmDAEFOijERBLkmYfJ+vmk3w+7hOLYDNkRCuRuMJGEmqYNCNLyBBFwWKVMhfwaEF3WOd0Zlw86U/WC/+nYw==}
     engines: {'0': node >=0.6.0}
 
-  vue-component-type-helpers@2.1.0:
-    resolution: {integrity: sha512-Ec+sh0qzakYsoKiyey7izf83sVqOcB9PT12LU9z4csAaJ4CipO6o0+5PVMJRgMryKAi9HL7SDEVqoGNpcxzSmA==}
+  vue-component-type-helpers@2.0.29:
+    resolution: {integrity: sha512-58i+ZhUAUpwQ+9h5Hck0D+jr1qbYl4voRt5KffBx8qzELViQ4XdT/Tuo+mzq8u63teAG8K0lLaOiL5ofqW38rg==}
 
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
@@ -8085,15 +7999,9 @@ snapshots:
       '@babel/highlight': 7.24.7
       picocolors: 1.0.1
 
-<<<<<<< HEAD
-  /@babel/compat-data@7.25.4:
-    resolution: {integrity: sha512-+LGRog6RAsCJrrrg/IO6LGmpphNe5DiK30dGjCoxxeGv49B10/3XYGxPsAwrDlMFcFEvdAUavDT8r9k/hSyQqQ==}
-    engines: {node: '>=6.9.0'}
-=======
   '@babel/compat-data@7.25.2': {}
 
   '@babel/compat-data@7.25.4': {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@babel/core@7.25.2':
     dependencies:
@@ -8115,28 +8023,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@babel/eslint-parser@7.25.1(@babel/core@7.25.2)(eslint@8.57.0):
-    resolution: {integrity: sha512-Y956ghgTT4j7rKesabkh5WeqgSFZVFwaPR0IWFm7KFHFmmJ4afbG49SmfW4S+GyRPx0Dy5jxEWA5t0rpxfElWg==}
-    engines: {node: ^10.13.0 || ^12.13.0 || >=14.0.0}
-    peerDependencies:
-      '@babel/core': ^7.11.0
-      eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
-=======
-  '@babel/eslint-parser@7.25.1(@babel/core@7.25.2)(eslint@8.57.0)':
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  '@babel/eslint-parser@7.25.1(@babel/core@7.25.2)(eslint@9.9.1)':
     dependencies:
       '@babel/core': 7.25.2
       '@nicolo-ribaudo/eslint-scope-5-internals': 5.1.1-v1
-      eslint: 8.57.0
+      eslint: 9.9.1
       eslint-visitor-keys: 2.1.0
       semver: 6.3.1
 
-<<<<<<< HEAD
-  /@babel/generator@7.25.5:
-    resolution: {integrity: sha512-abd43wyLfbWoxC6ahM8xTkqLpGB2iWBVyuKC9/srhFunCd1SDNrV1s72bBpK4hLj8KLzHBBcOblvLQZBNw9r3w==}
-    engines: {node: '>=6.9.0'}
-=======
   '@babel/generator@7.25.0':
     dependencies:
       '@babel/types': 7.25.2
@@ -8145,7 +8039,6 @@ snapshots:
       jsesc: 2.5.2
 
   '@babel/generator@7.25.5':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/types': 7.25.4
       '@jridgewell/gen-mapping': 0.3.5
@@ -8171,15 +8064,7 @@ snapshots:
       lru-cache: 5.1.1
       semver: 6.3.1
 
-<<<<<<< HEAD
-  /@babel/helper-create-class-features-plugin@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-ro/bFs3/84MDgDmMwbcHgDa8/E6J3QKNTk4xJJnVeFtGE+tL0K26E3pNxhYz2b67fJpt7Aphw5XcploKXuCvCQ==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-=======
   '@babel/helper-create-class-features-plugin@7.25.0(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-annotate-as-pure': 7.24.7
@@ -8311,18 +8196,11 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.0.1
 
-<<<<<<< HEAD
-  /@babel/parser@7.25.4:
-    resolution: {integrity: sha512-nq+eWrOgdtu3jG5Os4TQP3x3cLA8hR8TvJNjD8vnPa20WGycimcparWnLK4jJhElTK6SDyuJo1weMKO/5LpmLA==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-=======
   '@babel/parser@7.25.3':
     dependencies:
       '@babel/types': 7.25.2
 
   '@babel/parser@7.25.4':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/types': 7.25.4
 
@@ -8363,7 +8241,7 @@ snapshots:
 
   '@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.25.2)':
     dependencies:
-      '@babel/compat-data': 7.25.4
+      '@babel/compat-data': 7.25.2
       '@babel/core': 7.25.2
       '@babel/helper-compilation-targets': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
@@ -8459,15 +8337,7 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
 
-<<<<<<< HEAD
-  /@babel/plugin-syntax-typescript@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-uMOCoHVU52BsSWxPOMVv5qKRdeSlPuImUCB2dlPuBSU+W2/ROE7/Zg8F2Kepbk+8yBa68LlRKxO+xgEVWorsDg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-=======
   '@babel/plugin-syntax-private-property-in-object@7.14.5(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
@@ -8493,15 +8363,7 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
 
-<<<<<<< HEAD
-  /@babel/plugin-transform-async-generator-functions@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-jz8cV2XDDTqjKPwVPJBIjORVEmSGYhdRa8e5k5+vN+uwcjSrSxUaebBRa4ko1jqNF2uxyg8G6XYk30Jv285xzg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-=======
   '@babel/plugin-transform-async-generator-functions@7.25.0(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
@@ -8540,13 +8402,6 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
 
-<<<<<<< HEAD
-  /@babel/plugin-transform-class-properties@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-nZeZHyCWPfjkdU5pA/uHiTaDAFUEqkpzf1YoQT2NeSynCGYq9rxfyI3XpQbfx/a0hSnFH6TGlEXvae5Vi7GD8g==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-=======
   '@babel/plugin-transform-class-properties@7.24.7(@babel/core@7.25.2)':
     dependencies:
       '@babel/core': 7.25.2
@@ -8556,7 +8411,6 @@ snapshots:
       - supports-color
 
   '@babel/plugin-transform-class-properties@7.25.4(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-create-class-features-plugin': 7.25.4(@babel/core@7.25.2)
@@ -8573,15 +8427,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@babel/plugin-transform-classes@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-oexUfaQle2pF/b6E0dwsxQtAol9TLSO88kQvym6HHBWFliV2lGdrPieX+WgMRLSJDVzdYywk7jXbLPuO2KLTLg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-=======
   '@babel/plugin-transform-classes@7.25.0(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-annotate-as-pure': 7.24.7
@@ -8786,13 +8632,6 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
 
-<<<<<<< HEAD
-  /@babel/plugin-transform-private-methods@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-ao8BG7E2b/URaUQGqN3Tlsg+M3KlHY6rJ1O1gXAEUnZoyNQnvKyH87Kfg+FoxSeyWUB8ISZZsC91C44ZuBFytw==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-=======
   '@babel/plugin-transform-private-methods@7.24.7(@babel/core@7.25.2)':
     dependencies:
       '@babel/core': 7.25.2
@@ -8802,7 +8641,6 @@ snapshots:
       - supports-color
 
   '@babel/plugin-transform-private-methods@7.25.4(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-create-class-features-plugin': 7.25.4(@babel/core@7.25.2)
@@ -8933,13 +8771,6 @@ snapshots:
       '@babel/helper-create-regexp-features-plugin': 7.25.2(@babel/core@7.25.2)
       '@babel/helper-plugin-utils': 7.24.8
 
-<<<<<<< HEAD
-  /@babel/plugin-transform-unicode-sets-regex@7.25.4(@babel/core@7.25.2):
-    resolution: {integrity: sha512-qesBxiWkgN1Q+31xUE9RcMk79eOXXDCv6tfyGMRSs4RGlioSg2WVyQAm07k726cSE56pa+Kb0y9epX2qaXzTvA==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-=======
   '@babel/plugin-transform-unicode-sets-regex@7.24.7(@babel/core@7.25.2)':
     dependencies:
       '@babel/core': 7.25.2
@@ -8947,13 +8778,10 @@ snapshots:
       '@babel/helper-plugin-utils': 7.24.8
 
   '@babel/plugin-transform-unicode-sets-regex@7.25.4(@babel/core@7.25.2)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-create-regexp-features-plugin': 7.25.2(@babel/core@7.25.2)
       '@babel/helper-plugin-utils': 7.24.8
-<<<<<<< HEAD
-=======
 
   '@babel/preset-env@7.25.3(@babel/core@7.25.2)':
     dependencies:
@@ -9043,7 +8871,6 @@ snapshots:
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@babel/preset-env@7.25.4(@babel/core@7.25.2)':
     dependencies:
@@ -9166,13 +8993,7 @@ snapshots:
 
   '@babel/regjsgen@0.8.0': {}
 
-<<<<<<< HEAD
-  /@babel/runtime@7.25.4:
-    resolution: {integrity: sha512-DSgLeL/FNcpXuzav5wfYvHCGvynXkJbn3Zvc3823AEe9nPwW9IK4UoCSS5yGymmQzN0pCPvivtgS6/8U2kkm1w==}
-    engines: {node: '>=6.9.0'}
-=======
   '@babel/runtime@7.25.4':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       regenerator-runtime: 0.14.1
 
@@ -9181,8 +9002,6 @@ snapshots:
       '@babel/code-frame': 7.24.7
       '@babel/parser': 7.25.4
       '@babel/types': 7.25.4
-<<<<<<< HEAD
-=======
 
   '@babel/traverse@7.25.3':
     dependencies:
@@ -9195,7 +9014,6 @@ snapshots:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@babel/traverse@7.25.4':
     dependencies:
@@ -9209,11 +9027,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@babel/types@7.25.4:
-    resolution: {integrity: sha512-zQ1ijeeCXVEh+aNL0RlmkPkG8HUiDcU2pzQQFjtbntgAczRASFzj4H+6+bV+dy1ntKR14I/DypeuRG1uma98iQ==}
-    engines: {node: '>=6.9.0'}
-=======
   '@babel/types@7.25.2':
     dependencies:
       '@babel/helper-string-parser': 7.24.8
@@ -9221,7 +9034,6 @@ snapshots:
       to-fast-properties: 2.0.0
 
   '@babel/types@7.25.4':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/helper-string-parser': 7.24.8
       '@babel/helper-validator-identifier': 7.24.7
@@ -9248,26 +9060,14 @@ snapshots:
     dependencies:
       '@emnapi/wasi-threads': 1.0.1
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@emnapi/runtime@1.2.0':
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@emnapi/wasi-threads@1.0.1':
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -9338,47 +9138,14 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-<<<<<<< HEAD
-  /@eslint-community/eslint-utils@4.4.0(eslint@8.57.0):
-    resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
-    dependencies:
-      eslint: 8.57.0
-      eslint-visitor-keys: 3.4.3
-    dev: true
-
-=======
-<<<<<<< HEAD
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-  /@eslint-community/eslint-utils@4.4.0(eslint@9.9.1):
-    resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
-    dependencies:
-      eslint: 9.9.1
-      eslint-visitor-keys: 3.4.3
-    dev: true
-
-  /@eslint-community/regexpp@4.11.0:
-    resolution: {integrity: sha512-G/M/tIiMrTAxEWRfLfQJMmGNX28IxBg4PBz8XqQhqUHLFI6TL2htpIB1iQCj144V5ee/JaKyT9/WZ0MGZWfA7A==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-    dev: true
-
-  /@eslint/config-array@0.18.0:
-    resolution: {integrity: sha512-fTxvnS1sRMu3+JjXwJG0j/i4RT9u4qJ+lqS/yCGap4lH4zZGzQ7tu+xZqQmcMZq5OBZDL4QRxQzRjkWcGt8IVw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-=======
-  '@eslint-community/eslint-utils@4.4.0(eslint@8.57.0)':
-    dependencies:
-      eslint: 8.57.0
-      eslint-visitor-keys: 3.4.3
-
   '@eslint-community/eslint-utils@4.4.0(eslint@9.9.0)':
     dependencies:
       eslint: 9.9.0
+      eslint-visitor-keys: 3.4.3
+
+  '@eslint-community/eslint-utils@4.4.0(eslint@9.9.1)':
+    dependencies:
+      eslint: 9.9.1
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.11.0': {}
@@ -9391,36 +9158,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@eslint/eslintrc@2.1.4:
-    resolution: {integrity: sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-=======
-  '@eslint/eslintrc@2.1.4':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  '@eslint/config-array@0.18.0':
     dependencies:
-      ajv: 6.12.6
+      '@eslint/object-schema': 2.1.4
       debug: 4.3.6(supports-color@5.5.0)
-      espree: 9.6.1
-      globals: 13.24.0
-      ignore: 5.3.2
-      import-fresh: 3.3.0
-      js-yaml: 4.1.0
       minimatch: 3.1.2
-      strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
-<<<<<<< HEAD
-    dev: true
-
-  /@eslint/eslintrc@3.1.0:
-    resolution: {integrity: sha512-4Bfj15dVJdoy3RfZmmo86RK1Fwzn6SstsvK9JS+BaVKqC6QQQQyXekNaC+g+LKNgkQ+2VhGAzm6hO40AhMR3zQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-=======
 
   '@eslint/eslintrc@3.1.0':
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       ajv: 6.12.6
       debug: 4.3.6(supports-color@5.5.0)
@@ -9434,24 +9180,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@eslint/js@8.57.0:
-    resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dev: true
-
-=======
-<<<<<<< HEAD
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-  /@eslint/js@9.9.1:
-    resolution: {integrity: sha512-xIDQRsfg5hNBqHz04H1R3scSVwmI+KUbqjsQKHKQ1DAUSaUjYPReZZmS/5PNiKu1fUvzDd6H7DEDKACSEhu+TQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    dev: true
-=======
-  '@eslint/js@8.57.0': {}
-
   '@eslint/js@9.9.0': {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
+
+  '@eslint/js@9.9.1': {}
 
   '@eslint/object-schema@2.1.4': {}
 
@@ -9463,43 +9194,7 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-<<<<<<< HEAD
-  /@humanwhocodes/config-array@0.11.14:
-    resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
-    engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
-=======
-  '@humanwhocodes/config-array@0.11.14':
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    dependencies:
-      '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.6(supports-color@5.5.0)
-      minimatch: 3.1.2
-    transitivePeerDependencies:
-      - supports-color
-<<<<<<< HEAD
-    dev: true
-
-  /@humanwhocodes/module-importer@1.0.1:
-    resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
-    engines: {node: '>=12.22'}
-    dev: true
-
-  /@humanwhocodes/object-schema@2.0.3:
-    resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
-    deprecated: Use @eslint/object-schema instead
-    dev: true
-
-  /@humanwhocodes/retry@0.3.0:
-    resolution: {integrity: sha512-d2CGZR2o7fS6sWB7DG/3a95bGKQyHMACZ5aW8qGkkqQpUoZV6C0X7Pc7l4ZNMZkfNBf4VWNe9E1jRsf0G146Ew==}
-    engines: {node: '>=18.18'}
-    dev: true
-=======
-
   '@humanwhocodes/module-importer@1.0.1': {}
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-
-  '@humanwhocodes/object-schema@2.0.3': {}
 
   '@humanwhocodes/retry@0.3.0': {}
 
@@ -9529,7 +9224,7 @@ snapshots:
   '@jest/console@26.6.2':
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       jest-message-util: 26.6.2
       jest-util: 26.6.2
@@ -9538,7 +9233,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -9551,7 +9246,7 @@ snapshots:
       '@jest/test-result': 26.6.2
       '@jest/transform': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -9585,14 +9280,14 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-mock: 26.6.2
 
   '@jest/environment@29.7.0':
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-mock: 29.7.0
 
   '@jest/expect-utils@29.7.0':
@@ -9603,7 +9298,7 @@ snapshots:
     dependencies:
       '@jest/types': 26.6.2
       '@sinonjs/fake-timers': 6.0.1
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-message-util: 26.6.2
       jest-mock: 26.6.2
       jest-util: 26.6.2
@@ -9612,7 +9307,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -9723,7 +9418,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/yargs': 15.0.19
       chalk: 4.1.2
 
@@ -9732,7 +9427,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -9760,74 +9455,30 @@ snapshots:
 
   '@jsdevtools/ono@7.1.3': {}
 
-<<<<<<< HEAD
-  /@jsonjoy.com/base64@1.1.2(tslib@2.7.0):
-    resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-    dependencies:
-      tslib: 2.7.0
-    dev: true
-
-  /@jsonjoy.com/json-pack@1.1.0(tslib@2.7.0):
-    resolution: {integrity: sha512-zlQONA+msXPPwHWZMKFVS78ewFczIll5lXiVPwFPCZUsrOKdxc2AvxU1HoNBmMRhqDZUR9HkC3UOm+6pME6Xsg==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-=======
   '@jsonjoy.com/base64@1.1.2(tslib@2.7.0)':
     dependencies:
       tslib: 2.7.0
 
   '@jsonjoy.com/json-pack@1.1.0(tslib@2.7.0)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@jsonjoy.com/base64': 1.1.2(tslib@2.7.0)
       '@jsonjoy.com/util': 1.3.0(tslib@2.7.0)
       hyperdyperid: 1.2.0
       thingies: 1.21.0(tslib@2.7.0)
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-
-  /@jsonjoy.com/util@1.3.0(tslib@2.7.0):
-    resolution: {integrity: sha512-Cebt4Vk7k1xHy87kHY7KSPLT77A7Ev7IfOblyLZhtYEhrdQ6fX4EoLq3xOQ3O/DRMEh2ok5nyC180E+ABS8Wmw==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-    dependencies:
-      tslib: 2.7.0
-    dev: true
-=======
 
   '@jsonjoy.com/util@1.3.0(tslib@2.7.0)':
     dependencies:
       tslib: 2.7.0
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-<<<<<<< HEAD
-  /@lerna/create@8.1.8(typescript@5.5.4):
-    resolution: {integrity: sha512-wi72R01tgjBjzG2kjRyTHl4yCTKDfDMIXRyKz9E/FBa9SkFvUOAE4bdyY9MhEsRZmSWL7+CYE8Flv/HScRpBbA==}
-    engines: {node: '>=18.0.0'}
-=======
   '@lerna/create@8.1.8(encoding@0.1.13)(typescript@5.5.4)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@npmcli/arborist': 7.5.4
       '@npmcli/package-json': 5.2.0
       '@npmcli/run-script': 8.1.0
-<<<<<<< HEAD
-      '@nx/devkit': 19.6.4(nx@19.6.4)
-=======
-<<<<<<< HEAD
       '@nx/devkit': 19.6.3(nx@19.6.3)
-=======
-      '@nx/devkit': 19.6.4(nx@19.6.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       '@octokit/plugin-enterprise-rest': 6.0.1
       '@octokit/rest': 19.0.11(encoding@0.1.13)
       aproba: 2.0.0
@@ -9866,15 +9517,7 @@ snapshots:
       npm-package-arg: 11.0.2
       npm-packlist: 8.0.2
       npm-registry-fetch: 17.1.0
-<<<<<<< HEAD
-      nx: 19.6.4
-=======
-<<<<<<< HEAD
       nx: 19.6.3
-=======
-      nx: 19.6.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       p-map: 4.0.0
       p-map-series: 2.1.0
       p-queue: 6.6.2
@@ -10069,214 +9712,62 @@ snapshots:
       - bluebird
       - supports-color
 
-<<<<<<< HEAD
-  /@nrwl/devkit@19.6.4(nx@19.6.4):
-    resolution: {integrity: sha512-jpr+T5/+21W/fwAMB6zDLZKO+ReYAfOOMIeM8CpeBi/r9nWmjGXaXN9YKwEOYS1fath62Y5ldGK4yZUttv1tkw==}
-    dependencies:
-      '@nx/devkit': 19.6.4(nx@19.6.4)
-=======
-<<<<<<< HEAD
-  /@nrwl/devkit@19.6.3(nx@19.6.3):
-    resolution: {integrity: sha512-zrAboArNfrEMjimBl/0YeM08HfjqOEG/VHdCHKO+5QMDg65w7vDJ2flwyNhlmnMl8BMJSy9fNo6PNGhboOf3+w==}
+  '@nrwl/devkit@19.6.3(nx@19.6.3)':
     dependencies:
       '@nx/devkit': 19.6.3(nx@19.6.3)
-=======
-  '@nrwl/devkit@19.6.4(nx@19.6.4)':
-    dependencies:
-      '@nx/devkit': 19.6.4(nx@19.6.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - nx
 
-<<<<<<< HEAD
-  /@nrwl/tao@19.6.4:
-    resolution: {integrity: sha512-1J8cD+MFzsmboiGe03VlQZ8gt64k/TaYYPZivnnhOJolPPs75nz1JyJX55uWcKKRy/b7FZNKWIu/6Wp9JDhJrQ==}
-    hasBin: true
-    dependencies:
-      nx: 19.6.4
-=======
-<<<<<<< HEAD
-  /@nrwl/tao@19.6.3:
-    resolution: {integrity: sha512-j4vPU87yBhTrdyPFSNhlUkN29w4BQ+M14khT8PFGe+Y26gHMxNRNXNFUCwtVARYAc6IwxS8Uvlwy7AwXG2ETPA==}
-    hasBin: true
+  '@nrwl/tao@19.6.3':
     dependencies:
       nx: 19.6.3
-=======
-  '@nrwl/tao@19.6.4':
-    dependencies:
-      nx: 19.6.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       tslib: 2.7.0
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
       - debug
 
-<<<<<<< HEAD
-  /@nx/devkit@19.6.4(nx@19.6.4):
-    resolution: {integrity: sha512-mBitFwb/gcz8MR7STt7KQG0vf+QcsasDXiSYcf3OWpc6lGE5wn1q5jg6Iabp49Bd/mdHXVLQnP1aV5A+QqFIOQ==}
-    peerDependencies:
-      nx: '>= 17 <= 20'
-    dependencies:
-      '@nrwl/devkit': 19.6.4(nx@19.6.4)
-=======
-<<<<<<< HEAD
-  /@nx/devkit@19.6.3(nx@19.6.3):
-    resolution: {integrity: sha512-/d8Z5/Cy/H/1rIHxW3VjeK5dlvHwRxRj8rCm8/sj5Pz3GmGX03uuEK+J/p+VlP3gP8dAYMgZu3ImeqTAu6rBtw==}
-    peerDependencies:
-      nx: '>= 17 <= 20'
+  '@nx/devkit@19.6.3(nx@19.6.3)':
     dependencies:
       '@nrwl/devkit': 19.6.3(nx@19.6.3)
-=======
-  '@nx/devkit@19.6.4(nx@19.6.4)':
-    dependencies:
-      '@nrwl/devkit': 19.6.4(nx@19.6.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.2
       minimatch: 9.0.3
-<<<<<<< HEAD
-      nx: 19.6.4
-=======
-<<<<<<< HEAD
       nx: 19.6.3
-=======
-      nx: 19.6.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       semver: 7.6.3
       tmp: 0.2.3
       tslib: 2.7.0
       yargs-parser: 21.1.1
 
-<<<<<<< HEAD
-  /@nx/nx-darwin-arm64@19.6.4:
-    resolution: {integrity: sha512-kRn2FLvhwJA/TJrNlsCSqqQTrguNZLmiRsiXhvjkfUMbUKwyQfVMgJlvkZ+KoqraUSG+Qyb0FmrGur1I/Mld0Q==}
-=======
-<<<<<<< HEAD
-  /@nx/nx-darwin-arm64@19.6.3:
-    resolution: {integrity: sha512-P7WlX5YDZOABAlyfpR6eObigQTNuUuy3iJVUuGwp1Nuo3VPMPkpK1GMWKWLwOR9+2jGnF5MzuqWHk7CdF33uqQ==}
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-darwin-arm64@19.6.3':
     optional: true
 
-  /@nx/nx-darwin-x64@19.6.4:
-    resolution: {integrity: sha512-3uABBUhxVk+SdRwpUu30iuBlgRWm3tA/G9seG+wt7oN2R+fOu8zzRCYa+Blvoh1Ef+D9743Ir4rDc9Mhzl2B2g==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-darwin-x64@19.6.3':
     optional: true
 
-  /@nx/nx-freebsd-x64@19.6.4:
-    resolution: {integrity: sha512-OG83MiEk5L54/vAldmwZJBKEvZaM+DEIDqn2yZLTToBRj5Z9jwKJX3jKP60xbHiaT/hzsb1xPlwhOHJnYd80EQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-freebsd-x64@19.6.3':
     optional: true
 
-  /@nx/nx-linux-arm-gnueabihf@19.6.4:
-    resolution: {integrity: sha512-hQ9x4qSKUh9mIVDuD270ULrBnmYfDTjXq7LnIwECw1AuP4LkKzKxULhsbqVnFQ/k3xxyFkwyGTIu2mfDcw16Gw==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-linux-arm-gnueabihf@19.6.3':
     optional: true
 
-  /@nx/nx-linux-arm64-gnu@19.6.4:
-    resolution: {integrity: sha512-OFKpAHiaVg3YGFIMBmi/JshciP9buwtOPiHDXcQdzQgE22jyYzKEiFxfcpG0nCT8PlMYAbHPAda15WfWkfVGVQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-linux-arm64-gnu@19.6.3':
     optional: true
 
-  /@nx/nx-linux-arm64-musl@19.6.4:
-    resolution: {integrity: sha512-ZIR9u+mN0A7SmNd6vDxmPV1QVTgYPTdfBSM5TEnKl3q2fHw2Nkui81QBxA4d7VopJoJUz/pRHiUV+dlgEEZ6nA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-linux-arm64-musl@19.6.3':
     optional: true
 
-  /@nx/nx-linux-x64-gnu@19.6.4:
-    resolution: {integrity: sha512-AUMPvLs9KeCUuWD5DdlpbP3VfVsiD0IlptS2b3ul336rsQ7LwwdvE7jTVO5CixFOsiRZxP72fKJhaEargMn5Aw==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-linux-x64-gnu@19.6.3':
     optional: true
 
-  /@nx/nx-linux-x64-musl@19.6.4:
-    resolution: {integrity: sha512-PU7AaBlrgnJnDxTiV/PNCu0pHUCzaogm6uNcbzCyFJLGn7DoQK9rkqUMPJjb3CnJkAj9XrrhuZwmOdbrhvHAvA==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-linux-x64-musl@19.6.3':
     optional: true
 
-  /@nx/nx-win32-arm64-msvc@19.6.4:
-    resolution: {integrity: sha512-6CCmGWwH/J2k+Uxeci48w4QVhtcQ3hRZ5Z2jh26HI8YzH4wqZyA7QPgLBE6sNCPVLoGW5cBgTsfnyEdr+xarQA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
+  '@nx/nx-win32-arm64-msvc@19.6.3':
     optional: true
 
-  /@nx/nx-win32-x64-msvc@19.6.4:
-    resolution: {integrity: sha512-jTNrlaFaKtbL2mYOcfPAiljtpF5CI7vbHIqYqBFYLUQXOwW9lOHlO+SeQnft6JYZs0FIr1IdHaCfdOw/hpnCiQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-=======
-  '@nx/nx-darwin-arm64@19.6.4':
-    optional: true
-
-  '@nx/nx-darwin-x64@19.6.4':
-    optional: true
-
-  '@nx/nx-freebsd-x64@19.6.4':
-    optional: true
-
-  '@nx/nx-linux-arm-gnueabihf@19.6.4':
-    optional: true
-
-  '@nx/nx-linux-arm64-gnu@19.6.4':
-    optional: true
-
-  '@nx/nx-linux-arm64-musl@19.6.4':
-    optional: true
-
-  '@nx/nx-linux-x64-gnu@19.6.4':
-    optional: true
-
-  '@nx/nx-linux-x64-musl@19.6.4':
-    optional: true
-
-  '@nx/nx-win32-arm64-msvc@19.6.4':
-    optional: true
-
-  '@nx/nx-win32-x64-msvc@19.6.4':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
+  '@nx/nx-win32-x64-msvc@19.6.3':
     optional: true
 
   '@octokit/auth-token@3.0.4': {}
@@ -10476,7 +9967,7 @@ snapshots:
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@16.0.0(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.25.4
       '@testing-library/dom': 10.4.0
@@ -10497,10 +9988,6 @@ snapshots:
   '@tybys/wasm-util@0.9.0':
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@types/aria-query@5.0.4': {}
 
@@ -10515,71 +10002,36 @@ snapshots:
   '@types/babel__generator@7.6.8':
     dependencies:
       '@babel/types': 7.25.4
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@types/babel__template@7.4.4':
     dependencies:
       '@babel/parser': 7.25.4
       '@babel/types': 7.25.4
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@types/babel__traverse@7.20.6':
     dependencies:
       '@babel/types': 7.25.4
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 4.19.5
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
-<<<<<<< HEAD
-  /@types/estree@1.0.5:
-    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
-    dev: true
-=======
   '@types/eslint-scope@3.7.7':
     dependencies:
-<<<<<<< HEAD
-=======
       '@types/eslint': 9.6.0
       '@types/estree': 1.0.5
 
@@ -10589,12 +10041,10 @@ snapshots:
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.5': {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -10608,7 +10058,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
 
   '@types/html-minifier-terser@6.1.0': {}
 
@@ -10616,11 +10066,7 @@ snapshots:
 
   '@types/http-proxy@1.17.15':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -10639,7 +10085,7 @@ snapshots:
 
   '@types/jsdom@20.0.1':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/tough-cookie': 4.0.5
       parse5: 7.1.2
 
@@ -10655,16 +10101,9 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
+      '@types/node': 22.5.2
 
-  /@types/node@22.5.1:
-    resolution: {integrity: sha512-KkHsxej0j9IW1KKOOAA/XBA0z08UFSrRQHErzEfA3Vgq57eXIMYboIlHJuYIfd+lwCQjtKqUu3UnmKbtUc9yRw==}
-=======
-
-  '@types/node@22.5.1':
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  '@types/node@22.5.2':
     dependencies:
       undici-types: 6.19.8
 
@@ -10683,11 +10122,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -10696,16 +10131,12 @@ snapshots:
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/send': 0.17.4
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/stack-utils@2.0.3': {}
 
@@ -10725,16 +10156,12 @@ snapshots:
 
   '@types/whatwg-url@8.2.2':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       '@types/webidl-conversions': 7.0.3
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -10742,157 +10169,61 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-<<<<<<< HEAD
-  /@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0)(eslint@8.57.0)(typescript@5.5.4):
-=======
-<<<<<<< HEAD
-  /@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0)(eslint@9.9.1)(typescript@5.5.4):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-FLAIn63G5KH+adZosDYiutqkOkYEx0nvcwNNfJAf+c7Ae/H35qWwTYvPZUKFj5AS+WfHG/WJJfWnDnyNUlp8UA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      '@typescript-eslint/parser': ^8.0.0 || ^8.0.0-alpha.0
-      eslint: ^8.57.0 || ^9.0.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@eslint-community/regexpp': 4.11.0
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/scope-manager': 8.3.0
-      '@typescript-eslint/type-utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/visitor-keys': 8.3.0
-<<<<<<< HEAD
-      eslint: 8.57.0
-=======
-      eslint: 9.9.1
-=======
   '@types/yargs@17.0.33':
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/regexpp': 4.11.0
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/parser': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
       '@typescript-eslint/scope-manager': 8.3.0
-      '@typescript-eslint/type-utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/type-utils': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 8.3.0
-      eslint: 8.57.0
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      eslint: 9.9.1
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare: 1.4.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
-<<<<<<< HEAD
-=======
     optionalDependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4):
-=======
-<<<<<<< HEAD
-  /@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-h53RhVyLu6AtpUzVCYLPhZGL5jzTD9fZL+SYf/+hYOx2bDkyQXztXSc4tbvKYHzfMXExMLiL9CWqJmVz6+78IQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-=======
-  '@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
+  '@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.3.0
       '@typescript-eslint/types': 8.3.0
       '@typescript-eslint/typescript-estree': 8.3.0(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 8.3.0
       debug: 4.3.6(supports-color@5.5.0)
-<<<<<<< HEAD
-      eslint: 8.57.0
-=======
-<<<<<<< HEAD
       eslint: 9.9.1
-=======
-      eslint: 8.57.0
     optionalDependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@typescript-eslint/scope-manager@8.3.0:
-    resolution: {integrity: sha512-mz2X8WcN2nVu5Hodku+IR8GgCOl4C0G/Z1ruaWN4dgec64kDBabuXyPAr+/RgJtumv8EEkqIzf3X2U5DUKB2eg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    dependencies:
-      '@typescript-eslint/types': 8.3.0
-      '@typescript-eslint/visitor-keys': 8.3.0
-    dev: true
-
-  /@typescript-eslint/type-utils@8.3.0(eslint@8.57.0)(typescript@5.5.4):
-    resolution: {integrity: sha512-wrV6qh//nLbfXZQoj32EXKmwHf4b7L+xXLrP3FZ0GOUU72gSvLjeWUl5J5Ue5IwRxIV1TfF73j/eaBapxx99Lg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@typescript-eslint/typescript-estree': 8.3.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.6(supports-color@5.5.0)
-      ts-api-utils: 1.3.0(typescript@5.5.4)
-=======
   '@typescript-eslint/scope-manager@8.3.0':
     dependencies:
       '@typescript-eslint/types': 8.3.0
       '@typescript-eslint/visitor-keys': 8.3.0
 
-  '@typescript-eslint/type-utils@8.3.0(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/type-utils@8.3.0(eslint@9.9.1)(typescript@5.5.4)':
     dependencies:
       '@typescript-eslint/typescript-estree': 8.3.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
       debug: 4.3.6(supports-color@5.5.0)
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       typescript: 5.5.4
     transitivePeerDependencies:
       - eslint
       - supports-color
 
-<<<<<<< HEAD
-  /@typescript-eslint/types@8.3.0:
-    resolution: {integrity: sha512-y6sSEeK+facMaAyixM36dQ5NVXTnKWunfD1Ft4xraYqxP0lC0POJmIaL/mw72CUMqjY9qfyVfXafMeaUj0noWw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    dev: true
-
-  /@typescript-eslint/typescript-estree@8.3.0(typescript@5.5.4):
-    resolution: {integrity: sha512-Mq7FTHl0R36EmWlCJWojIC1qn/ZWo2YiWYc1XVtasJ7FIgjo0MVv9rZWXEE7IK2CGrtwe1dVOxWwqXUdNgfRCA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-=======
   '@typescript-eslint/types@8.3.0': {}
 
   '@typescript-eslint/typescript-estree@8.3.0(typescript@5.5.4)':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@typescript-eslint/types': 8.3.0
       '@typescript-eslint/visitor-keys': 8.3.0
@@ -10902,70 +10233,28 @@ snapshots:
       minimatch: 9.0.5
       semver: 7.6.3
       ts-api-utils: 1.3.0(typescript@5.5.4)
-<<<<<<< HEAD
-=======
     optionalDependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       typescript: 5.5.4
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /@typescript-eslint/utils@8.3.0(eslint@8.57.0)(typescript@5.5.4):
-=======
-<<<<<<< HEAD
-  /@typescript-eslint/utils@8.3.0(eslint@9.9.1)(typescript@5.5.4):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-F77WwqxIi/qGkIGOGXNBLV7nykwfjLsdauRB/DOFPdv6LTF3BHHkBpq81/b5iMPSF055oO2BiivDJV4ChvNtXA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
+  '@typescript-eslint/utils@8.3.0(eslint@9.9.1)(typescript@5.5.4)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.9.1)
       '@typescript-eslint/scope-manager': 8.3.0
       '@typescript-eslint/types': 8.3.0
       '@typescript-eslint/typescript-estree': 8.3.0(typescript@5.5.4)
-<<<<<<< HEAD
-      eslint: 8.57.0
-=======
       eslint: 9.9.1
-=======
-  '@typescript-eslint/utils@8.3.0(eslint@8.57.0)(typescript@5.5.4)':
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@typescript-eslint/scope-manager': 8.3.0
-      '@typescript-eslint/types': 8.3.0
-      '@typescript-eslint/typescript-estree': 8.3.0(typescript@5.5.4)
-      eslint: 8.57.0
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-<<<<<<< HEAD
-  /@typescript-eslint/visitor-keys@8.3.0:
-    resolution: {integrity: sha512-RmZwrTbQ9QveF15m/Cl28n0LXD6ea2CjkhH5rQ55ewz3H24w+AMCJHPVYaZ8/0HoG8Z3cLLFFycRXxeO2tz9FA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-=======
   '@typescript-eslint/visitor-keys@8.3.0':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@typescript-eslint/types': 8.3.0
       eslint-visitor-keys: 3.4.3
 
-<<<<<<< HEAD
-  /@ungap/structured-clone@1.2.0:
-    resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
-    dev: true
-
-  /@vue/compiler-core@3.4.38:
-    resolution: {integrity: sha512-8IQOTCWnLFqfHzOGm9+P8OPSEDukgg3Huc92qSG49if/xI2SAwLHQO2qaPQbjCWPBcQoO1WYfXfTACUrWV3c5A==}
-=======
-  '@ungap/structured-clone@1.2.0': {}
-
   '@vue/compiler-core@3.4.38':
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/parser': 7.25.4
       '@vue/shared': 3.4.38
@@ -10987,7 +10276,7 @@ snapshots:
       '@vue/shared': 3.4.38
       estree-walker: 2.0.2
       magic-string: 0.30.11
-      postcss: 8.4.41
+      postcss: 8.4.43
       source-map-js: 1.2.0
 
   '@vue/compiler-ssr@3.4.38':
@@ -11022,28 +10311,9 @@ snapshots:
   '@vue/test-utils@2.4.6':
     dependencies:
       js-beautify: 1.15.1
-      vue-component-type-helpers: 2.1.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      vue-component-type-helpers: 2.0.29
 
-<<<<<<< HEAD
-  /@vue/vue3-jest@29.2.6(@babel/core@7.25.2)(babel-jest@26.6.3)(jest@26.6.3)(typescript@5.5.4)(vue@3.4.38):
-    resolution: {integrity: sha512-Hy4i2BsV5fUmER5LplYiAeRkLTDCSB3ZbnAeEawXtjto/ILaOnamBAoAvEqARgPpR6NRtiYjSgGKmllMtnFd9g==}
-    engines: {node: '>10'}
-    peerDependencies:
-      '@babel/core': 7.x
-      babel-jest: ^26.6.3
-      jest: ^26.6.3
-      typescript: '>= 4.3'
-      vue: ^3.4.30
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-=======
   '@vue/vue3-jest@29.2.6(@babel/core@7.25.2)(babel-jest@26.6.3(@babel/core@7.25.2))(jest@26.6.3)(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4))':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-modules-commonjs': 7.24.8(@babel/core@7.25.2)
@@ -11054,14 +10324,9 @@ snapshots:
       jest: 26.6.3
       source-map: 0.5.6
       tsconfig: 7.0.0
-<<<<<<< HEAD
-      typescript: 5.5.4
-      vue: 3.4.38(typescript@5.5.4)
-=======
       vue: 3.4.38(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - supports-color
 
@@ -11141,68 +10406,32 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@xtuc/long': 4.2.2
 
-<<<<<<< HEAD
-  /@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.94.0):
-    resolution: {integrity: sha512-wy0mglZpDSiSS0XHrVR+BAdId2+yxPSoJW8fsna3ZpYSlufjvxnP4YbKTCBZnNIcGN4r6ZPXV55X4mYExOfLmw==}
-    engines: {node: '>=14.15.0'}
-    peerDependencies:
-      webpack: 5.x.x
-      webpack-cli: 5.x.x
-=======
   '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0)
 
   '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.94.0))(webpack@5.94.0(webpack-cli@5.1.4))':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       webpack: 5.94.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.94.0)
 
-<<<<<<< HEAD
-  /@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.94.0):
-    resolution: {integrity: sha512-zLHQdI/Qs1UyT5UBdWNqsARasIA+AaF8t+4u2aS2nEpBQh2mWIVb8qAklq0eUENnC5mOItrIB4LiS9xMtph18A==}
-    engines: {node: '>=14.15.0'}
-    peerDependencies:
-      webpack: 5.x.x
-      webpack-cli: 5.x.x
-=======
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0)
 
   '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.94.0))(webpack@5.94.0(webpack-cli@5.1.4))':
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       webpack: 5.94.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.94.0)
 
-<<<<<<< HEAD
-  /@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@4.15.2)(webpack@5.94.0):
-    resolution: {integrity: sha512-lqaoKnRYBdo1UgDX8uF24AfGMifWK19TxPmM5FHc2vAGxrJ/qtyUyFBWoY1tISZdelsQ5fBcOusifo5o5wSJxQ==}
-    engines: {node: '>=14.15.0'}
-    peerDependencies:
-      webpack: 5.x.x
-      webpack-cli: 5.x.x
-      webpack-dev-server: '*'
-    peerDependenciesMeta:
-      webpack-dev-server:
-        optional: true
-    dependencies:
-      webpack: 5.94.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.94.0)
-      webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.94.0)
-    dev: true
-=======
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0)
     optionalDependencies:
       webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.93.0)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.94.0))(webpack@5.94.0(webpack-cli@5.1.4))':
     dependencies:
@@ -11219,10 +10448,6 @@ snapshots:
     dependencies:
       js-yaml: 3.14.1
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   '@zkochan/js-yaml@0.0.7':
     dependencies:
@@ -11484,10 +10709,6 @@ snapshots:
   async-mutex@0.5.0:
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   async@2.6.4:
     dependencies:
@@ -11505,22 +10726,11 @@ snapshots:
 
   aws-sign2@0.7.0: {}
 
-<<<<<<< HEAD
-  /aws4@1.13.2:
-    resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
-    dev: false
-=======
   aws4@1.13.1: {}
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
 
   axe-core@4.10.0: {}
 
-<<<<<<< HEAD
-  /axios@1.7.5:
-    resolution: {integrity: sha512-fZu86yCo+svH3uqJ/yTdQ0QHpQu5oL+/QE+QPSv6BZSkDAoky9vytxp7u5qk83OJFS3kEBcesWni9WTZAv3tSw==}
-=======
   axios@1.7.4:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       follow-redirects: 1.15.6(debug@4.3.6)
       form-data: 4.0.0
@@ -11528,7 +10738,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.7.5:
+  axios@1.7.7:
     dependencies:
       follow-redirects: 1.15.6(debug@4.3.6)
       form-data: 4.0.0
@@ -11812,10 +11022,6 @@ snapshots:
     dependencies:
       pascal-case: 3.1.2
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   camelcase-keys@6.2.2:
     dependencies:
@@ -11827,12 +11033,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-<<<<<<< HEAD
-  /caniuse-lite@1.0.30001653:
-    resolution: {integrity: sha512-XGWQVB8wFQ2+9NZwZ10GxTYC5hk0Fa+q8cSkr0tgvMhYhMHP/QC+WTgrePMDBWiWc/pV+1ik82Al20XOK25Gcw==}
-=======
   caniuse-lite@1.0.30001653: {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   capture-exit@2.0.0:
     dependencies:
@@ -12142,15 +11343,7 @@ snapshots:
 
   copy-descriptor@0.1.1: {}
 
-<<<<<<< HEAD
-  /copy-webpack-plugin@12.0.2(webpack@5.94.0):
-    resolution: {integrity: sha512-SNwdBeHyII+rWvee/bTnAYyO8vfVdcSTud4EIb6jcZ8inLeWucJE0DnxXQBjlQ5zlteuuvooGQy3LIyGxhvlOA==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      webpack: ^5.1.0
-=======
   copy-webpack-plugin@12.0.2(webpack@5.93.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       fast-glob: 3.3.2
       glob-parent: 6.0.2
@@ -12158,12 +11351,7 @@ snapshots:
       normalize-path: 3.0.0
       schema-utils: 4.2.0
       serialize-javascript: 6.0.2
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   core-js-compat@3.38.1:
     dependencies:
@@ -12188,30 +11376,14 @@ snapshots:
       path-type: 4.0.0
       yaml: 1.10.2
 
-<<<<<<< HEAD
-  /cosmiconfig@8.3.6(typescript@5.5.4):
-    resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      typescript: '>=4.9.5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-=======
   cosmiconfig@8.3.6(typescript@5.5.4):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
-<<<<<<< HEAD
-      typescript: 5.5.4
-    dev: true
-=======
     optionalDependencies:
       typescript: 5.5.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   create-jest-runner@0.11.2:
     dependencies:
@@ -12233,37 +11405,18 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-<<<<<<< HEAD
-  /css-loader@7.1.2(webpack@5.94.0):
-    resolution: {integrity: sha512-6WvYYn7l/XEGN8Xu2vWFt9nVzrCn39vKyTEFf/ExEyoksJjjSZV/0/35XPlMbpnr6VGhZIUg5yJrL8tGfes/FA==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      '@rspack/core': 0.x || 1.x
-      webpack: ^5.27.0
-    peerDependenciesMeta:
-      '@rspack/core':
-        optional: true
-      webpack:
-        optional: true
-=======
   css-loader@7.1.2(webpack@5.93.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.41)
-      postcss: 8.4.41
-      postcss-modules-extract-imports: 3.1.0(postcss@8.4.41)
-      postcss-modules-local-by-default: 4.0.5(postcss@8.4.41)
-      postcss-modules-scope: 3.2.0(postcss@8.4.41)
-      postcss-modules-values: 4.0.0(postcss@8.4.41)
+      icss-utils: 5.1.0(postcss@8.4.43)
+      postcss: 8.4.43
+      postcss-modules-extract-imports: 3.1.0(postcss@8.4.43)
+      postcss-modules-local-by-default: 4.0.5(postcss@8.4.43)
+      postcss-modules-scope: 3.2.0(postcss@8.4.43)
+      postcss-modules-values: 4.0.0(postcss@8.4.43)
       postcss-value-parser: 4.2.0
       semver: 7.6.3
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
     optionalDependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   css-select@4.3.0:
     dependencies:
@@ -12517,10 +11670,6 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   dot-prop@5.3.0:
     dependencies:
@@ -12720,19 +11869,12 @@ snapshots:
 
   es6-error@4.1.1: {}
 
-<<<<<<< HEAD
-  /esbuild-loader@4.2.2(webpack@5.94.0):
-    resolution: {integrity: sha512-Mdq/A1L8p37hkibp8jGFwuQTDSWhDmlueAefsrCPRwNWThEOlQmIglV7Gd6GE2mO5bt7ksfxKOMwkuY7jjVTXg==}
-    peerDependencies:
-      webpack: ^4.40.0 || ^5.0.0
-=======
   esbuild-loader@4.2.2(webpack@5.93.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       esbuild: 0.21.5
       get-tsconfig: 4.7.6
       loader-utils: 2.0.4
-      webpack: 5.94.0(webpack-cli@5.1.4)
+      webpack: 5.93.0(webpack-cli@5.1.4)
       webpack-sources: 1.4.3
 
   esbuild@0.21.5:
@@ -12779,20 +11921,9 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-<<<<<<< HEAD
-  /eslint-config-prettier@9.1.0(eslint@8.57.0):
-    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
-    hasBin: true
-    peerDependencies:
-      eslint: '>=7.0.0'
+  eslint-config-prettier@9.1.0(eslint@9.9.1):
     dependencies:
-      eslint: 8.57.0
-    dev: true
-=======
-  eslint-config-prettier@9.1.0(eslint@8.57.0):
-    dependencies:
-      eslint: 8.57.0
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      eslint: 9.9.1
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
@@ -12802,105 +11933,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /eslint-module-utils@2.8.2(@typescript-eslint/parser@8.3.0)(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
-=======
-<<<<<<< HEAD
-  /eslint-module-utils@2.8.2(@typescript-eslint/parser@8.3.0)(eslint-import-resolver-node@0.3.9)(eslint@9.9.1):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-3XnC5fDyc8M4J2E8pt8pmSVRX2M+5yWMCfI/kDZwauQeFgzQOuhcRBFKjTeJagqgk4sFKxe1mvNVnaWwImx/Tg==}
-    engines: {node: '>=4'}
-    peerDependencies:
-      '@typescript-eslint/parser': '*'
-      eslint: '*'
-      eslint-import-resolver-node: '*'
-      eslint-import-resolver-typescript: '*'
-      eslint-import-resolver-webpack: '*'
-    peerDependenciesMeta:
-      '@typescript-eslint/parser':
-        optional: true
-      eslint:
-        optional: true
-      eslint-import-resolver-node:
-        optional: true
-      eslint-import-resolver-typescript:
-        optional: true
-      eslint-import-resolver-webpack:
-        optional: true
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@9.9.1):
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 3.2.7
-=======
-      '@typescript-eslint/parser': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
-=======
-  eslint-module-utils@2.8.2(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
-    dependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-      eslint: 8.57.0
+      '@typescript-eslint/parser': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
+      eslint: 9.9.1
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /eslint-plugin-es@3.0.1(eslint@8.57.0):
-    resolution: {integrity: sha512-GUmAsJaN4Fc7Gbtl8uOBlayo2DqhwWvEzykMHSCZHU3XdJ+NSzzZcVhXh3VxX5icqQ+oQdIEawXX8xkR3mIFmQ==}
-    engines: {node: '>=8.10.0'}
-    peerDependencies:
-      eslint: '>=4.19.1'
-=======
-  eslint-plugin-es@3.0.1(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  eslint-plugin-es@3.0.1(eslint@9.9.1):
     dependencies:
-      eslint: 8.57.0
+      eslint: 9.9.1
       eslint-utils: 2.1.0
       regexpp: 3.2.0
 
-<<<<<<< HEAD
-  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.3.0)(eslint@8.57.0):
-=======
-<<<<<<< HEAD
-  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.3.0)(eslint@9.9.1):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-BbPC0cuExzhiMo4Ff1BTVwHpjjv28C5R+btTOGaCRC7UEz801up0JadwkeSk5Ued6TG34uaczuVuH6qyy5YUxw==}
-    engines: {node: '>=4'}
-    peerDependencies:
-      '@typescript-eslint/parser': '*'
-      eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-    peerDependenciesMeta:
-      '@typescript-eslint/parser':
-        optional: true
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1):
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-=======
-      '@typescript-eslint/parser': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
-=======
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0):
-    dependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
       array.prototype.flat: 1.3.2
       array.prototype.flatmap: 1.3.2
       debug: 3.2.7
       doctrine: 2.1.0
-      eslint: 8.57.0
+      eslint: 9.9.1
       eslint-import-resolver-node: 0.3.9
-<<<<<<< HEAD
-      eslint-module-utils: 2.8.2(@typescript-eslint/parser@8.3.0)(eslint-import-resolver-node@0.3.9)(eslint@8.57.0)
-=======
-<<<<<<< HEAD
-      eslint-module-utils: 2.8.2(@typescript-eslint/parser@8.3.0)(eslint-import-resolver-node@0.3.9)(eslint@9.9.1)
-=======
-      eslint-module-utils: 2.8.2(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@9.9.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -12911,61 +11970,24 @@ snapshots:
       semver: 6.3.1
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/parser': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
 
-<<<<<<< HEAD
-  /eslint-plugin-jest@28.8.0(@typescript-eslint/eslint-plugin@8.3.0)(eslint@8.57.0)(jest@26.6.3)(typescript@5.5.4):
-=======
-<<<<<<< HEAD
-  /eslint-plugin-jest@28.8.0(@typescript-eslint/eslint-plugin@8.3.0)(eslint@9.9.1)(jest@26.6.3)(typescript@5.5.4):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    resolution: {integrity: sha512-Tubj1hooFxCl52G4qQu0edzV/+EZzPUeN8p2NnW5uu4fbDs+Yo7+qDVDc4/oG3FbCqEBmu/OC3LSsyiU22oghw==}
-    engines: {node: ^16.10.0 || ^18.12.0 || >=20.0.0}
-    peerDependencies:
-      '@typescript-eslint/eslint-plugin': ^6.0.0 || ^7.0.0 || ^8.0.0
-      eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
-      jest: ^26.6.3
-    peerDependenciesMeta:
-      '@typescript-eslint/eslint-plugin':
-        optional: true
-      jest:
-        optional: true
+  eslint-plugin-jest@28.8.1(@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(jest@26.6.3)(typescript@5.5.4):
     dependencies:
-<<<<<<< HEAD
-      '@typescript-eslint/eslint-plugin': 8.3.0(@typescript-eslint/parser@8.3.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint: 8.57.0
-=======
-      '@typescript-eslint/eslint-plugin': 8.3.0(@typescript-eslint/parser@8.3.0)(eslint@9.9.1)(typescript@5.5.4)
       '@typescript-eslint/utils': 8.3.0(eslint@9.9.1)(typescript@5.5.4)
       eslint: 9.9.1
-=======
-  eslint-plugin-jest@28.8.0(@typescript-eslint/eslint-plugin@8.3.0(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(jest@26.6.3)(typescript@5.5.4):
-    dependencies:
-      '@typescript-eslint/utils': 8.3.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint: 8.57.0
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.3.0(@typescript-eslint/parser@8.3.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@typescript-eslint/eslint-plugin': 8.3.0(@typescript-eslint/parser@8.3.0(eslint@9.9.1)(typescript@5.5.4))(eslint@9.9.1)(typescript@5.5.4)
       jest: 26.6.3
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-<<<<<<< HEAD
-  /eslint-plugin-jsx-a11y@6.9.0(eslint@8.57.0):
-    resolution: {integrity: sha512-nOFOCaJG2pYqORjK19lqPqxMO/JpvdCZdPtNdxY3kvom3jTvkAbOvQvD8wuD0G8BYR0IGAGYDlzqWJOh/ybn2g==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-=======
-  eslint-plugin-jsx-a11y@6.9.0(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  eslint-plugin-jsx-a11y@6.9.0(eslint@9.9.1):
     dependencies:
       aria-query: 5.1.3
       array-includes: 3.1.8
@@ -12976,7 +11998,7 @@ snapshots:
       damerau-levenshtein: 1.0.8
       emoji-regex: 9.2.2
       es-iterator-helpers: 1.0.19
-      eslint: 8.57.0
+      eslint: 9.9.1
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
       language-tags: 1.0.9
@@ -12985,75 +12007,31 @@ snapshots:
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.0
 
-<<<<<<< HEAD
-  /eslint-plugin-node@11.1.0(eslint@8.57.0):
-    resolution: {integrity: sha512-oUwtPJ1W0SKD0Tr+wqu92c5xuCeQqB3hSCHasn/ZgjFdA9iDGNkNf2Zi9ztY7X+hNuMib23LNGRm6+uN+KLE3g==}
-    engines: {node: '>=8.10.0'}
-    peerDependencies:
-      eslint: '>=5.16.0'
-=======
-  eslint-plugin-node@11.1.0(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  eslint-plugin-node@11.1.0(eslint@9.9.1):
     dependencies:
-      eslint: 8.57.0
-      eslint-plugin-es: 3.0.1(eslint@8.57.0)
+      eslint: 9.9.1
+      eslint-plugin-es: 3.0.1(eslint@9.9.1)
       eslint-utils: 2.1.0
       ignore: 5.3.2
       minimatch: 3.1.2
       resolve: 1.22.8
       semver: 6.3.1
 
-<<<<<<< HEAD
-  /eslint-plugin-prettier@5.2.1(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.3.3):
-    resolution: {integrity: sha512-gH3iR3g4JfF+yYPaJYkN7jEl9QbweL/YfkoRlNnuIEHEz1vHVlCmWOS+eGGiRuzHQXdJFCOTxRgvju9b8VUmrw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      '@types/eslint': '>=8.0.0'
-      eslint: '>=8.0.0'
-      eslint-config-prettier: '*'
-      prettier: '>=3.0.0'
-    peerDependenciesMeta:
-      '@types/eslint':
-        optional: true
-      eslint-config-prettier:
-        optional: true
+  eslint-plugin-prettier@5.2.1(@types/eslint@9.6.0)(eslint-config-prettier@9.1.0(eslint@9.9.1))(eslint@9.9.1)(prettier@3.3.3):
     dependencies:
-      eslint: 8.57.0
-      eslint-config-prettier: 9.1.0(eslint@8.57.0)
-=======
-  eslint-plugin-prettier@5.2.1(@types/eslint@9.6.0)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.3):
-    dependencies:
-      eslint: 8.57.0
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      eslint: 9.9.1
       prettier: 3.3.3
       prettier-linter-helpers: 1.0.0
       synckit: 0.9.1
     optionalDependencies:
       '@types/eslint': 9.6.0
-      eslint-config-prettier: 9.1.0(eslint@8.57.0)
+      eslint-config-prettier: 9.1.0(eslint@9.9.1)
 
-<<<<<<< HEAD
-  /eslint-plugin-react-hooks@4.6.2(eslint@8.57.0):
-    resolution: {integrity: sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
+  eslint-plugin-react-hooks@4.6.2(eslint@9.9.1):
     dependencies:
-      eslint: 8.57.0
-    dev: true
+      eslint: 9.9.1
 
-  /eslint-plugin-react@7.35.0(eslint@8.57.0):
-    resolution: {integrity: sha512-v501SSMOWv8gerHkk+IIQBkcGRGrO2nfybfj5pLxuJNFTPxxA3PSryhXTK+9pNbtkggheDdsC0E9Q8CuPk6JKA==}
-    engines: {node: '>=4'}
-    peerDependencies:
-      eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7
-=======
-  eslint-plugin-react-hooks@4.6.2(eslint@8.57.0):
-    dependencies:
-      eslint: 8.57.0
-
-  eslint-plugin-react@7.35.0(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  eslint-plugin-react@7.35.0(eslint@9.9.1):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlast: 1.2.5
@@ -13061,7 +12039,7 @@ snapshots:
       array.prototype.tosorted: 1.1.4
       doctrine: 2.1.0
       es-iterator-helpers: 1.0.19
-      eslint: 8.57.0
+      eslint: 9.9.1
       estraverse: 5.3.0
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
@@ -13075,24 +12053,16 @@ snapshots:
       string.prototype.matchall: 4.0.11
       string.prototype.repeat: 1.0.0
 
-<<<<<<< HEAD
-  /eslint-plugin-vue@9.27.0(eslint@8.57.0):
-    resolution: {integrity: sha512-5Dw3yxEyuBSXTzT5/Ge1X5kIkRTQ3nvBn/VwPwInNiZBSJOO/timWMUaflONnFBzU6NhB68lxnCda7ULV5N7LA==}
-    engines: {node: ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-=======
-  eslint-plugin-vue@9.27.0(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  eslint-plugin-vue@9.27.0(eslint@9.9.1):
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      eslint: 8.57.0
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.9.1)
+      eslint: 9.9.1
       globals: 13.24.0
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.1.2
       semver: 7.6.3
-      vue-eslint-parser: 9.4.3(eslint@8.57.0)
+      vue-eslint-parser: 9.4.3(eslint@9.9.1)
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -13124,116 +12094,6 @@ snapshots:
 
   eslint-visitor-keys@4.0.0: {}
 
-<<<<<<< HEAD
-  /eslint@8.57.0:
-    resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    hasBin: true
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@eslint-community/regexpp': 4.11.0
-      '@eslint/eslintrc': 2.1.4
-      '@eslint/js': 8.57.0
-      '@humanwhocodes/config-array': 0.11.14
-      '@humanwhocodes/module-importer': 1.0.1
-      '@nodelib/fs.walk': 1.2.8
-      '@ungap/structured-clone': 1.2.0
-      ajv: 6.12.6
-      chalk: 4.1.2
-      cross-spawn: 7.0.3
-      debug: 4.3.6(supports-color@5.5.0)
-      doctrine: 3.0.0
-      escape-string-regexp: 4.0.0
-      eslint-scope: 7.2.2
-      eslint-visitor-keys: 3.4.3
-      espree: 9.6.1
-      esquery: 1.6.0
-      esutils: 2.0.3
-      fast-deep-equal: 3.1.3
-      file-entry-cache: 6.0.1
-      find-up: 5.0.0
-      glob-parent: 6.0.2
-      globals: 13.24.0
-      graphemer: 1.4.0
-      ignore: 5.3.2
-      imurmurhash: 0.1.4
-      is-glob: 4.0.3
-      is-path-inside: 3.0.3
-      js-yaml: 4.1.0
-      json-stable-stringify-without-jsonify: 1.0.1
-      levn: 0.4.1
-      lodash.merge: 4.6.2
-      minimatch: 3.1.2
-      natural-compare: 1.4.0
-      optionator: 0.9.4
-      strip-ansi: 6.0.1
-      text-table: 0.2.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-=======
-<<<<<<< HEAD
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-  /eslint@9.9.1:
-    resolution: {integrity: sha512-dHvhrbfr4xFQ9/dq+jcVneZMyRYLjggWjk6RVsIiHsP8Rz6yZ8LvZ//iU4TrZF+SXWG+JkNF2OyiZRvzgRDqMg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    hasBin: true
-    peerDependencies:
-      jiti: '*'
-    peerDependenciesMeta:
-      jiti:
-        optional: true
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.9.1)
-      '@eslint-community/regexpp': 4.11.0
-      '@eslint/config-array': 0.18.0
-      '@eslint/eslintrc': 3.1.0
-      '@eslint/js': 9.9.1
-=======
-  eslint@8.57.0:
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@eslint-community/regexpp': 4.11.0
-      '@eslint/eslintrc': 2.1.4
-      '@eslint/js': 8.57.0
-      '@humanwhocodes/config-array': 0.11.14
-      '@humanwhocodes/module-importer': 1.0.1
-      '@nodelib/fs.walk': 1.2.8
-      '@ungap/structured-clone': 1.2.0
-      ajv: 6.12.6
-      chalk: 4.1.2
-      cross-spawn: 7.0.3
-      debug: 4.3.6(supports-color@5.5.0)
-      doctrine: 3.0.0
-      escape-string-regexp: 4.0.0
-      eslint-scope: 7.2.2
-      eslint-visitor-keys: 3.4.3
-      espree: 9.6.1
-      esquery: 1.6.0
-      esutils: 2.0.3
-      fast-deep-equal: 3.1.3
-      file-entry-cache: 6.0.1
-      find-up: 5.0.0
-      glob-parent: 6.0.2
-      globals: 13.24.0
-      graphemer: 1.4.0
-      ignore: 5.3.2
-      imurmurhash: 0.1.4
-      is-glob: 4.0.3
-      is-path-inside: 3.0.3
-      js-yaml: 4.1.0
-      json-stable-stringify-without-jsonify: 1.0.1
-      levn: 0.4.1
-      lodash.merge: 4.6.2
-      minimatch: 3.1.2
-      natural-compare: 1.4.0
-      optionator: 0.9.4
-      strip-ansi: 6.0.1
-      text-table: 0.2.0
-    transitivePeerDependencies:
-      - supports-color
-
   eslint@9.9.0:
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@9.9.0)
@@ -13241,7 +12101,6 @@ snapshots:
       '@eslint/config-array': 0.17.1
       '@eslint/eslintrc': 3.1.0
       '@eslint/js': 9.9.0
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.3.0
       '@nodelib/fs.walk': 1.2.8
@@ -13273,16 +12132,47 @@ snapshots:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
-<<<<<<< HEAD
-    dev: true
 
-  /espree@10.1.0:
-    resolution: {integrity: sha512-M1M6CpiE6ffoigIOWYO9UDP8TMUw9kqb21tf+08IgDYjCsOvCuDt4jQcZmoYxx+w7zlKw9/N0KXfto+I8/FrXA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-=======
+  eslint@9.9.1:
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.9.1)
+      '@eslint-community/regexpp': 4.11.0
+      '@eslint/config-array': 0.18.0
+      '@eslint/eslintrc': 3.1.0
+      '@eslint/js': 9.9.1
+      '@humanwhocodes/module-importer': 1.0.1
+      '@humanwhocodes/retry': 0.3.0
+      '@nodelib/fs.walk': 1.2.8
+      ajv: 6.12.6
+      chalk: 4.1.2
+      cross-spawn: 7.0.3
+      debug: 4.3.6(supports-color@5.5.0)
+      escape-string-regexp: 4.0.0
+      eslint-scope: 8.0.2
+      eslint-visitor-keys: 4.0.0
+      espree: 10.1.0
+      esquery: 1.6.0
+      esutils: 2.0.3
+      fast-deep-equal: 3.1.3
+      file-entry-cache: 8.0.0
+      find-up: 5.0.0
+      glob-parent: 6.0.2
+      ignore: 5.3.2
+      imurmurhash: 0.1.4
+      is-glob: 4.0.3
+      is-path-inside: 3.0.3
+      json-stable-stringify-without-jsonify: 1.0.1
+      levn: 0.4.1
+      lodash.merge: 4.6.2
+      minimatch: 3.1.2
+      natural-compare: 1.4.0
+      optionator: 0.9.4
+      strip-ansi: 6.0.1
+      text-table: 0.2.0
+    transitivePeerDependencies:
+      - supports-color
 
   espree@10.1.0:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       acorn: 8.12.1
       acorn-jsx: 5.3.2(acorn@8.12.1)
@@ -13500,12 +12390,7 @@ snapshots:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-<<<<<<< HEAD
-      micromatch: 4.0.8
-    dev: true
-=======
       micromatch: 4.0.7
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   fast-json-stable-stringify@2.1.0: {}
 
@@ -13540,45 +12425,15 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
 
-<<<<<<< HEAD
-  /file-entry-cache@6.0.1:
-    resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
-    engines: {node: ^10.12.0 || >=12.0.0}
-    dependencies:
-      flat-cache: 3.2.0
-    dev: true
-
-  /file-entry-cache@8.0.0:
-    resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
-    engines: {node: '>=16.0.0'}
-=======
-  file-entry-cache@6.0.1:
-    dependencies:
-      flat-cache: 3.2.0
-
   file-entry-cache@8.0.0:
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       flat-cache: 4.0.1
 
-<<<<<<< HEAD
-  /file-loader@6.2.0(webpack@5.94.0):
-    resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      loader-utils: 2.0.4
-      schema-utils: 3.3.0
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
   file-loader@6.2.0(webpack@5.93.0(webpack-cli@5.1.4)):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   file-stream-rotator@0.6.1:
     dependencies:
@@ -13630,27 +12485,6 @@ snapshots:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
-
-<<<<<<< HEAD
-  /flat-cache@3.2.0:
-    resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
-    engines: {node: ^10.12.0 || >=12.0.0}
-    dependencies:
-      flatted: 3.3.1
-      keyv: 4.5.4
-      rimraf: 3.0.2
-    dev: true
-
-  /flat-cache@4.0.1:
-    resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
-    engines: {node: '>=16'}
-=======
-  flat-cache@3.2.0:
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    dependencies:
-      flatted: 3.3.1
-      keyv: 4.5.4
-      rimraf: 3.0.2
 
   flat-cache@4.0.1:
     dependencies:
@@ -14052,24 +12886,11 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
-<<<<<<< HEAD
-  /html-loader@5.1.0(webpack@5.94.0):
-    resolution: {integrity: sha512-Jb3xwDbsm0W3qlXrCZwcYqYGnYz55hb6aoKQTlzyZPXsPpi6tHXzAfqalecglMQgNvtEfxrCQPaKT90Irt5XDA==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      webpack: ^5.0.0
-    dependencies:
-      html-minifier-terser: 7.2.0
-      parse5: 7.1.2
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
   html-loader@5.1.0(webpack@5.93.0(webpack-cli@5.1.4)):
     dependencies:
       html-minifier-terser: 7.2.0
       parse5: 7.1.2
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   html-minifier-terser@6.1.0:
     dependencies:
@@ -14091,34 +12912,15 @@ snapshots:
       relateurl: 0.2.7
       terser: 5.31.6
 
-<<<<<<< HEAD
-  /html-webpack-plugin@5.6.0(webpack@5.94.0):
-    resolution: {integrity: sha512-iwaY4wzbe48AfKLZ/Cc8k0L+FKG6oSNRaZ8x5A/T/IVDGyXcbHncM9TdDa93wn0FsSm82FhTKW7f3vS61thXAw==}
-    engines: {node: '>=10.13.0'}
-    peerDependencies:
-      '@rspack/core': 0.x || 1.x
-      webpack: ^5.20.0
-    peerDependenciesMeta:
-      '@rspack/core':
-        optional: true
-      webpack:
-        optional: true
-=======
   html-webpack-plugin@5.6.0(webpack@5.93.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
     optionalDependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   htmlparser2@6.1.0:
     dependencies:
@@ -14177,13 +12979,9 @@ snapshots:
       http-proxy: 1.18.1
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
-<<<<<<< HEAD
-      micromatch: 4.0.8
-=======
       micromatch: 4.0.7
     optionalDependencies:
       '@types/express': 4.17.21
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - debug
 
@@ -14250,9 +13048,9 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  icss-utils@5.1.0(postcss@8.4.41):
+  icss-utils@5.1.0(postcss@8.4.43):
     dependencies:
-      postcss: 8.4.41
+      postcss: 8.4.43
 
   identity-obj-proxy@3.0.0:
     dependencies:
@@ -14705,7 +13503,7 @@ snapshots:
 
   jest-diff@29.7.0:
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       diff-sequences: 29.6.3
       jest-get-type: 29.6.3
       pretty-format: 29.7.0
@@ -14727,7 +13525,7 @@ snapshots:
       '@jest/environment': 26.6.2
       '@jest/fake-timers': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-mock: 26.6.2
       jest-util: 26.6.2
       jsdom: 16.7.0
@@ -14743,7 +13541,7 @@ snapshots:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
       '@types/jsdom': 20.0.1
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-mock: 29.7.0
       jest-util: 29.7.0
       jsdom: 20.0.3
@@ -14757,7 +13555,7 @@ snapshots:
       '@jest/environment': 26.6.2
       '@jest/fake-timers': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-mock: 26.6.2
       jest-util: 26.6.2
 
@@ -14769,7 +13567,7 @@ snapshots:
     dependencies:
       '@jest/types': 26.6.2
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -14789,7 +13587,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -14813,7 +13611,7 @@ snapshots:
       '@jest/source-map': 26.6.2
       '@jest/test-result': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       co: 4.6.0
       expect: 26.6.2
@@ -14875,16 +13673,12 @@ snapshots:
   jest-mock@26.6.2:
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@types/node': 22.5.2
 
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@26.6.2):
@@ -14914,22 +13708,13 @@ snapshots:
       resolve: 1.22.8
       slash: 3.0.0
 
-<<<<<<< HEAD
-  /jest-runner-eslint@2.2.0(eslint@8.57.0)(jest@26.6.3):
-    resolution: {integrity: sha512-uR0kS/PCwCybIFh1yvbJSr3ajmusrueO8vnA4H3ItTpKCoYpQ9k2j2COrR1rdb4MnnbVBczrodCChrcJ/Hq3AQ==}
-    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=18.0.0}
-    peerDependencies:
-      eslint: ^7 || ^8
-      jest: ^26.6.3
-=======
-  jest-runner-eslint@2.2.0(eslint@8.57.0)(jest@26.6.3):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  jest-runner-eslint@2.2.0(eslint@9.9.1)(jest@26.6.3):
     dependencies:
       chalk: 4.1.2
       cosmiconfig: 7.1.0
       create-jest-runner: 0.11.2
       dot-prop: 6.0.1
-      eslint: 8.57.0
+      eslint: 9.9.1
       jest: 26.6.3
     transitivePeerDependencies:
       - '@jest/test-result'
@@ -14941,7 +13726,7 @@ snapshots:
       '@jest/environment': 26.6.2
       '@jest/test-result': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       emittery: 0.7.2
       exit: 0.1.2
@@ -15002,7 +13787,7 @@ snapshots:
 
   jest-serializer@26.6.2:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       graceful-fs: 4.2.11
 
   jest-snapshot@26.6.2:
@@ -15029,20 +13814,16 @@ snapshots:
   jest-util@26.6.2:
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       graceful-fs: 4.2.11
       is-ci: 2.0.0
       micromatch: 4.0.8
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -15061,7 +13842,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       jest-util: 26.6.2
@@ -15069,25 +13850,25 @@ snapshots:
 
   jest-worker@26.6.2:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       merge-stream: 2.0.0
       supports-color: 7.2.0
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@28.1.3:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 22.5.2
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -15341,23 +14122,11 @@ snapshots:
 
   lerna@8.1.8(encoding@0.1.13):
     dependencies:
-<<<<<<< HEAD
-      '@lerna/create': 8.1.8(typescript@5.5.4)
-      '@npmcli/arborist': 7.5.4
-      '@npmcli/package-json': 5.2.0
-      '@npmcli/run-script': 8.1.0
-<<<<<<< HEAD
-      '@nx/devkit': 19.6.4(nx@19.6.4)
-=======
-      '@nx/devkit': 19.6.3(nx@19.6.3)
-=======
       '@lerna/create': 8.1.8(encoding@0.1.13)(typescript@5.5.4)
       '@npmcli/arborist': 7.5.4
       '@npmcli/package-json': 5.2.0
       '@npmcli/run-script': 8.1.0
-      '@nx/devkit': 19.6.4(nx@19.6.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+      '@nx/devkit': 19.6.3(nx@19.6.3)
       '@octokit/plugin-enterprise-rest': 6.0.1
       '@octokit/rest': 19.0.11(encoding@0.1.13)
       aproba: 2.0.0
@@ -15402,15 +14171,7 @@ snapshots:
       npm-package-arg: 11.0.2
       npm-packlist: 8.0.2
       npm-registry-fetch: 17.1.0
-<<<<<<< HEAD
-      nx: 19.6.4
-=======
-<<<<<<< HEAD
       nx: 19.6.3
-=======
-      nx: 19.6.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       p-map: 4.0.0
       p-map-series: 2.1.0
       p-pipe: 3.1.0
@@ -15553,7 +14314,7 @@ snapshots:
 
   log-symbols@4.1.0:
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
   logform@2.6.1:
@@ -15562,7 +14323,7 @@ snapshots:
       '@types/triple-beam': 1.3.5
       fecha: 4.2.3
       ms: 2.1.3
-      safe-stable-stringify: 2.5.0
+      safe-stable-stringify: 2.4.3
       triple-beam: 1.4.1
 
   loose-envify@1.4.0:
@@ -15572,10 +14333,6 @@ snapshots:
   lower-case@2.0.2:
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   lru-cache@10.4.3: {}
 
@@ -15653,10 +14410,6 @@ snapshots:
       '@jsonjoy.com/util': 1.3.0(tslib@2.7.0)
       tree-dump: 1.0.2(tslib@2.7.0)
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   memjs@1.3.2: {}
 
@@ -15702,13 +14455,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /micromatch@4.0.8:
-    resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
-    engines: {node: '>=8.6'}
-=======
   micromatch@4.0.7:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       braces: 3.0.3
       picomatch: 2.3.1
@@ -15866,11 +14613,7 @@ snapshots:
 
   mongodb-memory-server@10.0.0(socks@2.8.3):
     dependencies:
-<<<<<<< HEAD
-      mongodb-memory-server-core: 10.0.0
-=======
       mongodb-memory-server-core: 10.0.0(socks@2.8.3)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       tslib: 2.7.0
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -15890,51 +14633,15 @@ snapshots:
     optionalDependencies:
       '@mongodb-js/saslprep': 1.1.8
 
-<<<<<<< HEAD
-  /mongodb@6.8.0:
-    resolution: {integrity: sha512-HGQ9NWDle5WvwMnrvUxsFYPd3JEbqD3RgABHBQRuoCEND0qzhsd0iH5ypHsf1eJ+sXmvmyKpP+FLOKY8Il7jMw==}
-    engines: {node: '>=16.20.1'}
-    peerDependencies:
-      '@aws-sdk/credential-providers': ^3.188.0
-      '@mongodb-js/zstd': ^1.1.0
-      gcp-metadata: ^5.2.0
-      kerberos: ^2.0.1
-      mongodb-client-encryption: '>=6.0.0 <7'
-      snappy: ^7.2.2
-      socks: ^2.7.1
-    peerDependenciesMeta:
-      '@aws-sdk/credential-providers':
-        optional: true
-      '@mongodb-js/zstd':
-        optional: true
-      gcp-metadata:
-        optional: true
-      kerberos:
-        optional: true
-      mongodb-client-encryption:
-        optional: true
-      snappy:
-        optional: true
-      socks:
-        optional: true
-=======
   mongodb@6.8.0(socks@2.8.3):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@mongodb-js/saslprep': 1.1.8
       bson: 6.8.0
       mongodb-connection-string-url: 3.0.1
-<<<<<<< HEAD
-
-  /mongoose@7.8.1:
-    resolution: {integrity: sha512-c3MY8P1mGUGO+0H8rqxMNmAmhP0xb2EPNItfr7tHAHkh52uB0owH4Gu6q1GTUYj8yoHEDG5MN2V1aBBR6aJPuA==}
-    engines: {node: '>=14.20.1'}
-=======
     optionalDependencies:
       socks: 2.8.3
 
   mongoose@7.8.1:
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       bson: 5.5.1
       kareem: 2.5.1
@@ -15951,21 +14658,11 @@ snapshots:
       - snappy
       - supports-color
 
-<<<<<<< HEAD
-  /mongoose@8.6.0:
-    resolution: {integrity: sha512-p6VSbYKvD4ZIabqo8C0kS5eKX1Xpji+opTAIJ9wyuPJ8Y/FblgXSMnFRXnB40bYZLKPQT089K5KU8+bqIXtFdw==}
-    engines: {node: '>=16.20.1'}
-    dependencies:
-      bson: 6.8.0
-      kareem: 2.6.3
-      mongodb: 6.8.0
-=======
   mongoose@8.6.0(socks@2.8.3):
     dependencies:
       bson: 6.8.0
       kareem: 2.6.3
       mongodb: 6.8.0(socks@2.8.3)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
@@ -16025,7 +14722,7 @@ snapshots:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.2
 
   mute-stream@0.0.8: {}
 
@@ -16058,14 +14755,10 @@ snapshots:
       apparatus: 0.0.10
       dotenv: 16.4.5
       memjs: 1.3.2
-<<<<<<< HEAD
-      mongoose: 8.6.0
-=======
       mongoose: 8.6.0(socks@2.8.3)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       pg: 8.12.0
       redis: 4.7.0
-      safe-stable-stringify: 2.5.0
+      safe-stable-stringify: 2.4.3
       stopwords-iso: 1.1.0
       sylvester: 0.0.12
       underscore: 1.13.7
@@ -16090,11 +14783,7 @@ snapshots:
       dotenv: 16.4.5
       http-server: 14.1.1
       memjs: 1.3.2
-<<<<<<< HEAD
-      mongoose: 8.6.0
-=======
       mongoose: 8.6.0(socks@2.8.3)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       pg: 8.12.0
       redis: 4.7.0
       safe-stable-stringify: 2.5.0
@@ -16131,10 +14820,6 @@ snapshots:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   node-fetch@2.6.7(encoding@0.1.13):
     dependencies:
@@ -16277,42 +14962,15 @@ snapshots:
 
   nwsapi@2.2.12: {}
 
-<<<<<<< HEAD
-  /nx@19.6.4:
-    resolution: {integrity: sha512-yudYlBd3cMchRd8c0ZNan1SfT19AYK2zYOp77XVqVVwgqb6rJVxz6StFGFluUQ7Q7uSpkeT/8PsjwPVLt85EoQ==}
-=======
-<<<<<<< HEAD
-  /nx@19.6.3:
-    resolution: {integrity: sha512-JbgrEKaIBvTfhw3mG3GeyyzJHBAMfuQkMNrxxIto1fn94gxdjXdMfqUnAzrW6xRAt5OEEU+rf7v2OA3vEXYc3A==}
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@swc-node/register': ^1.8.0
-      '@swc/core': ^1.3.85
-    peerDependenciesMeta:
-      '@swc-node/register':
-        optional: true
-      '@swc/core':
-        optional: true
+  nx@19.6.3:
     dependencies:
       '@napi-rs/wasm-runtime': 0.2.4
-<<<<<<< HEAD
-      '@nrwl/tao': 19.6.4
-=======
       '@nrwl/tao': 19.6.3
-=======
-  nx@19.6.4:
-    dependencies:
-      '@napi-rs/wasm-runtime': 0.2.4
-      '@nrwl/tao': 19.6.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.0-rc.46
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.7.5
-      chalk: 4.1.0
+      axios: 1.7.7
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -16342,9 +15000,6 @@ snapshots:
       yargs: 17.7.2
       yargs-parser: 21.1.1
     optionalDependencies:
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
       '@nx/nx-darwin-arm64': 19.6.3
       '@nx/nx-darwin-x64': 19.6.3
       '@nx/nx-freebsd-x64': 19.6.3
@@ -16355,22 +15010,6 @@ snapshots:
       '@nx/nx-linux-x64-musl': 19.6.3
       '@nx/nx-win32-arm64-msvc': 19.6.3
       '@nx/nx-win32-x64-msvc': 19.6.3
-=======
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
-      '@nx/nx-darwin-arm64': 19.6.4
-      '@nx/nx-darwin-x64': 19.6.4
-      '@nx/nx-freebsd-x64': 19.6.4
-      '@nx/nx-linux-arm-gnueabihf': 19.6.4
-      '@nx/nx-linux-arm64-gnu': 19.6.4
-      '@nx/nx-linux-arm64-musl': 19.6.4
-      '@nx/nx-linux-x64-gnu': 19.6.4
-      '@nx/nx-linux-x64-musl': 19.6.4
-      '@nx/nx-win32-arm64-msvc': 19.6.4
-      '@nx/nx-win32-x64-msvc': 19.6.4
-<<<<<<< HEAD
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - debug
 
@@ -16515,7 +15154,7 @@ snapshots:
   ora@5.3.0:
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
@@ -16637,10 +15276,6 @@ snapshots:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   parent-module@1.0.1:
     dependencies:
@@ -16684,10 +15319,6 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   pascalcase@0.1.1: {}
 
@@ -16787,26 +15418,26 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-modules-extract-imports@3.1.0(postcss@8.4.41):
+  postcss-modules-extract-imports@3.1.0(postcss@8.4.43):
     dependencies:
-      postcss: 8.4.41
+      postcss: 8.4.43
 
-  postcss-modules-local-by-default@4.0.5(postcss@8.4.41):
+  postcss-modules-local-by-default@4.0.5(postcss@8.4.43):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.41)
-      postcss: 8.4.41
+      icss-utils: 5.1.0(postcss@8.4.43)
+      postcss: 8.4.43
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
 
-  postcss-modules-scope@3.2.0(postcss@8.4.41):
+  postcss-modules-scope@3.2.0(postcss@8.4.43):
     dependencies:
-      postcss: 8.4.41
+      postcss: 8.4.43
       postcss-selector-parser: 6.1.2
 
-  postcss-modules-values@4.0.0(postcss@8.4.41):
+  postcss-modules-values@4.0.0(postcss@8.4.43):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.41)
-      postcss: 8.4.41
+      icss-utils: 5.1.0(postcss@8.4.43)
+      postcss: 8.4.43
 
   postcss-selector-parser@6.1.2:
     dependencies:
@@ -16815,7 +15446,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.4.41:
+  postcss@8.4.43:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.1
@@ -17113,7 +15744,7 @@ snapshots:
   request@2.88.2:
     dependencies:
       aws-sign2: 0.7.0
-      aws4: 1.13.2
+      aws4: 1.13.1
       caseless: 0.12.0
       combined-stream: 1.0.8
       extend: 3.0.2
@@ -17197,10 +15828,6 @@ snapshots:
   rxjs@7.8.1:
     dependencies:
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   safe-array-concat@1.1.2:
     dependencies:
@@ -17223,14 +15850,7 @@ snapshots:
     dependencies:
       ret: 0.1.15
 
-<<<<<<< HEAD
-  /safe-stable-stringify@2.5.0:
-    resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
-    engines: {node: '>=10'}
-    dev: false
-=======
   safe-stable-stringify@2.4.3: {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   safe-stable-stringify@2.5.0: {}
 
@@ -17715,20 +16335,9 @@ snapshots:
       minimist: 1.2.8
       through: 2.3.8
 
-<<<<<<< HEAD
-  /style-loader@4.0.0(webpack@5.94.0):
-    resolution: {integrity: sha512-1V4WqhhZZgjVAVJyt7TdDPZoPBPNHbekX4fWnCJL1yQukhCeZhJySUL+gL9y6sNdN95uEOS83Y55SqHcP7MzLA==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      webpack: ^5.27.0
-    dependencies:
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
   style-loader@4.0.0(webpack@5.93.0(webpack-cli@5.1.4)):
     dependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   suffix-thumb@5.0.2: {}
 
@@ -17804,10 +16413,6 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.1.1
       tslib: 2.7.0
-<<<<<<< HEAD
-    dev: true
-=======
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   tapable@2.2.1: {}
 
@@ -17841,23 +16446,6 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-<<<<<<< HEAD
-  /terser-webpack-plugin@5.3.10(webpack@5.94.0):
-    resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-=======
   terser-webpack-plugin@5.3.10(webpack@5.93.0(webpack-cli@5.1.4)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
@@ -17868,7 +16456,6 @@ snapshots:
       webpack: 5.93.0(webpack-cli@5.1.4)
 
   terser-webpack-plugin@5.3.10(webpack@5.94.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -17900,20 +16487,9 @@ snapshots:
 
   text-table@0.2.0: {}
 
-<<<<<<< HEAD
-  /thingies@1.21.0(tslib@2.7.0):
-    resolution: {integrity: sha512-hsqsJsFMsV+aD4s3CWKk85ep/3I9XzYV/IXaSouJMYIoDlgyi11cBhsqYe9/geRfB0YIikBQg6raRaM+nIMP9g==}
-    engines: {node: '>=10.18'}
-    peerDependencies:
-      tslib: ^2
-    dependencies:
-      tslib: 2.7.0
-    dev: true
-=======
   thingies@1.21.0(tslib@2.7.0):
     dependencies:
       tslib: 2.7.0
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   throat@5.0.0: {}
 
@@ -17979,48 +16555,6 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-<<<<<<< HEAD
-  /tree-dump@1.0.2(tslib@2.7.0):
-    resolution: {integrity: sha512-dpev9ABuLWdEubk+cIaI9cHwRNNDjkBBLXTwI4UCUFdQ5xXKqNXoK4FEciw/vxf+NQ7Cb7sGUyeUtORvHIdRXQ==}
-    engines: {node: '>=10.0'}
-    peerDependencies:
-      tslib: '2'
-    dependencies:
-      tslib: 2.7.0
-    dev: true
-
-  /treeverse@3.0.0:
-    resolution: {integrity: sha512-gcANaAnd2QDZFmHFEOF4k7uc1J/6a6z3DJMd/QwEyxLoKGiptJRwid582r7QIsFlFMIZ3SnxfS52S4hm2DHkuQ==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
-
-  /trim-newlines@3.0.1:
-    resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
-    engines: {node: '>=8'}
-    dev: true
-
-  /triple-beam@1.4.1:
-    resolution: {integrity: sha512-aZbgViZrg1QNcG+LULa7nhZpJTZSLm/mXnHXnbAbjmN5aSa0y7V+wvv6+4WaBtpISJzThKy+PIPxc1Nq1EJ9mg==}
-    engines: {node: '>= 14.0.0'}
-    dev: false
-
-  /ts-api-utils@1.3.0(typescript@5.5.4):
-    resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      typescript: '>=4.2.0'
-    dependencies:
-      typescript: 5.5.4
-    dev: true
-
-  /ts-jest@26.5.6(jest@26.6.3)(typescript@5.5.4):
-    resolution: {integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA==}
-    engines: {node: '>= 10'}
-    hasBin: true
-    peerDependencies:
-      jest: ^26.6.3
-      typescript: '>=3.8 <5.0'
-=======
   tr46@4.1.1:
     dependencies:
       punycode: 2.3.1
@@ -18040,7 +16574,6 @@ snapshots:
       typescript: 5.5.4
 
   ts-jest@26.5.6(jest@26.6.3)(typescript@5.5.4):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       bs-logger: 0.2.6
       buffer-from: 1.1.2
@@ -18075,13 +16608,7 @@ snapshots:
       strip-bom: 3.0.0
       strip-json-comments: 2.0.1
 
-<<<<<<< HEAD
-  /tslib@2.7.0:
-    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
-    dev: true
-=======
   tslib@2.7.0: {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   tuf-js@2.2.1:
     dependencies:
@@ -18158,14 +16685,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-<<<<<<< HEAD
-  /typescript@5.5.4:
-    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-=======
   typescript@5.5.4: {}
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   uglify-js@3.19.2:
     optional: true
@@ -18288,24 +16808,12 @@ snapshots:
       core-util-is: 1.0.2
       extsprintf: 1.3.0
 
-<<<<<<< HEAD
-  /vue-component-type-helpers@2.1.0:
-    resolution: {integrity: sha512-Ec+sh0qzakYsoKiyey7izf83sVqOcB9PT12LU9z4csAaJ4CipO6o0+5PVMJRgMryKAi9HL7SDEVqoGNpcxzSmA==}
-    dev: true
+  vue-component-type-helpers@2.0.29: {}
 
-  /vue-eslint-parser@9.4.3(eslint@8.57.0):
-    resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
-    engines: {node: ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: '>=6.0.0'
-=======
-  vue-component-type-helpers@2.1.0: {}
-
-  vue-eslint-parser@9.4.3(eslint@8.57.0):
->>>>>>> 2577833 (Set up Husky pre-commit hook and updated dependencies)
+  vue-eslint-parser@9.4.3(eslint@9.9.1):
     dependencies:
       debug: 4.3.6(supports-color@5.5.0)
-      eslint: 8.57.0
+      eslint: 9.9.1
       eslint-scope: 7.2.2
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
@@ -18315,24 +16823,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /vue-jest@5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3)(jest@26.6.3)(ts-jest@26.5.6)(typescript@5.5.4)(vue@3.4.38):
-    resolution: {integrity: sha512-iN62cTi4AL0UsgxEyVeJtHG6qXEv+8Ci2wX1vP3b/dAZvyBRmqy5aJHQrP6VCEuio+HgHQ1LAZ+ccM2pouBmlg==}
-    peerDependencies:
-      '@babel/core': 7.x
-      babel-jest: ^26.6.3
-      jest: ^26.6.3
-      ts-jest: ^26.5.6
-      typescript: '>= 3.x'
-      vue: ^3.4.30
-    peerDependenciesMeta:
-      ts-jest:
-        optional: true
-      typescript:
-        optional: true
-=======
   vue-jest@5.0.0-alpha.10(@babel/core@7.25.2)(babel-jest@26.6.3(@babel/core@7.25.2))(jest@26.6.3)(ts-jest@26.5.6(jest@26.6.3)(typescript@5.5.4))(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-modules-commonjs': 7.24.8(@babel/core@7.25.2)
@@ -18342,42 +16833,22 @@ snapshots:
       extract-from-css: 0.4.4
       jest: 26.6.3
       source-map: 0.5.6
-<<<<<<< HEAD
-      ts-jest: 26.5.6(jest@26.6.3)(typescript@5.5.4)
-      tsconfig: 7.0.0
-      typescript: 5.5.4
-      vue: 3.4.38(typescript@5.5.4)
-=======
       tsconfig: 7.0.0
       vue: 3.4.38(typescript@5.5.4)
     optionalDependencies:
       ts-jest: 26.5.6(jest@26.6.3)(typescript@5.5.4)
       typescript: 5.5.4
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  /vue@3.4.38(typescript@5.5.4):
-    resolution: {integrity: sha512-f0ZgN+mZ5KFgVv9wz0f4OgVKukoXtS3nwET4c2vLBGQR50aI8G0cqbFtLlX9Yiyg3LFGBitruPHt2PxwTduJEw==}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-=======
   vue@3.4.38(typescript@5.5.4):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@vue/compiler-dom': 3.4.38
       '@vue/compiler-sfc': 3.4.38
       '@vue/runtime-dom': 3.4.38
       '@vue/server-renderer': 3.4.38(vue@3.4.38(typescript@5.5.4))
       '@vue/shared': 3.4.38
-<<<<<<< HEAD
-=======
     optionalDependencies:
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       typescript: 5.5.4
 
   w3c-hr-time@1.0.2:
@@ -18419,36 +16890,12 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-<<<<<<< HEAD
-  /webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.94.0):
-    resolution: {integrity: sha512-pIDJHIEI9LR0yxHXQ+Qh95k2EvXpWzZ5l+d+jIo+RdSm9MiHfzazIxwwni/p7+x4eJZuvG1AJwgC4TNQ7NRgsg==}
-    engines: {node: '>=14.15.0'}
-    hasBin: true
-    peerDependencies:
-      '@webpack-cli/generators': '*'
-      webpack: 5.x.x
-      webpack-bundle-analyzer: '*'
-      webpack-dev-server: '*'
-    peerDependenciesMeta:
-      '@webpack-cli/generators':
-        optional: true
-      webpack-bundle-analyzer:
-        optional: true
-      webpack-dev-server:
-        optional: true
-    dependencies:
-      '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.94.0)
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.94.0)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack-dev-server@4.15.2)(webpack@5.94.0)
-=======
   webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))
       '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))
       '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0))(webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.93.0))(webpack@5.93.0(webpack-cli@5.1.4))
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.3
@@ -18457,12 +16904,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-      webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.94.0)
-=======
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
       webpack-merge: 5.10.0
     optionalDependencies:
       webpack-dev-server: 4.15.2(webpack-cli@5.1.4)(webpack@5.93.0)
@@ -18484,27 +16926,14 @@ snapshots:
       webpack: 5.94.0(webpack-cli@5.1.4)
       webpack-merge: 5.10.0
 
-<<<<<<< HEAD
-  /webpack-dev-middleware@5.3.4(webpack@5.94.0):
-    resolution: {integrity: sha512-BVdTqhhs+0IfoeAf7EoH5WE+exCmqGerHfDM0IL096Px60Tq2Mn9MAbnaGUe6HiMa41KMCYF19gyzZmBcq/o4Q==}
-    engines: {node: '>= 12.13.0'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-=======
   webpack-dev-middleware@5.3.4(webpack@5.93.0(webpack-cli@5.1.4)):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.3
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.2.0
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-    dev: true
-=======
       webpack: 5.93.0(webpack-cli@5.1.4)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
 
   webpack-dev-middleware@7.4.2(webpack@5.94.0(webpack-cli@5.1.4)):
     dependencies:
@@ -18517,22 +16946,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.94.0(webpack-cli@5.1.4)
 
-<<<<<<< HEAD
-  /webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.94.0):
-    resolution: {integrity: sha512-0XavAZbNJ5sDrCbkpWL8mia0o5WPOd2YGtxrEiZkBK9FjLppIUK2TgxK6qGD2P3hUXTJNNPVibrerKcx5WkR1g==}
-    engines: {node: '>= 12.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack: ^4.37.0 || ^5.0.0
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack:
-        optional: true
-      webpack-cli:
-        optional: true
-=======
   webpack-dev-server@4.15.2(webpack-cli@5.1.4)(webpack@5.93.0):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
@@ -18562,18 +16976,11 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-<<<<<<< HEAD
-      webpack: 5.94.0(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.94.0)
-      webpack-dev-middleware: 5.3.4(webpack@5.94.0)
-      ws: 8.18.0
-=======
       webpack-dev-middleware: 5.3.4(webpack@5.93.0(webpack-cli@5.1.4))
       ws: 8.18.0
     optionalDependencies:
       webpack: 5.93.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.93.0)
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -18593,17 +17000,6 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-<<<<<<< HEAD
-  /webpack@5.94.0(webpack-cli@5.1.4):
-    resolution: {integrity: sha512-KcsGn50VT+06JH/iunZJedYGUJS5FGjow8wb9c0v5n1Om8O1g4L6LjtfxwlXIATopoQu+vOXXa7gYisWxCoPyg==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-    peerDependencies:
-      webpack-cli: '*'
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-=======
   webpack@5.93.0(webpack-cli@5.1.4):
     dependencies:
       '@types/eslint-scope': 3.7.7
@@ -18638,7 +17034,6 @@ snapshots:
       - uglify-js
 
   webpack@5.94.0(webpack-cli@5.1.4):
->>>>>>> 3508c91 (Set up Husky pre-commit hook and updated dependencies)
     dependencies:
       '@types/estree': 1.0.5
       '@webassemblyjs/ast': 1.12.1
@@ -18800,7 +17195,7 @@ snapshots:
       logform: 2.6.1
       one-time: 1.0.0
       readable-stream: 3.6.2
-      safe-stable-stringify: 2.5.0
+      safe-stable-stringify: 2.4.3
       stack-trace: 0.0.10
       triple-beam: 1.4.1
       winston-transport: 4.7.1
