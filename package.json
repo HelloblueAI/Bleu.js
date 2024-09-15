@@ -45,6 +45,7 @@
     "compression": "^1.7.4",
     "compromise": "^14.14.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-validator": "^7.2.0",
     "get-port": "^7.1.0",
