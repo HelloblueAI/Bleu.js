@@ -16,27 +16,34 @@ class AIService {
 
     logger.info('Starting text analysis');
 
-    const tokens = this.nlpProcessor.tokenize(text);
-    logger.info(`Tokens: ${tokens.join(', ')}`);
+    try {
+      const tokens = this.nlpProcessor.tokenize(text);
+      logger.info(`Tokens: ${tokens.join(', ')}`);
 
-    const stemmedTokens = tokens.map((token) => this.nlpProcessor.stem(token));
-    logger.info(`Stemmed Tokens: ${stemmedTokens.join(', ')}`);
+      const stemmedTokens = tokens.map((token) =>
+        this.nlpProcessor.stem(token),
+      );
+      logger.info(`Stemmed Tokens: ${stemmedTokens.join(', ')}`);
 
-    const sentiment = this.nlpProcessor.analyzeSentiment(text);
-    logger.info(`Sentiment: ${sentiment}`);
+      const sentiment = this.nlpProcessor.analyzeSentiment(text);
+      logger.info(`Sentiment: ${sentiment}`);
 
-    const entities = this.nlpProcessor.namedEntityRecognition(text);
-    logger.info(`Named Entities: ${entities.join(', ')}`);
+      const entities = this.nlpProcessor.namedEntityRecognition(text);
+      logger.info(`Named Entities: ${entities.join(', ')}`);
 
-    return {
-      tokens,
-      stemmedTokens,
-      sentiment,
-      entities,
-    };
+      return {
+        tokens,
+        stemmedTokens,
+        sentiment,
+        entities,
+      };
+    } catch (error) {
+      logger.error(`Error during text analysis: ${error.message}`);
+      throw error;
+    }
   }
 
-  doSomething(text) {
+  async doSomething(text) {
     logger.info('Doing something');
     try {
       const analysisResult = this.analyzeText(text);
@@ -50,22 +57,42 @@ class AIService {
 
   async trainModel(modelInfo) {
     logger.info('Training model with info:', modelInfo);
-    return this.modelManager.trainModel(modelInfo);
+    try {
+      return await this.modelManager.trainModel(modelInfo);
+    } catch (error) {
+      logger.error(`Error training model: ${error.message}`);
+      throw error;
+    }
   }
 
   async getTrainModelStatus() {
     logger.info('Getting train model status');
-    return this.modelManager.getTrainModelStatus();
+    try {
+      return await this.modelManager.getTrainModelStatus();
+    } catch (error) {
+      logger.error(`Error getting train model status: ${error.message}`);
+      throw error;
+    }
   }
 
   async uploadDataset(dataset) {
     logger.info('Uploading dataset:', dataset);
-    return this.modelManager.uploadDataset(dataset);
+    try {
+      return await this.modelManager.uploadDataset(dataset);
+    } catch (error) {
+      logger.error(`Error uploading dataset: ${error.message}`);
+      throw error;
+    }
   }
 
   async evaluateRule(ruleId, inputData) {
     logger.info('Evaluating rule:', ruleId, inputData);
-    return this.modelManager.evaluateRule(ruleId, inputData);
+    try {
+      return await this.modelManager.evaluateRule(ruleId, inputData);
+    } catch (error) {
+      logger.error(`Error evaluating rule ${ruleId}: ${error.message}`);
+      throw error;
+    }
   }
 }
 
