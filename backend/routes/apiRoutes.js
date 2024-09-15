@@ -18,10 +18,10 @@ router.post('/rules', apiController.addRule);
 router.put('/rules/:id', apiController.updateRule);
 router.delete('/rules/:id', apiController.deleteRule);
 router.post('/evaluateRule/:id', apiController.evaluateRule);
-router.post('/generate-egg', apiController.generateEgg); // Ensure this route is defined
-router.get('/dependencies', apiController.monitorDependencies); // Ensure this route is defined
-router.get('/dependencies/conflicts', apiController.resolveConflicts); // Ensure this route is defined
-router.post('/debug', apiController.debug); // Ensure this route is defined
+router.post('/generate-egg', apiController.generateEgg);
+router.get('/dependencies', apiController.monitorDependencies);
+router.get('/dependencies/conflicts', apiController.resolveConflicts);
+router.post('/debug', apiController.debug);
 router.all('*', apiController.invalidRoute);
 
 module.exports = router;
