@@ -5,7 +5,7 @@ const winston = require('winston');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const apiRoutes = require('./routes/apiRoutes'); // Ensure this path is correct
+const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 4003;
