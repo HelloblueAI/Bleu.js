@@ -22,6 +22,11 @@ router.post('/generate-egg', apiController.generateEgg);
 router.get('/dependencies', apiController.monitorDependencies);
 router.get('/dependencies/conflicts', apiController.resolveConflicts);
 router.post('/debug', apiController.debug);
+
+
+router.post('/generate', apiController.generateAIResponse); 
+
+
 router.all('*', apiController.invalidRoute);
 
 module.exports = router;
