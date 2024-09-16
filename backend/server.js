@@ -1,16 +1,22 @@
 const path = require('path');
-
 const express = require('express');
 const winston = require('winston');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const openai = require('openai'); // Updated to use OpenAI directly
 
 const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 4003;
-const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+
+// Set OpenAI API key directly
+if (process.env.OPENAI_API_KEY) {
+  openai.apiKey = process.env.OPENAI_API_KEY;
+} else {
+  console.error('OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.');
+}
 
 const logger = winston.createLogger({
   level: 'info',
