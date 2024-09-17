@@ -1337,6 +1337,34 @@ npm install bleujs-utils
 ```
 
 ### Usage
+### Example 1: General Utility Function
+```javascript
+from bleujs_utils import some_utility_function
+
+result = some_utility_function(input_data)
+print(result)
+```
+
+### Example 2: Helper Functions for AI Integration
+
+```javascript
+from bleujs_utils import ai_query
+
+response = ai_query('What is the weather today?')
+print(response)
+```
+
+### Use Cases
+* AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
+* Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
+* Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
+### Example 3: CLI Tool
+```javascript
+bleujs-utils-cli --help
+```
+
+
 Here’s how you can use the `bleujs-utils` package in your project:
 
 ```javascript
