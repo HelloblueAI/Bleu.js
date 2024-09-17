@@ -1,13 +1,15 @@
 const axios = require('axios');
+
 const AiQuery = require('../models/AiQuery');
 
 const apiKey = process.env.OPENAI_API_KEY;
 
 if (!apiKey) {
-  console.error('OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.');
-  process.exit(1); 
+  console.error(
+    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
+  );
+  process.exit(1);
 }
-
 
 const callAIModel = async (query) => {
   try {
@@ -24,7 +26,7 @@ const callAIModel = async (query) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
         },
-      }
+      },
     );
 
     return response.data.choices[0].text.trim();
@@ -33,7 +35,6 @@ const callAIModel = async (query) => {
     return null;
   }
 };
-
 
 const generateAIResponse = async (req, res) => {
   const { prompt } = req.body;
@@ -45,7 +46,9 @@ const generateAIResponse = async (req, res) => {
   try {
     const response = await callAIModel(prompt);
     if (!response) {
-      return res.status(500).json({ error: 'Failed to get a response from OpenAI' });
+      return res
+        .status(500)
+        .json({ error: 'Failed to get a response from OpenAI' });
     }
 
     const modelUsed = 'GPT-3 (text-davinci-003)';
@@ -70,7 +73,6 @@ const generateAIResponse = async (req, res) => {
   }
 };
 
-
 const predict = async (req, res) => {
   const { query } = req.body;
 
@@ -81,7 +83,9 @@ const predict = async (req, res) => {
   try {
     const response = await callAIModel(query);
     if (!response) {
-      return res.status(500).json({ error: 'Failed to get a response from the AI model' });
+      return res
+        .status(500)
+        .json({ error: 'Failed to get a response from the AI model' });
     }
 
     const modelUsed = 'GPT-3 (text-davinci-003)';
@@ -107,8 +111,8 @@ const predict = async (req, res) => {
 };
 
 const evaluateRule = (req, res) => {
-  const { id } = req.params;  
-  const { inputData } = req.body; 
+  const { id } = req.params;
+  const { inputData } = req.body;
 
   if (!inputData) {
     return res.status(400).json({ error: 'Input data is required' });
@@ -117,7 +121,7 @@ const evaluateRule = (req, res) => {
   const ruleResult = {
     ruleId: id,
     input: inputData,
-    passed: inputData.someKey === 'someValue',  // Simple rule evaluation for example
+    passed: inputData.someKey === 'someValue', // Simple rule evaluation for example
     details: `Rule ${id} evaluated with input data ${JSON.stringify(inputData)}`,
   };
 
@@ -128,16 +132,28 @@ const evaluateRule = (req, res) => {
   });
 };
 
-const processData = (req, res) => res.json({ message: 'Process data endpoint is not yet implemented.' });
-const getData = (req, res) => res.json({ message: 'Data retrieval endpoint is not yet implemented.' });
-const getProcessedData = (req, res) => res.json({ message: 'Get processed data endpoint is not yet implemented.' });
-const trainModel = (req, res) => res.json({ message: 'Train model endpoint is not yet implemented.' });
-const getTrainModelStatus = (req, res) => res.json({ message: 'Get train model status endpoint is not yet implemented.' });
-const uploadDataset = (req, res) => res.json({ message: 'Upload dataset endpoint is not yet implemented.' });
-const getRules = (req, res) => res.json({ message: 'Get rules endpoint is not yet implemented.' });
-const addRule = (req, res) => res.json({ message: 'Add rule endpoint is not yet implemented.' });
-const updateRule = (req, res) => res.json({ message: 'Update rule endpoint is not yet implemented.' });
-const deleteRule = (req, res) => res.json({ message: 'Delete rule endpoint is not yet implemented.' });
+const processData = (req, res) =>
+  res.json({ message: 'Process data endpoint is not yet implemented.' });
+const getData = (req, res) =>
+  res.json({ message: 'Data retrieval endpoint is not yet implemented.' });
+const getProcessedData = (req, res) =>
+  res.json({ message: 'Get processed data endpoint is not yet implemented.' });
+const trainModel = (req, res) =>
+  res.json({ message: 'Train model endpoint is not yet implemented.' });
+const getTrainModelStatus = (req, res) =>
+  res.json({
+    message: 'Get train model status endpoint is not yet implemented.',
+  });
+const uploadDataset = (req, res) =>
+  res.json({ message: 'Upload dataset endpoint is not yet implemented.' });
+const getRules = (req, res) =>
+  res.json({ message: 'Get rules endpoint is not yet implemented.' });
+const addRule = (req, res) =>
+  res.json({ message: 'Add rule endpoint is not yet implemented.' });
+const updateRule = (req, res) =>
+  res.json({ message: 'Update rule endpoint is not yet implemented.' });
+const deleteRule = (req, res) =>
+  res.json({ message: 'Delete rule endpoint is not yet implemented.' });
 const generateEgg = (req, res) => {
   const { type, options } = req.body;
   try {
@@ -190,8 +206,10 @@ const resolveConflicts = (req, res) => {
   }
 };
 
-const debug = (req, res) => res.status(200).json({ message: 'Debug endpoint is not yet implemented.' });
-const invalidRoute = (req, res) => res.status(404).send({ error: 'Invalid route' });
+const debug = (req, res) =>
+  res.status(200).json({ message: 'Debug endpoint is not yet implemented.' });
+const invalidRoute = (req, res) =>
+  res.status(404).send({ error: 'Invalid route' });
 
 // Export the controller functions
 module.exports = {

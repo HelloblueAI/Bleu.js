@@ -1,35 +1,30 @@
 /* eslint-env node */
 const express = require('express');
+
 const router = express.Router();
+const dataController = require('../controllers/dataController');
 
-router.post('/', (req, res) => {
-  res.status(201).send({ message: 'Data received', data: req.body.data });
-});
+// POST request: Create or process data
+router.post('/', dataController.handlePost);
 
-router.put('/', (req, res) => {
-  res.status(200).send({ message: 'Data updated' });
-});
+// PUT request: Update existing data
+router.put('/', dataController.handlePut);
 
-router.delete('/', (req, res) => {
-  res.status(200).send({ message: 'Data deleted' });
-});
+// DELETE request: Remove data
+router.delete('/', dataController.handleDelete);
 
-router.patch('/', (req, res) => {
-  res.status(200).send({ message: 'Data patched' });
-});
+// PATCH request: Partially update data
+router.patch('/', dataController.handlePatch);
 
-router.head('/', (req, res) => {
-  res.status(200).send({});
-});
+// HEAD request: Retrieve headers
+router.head('/', dataController.handleHead);
 
-router.options('/', (req, res) => {
-  res
-    .status(204)
-    .set(
-      'access-control-allow-methods',
-      'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-    )
-    .send();
-});
+// OPTIONS request: Provide allowed methods
+router.options('/', dataController.handleOptions);
+
+// GET requests for fetching data in different formats
+router.get('/json', dataController.handleGetJson);
+router.get('/html', dataController.handleGetHtml);
+router.get('/', dataController.handleGet);
 
 module.exports = router;
