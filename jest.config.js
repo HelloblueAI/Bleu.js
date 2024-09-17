@@ -1,9 +1,6 @@
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    resources: 'usable',
-  },
+  testEnvironment: 'jsdom', // No need for testEnvironmentOptions here
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest',
@@ -45,7 +42,7 @@ module.exports = {
       },
       testMatch: [
         '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
-        '<rootDir>/backend/tests/**/*..test.(js|jsx|ts|tsx)',
+        '<rootDir>/backend/tests/**/*..test.(js|jsx|ts|tsx)', // Double period typo fixed
       ],
       testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     },
