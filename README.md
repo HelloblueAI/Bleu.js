@@ -1321,7 +1321,7 @@ The `bleujs-util` package provides essential utility functions that are part of 
 * Code optimization tools.
 
 ### Installation
-You can install the bleujs-utils package via `pnpm ` or `npm `:
+You can install the bleujs-utils package via `pnpm` or `npm`:
 
 Using pnpm:
 
