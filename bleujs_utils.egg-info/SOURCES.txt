@@ -1,0 +1,8 @@
+LICENSE.md
+README.md
+setup.py
+bleujs_utils.egg-info/PKG-INFO
+bleujs_utils.egg-info/SOURCES.txt
+bleujs_utils.egg-info/dependency_links.txt
+bleujs_utils.egg-info/requires.txt
+bleujs_utils.egg-info/top_level.txt
