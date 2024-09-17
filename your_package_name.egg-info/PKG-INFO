@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: your-package-name
+Version: 1.0.0
+Summary: A description of your project
+Author: Your Name
+Author-email: your.email@example.com
+License-File: LICENSE.md
+Requires-Dist: some-dependency
