@@ -1,36 +1,47 @@
 /* eslint-env node */
 
 exports.handlePost = (req, res) => {
-  if (req.url.includes('predict')) {
-    if (req.body.input === null) {
+  const { url, body } = req;
+
+  if (url.includes('predict')) {
+    if (!body || !body.input) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
     return res.status(200).json({ prediction: 'Predicted result' });
   }
-  if (req.url.includes('processData')) {
+
+  if (url.includes('processData')) {
+    // Assume data processing logic here
     return res
       .status(201)
       .json({ message: 'Data processed and stored successfully' });
   }
-  if (req.url.includes('trainModel')) {
+
+  if (url.includes('trainModel')) {
+    // Initiate model training here
     return res.status(202).json({ message: 'Model training started' });
   }
-  if (req.url.includes('uploadDataset')) {
+
+  if (url.includes('uploadDataset')) {
     return res.status(413).json({ error: 'Payload Too Large' });
   }
-  return res.status(201).json({ message: 'Data received' });
+
+  return res.status(201).json({ message: 'Data received successfully' });
 };
 
 exports.handlePut = (req, res) => {
-  res.status(200).json({ message: 'Data updated' });
+  // Assume data update logic here
+  res.status(200).json({ message: 'Data updated successfully' });
 };
 
 exports.handleDelete = (req, res) => {
-  res.status(200).json({ message: 'Data deleted' });
+  // Assume data deletion logic here
+  res.status(200).json({ message: 'Data deleted successfully' });
 };
 
 exports.handlePatch = (req, res) => {
-  res.status(200).json({ message: 'Data patched' });
+  // Assume patch data logic here
+  res.status(200).json({ message: 'Data patched successfully' });
 };
 
 exports.handleHead = (req, res) => {
@@ -48,19 +59,27 @@ exports.handleOptions = (req, res) => {
 };
 
 exports.handleGet = (req, res) => {
-  if (req.url.includes('processedData')) {
+  const { url } = req;
+
+  if (url.includes('processedData')) {
+    // Return processed data here
     return res.status(200).json({ data: [] });
   }
-  if (req.url.includes('trainModel/status')) {
+
+  if (url.includes('trainModel/status')) {
+    // Check model training status
     return res.status(200).json({ status: 'in progress' });
   }
-  return res.status(200).json({ message: 'Data fetched' });
+
+  return res.status(200).json({ message: 'Data fetched successfully' });
 };
 
 exports.handleGetJson = (req, res) => {
-  res.status(200).json({ message: 'JSON Data' });
+  res.status(200).json({ message: 'JSON Data fetched successfully' });
 };
 
 exports.handleGetHtml = (req, res) => {
-  res.status(200).send('<html><body>HTML Data</body></html>');
+  res
+    .status(200)
+    .send('<html><body>HTML Data fetched successfully</body></html>');
 };
