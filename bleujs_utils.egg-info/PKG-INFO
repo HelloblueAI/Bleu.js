@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: bleujs-utils
+Version: 1.0.1
+Summary: A utility package for Bleu.js project
+Author: Pejman Haghighatnia
+Author-email: pejmanhnia@gmail.com
+License-File: LICENSE.md
+Requires-Dist: some-dependency

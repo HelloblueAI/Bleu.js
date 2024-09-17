@@ -1310,6 +1310,75 @@ cd eggs-generator
 pnpm run start
 ```
 
+### bleujs-utils Package (Version 1.0.1)
+
+The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
+
+
+### Features
+* Lightweight utility functions for common tasks.
+* Dependency management utilities.
+* Code optimization tools.
+
+### Installation
+You can install the bleujs-utils package via `pnpm ` or `npm `:
+
+Using pnpm:
+
+```javascript
+pnpm install bleujs-utils
+
+```
+
+Using npm:
+
+```javascript
+npm install bleujs-utils
+```
+
+### Usage
+Here’s how you can use the `bleujs-utils` package in your project:
+
+```javascript
+const { optimizeCode, manageDependencies } = require('bleujs-utils');
+
+// Optimize code
+const code = "const   x = 1;   console.log( x);";
+const optimizedCode = optimizeCode(code);
+console.log('Optimized Code:', optimizedCode);
+
+// Manage dependencies
+const dependencies = ['express', 'body-parser'];
+manageDependencies(dependencies);
+```
+
+### Optimizing Code
+The `optimizeCode` function cleans up and formats code for better readability and performance.
+```javascript
+const { optimizeCode } = require('bleujs-utils');
+
+const code = "const   x = 1;   console.log( x);";
+const optimizedCode = optimizeCode(code);
+console.log(optimizedCode);
+```
+
+### Managing Dependencies
+The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
+```javascript
+const { manageDependencies } = require('bleujs-utils');
+
+const dependencies = ['express', 'mongoose'];
+manageDependencies(dependencies);
+```
+
+### Package Information
+* Package Name: `bleujs-utils`
+* Version: 1.0.1
+* License: MIT
+
+You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
+
+
 ### Conclusion
 
 This document provides an overview of the recent updates and enhancements made to the Bleu.js. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
