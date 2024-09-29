@@ -53,7 +53,7 @@
     "express-validator": "^7.2.0",
     "get-port": "^7.1.0",
     "glob-parent": "^6.0.2",
-    "helmet": "^7.1.0",
+    "helmet": "^8.0.0",
     "ip": "latest",
     "json-rules-engine": "^6.5.0",
     "jsonwebtoken": "^9.0.2",
