@@ -24,13 +24,13 @@ Thumbs.db
 # Ignore .env file
 .env
 
-# Ignore Python bytecode cache
+# Ignore Python bytecode cache and virtual environment directories
 __pycache__/
-
-# Ignore virtual environment directory
+*.py[cod]
 language-plugins/python/venv/
 new_venv/
 venv/
+.pytest_cache/
 
 # Lock files
 pnpm-lock.yaml
