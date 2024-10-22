@@ -1407,10 +1407,6 @@ manageDependencies(dependencies);
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
 
-### Conclusion
-
-This document provides an overview of the recent updates and enhancements made to the Bleu.js. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
-
 # License
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
