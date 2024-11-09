@@ -73,4 +73,4 @@ pnpm-lock.yaml
 pnpm-lock.yaml.bak
 
 # NPM configuration file (only if it's meant to be local)
-.npmrc
+.npmrcnew_venv/
