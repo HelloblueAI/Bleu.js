@@ -27,11 +27,50 @@ Thumbs.db
 # Ignore Python bytecode cache and virtual environment directories
 __pycache__/
 *.py[cod]
-language-plugins/python/venv/
-new_venv/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
 venv/
-.pytest_cache/
+env/
+ENV/
+ve/
+virtualenv/
+
+# IDE-specific files
+.vscode/
+.idea/
+.pydevproject
+.python-version
+
+# Python cache files
+__pypackages__/
+
+# Python distribution files
+*.egg-info
+*.egg
+*.eggs/
+*.egg.tmp/
+
+# Python compiled files
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.pyc
+
+# pytest
+.pytest_cache
+.tox/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
 
 # Lock files
 pnpm-lock.yaml
 pnpm-lock.yaml.bak
+
+# NPM configuration file (only if it's meant to be local)
+.npmrc
