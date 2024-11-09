@@ -1,4 +1,12 @@
-# Ignore node modules and other non-Python directories
+# Ignore common non-Python directories and files
 node_modules/* linguist-vendored
 dist/* linguist-vendored
 *.js linguist-vendored
+*.html linguist-vendored
+*.css linguist-vendored
+*.json linguist-vendored
+*.ts linguist-vendored
+*.jsx linguist-vendored
+*.tsx linguist-vendored
+*.svg linguist-vendored
+*.md linguist-vendored
