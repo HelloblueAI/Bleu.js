@@ -1,1 +1,4 @@
-html-report/* linguist-vendored
+# Ignore node modules and other non-Python directories
+node_modules/* linguist-vendored
+dist/* linguist-vendored
+*.js linguist-vendored

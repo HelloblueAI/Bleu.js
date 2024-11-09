@@ -38,6 +38,7 @@ env/
 ENV/
 ve/
 virtualenv/
+new_venv/
 
 # IDE-specific files
 .vscode/
@@ -59,7 +60,6 @@ __pypackages__/
 *.pyo
 *.pyd
 *.so
-*.pyc
 
 # pytest
 .pytest_cache
@@ -73,4 +73,4 @@ pnpm-lock.yaml
 pnpm-lock.yaml.bak
 
 # NPM configuration file (only if it's meant to be local)
-.npmrcnew_venv/
+.npmrc
