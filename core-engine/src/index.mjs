@@ -1,8 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const winston = require('winston');
-const { createLogger, transports, format } = winston;
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import winston, { createLogger, transports, format } from 'winston';
+import path from 'path';
+import serveStatic from 'serve-static';
 
 const app = express();
 const port = 3001;
@@ -26,6 +27,7 @@ const logger = createLogger({
   ],
 });
 
+// Utility Functions
 function debugCode(code) {
   return `Debugged code: ${code}`;
 }
@@ -38,6 +40,7 @@ function generateCode(template) {
   return `Generated code from template: ${template}`;
 }
 
+// Middleware
 app.use(bodyParser.json());
 
 app.use(
@@ -45,8 +48,11 @@ app.use(
     origin: 'http://localhost:4002',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   }),
 );
+
+app.use(serveStatic(path.join(process.cwd(), 'public')));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
@@ -54,9 +60,9 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.sendStatus(200);
   }
-  return next();
+  next();
 });
 
 app.post('/debug', (req, res) => {
@@ -64,10 +70,10 @@ app.post('/debug', (req, res) => {
   try {
     const result = debugCode(code);
     logger.info('Code debugged successfully', { code, result });
-    return res.status(200).send(result);
+    res.status(200).send(result);
   } catch (error) {
     logger.error('Error debugging code', { code, error: error.message });
-    return res.status(500).send('Error debugging code');
+    res.status(500).send('Error debugging code');
   }
 });
 
@@ -76,10 +82,10 @@ app.post('/optimize', (req, res) => {
   try {
     const result = optimizeCode(code);
     logger.info('Code optimized successfully', { code, result });
-    return res.status(200).send(result);
+    res.status(200).send(result);
   } catch (error) {
     logger.error('Error optimizing code', { code, error: error.message });
-    return res.status(500).send('Error optimizing code');
+    res.status(500).send('Error optimizing code');
   }
 });
 
@@ -88,10 +94,10 @@ app.post('/generate', (req, res) => {
   try {
     const result = generateCode(template);
     logger.info('Code generated successfully', { template, result });
-    return res.status(200).send(result);
+    res.status(200).send(result);
   } catch (error) {
     logger.error('Error generating code', { template, error: error.message });
-    return res.status(500).send('Error generating code');
+    res.status(500).send('Error generating code');
   }
 });
 
@@ -100,4 +106,4 @@ app.listen(port, () => {
   console.log(`Core Engine running on port ${port}`);
 });
 
-module.exports = app;
+export default app;

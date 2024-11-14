@@ -139,26 +139,28 @@
     "webpack-dev-middleware": "^7.4.2"
   },
   
-  "pnpm": {
-    "overrides": {
+"pnpm": {
+   "overrides": {
       "babel-traverse": "6.26.0",
       "jsonpath-plus": "^10.0.0",
-      "mime": "^4.0.4",
+      "mime": "2.4.4",
+      "send": "0.18.0",
       "json5": "^1.0.2",
       "node-fetch": "^3.3.2",
       "tough-cookie": "^5.0.0",
       "vue-jest": "@vue/vue3-jest",
       "vue-template-compiler": "npm:@vue/compiler-sfc@^3.0.0"
-    }
-  },
-  "resolutions": {
-    "babel-traverse": "6.26.0",
-    "jsonpath-plus": "^10.0.0",
-    "mime": "^4.0.4",
-    "json5": "^1.0.2",
-    "tough-cookie": "^4.1.3",
-    "vue-template-compiler": "^3.0.0"
-  },
+   }
+},
+"resolutions": {
+   "babel-traverse": "6.26.0",
+   "jsonpath-plus": "^10.0.0",
+   "mime": "2.4.4",
+   "send": "0.18.0",
+   "json5": "^1.0.2",
+   "tough-cookie": "^4.1.3",
+   "vue-template-compiler": "^3.0.0"
+},
   "peerDependencies": {
     "mongodb": "^6.7.0"
   },
