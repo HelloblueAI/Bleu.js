@@ -76,7 +76,6 @@ pnpm run test:all
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue. 
-![HenFarm js](https://github.com/user-attachments/assets/42181cf2-0970-4793-8d28-5122dbe6971b)HenFarm.js
 
 - **docker**: Docker configuration files.
 
