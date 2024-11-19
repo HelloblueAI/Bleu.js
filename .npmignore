@@ -1,42 +1,38 @@
-# Directories
+# Directories to ignore
 node_modules/
 dist/
 frontend/
 backend/
 tests/
+coverage/
 venv/
 
-# Version control
+# Version control and Git-related files
 .git/
 .gitignore
 
-# Configuration files
+# Configuration files not needed for the package
 .eslintrc.cjs
 .babelrc
 
-# Additional files typically ignored
-*.log
-*.lock
-*.yml
-*.yaml
-
-# Editor directories and files
+# Editor and environment-specific files
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Temporary files
+# Logs and temporary files
+*.log
 *.tmp
 *.temp
+*.lock
 
-# Environment variables
+# YAML and configuration files
+*.yml
+*.yaml
+
+# Environment variable files
 .env
 .env.*
