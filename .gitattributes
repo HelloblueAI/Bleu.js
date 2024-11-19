@@ -10,3 +10,4 @@ dist/* linguist-vendored
 *.tsx linguist-vendored
 *.svg linguist-vendored
 *.md linguist-vendored
+*.tgz filter=lfs diff=lfs merge=lfs -text
