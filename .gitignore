@@ -1,76 +1,109 @@
-# Node modules
+# Node.js dependencies
 node_modules/
 
-# Coverage directories and files
+# Testing and Coverage
 coverage/
 backend/coverage/
+*.lcov
 coverage/**/*.html
 backend/coverage/**/*.html
+.pytest_cache/
 
-# Build directories and files
+# Build outputs
 dist/
 build/
+.esbuild/
+*.out
 
-# Logs
+# Logs and debug files
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Backup files
+# Backup and temporary files
 *.bak
+*.tmp
+*.swp
+*.swo
+*.~lock.*
 
 # OS-specific files
 .DS_Store
 Thumbs.db
+*.appledouble
 
-# Ignore .env file
+# Environment variables
 .env
+.env.local
+.env.*.local
 
-# Ignore Python bytecode cache and virtual environment directories
+# Python bytecode and virtual environments
 __pycache__/
 *.py[cod]
-*.pyc
 *.pyo
 *.pyd
+*.so
 .Python
-
-# Virtual environments
 venv/
 env/
 ENV/
 ve/
 virtualenv/
 new_venv/
+__pypackages__/
 
-# IDE-specific files
+# Python distribution and packaging
+*.egg-info/
+*.egg
+*.eggs/
+*.egg.tmp/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+MANIFEST
+
+# IDE and editor-specific files
 .vscode/
 .idea/
 .pydevproject
 .python-version
 
-# Python cache files
-__pypackages__/
-
-# Python distribution files
-*.egg-info
-*.egg
-*.eggs/
-*.egg.tmp/
-
-# Python compiled files
-*.pyc
-*.pyo
-*.pyd
-*.so
-
-# pytest
-.pytest_cache
-.tox/
-
-# Jupyter Notebook
+# Jupyter Notebooks
 .ipynb_checkpoints/
 
-# Lock files
+# Lock and dependency files
 pnpm-lock.yaml
 pnpm-lock.yaml.bak
+yarn.lock
+package-lock.json
 
-# NPM configuration file (only if it's meant to be local)
+# Temporary and miscellaneous files
+*.bak
+*.swp
+*.tmp
+*.pid
+*.seed
+*.pid.lock
+
+# Generated files
+*.iml
+*.class
+*.jar
+*.war
+*.ear
+*.sqlite3
+*.db
+*.sqlite
+*.mdb
+*.accdb
+*.app
+*.exe
+*.dll
+*.deb
+*.dmg
+*.iso
+*.pkg
+
+# Configurations
 .npmrc

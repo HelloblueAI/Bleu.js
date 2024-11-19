@@ -1,1 +1,2 @@
-some-dependency
+requests>=2.20
+numpy>=1.21
