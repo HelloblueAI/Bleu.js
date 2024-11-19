@@ -1,38 +1,35 @@
-# Directories to ignore
+# Node and package files
 node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Build artifacts
 dist/
-frontend/
-backend/
-tests/
+
 coverage/
-venv/
+build/
+.nyc_output/
 
-# Version control and Git-related files
-.git/
-.gitignore
+# Logs and reports
+*.log
+reports/
+**/*.html
+**/*.xml
+**/lcov*
 
-# Configuration files not needed for the package
-.eslintrc.cjs
-.babelrc
-
-# Editor and environment-specific files
+# IDE and OS-specific files
 .vscode/
 .idea/
-*.swp
-*.swo
 .DS_Store
 Thumbs.db
 
-# Logs and temporary files
-*.log
-*.tmp
-*.temp
-*.lock
+# Test and development files
+tests/
+**/__tests__/
+**/*.test.*
+**/*.spec.*
 
-# YAML and configuration files
-*.yml
-*.yaml
-
-# Environment variable files
-.env
-.env.*
+# Unnecessary files in root
+*.bak
+*.tmp,
