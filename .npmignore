@@ -6,17 +6,21 @@ yarn.lock
 
 # Build artifacts
 dist/
-
-coverage/
 build/
+coverage/
+
 .nyc_output/
 
 # Logs and reports
 *.log
+debug.log
 reports/
 **/*.html
 **/*.xml
 **/lcov*
+
+# Tarballs
+*.tgz
 
 # IDE and OS-specific files
 .vscode/
@@ -24,12 +28,17 @@ reports/
 .DS_Store
 Thumbs.db
 
-# Test and development files
+# Temporary and backup files
+*.bak
+*.tmp
+*.swp
+
+# Python virtual environment
+venv/
+
+# Tests and unnecessary files
 tests/
 **/__tests__/
 **/*.test.*
 **/*.spec.*
-
-# Unnecessary files in root
-*.bak
-*.tmp,
+,
