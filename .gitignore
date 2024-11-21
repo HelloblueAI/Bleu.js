@@ -108,3 +108,7 @@ package-lock.json
 # Configurations
 .npmrc
 *.tgz
+babel.config.cjs
+backend/routes/apiRoutes.mjs
+backend/server.mjs
+jest.config.cjs
