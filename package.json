@@ -1,6 +1,6 @@
 {
   "name": "bleujs",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "A production-ready AI and decision tree service",
   "main": "index.js",
   "type": "commonjs",
