@@ -5,9 +5,9 @@ const express = require('express');
 const winston = require('winston');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const openai = require('openai'); // Updated to use OpenAI directly
 
-const apiRoutes = require('./routes/apiRoutes'); // Import API routes
+// Import API routes
+const apiRoutes = require('./routes/apiRoutes');
 
 // Initialize the Express application
 const app = express();
@@ -17,14 +17,22 @@ const PORT = process.env.PORT || 4003;
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
 
-// Configure OpenAI API key directly from environment variables
-if (process.env.OPENAI_API_KEY) {
-  openai.apiKey = process.env.OPENAI_API_KEY;
-} else {
-  console.error(
-    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
-  );
-}
+// Configure OpenAI API key using dynamic import
+let openai;
+(async () => {
+  try {
+    openai = (await import('openai')).default;
+    if (process.env.OPENAI_API_KEY) {
+      openai.apiKey = process.env.OPENAI_API_KEY;
+    } else {
+      console.error(
+        'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
+      );
+    }
+  } catch (err) {
+    console.error('Failed to load OpenAI module:', err);
+  }
+})();
 
 // Set up Winston logger for logging
 const logger = winston.createLogger({
@@ -41,13 +49,9 @@ const logger = winston.createLogger({
   ],
 });
 
-// Connect to MongoDB using Mongoose
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(MONGODB_URI); // Removed deprecated options
     logger.info('MongoDB connected successfully');
   } catch (error) {
     logger.error('MongoDB connection error', error);
