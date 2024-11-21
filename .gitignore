@@ -1,44 +1,60 @@
-# Node.js dependencies
+# ----------------------------
+# Node.js Dependencies
+# ----------------------------
 node_modules/
 
+# ----------------------------
 # Testing and Coverage
+# ----------------------------
 coverage/
-backend/coverage/
 *.lcov
 coverage/**/*.html
+backend/coverage/
 backend/coverage/**/*.html
 .pytest_cache/
 
-# Build outputs
+# ----------------------------
+# Build Outputs
+# ----------------------------
 dist/
 build/
 .esbuild/
 *.out
 
-# Logs and debug files
+# ----------------------------
+# Logs and Debug Files
+# ----------------------------
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Backup and temporary files
+# ----------------------------
+# Backup and Temporary Files
+# ----------------------------
 *.bak
 *.tmp
 *.swp
 *.swo
 *.~lock.*
 
-# OS-specific files
+# ----------------------------
+# OS-Specific Files
+# ----------------------------
 .DS_Store
 Thumbs.db
 *.appledouble
 
-# Environment variables
+# ----------------------------
+# Environment Variables
+# ----------------------------
 .env
 .env.local
 .env.*.local
 
-# Python bytecode and virtual environments
+# ----------------------------
+# Python Bytecode and Virtual Environments
+# ----------------------------
 __pycache__/
 *.py[cod]
 *.pyo
@@ -53,7 +69,9 @@ virtualenv/
 new_venv/
 __pypackages__/
 
-# Python distribution and packaging
+# ----------------------------
+# Python Distribution and Packaging
+# ----------------------------
 *.egg-info/
 *.egg
 *.eggs/
@@ -63,22 +81,41 @@ pip-log.txt
 pip-delete-this-directory.txt
 MANIFEST
 
-# IDE and editor-specific files
+# ----------------------------
+# Python-Specific Configuration Files
+# ----------------------------
+*.ipynb_checkpoints/
+*.pytest_cache/
+setup.py
+setup.cfg
+pyproject.toml
+requirements.txt
+requirements-dev.txt
+
+# ----------------------------
+# IDE and Editor-Specific Files
+# ----------------------------
 .vscode/
 .idea/
 .pydevproject
 .python-version
 
+# ----------------------------
 # Jupyter Notebooks
+# ----------------------------
 .ipynb_checkpoints/
 
-# Lock and dependency files
+# ----------------------------
+# Lock and Dependency Files
+# ----------------------------
 pnpm-lock.yaml
 pnpm-lock.yaml.bak
 yarn.lock
 package-lock.json
 
-# Temporary and miscellaneous files
+# ----------------------------
+# Temporary and Miscellaneous Files
+# ----------------------------
 *.bak
 *.swp
 *.tmp
@@ -86,7 +123,9 @@ package-lock.json
 *.seed
 *.pid.lock
 
-# Generated files
+# ----------------------------
+# Generated Files
+# ----------------------------
 *.iml
 *.class
 *.jar
@@ -105,7 +144,9 @@ package-lock.json
 *.iso
 *.pkg
 
+# ----------------------------
 # Configurations
+# ----------------------------
 .npmrc
 *.tgz
 babel.config.cjs
