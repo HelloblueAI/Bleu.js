@@ -1,4 +1,7 @@
-const { monitorDependencies, resolveConflicts } = require('./src/index');
+const {
+  monitorDependencies,
+  resolveConflicts,
+} = require('./src/dependencyManager');
 
 describe('Dependency Management', () => {
   describe('monitorDependencies', () => {
