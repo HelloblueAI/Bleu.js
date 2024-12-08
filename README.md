@@ -187,23 +187,33 @@ console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
 
 ```javascript
-
   Bleu
-    ✓ should generate a new egg (3 ms)
-    ✓ should optimize code
-    ✓ should manage dependencies (15 ms)
-    ✓ should ensure code quality
+    ✓ should generate a new egg (2 ms)
+    ✓ should optimize code (1 ms)
+    ✓ should manage dependencies (13 ms)
+    ✓ should ensure code quality (1 ms)
     ✓ should generate multiple eggs
-    ✓ should handle large number of eggs (1 ms)
+
     ✓ should handle complex optimization
-    ✓ should ensure quality of complex code
+    ✓ should debug code (1 ms)
+    ✓ should generate correct description for model
+    ✓ should generate correct description for utility
+    ✓ should throw error for unknown code type (4 ms)
 
-Test Suites: 1 passed, 1 total
-Tests:       8 passed, 8 total
+----------------|---------|----------|---------|---------|-------------------
+File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------------|---------|----------|---------|---------|-------------------
+All files       |   28.76 |       20 |   52.63 |   27.53 |                   
+ Bleu.js        |   95.45 |      100 |    90.9 |      95 | 22                
+ HenFarm.js     |       0 |        0 |       0 |       0 | 3-14              
+ generateEgg.js |       0 |        0 |       0 |       0 | 1-33              
+ index.js       |       0 |        0 |       0 |       0 | 1-72              
+----------------|---------|----------|---------|---------|-------------------
+Test Suites: 14 passed, 14 total
+Tests:       23 passed, 23 total
 Snapshots:   0 total
-Time:        0.359 s, estimated 1 s
-Ran all test suites.
-
+Time:        3.154 s
+Ran all test suites in 2 projects.
 ```
 
 test backend
