@@ -19,6 +19,7 @@
 - Support for multiple programming languages
 - Manage Dependencies: Handle project dependencies efficiently
 
+
 ## Installation
 
 Install the package using pnpm.
@@ -26,8 +27,7 @@ Install the package using pnpm.
 ```javascript
 pnpm install bleujs
 ```
-![npm version](https://img.shields.io/npm/v/bleujs)
-![npm downloads](https://img.shields.io/npm/dw/bleujs)
+
 
 ## Running the Application
 
