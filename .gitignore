@@ -153,3 +153,4 @@ babel.config.cjs
 backend/routes/apiRoutes.mjs
 backend/server.mjs
 jest.config.cjs
+.jest-cache/
