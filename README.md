@@ -7,8 +7,6 @@ The bleujs package aims to provide a robust and powerful solution for developers
 
 - Bleu.js is a Rule-based AI framework designed to provide pinpoint solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face.
 
-![npm version](https://img.shields.io/npm/v/bleujs)
-![npm downloads](https://img.shields.io/npm/dw/bleujs)
 
 ### Features
 
@@ -1437,6 +1435,9 @@ manageDependencies(dependencies);
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
+![npm version](https://img.shields.io/npm/v/bleujs)
+![npm downloads](https://img.shields.io/npm/dw/bleujs)
+
 # License
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
@@ -1444,3 +1445,4 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ## Author
 
 Pejman Haghighatnia
+
