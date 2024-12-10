@@ -19,6 +19,8 @@
 - Support for multiple programming languages
 - Manage Dependencies: Handle project dependencies efficiently
 
+![npm version](https://img.shields.io/npm/v/bleujs)
+![npm downloads](https://img.shields.io/npm/dw/bleujs)
 
 ## Installation
 
