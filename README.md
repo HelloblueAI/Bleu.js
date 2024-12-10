@@ -7,6 +7,9 @@ The bleujs package aims to provide a robust and powerful solution for developers
 
 - Bleu.js is a Rule-based AI framework designed to provide pinpoint solutions to various problems. It's is a JavaScript framework built to tackle the various coding challenges developers face.
 
+![npm version](https://img.shields.io/npm/v/bleujs)
+![npm downloads](https://img.shields.io/npm/dw/bleujs)
+
 ### Features
 
 - Advanced debugging
