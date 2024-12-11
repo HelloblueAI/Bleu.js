@@ -1344,4 +1344,3 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 
 Pejman Haghighatnia
 
-s
