@@ -1,9 +1,10 @@
 {
+  "type": "module",
   "name": "bleujs-backend",
   "version": "1.0.18",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node backend/server.js",
     "test:backend": "nyc jest --config=./jest.backend.config.cjs --detectOpenHandles",
     "test": "pnpm -w run test"
   },
@@ -20,7 +21,8 @@
     "helmet": "^7.1.0",
     "json-rules-engine": "^6.5.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.6.3",
+    "mongoose": "^8.8.4",
+    "mongodb": "^6.10.0",
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "natural": "^8.0.1",

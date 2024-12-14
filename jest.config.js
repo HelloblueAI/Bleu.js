@@ -39,12 +39,16 @@ module.exports = {
       },
       transform: {
         '^.+\\.jsx?$': 'babel-jest',
+        '^.+\\.tsx?$': 'ts-jest',
       },
       testMatch: [
         '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
-        '<rootDir>/backend/tests/**/*..test.(js|jsx|ts|tsx)', // Double period typo fixed
+        '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
       ],
       testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+      transformIgnorePatterns: [
+        '/node_modules/(?!get-port|other-esm-modules)/',
+      ],
     },
   ],
 };

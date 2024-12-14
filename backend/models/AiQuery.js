@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define the schema for storing AI queries
 const AiQuerySchema = new mongoose.Schema({
@@ -31,15 +31,18 @@ const AiQuerySchema = new mongoose.Schema({
   },
 });
 
-// Apply schema-level validation for safe queries
+// Pre-save validation to ensure required fields are not empty
 AiQuerySchema.pre('save', function (next) {
-  if (!this.query || !this.response) {
-    return next(new Error('Query and Response are required fields.'));
+  if (!this.query.trim() || !this.response.trim()) {
+    return next(new Error('Query and Response fields must not be empty.'));
   }
-  return next(); // Ensure a return value
+  return next(); // Explicitly return next
 });
+
+// Index for faster querying by query and createdAt fields
+AiQuerySchema.index({ query: 1, createdAt: -1 });
 
 // Model for AI queries
 const AiQuery = mongoose.model('AiQuery', AiQuerySchema);
 
-module.exports = AiQuery;
+export default AiQuery;

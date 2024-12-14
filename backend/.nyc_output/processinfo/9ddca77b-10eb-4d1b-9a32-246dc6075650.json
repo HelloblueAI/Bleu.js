@@ -1,0 +1,18 @@
+{
+  "parent": null,
+  "pid": 13517,
+  "argv": [
+    "/Users/pejmanhaghighatnia/.nvm/versions/node/v18.20.5/bin/node",
+    "/Users/pejmanhaghighatnia/Bleu.js/backend/node_modules/jest/bin/jest.js",
+    "--config=./jest.backend.config.cjs",
+    "--detectOpenHandles"
+  ],
+  "execArgv": [],
+  "cwd": "/Users/pejmanhaghighatnia/Bleu.js/backend",
+  "time": 1734014844665,
+  "ppid": 13509,
+  "coverageFilename": "/Users/pejmanhaghighatnia/Bleu.js/backend/.nyc_output/9ddca77b-10eb-4d1b-9a32-246dc6075650.json",
+  "externalId": "",
+  "uuid": "9ddca77b-10eb-4d1b-9a32-246dc6075650",
+  "files": []
+}

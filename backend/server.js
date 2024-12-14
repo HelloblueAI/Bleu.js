@@ -1,114 +1,114 @@
-// Import dependencies
-const path = require('path');
+import path from 'path';
 
-const express = require('express');
-const winston = require('winston');
-const mongoose = require('mongoose');
-const cors = require('cors');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import express from 'express';
+import winston from 'winston';
+import cors from 'cors';
 
-// Import API routes
-const apiRoutes = require('./routes/apiRoutes');
+import apiRoutes from './routes/apiRoutes.js';
 
-// Initialize the Express application
+// Load environment variables from the .env file in the backend folder
+dotenv.config({ path: './backend/.env' });
+
+console.log('Environment Variables Loaded:', process.env);
+console.log(
+  'Loaded OpenAI API Key:',
+  process.env.OPENAI_API_KEY ? '*****' : 'API key is missing',
+);
+
 const app = express();
-
-// Set up environment variables
 const PORT = process.env.PORT || 4003;
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
 
-// Configure OpenAI API key using dynamic import
-let openai;
-(async () => {
-  try {
-    openai = (await import('openai')).default;
-    if (process.env.OPENAI_API_KEY) {
-      openai.apiKey = process.env.OPENAI_API_KEY;
-    } else {
-      console.error(
-        'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
-      );
-    }
-  } catch (err) {
-    console.error('Failed to load OpenAI module:', err);
-  }
-})();
-
-// Set up Winston logger for logging
+// Set up Winston logger
 const logger = winston.createLogger({
-  level: 'info',
+  level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.printf(
-      ({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`,
-    ),
+    winston.format.json(),
   ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'server.log' }), // Log to file
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple(),
+      ),
+    }),
+    new winston.transports.File({ filename: 'server.log', level: 'info' }),
   ],
 });
 
+// MongoDB connection with retry mechanism
 const connectDB = async () => {
-  try {
-    await mongoose.connect(MONGODB_URI); // Removed deprecated options
-    logger.info('MongoDB connected successfully');
-  } catch (error) {
-    logger.error('MongoDB connection error', error);
-    process.exit(1); // Exit process on connection failure
+  const maxRetries = 5;
+  let attempts = 0;
+
+  while (attempts < maxRetries) {
+    try {
+      await mongoose.connect(MONGODB_URI);
+      logger.info('MongoDB connected successfully');
+      return; // Exit the function once connected
+    } catch (error) {
+      attempts += 1;
+      logger.error(
+        `MongoDB connection attempt ${attempts} failed: ${error.message}`,
+      );
+
+      if (attempts >= maxRetries) {
+        logger.error('Max retries reached, shutting down server');
+        process.exit(1);
+      }
+
+      logger.info('Retrying MongoDB connection...');
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Retry after 5 seconds
+    }
   }
 };
 
-// Set up CORS configuration
-app.use(
-  cors({
-    origin: 'http://localhost:4002', // Allow specific origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-    credentials: true, // Allow credentials (cookies, etc.)
-  }),
-);
+// Configure CORS options
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (process.env.CORS_ENABLED === 'true' && origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
 
-// Parse incoming JSON requests
-app.use(express.json());
+app.use(cors(corsOptions));
+app.use(express.json()); // Middleware to parse JSON requests
 
-// Use API routes for backend functionality
+// Set up API routes
 app.use('/api', apiRoutes);
 
 // Serve static frontend files
 const frontendDir = path.join(__dirname, '../frontend/public');
 app.use(express.static(frontendDir));
 
-// Serve frontend index.html for all other routes (Single Page Application setup)
+// Fallback route for SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
+// Gracefully stop the server
 let server;
-
-// Function to start the server
-const startServer = async () => {
-  try {
-    await connectDB(); // Ensure MongoDB connection before starting the server
-    server = app.listen(PORT, () => {
-      logger.info(`Server running on port ${PORT}`);
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    logger.error('Error starting the server', { error });
-    console.error('Error starting the server:', error);
-  }
-};
-
-// Function to stop the server gracefully
 const stopServer = () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (server) {
-      server.close(() => {
-        logger.info('Server stopped');
-        console.log('Server stopped');
-        server = null;
-        resolve();
+      server.close((err) => {
+        if (err) {
+          logger.error('Error stopping the server:', err);
+          reject(err);
+        } else {
+          logger.info('Server stopped gracefully');
+          resolve();
+        }
       });
     } else {
       resolve();
@@ -116,10 +116,38 @@ const stopServer = () => {
   });
 };
 
-// Export the app and server control functions
-module.exports = { app, startServer, stopServer };
+// Graceful shutdown on signals
+process.on('SIGINT', async () => {
+  logger.info('SIGINT signal received. Shutting down gracefully...');
+  await stopServer();
+  process.exit(0);
+});
 
-// Start the server immediately
+process.on('SIGTERM', async () => {
+  logger.info('SIGTERM signal received. Shutting down gracefully...');
+  await stopServer();
+  process.exit(0);
+});
+
+// Start the server with MongoDB connection validation
+const startServer = async () => {
+  try {
+    await connectDB();
+    server = app.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    logger.error('Error starting the server:', error);
+    console.error('Error starting the server:', error);
+  }
+};
+
+// Export app and server controls for testing
+export { app, startServer, stopServer };
+
+// Automatically start the server
 startServer().catch((error) => {
+  logger.error('Failed to start the server:', error);
   console.error('Failed to start the server:', error);
 });

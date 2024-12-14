@@ -1,15 +1,21 @@
-const request = require('supertest');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import request from 'supertest';
 
-const { startServer, stopServer } = require('../index');
+import { startServer, stopServer } from '../index';
+
+dotenv.config();
 
 let app, server;
 
 beforeAll(async () => {
+  mongoose.set('strictQuery', false); // Avoid deprecation warnings
   ({ app, server } = await startServer(0));
 });
 
 afterAll(async () => {
   await stopServer(server);
+  await mongoose.connection.close(); // Ensure Mongoose disconnects properly
 });
 
 describe('Test Sequencer', () => {
