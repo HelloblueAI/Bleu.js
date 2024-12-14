@@ -49,6 +49,7 @@ Thumbs.db
 # Environment Variables
 # ----------------------------
 .env
+.env.backup
 .env.local
 .env.*.local
 

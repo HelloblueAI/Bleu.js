@@ -2,9 +2,11 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -21,43 +23,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
-        run: |
-          if ! pnpm install --frozen-lockfile; then
-            echo "Frozen install failed. Updating lockfile and retrying..."
-            pnpm install --no-frozen-lockfile
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add pnpm-lock.yaml
-            git commit -m "Update pnpm-lock.yaml" || echo "No changes to commit"
-          fi
-
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: pnpm install --frozen-lockfile
 
       - name: Lint frontend
         run: pnpm run lint:frontend
@@ -68,11 +42,8 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      - name: Run all tests
+      - name: Run tests
         run: pnpm run test:all
-
-      - name: Set CURRENT_VERSION environment variable
-        run: echo "CURRENT_VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
 
   docker:
     needs: build-and-test
@@ -100,7 +71,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker images
+      - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -122,32 +93,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          if ! pnpm install --frozen-lockfile; then
-            echo "Frozen install failed. Updating lockfile and retrying..."
-            pnpm install --no-frozen-lockfile
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add pnpm-lock.yaml
-            git commit -m "Update pnpm-lock.yaml" || echo "No changes to commit"
-          fi
-
-      - name: Set CURRENT_VERSION environment variable
-        run: echo "CURRENT_VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
+        run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
-        run: |
-          if [ "$CURRENT_VERSION" != "1.0.9" ]; then
-            pnpm publish --no-git-checks
-          fi
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

@@ -1,0 +1,27 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env: # Use environment variables from repository settings
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      CORE_ENGINE_URL: ${{ secrets.CORE_ENGINE_URL }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Run tests
+      run: pnpm run test
