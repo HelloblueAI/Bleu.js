@@ -1463,10 +1463,6 @@ manageDependencies(dependencies);
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
-# License
-
-Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
-
 ![Version](https://img.shields.io/badge/version-1.0.22-blue)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/ci.yml?branch=main&label=build&logo=github)
@@ -1479,6 +1475,11 @@ Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/
 ![Contributors](https://img.shields.io/github/contributors/HelloblueAI/Bleu.js)
 ![Last Commit](https://img.shields.io/github/last-commit/HelloblueAI/Bleu.js)
 ![Stars](https://img.shields.io/github/stars/HelloblueAI/Bleu.js?style=social)
+
+# License
+
+Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
+
 
 ## Author
 
