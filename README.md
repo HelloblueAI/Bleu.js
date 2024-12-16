@@ -79,7 +79,7 @@ pnpm run test:all
 
 - **docker**: Docker configuration files.
 
-Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
+
 
 ## Generating Code
 
@@ -970,11 +970,59 @@ Ran all test suites matching /backend\/tests/i.
  PASS   lint  ./index.js
  PASS   lint  ./jest.config.js
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
-----------|---------|----------|---------|---------|-------------------
+
+--------------------------------------|---------|----------|---------|---------|-------------------
+File                                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------------------------------|---------|----------|---------|---------|-------------------
+All files                             |       0 |        0 |       0 |       0 |                   
+ backend                              |       0 |        0 |       0 |       0 |                   
+  db.js                               |       0 |        0 |       0 |       0 | 1-19              
+  index.js                            |       0 |        0 |       0 |       0 | 1-170             
+  server.js                           |       0 |        0 |       0 |       0 | 12-152            
+ backend/ai                           |       0 |        0 |       0 |       0 |                   
+  decisionTree.js                     |       0 |        0 |       0 |       0 | 5-165             
+  nlpProcessor.js                     |       0 |        0 |       0 |       0 | 2-94              
+ backend/controllers                  |       0 |        0 |       0 |       0 |                   
+  apiController.js                    |       0 |        0 |       0 |       0 | 5-150             
+  dataController.js                   |       0 |        0 |       0 |       0 | 3-82              
+ ...jest-html-reporters-attach/report |       0 |        0 |       0 |       0 |                   
+  index.js                            |       0 |        0 |       0 |       0 | 3-49              
+  result.js                           |       0 |      100 |     100 |       0 | 1                 
+ backend/ml                           |       0 |        0 |       0 |       0 |                   
+  modelManager.js                     |       0 |        0 |       0 |       0 | 1-75              
+ backend/mocks                        |       0 |        0 |       0 |       0 |                   
+  databse.js                          |       0 |        0 |       0 |       0 | 1-43              
+ backend/models                       |       0 |        0 |       0 |       0 |                   
+  AiQuery.js                          |       0 |        0 |       0 |       0 | 4-46              
+  ruleModel.js                        |       0 |      100 |     100 |       0 | 1-15              
+  userModel.js                        |       0 |      100 |       0 |       0 | 1-33              
+ backend/routes                       |       0 |      100 |       0 |       0 |                   
+  apiRoutes.js                        |       0 |      100 |     100 |       0 | 5-33              
+  dataRoutes.js                       |       0 |      100 |     100 |       0 | 2-30              
+  index.js                            |       0 |      100 |     100 |       0 | 2-9               
+  simpleRoute.js                      |       0 |      100 |       0 |       0 | 2-9               
+ backend/services                     |       0 |        0 |       0 |       0 |                   
+  aiService.js                        |       0 |        0 |       0 |       0 | 1-99              
+  database.js                         |       0 |      100 |       0 |       0 | 1-26              
+  decisionTreeService.js              |       0 |        0 |       0 |       0 | 1-28              
+  mockEngine.js                       |       0 |        0 |       0 |       0 | 5-12              
+  rulesEngine.js                      |       0 |      100 |       0 |       0 | 2-61              
+  seedDatabase.js                     |       0 |      100 |       0 |       0 | 2-18              
+ backend/src                          |       0 |        0 |       0 |       0 |                   
+  routes.js                           |       0 |        0 |       0 |       0 | 2-152             
+  swagger.js                          |       0 |      100 |     100 |       0 | 2-25              
+ backend/src/utils                    |       0 |        0 |       0 |       0 |                   
+  logger.js                           |       0 |        0 |     100 |       0 | 1-9               
+  testSequencer.js                    |       0 |      100 |       0 |       0 | 2-36              
+ backend/src/utils/lib                |       0 |      100 |       0 |       0 |                   
+  Bleu.js                             |       0 |      100 |       0 |       0 | 2-14              
+ backend/tests                        |       0 |        0 |       0 |       0 |                   
+  CustomSequencer.js                  |       0 |        0 |       0 |       0 | 2-57              
+  globalSetup.js                      |       0 |      100 |       0 |       0 | 1-9               
+  globalTeardown.js                   |       0 |      100 |       0 |       0 | 1-9               
+  setupTests.js                       |       0 |        0 |       0 |       0 | 3-13              
+  testMongoOperations.js              |       0 |        0 |       0 |       0 | 1-46              
+--------------------------------------|---------|----------|---------|---------|-------------------
 
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
