@@ -103,7 +103,7 @@ cd frontend
 ```javascript
 ╰─ pnpm run serve
 
-> bleujs@1.0.0 serve /Users/path/path/Bleu.js
+> bleujs@1.0.22 serve /Users/path/path/Bleu.js
 > cd ui && pnpm run serve
 
 
@@ -967,7 +967,7 @@ Ran all test suites matching /backend\/tests/i.
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
 
 -----------------------------------|-------|-------|-------|-------|-------------------
-File                                |%Stmts |%Branch|%Funcs |%Lines |Uncovered Line #s
+File                               |%Stmts |%Branch|%Funcs |%Lines |Uncovered Line #s
 -----------------------------------|-------|-------|-------|-------|-------------------
 All files                          |     0 |     0 |     0 |     0 |
 backend                            |     0 |     0 |     0 |     0 |
