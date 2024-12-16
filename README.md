@@ -1476,7 +1476,6 @@ Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/
 ![Open Issues](https://img.shields.io/github/issues-raw/HelloblueAI/Bleu.js)
 ![Closed Issues](https://img.shields.io/github/issues-closed/HelloblueAI/Bleu.js)
 ![Pull Requests](https://img.shields.io/github/issues-pr-raw/HelloblueAI/Bleu.js)
-![Size](https://img.shields.io/bundlephobia/min/bleujs)
 ![Contributors](https://img.shields.io/github/contributors/HelloblueAI/Bleu.js)
 ![Last Commit](https://img.shields.io/github/last-commit/HelloblueAI/Bleu.js)
 ![Stars](https://img.shields.io/github/stars/HelloblueAI/Bleu.js?style=social)
