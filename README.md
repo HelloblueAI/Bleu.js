@@ -1465,7 +1465,7 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 # License
 
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
+Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
 ## Author
 
