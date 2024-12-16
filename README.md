@@ -984,8 +984,7 @@ All files                             |       0 |        0 |       0 |       0 |
   nlpProcessor.js                     |       0 |        0 |       0 |       0 | 2-94              
  backend/controllers                  |       0 |        0 |       0 |       0 |                   
   apiController.js                    |       0 |        0 |       0 |       0 | 5-150             
-  dataController.js                   |       0 |        0 |       0 |       0 | 3-82              
- ...jest-html-reporters-attach/report |       0 |        0 |       0 |       0 |                   
+  dataController.js                   |       0 |        0 |       0 |       0 | 3-82                            
   index.js                            |       0 |        0 |       0 |       0 | 3-49              
   result.js                           |       0 |      100 |     100 |       0 | 1                 
  backend/ml                           |       0 |        0 |       0 |       0 |                   
@@ -1022,7 +1021,8 @@ All files                             |       0 |        0 |       0 |       0 |
   globalTeardown.js                   |       0 |      100 |       0 |       0 | 1-9               
   setupTests.js                       |       0 |        0 |       0 |       0 | 3-13              
   testMongoOperations.js              |       0 |        0 |       0 |       0 | 1-46              
---------------------------------------|---------|----------|---------|---------|-------------------
+--------------------------------------|---------|---------|---------|-------------------
+
 
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
