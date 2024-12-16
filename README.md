@@ -1465,7 +1465,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 ![Version](https://img.shields.io/badge/version-1.0.22-blue)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
-![Build Status](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/ci.yml?branch=main&label=build&logo=github)
 ![Test Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
 ![Downloads](https://img.shields.io/npm/dt/bleujs)
 ![Dependencies](https://img.shields.io/librariesio/github/HelloblueAI/Bleu.js)
