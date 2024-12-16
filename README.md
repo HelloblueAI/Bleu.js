@@ -1467,6 +1467,20 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
+![Version](https://img.shields.io/badge/version-1.0.22-blue)
+![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
+![Build Status](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/ci.yml?branch=main&label=build&logo=github)
+![Test Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+![Downloads](https://img.shields.io/npm/dt/bleujs)
+![Dependencies](https://img.shields.io/librariesio/github/HelloblueAI/Bleu.js)
+![Open Issues](https://img.shields.io/github/issues-raw/HelloblueAI/Bleu.js)
+![Closed Issues](https://img.shields.io/github/issues-closed/HelloblueAI/Bleu.js)
+![Pull Requests](https://img.shields.io/github/issues-pr-raw/HelloblueAI/Bleu.js)
+![Size](https://img.shields.io/bundlephobia/min/bleujs)
+![Contributors](https://img.shields.io/github/contributors/HelloblueAI/Bleu.js)
+![Last Commit](https://img.shields.io/github/last-commit/HelloblueAI/Bleu.js)
+![Stars](https://img.shields.io/github/stars/HelloblueAI/Bleu.js?style=social)
+
 ## Author
 
 Pejman Haghighatnia
