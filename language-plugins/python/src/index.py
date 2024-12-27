@@ -1,21 +1,24 @@
 import ast
-import astor
+
 
 class PythonProcessor:
-    def parse_code(self, code):
+    """A powerful Python code processor for parsing, optimizing, and generating Python code."""
+
+    def parse_code(self, code: str) -> ast.AST:
+        """Parse Python code into an Abstract Syntax Tree (AST)."""
         try:
             return ast.parse(code)
-        except Exception as e:
-            raise ValueError(f"Error parsing code: {str(e)}")
+        except SyntaxError as e:
+            raise ValueError(f"Error parsing code: {e}")
 
-    def optimizeCode(self, tree):
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Name) and node.id == 'var':
-                node.id = 'let'
+    def optimize_code(self, tree: ast.AST) -> ast.AST:
+        """Perform optimizations on the AST."""
+        # Currently, this is a placeholder for optimizations.
         return tree
 
-    def generateCode(self, tree):
+    def generate_code(self, tree: ast.AST) -> str:
+        """Generate Python code from an AST."""
         try:
-            return astor.to_source(tree)
+            return ast.unparse(tree).strip() + "\n"
         except Exception as e:
-            raise ValueError(f"Error generating code: {str(e)}")
+            raise ValueError(f"Error generating code: {e}")

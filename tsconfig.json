@@ -23,6 +23,8 @@
     "forceConsistentCasingInFileNames": true,
     "allowUmdGlobalAccess": true,
     "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
     "checkJs": true,
     "declaration": true,
     "declarationMap": true,
@@ -61,18 +63,15 @@
     "traceResolution": false,
     "pretty": true
   },
-  "include": [
+"include": [
     "src/**/*",
     "backend/**/*",
     "core-engine/**/*",
     "tests/**/*",
-    "scripts/**/*",
-    "*.mts",
-    "*.cts",
+
     "*.ts",
     "*.tsx",
-    "*.js",
-    "*.jsx",
+
     "jest.setup.ts",
     "jest.config.ts",
     "node_modules/@types/**/*.d.ts"

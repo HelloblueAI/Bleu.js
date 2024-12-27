@@ -1,6 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 
-import logger from './utils/logger.js'; // Ensure the path to logger.js is correct.
+import logger from './utils/logger.ts'; // Ensure the path to logger.ts is correct.
 
 const uri = process.env['MONGO_URI'] || 'mongodb://127.0.0.1:27017';
 const client = new MongoClient(uri);

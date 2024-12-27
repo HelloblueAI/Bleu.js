@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import apiRoutes from './apiRoutes.js'; // Importing API routes
+import apiRoutes from './apiRoutes.ts'; // Importing API routes
 
 // Initialize the router
 const router = express.Router();
@@ -26,7 +26,7 @@ router.use(limiter);
 router.use(morgan('combined'));
 
 // Body parser middleware
-router.use(express.json());
+router.use(express.tson());
 router.use(express.urlencoded({ extended: true }));
 
 // Mount API routes
@@ -35,12 +35,12 @@ router.use('/api', apiRoutes);
 // Error handling middleware
 router.use((err, _req, res) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(500).tson({ error: 'Something went wrong!' });
 });
 
 // 404 handler
 router.use((_, res) => {
-  res.status(404).json({ error: 'Not Found' });
+  res.status(404).tson({ error: 'Not Found' });
 });
 
 // Export the router for use in other parts of the application

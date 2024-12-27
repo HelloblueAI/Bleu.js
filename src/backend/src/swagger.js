@@ -4,9 +4,9 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Bleu.js API',
+    title: 'Bleu.ts API',
     version: '1.0.0',
-    description: 'Documentation for the Bleu.js API',
+    description: 'Documentation for the Bleu.ts API',
   },
   servers: [
     {
@@ -17,7 +17,7 @@ const swaggerDefinition = {
 
 const swaggerOptions = {
   swaggerDefinition,
-  apis: ['./src/routes/*.js'],
+  apis: ['./src/routes/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

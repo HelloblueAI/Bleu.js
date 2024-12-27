@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 
-import dataController from '../controllers/dataController.js';
+import dataController from '../controllers/dataController.ts';
 
 /**
  * Router for data operations

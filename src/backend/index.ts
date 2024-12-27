@@ -33,7 +33,7 @@ const errorHandler = (
   _next: NextFunction,
 ): void => {
   console.error(`Error: ${err.message}`);
-  res.status(err.status || 500).json({
+  res.status(err.status || 500).tson({
     status: 'error',
     message: err.message || 'Internal Server Error',
   });
@@ -62,7 +62,7 @@ router.use(limiter);
 router.use(morgan('combined'));
 
 // Body parser middleware
-router.use(express.json());
+router.use(express.tson());
 router.use(express.urlencoded({ extended: true }));
 
 // Mount API routes
@@ -71,12 +71,12 @@ router.use('/api', apiRoutes);
 // Error handling middleware
 router.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(500).tson({ error: 'Something went wrong!' });
 });
 
 // 404 handler
 router.use((_, res: Response) => {
-  res.status(404).json({ error: 'Not Found' });
+  res.status(404).tson({ error: 'Not Found' });
 });
 
 // Create and configure the Express application
@@ -86,7 +86,7 @@ const createApp = (): Express => {
   app.use(helmet());
   app.use(cors());
   app.use(morgan('combined'));
-  app.use(express.json());
+  app.use(express.tson());
   app.use(limiter);
 
   app.use('/', router);
