@@ -1,12 +1,12 @@
 {
   "name": "bleujs",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "packageManager": "pnpm@9.15.1",
   "description": "A production-ready AI and decision tree service for enterprise applications.",
   "main": "index.js",
   "type": "module",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "workspaces": [
     "backend",
     "core-engine",
