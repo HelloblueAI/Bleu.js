@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "bleujs-backend",
-  "version": "1.0.18",
+  "version": "1.0.23",
   "main": "src/index.js",
   "scripts": {
     "start": "node server.js",
