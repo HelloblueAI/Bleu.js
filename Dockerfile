@@ -2,20 +2,20 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Copy only package.json and pnpm-lock.yaml initially
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
+# Enable Corepack and prepare pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Install pnpm globally and install dependencies
-RUN npm install -g pnpm
-RUN pnpm install
+# Copy package.json and pnpm-lock.yaml
+COPY backend/package*.json backend/pnpm-lock.yaml* ./
 
-# Copy the rest of the application code, excluding node_modules
-COPY . .
+# Install dependencies without freezing the lockfile
+RUN pnpm install --no-frozen-lockfile
 
-# If there is a build step, add it here
-# RUN pnpm run build
+# Copy the rest of the app
+COPY backend .
 
+# Expose the application port
 EXPOSE 3000
 
-CMD ["node", "index.js"]
+# Start the application
+CMD ["pnpm", "start"]

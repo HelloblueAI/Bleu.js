@@ -79,8 +79,6 @@ pnpm run test:all
 
 - **docker**: Docker configuration files.
 
-
-
 ## Generating Code
 
 To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
@@ -620,7 +618,7 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`  
+`cd eggs-generator`
 `pnpm run test`
 
 ```javascript
@@ -1010,7 +1008,7 @@ globalSetup.js                     |     0 |   100 |     0 |     0 | 1-9
 globalTeardown.js                  |     0 |   100 |     0 |     0 | 1-9
 setupTests.js                      |     0 |     0 |     0 |     0 | 3-13
 testMongoOperations.js             |     0 |     0 |     0 |     0 | 1-46
-             
+
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
 Snapshots:   0 total
@@ -1472,7 +1470,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 # License
 
 Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
-
 
 ## Author
 

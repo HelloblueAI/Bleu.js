@@ -1,27 +1,45 @@
 name: Run Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    env: # Use environment variables from repository settings
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      CORE_ENGINE_URL: ${{ secrets.CORE_ENGINE_URL }}
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI || 'default_mongodb_uri' }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'default_jwt_secret' }}
+      CORE_ENGINE_URL: ${{ secrets.CORE_ENGINE_URL || 'default_core_engine_url' }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
 
-    - name: Run tests
-      run: pnpm run test
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run tests
+        run: pnpm run test

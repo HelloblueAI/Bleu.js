@@ -1,1 +1,1 @@
-{"last_found_secrets": [{"name": "Generic High Entropy Secret - /Users/pejmanhaghighatnia/Bleu.js/.env.backup", "match": "0808bfcbefd3f43e1bda7bed71bb20242d74da3538c270a7bfd9000d5c385a8f"}]}
+{"last_found_secrets": [{"match": "773d83b90b9135b7d50e70663dd3a6a3fcd95eb668ef2559491b20778287c902", "name": "Generic High Entropy Secret - /Users/pejmanhaghighatnia/Bleu.js/backend/.env"}]}
