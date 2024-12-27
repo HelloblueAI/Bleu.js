@@ -1,4 +1,8 @@
 packages:
-  - 'backend'
-  - 'frontend'
-  - 'core-engine'
+  - backend
+  - frontend
+  - core-engine
+  - eggs-generator
+  - collaboration-tools
+  - dependency-management
+  - language-plugins/*

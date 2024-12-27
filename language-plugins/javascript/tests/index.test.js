@@ -1,5 +1,6 @@
 const parser = require('@babel/parser');
 const generate = require('@babel/generator').default;
+
 const JSProcessor = require('../src/JSProcessor');
 
 describe('JSProcessor', () => {

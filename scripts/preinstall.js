@@ -1,5 +1,5 @@
-const fs = require('fs');
 const { execSync } = require('child_process');
+const fs = require('fs');
 
 if (fs.existsSync('./package-lock.json') || fs.existsSync('./pnpm-lock.yaml')) {
   execSync('npx npm-force-resolutions', { stdio: 'inherit' });
