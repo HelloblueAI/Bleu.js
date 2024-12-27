@@ -1,5 +1,6 @@
 LICENSE.md
 README.md
+setup.cfg
 setup.py
 bleujs_utils.egg-info/PKG-INFO
 bleujs_utils.egg-info/SOURCES.txt

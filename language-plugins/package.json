@@ -1,6 +1,6 @@
 {
   "name": "language-plugins",
-  "version": "1.0.18",
+  "version": "1.0.24",
   "private": true,
   "workspaces": [
     "javascript",
@@ -10,9 +10,9 @@
     "force": "^0.0.3"
   },
   "scripts": {
-    "start": "pnpm run start --workspace=javascript",
-    "build": "pnpm run build --workspace=python",
-    "test": "pnpm run test"
+    "start": "pnpm --filter=javascript start",
+    "build": "pnpm --filter=python build",
+    "test": "pnpm --filter=javascript test && pnpm --filter=python test"
   },
   "devDependencies": {
     "eslint": "^8.40.0",

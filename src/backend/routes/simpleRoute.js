@@ -1,7 +1,6 @@
-const express = require('express');
-
-const apiRoutes = require('./apiRoutes');
-const simpleRoute = require('./simpleRoute');
+import express, { Router } from 'express';
+import apiRoutes from './apiRoutes';
+import simpleRoute from './simpleRoute';
 
 const router = express.Router();
 
@@ -11,4 +10,4 @@ router.use('/api', apiRoutes);
 // Mount simple route
 router.use('/simple', simpleRoute);
 
-module.exports = router;
+export default router;

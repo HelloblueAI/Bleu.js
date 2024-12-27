@@ -1455,7 +1455,7 @@ manageDependencies(dependencies);
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
-![Version](https://img.shields.io/badge/version-1.0.22-blue)
+![Version](https://img.shields.io/badge/version-1.0.24-blue)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
 ![Test Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
 ![Downloads](https://img.shields.io/npm/dt/bleujs)

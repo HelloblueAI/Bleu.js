@@ -8,7 +8,7 @@ process.env.PORT = '3000';
 process.env.JWT_SECRET = 'test_jwt_secret';
 process.env.CORE_ENGINE_URL = 'http://localhost:4000';
 
-// Polyfill TextEncoder and TextDecoder (Node.js < v16)
+// Polyfill TextEncoder and TextDecoder (Node.ts < v16)
 if (typeof global.TextEncoder === 'undefined') {
   global.TextEncoder = TextEncoder;
 }

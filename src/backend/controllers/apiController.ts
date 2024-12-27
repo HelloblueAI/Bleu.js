@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require('../utils/logger.js'); // Ensure .js extension
+const logger = require('../utils/logger.ts'); // Ensure .ts extension
 
 /**
  * @param {import("express").Request} req
@@ -16,7 +16,7 @@ const predict = async (req, res, next) => {
 
     // Simulated prediction logic
     const response = { result: 'Simulated prediction' };
-    res.status(200).json({ status: 'success', response });
+    res.status(200).tson({ status: 'success', response });
   } catch (error) {
     logger.error('Prediction failed', { error });
     next(error);

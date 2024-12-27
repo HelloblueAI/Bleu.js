@@ -104,11 +104,9 @@ pnpm run test:all
 - **collaboration-tools**: Tools for code review, issue tracking, and project management.
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
-- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue. 
+- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
 
 - **docker**: Docker configuration files.
-
-Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 
 
 ## Generating Code
 
@@ -132,7 +130,7 @@ cd frontend
 ```javascript
 ╰─ pnpm run serve
 
-> bleujs@1.0.0 serve /Users/path/path/Bleu.js
+> bleujs@1.0.22 serve /Users/path/path/Bleu.js
 > cd ui && pnpm run serve
 
 
@@ -151,12 +149,6 @@ cd frontend
 ```
 
 <img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
-
-The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
-
-## Comprehensive AI Tools
-
-With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
 
 ## Backend Efficiency
 
@@ -655,7 +647,7 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`  
+`cd eggs-generator`
 `pnpm run test`
 
 ```javascript
@@ -794,11 +786,6 @@ This document provides detailed information about the API endpoints available in
     ✓ should handle JSON arrays (1 ms)
     ✓ should handle deeply nested JSON objects (1 ms)
 
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
-----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
 Snapshots:   0 total
@@ -999,11 +986,57 @@ Ran all test suites matching /backend\/tests/i.
  PASS   lint  ./index.js
  PASS   lint  ./jest.config.js
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
-----------|---------|----------|---------|---------|-------------------
+
+-----------------------------------|-------|-------|-------|-------|-------------------
+File                               |%Stmts |%Branch|%Funcs |%Lines |Uncovered Line #s
+-----------------------------------|-------|-------|-------|-------|-------------------
+All files                          |     0 |     0 |     0 |     0 |
+backend                            |     0 |     0 |     0 |     0 |
+db.js                              |     0 |     0 |     0 |     0 | 1-19
+index.js                           |     0 |     0 |     0 |     0 | 1-170
+server.js                          |     0 |     0 |     0 |     0 | 12-152
+backend/ai                         |     0 |     0 |     0 |     0 |
+decisionTree.js                    |     0 |     0 |     0 |     0 | 5-165
+nlpProcessor.js                    |     0 |     0 |     0 |     0 | 2-94
+backend/controllers                |     0 |     0 |     0 |     0 |
+apiController.js                   |     0 |     0 |     0 |     0 | 5-150
+dataController.js                  |     0 |     0 |     0 |     0 | 3-82
+index.js                           |     0 |     0 |     0 |     0 | 3-49
+result.js                          |     0 |   100 |   100 |     0 | 1
+backend/ml                         |     0 |     0 |     0 |     0 |
+modelManager.js                    |     0 |     0 |     0 |     0 | 1-75
+backend/mocks                      |     0 |     0 |     0 |     0 |
+databse.js                         |     0 |     0 |     0 |     0 | 1-43
+backend/models                     |     0 |     0 |     0 |     0 |
+AiQuery.js                         |     0 |     0 |     0 |     0 | 4-46
+ruleModel.js                       |     0 |   100 |   100 |     0 | 1-15
+userModel.js                       |     0 |   100 |     0 |     0 | 1-33
+backend/routes                     |     0 |   100 |     0 |     0 |
+apiRoutes.js                       |     0 |   100 |   100 |     0 | 5-33
+dataRoutes.js                      |     0 |   100 |   100 |     0 | 2-30
+index.js                           |     0 |   100 |   100 |     0 | 2-9
+simpleRoute.js                     |     0 |   100 |     0 |     0 | 2-9
+backend/services                   |     0 |     0 |     0 |     0 |
+aiService.js                       |     0 |     0 |     0 |     0 | 1-99
+database.js                        |     0 |   100 |     0 |     0 | 1-26
+decisionTreeService.js             |     0 |     0 |     0 |     0 | 1-28
+mockEngine.js                      |     0 |     0 |     0 |     0 | 5-12
+rulesEngine.js                     |     0 |   100 |     0 |     0 | 2-61
+seedDatabase.js                    |     0 |   100 |     0 |     0 | 2-18
+backend/src                        |     0 |     0 |     0 |     0 |
+routes.js                          |     0 |     0 |     0 |     0 | 2-152
+swagger.js                         |     0 |   100 |   100 |     0 | 2-25
+backend/src/utils                  |     0 |     0 |     0 |     0 |
+logger.js                          |     0 |     0 |   100 |     0 | 1-9
+testSequencer.js                   |     0 |   100 |     0 |     0 | 2-36
+backend/src/utils/lib              |     0 |   100 |     0 |     0 |
+Bleu.js                            |     0 |   100 |     0 |     0 | 2-14
+backend/tests                      |     0 |     0 |     0 |     0 |
+CustomSequencer.js                 |     0 |     0 |     0 |     0 | 2-57
+globalSetup.js                     |     0 |   100 |     0 |     0 | 1-9
+globalTeardown.js                  |     0 |   100 |     0 |     0 | 1-9
+setupTests.js                      |     0 |     0 |     0 |     0 | 3-13
+testMongoOperations.js             |     0 |     0 |     0 |     0 | 1-46
 
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
@@ -1344,14 +1377,21 @@ pnpm run start
 
 The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
 
-
 ### Features
-* Lightweight utility functions for common tasks.
-* Dependency management utilities.
-* Code optimization tools.
+
+- Lightweight utility functions for common tasks.
+- Dependency management utilities.
+- Code optimization tools.
 
 ### Installation
-You can install the bleujs-utils package via `pnpm` or `npm`:
+
+You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
+
+Using pip:
+
+```javascript
+pip install bleujs-utils
+```
 
 Using pnpm:
 
@@ -1367,7 +1407,9 @@ npm install bleujs-utils
 ```
 
 ### Usage
+
 ### Example 1: General Utility Function
+
 ```javascript
 from bleujs_utils import some_utility_function
 
@@ -1385,15 +1427,16 @@ print(response)
 ```
 
 ### Use Cases
-* AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
-* Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
-* Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
+- AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
+- Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
+- Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
 
 ### Example 3: CLI Tool
+
 ```javascript
 bleujs-utils-cli --help
 ```
-
 
 Here’s how you can use the `bleujs-utils` package in your project:
 
@@ -1401,7 +1444,7 @@ Here’s how you can use the `bleujs-utils` package in your project:
 const { optimizeCode, manageDependencies } = require('bleujs-utils');
 
 // Optimize code
-const code = "const   x = 1;   console.log( x);";
+const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log('Optimized Code:', optimizedCode);
 
@@ -1411,17 +1454,21 @@ manageDependencies(dependencies);
 ```
 
 ### Optimizing Code
+
 The `optimizeCode` function cleans up and formats code for better readability and performance.
+
 ```javascript
 const { optimizeCode } = require('bleujs-utils');
 
-const code = "const   x = 1;   console.log( x);";
+const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log(optimizedCode);
 ```
 
 ### Managing Dependencies
+
 The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
+
 ```javascript
 const { manageDependencies } = require('bleujs-utils');
 
@@ -1430,16 +1477,28 @@ manageDependencies(dependencies);
 ```
 
 ### Package Information
-* Package Name: `bleujs-utils`
-* Version: 1.0.1
-* License: MIT
+
+- Package Name: `bleujs-utils`
+- Version: 1.0.1
+- License: MIT
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
+![Version](https://img.shields.io/badge/version-1.0.24-blue)
+![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
+![Test Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+![Downloads](https://img.shields.io/npm/dt/bleujs)
+![Dependencies](https://img.shields.io/librariesio/github/HelloblueAI/Bleu.js)
+![Open Issues](https://img.shields.io/github/issues-raw/HelloblueAI/Bleu.js)
+![Closed Issues](https://img.shields.io/github/issues-closed/HelloblueAI/Bleu.js)
+![Pull Requests](https://img.shields.io/github/issues-pr-raw/HelloblueAI/Bleu.js)
+![Contributors](https://img.shields.io/github/contributors/HelloblueAI/Bleu.js)
+![Last Commit](https://img.shields.io/github/last-commit/HelloblueAI/Bleu.js)
+![Stars](https://img.shields.io/github/stars/HelloblueAI/Bleu.js?style=social)
 
 # License
 
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
+Bleu.js is licensed under the [MIT](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
 ## Author
 

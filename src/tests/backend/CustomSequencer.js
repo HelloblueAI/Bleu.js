@@ -6,7 +6,7 @@ import { default as Sequencer } from '@jest/test-sequencer';
 
 class CustomSequencer extends Sequencer {
   sort(tests) {
-    const priorityList = ['critical.test.js', 'important.test.js'];
+    const priorityList = ['critical.test.ts', 'important.test.ts'];
 
     // Assign priority based on the filename
     const getPriority = (testPath) => {

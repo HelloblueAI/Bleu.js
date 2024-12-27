@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import request from 'supertest';
 
-import { startServer, stopServer } from '../../src/backend/index.js'; // Corrected path
+import { startServer, stopServer } from '../../src/backend/index.ts'; // Corrected path
 
 dotenv.config();
 

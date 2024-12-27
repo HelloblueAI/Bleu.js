@@ -2,8 +2,8 @@ import express, { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult, ValidationError } from 'express-validator';
 import { HttpError } from 'http-errors';
 
-import { apiController } from '../controllers/apiController.js'; // Add '.js' extension
-import logger from '../utils/logger.js'; // Add '.js' extension
+import { apiController } from '../controllers/apiController.ts'; // Add '.ts' extension
+import logger from '../utils/logger.ts'; // Add '.ts' extension
 
 const router: Router = express.Router();
 
@@ -25,7 +25,7 @@ const validateRequest = (req: Request, res: Response, next: NextFunction) => {
       message: err.msg,
     }));
 
-    return res.status(400).json({
+    return res.status(400).tson({
       status: 'error',
       message: 'Validation failed',
       errors: errorDetails,
@@ -69,7 +69,7 @@ router.post(
 
     logger.info('Prediction successful', { response });
 
-    res.status(200).json({ status: 'success', response });
+    res.status(200).tson({ status: 'success', response });
   }),
 );
 
@@ -78,7 +78,7 @@ router.post(
  */
 router.get('/health', (_req: Request, res: Response) => {
   logger.info('Health check performed');
-  res.status(200).json({
+  res.status(200).tson({
     status: 'ok',
     message: 'API is operational',
     timestamp: new Date().toISOString(),
@@ -91,7 +91,7 @@ router.get('/health', (_req: Request, res: Response) => {
 router.use(
   (err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
     logger.error('Unhandled error occurred', { error: err.stack });
-    res.status(err.status || 500).json({
+    res.status(err.status || 500).tson({
       status: 'error',
       message: err.message || 'Internal Server Error',
     });

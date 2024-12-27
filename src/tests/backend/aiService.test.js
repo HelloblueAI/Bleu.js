@@ -1,6 +1,6 @@
 import request from 'supertest';
-import { startServer, stopServer } from '../../src/backend/index.js'; // Corrected path
-import decisionTreeService from '../../src/backend/services/decisionTreeService.js';
+import { startServer, stopServer } from '../../src/backend/index.ts'; // Corrected path
+import decisionTreeService from '../../src/backend/services/decisionTreeService.ts';
 
 let app, server;
 
