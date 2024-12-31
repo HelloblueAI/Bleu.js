@@ -2,6 +2,8 @@
 # Node.js Dependencies
 # ----------------------------
 node_modules/
+.npm/
+.pnpm-debug.log/
 
 # ----------------------------
 # Testing and Coverage
@@ -14,6 +16,7 @@ backend/coverage/**/*.html
 .pytest_cache/
 .jest-cache/
 .nyc_output/
+.vitest/
 
 # ----------------------------
 # Build Outputs
@@ -23,6 +26,7 @@ build/
 .esbuild/
 *.out
 *.map
+*.build/
 tmp/
 
 # ----------------------------
@@ -31,6 +35,7 @@ tmp/
 *.log
 npm-debug.log*
 yarn-debug.log*
+pnpm-debug.log*
 yarn-error.log*
 *.trace
 *.err
@@ -61,6 +66,8 @@ Icon?
 .env
 .env.*
 .env.local
+.env.test
+.env.production
 .env.backup
 
 # ----------------------------
@@ -96,7 +103,7 @@ MANIFEST
 # Python-Specific Configuration Files
 # ----------------------------
 *.ipynb_checkpoints/
-*.pytest_cache/
+.pytest_cache/
 setup.py
 setup.cfg
 pyproject.toml
@@ -124,6 +131,7 @@ pnpm-lock.yaml
 pnpm-lock.yaml.bak
 yarn.lock
 package-lock.json
+composer.lock
 
 # ----------------------------
 # Temporary and Miscellaneous Files
@@ -135,6 +143,7 @@ package-lock.json
 *.seed
 *.pid.lock
 *.orig
+*.repl_history
 
 # ----------------------------
 # Generated Files
@@ -169,8 +178,20 @@ backend/server.mjs
 jest.config.*
 prettier.config.*
 eslint.config.*
+tsconfig.json
+tsconfig.*.json
 
 # ----------------------------
 # OpenAI API Integration
 # ----------------------------
 openai.log
+
+# ----------------------------
+# Machine Learning Artifacts
+# ----------------------------
+*.pkl
+*.h5
+*.onnx
+*.tflite
+*.json
+model_outputs/

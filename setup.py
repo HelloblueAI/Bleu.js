@@ -1,12 +1,6 @@
-from setuptools import setup, find_packages
-from pathlib import Path
-
-current_directory = Path(__file__).parent
-long_description = (current_directory / "README.md").read_text(encoding="utf-8")
-
 setup(
     name="bleujs-utils",
-    version="1.0.2",
+    version="1.0.4",
     description="Utility package for Bleu.js, providing tools to enhance development and integration.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -41,4 +35,4 @@ setup(
     },
     include_package_data=True,
     zip_safe=False,
-),
+)
