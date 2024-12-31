@@ -3,7 +3,7 @@ import multer from 'multer';
 import AIService from '../services/aiService';
 import Logger from '../utils/logger';
 
-const router: Router = express.Router();
+const router = express.Router();
 const upload = multer();
 const logger = new Logger();
 const aiService = new AIService();
