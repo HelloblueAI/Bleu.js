@@ -1,17 +1,19 @@
-name: Publish to PyPI
+name: Publish Package to PyPI
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*.*.*'  # Trigger the workflow on version tags like v1.0.0
 
 jobs:
   publish:
-    name: Publish Package to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read  # Required for GitHub Actions' OpenID Connect authentication
 
     steps:
-      # Step 1: Check out the repository
+      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -19,26 +21,44 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.x'  # Adjust Python version as needed
 
-      # Step 3: Install dependencies for building and publishing the package
+      # Step 3: Install required tools and dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build twine
 
-      # Step 4: Build the Python package
-      - name: Build package
-        run: python -m build
+      # Step 4: Ensure dist directory is clean
+      - name: Clean up previous builds
+        run: |
+          rm -rf dist/ build/ *.egg-info
 
-      # Step 5: Publish the package to PyPI
+      # Step 5: Build the package
+      - name: Build package
+        run: |
+          python -m build
+
+      # Step 6: Verify the built package before uploading
+      - name: Check built distributions
+        run: |
+          twine check dist/*
+
+      # Step 7: Publish to PyPI
       - name: Publish to PyPI
         env:
-          TWINE_USERNAME: __token__  # Standard username for API token authentication
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}  # Securely retrieve API token
-        run: python -m twine upload dist/*
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m twine upload dist/*
 
-      # Optional: Clean up artifacts (if required)
-      - name: Cleanup build artifacts
-        if: success()
-        run: rm -rf dist/ build/ *.egg-info
+      # Step 8: Confirm the upload
+      - name: Confirm upload
+        if: always()
+        run: echo "Package published successfully to PyPI!"
+
+      # Optional Step: Notify on success/failure
+      - name: Notify completion
+        if: always()
+        run: |
+          echo "Workflow completed with status: ${{ job.status }}"
