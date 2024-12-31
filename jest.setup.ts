@@ -1,5 +1,5 @@
+import { afterAll, afterEach, beforeAll } from '@jest/globals';
 import '@testing-library/jest-dom'; // Extend Jest matchers for DOM assertions
-import { afterAll, beforeAll, afterEach } from '@jest/globals';
 import * as dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 
@@ -12,13 +12,29 @@ global.mongoClient = global.mongoClient || undefined;
 // Load environment variables from the `.env` file
 dotenv.config({ path: './src/backend/.env' });
 
+// Suppress console logs globally
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation((message) => {
+    // Allow only specific logs if needed; otherwise, suppress all
+    if (!message.includes('Allowed log message')) {
+      return;
+    }
+  });
+  jest.spyOn(console, 'warn').mockImplementation(() => { });
+  jest.spyOn(console, 'error').mockImplementation(() => { });
+});
+
+afterAll(() => {
+  jest.restoreAllMocks(); // Restore all mocked console methods
+});
+
 // MongoDB connection details
 const MONGODB_URI =
   process.env.MONGODB_URI ||
   `mongodb://admin:Pezhman65%21%40%23@localhost:27017/admin`;
 
 if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI is not defined');
+  throw new Error('MONGODB_URI is not defined. Ensure your environment variables are configured correctly.');
 }
 
 let mongoClient: MongoClient;
@@ -26,14 +42,12 @@ let mongoClient: MongoClient;
 // Jest global setup: Initialize MongoDB connection
 beforeAll(async () => {
   try {
-    console.log('[Jest Setup] Connecting to MongoDB...');
     mongoClient = new MongoClient(MONGODB_URI);
     await mongoClient.connect();
     global.mongoClient = mongoClient;
-    console.log('[Jest Setup] MongoDB connection established.');
   } catch (error) {
-    console.error('[Jest Setup] Failed to connect to MongoDB:', error);
-    process.exit(1); // Exit the test process if MongoDB connection fails
+    throw new Error(`Error during Jest MongoDB setup: ${error instanceof Error ? error.message : String(error)}`);
+
   }
 });
 
@@ -42,10 +56,11 @@ afterAll(async () => {
   try {
     if (global.mongoClient) {
       await global.mongoClient.close();
-      console.log('[Jest Teardown] MongoDB connection closed.');
+
     }
   } catch (error) {
-    console.error('[Jest Teardown] Error during MongoDB disconnection:', error);
+    throw new Error(`Error during Jest MongoDB teardown: ${error instanceof Error ? error.message : String(error)}`);
+
   } finally {
     global.mongoClient = undefined;
   }
@@ -53,14 +68,11 @@ afterAll(async () => {
 
 // Jest cleanup after each test
 afterEach(() => {
-  if (global.jest) {
-    // Reset mocks and modules to avoid side effects
-    jest.restoreAllMocks();
-    jest.resetModules();
-    jest.clearAllMocks();
-    jest.clearAllTimers();
-  }
+  jest.restoreAllMocks();
+  jest.resetModules();
+  jest.clearAllMocks();
+  jest.clearAllTimers();
 });
 
-// Export MongoDB URI for test files
+// Export MongoDB URI for use in test files
 export { MONGODB_URI };
