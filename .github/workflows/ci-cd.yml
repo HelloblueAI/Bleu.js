@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       # Step 1: Checkout code
       - name: Checkout code
@@ -33,37 +33,46 @@ jobs:
         with:
           version: 8
 
-      # Step 4: Install dependencies
+      # Step 4: Cache pnpm dependencies
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      # Step 5: Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Step 5: Lint frontend
+      # Step 6: Lint frontend
       - name: Lint frontend
         run: pnpm run lint:frontend
 
-      # Step 6: Lint backend
+      # Step 7: Lint backend
       - name: Lint backend
         run: pnpm run lint:ci
 
-      # Step 7: Build project
+      # Step 8: Build project
       - name: Build project
         run: pnpm run build
 
-      # Step 8: Run tests
+      # Step 9: Run tests
       - name: Run tests
         run: pnpm run test:all
 
-      # Step 9: Upload test results
+      # Step 10: Upload test results
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: ./test-results/ # Adjust this path based on your project structure
+          path: ./test-results/ # Adjust based on your project structure
 
   docker:
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       # Step 1: Checkout code
@@ -79,9 +88,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-docker-
 
       # Step 4: Login to DockerHub
       - name: Login to DockerHub
@@ -102,7 +111,7 @@ jobs:
 
   publish:
     needs: [build-and-test, docker]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       # Step 1: Checkout code
@@ -126,6 +135,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Step 5: Notify on completion
+      # Step 5: Notify success
       - name: Notify success
         run: echo "CI/CD pipeline completed successfully."
