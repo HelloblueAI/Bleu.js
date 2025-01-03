@@ -75,11 +75,11 @@ pnpm run test:all
 - **collaboration-tools**: Tools for code review, issue tracking, and project management.
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
-- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue. 
+- **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
 
 - **docker**: Docker configuration files.
 
-Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 
+Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
 
 ## Generating Code
 
@@ -626,7 +626,7 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`  
+`cd eggs-generator`
 `pnpm run test`
 
 ```javascript
@@ -768,7 +768,7 @@ This document provides detailed information about the API endpoints available in
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
+All files  |    7865 |      300 |       9 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total

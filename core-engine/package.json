@@ -1,6 +1,6 @@
 {
   "name": "bleujs-core-engine",
-  "version": "1.0.17",
+  "version": "1.0.25",
   "main": "src/index.mjs",
   "directories": {
     "test": "tests"

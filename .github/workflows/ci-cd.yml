@@ -77,7 +77,7 @@ jobs:
   docker:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.ref, 'main') || contains(github.ref, 'v1.0.25')
+    if: github.event_name == 'push' && (contains(github.ref, 'main') || contains(github.ref, 'v1.0.25'))
 
     steps:
       - name: Checkout code
@@ -112,7 +112,7 @@ jobs:
   publish:
     needs: [build-and-test, docker]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.ref, 'main') || contains(github.ref, 'v1.0.25')
+    if: github.event_name == 'push' && (contains(github.ref, 'main') || contains(github.ref, 'v1.0.25'))
 
     steps:
       - name: Checkout code
@@ -145,8 +145,10 @@ jobs:
 
       - name: Publish to npm
         run: |
-          if [ "$CURRENT_VERSION" != "1.0.9" ]; then
+          if ! npm view bleujs@$CURRENT_VERSION > /dev/null 2>&1; then
             pnpm publish --no-git-checks
+          else
+            echo "Version $CURRENT_VERSION is already published. Skipping publish step."
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
