@@ -1419,12 +1419,11 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
 
-![npm](https://img.shields.io/npm/v/bleujs-utils?color=blue&label=npm%20version&logo=npm)
-![npm downloads](https://img.shields.io/npm/dm/bleujs-utils?color=green&label=npm%20downloads&logo=npm)
+# Bleu.js
 
-
+![npm](https://img.shields.io/npm/v/bleujs?color=blue&label=npm%20version&logo=npm)
+![npm downloads](https://img.shields.io/npm/dm/bleujs?color=green&label=npm%20downloads&logo=npm)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
-![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen?style=flat-square&logo=vue.js)
 ![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey?style=flat-square&logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
