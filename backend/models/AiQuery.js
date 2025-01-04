@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the schema for storing AI queries
 const AiQuerySchema = new mongoose.Schema({
   query: {
     type: String,
@@ -31,7 +30,6 @@ const AiQuerySchema = new mongoose.Schema({
   },
 });
 
-// Apply schema-level validation for safe queries
 AiQuerySchema.pre('save', function (next) {
   if (!this.query || !this.response) {
     return next(new Error('Query and Response are required fields.'));

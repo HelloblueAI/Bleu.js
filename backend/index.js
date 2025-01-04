@@ -21,7 +21,7 @@ const createApp = () => {
   app.use(morgan('dev'));
   app.use(bodyParser.json());
 
-  app.use('/api', apiRoutes); // Use the routes defined in apiRoutes
+  app.use('/api', apiRoutes);
 
   app.post('/api/aiService', async (req, res) => {
     try {

@@ -1315,14 +1315,15 @@ pnpm run start
 
 The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
 
-
 ### Features
-* Lightweight utility functions for common tasks.
-* Dependency management utilities.
-* Code optimization tools.
+
+- Lightweight utility functions for common tasks.
+- Dependency management utilities.
+- Code optimization tools.
 
 ### Installation
-You can install the bleujs-utils package via  `pip` or `pnpm` or `npm`:
+
+You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
 
 Using pip:
 
@@ -1344,7 +1345,9 @@ npm install bleujs-utils
 ```
 
 ### Usage
+
 ### Example 1: General Utility Function
+
 ```javascript
 from bleujs_utils import some_utility_function
 
@@ -1362,15 +1365,16 @@ print(response)
 ```
 
 ### Use Cases
-* AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
-* Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
-* Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
+- AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
+- Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
+- Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
 
 ### Example 3: CLI Tool
+
 ```javascript
 bleujs-utils-cli --help
 ```
-
 
 Here’s how you can use the `bleujs-utils` package in your project:
 
@@ -1378,7 +1382,7 @@ Here’s how you can use the `bleujs-utils` package in your project:
 const { optimizeCode, manageDependencies } = require('bleujs-utils');
 
 // Optimize code
-const code = "const   x = 1;   console.log( x);";
+const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log('Optimized Code:', optimizedCode);
 
@@ -1388,17 +1392,21 @@ manageDependencies(dependencies);
 ```
 
 ### Optimizing Code
+
 The `optimizeCode` function cleans up and formats code for better readability and performance.
+
 ```javascript
 const { optimizeCode } = require('bleujs-utils');
 
-const code = "const   x = 1;   console.log( x);";
+const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log(optimizedCode);
 ```
 
 ### Managing Dependencies
+
 The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
+
 ```javascript
 const { manageDependencies } = require('bleujs-utils');
 
@@ -1407,13 +1415,12 @@ manageDependencies(dependencies);
 ```
 
 ### Package Information
-* Package Name: `bleujs-utils`
-* Version: 1.0.1
-* License: MIT
+
+- Package Name: `bleujs-utils`
+- Version: 1.0.1
+- License: MIT
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
-
-
 
 ![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
@@ -1441,7 +1448,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 # License
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
-
 
 ## Author
 
