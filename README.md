@@ -1421,9 +1421,11 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 
 # Bleu.js
 
-![npm](https://img.shields.io/npm/v/bleujs?color=blue&label=npm%20version&logo=npm)
-![npm downloads](https://img.shields.io/npm/dm/bleujs?color=green&label=npm%20downloads&logo=npm)
+![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
+![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
+![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
+
 ![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey?style=flat-square&logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
