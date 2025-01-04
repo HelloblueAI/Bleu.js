@@ -5,9 +5,9 @@ const express = require('express');
 const winston = require('winston');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const openai = require('openai'); // Updated to use OpenAI directly
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // Load environment variables
 
-const apiRoutes = require('./routes/apiRoutes'); // Import API routes
+const apiRoutes = require('./routes/apiRoutes');
 
 // Initialize the Express application
 const app = express();
@@ -16,15 +16,6 @@ const app = express();
 const PORT = process.env.PORT || 4003;
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
-
-// Configure OpenAI API key directly from environment variables
-if (process.env.OPENAI_API_KEY) {
-  openai.apiKey = process.env.OPENAI_API_KEY;
-} else {
-  console.error(
-    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
-  );
-}
 
 // Set up Winston logger for logging
 const logger = winston.createLogger({
@@ -41,13 +32,9 @@ const logger = winston.createLogger({
   ],
 });
 
-// Connect to MongoDB using Mongoose
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(MONGODB_URI);
     logger.info('MongoDB connected successfully');
   } catch (error) {
     logger.error('MongoDB connection error', error);
@@ -58,7 +45,7 @@ const connectDB = async () => {
 // Set up CORS configuration
 app.use(
   cors({
-    origin: 'http://localhost:4002', // Allow specific origin
+    origin: process.env.CORS_ORIGIN || 'http://localhost:4002', // Allow specific origin
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow credentials (cookies, etc.)
