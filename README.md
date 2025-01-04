@@ -1419,7 +1419,7 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
 
 
-# Bleu.js
+
 
 ![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
