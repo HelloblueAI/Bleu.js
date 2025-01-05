@@ -1414,16 +1414,17 @@ const dependencies = ['express', 'mongoose'];
 manageDependencies(dependencies);
 ```
 
-### Package Information
+### CLI Package Information
 
 - Package Name: `bleujs-utils`
 - Version: 1.0.1
 - License: MIT
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
-
-
-
 ![Bleu.js](https://img.shields.io/badge/Bleu.js-v1.0.25-green)
+
+
+
+![GitHub](https://img.shields.io/badge/GitHub-Bleu.js-blue?style=flat-square&logo=github)
 ![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
@@ -1432,7 +1433,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
 ![pnpm](https://img.shields.io/badge/pnpm-8.x-orange?style=flat-square&logo=pnpm)
-![GitHub](https://img.shields.io/badge/GitHub-Bleu.js-blue?style=flat-square&logo=github)
 ![Docker](https://img.shields.io/badge/Docker-20.x-blue?style=flat-square&logo=docker)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
@@ -1442,7 +1442,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 ![Jest](https://img.shields.io/badge/Jest-29.x-red?style=flat-square&logo=jest)
 ![Cypress](https://img.shields.io/badge/Cypress-12.x-green?style=flat-square&logo=cypress)
 ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-v7.x-blue?style=flat-square&logo=framer)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.x-blue?style=flat-square&logo=tailwindcss)
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
