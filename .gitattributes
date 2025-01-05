@@ -4,20 +4,24 @@
 *.ts linguist-vendored
 *.tsx linguist-vendored
 *.vue linguist-vendored
-frontend/* linguist-vendored
-public/* linguist-vendored
 
-# Exclude non-Python assets
+# Exclude JSON and other frontend files
+*.json linguist-vendored
+*.map linguist-vendored
 *.html linguist-vendored
 *.css linguist-vendored
 *.svg linguist-vendored
-*.json linguist-vendored
-*.map linguist-vendored
-*.md linguist-vendored
 
-# Vendored directories
+# Exclude lock files and reports
+*lock.json linguist-vendored
+pnpm-lock.yaml linguist-vendored
+reports/* linguist-vendored
+
+# Exclude vendored directories
 node_modules/* linguist-vendored
 dist/* linguist-vendored
+frontend/* linguist-vendored
+public/* linguist-vendored
 tests/* linguist-vendored
 
 # Highlight Python
