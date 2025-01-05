@@ -1,28 +1,30 @@
-# Exclude JavaScript-related files
+# Exclude JavaScript and related files
 *.js linguist-vendored
 *.jsx linguist-vendored
 *.ts linguist-vendored
 *.tsx linguist-vendored
 *.vue linguist-vendored
+*.mjs linguist-vendored
+*.cjs linguist-vendored
 
-# Exclude JSON and other frontend files
+# Exclude JSON and other non-Python assets
 *.json linguist-vendored
 *.map linguist-vendored
 *.html linguist-vendored
 *.css linguist-vendored
 *.svg linguist-vendored
 
-# Exclude lock files and reports
+# Exclude lock files and generated reports
 *lock.json linguist-vendored
 pnpm-lock.yaml linguist-vendored
 reports/* linguist-vendored
 
-# Exclude vendored directories
+# Vendored directories
 node_modules/* linguist-vendored
 dist/* linguist-vendored
 frontend/* linguist-vendored
 public/* linguist-vendored
 tests/* linguist-vendored
 
-# Highlight Python
+# Highlight Python files
 *.py linguist-language=Python
