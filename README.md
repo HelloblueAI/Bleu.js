@@ -1422,11 +1422,12 @@ manageDependencies(dependencies);
 
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
+
+![Bleu.js](https://img.shields.io/badge/Bleu.js-v1.0.25-green)
 ![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
 ![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
-
 ![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey?style=flat-square&logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
