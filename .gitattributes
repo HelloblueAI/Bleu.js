@@ -1,26 +1,23 @@
-# Mark JavaScript and related files as vendored
+# Exclude JavaScript-related files
 *.js linguist-vendored
 *.jsx linguist-vendored
 *.ts linguist-vendored
 *.tsx linguist-vendored
 *.vue linguist-vendored
-*.json linguist-vendored
-*.map linguist-vendored
+frontend/* linguist-vendored
+public/* linguist-vendored
 
-# Mark common non-code files as vendored
-*.md linguist-vendored
-*.yaml linguist-vendored
-*.yml linguist-vendored
-*.lock linguist-vendored
+# Exclude non-Python assets
 *.html linguist-vendored
 *.css linguist-vendored
 *.svg linguist-vendored
+*.json linguist-vendored
+*.map linguist-vendored
+*.md linguist-vendored
 
 # Vendored directories
 node_modules/* linguist-vendored
 dist/* linguist-vendored
-frontend/* linguist-vendored
-public/* linguist-vendored
 tests/* linguist-vendored
 
 # Highlight Python
