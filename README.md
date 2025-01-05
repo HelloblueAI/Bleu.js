@@ -1420,8 +1420,6 @@ manageDependencies(dependencies);
 - Version: 1.0.1
 - License: MIT
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
-![Bleu.js](https://img.shields.io/badge/Bleu.js-v1.0.25-green)
-
 
 
 ![GitHub](https://img.shields.io/badge/GitHub-Bleu.js-blue?style=flat-square&logo=github)
