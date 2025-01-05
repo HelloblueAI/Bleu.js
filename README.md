@@ -1423,7 +1423,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 
 ![GitHub](https://img.shields.io/badge/GitHub-Bleu.js-blue?style=flat-square&logo=github)
-![NPM Version](https://img.shields.io/npm/v/python-processor.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
 ![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
