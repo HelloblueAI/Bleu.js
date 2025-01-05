@@ -1,114 +1,81 @@
-# Node.js dependencies
-node_modules/
-
-# Testing and Coverage
-coverage/
-backend/coverage/
-*.lcov
-coverage/**/*.html
-backend/coverage/**/*.html
-.pytest_cache/
-
-# Build outputs
-dist/
-build/
-.esbuild/
-*.out
-
-# Logs and debug files
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Backup and temporary files
-*.bak
-*.tmp
-*.swp
-*.swo
-*.~lock.*
-
-# OS-specific files
-.DS_Store
-Thumbs.db
-*.appledouble
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Python bytecode and virtual environments
-__pycache__/
+# Python-specific ignores
 *.py[cod]
 *.pyo
 *.pyd
 *.so
+__pycache__/
 .Python
-venv/
 env/
+venv/
 ENV/
-ve/
 virtualenv/
-new_venv/
-__pypackages__/
-
-# Python distribution and packaging
 *.egg-info/
 *.egg
-*.eggs/
-*.egg.tmp/
-*.whl
+dist/
+build/
+__pypackages__/
 pip-log.txt
 pip-delete-this-directory.txt
-MANIFEST
-
-# IDE and editor-specific files
-.vscode/
-.idea/
-.pydevproject
-.python-version
-
-# Jupyter Notebooks
-.ipynb_checkpoints/
-
-# Lock and dependency files
-pnpm-lock.yaml
-pnpm-lock.yaml.bak
-yarn.lock
-package-lock.json
-
-# Temporary and miscellaneous files
-*.bak
-*.swp
-*.tmp
-*.pid
-*.seed
-*.pid.lock
-
-# Generated files
-*.iml
-*.class
-*.jar
-*.war
-*.ear
 *.sqlite3
 *.db
 *.sqlite
-*.mdb
-*.accdb
-*.app
-*.exe
-*.dll
-*.deb
-*.dmg
-*.iso
-*.pkg
 
-# Configurations
-.npmrc
-*.tgz
-babel.config.cjs
-backend/routes/apiRoutes.mjs
-backend/server.mjs
-jest.config.cjs
+# Node.js dependencies
+node_modules/
+
+# Testing and coverage outputs
+coverage/
+
+*.lcov
+
+.pytest_cache/
+htmlcov/
+
+# Logs and debugging files
+*.log
+*.tmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+.esbuild/
+build/
+*.out
+
+# Vue and JavaScript-specific
+*.js
+*.jsx
+*.ts
+*.tsx
+*.vue
+*.mjs
+*.cjs
+vite.config.js
+vite.config.ts
+nuxt.config.js
+nuxt.config.ts
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment and config files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.pydevproject
+
+# Backup and temporary files
+*.bak
+*.swp
+*.swo
+*.tmp
+*.~lock.*

@@ -18,17 +18,25 @@
     "databse",
     "doctools",
     "emscripten",
+    "esbuild",
     "Funcs",
     "Haghighatnia",
     "Helloblue",
+    "htmlcov",
     "iniconfig",
     "mediaqueries",
+    "nuxt",
     "Pejman",
     "pluggy",
+    "pycache",
+    "pydevproject",
+    "pypackages",
     "PYPI",
     "pytest",
     "searchtools",
     "Stmts",
-    "venv"
+    "venv",
+    "virtualenv",
+    "vite"
   ]
 }
