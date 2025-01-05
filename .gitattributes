@@ -24,7 +24,12 @@ node_modules/* linguist-vendored
 dist/* linguist-vendored
 frontend/* linguist-vendored
 public/* linguist-vendored
-tests/* linguist-vendored
+tests/*.js linguist-vendored
+tests/*.html linguist-vendored
 
 # Highlight Python files
 *.py linguist-language=Python
+
+# Optional: Exclude coverage and env files
+coverage/* linguist-vendored
+*.env linguist-vendored
