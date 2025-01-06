@@ -1416,9 +1416,7 @@ manageDependencies(dependencies);
 
 ### CLI Package Information
 
-- Package Name: `bleujs-utils`
-- Version: 1.0.1
-- License: MIT
+ `bleujs-utils`
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
 
