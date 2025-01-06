@@ -1436,5 +1436,5 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 # Author
 Pejman Haghighatnia
 
-This project is maintained by [Helloblue, Inc.](https://helloblue.ai), a company dedicated to advanced innovations in AI solutions.
+This software is maintained by [Helloblue, Inc.](https://helloblue.ai), a company dedicated to advanced innovations in AI solutions.
 
