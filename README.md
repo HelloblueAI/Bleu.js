@@ -1432,8 +1432,9 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Jest](https://img.shields.io/badge/Jest-29.x-red?style=flat-square&logo=jest)
 ![Cypress](https://img.shields.io/badge/Cypress-12.x-green?style=flat-square&logo=cypress)
 ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-v7.x-blue?style=flat-square&logo=framer)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
+
+[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
 ## Author
 Pejman Haghighatnia
