@@ -25,20 +25,6 @@ Install the package using pnpm.
 pnpm install bleujs
 ```
 
-## Running the Application
-
-ROOT:
-
-```javascript
-pnpm run start:backend
-```
-
-In another terminal: ROOT:
-
-```javascript
-pnpm run start:frontend
-```
-
 ```javascript
 cd core-engine
 pnpm run start
@@ -76,7 +62,6 @@ pnpm run test:all
 - **dependency-management**: Tools for monitoring and managing dependencies.
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
-
 - **docker**: Docker configuration files.
 
 Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
@@ -557,7 +542,7 @@ The class constructor initializes the Bleu object with an empty array eggs to st
 ```javascript
   constructor() {
   this.eggs = [];
-  this.henFarm = new HenFarm(); // Initialize HenFarm.js
+  this.henFarm = new HenFarm(); 
 }
 ```
 
