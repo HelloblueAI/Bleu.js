@@ -89,7 +89,7 @@ To generate code using Bleu.js, you can send a POST request to the /generate end
 ## Optimizing Code
 
 To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
-`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
+`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"Hello, world!)}'`
 
 ## Debugging Code
 
