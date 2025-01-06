@@ -1421,6 +1421,10 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 
 
+
+# License
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
+
 ![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
@@ -1433,9 +1437,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 ![Cypress](https://img.shields.io/badge/Cypress-12.x-green?style=flat-square&logo=cypress)
 ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-v7.x-blue?style=flat-square&logo=framer)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
-
-# License
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
 
 ## Author
 Pejman Haghighatnia
