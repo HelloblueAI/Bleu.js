@@ -1422,10 +1422,9 @@ manageDependencies(dependencies);
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
 
-![GitHub](https://img.shields.io/badge/GitHub-Bleu.js-blue?style=flat-square&logo=github)
-![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
-![Node.js](https://img.shields.io/badge/Node.js-v18.12-green?style=flat-square&logo=node.js)
+
 ![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
+![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey?style=flat-square&logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
@@ -1433,17 +1432,17 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 ![Docker](https://img.shields.io/badge/Docker-20.x-blue?style=flat-square&logo=docker)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
+![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![CI/CD](https://img.shields.io/badge/CI/CD-GitHub%20Actions-blue?style=flat-square&logo=githubactions)
 ![ESLint](https://img.shields.io/badge/ESLint-8.x-purple?style=flat-square&logo=eslint)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-pink?style=flat-square&logo=prettier)
 ![Jest](https://img.shields.io/badge/Jest-29.x-red?style=flat-square&logo=jest)
 ![Cypress](https://img.shields.io/badge/Cypress-12.x-green?style=flat-square&logo=cypress)
 ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-v7.x-blue?style=flat-square&logo=framer)
-![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
 # License
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)  
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
 
 ## Author
 Pejman Haghighatnia
