@@ -1436,3 +1436,5 @@ a company dedicated to advanced innovations in AI solutions.
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
 
+# Author
+Pejman Haghighatnia
