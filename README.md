@@ -1419,8 +1419,8 @@ manageDependencies(dependencies);
  `bleujs-utils`
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
-## Author
-Pejman Haghighatnia
+
+
 
 # License
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
@@ -1434,6 +1434,8 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
+## Author
+Pejman Haghighatnia
 
 
 
