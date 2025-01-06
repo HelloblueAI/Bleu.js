@@ -1423,18 +1423,15 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 ![Build Status](https://github.com/HelloblueAI/Bleu.js/actions/workflows/ci-cd.yml/badge.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
-![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey?style=flat-square&logo=express)
-![MongoDB](https://img.shields.io/badge/MongoDB-v5.0-brightgreen?style=flat-square&logo=mongodb)
 ![Swagger](https://img.shields.io/badge/Swagger-UI-green?style=flat-square&logo=swagger)
+![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![pnpm](https://img.shields.io/badge/pnpm-8.x-orange?style=flat-square&logo=pnpm)
-![Docker](https://img.shields.io/badge/Docker-20.x-blue?style=flat-square&logo=docker)
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
 ![ESLint](https://img.shields.io/badge/ESLint-8.x-purple?style=flat-square&logo=eslint)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-pink?style=flat-square&logo=prettier)
 ![Jest](https://img.shields.io/badge/Jest-29.x-red?style=flat-square&logo=jest)
 ![Cypress](https://img.shields.io/badge/Cypress-12.x-green?style=flat-square&logo=cypress)
 ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-v7.x-blue?style=flat-square&logo=framer)
-![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
 # License
