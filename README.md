@@ -121,7 +121,6 @@ cd frontend
   - Network: http://10.0.0.0:8080/
 ```
 
-<img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
 
 The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
 
