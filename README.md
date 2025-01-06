@@ -1400,7 +1400,6 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
 
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
-![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
 ![Platform Support](https://img.shields.io/badge/Platform-MacOS%20|%20Linux-lightgrey)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
@@ -1412,6 +1411,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Model Deployment](https://img.shields.io/badge/Model%20Deployment-Cloud%20%7C%20Docker-brightgreen?style=flat-square&logo=docker)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
+![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
 
 
 This software is maintained by Helloblue, Inc.,
