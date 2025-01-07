@@ -1396,8 +1396,8 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Model Deployment](https://img.shields.io/badge/Model%20Deployment-Cloud%20%7C%20Docker-brightgreen?style=flat-square&logo=docker)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
-![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
+![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
 
 This software is maintained by Helloblue, Inc.,
