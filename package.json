@@ -166,19 +166,19 @@
   "engines": {
     "node": ">=16.0.0"
   },
-"keywords": [
-  "Helloblue",
-  "ai",
-  "decision-tree",
-  "express",
-  "mongodb",
-  "natural-language-processing"
-],
-"author": "Pejman Haghighatnia",
-"repository": {
-  "type": "git",
-  "url": "https://github.com/HelloblueAI/Bleu.js.git"
-},
+  "keywords": [
+    "Helloblue",
+    "ai",
+    "decision-tree",
+    "express",
+    "mongodb",
+    "natural-language-processing"
+  ],
+  "author": "Pejman Haghighatnia",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HelloblueAI/Bleu.js.git"
+  },
   "bugs": {
     "url": "https://github.com/HelloblueAI/Bleu.js/issues"
   },
