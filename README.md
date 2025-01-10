@@ -1390,24 +1390,6 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-MacOS%20|%20Linux-lightgrey)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
-![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
-![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
-![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
-![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
-![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)
-![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)
-![Model Deployment](https://img.shields.io/badge/Model%20Deployment-Cloud%20%7C%20Docker-brightgreen?style=flat-square&logo=docker)
-![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
-![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
-![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
-
-<<<<<<< HEAD
-=======
-
-![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
-![Platform Support](https://img.shields.io/badge/Platform-MacOS%20|%20Linux-lightgrey)
-![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![Good first issues](https://img.shields.io/github/issues-raw/HelloblueAI/Bleu.js/good%20first%20issue)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
@@ -1421,8 +1403,6 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
-## Author
->>>>>>> v1.0.25
 
 This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
