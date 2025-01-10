@@ -25,9 +25,7 @@ node_modules/
 
 # Testing and coverage outputs
 coverage/
-
 *.lcov
-
 .pytest_cache/
 htmlcov/
 
@@ -45,11 +43,11 @@ build/
 *.out
 
 # Vue and JavaScript-specific
-*.js
-*.jsx
-*.ts
-*.tsx
-*.vue
+*.js.map
+*.jsx.map
+*.ts.map
+*.tsx.map
+*.vue.map
 *.mjs
 *.cjs
 vite.config.js
@@ -67,7 +65,8 @@ Thumbs.db
 .env.*.local
 
 # IDE and editor files
-.vscode/
+.vscode/*
+!.vscode/settings.json  # Allow only settings.json from .vscode
 .idea/
 *.sublime-workspace
 *.sublime-project
@@ -79,3 +78,18 @@ Thumbs.db
 *.swo
 *.tmp
 *.~lock.*
+
+# Miscellaneous
+*.log.*
+*.cache
+*.pid
+*.seed
+*.pid.lock
+*.orig
+*.rej
+
+# System-specific files
+Icon?
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
