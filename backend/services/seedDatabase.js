@@ -1,6 +1,6 @@
 /* eslint-env node */
-const Rule = require('../models/ruleModel');
-const logger = require('../src/utils/logger');
+import { insertMany } from '../models/RuleModel';
+import { info, error as _error } from '../src/utils/logger';
 
 const seedDatabase = async () => {
   const data = [
@@ -8,11 +8,11 @@ const seedDatabase = async () => {
   ];
 
   try {
-    await Rule.insertMany(data);
-    logger.info('Database seeded successfully');
+    await insertMany(data);
+    info('Database seeded successfully');
   } catch (error) {
-    logger.error('Error seeding database:', error);
+    _error('Error seeding database:', error);
   }
 };
 
-module.exports = { seedDatabase };
+export default { seedDatabase };

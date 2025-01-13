@@ -1,4 +1,4 @@
-const DecisionTree = require('decision-tree');
+import DecisionTree from 'decision-tree';
 
 class DecisionTreeService {
   constructor() {
@@ -25,4 +25,4 @@ class DecisionTreeService {
   }
 }
 
-module.exports = new DecisionTreeService();
+export default new DecisionTreeService();

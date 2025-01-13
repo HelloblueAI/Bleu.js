@@ -1,14 +1,12 @@
 # Directories
 node_modules/
-dist/
 frontend/
 backend/
 tests/
 venv/
 
 # Version control
-.git/
-.gitignore
+.git
 
 # Configuration files
 .eslintrc.cjs

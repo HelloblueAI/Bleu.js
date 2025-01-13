@@ -1,4 +1,4 @@
-const Bleu = require('../src/Bleu');
+const Bleu = require('../src/Bleu').default;
 
 // Mock the HenFarm class
 jest.mock('../src/HenFarm', () => {

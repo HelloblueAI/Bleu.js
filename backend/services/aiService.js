@@ -1,6 +1,6 @@
-const logger = require('../src/utils/logger');
-const NLPProcessor = require('../ai/nlpProcessor');
-const ModelManager = require('../ml/modelManager');
+import { error as _error, info } from '../src/utils/logger';
+import NLPProcessor from '../ai/nlpProcessor';
+import ModelManager from '../ml/modelManager';
 
 class AIService {
   constructor() {
@@ -10,26 +10,26 @@ class AIService {
 
   analyzeText(text) {
     if (!text || typeof text !== 'string') {
-      logger.error('Invalid input. Text must be a non-empty string.');
+      _error('Invalid input. Text must be a non-empty string.');
       throw new Error('Invalid input. Text must be a non-empty string.');
     }
 
-    logger.info('Starting text analysis');
+    info('Starting text analysis');
 
     try {
       const tokens = this.nlpProcessor.tokenize(text);
-      logger.info(`Tokens: ${tokens.join(', ')}`);
+      info(`Tokens: ${tokens.join(', ')}`);
 
       const stemmedTokens = tokens.map((token) =>
         this.nlpProcessor.stem(token),
       );
-      logger.info(`Stemmed Tokens: ${stemmedTokens.join(', ')}`);
+      info(`Stemmed Tokens: ${stemmedTokens.join(', ')}`);
 
       const sentiment = this.nlpProcessor.analyzeSentiment(text);
-      logger.info(`Sentiment: ${sentiment}`);
+      info(`Sentiment: ${sentiment}`);
 
       const entities = this.nlpProcessor.namedEntityRecognition(text);
-      logger.info(`Named Entities: ${entities.join(', ')}`);
+      info(`Named Entities: ${entities.join(', ')}`);
 
       return {
         tokens,
@@ -38,62 +38,62 @@ class AIService {
         entities,
       };
     } catch (error) {
-      logger.error(`Error during text analysis: ${error.message}`);
+      _error(`Error during text analysis: ${error.message}`);
       throw error;
     }
   }
 
   async doSomething(text) {
-    logger.info('Doing something');
+    info('Doing something');
     try {
       const analysisResult = this.analyzeText(text);
-      logger.info('Text analysis completed successfully');
+      info('Text analysis completed successfully');
       return analysisResult;
     } catch (error) {
-      logger.error(`Error during text analysis: ${error.message}`);
+      _error(`Error during text analysis: ${error.message}`);
       throw error;
     }
   }
 
   async trainModel(modelInfo) {
-    logger.info('Training model with info:', modelInfo);
+    info('Training model with info:', modelInfo);
     try {
       return await this.modelManager.trainModel(modelInfo);
     } catch (error) {
-      logger.error(`Error training model: ${error.message}`);
+      _error(`Error training model: ${error.message}`);
       throw error;
     }
   }
 
   async getTrainModelStatus() {
-    logger.info('Getting train model status');
+    info('Getting train model status');
     try {
       return await this.modelManager.getTrainModelStatus();
     } catch (error) {
-      logger.error(`Error getting train model status: ${error.message}`);
+      _error(`Error getting train model status: ${error.message}`);
       throw error;
     }
   }
 
   async uploadDataset(dataset) {
-    logger.info('Uploading dataset:', dataset);
+    info('Uploading dataset:', dataset);
     try {
       return await this.modelManager.uploadDataset(dataset);
     } catch (error) {
-      logger.error(`Error uploading dataset: ${error.message}`);
+      _error(`Error uploading dataset: ${error.message}`);
       throw error;
     }
   }
 
   async evaluateRule(ruleId, inputData) {
-    logger.info('Evaluating rule:', ruleId, inputData);
+    info('Evaluating rule:', ruleId, inputData);
     try {
       return await this.modelManager.evaluateRule(ruleId, inputData);
     } catch (error) {
-      logger.error(`Error evaluating rule ${ruleId}: ${error.message}`);
+      _error(`Error evaluating rule ${ruleId}: ${error.message}`);
       throw error;
     }
   }
 }
 
-module.exports = AIService;
+export default AIService;

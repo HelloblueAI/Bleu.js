@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const ruleSchema = new mongoose.Schema({
+const ruleSchema = new Schema({
   name: { type: String, required: true },
   data: { type: String },
   nested: {
@@ -10,6 +10,6 @@ const ruleSchema = new mongoose.Schema({
   },
 });
 
-const Rule = mongoose.model('Rule', ruleSchema);
+const Rule = model('Rule', ruleSchema);
 
-module.exports = Rule;
+export default Rule;

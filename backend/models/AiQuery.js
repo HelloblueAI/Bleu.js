@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const AiQuerySchema = new mongoose.Schema({
+const AiQuerySchema = new Schema({
   query: {
     type: String,
     required: true,
@@ -23,6 +23,6 @@ const AiQuerySchema = new mongoose.Schema({
   },
 });
 
-const AiQuery = mongoose.model('AiQuery', AiQuerySchema);
+const AiQuery = model('AiQuery', AiQuerySchema);
 
-module.exports = AiQuery;
+export default AiQuery;

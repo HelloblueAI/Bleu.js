@@ -1,4 +1,4 @@
-const HenFarm = require('./HenFarm');
+import HenFarm from './HenFarm';
 
 class Bleu {
   constructor() {
@@ -62,4 +62,4 @@ class Bleu {
   }
 }
 
-module.exports = Bleu;
+export default Bleu;

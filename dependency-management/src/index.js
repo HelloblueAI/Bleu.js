@@ -1,13 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const winston = require('winston');
+import { json } from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import winston from 'winston';
+
+import { monitorDependencies, resolveConflicts } from './dependencyManager';
 
 const { createLogger, transports, format } = winston;
-const {
-  monitorDependencies,
-  resolveConflicts,
-} = require('./dependencyManager');
 
 const app = express();
 const port = 3002;
@@ -31,7 +29,7 @@ const logger = createLogger({
   ],
 });
 
-app.use(bodyParser.json());
+app.use(json());
 
 app.use(
   cors({
@@ -79,4 +77,4 @@ app.listen(port, () => {
   console.log(`Dependency Management running on port ${port}`);
 });
 
-module.exports = app;
+export default app;

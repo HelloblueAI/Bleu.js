@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-exports.handlePost = (req, res) => {
+export function handlePost(req, res) {
   if (req.url.includes('predict')) {
     if (req.body.input === null) {
       return res.status(400).json({ error: 'Invalid input data' });
@@ -19,25 +19,25 @@ exports.handlePost = (req, res) => {
     return res.status(413).json({ error: 'Payload Too Large' });
   }
   return res.status(201).json({ message: 'Data received' });
-};
+}
 
-exports.handlePut = (req, res) => {
+export function handlePut(req, res) {
   res.status(200).json({ message: 'Data updated' });
-};
+}
 
-exports.handleDelete = (req, res) => {
+export function handleDelete(req, res) {
   res.status(200).json({ message: 'Data deleted' });
-};
+}
 
-exports.handlePatch = (req, res) => {
+export function handlePatch(req, res) {
   res.status(200).json({ message: 'Data patched' });
-};
+}
 
-exports.handleHead = (req, res) => {
+export function handleHead(req, res) {
   res.status(200).end();
-};
+}
 
-exports.handleOptions = (req, res) => {
+export function handleOptions(req, res) {
   res
     .status(204)
     .setHeader(
@@ -45,9 +45,9 @@ exports.handleOptions = (req, res) => {
       'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     )
     .end();
-};
+}
 
-exports.handleGet = (req, res) => {
+export function handleGet(req, res) {
   if (req.url.includes('processedData')) {
     return res.status(200).json({ data: [] });
   }
@@ -55,12 +55,12 @@ exports.handleGet = (req, res) => {
     return res.status(200).json({ status: 'in progress' });
   }
   return res.status(200).json({ message: 'Data fetched' });
-};
+}
 
-exports.handleGetJson = (req, res) => {
+export function handleGetJson(req, res) {
   res.status(200).json({ message: 'JSON Data' });
-};
+}
 
-exports.handleGetHtml = (req, res) => {
+export function handleGetHtml(req, res) {
   res.status(200).send('<html><body>HTML Data</body></html>');
-};
+}

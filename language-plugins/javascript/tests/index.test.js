@@ -1,12 +1,12 @@
-const parser = require('@babel/parser');
-const generate = require('@babel/generator').default;
-const JSProcessor = require('../src/JSProcessor');
+import { parse } from '@babel/parser';
+import generate from '@babel/generator';
+import JSProcessor from '../src/JSProcessor';
 
 describe('JSProcessor', () => {
   it('should optimize code', () => {
     const processor = new JSProcessor();
     const code = 'var a = 1;';
-    const ast = parser.parse(code);
+    const ast = parse(code);
     const optimizedAst = processor.optimizeCode(ast);
     const optimizedCode = generate(optimizedAst).code;
     expect(optimizedCode).toBe('let a = 1;');

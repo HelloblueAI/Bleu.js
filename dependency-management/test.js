@@ -1,4 +1,4 @@
-const { monitorDependencies, resolveConflicts } = require('./src/index');
+import { monitorDependencies, resolveConflicts } from './src/index';
 
 describe('Dependency Management', () => {
   describe('monitorDependencies', () => {

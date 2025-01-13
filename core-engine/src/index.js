@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const winston = require('winston');
+import express from 'express';
+import { json } from 'body-parser';
+import cors from 'cors';
+import winston from 'winston';
 const { createLogger, transports, format } = winston;
 
 const app = express();
@@ -38,7 +38,7 @@ function generateCode(template) {
   return `Generated code from template: ${template}`;
 }
 
-app.use(bodyParser.json());
+app.use(json());
 
 app.use(
   cors({
@@ -100,4 +100,4 @@ app.listen(port, () => {
   console.log(`Core Engine running on port ${port}`);
 });
 
-module.exports = app;
+export default app;

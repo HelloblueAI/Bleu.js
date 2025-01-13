@@ -1,7 +1,7 @@
 const openai = require('openai'); // Correct order of imports
 const axios = require('axios'); // Correct order of imports
 
-const AiQuery = require('../models/AiQuery');
+const AiQuery = require('../models/AiQuery').default;
 
 const apiKey = process.env.OPENAI_API_KEY; // Your OpenAI API key
 

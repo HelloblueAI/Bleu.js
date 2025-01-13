@@ -1,21 +1,46 @@
-const request = require('supertest');
+import express from 'express';
+import { connect, disconnect } from 'mongoose';
+import request from 'supertest';
 
-const { startServer, stopServer } = require('../index');
+import apiRoutes from '../routes/apiRoutes.js';
 
-let app, server;
+const app = express();
+app.use(express.json());
+app.use('/api', apiRoutes);
 
 beforeAll(async () => {
-  ({ app, server } = await startServer(0));
+  await connect('mongodb://localhost:27017/testdb');
 });
 
 afterAll(async () => {
-  await stopServer(server);
+  await disconnect();
 });
 
 describe('API Routes', () => {
-  it('should pass a basic test', async () => {
-    const response = await request(app).get('/api/basic-test');
-    expect(response.statusCode).toBe(200);
-    expect(response.text).toBe('Basic test passed');
+  it('should return all rules', async () => {
+    const response = await request(app).get('/api/rules');
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('data');
+  });
+
+  it('should create a new rule', async () => {
+    const newRule = { conditions: [], actions: [] };
+    const response = await request(app).post('/api/rules').send(newRule);
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('data');
+  });
+
+  it('should update a rule', async () => {
+    const ruleId = 'mock-id';
+    const response = await request(app)
+      .put(`/api/rules/${ruleId}`)
+      .send({ actions: ['approve'] });
+    expect(response.status).toBe(200);
+  });
+
+  it('should delete a rule', async () => {
+    const ruleId = 'mock-id';
+    const response = await request(app).delete(`/api/rules/${ruleId}`);
+    expect(response.status).toBe(200);
   });
 });

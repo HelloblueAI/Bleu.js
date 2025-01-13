@@ -1,7 +1,7 @@
 /* eslint-env node */
-const { Engine } = require('json-rules-engine');
+import { Engine } from 'json-rules-engine';
 
-const logger = require('../src/utils/logger');
+import logger from '../src/utils/logger';
 
 class RulesEngine {
   constructor() {
@@ -58,4 +58,4 @@ class RulesEngine {
   }
 }
 
-module.exports = RulesEngine;
+export default RulesEngine;
