@@ -1,6 +1,6 @@
 /* eslint-env node */
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 router.post('/', (req, res) => {
   res.status(201).send({ message: 'Data received', data: req.body.data });
@@ -32,4 +32,4 @@ router.options('/', (req, res) => {
     .send();
 });
 
-module.exports = router;
+export default router;

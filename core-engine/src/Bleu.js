@@ -1,4 +1,4 @@
-const HenFarm = require('../../eggs-generator/src/HenFarm');
+import HenFarm from '../../eggs-generator/src/HenFarm';
 
 class Bleu {
   constructor() {
@@ -58,4 +58,4 @@ class Bleu {
   }
 }
 
-module.exports = Bleu;
+export default Bleu;

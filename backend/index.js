@@ -4,14 +4,12 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const getPort = require('get-port');
 
-const {
-  monitorDependencies,
-  resolveConflicts,
-} = require('../dependency-management/src/index');
-const { generateEgg } = require('../eggs-generator/src/index');
+const { monitorDependencies, resolveConflicts } =
+  require('../dependency-management/src/index').default;
+const { generateEgg } = require('../eggs-generator/src/index').default;
 
 const apiRoutes = require('./routes/apiRoutes');
-const decisionTreeService = require('./services/decisionTreeService');
+const decisionTreeService = require('./services/decisionTreeService').default;
 const database = require('./services/database');
 
 const createApp = () => {

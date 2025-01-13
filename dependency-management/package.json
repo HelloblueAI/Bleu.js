@@ -1,6 +1,6 @@
 {
   "name": "bleujs-dependency-management",
-  "version": "1.0.9",
+  "version": "1.0.26",
   "type": "commonjs",
   "main": "src/index.js",
   "directories": {
@@ -20,6 +20,7 @@
   "license": "MIT",
   "description": "Module for managing and resolving dependencies for Bleu.js.",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "jest": "^29.7.0"
   }
 }

@@ -1,9 +1,9 @@
 /* eslint-env node */
-const express = require('express');
+import { Router } from 'express';
 
-const router = express.Router();
-const apiRoutes = require('./apiRoutes');
+const router = Router();
+import apiRoutes from './apiRoutes';
 
 router.use('/api', apiRoutes);
 
-module.exports = router;
+export default router;

@@ -1,0 +1,13 @@
+{
+  "presets": [
+    ["@babel/preset-env", { "modules": "commonjs" }],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "alias": {
+        "@utils": "./src/utils"
+      }
+    }]
+  ]
+}

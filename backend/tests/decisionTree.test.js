@@ -1,7 +1,7 @@
-const request = require('supertest');
+import request from 'supertest';
 
-const { startServer, stopServer } = require('../index');
-const decisionTreeService = require('../services/decisionTreeService');
+import { startServer, stopServer } from '../index';
+import { buildDecisionTree } from '../services/decisionTreeService';
 
 let app, server;
 
@@ -109,7 +109,7 @@ beforeAll(async () => {
     },
   ];
 
-  decisionTreeService.buildDecisionTree(trainingData, 'play', [
+  buildDecisionTree(trainingData, 'play', [
     'outlook',
     'temperature',
     'humidity',

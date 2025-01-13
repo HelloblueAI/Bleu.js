@@ -1,13 +1,10 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const winston = require('winston');
+import express from 'express';
+import { json } from 'body-parser';
+import { object, string } from 'joi';
+import { createLogger, transports, format } from 'winston';
+import compression from 'compression';
 
-const { createLogger, transports, format } = winston;
-const { generateEgg } = require('./generateEgg');
-
-const app = express();
-const port = 3003;
+import { generateEgg } from './generateEgg.js';
 
 const logger = createLogger({
   level: 'info',
@@ -15,58 +12,88 @@ const logger = createLogger({
     format.timestamp(),
     format.printf(
       ({ timestamp, level, message, ...meta }) =>
-        `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`,
+        `${timestamp} [${level.toUpperCase()}]: ${message} ${
+          Object.keys(meta).length ? JSON.stringify(meta) : ''
+        }`,
     ),
   ),
   transports: [
     new transports.Console(),
     new transports.File({
       filename: 'logs/app.log',
-      maxsize: 5242880,
+      maxsize: 5 * 1024 * 1024,
       maxFiles: 5,
     }),
   ],
 });
 
-app.use(bodyParser.json());
+const optionsSchema = object({
+  type: string().required(),
+  parameters: object().optional(),
+}).required();
 
-app.use(
-  cors({
-    origin: 'http://localhost:4002',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  }),
-);
+// Express App Setup
+const app = express();
+const PORT = process.env.PORT || 3003;
+
+// Middleware
+app.use(json());
+
+// Enhanced CORS Middleware
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['http://localhost:4002'];
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const origin = req.headers.origin;
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
+  }
+
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-Requested-With',
+  );
   res.header('Access-Control-Allow-Credentials', 'true');
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
   return next();
 });
 
-app.post('/api/generate-egg', (req, res) => {
-  const options = req.body;
-  console.log('Received generate-egg request:', options); // Debug log
+app.use(compression());
+
+// Routes
+app.post('/api/generate-egg', async (req, res) => {
+  const { error } = optionsSchema.validate(req.body);
+  if (error) {
+    logger.warn('Validation failed', { error: error.message });
+    return res.status(400).json({ error: 'Invalid input' });
+  }
+
   try {
-    const result = generateEgg(options);
-    logger.info('Egg generated successfully', { options, result });
-    console.log('Egg generated successfully:', result); // Debug log
-    return res.status(200).send(result);
-  } catch (error) {
-    logger.error('Error generating egg', { options, error: error.message });
-    console.error('Error generating egg:', error); // Debug log
-    return res.status(500).send('Error generating egg');
+    const result = await generateEgg(req.body);
+    logger.info('Egg generated successfully', { result });
+    return res.status(200).json({ result });
+  } catch (err) {
+    logger.error('Error generating egg', { error: err.message });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-app.listen(port, () => {
-  logger.info(`Eggs Generator running on port ${port}`);
-  console.log(`Eggs Generator running on port ${port}`);
+// Global Error Handler
+app.use((err, req, res) => {
+  logger.error('Unhandled error', { error: err.message });
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
-module.exports = app;
+// Start Server
+app.listen(PORT, () => {
+  logger.info(`Eggs Generator running on port ${PORT}`);
+});

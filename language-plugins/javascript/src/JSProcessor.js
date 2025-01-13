@@ -1,7 +1,6 @@
-const parser = require('@babel/parser');
-const traverse = require('@babel/traverse').default;
-const generate = require('@babel/generator').default;
-const t = require('@babel/types');
+import generate from '@babel/generator';
+import { parse } from '@babel/parser';
+import traverse from '@babel/traverse';
 
 class JSProcessor {
   optimizeCode(ast) {
@@ -17,7 +16,7 @@ class JSProcessor {
 
   processCode(code) {
     try {
-      const ast = parser.parse(code);
+      const ast = parse(code);
       const optimizedAst = this.optimizeCode(ast);
       return generate(optimizedAst).code;
     } catch (error) {
@@ -26,4 +25,4 @@ class JSProcessor {
   }
 }
 
-module.exports = JSProcessor;
+export default JSProcessor;

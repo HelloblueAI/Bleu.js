@@ -1,9 +1,12 @@
-const isTestEnv = process.env.NODE_ENV === 'test';
+const { createLogger, transports, format } = require("winston");
 
-const logger = {
-  info: isTestEnv ? jest.fn() : console.info.bind(console),
-  warn: isTestEnv ? jest.fn() : console.warn.bind(console),
-  error: isTestEnv ? jest.fn() : console.error.bind(console),
-};
+const logger = createLogger({
+  level: "info",
+  format: format.combine(
+    format.timestamp(),
+    format.printf(({ timestamp, level, message }) => `${timestamp} [${level.toUpperCase()}]: ${message}`)
+  ),
+  transports: [new transports.Console()],
+});
 
 module.exports = logger;

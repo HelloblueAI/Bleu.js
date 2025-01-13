@@ -1,6 +1,6 @@
-const { parse, transformFromAstSync } = require('@babel/core');
-const { default: generate } = require('@babel/generator');
-const { default: traverse } = require('@babel/traverse');
+import { parse } from '@babel/core';
+import { default as generate } from '@babel/generator';
+import { default as traverse } from '@babel/traverse';
 
 class JSProcessor {
   constructor() {
@@ -48,4 +48,4 @@ class JSProcessor {
   }
 }
 
-module.exports = JSProcessor;
+export default JSProcessor;

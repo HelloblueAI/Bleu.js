@@ -25,20 +25,6 @@ Install the package using pnpm.
 pnpm install bleujs
 ```
 
-## Running the Application
-
-ROOT:
-
-```javascript
-pnpm run start:backend
-```
-
-In another terminal: ROOT:
-
-```javascript
-pnpm run start:frontend
-```
-
 ```javascript
 cd core-engine
 pnpm run start
@@ -78,7 +64,7 @@ pnpm run test:all
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
 - **docker**: Docker configuration files.
 
-Bleu.js, uses the HenFarm.js framework for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems. 🪺
+Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
 
 ## Generating Code
 
@@ -88,39 +74,12 @@ To generate code using Bleu.js, you can send a POST request to the /generate end
 ## Optimizing Code
 
 To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
-`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
+`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"Hello, world!)}'`
 
 ## Debugging Code
 
 To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
 `curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
-
-```javascript
-cd frontend
-```
-
-```javascript
-╰─ pnpm run serve
-
-> bleujs@1.0.0 serve /Users/path/path/Bleu.js
-> cd ui && pnpm run serve
-
-
-> bleujs-ui@1.0.0 serve /Users/path/path/Bleu.js/ui
-> vue-cli-service serve
-
- INFO  Starting development server...
-98% after emitting
-
- DONE  Compiled successfully in 93660ms
-
-
-  App running at:
-  - Local:   http://localhost:8080/
-  - Network: http://10.0.0.0:8080/
-```
-
-<img width="195" alt="Screenshot 2024-06-07 at 7 56 51 AM" src="https://github.com/HelloblueAI/Bleu.js/assets/81389644/03ccbf03-0f7f-412b-b396-0ce80f47809a">
 
 The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
 
@@ -582,7 +541,7 @@ The class constructor initializes the Bleu object with an empty array eggs to st
 ```javascript
   constructor() {
   this.eggs = [];
-  this.henFarm = new HenFarm(); // Initialize HenFarm.js
+  this.henFarm = new HenFarm();
 }
 ```
 
@@ -625,7 +584,7 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`  
+`cd eggs-generator`
 `pnpm run test`
 
 ```javascript
@@ -767,7 +726,7 @@ This document provides detailed information about the API endpoints available in
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
+All files  |    7865 |      300 |       9 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
@@ -972,7 +931,7 @@ Ran all test suites matching /backend\/tests/i.
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
+All files  |   10334 |     38   |     191 |  191245 |        0
 ----------|---------|----------|---------|---------|-------------------
 
 Test Suites: 191 passed, 191 total
@@ -1310,14 +1269,138 @@ cd eggs-generator
 pnpm run start
 ```
 
-### Conclusion
+### bleujs-utils Package (Version 1.0.1)
 
-This document provides an overview of the recent updates and enhancements made to the Bleu.js. For detailed information on each endpoint, refer to the Swagger UI documentation available at `http://localhost:3003/docs`.
+The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
+
+### Features
+
+- Lightweight utility functions for common tasks.
+- Dependency management utilities.
+- Code optimization tools.
+
+### Installation
+
+You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
+
+Using pip:
+
+```javascript
+pip install bleujs-utils
+```
+
+Using pnpm:
+
+```javascript
+pnpm install bleujs-utils
+
+```
+
+Using npm:
+
+```javascript
+npm install bleujs-utils
+```
+
+### Usage
+
+### Example 1: General Utility Function
+
+```javascript
+from bleujs_utils import some_utility_function
+
+result = some_utility_function(input_data)
+print(result)
+```
+
+### Example 2: Helper Functions for AI Integration
+
+```javascript
+from bleujs_utils import ai_query
+
+response = ai_query('What is the weather today?')
+print(response)
+```
+
+### Use Cases
+
+- AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
+- Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
+- Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
+### Example 3: CLI Tool
+
+```javascript
+bleujs-utils-cli --help
+```
+
+Here’s how you can use the `bleujs-utils` package in your project:
+
+```javascript
+const { optimizeCode, manageDependencies } = require('bleujs-utils');
+
+// Optimize code
+const code = 'const   x = 1;   console.log( x);';
+const optimizedCode = optimizeCode(code);
+console.log('Optimized Code:', optimizedCode);
+
+// Manage dependencies
+const dependencies = ['express', 'body-parser'];
+manageDependencies(dependencies);
+```
+
+### Optimizing Code
+
+The `optimizeCode` function cleans up and formats code for better readability and performance.
+
+```javascript
+const { optimizeCode } = require('bleujs-utils');
+
+const code = 'const   x = 1;   console.log( x);';
+const optimizedCode = optimizeCode(code);
+console.log(optimizedCode);
+```
+
+### Managing Dependencies
+
+The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
+
+```javascript
+const { manageDependencies } = require('bleujs-utils');
+
+const dependencies = ['express', 'mongoose'];
+manageDependencies(dependencies);
+```
+
+### CLI Package Information
+
+`bleujs-utils`
+You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
 # License
 
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/4554e677a3569f1a3200cfb40afb8bacc113890c/LICENSE.md)
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
 
-## Author
+![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
+![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
+![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
+![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
+![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
+![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
+![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
+![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
+![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)
+![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)
+![Model Deployment](https://img.shields.io/badge/Model%20Deployment-Cloud%20%7C%20Docker-brightgreen?style=flat-square&logo=docker)
+![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
+![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
+![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
+
+This software is maintained by Helloblue, Inc.,
+a company dedicated to advanced innovations in AI solutions.
+
+[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
+
+# Author
 
 Pejman Haghighatnia

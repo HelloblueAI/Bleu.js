@@ -1,13 +1,13 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
+import request from 'supertest';
+import { model as _model, Schema, connection } from 'mongoose';
 
-const { startServer, stopServer } = require('../index');
+import { startServer, stopServer } from '../index';
 
 let app, server;
 
-const TestModel = mongoose.model(
+const TestModel = _model(
   'Test',
-  new mongoose.Schema({
+  new Schema({
     name: String,
     value: Number,
   }),
@@ -19,7 +19,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await stopServer(server);
-  await mongoose.connection.dropDatabase();
+  await connection.dropDatabase();
 });
 
 describe('Seed Database', () => {

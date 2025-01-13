@@ -1,95 +1,116 @@
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import { createLogger, transports, format } from 'winston';
+import getPort from 'get-port';
 
-const express = require('express');
-const winston = require('winston');
-const mongoose = require('mongoose');
-const cors = require('cors');
+import database from './services/database.js';
+import apiRoutes from './routes/apiRoutes.js';
+import decisionTreeService from './services/decisionTreeService.js';
 
-const apiRoutes = require('./routes/apiRoutes');
-
-const app = express();
-const PORT = process.env.PORT || 4003;
-const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
-
-const logger = winston.createLogger({
+// Logger Configuration
+const logger = createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(
-      ({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`,
-    ),
+  format: format.combine(
+    format.timestamp(),
+    format.printf(({ timestamp, level, message, ...meta }) => {
+      const metaString = Object.keys(meta).length ? JSON.stringify(meta) : '';
+      return `${timestamp} [${level.toUpperCase()}]: ${message} ${metaString}`;
+    }),
   ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'server.log' }),
+    new transports.Console(),
+    new transports.File({
+      filename: 'logs/server.log',
+      maxsize: 5 * 1024 * 1024,
+      maxFiles: 5,
+    }),
   ],
 });
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+// Centralized Error Handling
+
+const stopServer = (server) =>
+  new Promise((resolve, reject) => {
+    server.close(async (err) => {
+      if (err) {
+        logger.error('Error while stopping server:', err.message);
+        return reject(err);
+      }
+      logger.info('Server stopped.');
+      await database.disconnect();
+      return resolve();
     });
-    logger.info('MongoDB connected successfully');
-  } catch (error) {
-    logger.error('MongoDB connection error', error);
-    process.exit(1);
-  }
+  });
+
+// Define API Endpoints
+const configureEndpoints = (app) => {
+  app.use('/api', apiRoutes);
+
+  app.post('/api/aiService', async (req, res) => {
+    try {
+      const { input } = req.body;
+      if (!input) {
+        return res.status(400).json({ error: 'Input is required' }); // Ensure return
+      }
+
+      const result = await decisionTreeService.traverseDecisionTree(input);
+      return res.status(200).json({ result }); // Ensure return
+    } catch (error) {
+      logger.error('Error in aiService endpoint:', error.message);
+      return res.status(500).json({ error: 'Internal Server Error' }); // Ensure return
+    }
+  });
+
+  // Additional endpoints can be added here
 };
 
-app.use(
-  cors({
-    origin: 'http://localhost:4002',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  }),
-);
+// Initialize Express App
+const createApp = () => {
+  const app = express();
 
-app.use(express.json());
-app.use('/api', apiRoutes);
+  // Middleware
+  app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
+  app.use(
+    morgan('combined', {
+      stream: { write: (msg) => logger.info(msg.trim()) },
+    }),
+  );
+  app.use(bodyParser.json());
 
-const frontendDir = path.join(__dirname, '../frontend/public');
-app.use(express.static(frontendDir));
+  // Configure Endpoints
+  configureEndpoints(app);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendDir, 'index.html'));
-});
+  // Global 404 Handler
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Not Found' });
+  });
 
-let server;
+  return app;
+};
 
 const startServer = async () => {
   try {
-    await connectDB();
-    server = app.listen(PORT, () => {
-      logger.info(`Server running on port ${PORT}`);
-      console.log(`Server running on port ${PORT}`);
+    const app = createApp();
+    const port = await getPort({ port: process.env.PORT || 4003 });
+    await database.connect();
+
+    const server = app.listen(port, () => {
+      logger.info(`Server running at http://localhost:${port}`);
     });
+
+    process.on('SIGTERM', async () => {
+      logger.info('Shutting down server...');
+      await stopServer(server);
+    });
+
+    return { app, server }; // Ensure return
   } catch (error) {
-    logger.error('Error starting the server', { error });
-    console.error('Error starting the server:', error);
+    logger.error('Failed to start server:', error.message);
+    return null; // Add a fallback return value
   }
 };
 
-const stopServer = () => {
-  return new Promise((resolve) => {
-    if (server) {
-      server.close(() => {
-        logger.info('Server stopped');
-        console.log('Server stopped');
-        server = null;
-        resolve();
-      });
-    } else {
-      resolve();
-    }
-  });
-};
-
-module.exports = { app, startServer, stopServer };
-
-startServer().catch((error) => {
-  console.error('Failed to start the server:', error);
-});
+// Export for Testing
+export { createApp, startServer, stopServer };

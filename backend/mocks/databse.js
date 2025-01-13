@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { connect as _connect, disconnect as _disconnect } from 'mongoose';
 
-const config = require('../config');
+import { mongoURI } from '../config';
 
 class Database {
   constructor() {
@@ -11,7 +11,7 @@ class Database {
     if (this.connection) return this.connection;
 
     try {
-      this.connection = await mongoose.connect(config.mongoURI, {
+      this.connection = await _connect(mongoURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
@@ -25,7 +25,7 @@ class Database {
 
   async disconnect() {
     if (this.connection) {
-      await mongoose.disconnect();
+      await _disconnect();
       this.connection = null;
       console.log('Disconnected from MongoDB');
     }
@@ -40,4 +40,4 @@ class Database {
   }
 }
 
-module.exports = new Database();
+export default new Database();

@@ -1,6 +1,6 @@
-const request = require('supertest');
+import request from 'supertest';
 
-const { app, startServer, stopServer } = require('../index');
+import { app, startServer, stopServer } from '../index';
 
 let server;
 

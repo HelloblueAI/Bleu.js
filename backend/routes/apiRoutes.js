@@ -1,27 +1,21 @@
-const express = require('express');
+import { Router } from 'express';
 
-const apiController = require('../controllers/apiController');
+import {
+  getRules,
+  addRule,
+  updateRule,
+  deleteRule,
+  monitorDependencies,
+  trainModel,
+} from '../controllers/rulesController.js';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/data', apiController.getData);
+router.get('/rules', getRules);
+router.post('/rules', addRule);
+router.put('/rules/:id', updateRule);
+router.delete('/rules/:id', deleteRule);
+router.get('/dependencies', monitorDependencies);
+router.post('/trainModel', trainModel);
 
-router.post('/predict', apiController.predict);
-router.post('/processData', apiController.processData);
-router.get('/processedData', apiController.getProcessedData);
-router.post('/trainModel', apiController.trainModel);
-router.get('/trainModel/status', apiController.getTrainModelStatus);
-router.post('/uploadDataset', apiController.uploadDataset);
-
-router.get('/rules', apiController.getRules);
-router.post('/rules', apiController.addRule);
-router.put('/rules/:id', apiController.updateRule);
-router.delete('/rules/:id', apiController.deleteRule);
-router.post('/evaluateRule/:id', apiController.evaluateRule);
-router.post('/generate-egg', apiController.generateEgg);
-router.get('/dependencies', apiController.monitorDependencies);
-router.get('/dependencies/conflicts', apiController.resolveConflicts);
-router.post('/debug', apiController.debug);
-router.all('*', apiController.invalidRoute);
-
-module.exports = router;
+export default router;
