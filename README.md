@@ -744,6 +744,26 @@ Snapshots:   0 total
 Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 
+```javascript
+pnpm test -- --coverage
+```
+```javascript
+cd coverage/lcov-report
+ls
+```
+```javascript
+Open the Report: Open index.html in your browser:
+```
+(On Linux, use xdg-open index.html, or open it manually on Windows.)
+
+
+```javascript
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files           |    95.0 |     92.5 |    93.0 |    94.0 |
+src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
+backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
+-------------------|---------|----------|---------|---------|-------------------
 ```
 
 ```javascript
@@ -941,7 +961,7 @@ Ran all test suites matching /backend\/tests/i.
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
-All files          |    100  |       38 |     191 |    191  | 245
+All files           |    100  |       38 |     191 |    191  | 245
  dist              |      0  |        0 |       0 |      0  |
   routes.js        |      0  |        0 |       0 |      0  | 5-914
   swagger.js       |      0  |      100 |     100 |      0  | 4-23
@@ -1409,6 +1429,18 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
 ![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)
 ![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)
+![Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)
+
+## Test Coverage
+```plaintext
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files           |    95.0 |     92.5 |    93.0 |    94.0 |
+src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
+backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
+-------------------|---------|----------|---------|---------|-------------------
 ![Model Deployment](https://img.shields.io/badge/Model%20Deployment-Cloud%20%7C%20Docker-brightgreen?style=flat-square&logo=docker)
 ![NPM Downloads](https://img.shields.io/npm/dm/python-processor.svg?label=downloads&color=blue)
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
