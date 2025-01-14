@@ -4,19 +4,33 @@ frontend/
 backend/
 tests/
 venv/
+coverage/
+dist/
+reports/
+html-report/
+.nyc_output/
+logs/
 
 # Version control
-.git
+.git/
+*.gitignore
+*.gitmodules
 
 # Configuration files
-.eslintrc.cjs
-.babelrc
+.eslintrc.*
+.prettierrc.*
+.babelrc.*
+*.config.js
+*.config.cjs
+*.config.json
+*.config.ts
 
-# Additional files typically ignored
+# Logs and lock files
 *.log
 *.lock
-*.yml
-*.yaml
+*.bak
+*.swp
+*.tmp
 
 # Editor directories and files
 .vscode/
@@ -27,14 +41,42 @@ venv/
 # OS generated files
 .DS_Store
 Thumbs.db
+*.~
 
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Temporary files
+# Temporary and miscellaneous files
 *.tmp
-*.temp
+*.bak
+*.orig
+*.rej
+*.old
 
-# Environment variables
+# Python virtual environment
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Build and distribution
+*.tgz
+*.tar.gz
+
+# Environment and secrets
 .env
 .env.*
+
+# Testing and CI/CD
+*.test.*
+*.spec.*
+.jest/
+.jest-cache/
+
+# Additional large files
+*.dmg
+*.exe
+*.dll
+*.iso
+
+# Files specific to your project
+Dockerfile*
+lerna.json
+pnpm-workspace.yaml
