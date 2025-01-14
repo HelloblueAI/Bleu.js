@@ -19,25 +19,30 @@
 
 ## Installation
 
-Install the package using pnpm.
+Install the `bleujs` package using **pnpm**:
 
 ```javascript
-pnpm install bleujs
+pnpm add bleujs
 ```
+
+## Starting Core Engine
 
 ```javascript
 cd core-engine
-pnpm run start
+pnpm start
 ```
 
+## Running Dependency Management
 ```javascript
 cd dependency-management
 pnpm start
 ```
 
+## Running Eggs Generator
+
 ```javascript
 cd eggs-generator
-pnpm run start
+pnpm start
 ```
 
 ## Building the Application
@@ -49,7 +54,7 @@ pnpm run build
 ## Testing
 
 ```javascript
-pnpm run test:all
+pnpm run test
 ```
 
 ### Directory Structure
