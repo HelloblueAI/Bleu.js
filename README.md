@@ -731,7 +731,7 @@ This document provides detailed information about the API endpoints available in
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files  |    7865 |      300 |       9 |       0 |
+All files |    7865 |      300 |       9 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
@@ -936,7 +936,7 @@ Ran all test suites matching /backend\/tests/i.
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
-All files           |    100  |       38 |     191 |    191  | 245
+All files          |    100  |       38 |     191 |    191  | 245
  dist              |      0  |        0 |       0 |      0  |
   routes.js        |      0  |        0 |       0 |      0  | 5-914
   swagger.js       |      0  |      100 |     100 |      0  | 4-23
