@@ -22,6 +22,10 @@
 Install the `bleujs` package using **pnpm**:
 
 ```javascript
+pnpm install bleujs@latest
+```
+
+```javascript
 pnpm add bleujs
 ```
 
@@ -33,6 +37,7 @@ pnpm start
 ```
 
 ## Running Dependency Management
+
 ```javascript
 cd dependency-management
 pnpm start
