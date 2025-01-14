@@ -2,7 +2,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    resources: 'usable',
+    resources: 'usable',  // Keeps this option
   },
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
@@ -27,6 +27,7 @@ module.exports = {
       tsconfig: 'tsconfig.json',
     },
   },
+  // Removing testEnvironmentOptions from the 'projects' array
   projects: [
     {
       displayName: 'lint',
@@ -36,13 +37,7 @@ module.exports = {
     },
     {
       displayName: 'test',
-      testEnvironment: 'jsdom',
-      testEnvironmentOptions: {
-        resources: 'usable',
-      },
-      transform: {
-        '^.+\\.jsx?$': 'babel-jest',
-      },
+      testEnvironment: 'jsdom',  // Use jsdom without custom options
       testMatch: [
         '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
         '<rootDir>/backend/tests/**/*..test.(js|jsx|ts|tsx)',
