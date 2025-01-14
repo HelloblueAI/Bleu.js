@@ -928,11 +928,19 @@ Ran all test suites matching /backend\/tests/i.
  PASS   lint  ./index.js
  PASS   lint  ./jest.config.js
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files  |   10334 |     38   |     191 |  191245 |        0
-----------|---------|----------|---------|---------|-------------------
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files           |    100  |       38 |     191 |    191  | 245
+ dist              |      0  |        0 |       0 |      0  |
+  routes.js        |      0  |        0 |       0 |      0  | 5-914
+  swagger.js       |      0  |      100 |     100 |      0  | 4-23
+ dist/utils        |      0  |        0 |       0 |      0  |
+  logger.js        |      0  |      100 |       0 |      0  | 3-23
+  testSequencer.js |      0  |        0 |       0 |      0  | 5-725
+ dist/utils/lib    |      0  |        0 |       0 |      0  |
+  Bleu.js          |      0  |        0 |       0 |      0  | 5-78
+-------------------|---------|----------|---------|---------|-------------------
 
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
