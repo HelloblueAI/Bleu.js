@@ -1395,7 +1395,7 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/3b0790b1a795ac4b80ad9e552ae8efe7b389611a/LICENSE.md)
 
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
-![v1.0.25](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
+![v1.0.26](https://img.shields.io/badge/v1.0.25-0ff?style=flat)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
