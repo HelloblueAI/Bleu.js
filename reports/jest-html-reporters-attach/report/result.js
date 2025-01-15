@@ -26,7 +26,7 @@ window.jest_html_reporters_callback__({
       testFilePath:
         '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiTests.test.js',
       failureMessage:
-        '\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should evaluate a single rule correctly\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiTests.test.js\u001b[39m\u001b[0m\u001b[2m:7:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should evaluate multiple rules correctly\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiTests.test.js\u001b[39m\u001b[0m\u001b[2m:7:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should return null when no rules match\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiTests.test.js\u001b[39m\u001b[0m\u001b[2m:7:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should execute action functions correctly\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiTests.test.js\u001b[39m\u001b[0m\u001b[2m:7:17)\u001b[22m\u001b[2m\u001b[22m\n',
+        '\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should evaluate a single rule correctly\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n    \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n    \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiTests.test.js\u001b[39m\u001b[0m\u001b[2m:7:17)\u001b[22m\u001b[2m\u001b[22m\n',
       testResults: [
         {
           ancestorTitles: ['AIService'],
@@ -57,84 +57,6 @@ window.jest_html_reporters_callback__({
           fullName: 'AIService should return null when no rules match',
           status: 'failed',
           title: 'should return null when no rules match',
-        },
-        {
-          ancestorTitles: ['AIService'],
-          duration: 1,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiTests.test.js:7:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should execute action functions correctly',
-          status: 'failed',
-          title: 'should execute action functions correctly',
-        },
-      ],
-    },
-    {
-      numFailingTests: 5,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: {
-        end: 1718573026726,
-        runtime: 230,
-        slow: false,
-        start: 1718573026496,
-      },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js',
-      failureMessage:
-        '\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should fetch rules\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiService.test.js\u001b[39m\u001b[0m\u001b[2m:24:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should add a rule\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiService.test.js\u001b[39m\u001b[0m\u001b[2m:24:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should remove a rule\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiService.test.js\u001b[39m\u001b[0m\u001b[2m:24:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should update a rule\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiService.test.js\u001b[39m\u001b[0m\u001b[2m:24:17)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAIService › should evaluate rules\u001b[39m\u001b[22m\n\n    TypeError: Logger is not a constructor\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 4 |\u001b[39m \u001b[36mclass\u001b[39m \u001b[33mAIService\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 5 |\u001b[39m   constructor() {\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 6 |\u001b[39m     \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mlogger \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mLogger\u001b[39m()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m   |\u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 7 |\u001b[39m   }\u001b[22m\n\u001b[2m     \u001b[90m 8 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 9 |\u001b[39m   \u001b[36masync\u001b[39m getRules() {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat new AIService (\u001b[22m\u001b[2mbackend/services/aiService.js\u001b[2m:6:19)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mbackend/tests/aiService.test.js\u001b[39m\u001b[0m\u001b[2m:24:17)\u001b[22m\u001b[2m\u001b[22m\n',
-      testResults: [
-        {
-          ancestorTitles: ['AIService'],
-          duration: 1,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js:24:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should fetch rules',
-          status: 'failed',
-          title: 'should fetch rules',
-        },
-        {
-          ancestorTitles: ['AIService'],
-          duration: 1,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js:24:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should add a rule',
-          status: 'failed',
-          title: 'should add a rule',
-        },
-        {
-          ancestorTitles: ['AIService'],
-          duration: 0,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js:24:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should remove a rule',
-          status: 'failed',
-          title: 'should remove a rule',
-        },
-        {
-          ancestorTitles: ['AIService'],
-          duration: 0,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js:24:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should update a rule',
-          status: 'failed',
-          title: 'should update a rule',
-        },
-        {
-          ancestorTitles: ['AIService'],
-          duration: 1,
-          failureMessages: [
-            'TypeError: Logger is not a constructor\n    at new AIService (/Users/pejmanhaghighatnia/Bleu.js/backend/services/aiService.js:6:19)\n    at Object.<anonymous> (/Users/pejmanhaghighatnia/Bleu.js/backend/tests/aiService.test.js:24:17)\n    at Promise.then.completed (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:281:40)\n    at _runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:246:5)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/pejmanhaghighatnia/Bleu.js/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)',
-          ],
-          fullName: 'AIService should evaluate rules',
-          status: 'failed',
-          title: 'should evaluate rules',
         },
       ],
     },
@@ -187,78 +109,6 @@ window.jest_html_reporters_callback__({
           title: 'should correctly calculate Gini impurity',
         },
       ],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/testSequencer.test.js',
-      failureMessage:
-        '  \u001b[1m● \u001b[22mTest suite failed to run\n\n    Your test suite must contain at least one test.\n\n      \u001b[2mat onResult (\u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:133:18)\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:254:19\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:363:13\u001b[22m\n          at Array.map (<anonymous>)\n      \u001b[2mat Emittery.emit (\u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:361:23)\u001b[22m\n',
-      testResults: [],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/seedDatabase.test.js',
-      failureMessage:
-        '  \u001b[1m● \u001b[22mTest suite failed to run\n\n    Your test suite must contain at least one test.\n\n      \u001b[2mat onResult (\u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:133:18)\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:254:19\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:363:13\u001b[22m\n          at Array.map (<anonymous>)\n      \u001b[2mat Emittery.emit (\u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:361:23)\u001b[22m\n',
-      testResults: [],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/globalTeardown.test.js',
-      failureMessage:
-        '  \u001b[1m● \u001b[22mTest suite failed to run\n\n    Your test suite must contain at least one test.\n\n      \u001b[2mat onResult (\u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:133:18)\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:254:19\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:363:13\u001b[22m\n          at Array.map (<anonymous>)\n      \u001b[2mat Emittery.emit (\u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:361:23)\u001b[22m\n',
-      testResults: [],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/globalSetup.test.js',
-      failureMessage:
-        '  \u001b[1m● \u001b[22mTest suite failed to run\n\n    Your test suite must contain at least one test.\n\n      \u001b[2mat onResult (\u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:133:18)\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/@jest+core@29.7.0/node_modules/@jest/core/build/TestScheduler.js\u001b[2m:254:19\u001b[22m\n      \u001b[2mat \u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:363:13\u001b[22m\n          at Array.map (<anonymous>)\n      \u001b[2mat Emittery.emit (\u001b[22mnode_modules/.pnpm/emittery@0.13.1/node_modules/emittery/index.js\u001b[2m:361:23)\u001b[22m\n',
-      testResults: [],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/bleu.test.js',
-      failureMessage:
-        "  \u001b[1m● \u001b[22mTest suite failed to run\n\n    TypeError: RulesEngine is not a constructor\n\n    \u001b[0m \u001b[90m  8 |\u001b[39m\n     \u001b[90m  9 |\u001b[39m \u001b[36mconst\u001b[39m nlpProcessor \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mNLPProcessor\u001b[39m()\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 |\u001b[39m \u001b[36mconst\u001b[39m rulesEngine \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mRulesEngine\u001b[39m()\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 11 |\u001b[39m\n     \u001b[90m 12 |\u001b[39m \u001b[90m// Example of a simple GET endpoint\u001b[39m\n     \u001b[90m 13 |\u001b[39m router\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/'\u001b[39m\u001b[33m,\u001b[39m (req\u001b[33m,\u001b[39m res) \u001b[33m=>\u001b[39m {\u001b[0m\n\n      \u001b[2mat Object.<anonymous> (\u001b[22mbackend/routes/apiRoutes.js\u001b[2m:10:21)\u001b[22m\n      \u001b[2mat Object.require (\u001b[22m\u001b[0m\u001b[36mbackend/tests/bleu.test.js\u001b[39m\u001b[0m\u001b[2m:4:19)\u001b[22m\n",
-      testResults: [],
-    },
-    {
-      numFailingTests: 0,
-      numPassingTests: 0,
-      numPendingTests: 0,
-      numTodoTests: 0,
-      perfStats: { end: 0, runtime: 0, slow: false, start: 0 },
-      testFilePath:
-        '/Users/pejmanhaghighatnia/Bleu.js/backend/tests/apiRoutes.test.js',
-      failureMessage:
-        "  \u001b[1m● \u001b[22mTest suite failed to run\n\n    TypeError: RulesEngine is not a constructor\n\n    \u001b[0m \u001b[90m  8 |\u001b[39m\n     \u001b[90m  9 |\u001b[39m \u001b[36mconst\u001b[39m nlpProcessor \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mNLPProcessor\u001b[39m()\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 |\u001b[39m \u001b[36mconst\u001b[39m rulesEngine \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mRulesEngine\u001b[39m()\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 11 |\u001b[39m\n     \u001b[90m 12 |\u001b[39m \u001b[90m// Example of a simple GET endpoint\u001b[39m\n     \u001b[90m 13 |\u001b[39m router\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/'\u001b[39m\u001b[33m,\u001b[39m (req\u001b[33m,\u001b[39m res) \u001b[33m=>\u001b[39m {\u001b[0m\n\n      \u001b[2mat Object.<anonymous> (\u001b[22mbackend/routes/apiRoutes.js\u001b[2m:10:21)\u001b[22m\n      \u001b[2mat Object.require (\u001b[22m\u001b[0m\u001b[36mbackend/tests/apiRoutes.test.js\u001b[39m\u001b[0m\u001b[2m:3:19)\u001b[22m\n",
-      testResults: [],
     },
   ],
   config: {
