@@ -699,7 +699,7 @@ This document provides detailed information about the API endpoints available in
 `ROOT`
 `pnpm run start:backend `
 
-```javascript
+````javascript
  PASS  backend/tests/bleu.test.js
   API Tests
     ✓ should handle invalid request headers (28 ms)
@@ -746,16 +746,18 @@ Ran all test suites matching /backend\/tests/i.
 
 ```javascript
 pnpm test -- --coverage
-```
+````
+
 ```javascript
 cd coverage/lcov-report
 ls
 ```
+
 ```javascript
 Open the Report: Open index.html in your browser:
 ```
-(On Linux, use xdg-open index.html, or open it manually on Windows.)
 
+(On Linux, use xdg-open index.html, or open it manually on Windows.)
 
 ```javascript
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
