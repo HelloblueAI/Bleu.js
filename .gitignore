@@ -1,5 +1,6 @@
-# Node modules
+# Dependency directories
 node_modules/
+backend/node_modules/
 
 # Coverage directories and files
 coverage/
@@ -7,27 +8,28 @@ backend/coverage/
 coverage/**/*.html
 backend/coverage/**/*.html
 
-# Build directories and files
+# Build output
 dist/
 build/
+backend/build/
 
-# Logs
+# Logs and backups
 *.log
-
-# Backup files
 *.bak
 
-# OS-specific files
+# Operating system and IDE specific files
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
 
-# Ignore .env file
+# Environment files
 .env
+*.env
 
-# Ignore Python bytecode cache
+# Python-related files and directories
 __pycache__/
-
-# Ignore virtual environment directory
+*.py[cod]
 language-plugins/python/venv/
 new_venv/
 venv/
@@ -35,4 +37,13 @@ venv/
 # Lock files
 pnpm-lock.yaml
 pnpm-lock.yaml.bak
-.env
+
+# Test reports
+test-report/
+**/test-report/
+
+
+result.js
+result.json
+**/result.js
+**/result.json
