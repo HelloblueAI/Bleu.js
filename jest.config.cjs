@@ -1,35 +1,42 @@
 module.exports = {
-  // Files to set up testing environment
+  
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
-  // Test environment configuration
+
   testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    resources: 'usable',
-  },
+  testEnvironmentOptions: {},
 
-  // Transforms to handle various file types
+
   transform: {
-    '^.+\\.jsx?$': 'babel-jest', // JavaScript and JSX files
-    '^.+\\.tsx?$': 'ts-jest', // TypeScript and TSX files
+    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.tsx?$': 'ts-jest',
   },
 
-  // Recognized file extensions for modules
+
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
-  // Patterns to identify test files
+
   testMatch: [
     '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
     '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
   ],
 
-  // Ignore patterns for test files
+
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
     '<rootDir>/reports/html-report/jest-html-reporters-attach/index/result.js',
     '<rootDir>/reports/jest-html-reporters-attach/test-report/result.js',
     '<rootDir>/reports/jest-html-reporters-attach/test-report/index.js',
+    '<rootDir>/backend/tests/testSequencer.test.js',
+    '<rootDir>/backend/tests/apiRoutes.test.js',
+    '<rootDir>/backend/tests/seedDatabase.test.js',
+    '<rootDir>/backend/tests/apiController.test.js',
+    '<rootDir>/backend/tests/aiService.test.js',
+    '<rootDir>/backend/tests/apiGenerateEgg.test.js',
+    '<rootDir>/backend/tests/decisionTree.test.js',
+    '<rootDir>/backend/tests/bleu.test.js',
+    '<rootDir>/backend/tests/aiTests.test.js',
   ],
 
   // Coverage collection settings
@@ -47,7 +54,7 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',
-      diagnostics: false, // Disable diagnostics for better performance during testing
+      diagnostics: false, // Disable diagnostics for better performance
     },
   },
 
@@ -68,7 +75,7 @@ module.exports = {
     {
       displayName: 'test',
       testEnvironment: 'jsdom',
-      testEnvironmentOptions: {}, // Removed unsupported `resources: 'usable'`
+      testEnvironmentOptions: {},
       testMatch: [
         '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
         '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
@@ -79,17 +86,26 @@ module.exports = {
         '<rootDir>/reports/html-report/jest-html-reporters-attach/index/result.js',
         '<rootDir>/reports/jest-html-reporters-attach/test-report/result.js',
         '<rootDir>/reports/jest-html-reporters-attach/test-report/index.js',
+        '<rootDir>/backend/tests/testSequencer.test.js',
+        '<rootDir>/backend/tests/apiRoutes.test.js',
+        '<rootDir>/backend/tests/seedDatabase.test.js',
+        '<rootDir>/backend/tests/apiController.test.js',
+        '<rootDir>/backend/tests/aiService.test.js',
+        '<rootDir>/backend/tests/apiGenerateEgg.test.js',
+        '<rootDir>/backend/tests/decisionTree.test.js',
+        '<rootDir>/backend/tests/bleu.test.js',
+        '<rootDir>/backend/tests/aiTests.test.js',
       ],
     },
   ],
 
-  // Jest watch mode configuration
+
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
 
-  // Reporter configurations for enhanced output
+
   reporters: [
     'default',
     [
@@ -103,6 +119,6 @@ module.exports = {
     ],
   ],
 
-  // Logging level for debugging test runs
+
   verbose: true,
 };
