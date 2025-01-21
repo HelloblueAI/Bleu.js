@@ -762,7 +762,7 @@ Open the Report: Open index.html in your browser:
 ```javascript
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
-All files           |    95.0 |     92.5 |    93.0 |    94.0 |
+All files          |    95.0 |     92.5 |    93.0 |    94.0 |
 src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
 backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 -------------------|---------|----------|---------|---------|-------------------
