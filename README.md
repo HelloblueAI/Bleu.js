@@ -699,7 +699,7 @@ This document provides detailed information about the API endpoints available in
 `ROOT`
 `pnpm run start:backend `
 
-````javascript
+```javascript
  PASS  backend/tests/bleu.test.js
   API Tests
     ✓ should handle invalid request headers (28 ms)
@@ -743,6 +743,7 @@ Tests:       30 passed, 30 total
 Snapshots:   0 total
 Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
+```
 
 # Run tests with coverage enabled
 pnpm test -- --coverage
@@ -758,14 +759,14 @@ open index.html
 
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
 
-```javascript
+
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
 All files          |    95.0 |     92.5 |    93.0 |    94.0 |
 src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
 backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 -------------------|---------|----------|---------|---------|-------------------
-```
+
 
 ## ** Test Report Overview**
 
@@ -813,7 +814,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | `/src/backend/tests/apiRoutes.test.js`        | 00:00.002         | ✅ Passed     |
 | `/src/backend/src/services/decision...`       | 00:00.001         | ✅ Passed     |
 
-### **💻 Core Engine Highlights**
+### ** Core Engine Highlights**
 | **File**                                      | **Exec Time (s)** | **Status**   |
 |-----------------------------------------------|-------------------|--------------|
 | `/core-engine/src/BleuX.js`                   | 00:00.001         | ✅ Passed     |
@@ -825,13 +826,15 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 Dive into the detailed test report and visualize coverage metrics with ease:
 
-1. **Locate the Report:**
-   The report is generated in:
-   ```bash
-   /reports/test-report.html
+**Locate the Report:**
+  The report is generated in:
+  ```javascript
+  /reports/test-report.html
+  ```
 
-
-
+```javascript
+pnpm test
+```
 ```javascript
  PASS   lint  reports/jest-html-reporters-attach/report/index.js
  PASS   lint  backend/coverage/lcov-report/prettify.js
@@ -1024,6 +1027,7 @@ Dive into the detailed test report and visualize coverage metrics with ease:
  PASS   lint  ./index.js
  PASS   lint  ./jest.config.js
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
+ 
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
@@ -1045,10 +1049,6 @@ Time:        5.507 s
 Ran all test suites.
 📦 report is created on: /home/runner/work/Bleu.js/Bleu.js/reports/test-report.html
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
-```
-
-```javascript
-pnpm test
 ```
 
 ## Jest HTML Reporters
