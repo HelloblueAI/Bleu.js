@@ -744,18 +744,17 @@ Snapshots:   0 total
 Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 
-```javascript
+# Run tests with coverage enabled
 pnpm test -- --coverage
-```
 
-```javascript
+# Navigate to the coverage report directory
 cd coverage/lcov-report
-ls
-```
 
-```javascript
-Open the Report: Open index.html in your browser:
-```
+# List the files to verify the report is generated
+ls
+
+# Open the report in your browser
+open index.html
 
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
 
