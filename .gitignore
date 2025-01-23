@@ -47,3 +47,9 @@ result.js
 result.json
 **/result.js
 **/result.json
+/output/
+/coverage/
+/html-report/
+*.html
+*.css
+*.js
