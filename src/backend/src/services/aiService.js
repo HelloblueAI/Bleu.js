@@ -21,7 +21,7 @@ class AIService {
       info(`Tokens: ${tokens.join(', ')}`);
 
       const stemmedTokens = tokens.map((token) =>
-        this.nlpProcessor.stem(token)
+        this.nlpProcessor.stem(token),
       );
       info(`Stemmed Tokens: ${stemmedTokens.join(', ')}`);
 

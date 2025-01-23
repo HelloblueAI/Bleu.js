@@ -12,7 +12,7 @@ class NLPProcessor {
     this.sentimentAnalyzer = new SentimentAnalyzer(
       'English',
       this.stemmer,
-      'afinn'
+      'afinn',
     );
     this.classifier = new BayesClassifier();
     this.ner = compromise;
@@ -52,7 +52,7 @@ class NLPProcessor {
       typeof category !== 'string'
     ) {
       throw new Error(
-        'Invalid input. Text and category must be non-empty strings.'
+        'Invalid input. Text and category must be non-empty strings.',
       );
     }
     this.classifier.addDocument(text, category);

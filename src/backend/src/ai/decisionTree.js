@@ -11,7 +11,7 @@ class DecisionTree {
     }
     return this.traverse(
       node[node.condition(data) ? 'trueBranch' : 'falseBranch'],
-      data
+      data,
     );
   }
 
@@ -27,7 +27,7 @@ class DecisionTree {
     const { bestFeature, bestSplit, subsets } = this.getBestSplit(
       data,
       features,
-      target
+      target,
     );
 
     if (!bestSplit) {
@@ -42,14 +42,14 @@ class DecisionTree {
         features,
         target,
         maxDepth - 1,
-        minSize
+        minSize,
       ),
       falseBranch: this.buildTree(
         subsets.falseSubset,
         features,
         target,
         maxDepth - 1,
-        minSize
+        minSize,
       ),
     };
   }
@@ -61,7 +61,7 @@ class DecisionTree {
       return acc;
     }, {});
     return Object.keys(counts).reduce((a, b) =>
-      counts[a] > counts[b] ? a : b
+      counts[a] > counts[b] ? a : b,
     );
   }
 
@@ -77,7 +77,7 @@ class DecisionTree {
         const gini = this.calculateGini(
           subsets.trueSubset,
           subsets.falseSubset,
-          target
+          target,
         );
         if (gini < bestGini) {
           bestGini = gini;
@@ -101,7 +101,7 @@ class DecisionTree {
         acc[item[feature] === split ? 'trueSubset' : 'falseSubset'].push(item);
         return acc;
       },
-      { trueSubset: [], falseSubset: [] }
+      { trueSubset: [], falseSubset: [] },
     );
   }
 
@@ -124,19 +124,19 @@ class DecisionTree {
       1 -
       Object.values(counts).reduce(
         (sum, count) => sum + (count / subset.length) ** 2,
-        0
+        0,
       )
     );
   }
 
   visualize(node = this.tree, indent = '') {
     if (node.isLeaf) {
-      // console.log(`${indent}Leaf: ${node.result}`);
+      console.log(`${indent}Leaf: ${node.result}`);
     } else {
-      // console.log(`${indent}Condition: ${node.condition.toString()}`);
-      // console.log(`${indent}True Branch:`);
+
+
       this.visualize(node.trueBranch, indent + '  ');
-      // console.log(`${indent}False Branch:`);
+      
       this.visualize(node.falseBranch, indent + '  ');
     }
   }
@@ -162,4 +162,4 @@ class DecisionTree {
   }
 }
 
-module.exports = DecisionTree;
+export default DecisionTree;

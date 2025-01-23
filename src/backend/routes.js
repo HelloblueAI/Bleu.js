@@ -138,7 +138,7 @@ router.post('/api/ai/process-text-advanced', async (req, res) => {
   try {
     const result = await aiService.processTextAdvanced(
       req.body.text,
-      req.body.options
+      req.body.options,
     );
     res.status(200).json({ result });
   } catch (error) {

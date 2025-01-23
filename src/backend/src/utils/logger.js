@@ -6,8 +6,8 @@ const logger = createLogger({
     format.timestamp(),
     format.printf(
       ({ timestamp, level, message }) =>
-        `${timestamp} [${level.toUpperCase()}]: ${message}`
-    )
+        `${timestamp} [${level.toUpperCase()}]: ${message}`,
+    ),
   ),
   transports: [new transports.Console()],
 });

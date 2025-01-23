@@ -21,7 +21,7 @@ const createApp = () => {
       origin: '*', // Allow all origins
       methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
       allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-    })
+    }),
   );
 
   app.use(morgan('dev'));
@@ -35,7 +35,7 @@ const createApp = () => {
         return res.status(400).json({ error: 'Missing input' });
       }
       const result = await decisionTreeService.traverseDecisionTree(
-        req.body.input
+        req.body.input,
       );
       return res.status(200).json({ result });
     } catch (error) {

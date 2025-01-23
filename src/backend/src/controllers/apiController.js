@@ -10,7 +10,7 @@ if (apiKey) {
   openai.apiKey = apiKey;
 } else {
   console.error(
-    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.'
+    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
   );
 }
 
@@ -29,7 +29,7 @@ const callAIModel = async (query) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
         },
-      }
+      },
     );
 
     return response.data.choices[0].text.trim();

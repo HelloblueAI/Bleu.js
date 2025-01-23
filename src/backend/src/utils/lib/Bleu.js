@@ -5,7 +5,7 @@ class Bleu {
   manageDependencies(dependencies) {
     dependencies.forEach((dependency) => {
       logger.info(
-        `Managing dependency: ${dependency.name}@${dependency.version}`
+        `Managing dependency: ${dependency.name}@${dependency.version}`,
       );
     });
   }
