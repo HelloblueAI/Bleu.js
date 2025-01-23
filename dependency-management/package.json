@@ -1,6 +1,6 @@
 {
   "name": "bleujs-dependency-management",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "type": "commonjs",
   "main": "src/index.js",
   "directories": {
