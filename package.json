@@ -16,6 +16,7 @@
     "start:core-engine": "node core-engine/index.js",
     "start:eggs-generator": "node eggs-generator/src/index.js",
     "start:dependency-management": "node dependency-management/src/index.js",
+    "build": "pnpm run build:backend && pnpm run build:eggs-generator",
     "build:backend": "babel src/backend --out-dir backend/dist",
     "build:eggs-generator": "babel eggs-generator/src --out-dir eggs-generator/dist",
     "test": "jest",
@@ -179,3 +180,4 @@
     ]
   }
 }
+
