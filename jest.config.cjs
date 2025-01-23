@@ -1,26 +1,20 @@
 module.exports = {
-
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-
 
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {},
-
 
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest',
   },
 
-
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
-
 
   testMatch: [
     '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
     '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
   ],
-
 
   testPathIgnorePatterns: [
     '/node_modules/',
@@ -39,7 +33,6 @@ module.exports = {
     '<rootDir>/backend/tests/aiTests.test.js',
   ],
 
-  // Coverage collection settings
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
@@ -77,8 +70,8 @@ module.exports = {
       testEnvironment: 'jsdom',
       testEnvironmentOptions: {},
       testMatch: [
-        '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
-        '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
+        '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
       ],
       testPathIgnorePatterns: [
         '/node_modules/',
@@ -99,12 +92,10 @@ module.exports = {
     },
   ],
 
-
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-
 
   reporters: [
     'default',
@@ -118,7 +109,6 @@ module.exports = {
       },
     ],
   ],
-
 
   verbose: true,
 };
