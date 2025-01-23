@@ -17,6 +17,11 @@ backend/build/
 *.log
 *.bak
 
+# Allow specific test report files
+!reports/jest-html-reporters-attach/test-report/result.js
+!reports/jest-stare/jest-results.json
+
+
 # Operating system and IDE specific files
 .DS_Store
 Thumbs.db
