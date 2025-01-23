@@ -736,7 +736,7 @@ This document provides detailed information about the API endpoints available in
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files  |    7865 |      300 |       9 |       0 |
+All files |    7865 |      300 |       9 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
@@ -746,7 +746,7 @@ Ran all test suites matching /backend\/tests/i.
 
 ```javascript
 pnpm test -- --coverage
-````
+```
 
 ```javascript
 cd coverage/lcov-report
@@ -762,17 +762,17 @@ Open the Report: Open index.html in your browser:
 ```javascript
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
-All files           |    95.0 |     92.5 |    93.0 |    94.0 |
+All files          |    95.0 |     92.5 |    93.0 |    94.0 |
 src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
 backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 -------------------|---------|----------|---------|---------|-------------------
 ```
 
-## **📊 Test Report Overview**
+## ** Test Report Overview**
 
 Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
 
-### **📌 Summary**
+### ** Summary**
 | 📈 **Metric**               | 🚀 **Value** |
 |-----------------------------|--------------|
 | **Test Suites Total**       | 98           |
@@ -788,13 +788,13 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 |-----------------------------|--------------------------|
 | **Start Time**              | 2025-01-23 11:45:41     |
 | **Total Execution Time**    | 00:05.928 seconds       |
-| **Root Directory**          | `/Users/pejmanhaghighatnia/Bleu.js` |
+| **Root Directory**          | `/Users/path/Bleu.js` |
 | **Max Workers Utilized**    | 7                        |
 | **Framework Version**       | 1.0.29                  |
 
 ---
 
-## **🧩 Detailed Execution**
+## ** Detailed Execution**
 
 Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
 
@@ -1058,7 +1058,6 @@ open
 ```javascript
 open ./reports/test-report.html
 ```
-
 
 ## Jest-Stare Report
 * Location: ./reports/jest-stare/index.html
