@@ -1,16 +1,46 @@
 {
   "presets": [
-    ["@babel/preset-env", { "modules": "commonjs" }],
+    [
+      "@babel/preset-env",
+      {
+        "modules": "auto",
+        "targets": {
+          "browsers": "> 0.25%, not dead",
+          "node": "current"
+        },
+        "useBuiltIns": "entry",
+        "corejs": {
+          "version": "3.37",
+          "proposals": true
+        }
+      }
+    ],
     "@babel/preset-typescript"
   ],
   "plugins": [
     [
       "module-resolver",
       {
+        "root": ["./src"],
         "alias": {
-          "@utils": "./src/utils"
-        }
+          "@utils": "./src/utils",
+          "@components": "./src/components",
+          "@models": "./src/models",
+          "@services": "./src/services",
+          "@core": "./src/core"
+        },
+        "extensions": [".js", ".ts", ".tsx", ".json"]
       }
-    ]
-  ]
+    ],
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-nullish-coalescing-operator",
+    ["@babel/plugin-transform-class-properties", { "loose": true }],
+    ["@babel/plugin-transform-private-methods", { "loose": true }],
+    ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    "babel-plugin-parameter-decorator",
+    "babel-plugin-transform-typescript-metadata"
+  ],
+  "ignore": ["node_modules/**", "**/*.test.js", "**/*.test.ts", "dist/**"]
 }
