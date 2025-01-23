@@ -736,7 +736,7 @@ This document provides detailed information about the API endpoints available in
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 ----------|---------|----------|---------|---------|-------------------
-All files |    7865 |      300 |       9 |       0 |
+All files  |    7865 |      300 |       9 |       0 |
 ----------|---------|----------|---------|---------|-------------------
 Test Suites: 1 passed, 1 total
 Tests:       30 passed, 30 total
@@ -762,11 +762,76 @@ Open the Report: Open index.html in your browser:
 ```javascript
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
-All files          |    95.0 |     92.5 |    93.0 |    94.0 |
+All files           |    95.0 |     92.5 |    93.0 |    94.0 |
 src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
 backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 -------------------|---------|----------|---------|---------|-------------------
 ```
+
+## **📊 Test Report Overview**
+
+Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
+
+### **📌 Summary**
+| 📈 **Metric**               | 🚀 **Value** |
+|-----------------------------|--------------|
+| **Test Suites Total**       | 98           |
+| **Tests Total**             | 97           |
+| **Failed Suites**           | 0            |
+| **Failed Tests**            | 0            |
+| **Pending Suites**          | 1            |
+| **Pending Tests**           | 0            |
+| **Test Coverage**           | **100%**     |
+
+### **⚙️ Execution Details**
+| 🔑 **Key Metrics**          | 🌟 **Value**             |
+|-----------------------------|--------------------------|
+| **Start Time**              | 2025-01-23 11:45:41     |
+| **Total Execution Time**    | 00:05.928 seconds       |
+| **Root Directory**          | `/Users/pejmanhaghighatnia/Bleu.js` |
+| **Max Workers Utilized**    | 7                        |
+| **Framework Version**       | 1.0.29                  |
+
+---
+
+## **🧩 Detailed Execution**
+
+Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
+
+### **🏗️ Top-Level Files**
+| **File**                                      | **Exec Time (s)** | **Status**   |
+|-----------------------------------------------|-------------------|--------------|
+| `/src/backend/tests/setup.ts`                 | 00:00.015         | ✅ Passed     |
+| `/src/backend/tests/aiTests.test.js`          | 00:00.003         | ✅ Passed     |
+| `/output/jest-html-reporters-attach/...`      | 00:01.462         | ✅ Passed     |
+| `/coverage/prettify.js`                       | 00:00.012         | ✅ Passed     |
+
+### **⚡ Backend Highlights**
+| **File**                                      | **Exec Time (s)** | **Status**   |
+|-----------------------------------------------|-------------------|--------------|
+| `/src/backend/src/controllers/...`            | 00:00.007         | ✅ Passed     |
+| `/src/backend/src/utils/lib/Bleu.js`          | 00:00.002         | ✅ Passed     |
+| `/src/backend/tests/apiRoutes.test.js`        | 00:00.002         | ✅ Passed     |
+| `/src/backend/src/services/decision...`       | 00:00.001         | ✅ Passed     |
+
+### **💻 Core Engine Highlights**
+| **File**                                      | **Exec Time (s)** | **Status**   |
+|-----------------------------------------------|-------------------|--------------|
+| `/core-engine/src/BleuX.js`                   | 00:00.001         | ✅ Passed     |
+| `/core-engine/src/index.js`                   | 00:00.003         | ✅ Passed     |
+
+---
+
+## **🖥️ How to View Test Reports**
+
+Dive into the detailed test report and visualize coverage metrics with ease:
+
+1. **Locate the Report:**
+   The report is generated in:
+   ```bash
+   /reports/test-report.html
+
+
 
 ```javascript
  PASS   lint  reports/jest-html-reporters-attach/report/index.js
@@ -980,6 +1045,26 @@ Snapshots:   0 total
 Time:        5.507 s
 Ran all test suites.
 📦 report is created on: /home/runner/work/Bleu.js/Bleu.js/reports/test-report.html
+**  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
+```
+
+```javascript
+pnpm test
+```
+
+## Jest HTML Reporters
+* Location: ./reports/jest-stare/index.html
+open
+```javascript
+open ./reports/test-report.html
+```
+
+
+## Jest-Stare Report
+* Location: ./reports/jest-stare/index.html
+open
+```javascript
+open ./reports/jest-stare/index.html
 ```
 
 ## Getting Started
@@ -1425,7 +1510,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
-![v1.0.29](https://img.shields.io/badge/v1.0.26-0ff?style=flat)
+![v1.0.29](https://img.shields.io/badge/v1.0.29-0ff?style=flat)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
