@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pnpm lint && pnpm test
+cat COMMIT_MESSAGE_TEMPLATE >> $1

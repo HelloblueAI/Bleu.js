@@ -1,0 +1,19 @@
+# Commit message structure:
+#
+# <type>(<scope>): <subject>
+#
+# Example Types:
+# - feat: A new feature
+# - fix: A bug fix
+# - docs: Documentation updates
+# - chore: Routine tasks (e.g., CI/CD changes)
+# - refactor: Code refactoring without behavior changes
+#
+# Example Scopes:
+# - frontend
+# - backend
+# - ci
+#
+# Example Messages:
+# feat(frontend): add dark mode toggle
+# fix(backend): resolve login timeout issue
