@@ -768,11 +768,11 @@ backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 -------------------|---------|----------|---------|---------|-------------------
 
 
-## ** Test Report Overview**
+## Test Report Overview
 
 Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
 
-### ** Summary**
+### Summary
 | 📈 **Metric**               | 🚀 **Value** |
 |-----------------------------|--------------|
 | **Test Suites Total**       | 98           |
@@ -783,7 +783,7 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 | **Pending Tests**           | 0            |
 | **Test Coverage**           | **100%**     |
 
-### **⚙️ Execution Details**
+### ⚙️ Execution Details
 | 🔑 **Key Metrics**          | 🌟 **Value**             |
 |-----------------------------|--------------------------|
 | **Start Time**              | 2025-01-23 11:45:41     |
@@ -794,7 +794,7 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 
 ---
 
-## ** Detailed Execution**
+## Detailed Execution
 
 Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
 
@@ -814,7 +814,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | `/src/backend/tests/apiRoutes.test.js`        | 00:00.002         | ✅ Passed     |
 | `/src/backend/src/services/decision...`       | 00:00.001         | ✅ Passed     |
 
-### ** Core Engine Highlights**
+### Core Engine Highlights
 | **File**                                      | **Exec Time (s)** | **Status**   |
 |-----------------------------------------------|-------------------|--------------|
 | `/core-engine/src/BleuX.js`                   | 00:00.001         | ✅ Passed     |
@@ -822,7 +822,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-## **🖥️ How to View Test Reports**
+## **🖥 How to View Test Reports**
 
 Dive into the detailed test report and visualize coverage metrics with ease:
 
