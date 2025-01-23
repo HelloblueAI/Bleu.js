@@ -1,9 +1,9 @@
 export default [
   {
-    "files": ["**/*.js"],
-    "languageOptions": {
-      "sourceType": "module",
-      "ecmaVersion": 2024
-    }
-  }
-]
+    files: ['**/*.js'],
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 2024,
+    },
+  },
+];

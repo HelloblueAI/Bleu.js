@@ -10,7 +10,7 @@ const TestModel = _model(
   new Schema({
     name: String,
     value: Number,
-  })
+  }),
 );
 
 beforeAll(async () => {
@@ -36,7 +36,7 @@ describe('Seed Database', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty(
       'message',
-      'Database seeded successfully'
+      'Database seeded successfully',
     );
     expect(response.body).toHaveProperty('insertedCount', 2);
 

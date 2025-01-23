@@ -27,7 +27,7 @@ router.options('/', (req, res) => {
     .status(204)
     .set(
       'access-control-allow-methods',
-      'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+      'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     )
     .send();
 });

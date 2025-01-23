@@ -42,7 +42,7 @@ export function handleOptions(req, res) {
     .status(204)
     .setHeader(
       'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+      'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     )
     .end();
 }

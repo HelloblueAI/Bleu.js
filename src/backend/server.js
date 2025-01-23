@@ -17,7 +17,7 @@ const logger = createLogger({
     format.printf(({ timestamp, level, message, ...meta }) => {
       const metaString = Object.keys(meta).length ? JSON.stringify(meta) : '';
       return `${timestamp} [${level.toUpperCase()}]: ${message} ${metaString}`;
-    })
+    }),
   ),
   transports: [
     new transports.Console(),
@@ -75,7 +75,7 @@ const createApp = () => {
   app.use(
     morgan('combined', {
       stream: { write: (msg) => logger.info(msg.trim()) },
-    })
+    }),
   );
   app.use(bodyParser.json());
 

@@ -53,7 +53,7 @@ describe('Eggs Generator API - Advanced Tests', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.result).toHaveProperty('egg');
     expect(response.body.result.parameters).toMatchObject(
-      complexInput.parameters
+      complexInput.parameters,
     );
   });
 
@@ -84,7 +84,7 @@ describe('Eggs Generator API - Advanced Tests', () => {
 
   it('should process multiple concurrent requests correctly', async () => {
     const requests = Array.from({ length: 10 }).map(() =>
-      request(app).post('/api/generate-egg').send(validInput)
+      request(app).post('/api/generate-egg').send(validInput),
     );
     const responses = await Promise.all(requests);
 
