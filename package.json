@@ -1,6 +1,6 @@
 {
   "name": "bleujs",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "A production-ready AI framework for decision tree services, supporting deep learning, neural networks, and model deployment.",
   "main": "index.js",
   "type": "module",
