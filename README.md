@@ -690,7 +690,7 @@ ensureCodeQuality(code) {
 }
 ```
 
-# Bleu.js API Documentation
+## Bleu.js API Documentation
 
 ## Introduction
 
@@ -745,16 +745,16 @@ Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 ```
 
-# Run tests with coverage enabled
+## Run tests with coverage enabled
 pnpm test -- --coverage
 
-# Navigate to the coverage report directory
+## Navigate to the coverage report directory
 cd coverage/lcov-report
 
-# List the files to verify the report is generated
+## List the files to verify the report is generated
 ls
 
-# Open the report in your browser
+## Open the report in your browser
 open index.html
 
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
