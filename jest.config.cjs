@@ -19,6 +19,7 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
+    '<rootDir>/reports/',
     '<rootDir>/reports/html-report/jest-html-reporters-attach/index/result.js',
     '<rootDir>/reports/jest-html-reporters-attach/test-report/result.js',
     '<rootDir>/reports/jest-html-reporters-attach/test-report/index.js',
@@ -43,15 +44,13 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text', 'lcov'],
 
-  // Global configuration for ts-jest
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',
-      diagnostics: false, // Disable diagnostics for better performance
+      diagnostics: false,
     },
   },
 
-  // Project-specific configurations
   projects: [
     {
       displayName: 'lint',
@@ -60,9 +59,7 @@ module.exports = {
       testPathIgnorePatterns: [
         '/node_modules/',
         '/dist/',
-        '<rootDir>/reports/html-report/jest-html-reporters-attach/index/result.js',
-        '<rootDir>/reports/jest-html-reporters-attach/test-report/result.js',
-        '<rootDir>/reports/jest-html-reporters-attach/test-report/index.js',
+        '<rootDir>/reports/',
       ],
     },
     {
@@ -76,9 +73,7 @@ module.exports = {
       testPathIgnorePatterns: [
         '/node_modules/',
         '/dist/',
-        '<rootDir>/reports/html-report/jest-html-reporters-attach/index/result.js',
-        '<rootDir>/reports/jest-html-reporters-attach/test-report/result.js',
-        '<rootDir>/reports/jest-html-reporters-attach/test-report/index.js',
+        '<rootDir>/reports/',
         '<rootDir>/backend/tests/testSequencer.test.js',
         '<rootDir>/backend/tests/apiRoutes.test.js',
         '<rootDir>/backend/tests/seedDatabase.test.js',
