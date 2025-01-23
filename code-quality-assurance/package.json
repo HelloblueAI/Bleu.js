@@ -1,6 +1,6 @@
 {
   "name": "bleujs-code-quality-assurance",
-  "version": "1.0.9",
+  "version": "1.0.27",
   "main": "src/index.js",
   "directories": {
     "src": "src",
