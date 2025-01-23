@@ -977,7 +977,9 @@ All files           |    100  |       38 |     191 |    191  | 245
 Test Suites: 191 passed, 191 total
 Tests:       191 passed, 191 total
 Snapshots:   0 total
-Time:        10.591 s
+Time:        5.507 s
+Ran all test suites.
+📦 report is created on: /home/runner/work/Bleu.js/Bleu.js/reports/test-report.html
 ```
 
 ## Getting Started
