@@ -1,6 +1,6 @@
 {
   "name": "eggs-generator",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
   "main": "src/index.js",
   "scripts": {
