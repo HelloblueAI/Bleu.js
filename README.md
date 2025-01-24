@@ -1014,16 +1014,13 @@ Ran all test suites.
 ```javascript
 open ./reports/test-report.html
 ```
-
 ## Jest-Stare Report
 
-- Location: ./reports/jest-stare/index.html
-  open
+- Location:
 
 ```javascript
 open ./reports/jest-stare/index.html
 ```
-
 
 ### Navigate to the backend directory:
 
