@@ -147,7 +147,9 @@ Ran all test suites.
 pnpm test
 ```
 
-```
+![My SVG Image](./assets/Asset.svg)
+
+
 ## Jest HTML Reporters
 
 - Location: ./reports/jest-stare/index.html
@@ -158,12 +160,11 @@ open ./reports/test-report.html
 ```
 ## Jest-Stare Report
 
-- Location:
-
 ```javascript
 open ./reports/jest-stare/index.html
 ```
-![My SVG Image](./assets/Asset.svg)
+
+
 
 ### Class Documentation
 
