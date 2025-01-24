@@ -61,7 +61,7 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(express@4.21.2)
       vue:
-        specifier: ^3.5.13
+        specifier: ^3.4.30
         version: 3.5.13(typescript@5.7.3)
       winston:
         specifier: ^3.17.0
@@ -143,8 +143,8 @@ importers:
         specifier: ^9.32.0
         version: 9.32.0(eslint@9.18.0(jiti@2.4.2))
       husky:
-        specifier: ^9.1.7
-        version: 9.1.7
+        specifier: 9.0.11
+        version: 9.0.11
       husky-init:
         specifier: ^8.0.0
         version: 8.0.0
@@ -172,6 +172,9 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
+      simple-git-hooks:
+        specifier: ^2.11.1
+        version: 2.11.1
       sonar-scanner:
         specifier: ^3.1.0
         version: 3.1.0
@@ -3391,8 +3394,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  husky@9.1.7:
-    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+  husky@9.0.11:
+    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5114,6 +5117,10 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-git-hooks@2.11.1:
+    resolution: {integrity: sha512-tgqwPUMDcNDhuf1Xf6KTUsyeqGdgKMhzaH4PAZZuzguOgTl5uuyeYe/8mWgAr6IBxB5V06uqEf6Dy37gIWDtDg==}
+    hasBin: true
 
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
@@ -9627,7 +9634,7 @@ snapshots:
 
   husky@8.0.3: {}
 
-  husky@9.1.7: {}
+  husky@9.0.11: {}
 
   iconv-lite@0.4.24:
     dependencies:
@@ -11667,6 +11674,8 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
+
+  simple-git-hooks@2.11.1: {}
 
   simple-swizzle@0.2.2:
     dependencies:
