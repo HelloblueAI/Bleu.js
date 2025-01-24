@@ -142,12 +142,6 @@ Ran all test suites.
 
 ```
 
-test backend
-
-```javascript
-cd bleu.js
-pnpm run test:backend
-```
 
 ### Class Documentation
 
