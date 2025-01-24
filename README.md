@@ -29,39 +29,6 @@ pnpm install bleujs@latest
 pnpm add bleujs
 ```
 
-## Starting Core Engine
-
-```javascript
-cd core-engine
-pnpm start
-```
-
-## Running Dependency Management
-
-```javascript
-cd dependency-management
-pnpm start
-```
-
-## Running Eggs Generator
-
-```javascript
-cd eggs-generator
-pnpm start
-```
-
-## Building the Application
-
-```javascript
-pnpm run build
-```
-
-## Testing
-
-```javascript
-pnpm run test
-```
-
 ### Directory Structure
 
 - **core-engine**: Contains the main logic for code generation, optimization, and debugging.
@@ -692,8 +659,6 @@ ensureCodeQuality(code) {
 
 ## Bleu.js API Documentation
 
-## Introduction
-
 This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
 
 `ROOT`
@@ -745,20 +710,7 @@ Time:        1.597 s
 Ran all test suites matching /backend\/tests/i.
 ```
 
-## Run tests with coverage enabled
-pnpm test -- --coverage
-
-## Navigate to the coverage report directory
-cd coverage/lcov-report
-
-## List the files to verify the report is generated
-ls
-
-## Open the report in your browser
-open index.html
-
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
-
 
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
@@ -824,7 +776,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | --------------------------- | ----------------- | ---------- |
 | `/core-engine/src/BleuX.js` | 00:00.001         | ✅ Passed  |
 | `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
-
 
 ---
 
@@ -1074,10 +1025,6 @@ open ./reports/test-report.html
 ```javascript
 open ./reports/jest-stare/index.html
 ```
-
-## Getting Started
-
-To set up the project and start the server, follow these steps:
 
 ### Navigate to the backend directory:
 
@@ -1516,9 +1463,9 @@ You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/projec
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/fca66aa2d399264d2f43fa5af54f452f8c145d16/LICENSE.md)
 
-![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
-![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![v1.0.29](https://img.shields.io/badge/v1.0.29-0ff?style=flat)
+![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
+![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
