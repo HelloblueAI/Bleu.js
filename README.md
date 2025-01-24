@@ -1021,6 +1021,7 @@ open ./reports/test-report.html
 open ./reports/jest-stare/index.html
 ```
 
+
 ### Navigate to the backend directory:
 
 ```javascript
