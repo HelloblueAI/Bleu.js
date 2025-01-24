@@ -729,7 +729,7 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 
 ### **Summary**
 
-| 📈 **Metric**         |  **Value** |
+|  **Metric**         |  **Value** |
 | --------------------- | ------------ |
 | **Test Suites Total** | 98           |
 | **Tests Total**       | 97           |
@@ -739,13 +739,13 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 | **Pending Tests**     | 0            |
 | **Test Coverage**     | **100%**     |
 
-### **⚙️ Execution Details**
+### **Execution Details**
 
 |  **Key Metrics**       |  **Value**                        |
 | ------------------------ | ----------------------------------- |
 | **Start Time**           | 2025-01-23 11:45:41                 |
 | **Total Execution Time** | 00:05.928 seconds                   |
-| **Root Directory**       | `/Users/pejmanhaghighatnia/Bleu.js` |
+| **Root Directory**       | `/Users/helloblue/Bleu.js` |
 | **Max Workers Utilized** | 7                                   |
 | **Framework Version**    | 1.0.29                              |
 
