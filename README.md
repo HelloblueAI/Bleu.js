@@ -28,6 +28,9 @@ pnpm install bleujs@latest
 ```javascript
 pnpm add bleujs
 ```
+```javascript
+pnpm info nodejs
+```
 
 ### Directory Structure
 
