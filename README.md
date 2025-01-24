@@ -738,7 +738,6 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 | ------------------------ | ----------------------------------- |
 | **Start Time**           | 2025-01-23 11:45:41                 |
 | **Total Execution Time** | 00:05.928 seconds                   |
-| **Root Directory**       | `/Users/helloblue/Bleu.js` |
 | **Max Workers Utilized** | 7                                   |
 | **Framework Version**    | 1.0.29                              |
 
