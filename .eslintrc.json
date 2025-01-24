@@ -3,5 +3,11 @@
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 2024
+  },
+  "ignorePatterns": ["**/reports/**", "**/coverage/**", "**/dist/**"],
+  "rules": {
+    "max-statements": "off",
+    "complexity": "off",
+    "no-invalid-this": "off"
   }
-}
+ }
