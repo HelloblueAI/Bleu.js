@@ -786,7 +786,7 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 
 ### **⚙️ Execution Details**
 
-| 🔑 **Key Metrics**       | 🌟 **Value**                        |
+| 🔑 **Key Metrics**       |  **Value**                        |
 | ------------------------ | ----------------------------------- |
 | **Start Time**           | 2025-01-23 11:45:41                 |
 | **Total Execution Time** | 00:05.928 seconds                   |
