@@ -772,9 +772,9 @@ backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 
 Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
 
-### **📌 Summary**
+### **Summary**
 
-| 📈 **Metric**         | 🚀 **Value** |
+| 📈 **Metric**         |  **Value** |
 | --------------------- | ------------ |
 | **Test Suites Total** | 98           |
 | **Tests Total**       | 97           |
@@ -828,7 +828,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-## **🖥 How to View Test Reports**
+## **How to View Test Reports**
 
 Dive into the detailed test report and visualize coverage metrics with ease:
 
