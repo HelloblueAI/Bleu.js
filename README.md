@@ -162,6 +162,115 @@ open ./reports/jest-stare/index.html
 ```
 
 
+### bleujs-utils Package (Version 1.0.1)
+
+The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
+
+### Features
+
+- Lightweight utility functions for common tasks.
+- Dependency management utilities.
+- Code optimization tools.
+
+### Installation
+
+You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
+
+Using pip:
+
+```javascript
+pip install bleujs-utils
+```
+
+Using pnpm:
+
+```javascript
+pnpm install bleujs-utils
+
+```
+
+Using npm:
+
+```javascript
+npm install bleujs-utils
+```
+
+### Usage
+
+### Example 1: General Utility Function
+
+```javascript
+from bleujs_utils import some_utility_function
+
+result = some_utility_function(input_data)
+print(result)
+```
+
+### Example 2: Helper Functions for AI Integration
+
+```javascript
+from bleujs_utils import ai_query
+
+response = ai_query('What is the weather today?')
+print(response)
+```
+
+### Use Cases
+
+- AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
+- Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
+- Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
+### Example 3: CLI Tool
+
+```javascript
+bleujs-utils-cli --help
+```
+
+Here’s how you can use the `bleujs-utils` package in your project:
+
+```javascript
+const { optimizeCode, manageDependencies } = require('bleujs-utils');
+
+// Optimize code
+const code = 'const   x = 1;   console.log( x);';
+const optimizedCode = optimizeCode(code);
+console.log('Optimized Code:', optimizedCode);
+
+// Manage dependencies
+const dependencies = ['express', 'body-parser'];
+manageDependencies(dependencies);
+```
+
+### Optimizing Code
+
+The `optimizeCode` function cleans up and formats code for better readability and performance.
+
+```javascript
+const { optimizeCode } = require('bleujs-utils');
+
+const code = 'const   x = 1;   console.log( x);';
+const optimizedCode = optimizeCode(code);
+console.log(optimizedCode);
+```
+
+### Managing Dependencies
+
+The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
+
+```javascript
+const { manageDependencies } = require('bleujs-utils');
+
+const dependencies = ['express', 'mongoose'];
+manageDependencies(dependencies);
+```
+
+### CLI Package Information
+
+`bleujs-utils`
+You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
+
+
 
 ### Class Documentation
 
@@ -1341,113 +1450,7 @@ cd eggs-generator
 pnpm run start
 ```
 
-### bleujs-utils Package (Version 1.0.1)
 
-The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
-
-### Features
-
-- Lightweight utility functions for common tasks.
-- Dependency management utilities.
-- Code optimization tools.
-
-### Installation
-
-You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
-
-Using pip:
-
-```javascript
-pip install bleujs-utils
-```
-
-Using pnpm:
-
-```javascript
-pnpm install bleujs-utils
-
-```
-
-Using npm:
-
-```javascript
-npm install bleujs-utils
-```
-
-### Usage
-
-### Example 1: General Utility Function
-
-```javascript
-from bleujs_utils import some_utility_function
-
-result = some_utility_function(input_data)
-print(result)
-```
-
-### Example 2: Helper Functions for AI Integration
-
-```javascript
-from bleujs_utils import ai_query
-
-response = ai_query('What is the weather today?')
-print(response)
-```
-
-### Use Cases
-
-- AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
-- Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
-- Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
-
-### Example 3: CLI Tool
-
-```javascript
-bleujs-utils-cli --help
-```
-
-Here’s how you can use the `bleujs-utils` package in your project:
-
-```javascript
-const { optimizeCode, manageDependencies } = require('bleujs-utils');
-
-// Optimize code
-const code = 'const   x = 1;   console.log( x);';
-const optimizedCode = optimizeCode(code);
-console.log('Optimized Code:', optimizedCode);
-
-// Manage dependencies
-const dependencies = ['express', 'body-parser'];
-manageDependencies(dependencies);
-```
-
-### Optimizing Code
-
-The `optimizeCode` function cleans up and formats code for better readability and performance.
-
-```javascript
-const { optimizeCode } = require('bleujs-utils');
-
-const code = 'const   x = 1;   console.log( x);';
-const optimizedCode = optimizeCode(code);
-console.log(optimizedCode);
-```
-
-### Managing Dependencies
-
-The `manageDependencies` function helps you keep track of and manage your project dependencies efficiently.
-
-```javascript
-const { manageDependencies } = require('bleujs-utils');
-
-const dependencies = ['express', 'mongoose'];
-manageDependencies(dependencies);
-```
-
-### CLI Package Information
-
-`bleujs-utils`
-You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
 
 # License
 
