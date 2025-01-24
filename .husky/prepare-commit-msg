@@ -1,4 +1,0 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-cat COMMIT_MESSAGE_TEMPLATE >> $1
