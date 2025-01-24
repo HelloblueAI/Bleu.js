@@ -1003,6 +1003,9 @@ Ran all test suites.
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
 ```
 
+![My SVG Image](./assets/Asset.svg)
+
+
 ## Jest HTML Reporters
 
 - Location: ./reports/jest-stare/index.html
