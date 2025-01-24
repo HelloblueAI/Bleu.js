@@ -77,11 +77,7 @@ module.exports = {
         '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
       ],
-      testPathIgnorePatterns: [
-        '/node_modules/',
-        '/dist/',
-        '/reports/',
-      ],
+      testPathIgnorePatterns: ['/node_modules/', '/dist/', '/reports/'],
     },
   ],
 
