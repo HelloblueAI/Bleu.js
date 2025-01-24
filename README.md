@@ -142,7 +142,6 @@ Ran all test suites.
 
 ```
 
-
 ### Class Documentation
 
 ### 'BleuJS'
