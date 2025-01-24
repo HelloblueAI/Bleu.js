@@ -772,27 +772,6 @@ backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
 
 Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
 
-<<<<<<< HEAD
-### Summary
-| 📈 **Metric**               | 🚀 **Value** |
-|-----------------------------|--------------|
-| **Test Suites Total**       | 98           |
-| **Tests Total**             | 97           |
-| **Failed Suites**           | 0            |
-| **Failed Tests**            | 0            |
-| **Pending Suites**          | 1            |
-| **Pending Tests**           | 0            |
-| **Test Coverage**           | **100%**     |
-
-### ⚙️ Execution Details
-| 🔑 **Key Metrics**          | 🌟 **Value**             |
-|-----------------------------|--------------------------|
-| **Start Time**              | 2025-01-23 11:45:41     |
-| **Total Execution Time**    | 00:05.928 seconds       |
-| **Root Directory**          | `/Users/path/Bleu.js` |
-| **Max Workers Utilized**    | 7                        |
-| **Framework Version**       | 1.0.29                  |
-=======
 ### **📌 Summary**
 
 | 📈 **Metric**         | 🚀 **Value** |
@@ -814,7 +793,6 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 | **Root Directory**       | `/Users/pejmanhaghighatnia/Bleu.js` |
 | **Max Workers Utilized** | 7                                   |
 | **Framework Version**    | 1.0.29                              |
->>>>>>> 565304f (build: compile babel output)
 
 ---
 
@@ -840,20 +818,13 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | `/src/backend/tests/apiRoutes.test.js`  | 00:00.002         | ✅ Passed  |
 | `/src/backend/src/services/decision...` | 00:00.001         | ✅ Passed  |
 
-<<<<<<< HEAD
-### Core Engine Highlights
-| **File**                                      | **Exec Time (s)** | **Status**   |
-|-----------------------------------------------|-------------------|--------------|
-| `/core-engine/src/BleuX.js`                   | 00:00.001         | ✅ Passed     |
-| `/core-engine/src/index.js`                   | 00:00.003         | ✅ Passed     |
-=======
-### **💻 Core Engine Highlights**
+### **Core Engine Highlights**
 
 | **File**                    | **Exec Time (s)** | **Status** |
 | --------------------------- | ----------------- | ---------- |
 | `/core-engine/src/BleuX.js` | 00:00.001         | ✅ Passed  |
 | `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
->>>>>>> 565304f (build: compile babel output)
+
 
 ---
 
@@ -861,19 +832,11 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 Dive into the detailed test report and visualize coverage metrics with ease:
 
-<<<<<<< HEAD
-**Locate the Report:**
-  The report is generated in:
-  ```javascript
-  /reports/test-report.html
-  ```
-=======
 1. **Locate the Report:**
    The report is generated in:
    ```bash
    /reports/test-report.html
    ```
->>>>>>> 565304f (build: compile babel output)
 
 ```javascript
 pnpm test
@@ -1070,7 +1033,7 @@ pnpm test
  PASS   lint  ./index.js
  PASS   lint  ./jest.config.js
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
- 
+
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -------------------|---------|----------|---------|---------|-------------------
