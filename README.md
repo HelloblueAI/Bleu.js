@@ -152,9 +152,6 @@ pnpm test
 
 ## Jest HTML Reporters
 
-- Location: ./reports/jest-stare/index.html
-  open
-
 ```javascript
 open ./reports/test-report.html
 ```
