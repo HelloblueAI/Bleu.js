@@ -83,10 +83,6 @@ By including ESLint and Prettier configurations, bleujs helps developers maintai
 
 The package supports TypeScript, allowing developers to write safer and more maintainable code with type checking.
 
-## Frontend Integration
-
-With Vue.js as the frontend framework, developers can create modern, reactive user interfaces. The package includes scripts for building and serving Vue applications, making it easy to integrate the frontend with the backend.
-
 ## Swagger Documentation
 
 The package includes tools for generating Swagger API documentation, making it easier for developers to document and share their API specifications.
@@ -140,7 +136,34 @@ Snapshots:   0 total
 Time:        0.359 s, estimated 1 s
 Ran all test suites.
 
+## **How to View Test Reports**
+
+**Locate the Report:**
+   The report is generated in:
+   ```bash
+   /reports/test-report.html
+   ```
+```javascript
+pnpm test
 ```
+
+```
+## Jest HTML Reporters
+
+- Location: ./reports/jest-stare/index.html
+  open
+
+```javascript
+open ./reports/test-report.html
+```
+## Jest-Stare Report
+
+- Location:
+
+```javascript
+open ./reports/jest-stare/index.html
+```
+![My SVG Image](./assets/Asset.svg)
 
 ### Class Documentation
 
@@ -603,190 +626,10 @@ Tests:       34 passed, 34 total
 Snapshots:   0 total
 Time:        3.707 s, estimated 4 s
 Ran all test suites.
-
 ```
 
-### optimizeCode Method:
-
-The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
-
-- Placeholder for code optimization logic.
-- Returns the optimized code.
-
-```javascript
-optimizeCode(code) {
-  // Optimization logic here
-  const optimizedCode = code.replace(/\s+/g, ' ').trim();
-  return optimizedCode;
-}
-
-```
-
-### manageDependencies Method:
-
-The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
-
-- Placeholder logic for dependency management.
-- Potential logging of managed dependencies.
-
-```javascript
-manageDependencies(dependencies) {
-  dependencies.forEach(dep => {
-    console.log(`Managing dependency: ${dep.name}@${dep.version}`);
-
-  });
-}
-```
-
-### ensureCodeQuality Method:
-
-The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
-
-- Placeholder for code quality assurance logic.
-- Returns a boolean indicating whether the code meets quality standards.
-
-```javascript
-ensureCodeQuality(code) {
-
-  const isQualityCode = true;
-  return isQualityCode;
-}
-```
-
-## Bleu.js API Documentation
-
-This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
-
-`ROOT`
-`pnpm run start:backend `
-
-```javascript
- PASS  backend/tests/bleu.test.js
-  API Tests
-    ✓ should handle invalid request headers (28 ms)
-    ✓ should handle /data with body {} (2 ms)
-    ✓ should handle /nonexistent with body null (2 ms)
-    ✓ should handle /data with body Invalid JSON (2 ms)
-    ✓ should handle asynchronous errors gracefully (2 ms)
-    ✓ should handle edge cases (1 ms)
-    ✓ should ensure performance meets expectations (10 ms)
-    ✓ should return 400 for missing data field in POST /data (1 ms)
-    ✓ should return 500 for simulated server error in POST /data (2 ms)
-    ✓ should handle invalid JSON gracefully (1 ms)
-    ✓ should handle very large data payloads (1 ms)
-    ✓ should measure response time for POST /data (2 ms)
-    ✓ should handle simultaneous requests (9 ms)
-    ✓ should validate response schema (1 ms)
-    ✓ should stress test the server (39 ms)
-    ✓ should test with invalid routes (1 ms)
-    ✓ should test JSON parsing error (1 ms)
-    ✓ should test different HTTP methods on /data (2 ms)
-    ✓ should handle very large number of simultaneous requests (294 ms)
-    ✓ should handle concurrent GET and POST requests (1 ms)
-    ✓ should handle slow network conditions gracefully
-    ✓ should verify CORS headers
-    ✓ should handle session cookies (8 ms)
-    ✓ should verify content-type for POST /data
-    ✓ should test for memory leaks (31 ms)
-    ✓ should handle different user roles (2 ms)
-    ✓ should handle database connectivity issues (1 ms)
-    ✓ should handle application/x-www-form-urlencoded (1 ms)
-    ✓ should handle JSON arrays (1 ms)
-    ✓ should handle deeply nested JSON objects (1 ms)
-
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |    7865 |      300 |       9 |       0 |
-----------|---------|----------|---------|---------|-------------------
-Test Suites: 1 passed, 1 total
-Tests:       30 passed, 30 total
-Snapshots:   0 total
-Time:        1.597 s
-Ran all test suites matching /backend\/tests/i.
-```
-
-(On Linux, use xdg-open index.html, or open it manually on Windows.)
-
-File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
--------------------|---------|----------|---------|---------|-------------------
-All files          |    95.0 |     92.5 |    93.0 |    94.0 |
-src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
-backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
--------------------|---------|----------|---------|---------|-------------------
 
 
-## Test Report Overview
-
-Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
-
-### **Summary**
-
-|  **Metric**         |  **Value** |
-| --------------------- | ------------ |
-| **Test Suites Total** | 98           |
-| **Tests Total**       | 97           |
-| **Failed Suites**     | 0            |
-| **Failed Tests**      | 0            |
-| **Pending Suites**    | 1            |
-| **Pending Tests**     | 0            |
-| **Test Coverage**     | **100%**     |
-
-### **Execution Details**
-
-|  **Key Metrics**       |  **Value**                        |
-| ------------------------ | ----------------------------------- |
-| **Start Time**           | 2025-01-23 11:45:41                 |
-| **Total Execution Time** | 00:05.928 seconds                   |
-| **Max Workers Utilized** | 7                                   |
-| **Framework Version**    | 1.0.29                              |
-
----
-
-## Detailed Execution
-
-Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
-
-### **🏗️ Top-Level Files**
-
-| **File**                                 | **Exec Time (s)** | **Status** |
-| ---------------------------------------- | ----------------- | ---------- |
-| `/src/backend/tests/setup.ts`            | 00:00.015         | ✅ Passed  |
-| `/src/backend/tests/aiTests.test.js`     | 00:00.003         | ✅ Passed  |
-| `/output/jest-html-reporters-attach/...` | 00:01.462         | ✅ Passed  |
-| `/coverage/prettify.js`                  | 00:00.012         | ✅ Passed  |
-
-### **Backend Highlights**
-
-| **File**                                | **Exec Time (s)** | **Status** |
-| --------------------------------------- | ----------------- | ---------- |
-| `/src/backend/src/controllers/...`      | 00:00.007         | ✅ Passed  |
-| `/src/backend/src/utils/lib/Bleu.js`    | 00:00.002         | ✅ Passed  |
-| `/src/backend/tests/apiRoutes.test.js`  | 00:00.002         | ✅ Passed  |
-| `/src/backend/src/services/decision...` | 00:00.001         | ✅ Passed  |
-
-### **Core Engine Highlights**
-
-| **File**                    | **Exec Time (s)** | **Status** |
-| --------------------------- | ----------------- | ---------- |
-| `/core-engine/src/BleuX.js` | 00:00.001         | ✅ Passed  |
-| `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
-
----
-
-## **How to View Test Reports**
-
-Dive into the detailed test report and visualize coverage metrics with ease:
-
-1. **Locate the Report:**
-   The report is generated in:
-   ```bash
-   /reports/test-report.html
-   ```
-
-```javascript
-pnpm test
-```
 ```javascript
  PASS   lint  reports/jest-html-reporters-attach/report/index.js
  PASS   lint  backend/coverage/lcov-report/prettify.js
@@ -1003,24 +846,177 @@ Ran all test suites.
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
 ```
 
-![My SVG Image](./assets/Asset.svg)
 
+### optimizeCode Method:
 
-## Jest HTML Reporters
+The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
 
-- Location: ./reports/jest-stare/index.html
-  open
-
-```javascript
-open ./reports/test-report.html
-```
-## Jest-Stare Report
-
-- Location:
+- Placeholder for code optimization logic.
+- Returns the optimized code.
 
 ```javascript
-open ./reports/jest-stare/index.html
+optimizeCode(code) {
+  // Optimization logic here
+  const optimizedCode = code.replace(/\s+/g, ' ').trim();
+  return optimizedCode;
+}
+
 ```
+
+### manageDependencies Method:
+
+The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
+
+- Placeholder logic for dependency management.
+- Potential logging of managed dependencies.
+
+```javascript
+manageDependencies(dependencies) {
+  dependencies.forEach(dep => {
+    console.log(`Managing dependency: ${dep.name}@${dep.version}`);
+
+  });
+}
+```
+
+### ensureCodeQuality Method:
+
+The ensureCodeQuality method will ensure that the provided code meets predefined quality standards. This placeholder will incorporate code analysis tools and techniques to validate the code's quality.
+
+- Placeholder for code quality assurance logic.
+- Returns a boolean indicating whether the code meets quality standards.
+
+```javascript
+ensureCodeQuality(code) {
+
+  const isQualityCode = true;
+  return isQualityCode;
+}
+```
+
+## Bleu.js API Documentation
+
+This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
+
+`ROOT`
+`pnpm run start:backend `
+
+```javascript
+ PASS  backend/tests/bleu.test.js
+  API Tests
+    ✓ should handle invalid request headers (28 ms)
+    ✓ should handle /data with body {} (2 ms)
+    ✓ should handle /nonexistent with body null (2 ms)
+    ✓ should handle /data with body Invalid JSON (2 ms)
+    ✓ should handle asynchronous errors gracefully (2 ms)
+    ✓ should handle edge cases (1 ms)
+    ✓ should ensure performance meets expectations (10 ms)
+    ✓ should return 400 for missing data field in POST /data (1 ms)
+    ✓ should return 500 for simulated server error in POST /data (2 ms)
+    ✓ should handle invalid JSON gracefully (1 ms)
+    ✓ should handle very large data payloads (1 ms)
+    ✓ should measure response time for POST /data (2 ms)
+    ✓ should handle simultaneous requests (9 ms)
+    ✓ should validate response schema (1 ms)
+    ✓ should stress test the server (39 ms)
+    ✓ should test with invalid routes (1 ms)
+    ✓ should test JSON parsing error (1 ms)
+    ✓ should test different HTTP methods on /data (2 ms)
+    ✓ should handle very large number of simultaneous requests (294 ms)
+    ✓ should handle concurrent GET and POST requests (1 ms)
+    ✓ should handle slow network conditions gracefully
+    ✓ should verify CORS headers
+    ✓ should handle session cookies (8 ms)
+    ✓ should verify content-type for POST /data
+    ✓ should test for memory leaks (31 ms)
+    ✓ should handle different user roles (2 ms)
+    ✓ should handle database connectivity issues (1 ms)
+    ✓ should handle application/x-www-form-urlencoded (1 ms)
+    ✓ should handle JSON arrays (1 ms)
+    ✓ should handle deeply nested JSON objects (1 ms)
+
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+----------|---------|----------|---------|---------|-------------------
+All files |    7865 |      300 |       9 |       0 |
+----------|---------|----------|---------|---------|-------------------
+Test Suites: 1 passed, 1 total
+Tests:       30 passed, 30 total
+Snapshots:   0 total
+Time:        1.597 s
+Ran all test suites matching /backend\/tests/i.
+```
+
+(On Linux, use xdg-open index.html, or open it manually on Windows.)
+
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |    95.0 |     92.5 |    93.0 |    94.0 |
+src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
+backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
+-------------------|---------|----------|---------|---------|-------------------
+
+
+## Test Report Overview
+
+Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
+
+### **Summary**
+
+|  **Metric**         |  **Value** |
+| --------------------- | ------------ |
+| **Test Suites Total** | 98           |
+| **Tests Total**       | 97           |
+| **Failed Suites**     | 0            |
+| **Failed Tests**      | 0            |
+| **Pending Suites**    | 1            |
+| **Pending Tests**     | 0            |
+| **Test Coverage**     | **100%**     |
+
+### **Execution Details**
+
+|  **Key Metrics**       |  **Value**                        |
+| ------------------------ | ----------------------------------- |
+| **Start Time**           | 2025-01-23 11:45:41                 |
+| **Total Execution Time** | 00:05.928 seconds                   |
+| **Max Workers Utilized** | 7                                   |
+| **Framework Version**    | 1.0.29                              |
+
+---
+
+## Detailed Execution
+
+Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
+
+### **🏗️ Top-Level Files**
+
+| **File**                                 | **Exec Time (s)** | **Status** |
+| ---------------------------------------- | ----------------- | ---------- |
+| `/src/backend/tests/setup.ts`            | 00:00.015         | ✅ Passed  |
+| `/src/backend/tests/aiTests.test.js`     | 00:00.003         | ✅ Passed  |
+| `/output/jest-html-reporters-attach/...` | 00:01.462         | ✅ Passed  |
+| `/coverage/prettify.js`                  | 00:00.012         | ✅ Passed  |
+
+### **Backend Highlights**
+
+| **File**                                | **Exec Time (s)** | **Status** |
+| --------------------------------------- | ----------------- | ---------- |
+| `/src/backend/src/controllers/...`      | 00:00.007         | ✅ Passed  |
+| `/src/backend/src/utils/lib/Bleu.js`    | 00:00.002         | ✅ Passed  |
+| `/src/backend/tests/apiRoutes.test.js`  | 00:00.002         | ✅ Passed  |
+| `/src/backend/src/services/decision...` | 00:00.001         | ✅ Passed  |
+
+### **Core Engine Highlights**
+
+| **File**                    | **Exec Time (s)** | **Status** |
+| --------------------------- | ----------------- | ---------- |
+| `/core-engine/src/BleuX.js` | 00:00.001         | ✅ Passed  |
+| `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
+
+---
+
+
+
 
 ### Navigate to the backend directory:
 
