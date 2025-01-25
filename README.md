@@ -1417,14 +1417,6 @@ const swaggerDefinition = {
 };
 ```
 
-### Running Tests
-
-```javascript
-cd eggs-generator
-pnpm run start
-```
-
-
 
 # License
 
