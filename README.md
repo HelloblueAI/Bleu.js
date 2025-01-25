@@ -28,6 +28,7 @@ pnpm install bleujs@latest
 ```javascript
 pnpm add bleujs
 ```
+
 ```javascript
 pnpm info bleujs
 ```
@@ -119,6 +120,10 @@ console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
 
 ```javascript
+pnpm test
+```
+
+````javascript
 
   Bleu
     ✓ should generate a new egg (3 ms)
@@ -142,10 +147,7 @@ Ran all test suites.
    The report is generated in:
    ```bash
    /reports/test-report.html
-   ```
-```javascript
-pnpm test
-```
+````
 
 ![My SVG Image](./assets/Asset.svg)
 
@@ -154,7 +156,8 @@ pnpm test
 
 ```javascript
 open ./reports/test-report.html
-```
+````
+
 ## Jest-Stare Report
 
 ```javascript
@@ -735,8 +738,6 @@ Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
-
-
 ```javascript
  PASS   lint  reports/jest-html-reporters-attach/report/index.js
  PASS   lint  backend/coverage/lcov-report/prettify.js
@@ -953,7 +954,6 @@ Ran all test suites.
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
 ```
 
-
 ### optimizeCode Method:
 
 The optimizeCode method is designed to optimize the provided code. While currently a placeholder, this method will implement advanced code optimization techniques to enhance performance and efficiency.
@@ -1056,13 +1056,12 @@ Ran all test suites matching /backend\/tests/i.
 
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
 
-File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
--------------------|---------|----------|---------|---------|-------------------
-All files          |    95.0 |     92.5 |    93.0 |    94.0 |
-src/utils          |   100.0 |     85.0 |   100.0 |   100.0 |
-backend/services   |    90.0 |     95.0 |    88.0 |    91.0 | 45, 67
--------------------|---------|----------|---------|---------|-------------------
-
+| File                | % Stmts   | % Branch   | % Funcs   | % Lines   | Uncovered Line #s   |
+| ------------------- | --------- | ---------- | --------- | --------- | ------------------- |
+| All files           | 95.0      | 92.5       | 93.0      | 94.0      |
+| src/utils           | 100.0     | 85.0       | 100.0     | 100.0     |
+| backend/services    | 90.0      | 95.0       | 88.0      | 91.0      | 45, 67              |
+| ------------------- | --------- | ---------- | --------- | --------- | ------------------- |
 
 ## Test Report Overview
 
@@ -1070,24 +1069,24 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 
 ### **Summary**
 
-|  **Metric**         |  **Value** |
-| --------------------- | ------------ |
-| **Test Suites Total** | 98           |
-| **Tests Total**       | 97           |
-| **Failed Suites**     | 0            |
-| **Failed Tests**      | 0            |
-| **Pending Suites**    | 1            |
-| **Pending Tests**     | 0            |
-| **Test Coverage**     | **100%**     |
+| **Metric**            | **Value** |
+| --------------------- | --------- |
+| **Test Suites Total** | 98        |
+| **Tests Total**       | 97        |
+| **Failed Suites**     | 0         |
+| **Failed Tests**      | 0         |
+| **Pending Suites**    | 1         |
+| **Pending Tests**     | 0         |
+| **Test Coverage**     | **100%**  |
 
 ### **Execution Details**
 
-|  **Key Metrics**       |  **Value**                        |
-| ------------------------ | ----------------------------------- |
-| **Start Time**           | 2025-01-23 11:45:41                 |
-| **Total Execution Time** | 00:05.928 seconds                   |
-| **Max Workers Utilized** | 7                                   |
-| **Framework Version**    | 1.0.29                              |
+| **Key Metrics**          | **Value**           |
+| ------------------------ | ------------------- |
+| **Start Time**           | 2025-01-23 11:45:41 |
+| **Total Execution Time** | 00:05.928 seconds   |
+| **Max Workers Utilized** | 7                   |
+| **Framework Version**    | 1.0.29              |
 
 ---
 
@@ -1121,9 +1120,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
 
 ---
-
-
-
 
 ### Navigate to the backend directory:
 
