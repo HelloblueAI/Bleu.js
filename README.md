@@ -249,7 +249,7 @@ manageDependencies(dependencies);
 ### CLI Package Information
 
 `bleujs-utils`
-You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/1.0.1/)
+You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
 
 
 
@@ -399,7 +399,6 @@ Tests:       8 passed, 8 total
 Snapshots:   0 total
 Time:        0.359 s, estimated 1 s
 Ran all test suites.
-
 ```
 
 ## Constructor
@@ -1099,13 +1098,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-### Navigate to the backend directory:
-
-```javascript
-pnpm install express body-parser swagger-jsdoc swagger-ui-express
-```
-
-Create server.js
 
 ```javascript
 const express = require('express');
@@ -1148,44 +1140,6 @@ app.listen(3003, () => {
 });
 ```
 
-Install the required packages:
-`pnpm install`
-
-Start the server:
-`node server.js`
-
-To set up the project and start the server, follow these steps:
-
-1. **Navigate to the backend directory:**
-
-```javascript
-   cd backend
-```
-
-2. **Install the required packages:**
-
-```javascript
-pnpm add express body-parser swagger-jsdoc swagger-ui-express
-```
-
-3. **Start the server:**
-
-```javascript
-node server.js
-```
-
-4. **Access the Swagger UI:**
-   Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
-
-## API Endpoint test:
-
-```javascript
-cd backend
-pnpm run start:dev
-```
-
-5. **Access the raw Swagger JSON:**
-   Open your browser and navigate to `http://localhost:3003/swagger.json` to view the raw Swagger JSON. Or in a new Terminal use curl test:
 
 ## Debug endpoint
 
