@@ -168,13 +168,19 @@ The `bleujs-util` package provides essential utility functions that are part of 
 
 ### Installation
 
-You can install the bleujs-utils package via `pip` or `pnpm` or `npm`:
+You can install the bleujs-utils package via `pip`
 
 Using pip:
 
 ```javascript
 pip install bleujs-utils
 ```
+
+### CLI Package Information
+
+`bleujs-utils`
+You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
+
 
 ### Usage
 
@@ -246,10 +252,6 @@ const dependencies = ['express', 'mongoose'];
 manageDependencies(dependencies);
 ```
 
-### CLI Package Information
-
-`bleujs-utils`
-You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
 
 
 
