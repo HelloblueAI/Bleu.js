@@ -176,19 +176,6 @@ Using pip:
 pip install bleujs-utils
 ```
 
-Using pnpm:
-
-```javascript
-pnpm install bleujs-utils
-
-```
-
-Using npm:
-
-```javascript
-npm install bleujs-utils
-```
-
 ### Usage
 
 ### Example 1: General Utility Function
