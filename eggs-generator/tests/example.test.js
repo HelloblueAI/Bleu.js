@@ -1,6 +1,6 @@
-const Bleu = require('../src/Bleu').default;
+import Bleu from '../src/Bleu';
+import HenFarm from '../src/HenFarm';
 
-// Mock the HenFarm class
 jest.mock('../src/HenFarm', () => {
   return jest.fn().mockImplementation(() => ({
     generateCode: jest.fn().mockReturnValue('Mock generated code'),
@@ -14,67 +14,88 @@ describe('Bleu', () => {
     bleu = new Bleu();
   });
 
-  it('should generate a new egg', () => {
+  it('should generate a new egg with valid inputs', () => {
     const egg = bleu.generateEgg('Test description', 'model', {
       modelName: 'TestModel',
       fields: [{ name: 'field1', type: 'string' }],
     });
-    expect(egg).toHaveProperty('id');
-    expect(egg).toHaveProperty('description');
-    expect(egg).toHaveProperty('type', 'model');
-    expect(egg).toHaveProperty('code', 'Mock generated code');
+    expect(egg).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        description: 'Test description',
+        type: 'model',
+        code: 'Mock generated code',
+      })
+    );
   });
 
-  it('should optimize code', () => {
+  it('should optimize simple code', () => {
     const code = 'function test() { let a = 1; return a + 2; }';
     const optimizedCode = bleu.optimizeCode(code);
     expect(optimizedCode).toBe('function test(){let a=1;return a+2;}');
   });
 
-  it('should manage dependencies', () => {
-    const dependencies = ['express', 'lodash'];
-    const spy = jest.spyOn(console, 'log');
-    bleu.manageDependencies(dependencies);
-    expect(spy).toHaveBeenCalledWith('Managing dependency: express');
-    expect(spy).toHaveBeenCalledWith('Managing dependency: lodash');
-    spy.mockRestore();
-  });
-
-  it('should ensure code quality', () => {
-    const goodCode = 'const a = 1;';
-    const badCode = 'var a = 1;';
-    expect(bleu.ensureCodeQuality(goodCode)).toBe(true);
-    expect(bleu.ensureCodeQuality(badCode)).toBe(false);
-  });
-
-  it('should generate multiple eggs', () => {
-    bleu.generateEggs(2, 'Test description', 'model', {
-      modelName: 'TestModel',
-      fields: [{ name: 'field1', type: 'string' }],
-    });
-    expect(bleu.eggs).toHaveLength(2);
-  });
-
-  it('should handle complex optimization', () => {
+  it('should optimize complex code', () => {
     const complexCode = `
       function test() {
         let a = 1;
         let b = 2;
         return a + b;
       }
+      const anotherTest = () => {
+        console.log('This is a test');
+      };
     `;
     const optimizedCode = bleu.optimizeCode(complexCode);
-    expect(optimizedCode).toBe('function test(){let a=1;let b=2;return a+b;}');
+    expect(optimizedCode).toBe(
+      "function test(){let a=1;let b=2;return a+b;}const anotherTest=()=>{console.log('This is a test');};"
+    );
   });
 
-  it('should debug code', () => {
+  it('should manage dependencies and log them', () => {
+    const dependencies = ['express', 'lodash', 'axios'];
     const spy = jest.spyOn(console, 'log');
-    bleu.debugCode('const a = 1;');
-    expect(spy).toHaveBeenCalledWith('Debugging code: const a = 1;');
+    bleu.manageDependencies(dependencies);
+    dependencies.forEach((dep) => {
+      expect(spy).toHaveBeenCalledWith(`Managing dependency: ${dep}`);
+    });
     spy.mockRestore();
   });
 
-  it('should generate correct description for model', () => {
+  it('should ensure code quality for valid and invalid code', () => {
+    const validCode = 'const a = 1;';
+    const invalidCode = 'var a = 1;';
+    expect(bleu.ensureCodeQuality(validCode)).toBe(true);
+    expect(bleu.ensureCodeQuality(invalidCode)).toBe(false);
+  });
+
+  it('should generate and validate multiple eggs', () => {
+    const eggs = bleu.generateEggs(5, 'Bulk Test Description', 'model', {
+      modelName: 'BulkModel',
+      fields: [{ name: 'bulkField', type: 'number' }],
+    });
+    expect(eggs).toHaveLength(5);
+    eggs.forEach((egg) => {
+      expect(egg).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          description: 'Bulk Test Description',
+          type: 'model',
+          code: 'Mock generated code',
+        })
+      );
+    });
+  });
+
+  it('should debug code effectively', () => {
+    const spy = jest.spyOn(console, 'log');
+    const debugCode = 'function debug() { return 42; }';
+    bleu.debugCode(debugCode);
+    expect(spy).toHaveBeenCalledWith(`Debugging code: ${debugCode}`);
+    spy.mockRestore();
+  });
+
+  it('should generate correct description for models', () => {
     const egg = bleu.generateEgg('Test', 'model', {
       modelName: 'User',
       fields: [
@@ -85,19 +106,40 @@ describe('Bleu', () => {
     expect(egg.description).toBe('Model User with fields name, age');
   });
 
-  it('should generate correct description for utility', () => {
+  it('should generate correct description for utilities', () => {
     const egg = bleu.generateEgg('Test', 'utility', {
       utilityName: 'StringUtils',
-      methods: ['capitalize', 'reverse'],
+      methods: ['capitalize', 'reverse', 'trim'],
     });
     expect(egg.description).toBe(
-      'Utility StringUtils with methods capitalize, reverse',
+      'Utility StringUtils with methods capitalize, reverse, trim'
     );
   });
 
-  it('should throw error for unknown code type', () => {
+  it('should throw an error for unknown code types', () => {
     expect(() => {
       bleu.generateEgg('Test', 'unknown', {});
     }).toThrow('Unknown code type: unknown');
+  });
+
+  it('should handle edge cases in code quality validation', () => {
+    const edgeCaseCode = `
+      let x = 1;
+      var y = 2;
+      const z = x + y; // Mixed variable types
+    `;
+    expect(bleu.ensureCodeQuality(edgeCaseCode)).toBe(false);
+  });
+
+  it('should handle nested fields in egg generation', () => {
+    const egg = bleu.generateEgg('Nested Test', 'model', {
+      modelName: 'ComplexModel',
+      fields: [
+        { name: 'nestedField', type: 'object', fields: [{ name: 'subField', type: 'string' }] },
+      ],
+    });
+    expect(egg.description).toBe(
+      'Model ComplexModel with fields nestedField (object with fields subField)'
+    );
   });
 });
