@@ -141,28 +141,19 @@ Snapshots:   0 total
 Time:        0.359 s, estimated 1 s
 Ran all test suites.
 
-## **How to View Test Reports**
 
-**Locate the Report:**
-   The report is generated in:
-   ```bash
-   /reports/test-report.html
-````
-
-![My SVG Image](./assets/Asset.svg)
-
-
-## Jest HTML Reporters
+## How to View Test Reports
 
 ```javascript
 open ./reports/test-report.html
 ````
 
-## Jest-Stare Report
-
 ```javascript
 open ./reports/jest-stare/index.html
 ```
+
+![My SVG Image](./assets/Asset.svg)
+
 
 
 ### bleujs-utils Package (Version 1.0.1)
