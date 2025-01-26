@@ -154,8 +154,6 @@ open ./reports/jest-stare/index.html
 
 ![My SVG Image](./assets/Asset.svg)
 
-
-
 ### bleujs-utils Package (Version 1.0.1)
 
 The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
@@ -180,7 +178,6 @@ pip install bleujs-utils
 
 `bleujs-utils`
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
-
 
 ### Usage
 
@@ -251,9 +248,6 @@ const { manageDependencies } = require('bleujs-utils');
 const dependencies = ['express', 'mongoose'];
 manageDependencies(dependencies);
 ```
-
-
-
 
 ### Class Documentation
 
@@ -1100,7 +1094,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-
 ```javascript
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -1141,7 +1134,6 @@ app.listen(3003, () => {
   console.log('Server is running on http://localhost:3003');
 });
 ```
-
 
 ## Debug endpoint
 
@@ -1373,7 +1365,6 @@ const swaggerDefinition = {
 };
 ```
 
-
 # License
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/fca66aa2d399264d2f43fa5af54f452f8c145d16/LICENSE.md)
@@ -1381,7 +1372,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.29](https://img.shields.io/badge/v1.0.29-0ff?style=flat)
+![v1.0.30](https://img.shields.io/badge/v1.0.30-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)

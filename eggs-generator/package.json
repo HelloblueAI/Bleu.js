@@ -1,6 +1,6 @@
 {
   "name": "eggs-generator",
-  "version": "1.0.28",
+  "version": "1.0.30",
   "description": "Tools for generating code snippets and optimization suggestions by HenFarm.js",
   "main": "src/index.js",
   "scripts": {
@@ -9,29 +9,21 @@
     "prettier:fix": "prettier --write '**/*.js'"
   },
   "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/../jest.setup.js"
-    ],
-    "testEnvironment": "node",
     "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
-      "^.+\\.vue$": "@vue/vue3-jest"
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
     },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!(get-port)/)"
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/!(example.test).(js|jsx|ts|tsx)",
+      "**/__tests__/**/*.(js|jsx|ts|tsx)",
+      "**/backend/tests/**/*.test.(js|jsx|ts|tsx)"
     ],
     "moduleFileExtensions": [
       "js",
       "jsx",
       "ts",
       "tsx",
-      "json",
-      "vue"
-    ],
-    "testMatch": [
-      "**/tests/**/*.test.(js|jsx|ts|tsx)",
-      "**/__tests__/**/*.(js|jsx|ts|tsx)",
-      "**/backend/tests/**/*.test.(js|jsx|ts|tsx)"
+      "json"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -49,9 +41,6 @@
       "clover"
     ],
     "globals": {
-      "vue-jest": {
-        "babelConfig": true
-      },
       "ts-jest": {
         "tsconfig": "tsconfig.json"
       }
@@ -88,9 +77,9 @@
     "maxWorkers": "50%"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
+    "@babel/core": "^7.26.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-env": "^7.26.0",
     "@types/cors": "^2.8.17",
     "@types/uuid": "^10.0.0",
     "babel-jest": "^29.7.0",

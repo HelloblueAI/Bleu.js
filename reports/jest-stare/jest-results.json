@@ -1,14 +1,14 @@
 {
   "numFailedTestSuites": 0,
   "numFailedTests": 0,
-  "numPassedTestSuites": 101,
-  "numPassedTests": 101,
+  "numPassedTestSuites": 100,
+  "numPassedTests": 100,
   "numPendingTestSuites": 1,
   "numPendingTests": 0,
   "numRuntimeErrorTestSuites": 0,
   "numTodoTests": 0,
-  "numTotalTestSuites": 102,
-  "numTotalTests": 101,
+  "numTotalTestSuites": 101,
+  "numTotalTests": 100,
   "openHandles": [],
   "snapshot": {
     "added": 0,
@@ -26,7 +26,7 @@
     "unmatched": 0,
     "updated": 0
   },
-  "startTime": 1737844873598,
+  "startTime": 1737895584558,
   "success": false,
   "testResults": [
     {
@@ -37,10 +37,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844873737,
-        "end": 1737844874243,
-        "duration": 506,
-        "runtime": 506,
+        "start": 1737895584689,
+        "end": 1737895585233,
+        "duration": 544,
+        "runtime": 544,
         "slow": false
       },
       "skipped": false,
@@ -56,7 +56,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/test-report/result.js",
       "testResults": [
         {
-          "duration": 506,
+          "duration": 544,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -90,10 +90,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844874257,
-        "end": 1737844875608,
-        "duration": 1351,
-        "runtime": 1351,
+        "start": 1737895585248,
+        "end": 1737895586707,
+        "duration": 1459,
+        "runtime": 1459,
         "slow": false
       },
       "skipped": false,
@@ -109,7 +109,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/index.js",
       "testResults": [
         {
-          "duration": 1351,
+          "duration": 1459,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -143,10 +143,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844875615,
-        "end": 1737844877153,
-        "duration": 1538,
-        "runtime": 1538,
+        "start": 1737895586713,
+        "end": 1737895588131,
+        "duration": 1418,
+        "runtime": 1418,
         "slow": false
       },
       "skipped": false,
@@ -162,7 +162,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/html-report/jest-html-reporters-attach/index/index.js",
       "testResults": [
         {
-          "duration": 1538,
+          "duration": 1418,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -196,10 +196,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844877160,
-        "end": 1737844878384,
-        "duration": 1224,
-        "runtime": 1224,
+        "start": 1737895588139,
+        "end": 1737895589492,
+        "duration": 1353,
+        "runtime": 1353,
         "slow": false
       },
       "skipped": false,
@@ -215,7 +215,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/test-report/index.js",
       "testResults": [
         {
-          "duration": 1224,
+          "duration": 1353,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -249,10 +249,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878390,
-        "end": 1737844878406,
-        "duration": 16,
-        "runtime": 16,
+        "start": 1737895589498,
+        "end": 1737895589512,
+        "duration": 14,
+        "runtime": 14,
         "slow": false
       },
       "skipped": false,
@@ -268,7 +268,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/html-report/jest-html-reporters-attach/index/result.js",
       "testResults": [
         {
-          "duration": 16,
+          "duration": 14,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -302,63 +302,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878414,
-        "end": 1737844878427,
-        "duration": 13,
-        "runtime": 13,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/prettify.js",
-      "testResults": [
-        {
-          "duration": 13,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/prettify.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878433,
-        "end": 1737844878446,
-        "duration": 13,
-        "runtime": 13,
+        "start": 1737895589518,
+        "end": 1737895589533,
+        "duration": 15,
+        "runtime": 15,
         "slow": false
       },
       "skipped": false,
@@ -374,7 +321,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/prettify.js",
       "testResults": [
         {
-          "duration": 13,
+          "duration": 15,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -408,10 +355,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878450,
-        "end": 1737844878463,
-        "duration": 13,
-        "runtime": 13,
+        "start": 1737895589538,
+        "end": 1737895589550,
+        "duration": 12,
+        "runtime": 12,
         "slow": false
       },
       "skipped": false,
@@ -424,14 +371,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/prettify.js",
       "testResults": [
         {
-          "duration": 13,
+          "duration": 12,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/prettify.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -461,114 +408,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878468,
-        "end": 1737844878482,
-        "duration": 14,
-        "runtime": 14,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/prettify.js",
-      "testResults": [
-        {
-          "duration": 14,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/prettify.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878487,
-        "end": 1737844878500,
-        "duration": 13,
-        "runtime": 13,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/prettify.js",
-      "testResults": [
-        {
-          "duration": 13,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/prettify.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878508,
-        "end": 1737844878521,
+        "start": 1737895589555,
+        "end": 1737895589568,
         "duration": 13,
         "runtime": 13,
         "slow": false
@@ -620,10 +461,169 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878526,
-        "end": 1737844878528,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589573,
+        "end": 1737895589615,
+        "duration": 42,
+        "runtime": 42,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/prettify.js",
+      "testResults": [
+        {
+          "duration": 42,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/prettify.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589621,
+        "end": 1737895589634,
+        "duration": 13,
+        "runtime": 13,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/prettify.js",
+      "testResults": [
+        {
+          "duration": 13,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/prettify.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589641,
+        "end": 1737895589657,
+        "duration": 16,
+        "runtime": 16,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
+      "testResults": [
+        {
+          "duration": 16,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589662,
+        "end": 1737895589665,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -639,7 +639,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/result.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -673,167 +673,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878532,
-        "end": 1737844878535,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878540,
-        "end": 1737844878543,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878547,
-        "end": 1737844878552,
-        "duration": 5,
-        "runtime": 5,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
-      "testResults": [
-        {
-          "duration": 5,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878556,
-        "end": 1737844878559,
+        "start": 1737895589670,
+        "end": 1737895589673,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -885,10 +726,169 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878563,
-        "end": 1737844878568,
-        "duration": 5,
-        "runtime": 5,
+        "start": 1737895589678,
+        "end": 1737895589680,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589685,
+        "end": 1737895589693,
+        "duration": 8,
+        "runtime": 8,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
+      "testResults": [
+        {
+          "duration": 8,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589699,
+        "end": 1737895589702,
+        "duration": 3,
+        "runtime": 3,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
+      "testResults": [
+        {
+          "duration": 3,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589707,
+        "end": 1737895589713,
+        "duration": 6,
+        "runtime": 6,
         "slow": false
       },
       "skipped": false,
@@ -904,7 +904,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/src/index.js",
       "testResults": [
         {
-          "duration": 5,
+          "duration": 6,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -938,8 +938,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878573,
-        "end": 1737844878577,
+        "start": 1737895589719,
+        "end": 1737895589723,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -991,10 +991,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878582,
-        "end": 1737844878588,
-        "duration": 6,
-        "runtime": 6,
+        "start": 1737895589729,
+        "end": 1737895589742,
+        "duration": 13,
+        "runtime": 13,
         "slow": false
       },
       "skipped": false,
@@ -1010,7 +1010,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/apiController.js",
       "testResults": [
         {
-          "duration": 6,
+          "duration": 13,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1044,61 +1044,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878593,
-        "end": 1737844878596,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878601,
-        "end": 1737844878605,
+        "start": 1737895589749,
+        "end": 1737895589753,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -1150,10 +1097,63 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878610,
-        "end": 1737844878614,
+        "start": 1737895589758,
+        "end": 1737895589762,
         "duration": 4,
         "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589767,
+        "end": 1737895589770,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -1169,7 +1169,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/result.js",
       "testResults": [
         {
-          "duration": 4,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1203,61 +1203,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878618,
-        "end": 1737844878620,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/example.test.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/example.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878625,
-        "end": 1737844878628,
+        "start": 1737895589775,
+        "end": 1737895589778,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -1309,10 +1256,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878632,
-        "end": 1737844878635,
-        "duration": 3,
-        "runtime": 3,
+        "start": 1737895589783,
+        "end": 1737895589787,
+        "duration": 4,
+        "runtime": 4,
         "slow": false
       },
       "skipped": false,
@@ -1328,7 +1275,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/decisionTree.js",
       "testResults": [
         {
-          "duration": 3,
+          "duration": 4,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1362,10 +1309,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878640,
-        "end": 1737844878643,
-        "duration": 3,
-        "runtime": 3,
+        "start": 1737895589793,
+        "end": 1737895589795,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -1381,7 +1328,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/core-engine/src/index.js",
       "testResults": [
         {
-          "duration": 3,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1415,10 +1362,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878649,
-        "end": 1737844878651,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589801,
+        "end": 1737895589805,
+        "duration": 4,
+        "runtime": 4,
         "slow": false
       },
       "skipped": false,
@@ -1434,7 +1381,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/Bleu.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 4,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1468,10 +1415,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878656,
-        "end": 1737844878658,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589810,
+        "end": 1737895589813,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -1487,7 +1434,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiGenerateEgg.test.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1521,10 +1468,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878662,
-        "end": 1737844878664,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589819,
+        "end": 1737895589822,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -1540,7 +1487,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/CustomSequencer.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1574,8 +1521,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878669,
-        "end": 1737844878671,
+        "start": 1737895589827,
+        "end": 1737895589829,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -1627,8 +1574,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878677,
-        "end": 1737844878679,
+        "start": 1737895589834,
+        "end": 1737895589836,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -1680,10 +1627,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878686,
-        "end": 1737844878688,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589842,
+        "end": 1737895589846,
+        "duration": 4,
+        "runtime": 4,
         "slow": false
       },
       "skipped": false,
@@ -1699,7 +1646,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/server.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 4,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1733,10 +1680,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878693,
-        "end": 1737844878695,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589851,
+        "end": 1737895589854,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -1752,7 +1699,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/rulesController.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1786,8 +1733,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878699,
-        "end": 1737844878700,
+        "start": 1737895589860,
+        "end": 1737895589861,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -1839,10 +1786,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878705,
-        "end": 1737844878707,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895589867,
+        "end": 1737895589868,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -1858,7 +1805,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/manualConnectionTest.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1892,8 +1839,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878713,
-        "end": 1737844878715,
+        "start": 1737895589874,
+        "end": 1737895589876,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -1945,169 +1892,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878719,
-        "end": 1737844878723,
-        "duration": 4,
-        "runtime": 4,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/block-navigation.js",
-      "testResults": [
-        {
-          "duration": 4,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/block-navigation.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878728,
-        "end": 1737844878730,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878734,
-        "end": 1737844878735,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/block-navigation.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/block-navigation.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1737844878740,
-        "end": 1737844878741,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895589881,
+        "end": 1737895589884,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2123,7 +1911,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/block-navigation.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2157,10 +1945,169 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878747,
-        "end": 1737844878749,
+        "start": 1737895589890,
+        "end": 1737895589891,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589896,
+        "end": 1737895589898,
         "duration": 2,
         "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/block-navigation.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/block-navigation.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589903,
+        "end": 1737895589905,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/block-navigation.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/block-navigation.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1737895589910,
+        "end": 1737895589913,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2176,7 +2123,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/index.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2210,10 +2157,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878753,
-        "end": 1737844878754,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895589920,
+        "end": 1737895589922,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -2229,7 +2176,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/testSequencer.test.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2263,10 +2210,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878759,
-        "end": 1737844878763,
-        "duration": 4,
-        "runtime": 4,
+        "start": 1737895589929,
+        "end": 1737895589934,
+        "duration": 5,
+        "runtime": 5,
         "slow": false
       },
       "skipped": false,
@@ -2282,7 +2229,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/block-navigation.js",
       "testResults": [
         {
-          "duration": 4,
+          "duration": 5,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2316,10 +2263,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878767,
-        "end": 1737844878768,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895589941,
+        "end": 1737895589943,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -2335,7 +2282,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/block-navigation.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2369,10 +2316,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878774,
-        "end": 1737844878775,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895589974,
+        "end": 1737895589977,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2388,7 +2335,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/nlpProcessor.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2422,8 +2369,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878780,
-        "end": 1737844878782,
+        "start": 1737895589984,
+        "end": 1737895589986,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -2475,8 +2422,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878787,
-        "end": 1737844878788,
+        "start": 1737895589992,
+        "end": 1737895589993,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2528,8 +2475,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878792,
-        "end": 1737844878793,
+        "start": 1737895589999,
+        "end": 1737895590000,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2581,8 +2528,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878798,
-        "end": 1737844878802,
+        "start": 1737895590005,
+        "end": 1737895590009,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -2634,8 +2581,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878807,
-        "end": 1737844878808,
+        "start": 1737895590014,
+        "end": 1737895590015,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2687,8 +2634,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878814,
-        "end": 1737844878815,
+        "start": 1737895590022,
+        "end": 1737895590023,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2740,8 +2687,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878819,
-        "end": 1737844878820,
+        "start": 1737895590029,
+        "end": 1737895590030,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2793,10 +2740,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878825,
-        "end": 1737844878826,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590035,
+        "end": 1737895590037,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -2812,7 +2759,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/jest.setup.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2846,8 +2793,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878830,
-        "end": 1737844878831,
+        "start": 1737895590045,
+        "end": 1737895590046,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2899,8 +2846,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878835,
-        "end": 1737844878836,
+        "start": 1737895590052,
+        "end": 1737895590053,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2952,8 +2899,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878841,
-        "end": 1737844878844,
+        "start": 1737895590060,
+        "end": 1737895590063,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -3005,8 +2952,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878849,
-        "end": 1737844878850,
+        "start": 1737895590068,
+        "end": 1737895590069,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3058,8 +3005,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878855,
-        "end": 1737844878856,
+        "start": 1737895590074,
+        "end": 1737895590075,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3111,8 +3058,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878860,
-        "end": 1737844878861,
+        "start": 1737895590079,
+        "end": 1737895590080,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3164,10 +3111,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878867,
-        "end": 1737844878868,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590086,
+        "end": 1737895590089,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -3183,7 +3130,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/index.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3217,8 +3164,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878873,
-        "end": 1737844878874,
+        "start": 1737895590094,
+        "end": 1737895590095,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3270,8 +3217,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878879,
-        "end": 1737844878880,
+        "start": 1737895590100,
+        "end": 1737895590101,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3323,8 +3270,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878885,
-        "end": 1737844878888,
+        "start": 1737895590107,
+        "end": 1737895590110,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -3376,8 +3323,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878892,
-        "end": 1737844878893,
+        "start": 1737895590116,
+        "end": 1737895590117,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3429,10 +3376,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878898,
-        "end": 1737844878898,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590123,
+        "end": 1737895590124,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -3448,7 +3395,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiTests.test.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3482,10 +3429,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878903,
-        "end": 1737844878905,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1737895590129,
+        "end": 1737895590130,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -3501,7 +3448,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/dataRoutes.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3535,10 +3482,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878921,
-        "end": 1737844878939,
-        "duration": 18,
-        "runtime": 18,
+        "start": 1737895590135,
+        "end": 1737895590136,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -3554,7 +3501,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/HenFarm.js",
       "testResults": [
         {
-          "duration": 18,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3588,10 +3535,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878957,
-        "end": 1737844878960,
-        "duration": 3,
-        "runtime": 3,
+        "start": 1737895590141,
+        "end": 1737895590141,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -3607,7 +3554,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/decisionTreeService.js",
       "testResults": [
         {
-          "duration": 3,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3641,10 +3588,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878967,
-        "end": 1737844878968,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590147,
+        "end": 1737895590147,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -3660,7 +3607,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/mocks/AiQuery.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3694,10 +3641,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878973,
-        "end": 1737844878974,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590152,
+        "end": 1737895590154,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -3713,7 +3660,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/JSProcessor.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3747,8 +3694,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878979,
-        "end": 1737844878980,
+        "start": 1737895590159,
+        "end": 1737895590160,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3800,8 +3747,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878985,
-        "end": 1737844878989,
+        "start": 1737895590164,
+        "end": 1737895590168,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -3853,8 +3800,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844878995,
-        "end": 1737844878995,
+        "start": 1737895590173,
+        "end": 1737895590173,
         "duration": 0,
         "runtime": 0,
         "slow": false
@@ -3906,8 +3853,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879001,
-        "end": 1737844879002,
+        "start": 1737895590178,
+        "end": 1737895590179,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3959,10 +3906,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879007,
-        "end": 1737844879007,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590183,
+        "end": 1737895590184,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -3978,7 +3925,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/swagger.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4012,8 +3959,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879012,
-        "end": 1737844879013,
+        "start": 1737895590189,
+        "end": 1737895590190,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4065,8 +4012,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879018,
-        "end": 1737844879019,
+        "start": 1737895590195,
+        "end": 1737895590196,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4118,10 +4065,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879024,
-        "end": 1737844879024,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590201,
+        "end": 1737895590202,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4137,7 +4084,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/models/AiQuery.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4171,8 +4118,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879029,
-        "end": 1737844879029,
+        "start": 1737895590208,
+        "end": 1737895590208,
         "duration": 0,
         "runtime": 0,
         "slow": false
@@ -4224,10 +4171,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879035,
-        "end": 1737844879036,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590215,
+        "end": 1737895590215,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -4243,7 +4190,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/ruleService.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4277,8 +4224,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879041,
-        "end": 1737844879042,
+        "start": 1737895590220,
+        "end": 1737895590221,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4330,10 +4277,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879050,
-        "end": 1737844879050,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590232,
+        "end": 1737895590233,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4349,7 +4296,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/logger.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4383,8 +4330,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879055,
-        "end": 1737844879056,
+        "start": 1737895590238,
+        "end": 1737895590239,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4436,8 +4383,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879061,
-        "end": 1737844879062,
+        "start": 1737895590245,
+        "end": 1737895590246,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4489,10 +4436,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879067,
-        "end": 1737844879067,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590251,
+        "end": 1737895590253,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -4508,7 +4455,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/preinstall.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4542,10 +4489,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879073,
-        "end": 1737844879073,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590259,
+        "end": 1737895590260,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4561,7 +4508,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/lib/Bleu.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4595,8 +4542,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879079,
-        "end": 1737844879079,
+        "start": 1737895590266,
+        "end": 1737895590266,
         "duration": 0,
         "runtime": 0,
         "slow": false
@@ -4633,10 +4580,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879084,
-        "end": 1737844879084,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590271,
+        "end": 1737895590272,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4652,7 +4599,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/models/ruleModel.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4686,10 +4633,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879090,
-        "end": 1737844879090,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590277,
+        "end": 1737895590278,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4705,7 +4652,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/setupTests.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4739,10 +4686,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879096,
-        "end": 1737844879097,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590284,
+        "end": 1737895590284,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -4758,7 +4705,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/mockEngine.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4792,10 +4739,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879104,
-        "end": 1737844879104,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590294,
+        "end": 1737895590295,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4811,7 +4758,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simpleServer.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4845,8 +4792,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879110,
-        "end": 1737844879111,
+        "start": 1737895590301,
+        "end": 1737895590302,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4898,10 +4845,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879116,
-        "end": 1737844879116,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590310,
+        "end": 1737895590312,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -4917,7 +4864,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/src/index.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4951,8 +4898,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879122,
-        "end": 1737844879123,
+        "start": 1737895590319,
+        "end": 1737895590320,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -5004,10 +4951,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879127,
-        "end": 1737844879128,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590353,
+        "end": 1737895590355,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -5023,7 +4970,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/simpleRoute.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -5057,8 +5004,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879133,
-        "end": 1737844879134,
+        "start": 1737895590361,
+        "end": 1737895590362,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -5110,8 +5057,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879139,
-        "end": 1737844879140,
+        "start": 1737895590368,
+        "end": 1737895590369,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -5163,8 +5110,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879145,
-        "end": 1737844879146,
+        "start": 1737895590375,
+        "end": 1737895590376,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -5216,10 +5163,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879153,
-        "end": 1737844879154,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590385,
+        "end": 1737895590387,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -5235,7 +5182,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/generateEgg.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -5269,8 +5216,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879160,
-        "end": 1737844879160,
+        "start": 1737895590394,
+        "end": 1737895590394,
         "duration": 0,
         "runtime": 0,
         "slow": false
@@ -5322,10 +5269,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879165,
-        "end": 1737844879165,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1737895590402,
+        "end": 1737895590404,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -5341,7 +5288,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simple-git-hooks.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -5375,10 +5322,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1737844879170,
-        "end": 1737844879171,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1737895590412,
+        "end": 1737895590412,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -5394,7 +5341,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/index.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -5421,5 +5368,6 @@
       }
     }
   ],
-  "wasInterrupted": false
+  "wasInterrupted": false,
+  "coverageMap": {}
 }
