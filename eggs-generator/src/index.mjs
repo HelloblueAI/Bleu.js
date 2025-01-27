@@ -1,10 +1,11 @@
 import express from 'express';
-import { json } from 'body-parser';
-import { object, string } from 'joi';
+import bodyParser from 'body-parser';
+import Joi from 'joi';
 import { createLogger, transports, format } from 'winston';
 import compression from 'compression';
-
 import { generateEgg } from './generateEgg.js';
+
+const { json } = bodyParser;
 
 const logger = createLogger({
   level: 'info',
@@ -27,9 +28,9 @@ const logger = createLogger({
   ],
 });
 
-const optionsSchema = object({
-  type: string().required(),
-  parameters: object().optional(),
+const optionsSchema = Joi.object({
+  type: Joi.string().required(),
+  parameters: Joi.object().optional(),
 }).required();
 
 // Express App Setup
@@ -46,24 +47,20 @@ const allowedOrigins = process.env.CORS_ORIGINS
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-
   if (origin && allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   } else {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
   }
-
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header(
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, X-Requested-With',
   );
   res.header('Access-Control-Allow-Credentials', 'true');
-
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-
   return next();
 });
 
