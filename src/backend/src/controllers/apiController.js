@@ -1,45 +1,26 @@
-const axios = require('axios'); // Correct order of imports
-const openai = require('openai'); // Correct order of imports
+import { post } from 'axios'; 
+import AiQuery from '../models/AiQuery';
 
-const AiQuery = require('../models/AiQuery').default;
-
-const apiKey = process.env.OPENAI_API_KEY; // Your OpenAI API key
-
-// Set the OpenAI API key
-if (apiKey) {
-  openai.apiKey = apiKey;
-} else {
-  console.error(
-    'OpenAI API key is missing. Please set OPENAI_API_KEY in your environment variables.',
-  );
-}
 
 const callAIModel = async (query) => {
   try {
-    const response = await axios.post(
-      'https://api.openai.com/v1/completions',
-      {
-        model: 'text-davinci-003',
-        prompt: query,
-        max_tokens: 150,
-        temperature: 0.7,
+    const response = {
+      data: {
+        choices: [
+          {
+            text: `Mock response for query: "${query}"`,
+          },
+        ],
       },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-
+    };
     return response.data.choices[0].text.trim();
   } catch (error) {
-    console.error('Error calling AI model:', error);
+    console.error('Error calling custom AI model:', error);
     return null;
   }
 };
 
-const predict = async (req, res) => {
+export const predict = async (req, res) => {
   const { query } = req.body;
 
   if (!query) {
@@ -49,17 +30,17 @@ const predict = async (req, res) => {
   try {
     const response = await callAIModel(query);
     if (!response) {
-      // If no response, handle it gracefully
       return res
         .status(500)
         .json({ error: 'Failed to get a response from the AI model' });
     }
-    const modelUsed = 'GPT-3 (text-davinci-003)';
+
+    const modelUsed = 'Custom AI Model';
     const aiQuery = new AiQuery({
       query,
       response,
       modelUsed,
-      confidence: 0.98,
+      confidence: 0.95, // Adjust confidence level as needed
     });
 
     const savedQuery = await aiQuery.save();
@@ -76,54 +57,53 @@ const predict = async (req, res) => {
   }
 };
 
-// Other routes (placeholders for now)
-const getData = (req, res) => {
+export const getData = (req, res) => {
   res.json({ message: 'Hello, this is your data!' });
 };
 
-const processData = (req, res) => {
+export const processData = (req, res) => {
   res.json({ message: 'Process data endpoint is not yet implemented.' });
 };
 
-const getProcessedData = (req, res) => {
+export const getProcessedData = (req, res) => {
   res.json({ message: 'Get processed data endpoint is not yet implemented.' });
 };
 
-const trainModel = (req, res) => {
+export const trainModel = (req, res) => {
   res.json({ message: 'Train model endpoint is not yet implemented.' });
 };
 
-const getTrainModelStatus = (req, res) => {
+export const getTrainModelStatus = (req, res) => {
   res.json({
     message: 'Get train model status endpoint is not yet implemented.',
   });
 };
 
-const uploadDataset = (req, res) => {
+export const uploadDataset = (req, res) => {
   res.json({ message: 'Upload dataset endpoint is not yet implemented.' });
 };
 
-const getRules = (req, res) => {
+export const getRules = (req, res) => {
   res.json({ message: 'Get rules endpoint is not yet implemented.' });
 };
 
-const addRule = (req, res) => {
+export const addRule = (req, res) => {
   res.json({ message: 'Add rule endpoint is not yet implemented.' });
 };
 
-const updateRule = (req, res) => {
+export const updateRule = (req, res) => {
   res.json({ message: 'Update rule endpoint is not yet implemented.' });
 };
 
-const deleteRule = (req, res) => {
+export const deleteRule = (req, res) => {
   res.json({ message: 'Delete rule endpoint is not yet implemented.' });
 };
 
-const evaluateRule = (req, res) => {
+export const evaluateRule = (req, res) => {
   res.json({ message: 'Evaluate rule endpoint is not yet implemented.' });
 };
 
-const generateEgg = (req, res) => {
+export const generateEgg = (req, res) => {
   const { type, options } = req.body;
   try {
     const egg = {
@@ -143,7 +123,7 @@ const generateEgg = (req, res) => {
   }
 };
 
-const monitorDependencies = (req, res) => {
+export const monitorDependencies = (req, res) => {
   try {
     const dependencies = [
       { name: 'express', version: '4.19.2', latest: '4.19.2' },
@@ -158,7 +138,7 @@ const monitorDependencies = (req, res) => {
   }
 };
 
-const resolveConflicts = (req, res) => {
+export const resolveConflicts = (req, res) => {
   try {
     const resolved = [
       { name: 'express', resolvedVersion: '4.19.2' },
@@ -175,16 +155,16 @@ const resolveConflicts = (req, res) => {
   }
 };
 
-const debug = (req, res) => {
+export const debug = (req, res) => {
   res.status(200).json({ message: 'Debug endpoint is not yet implemented.' });
 };
 
-const invalidRoute = (req, res) => {
+export const invalidRoute = (req, res) => {
   res.status(404).send({ error: 'Invalid route' });
 };
 
-// Export the controller functions
-module.exports = {
+// Export the controller functions as default for backward compatibility
+export default {
   getData,
   predict,
   processData,

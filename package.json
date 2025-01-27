@@ -9,10 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "node backend/server.js",
-    "start:dev": "nodemon backend/server.js",
+    "start:dev": "nodemon src/backend/server.mjs",
     "start:frontend": "pnpm dlx http-server -p 4002 ./frontend/public",
-    "start:backend": "node backend/server.js",
+    "start:backend": "node src/backend/server.js",
     "start:core-engine": "node core-engine/index.js",
     "start:eggs-generator": "node eggs-generator/src/index.js",
     "start:dependency-management": "node dependency-management/src/index.js",
@@ -45,7 +44,9 @@
     "body-parser": "^1.20.3",
     "compression": "^1.7.5",
     "cors": "^2.8.5",
+    "decision-tree": "^0.3.7",
     "express": "^4.21.2",
+    "get-port": "^7.1.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mime": "^4.0.6",

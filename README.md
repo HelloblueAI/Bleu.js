@@ -154,6 +154,46 @@ open ./reports/jest-stare/index.html
 
 ![My SVG Image](./assets/Asset.svg)
 
+
+
+## Generating Eggs
+
+To generate code snippets (eggs) using Bleu.js:
+Start the eggs generator server:
+
+```javascript
+cd eggs-generator
+node src/index.mjs
+```
+
+In a new terminal, send a POST request to generate an egg:
+
+```javascript
+curl -X POST http://localhost:3003/api/generate-egg \
+-H "Content-Type: application/json" \
+-d '{
+  "type": "basic",
+  "parameters": {
+    "color": "blue"
+  }
+}'
+```
+
+Example response:
+
+```javascript
+jsonCopy{
+  "result": {
+    "id": "egg-id",
+    "type": "basic",
+    "parameters": {
+      "color": "blue"
+    }
+  }
+}
+```
+
+
 ### bleujs-utils Package (Version 1.0.1)
 
 The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
@@ -163,6 +203,7 @@ The `bleujs-util` package provides essential utility functions that are part of 
 - Lightweight utility functions for common tasks.
 - Dependency management utilities.
 - Code optimization tools.
+
 
 ### Installation
 

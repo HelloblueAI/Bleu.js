@@ -5,9 +5,8 @@ import getPort from 'get-port';
 import morgan from 'morgan';
 import { createLogger, transports, format } from 'winston';
 
-import apiRoutes from './routes/apiRoutes.js';
-import database from './services/database.js';
-import decisionTreeService from './services/decisionTreeService.js';
+import apiRoutes from './src/routes/apiRoutes.mjs';
+import { connect, disconnect } from './mocks/database.mjs';
 
 // Logger Configuration
 const logger = createLogger({
@@ -30,7 +29,6 @@ const logger = createLogger({
 });
 
 // Centralized Error Handling
-
 const stopServer = (server) =>
   new Promise((resolve, reject) => {
     server.close(async (err) => {
@@ -39,7 +37,7 @@ const stopServer = (server) =>
         return reject(err);
       }
       logger.info('Server stopped.');
-      await database.disconnect();
+      await disconnect();
       return resolve();
     });
   });
@@ -52,14 +50,14 @@ const configureEndpoints = (app) => {
     try {
       const { input } = req.body;
       if (!input) {
-        return res.status(400).json({ error: 'Input is required' }); // Ensure return
+        return res.status(400).json({ error: 'Input is required' });
       }
 
-      const result = await decisionTreeService.traverseDecisionTree(input);
-      return res.status(200).json({ result }); // Ensure return
+      const result = await traverseDecisionTree(input);
+      return res.status(200).json({ result });
     } catch (error) {
       logger.error('Error in aiService endpoint:', error.message);
-      return res.status(500).json({ error: 'Internal Server Error' }); // Ensure return
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
@@ -94,7 +92,7 @@ const startServer = async () => {
   try {
     const app = createApp();
     const port = await getPort({ port: process.env.PORT || 4003 });
-    await database.connect();
+    await connect();
 
     const server = app.listen(port, () => {
       logger.info(`Server running at http://localhost:${port}`);
@@ -105,10 +103,10 @@ const startServer = async () => {
       await stopServer(server);
     });
 
-    return { app, server }; // Ensure return
+    return { app, server };
   } catch (error) {
     logger.error('Failed to start server:', error.message);
-    return null; // Add a fallback return value
+    return null;
   }
 };
 
