@@ -13,6 +13,8 @@
     "frontend/**/*.ts",
     "test/setup.ts",
     "src/**/*",
-    "test/**/*"
+    "test/**/*",
+    "core-engine/src/core/circuit-breaker.mjs",
+    "core-engine/src/core/service-generator.mjs"
   ]
 }

@@ -146,7 +146,7 @@ Ran all test suites.
 
 ```javascript
 open ./reports/test-report.html
-````
+```
 
 ```javascript
 open ./reports/jest-stare/index.html
@@ -154,15 +154,16 @@ open ./reports/jest-stare/index.html
 
 ![My SVG Image](./assets/Asset.svg)
 
-
 # API Test Suite Documentation
 
 ## Base URL Configuration
+
 ```bash
 HOST="http://localhost:3001"
 ```
 
 ## 1. Health Check Tests
+
 Tests the basic health and status of the API.
 
 ```bash
@@ -170,6 +171,7 @@ curl -X GET "http://localhost:3001/api/health"
 ```
 
 Expected Response:
+
 ```json
 {
   "status": "healthy",
@@ -188,6 +190,7 @@ Expected Response:
 ## 2. Basic Service Generation Tests
 
 ### Generate User Service
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -201,6 +204,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Generate Product Service
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -216,6 +220,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ## 3. Error Case Tests
 
 ### Missing Parameters
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -223,7 +228,9 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        "type": "service"
      }'
 ```
+
 Expected Response:
+
 ```json
 {
   "success": false,
@@ -232,6 +239,7 @@ Expected Response:
 ```
 
 ### Invalid Service Type
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -243,7 +251,9 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
+
 Expected Response:
+
 ```json
 {
   "success": false,
@@ -252,6 +262,7 @@ Expected Response:
 ```
 
 ### Invalid Methods Format
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -263,7 +274,9 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
+
 Expected Response:
+
 ```json
 {
   "success": false,
@@ -274,13 +287,16 @@ Expected Response:
 ## 4. CORS Tests
 
 ### Preflight Request
+
 ```bash
 curl -i -X OPTIONS "http://localhost:3001/api/generate-egg" \
      -H "Origin: http://localhost:3000" \
      -H "Access-Control-Request-Method: POST" \
      -H "Access-Control-Request-Headers: Content-Type"
 ```
+
 Expected Response Headers:
+
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
@@ -290,6 +306,7 @@ Access-Control-Allow-Headers: Content-Type
 ## 5. Complex Service Generation Tests
 
 ### Complex User Service
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -314,6 +331,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Authentication Service
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -339,6 +357,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ## 6. Edge Cases
 
 ### Very Long Service Name
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -352,6 +371,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Special Characters in Name
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -365,6 +385,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Large Number of Methods
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -380,12 +401,15 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ## 7. Content Type Tests
 
 ### Invalid Content Type
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: text/plain" \
      -d "Invalid data format"
 ```
+
 Expected Response:
+
 ```json
 {
   "success": false,
@@ -394,6 +418,7 @@ Expected Response:
 ```
 
 ### Missing Content Type
+
 ```bash
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -d '{
@@ -408,6 +433,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ## 8. Performance Test
 
 ### Multiple Rapid Requests
+
 ```bash
 for i in {1..5}; do
   curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -423,7 +449,9 @@ done
 ```
 
 ## Response Structure
+
 All successful responses follow this structure:
+
 ```json
 {
   "success": true,
@@ -437,6 +465,7 @@ All successful responses follow this structure:
 ```
 
 Error responses follow this structure:
+
 ```json
 {
   "success": false,
@@ -447,10 +476,6 @@ Error responses follow this structure:
   }
 }
 ```
-
-
-
-
 
 ## Generating Eggs
 
@@ -489,7 +514,6 @@ jsonCopy{
 }
 ```
 
-
 ### bleujs-utils Package (Version 1.0.1)
 
 The `bleujs-util` package provides essential utility functions that are part of the Bleu.js framework. It simplifies the process of handling various coding challenges such as dependency management, code quality checks, and optimization.
@@ -499,7 +523,6 @@ The `bleujs-util` package provides essential utility functions that are part of 
 - Lightweight utility functions for common tasks.
 - Dependency management utilities.
 - Code optimization tools.
-
 
 ### Installation
 

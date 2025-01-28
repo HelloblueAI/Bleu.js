@@ -1,39 +1,42 @@
 import { Schema, model } from 'mongoose';
 
-const ruleSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  data: {
-    type: String,
-    required: true
-  },
-  nested: {
-    level1: {
-      level2: {
-        type: String,
-        default: null
+const ruleSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    data: {
+      type: String,
+      required: true,
+    },
+    nested: {
+      level1: {
+        level2: {
+          type: String,
+          default: null,
+        },
       },
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    createdBy: {
+      type: String,
+      required: true,
+    },
   },
-  isActive: {
-    type: Boolean,
-    default: true
+  {
+    timestamps: true, // Adds createdAt and updatedAt fields
   },
-  createdBy: {
-    type: String,
-    required: true
-  }
-}, {
-  timestamps: true // Adds createdAt and updatedAt fields
-});
+);
 
 // Model
 const Rule = model('Rule', ruleSchema);
@@ -71,7 +74,7 @@ export const update = async (id, ruleData) => {
     const rule = await Rule.findByIdAndUpdate(
       id,
       { ...ruleData, updatedAt: Date.now() },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!rule) throw new Error('Rule not found');
     return rule;
@@ -86,7 +89,7 @@ export const remove = async (id) => {
     const rule = await Rule.findByIdAndUpdate(
       id,
       { isActive: false, updatedAt: Date.now() },
-      { new: true }
+      { new: true },
     );
     if (!rule) throw new Error('Rule not found');
     return rule;

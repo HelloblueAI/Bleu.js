@@ -29,7 +29,9 @@ export const getRules = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching rules:', error.stack || error.message);
-    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
@@ -40,7 +42,9 @@ export const addRule = async (req, res) => {
   try {
     const { error } = ruleSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({ status: 400, message: error.details[0].message });
+      return res
+        .status(400)
+        .json({ status: 400, message: error.details[0].message });
     }
 
     const newRule = await create(req.body);
@@ -76,7 +80,9 @@ export const deleteRule = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ status: 404, message: 'Rule not found' });
     }
-    return res.status(200).json({ status: 200, message: 'Rule deleted successfully' });
+    return res
+      .status(200)
+      .json({ status: 200, message: 'Rule deleted successfully' });
   } catch (error) {
     console.error('Error deleting rule:', error.stack || error.message);
     return res.status(500).json({ status: 500, message: error.message });
@@ -91,8 +97,13 @@ export const monitorDependencies = async (req, res) => {
     const dependencies = ['MongoDB', 'Express', 'Node.js'];
     return res.status(200).json({ status: 200, data: dependencies });
   } catch (error) {
-    console.error('Error monitoring dependencies:', error.stack || error.message);
-    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
+    console.error(
+      'Error monitoring dependencies:',
+      error.stack || error.message,
+    );
+    return res
+      .status(500)
+      .json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
@@ -103,7 +114,9 @@ export const trainModel = async (req, res) => {
   try {
     const { datasetId } = req.body;
     if (!datasetId) {
-      return res.status(400).json({ status: 400, message: 'Dataset ID is required' });
+      return res
+        .status(400)
+        .json({ status: 400, message: 'Dataset ID is required' });
     }
 
     const modelId = await trainModelLogic(datasetId);
