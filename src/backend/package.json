@@ -1,6 +1,6 @@
 {
   "name": "bleujs-backend",
-  "version": "1.0.28",
+  "version": "1.0.31",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

@@ -155,6 +155,302 @@ open ./reports/jest-stare/index.html
 ![My SVG Image](./assets/Asset.svg)
 
 
+# API Test Suite Documentation
+
+## Base URL Configuration
+```bash
+HOST="http://localhost:3001"
+```
+
+## 1. Health Check Tests
+Tests the basic health and status of the API.
+
+```bash
+curl -X GET "http://localhost:3001/api/health"
+```
+
+Expected Response:
+```json
+{
+  "status": "healthy",
+  "uptime": 1234.567,
+  "memory": {
+    "rss": 14417920,
+    "heapTotal": 11059200,
+    "heapUsed": 9751512,
+    "external": 2223019,
+    "arrayBuffers": 33341
+  },
+  "timestamp": "2025-01-28T03:19:28.417Z"
+}
+```
+
+## 2. Basic Service Generation Tests
+
+### Generate User Service
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "User",
+         "methods": ["findAll", "findOne", "create", "update", "delete"]
+       }
+     }'
+```
+
+### Generate Product Service
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "Product",
+         "methods": ["findAll", "findById", "create", "update", "remove", "search"]
+       }
+     }'
+```
+
+## 3. Error Case Tests
+
+### Missing Parameters
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service"
+     }'
+```
+Expected Response:
+```json
+{
+  "success": false,
+  "error": "Missing required fields"
+}
+```
+
+### Invalid Service Type
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "invalidType",
+       "parameters": {
+         "name": "Test",
+         "methods": ["test"]
+       }
+     }'
+```
+Expected Response:
+```json
+{
+  "success": false,
+  "error": "Unsupported type: invalidType"
+}
+```
+
+### Invalid Methods Format
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "Test",
+         "methods": "not-an-array"
+       }
+     }'
+```
+Expected Response:
+```json
+{
+  "success": false,
+  "error": "methods.map is not a function"
+}
+```
+
+## 4. CORS Tests
+
+### Preflight Request
+```bash
+curl -i -X OPTIONS "http://localhost:3001/api/generate-egg" \
+     -H "Origin: http://localhost:3000" \
+     -H "Access-Control-Request-Method: POST" \
+     -H "Access-Control-Request-Headers: Content-Type"
+```
+Expected Response Headers:
+```
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: Content-Type
+```
+
+## 5. Complex Service Generation Tests
+
+### Complex User Service
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "ComplexUser",
+         "methods": [
+           "findAll",
+           "findById",
+           "create",
+           "update",
+           "delete",
+           "validateEmail",
+           "resetPassword",
+           "updateProfile",
+           "searchByFilters",
+           "exportToCSV"
+         ]
+       }
+     }'
+```
+
+### Authentication Service
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "Auth",
+         "methods": [
+           "login",
+           "register",
+           "verifyToken",
+           "refreshToken",
+           "logout",
+           "forgotPassword",
+           "resetPassword",
+           "changePassword",
+           "validateSession"
+         ]
+       }
+     }'
+```
+
+## 6. Edge Cases
+
+### Very Long Service Name
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "VeryLongServiceNameThatMightCauseIssuesWithFormatting",
+         "methods": ["test"]
+       }
+     }'
+```
+
+### Special Characters in Name
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "User@Service",
+         "methods": ["test"]
+       }
+     }'
+```
+
+### Large Number of Methods
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "LargeService",
+         "methods": ["method1"..."method50"]
+       }
+     }'
+```
+
+## 7. Content Type Tests
+
+### Invalid Content Type
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: text/plain" \
+     -d "Invalid data format"
+```
+Expected Response:
+```json
+{
+  "success": false,
+  "error": "Invalid content type"
+}
+```
+
+### Missing Content Type
+```bash
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "Test",
+         "methods": ["test"]
+       }
+     }'
+```
+
+## 8. Performance Test
+
+### Multiple Rapid Requests
+```bash
+for i in {1..5}; do
+  curl -X POST "http://localhost:3001/api/generate-egg" \
+       -H "Content-Type: application/json" \
+       -d '{
+         "type": "service",
+         "parameters": {
+           "name": "Service'$i'",
+           "methods": ["test'$i'"]
+         }
+       }' &
+done
+```
+
+## Response Structure
+All successful responses follow this structure:
+```json
+{
+  "success": true,
+  "code": "Generated code here...",
+  "metadata": {
+    "generatedAt": "2025-01-28T03:19:28.417Z",
+    "requestId": "unique-request-id",
+    "engineVersion": "1.0.0"
+  }
+}
+```
+
+Error responses follow this structure:
+```json
+{
+  "success": false,
+  "error": "Error message here",
+  "metadata": {
+    "timestamp": "2025-01-28T03:19:28.417Z",
+    "requestId": "unique-request-id"
+  }
+}
+```
+
+
+
+
 
 ## Generating Eggs
 
@@ -1413,7 +1709,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.30](https://img.shields.io/badge/v1.0.30-0ff?style=flat)
+![v1.0.31](https://img.shields.io/badge/v1.0.31-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)

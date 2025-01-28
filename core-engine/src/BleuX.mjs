@@ -29,7 +29,7 @@ class Store {
       );
     } else {
       console.error(`Action ${action} does not exist`);
-      return null; // Ensure a value is always returned
+      return null;
     }
   }
 }
@@ -47,4 +47,4 @@ const BleuX = {
   },
 };
 
-module.exports = { Store, BleuX };
+export { Store, BleuX };
