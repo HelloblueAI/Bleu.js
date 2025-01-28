@@ -19,11 +19,10 @@ const CONFIG = {
   LOG_MAX_FILES: 5,
   RATE_LIMIT: {
     windowMs: 15 * 60 * 1000,
-    max: 100
+    max: 100,
   },
-  CORS_MAX_AGE: 24 * 60 * 60
+  CORS_MAX_AGE: 24 * 60 * 60,
 };
-
 
 class AppError extends Error {
   constructor(statusCode, message, code, details) {
@@ -36,26 +35,28 @@ class AppError extends Error {
   }
 }
 
-
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
     winston.format.colorize(),
-    winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }),
+    winston.format.metadata({
+      fillExcept: ['message', 'level', 'timestamp', 'stack'],
+    }),
     winston.format.printf(({ timestamp, level, message, metadata, stack }) => {
-      const meta = Object.keys(metadata).length ?
-        `\n${JSON.stringify(metadata, null, 2)}` : '';
+      const meta = Object.keys(metadata).length
+        ? `\n${JSON.stringify(metadata, null, 2)}`
+        : '';
       return `[${timestamp}] ${level.padEnd(7)}: ${message}${stack ? '\n' + stack : ''}${meta}`;
-    })
+    }),
   ),
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
-      )
+        winston.format.simple(),
+      ),
     }),
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -63,22 +64,22 @@ const logger = winston.createLogger({
       maxsize: CONFIG.LOG_ROTATION_SIZE,
       maxFiles: CONFIG.LOG_MAX_FILES,
       tailable: true,
-      zippedArchive: true
+      zippedArchive: true,
     }),
     new winston.transports.File({
       filename: 'logs/combined.log',
       maxsize: CONFIG.LOG_ROTATION_SIZE,
       maxFiles: CONFIG.LOG_MAX_FILES,
       tailable: true,
-      zippedArchive: true
-    })
+      zippedArchive: true,
+    }),
   ],
   exceptionHandlers: [
-    new winston.transports.File({ filename: 'logs/exceptions.log' })
+    new winston.transports.File({ filename: 'logs/exceptions.log' }),
   ],
   rejectionHandlers: [
-    new winston.transports.File({ filename: 'logs/rejections.log' })
-  ]
+    new winston.transports.File({ filename: 'logs/rejections.log' }),
+  ],
 });
 
 if (cluster.isPrimary) {
@@ -109,12 +110,12 @@ if (cluster.isPrimary) {
   }
 
   cluster.on('exit', (worker, code, signal) => {
-    logger.warn(`Worker ${worker.process.pid} died (${signal || code}). Restarting...`);
+    logger.warn(
+      `Worker ${worker.process.pid} died (${signal || code}). Restarting...`,
+    );
     cluster.fork();
   });
-
 } else {
-
   class PerformanceMonitor {
     constructor(snapshotInterval = CONFIG.METRICS_INTERVAL) {
       this.metrics = new Map();
@@ -128,12 +129,11 @@ if (cluster.isPrimary) {
         const metrics = this.getMetrics();
         this.snapshots.push({
           timestamp: Date.now(),
-          metrics
+          metrics,
         });
 
-
         const oneHourAgo = Date.now() - 3600000;
-        this.snapshots = this.snapshots.filter(s => s.timestamp > oneHourAgo);
+        this.snapshots = this.snapshots.filter((s) => s.timestamp > oneHourAgo);
       }, this.snapshotInterval);
     }
 
@@ -143,7 +143,7 @@ if (cluster.isPrimary) {
         count: 0,
         sum: 0,
         min: Infinity,
-        max: -Infinity
+        max: -Infinity,
       };
 
       current.count++;
@@ -168,7 +168,7 @@ if (cluster.isPrimary) {
           avg: value.sum / value.count,
           min: value.min,
           max: value.max,
-          count: value.count
+          count: value.count,
         };
       }
       return result;
@@ -176,10 +176,9 @@ if (cluster.isPrimary) {
 
     getHistoricalMetrics(duration = 3600000) {
       const since = Date.now() - duration;
-      return this.snapshots.filter(s => s.timestamp > since);
+      return this.snapshots.filter((s) => s.timestamp > since);
     }
   }
-
 
   class TemplateEngine {
     constructor() {
@@ -191,26 +190,33 @@ if (cluster.isPrimary) {
     }
 
     registerDefaultHelpers() {
-      this.helpers.set('formatDate', date => new Date(date).toISOString());
-      this.helpers.set('capitalize', str => str.charAt(0).toUpperCase() + str.slice(1));
-      this.helpers.set('pluralize', str => `${str}s`);
-      this.helpers.set('sanitize', str => {
+      this.helpers.set('formatDate', (date) => new Date(date).toISOString());
+      this.helpers.set(
+        'capitalize',
+        (str) => str.charAt(0).toUpperCase() + str.slice(1),
+      );
+      this.helpers.set('pluralize', (str) => `${str}s`);
+      this.helpers.set('sanitize', (str) => {
         const map = {
           '&': '&amp;',
           '<': '&lt;',
           '>': '&gt;',
           '"': '&quot;',
           "'": '&#x27;',
-          "/": '&#x2F;',
+          '/': '&#x2F;',
         };
-        return str.replace(/[&<>"'/]/ig, match => map[match]);
+        return str.replace(/[&<>"'/]/gi, (match) => map[match]);
       });
     }
 
     registerTemplate(name, template, validate) {
       this.templates.set(name, async (context, helpers) => {
         if (validate && !validate(context)) {
-          throw new AppError(400, 'Invalid template context', 'INVALID_TEMPLATE_CONTEXT');
+          throw new AppError(
+            400,
+            'Invalid template context',
+            'INVALID_TEMPLATE_CONTEXT',
+          );
         }
         return template(context, helpers);
       });
@@ -219,7 +225,11 @@ if (cluster.isPrimary) {
     async render(name, context) {
       const template = this.templates.get(name);
       if (!template) {
-        throw new AppError(404, `Template ${name} not found`, 'TEMPLATE_NOT_FOUND');
+        throw new AppError(
+          404,
+          `Template ${name} not found`,
+          'TEMPLATE_NOT_FOUND',
+        );
       }
 
       const cacheKey = this.generateCacheKey(name, context);
@@ -236,12 +246,12 @@ if (cluster.isPrimary) {
 
         monitor.recordMetric('template.render.duration', duration, {
           template: name,
-          cached: 'false'
+          cached: 'false',
         });
 
         this.cache.set(cacheKey, {
           result,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
         return result;
@@ -249,7 +259,7 @@ if (cluster.isPrimary) {
         logger.error(`Template rendering failed: ${error.message}`, {
           name,
           context,
-          error: error.stack
+          error: error.stack,
         });
         throw error;
       }
@@ -262,7 +272,6 @@ if (cluster.isPrimary) {
 
   const monitor = new PerformanceMonitor();
   const templateEngine = new TemplateEngine();
-
 
   templateEngine.registerTemplate(
     'service',
@@ -289,7 +298,9 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     this.initializeServices();
   }
 
-  ${context.methods.map(method => `
+  ${context.methods
+    .map(
+      (method) => `
   async ${method}(data) {
     const startTime = performance.now();
     try {
@@ -309,35 +320,37 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     } catch (error) {
       throw error;
     }
-  }`).join('\n\n')}
+  }`,
+    )
+    .join('\n\n')}
 }`;
     },
     (context) => {
       return Boolean(
         context.name &&
-        Array.isArray(context.methods) &&
-        context.methods.every(m => typeof m === 'string')
+          Array.isArray(context.methods) &&
+          context.methods.every((m) => typeof m === 'string'),
       );
-    }
+    },
   );
 
   const app = express();
   const port = process.env.PORT || CONFIG.DEFAULT_PORT;
 
-
   app.use(helmet());
   app.use(compression());
   app.use(rateLimit(CONFIG.RATE_LIMIT));
 
-  
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true,
-    maxAge: CONFIG.CORS_MAX_AGE
-  }));
+  app.use(
+    cors({
+      origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      credentials: true,
+      maxAge: CONFIG.CORS_MAX_AGE,
+    }),
+  );
 
   // Enhanced request tracking middleware
   app.use((req, res, next) => {
@@ -348,7 +361,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     req.context = {
       requestId,
       startTime,
-      logger: logger.child({ requestId })
+      logger: logger.child({ requestId }),
     };
 
     // Enhance response with timing header
@@ -357,7 +370,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
       monitor.recordMetric('http.response.time', duration, {
         method: req.method,
         status: res.statusCode.toString(),
-        path: req.path
+        path: req.path,
       });
     });
 
@@ -372,12 +385,12 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
         error: {
           code: err.code,
           message: err.message,
-          details: err.details
+          details: err.details,
         },
         metadata: {
           requestId: req.context?.requestId,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
     } else {
       logger.error('Unhandled error', { error: err.stack });
@@ -385,12 +398,12 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
         success: false,
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'An unexpected error occurred'
+          message: 'An unexpected error occurred',
         },
         metadata: {
           requestId: req.context?.requestId,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
     }
   });
@@ -409,7 +422,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
       const duration = performance.now() - startTime;
 
       monitor.recordMetric('code.generation.time', duration, {
-        template: type
+        template: type,
       });
 
       res.json({
@@ -419,8 +432,8 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
           generatedAt: new Date().toISOString(),
           requestId: req.context?.requestId,
           engineVersion: '1.0.32',
-          generationTime: `${duration.toFixed(2)}ms`
-        }
+          generationTime: `${duration.toFixed(2)}ms`,
+        },
       });
     } catch (error) {
       next(error);
@@ -436,10 +449,10 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
       cpu: process.cpuUsage(),
       metrics: {
         current: monitor.getMetrics(),
-        historical: monitor.getHistoricalMetrics()
+        historical: monitor.getHistoricalMetrics(),
       },
       timestamp: new Date().toISOString(),
-      version: '1.0.32'
+      version: '1.0.32',
     });
   });
 

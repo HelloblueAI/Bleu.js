@@ -26,13 +26,9 @@ export const trainModelLogic = async (datasetId) => {
 
 // Optional: Add additional validation helpers
 export const validateCondition = (condition) => {
-  return condition &&
-         typeof condition === 'object' &&
-         'type' in condition;
+  return condition && typeof condition === 'object' && 'type' in condition;
 };
 
 export const validateAction = (action) => {
-  return action &&
-         typeof action === 'object' &&
-         'type' in action;
+  return action && typeof action === 'object' && 'type' in action;
 };
