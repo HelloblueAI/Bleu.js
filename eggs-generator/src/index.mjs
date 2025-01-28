@@ -33,14 +33,14 @@ const optionsSchema = Joi.object({
   parameters: Joi.object().optional(),
 }).required();
 
-// Express App Setup
+
 const app = express();
 const PORT = process.env.PORT || 3003;
 
-// Middleware
+
 app.use(json());
 
-// Enhanced CORS Middleware
+
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',')
   : ['http://localhost:4002'];
@@ -84,7 +84,7 @@ app.post('/api/generate-egg', async (req, res) => {
   }
 });
 
-// Global Error Handler
+
 app.use((err, req, res) => {
   logger.error('Unhandled error', { error: err.message });
   res.status(500).json({ error: 'Internal Server Error' });

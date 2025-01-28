@@ -61,10 +61,12 @@
     "supertest",
     "supervisorctl",
     "supervisord",
+    "tailable",
     "testdb",
     "testname",
     "uuidv",
-    "venv"
+    "venv",
+    "virtuals"
   ],
   "sonarlint.connectedMode.project": {
     "connectionId": "helloblueai",
