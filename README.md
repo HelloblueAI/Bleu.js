@@ -123,7 +123,7 @@ console.log(`Is the code quality acceptable? ${isQualityCode}`);
 pnpm test
 ```
 
-````javascript
+```javascript
 
   Bleu
     ✓ should generate a new egg (3 ms)
@@ -140,7 +140,7 @@ Tests:       8 passed, 8 total
 Snapshots:   0 total
 Time:        0.359 s, estimated 1 s
 Ran all test suites.
-
+```
 
 
 ## Generating Eggs
