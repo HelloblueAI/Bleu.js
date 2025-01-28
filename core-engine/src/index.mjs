@@ -86,7 +86,7 @@ class MetricsSystem {
   }
 
   static getMetrics(options = {}) {
-    const { timeRange = 3600000 } = options; 
+    const { timeRange = 3600000 } = options;
     const now = Date.now();
     const results = {};
 
@@ -161,7 +161,7 @@ class CodeGenerator {
     this.className = '${sanitizedName}';
     this.type = '${type}';
     this.createdAt = new Date().toISOString();
-    this.version = '${process.env.ENGINE_VERSION || '1.0.32'}';
+    this.version = 'bleu.js v.' + (process.env.BLEU_VERSION || '1.0.31');
     this.instanceId = '${uuidv4()}';
 
     logger.info(\`Initializing ${type} instance: \${this.className}\`, {
@@ -494,7 +494,7 @@ app.get('/api/health', (req, res) => {
       pid: process.pid,
       version: process.version,
       env: process.env.NODE_ENV || 'development',
-      engineVersion: process.env.ENGINE_VERSION || '1.0.32',
+      engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.31',
       memoryUsage: process.memoryUsage(),
     },
     metrics: MetricsSystem.getMetrics(),
@@ -563,7 +563,7 @@ app.post('/api/generate-egg', async (req, res) => {
         requestId,
         generatedAt: new Date().toISOString(),
         duration: `${duration.toFixed(2)}ms`,
-        engineVersion: process.env.ENGINE_VERSION || '1.0.32',
+        engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.31',
         type,
         className: sanitizedName,
         methodCount: parameters.methods.length,
