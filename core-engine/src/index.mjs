@@ -5,9 +5,9 @@ import express from 'express';
 import { createServer } from 'http';
 import os from 'os';
 import { performance } from 'perf_hooks';
+import { v4 as uuidv4 } from 'uuid';
 import winston from 'winston';
 import { WebSocketServer } from 'ws';
-import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -779,4 +779,5 @@ if (cluster.isPrimary) {
 }
 
 // Export for testing
-export { app, server, wss, wsManager, MetricsSystem, CodeGenerator, logger };
+export { app, CodeGenerator, logger, MetricsSystem, server, wsManager, wss };
+
