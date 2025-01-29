@@ -142,14 +142,13 @@ Time:        0.359 s, estimated 1 s
 Ran all test suites.
 ```
 
-
 ## Generating Eggs
 
 To generate code snippets (eggs) using Bleu.js:
 Start the eggs generator server:
 
 ```javascript
-cd eggs-generator
+cd core-engine
 node src/index.mjs
 ```
 
@@ -547,9 +546,6 @@ const Bleu = require('./Bleu');
 
 const bleu = new Bleu();
 
-console.log('This is an index file');
-
-// Test generateEgg method
 const newEgg = bleu.generateEgg('This is a test egg', 'model', {
   modelName: 'TestModel',
   fields: [
@@ -558,18 +554,15 @@ const newEgg = bleu.generateEgg('This is a test egg', 'model', {
   ],
 });
 
-console.log('Generated Egg:', newEgg);
-
-// Test optimizeCode method
 const code = 'const x = 1;   console.log(x);';
 const optimizedCode = bleu.optimizeCode(code);
 console.log('Optimized Code:', optimizedCode);
 
-// Test ensureCodeQuality method
+
 const isQualityCode = bleu.ensureCodeQuality(code);
 console.log('Is the code quality acceptable?', isQualityCode);
 
-// Test manageDependencies method
+
 const dependencies = ['express', 'body-parser'];
 bleu.manageDependencies(dependencies);
 ```
@@ -969,21 +962,6 @@ optimizeCode(code) {
 
 ```
 
-### manageDependencies Method:
-
-The manageDependencies method will handle the project's dependencies. This placeholder will eventually include logic to automate dependency resolution, installation, and updates.
-
-- Placeholder logic for dependency management.
-- Potential logging of managed dependencies.
-
-```javascript
-manageDependencies(dependencies) {
-  dependencies.forEach(dep => {
-    console.log(`Managing dependency: ${dep.name}@${dep.version}`);
-
-  });
-}
-```
 
 ### ensureCodeQuality Method:
 
@@ -1120,58 +1098,113 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
+
+Test All APIs
+
 ```javascript
-const express = require('express');
-const bodyParser = require('body-parser');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-
-const app = express();
-app.use(bodyParser.json());
-
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'Bleu.js API',
-    version: '1.0.0',
-    description: 'Documentation for the Bleu.js API',
-  },
-  servers: [
-    {
-      url: 'http://localhost:3003',
-    },
-  ],
-};
-
-const options = {
-  swaggerDefinition,
-  apis: ['./server.js'], // Path to the API docs
-};
-
-const swaggerSpec = swaggerJsdoc(options);
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Hello, World!' });
-});
-
-app.listen(3003, () => {
-  console.log('Server is running on http://localhost:3003');
-});
+./api_test_suite.sh
 ```
 
-## Debug endpoint
+# Generate Model
 
-`curl -X POST http://localhost:3003/debug -d '{}'`
+`curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-model" \
+     -d '{
+       "type": "model",
+       "parameters": {
+         "name": "OrderModel",
+         "methods": [
+           "validateBeforeSave",
+           "calculateTotals",
+           "applyDiscount",
+           "generateInvoice",
+           "processPayment",
+           "updateInventory",
+           "notifyCustomer"
+         ]
+       }
+     }' | jq '.'`
 
-## Optimize endpoint
+## Generate REST Controller
 
-`curl -X POST http://localhost:3003/optimize -d '{}'`
+`curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-controller" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "ProductController",
+         "methods": [
+           "listProducts",
+           "getProductDetails",
+           "createProduct",
+           "updateProduct",
+           "deleteProduct",
+           "searchProducts",
+           "exportToCsv",
+           "importFromCsv"
+         ]
+       }
+     }' | jq '.'`
+
 
 ## Generate endpoint
 
-`curl -X POST http://localhost:3003/generate -d '{}'`
+`curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-factory" \
+     -d '{
+       "type": "factory",
+       "parameters": {
+         "name": "PaymentFactory",
+         "methods": [
+           "createPaymentProcessor",
+           "createPaymentGateway",
+           "createPaymentValidator",
+           "validatePaymentMethod",
+           "processTransaction"
+         ]
+       }
+     }' | jq '.'`
+
+
+## LARGE NUMBER OF METHODS WITH CATEGORIZATION
+
+`curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: advanced-large-methods" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "EnterpriseScaleService",
+         "methods": [
+           "initializeSystem1", "initializeSystem2", "initializeSystem3", "initializeSystem4", "initializeSystem5",
+           "validateData1", "validateData2", "validateData3", "validateData4", "validateData5",
+           "processRequest1", "processRequest2", "processRequest3", "processRequest4", "processRequest5",
+           "handleResponse1", "handleResponse2", "handleResponse3", "handleResponse4", "handleResponse5",
+           "manageCaching1", "manageCaching2", "manageCaching3", "manageCaching4", "manageCaching5",
+           "optimizePerformance1", "optimizePerformance2", "optimizePerformance3", "optimizePerformance4", "optimizePerformance5",
+           "handleFailover1", "handleFailover2", "handleFailover3", "handleFailover4", "handleFailover5",
+           "processQueue1", "processQueue2", "processQueue3", "processQueue4", "processQueue5",
+           "validateSecurity1", "validateSecurity2", "validateSecurity3", "validateSecurity4", "validateSecurity5",
+           "manageResources1", "manageResources2", "manageResources3", "manageResources4", "manageResources5",
+           "handleErrors1", "handleErrors2", "handleErrors3", "handleErrors4", "handleErrors5",
+           "processEvents1", "processEvents2", "processEvents3", "processEvents4", "processEvents5",
+           "manageState1", "manageState2", "manageState3", "manageState4", "manageState5",
+           "optimizeMemory1", "optimizeMemory2", "optimizeMemory3", "optimizeMemory4", "optimizeMemory5",
+           "handleConcurrency1", "handleConcurrency2", "handleConcurrency3", "handleConcurrency4", "handleConcurrency5",
+           "processStream1", "processStream2", "processStream3", "processStream4", "processStream5",
+           "validateIntegrity1", "validateIntegrity2", "validateIntegrity3", "validateIntegrity4", "validateIntegrity5",
+           "manageConnections1", "manageConnections2", "manageConnections3", "manageConnections4", "manageConnections5",
+           "handleTimeout1", "handleTimeout2", "handleTimeout3", "handleTimeout4", "handleTimeout5",
+           "processCallback1", "processCallback2", "processCallback3", "processCallback4", "processCallback5",
+           "validatePermissions1", "validatePermissions2", "validatePermissions3", "validatePermissions4", "validatePermissions5"
+         ]
+       }
+     }' | jq '.'`
+
+
 
 Access the Swagger UI:
 
@@ -1398,7 +1431,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.31](https://img.shields.io/badge/v1.0.31-0ff?style=flat)
+![v1.0.32](https://img.shields.io/badge/v1.0.32-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
