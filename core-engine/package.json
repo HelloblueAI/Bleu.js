@@ -1,6 +1,6 @@
 {
   "name": "core-engine",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "type": "module",
   "main": "src/index.mjs",
   "scripts": {
@@ -20,5 +20,8 @@
     "uuid": "^11.0.5",
     "validator": "^13.11.0",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "standard-version": "^9.5.0"
   }
 }

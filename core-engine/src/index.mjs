@@ -28,7 +28,6 @@ const ALLOWED_TYPES = [
   'factory',
 ];
 
-// Enhanced Logger Configuration
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
@@ -91,7 +90,11 @@ class MetricsSystem {
     const results = {};
 
     METRICS.forEach((value, key) => {
-      if (now - value.lastUpdated.getTime() < timeRange) {
+      if (
+        value.lastUpdated &&
+        value.lastUpdated instanceof Date &&
+        now - value.lastUpdated.getTime() < timeRange
+      ) {
         results[key] = {
           avg: value.total / value.count,
           min: value.min,
