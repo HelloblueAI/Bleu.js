@@ -186,4 +186,5 @@ const BleuX = {
   }
 };
 
-export { Store, BleuX };
+export { BleuX, Store };
+
