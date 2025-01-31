@@ -24,6 +24,7 @@ Install the `bleujs` package using **pnpm**:
 ```javascript
 pnpm install bleujs@latest
 ```
+or
 
 ```javascript
 pnpm add bleujs
@@ -47,22 +48,331 @@ pnpm info bleujs
 
 Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
 
-## Generating Code
 
-To generate code using Bleu.js, you can send a POST request to the /generate endpoint with the template you want to use:
-`curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"template": "basic function"}'`
+### Features
+## Lambda Core Engine
 
-## Optimizing Code
+* Efficient CPU core utilization through worker (Agent) processes
+* Automatic worker restart for high availability
+* Dynamic code generation and template management
+* Enhanced logging with winston integration
+* Comprehensive metrics tracking
+* WebSocket connection management
+* Request rate limiting
+* Health monitoring
+* Graceful shutdown handling
 
-To optimize code using Bleu.js, you can send a POST request to the /optimize endpoint with the code you want to optimize:
-`curl -X POST http://localhost:3000/optimize -H "Content-Type: application/json" -d '{"Hello, world!)}'`
+### API Reference
 
-## Debugging Code
+Starting the Server
 
-To debug code using Bleu.js, you can send a POST request to the /debug endpoint with the code you want to debug:
-`curl -X POST http://localhost:3000/debug -H "Content-Type: application/json" -d '{"code": "console.log(\"Hello, world!\");"}'`
+```javascript
+cd core-engine
+```
 
-The bleujs package aims to provide a robust and powerful solution for developers working on AI and backend services. Here's how this package can help developers around the world:
+To test All APIs
+(In a new terminal)
+```javascript
+./api_test_suite.sh
+```
+
+## Generate Code Templates
+
+Generate Model
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-model" \
+     -d '{
+       "type": "model",
+       "parameters": {
+         "name": "OrderModel",
+         "methods": [
+           "validateBeforeSave",
+           "calculateTotals",
+           "applyDiscount",
+           "generateInvoice"
+         ]
+       }
+     }'
+```
+
+Generate Service Class
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-service" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserService",
+         "methods": [
+           "findAll",
+           "findOne",
+           "create",
+           "update",
+           "delete",
+           "validateBeforeSave"
+         ]
+       }
+     }'
+```
+
+Generate Controller
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-controller" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "ProductController",
+         "methods": [
+           "listProducts",
+           "getProductDetails",
+           "createProduct",
+           "updateProduct",
+           "deleteProduct",
+           "searchProducts"
+         ]
+       }
+     }'
+```
+
+Generate Repository
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-repository" \
+     -d '{
+       "type": "repository",
+       "parameters": {
+         "name": "OrderRepository",
+         "methods": [
+           "findById",
+           "findAll",
+           "findByCategory",
+           "createBulk",
+           "updateMany",
+           "softDelete"
+         ]
+       }
+     }'
+```
+
+## Advanced Usage
+Event Sourcing Pattern
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-event-sourcing" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "EventSourcingEngine",
+         "methods": [
+           "appendToEventStream",
+           "reconstructAggregateState",
+           "handleEventReplay",
+           "manageEventStore",
+           "versionSnapshot"
+         ]
+       }
+     }'
+```
+Microservice Infrastructure
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-microservice" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "MicroserviceInfrastructure",
+         "methods": [
+           "initializeServiceRegistry",
+           "configureServiceDiscovery",
+           "setupCircuitBreaker",
+           "implementRetryMechanism",
+           "setupDistributedTracing"
+         ]
+       }
+     }'
+```
+
+Load Testing
+```javascript
+for i in {1..5}; do
+  curl -X POST "http://localhost:3001/api/generate-egg" \
+       -H "Content-Type: application/json" \
+       -H "X-Request-ID: load-test-$i" \
+       -d "{
+         \"type\": \"service\",
+         \"parameters\": {
+           \"name\": \"TestService$i\",
+           \"methods\": [\"test1\", \"test2\"]
+         }
+       }" &
+done
+```
+
+## Error Handling
+Missing Required Fields
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "service"
+     }'
+```
+
+Invalid Service Type
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "invalidType",
+       "parameters": {
+         "name": "Test",
+         "methods": ["test"]
+       }
+     }'
+```
+
+Generate Authentication Service
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-auth-service" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "AuthenticationService",
+         "methods": [
+           "login",
+           "logout",
+           "refreshToken",
+           "validateSession",
+           "changePassword",
+           "resetPassword",
+           "generateTwoFactorCode",
+           "verifyTwoFactorCode",
+           "revokeToken",
+           "updateProfile"
+         ]
+       }
+     }'
+```
+
+Generate Authentication Service
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-auth-service" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "AuthenticationService",
+         "methods": [
+           "login",
+           "logout",
+           "refreshToken",
+           "validateSession",
+           "changePassword",
+           "resetPassword",
+           "generateTwoFactorCode",
+           "verifyTwoFactorCode",
+           "revokeToken",
+           "updateProfile"
+         ]
+       }
+     }'
+```
+
+### Enterprise Service
+
+Generate Enterprise Service
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-enterprise-scale" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "EnterpriseService",
+         "methods": [
+           "initializeSystem",
+           "validateConfiguration",
+           "processRequest",
+           "handleResponse",
+           "manageCaching",
+           "optimizePerformance",
+           "handleFailover",
+           "processQueue",
+           "validateSecurity",
+           "manageResources"
+         ]
+       }
+     }'
+```
+
+Missing Parameters
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-missing-params" \
+     -d '{
+       "type": "service"
+     }'
+```
+
+Expected Response:
+```javascript
+{
+  "success": false,
+  "error": "Missing required fields: type or parameters",
+  "metadata": {
+    "requestId": "test-missing-params",
+    "timestamp": "2025-01-28T...",
+    "duration": "0.04ms"
+  }
+}
+```
+
+### Edge Cases
+
+Edge Cases
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-unicode" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "TestService💫",
+         "methods": ["test✨", "validate🔍", "process🔄"]
+       }
+     }'
+```
+Load Testing Example
+```javascript
+for i in {1..5}; do
+  curl -X POST "http://localhost:3001/api/generate-egg" \
+       -H "Content-Type: application/json" \
+       -H "X-Request-ID: concurrent-test-$i" \
+       -d "{
+         \"type\": \"service\",
+         \"parameters\": {
+           \"name\": \"Service$i\",
+           \"methods\": [\"method$i\"]
+         }
+       }" &
+done
+wait
+```
 
 ## Comprehensive AI Tools
 
@@ -616,16 +926,6 @@ Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
-## Test
-
-`cd backend`
-
-`╰─ curl -X POST http://localhost:3003/ai/nlp -H "Content-Type: application/json" -d '{"text": "This is a test for NLP processing."}'`
-
-## Expected response:
-
-`{"tokens":["This","is","a","test","for","NLP","processing"]}% `
-
 ## Initializes a new instance of the BleuJS class.
 
 ### Methods
@@ -731,219 +1031,306 @@ Ran all test suites.
 ```
 
 ```javascript
- PASS   lint  reports/jest-html-reporters-attach/report/index.js
- PASS   lint  backend/coverage/lcov-report/prettify.js
+pnpm test
+```
+
+```javascript
+    ~/Bleu.js  on   main *4 +10 !1  pnpm test                               ✔  3.1.0   at 03:19:23 PM 
+
+> bleujs@1.0.33 test /Users/pejmanhaghighatnia/Bleu.js
+> jest --detectOpenHandles --forceExit
+
+ PASS   lint  output/html-report/jest-html-reporters-attach/index/index.js
+  ✓ ESLint (1569 ms)
+
+ PASS   lint  output/jest-html-reporters-attach/report/index.js
+  ✓ ESLint (1370 ms)
+
+ PASS   lint  output/jest-html-reporters-attach/test-report/index.js
+  ✓ ESLint (1201 ms)
+
+ PASS   lint  output/jest-html-reporters-attach/test-report/result.js
+  ✓ ESLint (547 ms)
+
+ PASS   lint  src/backend/src/ai/decisionTree.js
+  ✓ ESLint (7 ms)
+
  PASS   lint  eggs-generator/coverage/prettify.js
- PASS   lint  eggs-generator/coverage/lcov-report/prettify.js
- PASS   lint  coverage/lcov-report/prettify.js
+  ✓ ESLint (23 ms)
+
  PASS   lint  coverage/prettify.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/turkish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/turkish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/bizstyle/static/css3-mediaqueries.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/italian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/bizstyle/static/css3-mediaqueries_src.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/basic/static/searchtools.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/dutch-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/docutils/writers/s5_html/themes/default/slides.js
- PASS   lint  backend/coverage/lcov-report/sorter.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/french-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/french-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/portuguese-stemmer.js
- PASS   lint  scripts/preinstall.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/spanish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/spanish-stemmer.js
+  ✓ ESLint (18 ms)
+
+ PASS   lint  output/lcov-report/prettify.js
+  ✓ ESLint (14 ms)
+
+ PASS   lint  output/html-report/jest-html-reporters-attach/index/result.js
+  ✓ ESLint (16 ms)
+
+ PASS   lint  coverage/lcov-report/prettify.js
+  ✓ ESLint (13 ms)
+
+ PASS   lint  output/prettify.js
+  ✓ ESLint (14 ms)
+
+ PASS   lint  eggs-generator/coverage/lcov-report/prettify.js
+  ✓ ESLint (12 ms)
+
+ PASS   lint  src/backend/src/controllers/apiController.js
+  ✓ ESLint (6 ms)
+
  PASS   lint  coverage/lcov-report/sorter.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/finnish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/en_DE/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/portuguese-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/italian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/finnish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/russian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/porter-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/romanian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/porter-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/pt/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/hungarian-stemmer.js
- PASS   lint  coverage/sorter.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/romanian-stemmer.js
- PASS   lint  eggs-generator/coverage/sorter.js
- PASS   lint  eggs-generator/coverage/lcov-report/sorter.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/hungarian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/russian-stemmer.js
- PASS   lint  reports/jest-html-reporters-attach/report/result.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/dutch-stemmer.js
- PASS   lint  backend/server.js
- PASS   lint  core-engine/src/index.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/german-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/danish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/base-stemmer.js
- PASS   lint  backend/src/routes.js
- PASS   lint  backend/ai/decisionTree.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/base-stemmer.js
- PASS   lint  backend/index.js
- PASS   lint  frontend/src/index.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/german-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/basic/static/doctools.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/swedish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/el/LC_MESSAGES/sphinx.js
+  ✓ ESLint (5 ms)
+
  PASS   lint  dependency-management/src/index.js
- PASS   lint  backend/tests/CustomSequencer.js
- PASS   lint  frontend/public/app.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/danish-stemmer.js
- PASS   lint  backend/controllers/apiController.js
- PASS   lint  core-engine/src/BleuX.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/urllib3/contrib/emscripten/emscripten_fetch_worker.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/basic/static/sphinx_highlight.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/non-minified-js/norwegian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/swedish-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/search/minified-js/norwegian-stemmer.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ta/LC_MESSAGES/sphinx.js
- PASS   lint  eggs-generator/coverage/block-navigation.js
- PASS   lint  language-plugins/javascript/src/index.js
- PASS   lint  backend/controllers/dataController.js
- PASS   lint  backend/ai/nlpProcessor.js
- PASS   lint  backend/tests/decisionTree.test.js
- PASS   lint  eggs-generator/src/index.js
- PASS   lint  eggs-generator/tests/example.test.js
- PASS   lint  ./jest.setup.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/et/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/fr/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/gl/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/es_CO/LC_MESSAGES/sphinx.js
- PASS   lint  coverage/lcov-report/block-navigation.js
- PASS   lint  coverage/block-navigation.js
- PASS   lint  dependency-management/test.js
- PASS   lint  ./babel.config.js
- PASS   lint  backend/coverage/lcov-report/block-navigation.js
- PASS   lint  backend/routes/apiRoutes.js
- PASS   lint  backend/ml/modelManager.js
- PASS   lint  backend/tests/testSequencer.test.js
- PASS   lint  backend/html-report/jest-html-reporters-attach/report/result.js
- PASS   lint  core-engine/src/Bleu.js
- PASS   lint  eggs-generator/tests/index.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/fa/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/mk/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/yue/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/cak/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/zh_CN/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/is/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sr_RS/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ca/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/da/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sv/LC_MESSAGES/sphinx.js
- PASS   lint  ./generateRuleId.js
- PASS   lint  backend/src/swagger.js
- PASS   lint  backend/services/aiService.js
- PASS   lint  backend/services/rulesEngine.js
- PASS   lint  backend/models/ruleModel.js
- PASS   lint  backend/tests/globalSetup.js
- PASS   lint  backend/tests/seedDatabase.test.js
+  ✓ ESLint (3 ms)
+
  PASS   lint  eggs-generator/src/HenFarm.js
+  ✓ ESLint (1 ms)
+
  PASS   lint  eggs-generator/src/Bleu.js
- PASS   lint  eggs-generator/coverage/lcov-report/block-navigation.js
- PASS   lint  language-plugins/javascript/tests/index.test.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/eu/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/cy/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ko/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/si/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ro/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ru/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/cs/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/nb_NO/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/he/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/zh_HK/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/vi/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ur/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sl/LC_MESSAGES/sphinx.js
- PASS   lint  ./simpleServer.js
- PASS   lint  backend/src/utils/lib/Bleu.js
- PASS   lint  backend/src/utils/testSequencer.js
- PASS   lint  backend/services/decisionTreeService.js
- PASS   lint  backend/routes/dataRoutes.js
- PASS   lint  backend/tests/aiService.test.js
- PASS   lint  ./preinstall.js
- PASS   lint  language-plugins/src/index.js
- PASS   lint  language-plugins/javascript/src/JSProcessor.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/themes/scrolls/static/theme_extras.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/de_DE/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/en_FR/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/tr/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/fr_FR/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/lt/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/es/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/eo/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/id/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/fi/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/de/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/hi/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ka/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ne/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/nl/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/bn/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/bg/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/hu/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/hr/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ar/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/en_GB/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sr@latin/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sr/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/zh_TW.Big5/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/hi_IN/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/zh_TW/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/it/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/lv/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/ja/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/pt_BR/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/uk_UA/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sq/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/en_HK/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/pl/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/sk/LC_MESSAGES/sphinx.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  eggs-generator/coverage/lcov-report/sorter.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  src/backend/src/routes/dataRoutes.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  src/backend/routes.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  src/backend/index.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  coverage/sorter.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  coverage/block-navigation.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  output/jest-html-reporters-attach/report/result.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  src/backend/src/services/aiService.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/routes/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/CustomSequencer.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/aiService.test.js
+  ✓ ESLint (1 ms)
+
  PASS   lint  dependency-management/src/dependencyManager.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  output/sorter.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  output/lcov-report/sorter.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  eggs-generator/coverage/sorter.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  frontend/src/index.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  frontend/public/app.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  src/backend/src/controllers/dataController.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/ai/nlpProcessor.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/ml/modelManager.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/decisionTree.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/apiGenerateEgg.test.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  src/backend/tests/seedDatabase.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/testSequencer.test.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/apiController.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/mocks/AiQuery.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  language-plugins/javascript/src/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  language-plugins/javascript/src/JSProcessor.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  language-plugins/javascript/tests/index.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  coverage/lcov-report/block-navigation.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./.simple-git-hooks.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  dependency-management/test.js
+  ✓ ESLint (2 ms)
+
  PASS   lint  ./manualConnectionTest.js
- PASS   lint  collaboration-tools/src/index.js
- PASS   lint  backend/src/utils/logger.js
- PASS   lint  backend/services/seedDatabase.js
- PASS   lint  backend/routes/index.js
- PASS   lint  backend/tests/apiRoutes.test.js
- PASS   lint  backend/tests/bleu.test.js
- PASS   lint  backend/tests/setupTests.js
- PASS   lint  backend/tests/aiTests.test.js
- PASS   lint  backend/tests/globalTeardown.js
- PASS   lint  backend/html-report/jest-html-reporters-attach/report/index.js
- PASS   lint  backend/mocks/databse.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  output/lcov-report/block-navigation.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./eslint.generated.config.js
+  ✓ ESLint (3 ms)
+
  PASS   lint  eggs-generator/src/generateEgg.js
- PASS   lint  code-quality-assurance/src/index.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/pt_PT/LC_MESSAGES/sphinx.js
- PASS   lint  language-plugins/python/venv/lib/python3.12/site-packages/sphinx/locale/te/LC_MESSAGES/sphinx.js
- PASS   lint  backend/services/mockEngine.js
- PASS   lint  backend/routes/simpleRoute.js
- PASS   lint  backend/models/userModel.js
- PASS   lint  ./index.js
- PASS   lint  ./jest.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/coverage/block-navigation.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/tests/index.js
+  ✓ ESLint (1 ms)
+
  PASS   lint  eggs-generator/__mocks__/HenFarm.js
+  ✓ ESLint (2 ms)
 
--------------------|---------|----------|---------|---------|-------------------
-File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
--------------------|---------|----------|---------|---------|-------------------
-All files          |    100  |       38 |     191 |    191  | 245
- dist              |      0  |        0 |       0 |      0  |
-  routes.js        |      0  |        0 |       0 |      0  | 5-914
-  swagger.js       |      0  |      100 |     100 |      0  | 4-23
- dist/utils        |      0  |        0 |       0 |      0  |
-  logger.js        |      0  |      100 |       0 |      0  | 3-23
-  testSequencer.js |      0  |        0 |       0 |      0  | 5-725
- dist/utils/lib    |      0  |        0 |       0 |      0  |
-  Bleu.js          |      0  |        0 |       0 |      0  | 5-78
--------------------|---------|----------|---------|---------|-------------------
+ PASS   lint  code-quality-assurance/src/index.js
+  ✓ ESLint (1 ms)
 
-Test Suites: 191 passed, 191 total
-Tests:       191 passed, 191 total
+ PASS   lint  src/backend/src/services/seedDatabase.js
+  ✓ ESLint
+
+ PASS   lint  src/backend/src/services/mockEngine.js
+  ✓ ESLint
+
+ PASS   lint  src/backend/src/services/rulesEngine.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/routes/simpleRoute.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/models/userModel.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/utils/logger.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/utils/testSequencer.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/apiRoutes.test.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/bleu.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/setupTests.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/globalSetup.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/aiTests.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/globalTeardown.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/swagger.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/html-report/jest-html-reporters-attach/report/result.js
+  ✓ ESLint (6 ms)
+
+ PASS   lint  src/backend/html-report/jest-html-reporters-attach/report/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  language-plugins/src/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./eslint.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  scripts/preinstall.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  ./generateRuleId.js
+  ✓ ESLint (5 ms)
+
+ PASS   lint  collaboration-tools/src/index.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  ./vite.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  output/block-navigation.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  eggs-generator/coverage/lcov-report/block-navigation.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  eggs-generator/jest.setup.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./jest.setup.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./preinstall.js
+  ✓ ESLint
+
+ PASS   lint  ./simple-git-hooks.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/models/AiQuery.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/utils/lib/Bleu.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./simpleServer.js
+  ✓ ESLint (1 ms)
+
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+----------|---------|----------|---------|---------|-------------------
+All files |       0 |        0 |       0 |       0 |
+----------|---------|----------|---------|---------|-------------------
+Test Suites: 1 skipped, 88 passed, 88 of 89 total
+Tests:       88 passed, 88 total
 Snapshots:   0 total
-Time:        5.507 s
+Time:        5.811 s
 Ran all test suites.
-📦 report is created on: /home/runner/work/Bleu.js/Bleu.js/reports/test-report.html
-**  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html
+📦 report is created on: /Users/pejmanhaghighatnia/Bleu.js/reports/test-report.html
+**  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html      **
+    ~/Bleu.js  on   main *4 +10 !3                              ✔  took 8s   3.1.0   at 03:19:33 PM 
+```
+
+![Bleu.js SVG](https://raw.githubusercontent.com/HelloblueAI/Bleu.js/46a4a1183db83ac789b4c41c9d4e2e39356cb902/Asset.svg)
+
+## Main Test Report
+
+```javascript
+open ./reports/test-report.html
+```
+
+Detailed Jest Report
+
+```javascript
+open ./reports/jest-stare/index.html
 ```
 
 ### optimizeCode Method:
@@ -959,7 +1346,6 @@ optimizeCode(code) {
   const optimizedCode = code.replace(/\s+/g, ' ').trim();
   return optimizedCode;
 }
-
 ```
 
 
@@ -981,55 +1367,6 @@ ensureCodeQuality(code) {
 ## Bleu.js API Documentation
 
 This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
-
-`ROOT`
-`pnpm run start:backend `
-
-```javascript
- PASS  backend/tests/bleu.test.js
-  API Tests
-    ✓ should handle invalid request headers (28 ms)
-    ✓ should handle /data with body {} (2 ms)
-    ✓ should handle /nonexistent with body null (2 ms)
-    ✓ should handle /data with body Invalid JSON (2 ms)
-    ✓ should handle asynchronous errors gracefully (2 ms)
-    ✓ should handle edge cases (1 ms)
-    ✓ should ensure performance meets expectations (10 ms)
-    ✓ should return 400 for missing data field in POST /data (1 ms)
-    ✓ should return 500 for simulated server error in POST /data (2 ms)
-    ✓ should handle invalid JSON gracefully (1 ms)
-    ✓ should handle very large data payloads (1 ms)
-    ✓ should measure response time for POST /data (2 ms)
-    ✓ should handle simultaneous requests (9 ms)
-    ✓ should validate response schema (1 ms)
-    ✓ should stress test the server (39 ms)
-    ✓ should test with invalid routes (1 ms)
-    ✓ should test JSON parsing error (1 ms)
-    ✓ should test different HTTP methods on /data (2 ms)
-    ✓ should handle very large number of simultaneous requests (294 ms)
-    ✓ should handle concurrent GET and POST requests (1 ms)
-    ✓ should handle slow network conditions gracefully
-    ✓ should verify CORS headers
-    ✓ should handle session cookies (8 ms)
-    ✓ should verify content-type for POST /data
-    ✓ should test for memory leaks (31 ms)
-    ✓ should handle different user roles (2 ms)
-    ✓ should handle database connectivity issues (1 ms)
-    ✓ should handle application/x-www-form-urlencoded (1 ms)
-    ✓ should handle JSON arrays (1 ms)
-    ✓ should handle deeply nested JSON objects (1 ms)
-
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |    7865 |      300 |       9 |       0 |
-----------|---------|----------|---------|---------|-------------------
-Test Suites: 1 passed, 1 total
-Tests:       30 passed, 30 total
-Snapshots:   0 total
-Time:        1.597 s
-Ran all test suites matching /backend\/tests/i.
-```
 
 (On Linux, use xdg-open index.html, or open it manually on Windows.)
 
@@ -1098,36 +1435,9 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-
-Test All APIs
-
-```javascript
-./api_test_suite.sh
-```
-
-# Generate Model
-
-`curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-model" \
-     -d '{
-       "type": "model",
-       "parameters": {
-         "name": "OrderModel",
-         "methods": [
-           "validateBeforeSave",
-           "calculateTotals",
-           "applyDiscount",
-           "generateInvoice",
-           "processPayment",
-           "updateInventory",
-           "notifyCustomer"
-         ]
-       }
-     }' | jq '.'`
-
 ## Generate REST Controller
 
+```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-controller" \
@@ -1147,10 +1457,10 @@ Test All APIs
          ]
        }
      }' | jq '.'`
-
+```
 
 ## Generate endpoint
-
+```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-factory" \
@@ -1167,10 +1477,10 @@ Test All APIs
          ]
        }
      }' | jq '.'`
-
+```
 
 ## LARGE NUMBER OF METHODS WITH CATEGORIZATION
-
+```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: advanced-large-methods" \
@@ -1203,8 +1513,7 @@ Test All APIs
          ]
        }
      }' | jq '.'`
-
-
+```
 
 Access the Swagger UI:
 
@@ -1431,7 +1740,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.32](https://img.shields.io/badge/v1.0.32-0ff?style=flat)
+![v1.0.33](https://img.shields.io/badge/v1.0.33-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)

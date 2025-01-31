@@ -164,7 +164,7 @@ class CodeGenerator {
     this.className = '${sanitizedName}';
     this.type = '${type}';
     this.createdAt = new Date().toISOString();
-    this.version = 'bleu.js v.' + (process.env.BLEU_VERSION || '1.0.31');
+    this.version = 'bleu.js v.' + (process.env.BLEU_VERSION || '1.0.33');
     this.instanceId = '${uuidv4()}';
 
     logger.info(\`Initializing ${type} instance: \${this.className}\`, {
@@ -201,7 +201,7 @@ ${sanitizedMethods.map((method) => this.methodTemplate(method)).join('\n')}
       className: '${sanitizedName}',
       type: '${type}',
       methodCount: ${sanitizedMethods.length},
-      engineVersion: '${process.env.ENGINE_VERSION || '1.0.32'}'
+      engineVersion: '${process.env.ENGINE_VERSION || '1.0.33'}'
     };
   }
 }`;
@@ -497,7 +497,7 @@ app.get('/api/health', (req, res) => {
       pid: process.pid,
       version: process.version,
       env: process.env.NODE_ENV || 'development',
-      engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.31',
+      engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.33',
       memoryUsage: process.memoryUsage(),
     },
     metrics: MetricsSystem.getMetrics(),
@@ -566,7 +566,7 @@ app.post('/api/generate-egg', async (req, res) => {
         requestId,
         generatedAt: new Date().toISOString(),
         duration: `${duration.toFixed(2)}ms`,
-        engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.31',
+        engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.0.33',
         type,
         className: sanitizedName,
         methodCount: parameters.methods.length,
@@ -691,7 +691,7 @@ const shutdownHandler = async (signal) => {
 };
 
 if (cluster.isPrimary) {
-  logger.info(`Primary process v1.0.32 ${process.pid} is running`);
+  logger.info(`Primary process v1.0.33 ${process.pid} is running`);
 
   for (let i = 0; i < CPU_CORES; i++) {
     cluster.fork();
@@ -741,7 +741,7 @@ if (cluster.isPrimary) {
       🔌 Port:           ${port}
       🔧 Worker PID:     ${process.pid}
       🔄 CPU Cores:      ${CPU_CORES}
-      📊 Engine Version: ${process.env.ENGINE_VERSION || '1.0.32'}
+      📊 Engine Version: ${process.env.ENGINE_VERSION || '1.0.33'}
       -------------------------------------------
     `);
   });
