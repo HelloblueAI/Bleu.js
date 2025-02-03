@@ -30,6 +30,7 @@ or
 pnpm add bleujs
 ```
 
+Retrieve Package Information
 ```javascript
 pnpm info bleujs
 ```
