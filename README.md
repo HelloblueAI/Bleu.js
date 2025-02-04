@@ -78,8 +78,7 @@ To test All APIs
 ```
 
 ## Generate Code Templates
-
-# Generate Model
+Generate Model
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -97,8 +96,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
-
-# Generate Service Class
+Generate Service Class
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -118,8 +116,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
-
-# Generate Controller
+Generate Controller
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -139,8 +136,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
-
-# Generate Repository
+Generate Repository
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -163,7 +159,6 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 
 ## Advanced Usage
 Event Sourcing Pattern
-
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -182,7 +177,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
-# Controller generation
+Controller generation
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -194,8 +189,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Model generation
+Model generation
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -207,8 +201,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Service generation
+Service generation
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -220,8 +213,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# API endpoint generation
+API endpoint generation
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -244,9 +236,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-
-# Generate Microservice with Advanced Features
+Generate Microservice with Advanced Features
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -279,8 +269,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Generate REST API with Authentication
+Generate REST API with Authentication
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -307,8 +296,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Generate Event-Driven Service
+Generate Event-Driven Service
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -335,8 +323,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Generate GraphQL API
+Generate GraphQL API
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -353,8 +340,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Deep Health Check
+Deep Health Check
 ```javascript
 curl -X POST http://localhost:3001/api/health/deep \
 -H "Content-Type: application/json" \
@@ -364,8 +350,7 @@ curl -X POST http://localhost:3001/api/health/deep \
   "services": ["database", "cache", "queue"]
 }'
 ```
-
-# Generate Load Test
+Generate Load Test
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -388,8 +373,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Generate Documentation
+Generate Documentation
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -409,8 +393,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Generate Deployment Config
+Generate Deployment Config
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -434,13 +417,11 @@ curl -X POST http://localhost:3001/api/generate-egg \
   }
 }'
 ```
-
-# Get Metrics
+Get Metrics
 ```javascript
 curl http://localhost:3001/api/metrics
 ```
-
-# Generate Migration
+Generate Migration
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -457,8 +438,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
 }'
 ```
 
-
-# Generate Service Template
+Generate Service Template
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -471,7 +451,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
 }'
 ```
 
-#  API Template
+API Template
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -485,7 +465,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
 }'
 ```
 
-# Test with Complex Parameters
+Test with Complex Parameters
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
 -H "Content-Type: application/json" \
@@ -504,18 +484,18 @@ curl -X POST http://localhost:3001/api/generate-egg \
 }'
 ```
 
-# Generate API
+Generate API
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \ -H "Content-Type: application/json" \ -d '{ "type": "api", "parameters": { "route": "/users", "message": "Users API" } }'
 ```
 
-# Generate Service
+Generate Service
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \ -H "Content-Type: application/json" \ -d '{ "type": "service", "parameters": { "name": "UserService", "methods": ["findAll", "findById", "create", "update", "delete"] } }'
 ```
 
 
-# Microservice Infrastructure
+Microservice Infrastructure
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -535,7 +515,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
      }'
 ```
 
-# Load Testing
+Load Testing
 ```javascript
 for i in {1..5}; do
   curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -552,7 +532,7 @@ done
 ```
 
 ## Error Handling
-# Missing Required Fields
+Missing Required Fields
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -561,7 +541,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
      }'
 ```
 
-# Invalid Service Type
+Invalid Service Type
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -574,32 +554,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
      }'
 ```
 
-# Generate Authentication Service
-```javascript
-curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-auth-service" \
-     -d '{
-       "type": "service",
-       "parameters": {
-         "name": "AuthenticationService",
-         "methods": [
-           "login",
-           "logout",
-           "refreshToken",
-           "validateSession",
-           "changePassword",
-           "resetPassword",
-           "generateTwoFactorCode",
-           "verifyTwoFactorCode",
-           "revokeToken",
-           "updateProfile"
-         ]
-       }
-     }'
-```
-
-# Generate Authentication Service
+Generate Authentication Service
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -626,7 +581,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 
 ### Enterprise Service
 
-# Generate Enterprise Service
+Generate Enterprise Service
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -651,7 +606,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
      }'
 ```
 
-# Missing Parameters
+Missing Parameters
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -660,8 +615,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        "type": "service"
      }'
 ```
-
-# Expected Response:
+Expected Response:
 ```javascript
 {
   "success": false,
@@ -675,8 +629,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Edge Cases
-
-# Edge Cases
+Edge Cases
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -689,7 +642,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
        }
      }'
 ```
-# Load Testing Example
+Load Testing Example
 ```javascript
 for i in {1..5}; do
   curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -760,7 +713,6 @@ bleu.manageDependencies(dependencies);
 const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
-
 
 
 ### bleujs-utils Package (Version 1.0.1)
