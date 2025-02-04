@@ -1965,6 +1965,7 @@ const swaggerDefinition = {
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/fca66aa2d399264d2f43fa5af54f452f8c145d16/LICENSE.md)
 
+![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=for-the-badge&logo=server)
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
@@ -1973,7 +1974,6 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
 ![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
-![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=for-the-badge&logo=server)
 ![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)
 ![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)
 ![Active Users](https://img.shields.io/badge/Active%20Users-300%2FMonth-orange?style=flat-square&logo=bar-chart)
