@@ -354,7 +354,7 @@ curl -X POST http://localhost:3001/api/generate-egg \
 }'
 ```
 
-#  Deep Health Check
+# Deep Health Check
 ```javascript
 curl -X POST http://localhost:3001/api/health/deep \
 -H "Content-Type: application/json" \
@@ -363,7 +363,7 @@ curl -X POST http://localhost:3001/api/health/deep \
   "timeout": 5000,
   "services": ["database", "cache", "queue"]
 }'
-``
+```
 
 # Generate Load Test
 ```javascript
@@ -516,7 +516,6 @@ curl -X POST http://localhost:3001/api/generate-egg \ -H "Content-Type: applicat
 
 
 # Microservice Infrastructure
-
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
