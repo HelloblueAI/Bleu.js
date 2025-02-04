@@ -1,6 +1,6 @@
 {
   "name": "python-processor",
-  "version": "1.0.5",
+  "version": "1.0.34",
   "description": "A powerful Python code processor",
   "main": "src/index.js",
   "scripts": {
