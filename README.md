@@ -63,7 +63,7 @@ Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code sn
 * Health monitoring
 * Graceful shutdown handling
 
-### API Reference
+### REST API Reference
 
 Starting the Server
 
@@ -762,28 +762,6 @@ const isQualityCode = bleu.ensureCodeQuality(code);
 console.log(`Is the code quality acceptable? ${isQualityCode}`);
 ```
 
-```javascript
-pnpm test
-```
-
-```javascript
-
-  Bleu
-    ✓ should generate a new egg (3 ms)
-    ✓ should optimize code
-    ✓ should manage dependencies (15 ms)
-    ✓ should ensure code quality
-    ✓ should generate multiple eggs
-    ✓ should handle large number of eggs (1 ms)
-    ✓ should handle complex optimization
-    ✓ should ensure quality of complex code
-
-Test Suites: 1 passed, 1 total
-Tests:       8 passed, 8 total
-Snapshots:   0 total
-Time:        0.359 s, estimated 1 s
-Ran all test suites.
-```
 
 
 ### bleujs-utils Package (Version 1.0.1)
