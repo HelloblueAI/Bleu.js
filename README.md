@@ -1965,7 +1965,6 @@ const swaggerDefinition = {
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/fca66aa2d399264d2f43fa5af54f452f8c145d16/LICENSE.md)
 
-![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=for-the-badge&logo=server)
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
@@ -1985,6 +1984,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
 ![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
+![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=for-the-badge&logo=server)
 
 This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
