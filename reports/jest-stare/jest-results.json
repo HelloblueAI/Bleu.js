@@ -26,7 +26,7 @@
     "unmatched": 0,
     "updated": 0
   },
-  "startTime": 1738701424662,
+  "startTime": 1738702021988,
   "success": false,
   "testResults": [
     {
@@ -37,10 +37,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701424805,
-        "end": 1738701424817,
-        "duration": 12,
-        "runtime": 12,
+        "start": 1738702022112,
+        "end": 1738702022128,
+        "duration": 16,
+        "runtime": 16,
         "slow": false
       },
       "skipped": true,
@@ -56,7 +56,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/setup.ts",
       "testResults": [
         {
-          "duration": 12,
+          "duration": 16,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -75,63 +75,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701424823,
-        "end": 1738701426181,
-        "duration": 1358,
-        "runtime": 1358,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/index.js",
-      "testResults": [
-        {
-          "duration": 1358,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/index.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701426198,
-        "end": 1738701427590,
-        "duration": 1392,
-        "runtime": 1392,
+        "start": 1738702022133,
+        "end": 1738702023437,
+        "duration": 1304,
+        "runtime": 1304,
         "slow": false
       },
       "skipped": false,
@@ -147,7 +94,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/test-report/index.js",
       "testResults": [
         {
-          "duration": 1392,
+          "duration": 1304,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -181,10 +128,63 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701427596,
-        "end": 1738701428839,
-        "duration": 1243,
-        "runtime": 1243,
+        "start": 1738702023451,
+        "end": 1738702024953,
+        "duration": 1502,
+        "runtime": 1502,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/index.js",
+      "testResults": [
+        {
+          "duration": 1502,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702024959,
+        "end": 1738702026200,
+        "duration": 1241,
+        "runtime": 1241,
         "slow": false
       },
       "skipped": false,
@@ -200,7 +200,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/html-report/jest-html-reporters-attach/index/index.js",
       "testResults": [
         {
-          "duration": 1243,
+          "duration": 1241,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -234,10 +234,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701428844,
-        "end": 1738701429391,
-        "duration": 547,
-        "runtime": 547,
+        "start": 1738702026205,
+        "end": 1738702026751,
+        "duration": 546,
+        "runtime": 546,
         "slow": false
       },
       "skipped": false,
@@ -253,7 +253,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/test-report/result.js",
       "testResults": [
         {
-          "duration": 547,
+          "duration": 546,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -287,8 +287,61 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429396,
-        "end": 1738701429411,
+        "start": 1738702026756,
+        "end": 1738702026768,
+        "duration": 12,
+        "runtime": 12,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/prettify.js",
+      "testResults": [
+        {
+          "duration": 12,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/prettify.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026774,
+        "end": 1738702026789,
         "duration": 15,
         "runtime": 15,
         "slow": false
@@ -340,10 +393,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429416,
-        "end": 1738701429430,
-        "duration": 14,
-        "runtime": 14,
+        "start": 1738702026793,
+        "end": 1738702026806,
+        "duration": 13,
+        "runtime": 13,
         "slow": false
       },
       "skipped": false,
@@ -359,7 +412,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/prettify.js",
       "testResults": [
         {
-          "duration": 14,
+          "duration": 13,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -393,10 +446,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429434,
-        "end": 1738701429448,
-        "duration": 14,
-        "runtime": 14,
+        "start": 1738702026810,
+        "end": 1738702026822,
+        "duration": 12,
+        "runtime": 12,
         "slow": false
       },
       "skipped": false,
@@ -412,7 +465,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/prettify.js",
       "testResults": [
         {
-          "duration": 14,
+          "duration": 12,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -446,116 +499,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429452,
-        "end": 1738701429467,
-        "duration": 15,
-        "runtime": 15,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/prettify.js",
-      "testResults": [
-        {
-          "duration": 15,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/prettify.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429472,
-        "end": 1738701429484,
+        "start": 1738702026829,
+        "end": 1738702026841,
         "duration": 12,
         "runtime": 12,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
-      "testResults": [
-        {
-          "duration": 12,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429489,
-        "end": 1738701429502,
-        "duration": 13,
-        "runtime": 13,
         "slow": false
       },
       "skipped": false,
@@ -571,7 +518,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/prettify.js",
       "testResults": [
         {
-          "duration": 13,
+          "duration": 12,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -605,10 +552,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429507,
-        "end": 1738701429520,
-        "duration": 13,
-        "runtime": 13,
+        "start": 1738702026847,
+        "end": 1738702026859,
+        "duration": 12,
+        "runtime": 12,
         "slow": false
       },
       "skipped": false,
@@ -624,7 +571,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/prettify.js",
       "testResults": [
         {
-          "duration": 13,
+          "duration": 12,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -658,10 +605,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429525,
-        "end": 1738701429528,
-        "duration": 3,
-        "runtime": 3,
+        "start": 1738702026863,
+        "end": 1738702026876,
+        "duration": 13,
+        "runtime": 13,
         "slow": false
       },
       "skipped": false,
@@ -674,14 +621,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/sorter.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
       "testResults": [
         {
-          "duration": 3,
+          "duration": 13,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/sorter.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/prettify.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -711,222 +658,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429533,
-        "end": 1738701429538,
-        "duration": 5,
-        "runtime": 5,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/CustomSequencer.js",
-      "testResults": [
-        {
-          "duration": 5,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/CustomSequencer.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429542,
-        "end": 1738701429547,
-        "duration": 5,
-        "runtime": 5,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/Bleu.js",
-      "testResults": [
-        {
-          "duration": 5,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/Bleu.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429551,
-        "end": 1738701429557,
-        "duration": 6,
-        "runtime": 6,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
-      "testResults": [
-        {
-          "duration": 6,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429562,
-        "end": 1738701429569,
-        "duration": 7,
-        "runtime": 7,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/src/index.js",
-      "testResults": [
-        {
-          "duration": 7,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/src/index.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429573,
-        "end": 1738701429580,
-        "duration": 7,
-        "runtime": 7,
+        "start": 1738702026880,
+        "end": 1738702026888,
+        "duration": 8,
+        "runtime": 8,
         "slow": false
       },
       "skipped": false,
@@ -942,7 +677,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/apiController.js",
       "testResults": [
         {
-          "duration": 7,
+          "duration": 8,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -976,8 +711,326 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429584,
-        "end": 1738701429588,
+        "start": 1738702026895,
+        "end": 1738702026899,
+        "duration": 4,
+        "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/routes.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/routes.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026903,
+        "end": 1738702026907,
+        "duration": 4,
+        "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/src/index.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/src/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026911,
+        "end": 1738702026915,
+        "duration": 4,
+        "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026921,
+        "end": 1738702026924,
+        "duration": 3,
+        "runtime": 3,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
+      "testResults": [
+        {
+          "duration": 3,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026930,
+        "end": 1738702026934,
+        "duration": 4,
+        "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/CustomSequencer.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/CustomSequencer.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026938,
+        "end": 1738702026941,
+        "duration": 3,
+        "runtime": 3,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/Bleu.js",
+      "testResults": [
+        {
+          "duration": 3,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/Bleu.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026945,
+        "end": 1738702026949,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -1029,61 +1082,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429592,
-        "end": 1738701429598,
-        "duration": 6,
-        "runtime": 6,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 6,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429602,
-        "end": 1738701429605,
+        "start": 1738702026953,
+        "end": 1738702026956,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -1098,14 +1098,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/block-navigation.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiGenerateEgg.test.js",
       "testResults": [
         {
           "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/block-navigation.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiGenerateEgg.test.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -1135,116 +1135,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429609,
-        "end": 1738701429611,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/aiService.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/aiService.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429645,
-        "end": 1738701429652,
-        "duration": 7,
-        "runtime": 7,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/routes.js",
-      "testResults": [
-        {
-          "duration": 7,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/routes.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429657,
-        "end": 1738701429661,
-        "duration": 4,
-        "runtime": 4,
+        "start": 1738702026960,
+        "end": 1738702026965,
+        "duration": 5,
+        "runtime": 5,
         "slow": false
       },
       "skipped": false,
@@ -1260,7 +1154,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/sorter.js",
       "testResults": [
         {
-          "duration": 4,
+          "duration": 5,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -1294,114 +1188,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429669,
-        "end": 1738701429672,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429677,
-        "end": 1738701429677,
-        "duration": 0,
-        "runtime": 0,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/vite.config.js",
-      "testResults": [
-        {
-          "duration": 0,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/vite.config.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429682,
-        "end": 1738701429684,
+        "start": 1738702026970,
+        "end": 1738702026972,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -1416,14 +1204,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/HenFarm.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/nlpProcessor.js",
       "testResults": [
         {
           "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/HenFarm.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/nlpProcessor.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -1453,167 +1241,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429689,
-        "end": 1738701429692,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429698,
-        "end": 1738701429700,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/public/app.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/public/app.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429705,
-        "end": 1738701429706,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/dataController.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/dataController.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429710,
-        "end": 1738701429713,
+        "start": 1738702026976,
+        "end": 1738702026979,
         "duration": 3,
         "runtime": 3,
         "slow": false
@@ -1665,8 +1294,61 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429718,
-        "end": 1738701429722,
+        "start": 1738702026985,
+        "end": 1738702026987,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/JSProcessor.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/JSProcessor.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702026991,
+        "end": 1738702026995,
         "duration": 4,
         "runtime": 4,
         "slow": false
@@ -1681,14 +1363,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiGenerateEgg.test.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
       "testResults": [
         {
           "duration": 4,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiGenerateEgg.test.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/sorter.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -1718,8 +1400,61 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429727,
-        "end": 1738701429729,
+        "start": 1738702027000,
+        "end": 1738702027004,
+        "duration": 4,
+        "runtime": 4,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/sorter.js",
+      "testResults": [
+        {
+          "duration": 4,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/sorter.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027008,
+        "end": 1738702027010,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -1734,14 +1469,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiController.test.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/block-navigation.js",
       "testResults": [
         {
           "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiController.test.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/lcov-report/block-navigation.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -1771,275 +1506,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429734,
-        "end": 1738701429736,
+        "start": 1738702027014,
+        "end": 1738702027016,
         "duration": 2,
         "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/result.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/result.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429741,
-        "end": 1738701429742,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/index.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/index.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429746,
-        "end": 1738701429748,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429753,
-        "end": 1738701429754,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/.simple-git-hooks.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/.simple-git-hooks.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429758,
-        "end": 1738701429760,
-        "duration": 2,
-        "runtime": 2,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/manualConnectionTest.js",
-      "testResults": [
-        {
-          "duration": 2,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/manualConnectionTest.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429766,
-        "end": 1738701429769,
-        "duration": 3,
-        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2055,7 +1525,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/output/jest-html-reporters-attach/report/result.js",
       "testResults": [
         {
-          "duration": 3,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2089,10 +1559,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429774,
-        "end": 1738701429775,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1738702027021,
+        "end": 1738702027024,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2105,14 +1575,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/generateEgg.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/generateEgg.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/sorter.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -2142,8 +1612,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429780,
-        "end": 1738701429781,
+        "start": 1738702027029,
+        "end": 1738702027030,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -2158,14 +1628,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/code-quality-assurance/src/index.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/preinstall.js",
       "testResults": [
         {
           "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/code-quality-assurance/src/index.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/preinstall.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -2195,10 +1665,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429786,
-        "end": 1738701429787,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1738702027035,
+        "end": 1738702027038,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -2211,14 +1681,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/mockEngine.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/aiService.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/mockEngine.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/aiService.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -2248,63 +1718,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429792,
-        "end": 1738701429793,
+        "start": 1738702027043,
+        "end": 1738702027044,
         "duration": 1,
         "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/dataRoutes.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/dataRoutes.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429803,
-        "end": 1738701429805,
-        "duration": 2,
-        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -2320,7 +1737,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/rulesEngine.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -2354,538 +1771,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429811,
-        "end": 1738701429811,
-        "duration": 0,
-        "runtime": 0,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/index.js",
-      "testResults": [
-        {
-          "duration": 0,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/index.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429816,
-        "end": 1738701429817,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/simpleRoute.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/simpleRoute.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429822,
-        "end": 1738701429825,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/nlpProcessor.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ai/nlpProcessor.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429832,
-        "end": 1738701429833,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ml/modelManager.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ml/modelManager.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429839,
-        "end": 1738701429840,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/logger.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/logger.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429845,
-        "end": 1738701429846,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/testSequencer.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/testSequencer.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429851,
-        "end": 1738701429852,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiRoutes.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiRoutes.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429857,
-        "end": 1738701429858,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/bleu.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/bleu.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429865,
-        "end": 1738701429866,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalSetup.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalSetup.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429873,
-        "end": 1738701429874,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/decisionTree.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/decisionTree.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429880,
-        "end": 1738701429882,
+        "start": 1738702027047,
+        "end": 1738702027049,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -2937,116 +1824,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429887,
-        "end": 1738701429888,
+        "start": 1738702027054,
+        "end": 1738702027055,
         "duration": 1,
         "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiTests.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiTests.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429895,
-        "end": 1738701429896,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiService.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiService.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429903,
-        "end": 1738701429905,
-        "duration": 2,
-        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -3062,7 +1843,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/testSequencer.test.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3096,8 +1877,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429909,
-        "end": 1738701429910,
+        "start": 1738702027060,
+        "end": 1738702027061,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3112,14 +1893,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalTeardown.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiController.test.js",
       "testResults": [
         {
           "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalTeardown.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiController.test.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -3149,222 +1930,116 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429916,
-        "end": 1738701429917,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/index.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/index.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429923,
-        "end": 1738701429924,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/mocks/AiQuery.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/mocks/AiQuery.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429931,
-        "end": 1738701429934,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/JSProcessor.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/JSProcessor.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429939,
-        "end": 1738701429940,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/tests/index.test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/tests/index.test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429945,
-        "end": 1738701429947,
+        "start": 1738702027065,
+        "end": 1738702027067,
         "duration": 2,
         "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/result.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/result.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027071,
+        "end": 1738702027072,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/lcov-report/block-navigation.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027076,
+        "end": 1738702027080,
+        "duration": 4,
+        "runtime": 4,
         "slow": false
       },
       "skipped": false,
@@ -3380,7 +2055,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/coverage/block-navigation.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 4,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3414,8 +2089,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429952,
-        "end": 1738701429954,
+        "start": 1738702027085,
+        "end": 1738702027087,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -3467,8 +2142,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429959,
-        "end": 1738701429961,
+        "start": 1738702027092,
+        "end": 1738702027094,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -3520,169 +2195,63 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429967,
-        "end": 1738701429968,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/dependency-management/test.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/dependency-management/test.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429973,
-        "end": 1738701429974,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/scripts/preinstall.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/scripts/preinstall.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429979,
-        "end": 1738701429980,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/generateRuleId.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/generateRuleId.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701429984,
-        "end": 1738701429986,
+        "start": 1738702027098,
+        "end": 1738702027100,
         "duration": 2,
         "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/manualConnectionTest.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/manualConnectionTest.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027104,
+        "end": 1738702027105,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -3698,7 +2267,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/collaboration-tools/src/index.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3732,8 +2301,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429991,
-        "end": 1738701429993,
+        "start": 1738702027109,
+        "end": 1738702027111,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -3785,8 +2354,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701429999,
-        "end": 1738701430000,
+        "start": 1738702027115,
+        "end": 1738702027116,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -3801,14 +2370,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eslint.generated.config.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/HenFarm.js",
       "testResults": [
         {
           "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eslint.generated.config.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/HenFarm.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -3838,10 +2407,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430006,
-        "end": 1738701430008,
-        "duration": 2,
-        "runtime": 2,
+        "start": 1738702027121,
+        "end": 1738702027124,
+        "duration": 3,
+        "runtime": 3,
         "slow": false
       },
       "skipped": false,
@@ -3857,7 +2426,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/coverage/lcov-report/block-navigation.js",
       "testResults": [
         {
-          "duration": 2,
+          "duration": 3,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -3891,8 +2460,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430013,
-        "end": 1738701430015,
+        "start": 1738702027129,
+        "end": 1738702027131,
         "duration": 2,
         "runtime": 2,
         "slow": false
@@ -3944,10 +2513,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430020,
-        "end": 1738701430021,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1738702027135,
+        "end": 1738702027137,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -3960,14 +2529,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/index.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/public/app.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/index.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/frontend/public/app.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -3997,114 +2566,8 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430025,
-        "end": 1738701430026,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/jest.setup.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/jest.setup.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701430033,
-        "end": 1738701430034,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/__mocks__/HenFarm.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/__mocks__/HenFarm.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701430039,
-        "end": 1738701430039,
+        "start": 1738702027142,
+        "end": 1738702027142,
         "duration": 0,
         "runtime": 0,
         "slow": false
@@ -4119,14 +2582,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/jest.setup.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/code-quality-assurance/src/index.js",
       "testResults": [
         {
           "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/jest.setup.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/code-quality-assurance/src/index.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -4156,116 +2619,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430044,
-        "end": 1738701430047,
-        "duration": 3,
-        "runtime": 3,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/preinstall.js",
-      "testResults": [
-        {
-          "duration": 3,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/preinstall.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701430052,
-        "end": 1738701430053,
-        "duration": 1,
-        "runtime": 1,
-        "slow": false
-      },
-      "skipped": false,
-      "snapshot": {
-        "added": 0,
-        "fileDeleted": false,
-        "matched": 0,
-        "unchecked": 0,
-        "uncheckedKeys": [],
-        "unmatched": 0,
-        "updated": 0
-      },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simple-git-hooks.js",
-      "testResults": [
-        {
-          "duration": 1,
-          "ancestorTitles": [],
-          "failureDetails": [],
-          "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simple-git-hooks.js",
-          "numPassingAsserts": 1,
-          "status": "passed",
-          "title": "ESLint"
-        }
-      ],
-      "cliOptions": {
-        "cache": false,
-        "cacheLocation": ".eslintcache",
-        "fixDryRun": false,
-        "maxWarnings": -1,
-        "ignore": true,
-        "allowInlineConfig": true,
-        "quiet": false,
-        "overrideConfigFile": null,
-        "overrideConfig": {
-          "linterOptions": {
-            "reportUnusedDisableDirectives": false
-          }
-        }
-      }
-    },
-    {
-      "leaks": false,
-      "numFailingTests": 0,
-      "numPassingTests": 1,
-      "numPendingTests": 0,
-      "numTodoTests": 0,
-      "openHandles": [],
-      "perfStats": {
-        "start": 1738701430057,
-        "end": 1738701430058,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1738702027147,
+        "end": 1738702027147,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -4281,7 +2638,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/seedDatabase.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4315,8 +2672,273 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430063,
-        "end": 1738701430064,
+        "start": 1738702027152,
+        "end": 1738702027153,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/mockEngine.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/services/mockEngine.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027158,
+        "end": 1738702027159,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/dataRoutes.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/dataRoutes.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027165,
+        "end": 1738702027167,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/simpleRoute.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/simpleRoute.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027171,
+        "end": 1738702027172,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/dataController.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/controllers/dataController.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027177,
+        "end": 1738702027178,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ml/modelManager.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/ml/modelManager.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027182,
+        "end": 1738702027183,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4368,10 +2990,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430069,
-        "end": 1738701430070,
-        "duration": 1,
-        "runtime": 1,
+        "start": 1738702027189,
+        "end": 1738702027189,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -4387,7 +3009,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/models/AiQuery.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4421,10 +3043,10 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430075,
-        "end": 1738701430075,
-        "duration": 0,
-        "runtime": 0,
+        "start": 1738702027194,
+        "end": 1738702027195,
+        "duration": 1,
+        "runtime": 1,
         "slow": false
       },
       "skipped": false,
@@ -4437,14 +3059,14 @@
         "unmatched": 0,
         "updated": 0
       },
-      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/lib/Bleu.js",
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/logger.js",
       "testResults": [
         {
-          "duration": 0,
+          "duration": 1,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
-          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/lib/Bleu.js",
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/logger.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
@@ -4474,8 +3096,167 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430080,
-        "end": 1738701430081,
+        "start": 1738702027199,
+        "end": 1738702027200,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/testSequencer.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/testSequencer.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027205,
+        "end": 1738702027206,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiRoutes.test.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/apiRoutes.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027210,
+        "end": 1738702027212,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/bleu.test.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/bleu.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027217,
+        "end": 1738702027218,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4527,8 +3308,273 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430086,
-        "end": 1738701430087,
+        "start": 1738702027224,
+        "end": 1738702027224,
+        "duration": 0,
+        "runtime": 0,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalSetup.js",
+      "testResults": [
+        {
+          "duration": 0,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalSetup.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027229,
+        "end": 1738702027230,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/decisionTree.test.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/decisionTree.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027235,
+        "end": 1738702027236,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiTests.test.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiTests.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027240,
+        "end": 1738702027242,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiService.test.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/aiService.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027246,
+        "end": 1738702027246,
+        "duration": 0,
+        "runtime": 0,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalTeardown.js",
+      "testResults": [
+        {
+          "duration": 0,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/tests/globalTeardown.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027251,
+        "end": 1738702027252,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4580,8 +3626,114 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430091,
-        "end": 1738701430092,
+        "start": 1738702027257,
+        "end": 1738702027258,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/index.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/html-report/jest-html-reporters-attach/report/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027263,
+        "end": 1738702027266,
+        "duration": 3,
+        "runtime": 3,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/mocks/AiQuery.js",
+      "testResults": [
+        {
+          "duration": 3,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/mocks/AiQuery.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027270,
+        "end": 1738702027271,
         "duration": 1,
         "runtime": 1,
         "slow": false
@@ -4633,10 +3785,116 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430098,
-        "end": 1738701430099,
+        "start": 1738702027276,
+        "end": 1738702027277,
         "duration": 1,
         "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/index.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/src/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027282,
+        "end": 1738702027283,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/tests/index.test.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/language-plugins/javascript/tests/index.test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027288,
+        "end": 1738702027288,
+        "duration": 0,
+        "runtime": 0,
         "slow": false
       },
       "skipped": false,
@@ -4652,7 +3910,7 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eslint.config.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 0,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
@@ -4686,10 +3944,222 @@
       "numTodoTests": 0,
       "openHandles": [],
       "perfStats": {
-        "start": 1738701430106,
-        "end": 1738701430107,
+        "start": 1738702027293,
+        "end": 1738702027294,
         "duration": 1,
         "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/.simple-git-hooks.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/.simple-git-hooks.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027298,
+        "end": 1738702027300,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/dependency-management/test.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/dependency-management/test.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027305,
+        "end": 1738702027306,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/scripts/preinstall.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/scripts/preinstall.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027311,
+        "end": 1738702027312,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/generateRuleId.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/generateRuleId.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027317,
+        "end": 1738702027319,
+        "duration": 2,
+        "runtime": 2,
         "slow": false
       },
       "skipped": false,
@@ -4705,11 +4175,541 @@
       "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simpleServer.js",
       "testResults": [
         {
-          "duration": 1,
+          "duration": 2,
           "ancestorTitles": [],
           "failureDetails": [],
           "failureMessages": [],
           "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simpleServer.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027326,
+        "end": 1738702027328,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eslint.generated.config.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eslint.generated.config.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027333,
+        "end": 1738702027334,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/generateEgg.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/src/generateEgg.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027339,
+        "end": 1738702027340,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/index.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/tests/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027345,
+        "end": 1738702027346,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/jest.setup.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/jest.setup.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027351,
+        "end": 1738702027352,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/__mocks__/HenFarm.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/eggs-generator/__mocks__/HenFarm.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027357,
+        "end": 1738702027358,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simple-git-hooks.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/simple-git-hooks.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027363,
+        "end": 1738702027364,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/index.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/routes/index.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027369,
+        "end": 1738702027370,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/lib/Bleu.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/src/backend/src/utils/lib/Bleu.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027375,
+        "end": 1738702027376,
+        "duration": 1,
+        "runtime": 1,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/vite.config.js",
+      "testResults": [
+        {
+          "duration": 1,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/vite.config.js",
+          "numPassingAsserts": 1,
+          "status": "passed",
+          "title": "ESLint"
+        }
+      ],
+      "cliOptions": {
+        "cache": false,
+        "cacheLocation": ".eslintcache",
+        "fixDryRun": false,
+        "maxWarnings": -1,
+        "ignore": true,
+        "allowInlineConfig": true,
+        "quiet": false,
+        "overrideConfigFile": null,
+        "overrideConfig": {
+          "linterOptions": {
+            "reportUnusedDisableDirectives": false
+          }
+        }
+      }
+    },
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 1,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "start": 1738702027382,
+        "end": 1738702027384,
+        "duration": 2,
+        "runtime": 2,
+        "slow": false
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/jest.setup.js",
+      "testResults": [
+        {
+          "duration": 2,
+          "ancestorTitles": [],
+          "failureDetails": [],
+          "failureMessages": [],
+          "testFilePath": "/Users/pejmanhaghighatnia/Bleu.js/jest.setup.js",
           "numPassingAsserts": 1,
           "status": "passed",
           "title": "ESLint"
