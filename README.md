@@ -1970,6 +1970,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
 ![v1.0.33](https://img.shields.io/badge/v1.0.33-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
+![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)
 ![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
@@ -1984,7 +1985,6 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
 ![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
-![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=for-the-badge&logo=server)
 
 This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
