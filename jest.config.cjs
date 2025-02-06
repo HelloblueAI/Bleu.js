@@ -1,23 +1,25 @@
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // Centralized setup for tests
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
-    url: 'http://localhost/', // Default URL for jsdom environment
-    resources: 'usable', // Enable resource loading during tests
-    runScripts: 'dangerously', // Allow script execution
+    url: 'http://localhost/',
+    resources: 'usable',
+    runScripts: 'dangerously',
   },
 
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json', diagnostics: false, isolatedModules: true }],
   },
 
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'], // Support for different file types
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
 
   testMatch: [
-    '<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)',
-    '<rootDir>/backend/tests/**/*.test.(js|jsx|ts|tsx)',
+    '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
+    '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
+    '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
+    '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
   ],
 
   testPathIgnorePatterns: [
@@ -32,58 +34,52 @@ module.exports = {
 
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}', // Include core source files
-    'backend/**/*.{js,jsx,ts,tsx}', // Include backend files
-    'frontend/**/*.{js,jsx,ts,tsx}', // Include frontend files
-    'core-engine/**/*.{js,jsx,ts,tsx}', // Include core engine files
-    'language-plugins/**/*.{js,jsx,ts,tsx}', // Include plugins
-    '!**/node_modules/**', // Exclude external dependencies
-    '!**/dist/**', // Exclude dist directories
-    '!**/build/**', // Exclude build directories
-    '!**/coverage/**', // Exclude coverage reports
-    '!**/reports/**', // Exclude test reports
-    '!**/tests/**', // Exclude test files themselves
-    '!**/__mocks__/**', // Exclude mock files
-    '!**/*.config.{js,ts}', // Exclude config files
-    '!**/scripts/**', // Exclude utility scripts
-    '!**/public/**', // Exclude static/public assets
-    '!**/*.d.ts', // Exclude TypeScript declaration files
+    'src/**/*.{js,jsx,ts,tsx}',
+    'backend/**/*.{js,jsx,ts,tsx}',
+    'frontend/**/*.{js,jsx,ts,tsx}',
+    'core-engine/**/*.{js,jsx,ts,tsx}',
+    'language-plugins/**/*.{js,jsx,ts,tsx}',
+    '!**/node_modules/**',
+    '!**/dist/**',
+    '!**/build/**',
+    '!**/coverage/**',
+    '!**/reports/**',
+    '!**/tests/**',
+    '!**/__mocks__/**',
+    '!**/*.config.{js,ts}',
+    '!**/scripts/**',
+    '!**/public/**',
+    '!**/*.d.ts',
   ],
-  coverageDirectory: 'coverage', // Directory for coverage reports
-  coverageReporters: ['html', 'text', 'lcov'], // Types of coverage reports
-
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.json', // Use TypeScript config for ts-jest
-      diagnostics: false, // Disable TypeScript diagnostics for faster tests
-      isolatedModules: true, // Improve performance with isolated modules
-    },
-  },
+  coverageDirectory: 'coverage',
+  coverageReporters: ['html', 'text', 'lcov'],
 
   projects: [
     {
-      displayName: 'lint', // Lint project
+      displayName: 'lint',
       runner: 'jest-runner-eslint',
       testMatch: ['<rootDir>/**/*.{js,jsx,ts,tsx}'],
       testPathIgnorePatterns: ['/node_modules/', '/dist/', '/reports/'],
     },
     {
-      displayName: 'test', // Main test project
+      displayName: 'test',
       testEnvironment: 'jsdom',
       testEnvironmentOptions: {
-        resources: 'usable', // Allow resources to load during tests
+        resources: 'usable',
       },
       testMatch: [
         '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
       ],
       testPathIgnorePatterns: ['/node_modules/', '/dist/', '/reports/'],
     },
   ],
 
   watchPlugins: [
-    'jest-watch-typeahead/filename', // File name search during watch
-    'jest-watch-typeahead/testname', // Test name search during watch
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
   ],
 
   reporters: [
@@ -98,10 +94,10 @@ module.exports = {
         hideIcon: false,
         customInfos: [
           { title: 'Project', value: 'Bleu.js' },
-          { title: 'Version', value: '1.0.29' },
+          { title: 'Version', value: '1.0.35' },
         ],
-        enableMergeData: true, // Merge data from multiple test runs
-        includeFailureMsg: true, // Include failure messages in the report
+        enableMergeData: true,
+        includeFailureMsg: true,
       },
     ],
     [
@@ -109,10 +105,11 @@ module.exports = {
       {
         resultDir: './reports/jest-stare',
         reportTitle: 'Bleu.js Stare Report',
-        coverageLink: '../coverage/lcov-report/index.html', // Link to coverage reports
+        coverageLink: '../coverage/lcov-report/index.html',
+        clear: true,
       },
     ],
   ],
 
-  verbose: true, // Show detailed test output
+  verbose: true,
 };
