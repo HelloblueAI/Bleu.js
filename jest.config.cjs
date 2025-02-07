@@ -1,6 +1,8 @@
 module.exports = {
+  // Auto-run setup after environment initialization
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
+  // Optimized testing environment
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     url: 'http://localhost/',
@@ -8,13 +10,24 @@ module.exports = {
     runScripts: 'dangerously',
   },
 
+  // Smart transpilation using Babel and ts-jest
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json', diagnostics: false, isolatedModules: true }],
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/tsconfig.json',
+        diagnostics: false,
+        isolatedModules: true,
+        esModuleInterop: true,
+      },
+    ],
   },
 
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+  // File extensions Jest should recognize
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node', 'mjs', 'cjs'],
 
+  // Test file patterns to match
   testMatch: [
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
     '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
@@ -22,38 +35,22 @@ module.exports = {
     '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
   ],
 
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/coverage/',
-    '/reports/',
-    '<rootDir>/build/',
-    '<rootDir>/scripts/',
-    '<rootDir>/public/',
-  ],
+  // Ignore unnecessary paths for better performance
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/', '/reports/', '<rootDir>/build/', '<rootDir>/scripts/', '<rootDir>/public/'],
 
+  // 🔥 Collect coverage from source files only (fixes 0% coverage issue)
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
-    'backend/**/*.{js,jsx,ts,tsx}',
-    'frontend/**/*.{js,jsx,ts,tsx}',
-    'core-engine/**/*.{js,jsx,ts,tsx}',
-    'language-plugins/**/*.{js,jsx,ts,tsx}',
-    '!**/node_modules/**',
-    '!**/dist/**',
-    '!**/build/**',
-    '!**/coverage/**',
-    '!**/reports/**',
-    '!**/tests/**',
-    '!**/__mocks__/**',
-    '!**/*.config.{js,ts}',
-    '!**/scripts/**',
-    '!**/public/**',
-    '!**/*.d.ts',
+    'backend/src/**/*.{js,jsx,ts,tsx}',
+    'frontend/src/**/*.{js,jsx,ts,tsx}',
+    'core-engine/src/**/*.{js,jsx,ts,tsx}',
+    'language-plugins/src/**/*.{js,jsx,ts,tsx}',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['html', 'text', 'lcov'],
+  coverageReporters: ['html', 'text', 'lcov', 'json-summary'],
 
+  // Projects for better test organization
   projects: [
     {
       displayName: 'lint',
@@ -64,9 +61,7 @@ module.exports = {
     {
       displayName: 'test',
       testEnvironment: 'jsdom',
-      testEnvironmentOptions: {
-        resources: 'usable',
-      },
+      testEnvironmentOptions: { resources: 'usable' },
       testMatch: [
         '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
@@ -77,11 +72,21 @@ module.exports = {
     },
   ],
 
-  watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-  ],
+  // Smart testing enhancements
+  automock: false, // Prevents Jest from auto-mocking everything
+  resetMocks: true, // Reset mocks after each test to prevent pollution
+  clearMocks: true, // Clear mocks before each test run
 
+  // 🔥 Advanced Performance Optimizations
+  maxWorkers: '80%', // Dynamically allocate CPU resources
+  maxConcurrency: 5, // Avoid CPU starvation while ensuring speed
+  slowTestThreshold: 3, // Flag tests that take longer than 3s
+  forceExit: true, // Ensures tests exit cleanly after execution
+
+  // Smart watch mode
+  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
+
+  // Custom reporters for best developer experience
   reporters: [
     'default',
     [
@@ -111,5 +116,5 @@ module.exports = {
     ],
   ],
 
-  verbose: true,
+  verbose: true, // Detailed logs for easier debugging
 };
