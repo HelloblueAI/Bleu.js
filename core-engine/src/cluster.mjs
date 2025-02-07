@@ -7,20 +7,19 @@ import winston from 'winston';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),
     new winston.transports.Console({
-      format: winston.format.simple()
-    })
-  ]
+      format: winston.format.simple(),
+    }),
+  ],
 });
 
 class WorkerManager {
@@ -56,7 +55,7 @@ class WorkerManager {
     const worker = cluster.fork();
     this.workers.set(worker.id, {
       pid: worker.process.pid,
-      startTime: Date.now()
+      startTime: Date.now(),
     });
 
     worker.on('message', (msg) => {
@@ -67,20 +66,26 @@ class WorkerManager {
   }
 
   handleWorkerExit(worker, code, signal) {
-    logger.warn(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
+    logger.warn(
+      `Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`,
+    );
 
     this.workers.delete(worker.id);
     const attempts = this.restartAttempts.get(worker.id) || 0;
 
     if (attempts < this.MAX_RESTART_ATTEMPTS) {
-      logger.info(`Attempting to restart worker. Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}`);
+      logger.info(
+        `Attempting to restart worker. Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}`,
+      );
 
       setTimeout(() => {
         const newWorker = this.createWorker();
         this.restartAttempts.set(newWorker.id, attempts + 1);
       }, this.RESTART_DELAY);
     } else {
-      logger.error(`Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`);
+      logger.error(
+        `Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`,
+      );
       this.checkClusterHealth();
     }
   }
@@ -96,14 +101,15 @@ class WorkerManager {
   checkClusterHealth() {
     const activeWorkers = this.workers.size;
     if (activeWorkers < this.numCPUs / 2) {
-      logger.error('Critical: More than 50% of workers are down. Initiating emergency restart.');
+      logger.error(
+        'Critical: More than 50% of workers are down. Initiating emergency restart.',
+      );
       this.emergencyRestart();
     }
   }
 
   emergencyRestart() {
     logger.warn('Initiating emergency cluster restart');
-
 
     for (const id of this.workers.keys()) {
       const worker = cluster.workers[id];
@@ -117,9 +123,7 @@ class WorkerManager {
       }
     }
 
-
     this.restartAttempts.clear();
-
 
     setTimeout(() => {
       this.initializeWorkers();
@@ -174,14 +178,11 @@ class WorkerManager {
       }
     });
 
-
     this.startServer();
   }
 
   gracefulShutdown() {
     logger.info(`Worker ${process.pid} is shutting down...`);
-
-
 
     setTimeout(() => {
       process.exit(0);
@@ -190,7 +191,6 @@ class WorkerManager {
 
   async startServer() {
     try {
-
       logger.info(`
       🚀 Worker server started
       -------------------------------------------
@@ -208,7 +208,6 @@ class WorkerManager {
     }
   }
 }
-
 
 const workerManager = new WorkerManager();
 workerManager.start();
