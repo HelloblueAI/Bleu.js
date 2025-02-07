@@ -29,6 +29,9 @@ or
 ```javascript
 pnpm add bleujs
 ```
+```javascript
+pnpm list | grep bleujs
+```
 
 Retrieve Package Information
 ```javascript
@@ -51,7 +54,7 @@ Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code sn
 
 
 ### Features
-## Lambda Core Engine
+## Core Engine
 
 * Efficient CPU core utilization through worker (Agent) processes
 * Automatic worker restart for high availability
@@ -63,7 +66,8 @@ Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code sn
 * Health monitoring
 * Graceful shutdown handling
 
-### REST API Reference
+### Lambda
+## REST API Reference
 
 Starting the Server
 
