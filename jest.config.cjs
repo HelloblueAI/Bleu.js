@@ -1,8 +1,6 @@
 module.exports = {
-  // Auto-run setup after environment initialization
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
-  // Optimized testing environment
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     url: 'http://localhost/',
@@ -10,7 +8,6 @@ module.exports = {
     runScripts: 'dangerously',
   },
 
-  // Smart transpilation using Babel and ts-jest
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': [
@@ -24,9 +21,7 @@ module.exports = {
     ],
   },
 
-  // File extensions Jest should recognize
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node', 'mjs', 'cjs'],
-
 
   testMatch: [
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
@@ -35,9 +30,7 @@ module.exports = {
     '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
   ],
 
-
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/', '/reports/', '<rootDir>/build/', '<rootDir>/scripts/', '<rootDir>/public/'],
-
 
   collectCoverage: true,
   collectCoverageFrom: [
@@ -50,7 +43,6 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text', 'lcov', 'json-summary'],
 
-  // Projects for better test organization
   projects: [
     {
       displayName: 'lint',
@@ -72,21 +64,17 @@ module.exports = {
     },
   ],
 
-  // Smart testing enhancements
-  automock: false, // Prevents Jest from auto-mocking everything
-  resetMocks: true, // Reset mocks after each test to prevent pollution
-  clearMocks: true, // Clear mocks before each test run
+  automock: false,
+  resetMocks: true,
+  clearMocks: true,
 
-  // 🔥 Advanced Performance Optimizations
-  maxWorkers: '80%', // Dynamically allocate CPU resources
-  maxConcurrency: 5, // Avoid CPU starvation while ensuring speed
-  slowTestThreshold: 3, // Flag tests that take longer than 3s
-  forceExit: true, // Ensures tests exit cleanly after execution
+  maxWorkers: '80%',
+  maxConcurrency: 5,
+  slowTestThreshold: 3,
+  forceExit: true,
 
-  // Smart watch mode
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 
-  // Custom reporters for best developer experience
   reporters: [
     'default',
     [
@@ -116,5 +104,5 @@ module.exports = {
     ],
   ],
 
-  verbose: true, // Detailed logs for easier debugging
+  verbose: true,
 };
