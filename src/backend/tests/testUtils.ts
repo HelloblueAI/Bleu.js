@@ -18,7 +18,10 @@ export interface MockResponse extends Partial<Response> {
 
 export const testUtils = {
   db: {
-    async connect(): Promise<{ mongod: InstanceType<typeof MongoMemoryServer>; uri: string }> {
+    async connect(): Promise<{
+      mongod: InstanceType<typeof MongoMemoryServer>;
+      uri: string;
+    }> {
       try {
         const mongod = await MongoMemoryServer.create();
         const uri = mongod.getUri();
@@ -30,7 +33,9 @@ export const testUtils = {
       }
     },
 
-    async disconnect(mongod: InstanceType<typeof MongoMemoryServer>): Promise<void> {
+    async disconnect(
+      mongod: InstanceType<typeof MongoMemoryServer>,
+    ): Promise<void> {
       try {
         await mongoose.connection.dropDatabase();
         await mongoose.disconnect();
@@ -43,7 +48,11 @@ export const testUtils = {
     async clearDatabase(): Promise<void> {
       try {
         const collections = mongoose.connection.collections;
-        await Promise.all(Object.values(collections).map((collection) => collection.deleteMany({})));
+        await Promise.all(
+          Object.values(collections).map((collection) =>
+            collection.deleteMany({}),
+          ),
+        );
       } catch (error) {
         console.error('Error clearing database:', error);
       }
@@ -83,8 +92,20 @@ export const testUtils = {
 
 export const mockData = {
   trainingData: Object.freeze([
-    { outlook: 'sunny', temperature: 'hot', humidity: 'high', windy: false, play: 'no' },
-    { outlook: 'overcast', temperature: 'mild', humidity: 'normal', windy: true, play: 'yes' },
+    {
+      outlook: 'sunny',
+      temperature: 'hot',
+      humidity: 'high',
+      windy: false,
+      play: 'no',
+    },
+    {
+      outlook: 'overcast',
+      temperature: 'mild',
+      humidity: 'normal',
+      windy: true,
+      play: 'yes',
+    },
   ]),
 };
 
