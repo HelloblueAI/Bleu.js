@@ -27,7 +27,7 @@ module.exports = {
   // File extensions Jest should recognize
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node', 'mjs', 'cjs'],
 
-  // Test file patterns to match
+
   testMatch: [
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
     '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
@@ -35,10 +35,10 @@ module.exports = {
     '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
   ],
 
-  // Ignore unnecessary paths for better performance
+
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/', '/reports/', '<rootDir>/build/', '<rootDir>/scripts/', '<rootDir>/public/'],
 
-  // 🔥 Collect coverage from source files only (fixes 0% coverage issue)
+
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
