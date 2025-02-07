@@ -10,7 +10,6 @@ class Store {
     this._gettersCache = {};
     this._strict = options.strict || false;
 
-
     if (options.modules) {
       Object.entries(options.modules).forEach(([name, moduleOptions]) => {
         this.registerModule(name, moduleOptions);
@@ -18,7 +17,7 @@ class Store {
     }
 
     if (options.plugins) {
-      options.plugins.forEach(plugin => plugin(this));
+      options.plugins.forEach((plugin) => plugin(this));
     }
   }
 
@@ -35,22 +34,22 @@ class Store {
 
       set(target, key, value) {
         if (store._strict && !store._isCommitting) {
-          throw new Error('State mutation outside of mutation handler is not allowed in strict mode');
+          throw new Error(
+            'State mutation outside of mutation handler is not allowed in strict mode',
+          );
         }
 
         const oldValue = target[key];
         target[key] = value;
 
-
         const watcherCallbacks = store._watchers.get(key);
         if (watcherCallbacks) {
-          watcherCallbacks.forEach(callback => callback(value, oldValue));
+          watcherCallbacks.forEach((callback) => callback(value, oldValue));
         }
 
         return true;
-      }
+      },
     });
-
   }
 
   commit(mutation, payload) {
@@ -65,8 +64,8 @@ class Store {
       mutationHandler(this._state, payload);
 
       // Notify subscribers
-      this._subscribers.forEach(subscriber =>
-        subscriber(mutation, this._state)
+      this._subscribers.forEach((subscriber) =>
+        subscriber(mutation, this._state),
       );
     } finally {
       this._isCommitting = false;
@@ -85,7 +84,7 @@ class Store {
       dispatch: this.dispatch.bind(this),
       state: this._state,
       rootState: this._state,
-      getters: this._gettersCache
+      getters: this._gettersCache,
     };
 
     try {
@@ -116,7 +115,7 @@ class Store {
   registerModule(name, options = {}) {
     const moduleStore = new Store({
       ...options,
-      strict: this._strict
+      strict: this._strict,
     });
 
     this._modules.set(name, moduleStore);
@@ -150,12 +149,12 @@ class Store {
   snapshot() {
     return {
       state: JSON.parse(JSON.stringify(this._state)),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
   restore(snapshot) {
-    Object.keys(this._state).forEach(key => {
+    Object.keys(this._state).forEach((key) => {
       this._state[key] = snapshot.state[key];
     });
   }
@@ -169,22 +168,18 @@ const BleuX = {
 
     const store = options.store;
 
-
     Bleu.prototype.$store = store;
 
-
     Bleu.provide('store', store);
-
 
     Bleu.mixin({
       beforeCreate() {
         if (this.$options.store) {
           Bleu.prototype.$store = this.$options.store;
         }
-      }
+      },
     });
-  }
+  },
 };
 
 export { BleuX, Store };
-

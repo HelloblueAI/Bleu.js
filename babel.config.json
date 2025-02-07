@@ -21,7 +21,9 @@
     [
       "module-resolver",
       {
-        "root": ["./src"],
+        "root": [
+          "./src"
+        ],
         "alias": {
           "@utils": "./src/utils",
           "@components": "./src/components",
@@ -29,7 +31,12 @@
           "@services": "./src/services",
           "@core": "./src/core"
         },
-        "extensions": [".js", ".ts", ".tsx", ".json"]
+        "extensions": [
+          ".js",
+          ".ts",
+          ".tsx",
+          ".json"
+        ]
       }
     ],
     [
@@ -41,19 +48,46 @@
         "useESModules": true
       }
     ],
-    ["@babel/plugin-transform-class-properties", { "loose": true }],
-    ["@babel/plugin-transform-private-methods", { "loose": true }],
-    ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
-    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    [
+      "@babel/plugin-transform-class-properties",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "@babel/plugin-transform-private-methods",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "@babel/plugin-transform-private-property-in-object",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
     "@babel/plugin-proposal-optional-chaining",
     "@babel/plugin-proposal-nullish-coalescing-operator",
     "babel-plugin-parameter-decorator",
     "babel-plugin-transform-typescript-metadata"
   ],
-  "ignore": ["node_modules/**", "**/*.test.js", "**/*.test.ts", "dist/**"],
+  "ignore": [
+    "node_modules/**",
+    "**/*.test.js",
+    "**/*.test.ts",
+    "dist/**"
+  ],
   "env": {
     "test": {
-      "plugins": ["@babel/plugin-transform-modules-commonjs"]
+      "plugins": [
+        "@babel/plugin-transform-modules-commonjs"
+      ]
     }
   }
 }

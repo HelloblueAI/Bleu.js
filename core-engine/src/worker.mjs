@@ -45,7 +45,7 @@ export class WorkerProcess {
         type: 'error',
         error: error.message || error,
         stack: error.stack,
-        pid: process.pid
+        pid: process.pid,
       });
     }
 
@@ -94,7 +94,7 @@ export class WorkerProcess {
         type: 'health',
         pid: process.pid,
         memory: process.memoryUsage(),
-        uptime: process.uptime()
+        uptime: process.uptime(),
       });
     }
   }

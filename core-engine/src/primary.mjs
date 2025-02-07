@@ -40,14 +40,16 @@ export class PrimaryManager {
     this.workers.set(worker.id, {
       pid: worker.process.pid,
       startTime: Date.now(),
-      restarts: 0
+      restarts: 0,
     });
     return worker;
   }
 
   handleWorkerExit(worker, code, signal) {
     const workerInfo = this.workers.get(worker.id);
-    console.log(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
+    console.log(
+      `Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`,
+    );
 
     if (workerInfo && workerInfo.restarts < 5) {
       console.log(`Restarting worker ${worker.process.pid}...`);
@@ -56,10 +58,12 @@ export class PrimaryManager {
         ...workerInfo,
         restarts: workerInfo.restarts + 1,
         pid: newWorker.process.pid,
-        startTime: Date.now()
+        startTime: Date.now(),
       });
     } else {
-      console.error(`Worker ${worker.process.pid} has crashed too many times. Not restarting.`);
+      console.error(
+        `Worker ${worker.process.pid} has crashed too many times. Not restarting.`,
+      );
     }
 
     this.workers.delete(worker.id);
@@ -70,7 +74,7 @@ export class PrimaryManager {
     if (message.type === 'health') {
       this.healthData.set(worker.id, {
         ...message,
-        lastUpdate: Date.now()
+        lastUpdate: Date.now(),
       });
     } else if (message.type === 'error') {
       console.error(`Error from worker ${worker.process.pid}:`, message.error);
@@ -110,8 +114,8 @@ export class PrimaryManager {
     // Wait for all workers to exit
     await Promise.all(
       Object.values(cluster.workers).map(
-        worker => new Promise(resolve => worker.on('exit', resolve))
-      )
+        (worker) => new Promise((resolve) => worker.on('exit', resolve)),
+      ),
     );
 
     clearTimeout(shutdownTimeout);
