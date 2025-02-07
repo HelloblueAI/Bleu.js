@@ -11,7 +11,7 @@ const generateRuleId = (() => {
 
     cache.add(ruleId);
 
-    if (cache.size > 1000) cache.clear(); 
+    if (cache.size > 1000) cache.clear();
 
     console.debug(`[RuleID Generator] New ID Generated: ${ruleId}`);
     return ruleId;
