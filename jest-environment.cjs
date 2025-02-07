@@ -6,8 +6,8 @@ class CustomEnvironment extends NodeEnvironment {
     super({
       ...config,
       testEnvironmentOptions: {
-        url: 'http://localhost'
-      }
+        url: 'http://localhost',
+      },
     });
   }
 
