@@ -1534,13 +1534,21 @@ pnpm test
  PASS   lint  ./simpleServer.js
   ✓ ESLint (1 ms)
 
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
-----------|---------|----------|---------|---------|-------------------
-Test Suites: 1 skipped, 88 passed, 88 of 89 total
-Tests:       88 passed, 88 total
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files           |       0 |        0 |       0 |       0 |
+ dist              |       0 |        0 |       0 |       0 |
+  routes.js        |       0 |        0 |       0 |       0 | 5-914
+  swagger.js       |       0 |      100 |     100 |       0 | 4-23
+ dist/utils        |       0 |        0 |       0 |       0 |
+  logger.js        |       0 |      100 |       0 |       0 | 5-10
+  testSequencer.js |       0 |        0 |       0 |       0 | 5-725
+ dist/utils/lib    |       0 |        0 |       0 |       0 |
+  Bleu.js          |       0 |        0 |       0 |       0 | 5-78
+-------------------|---------|----------|---------|---------|-------------------
+Test Suites: 2 skipped, 91 passed, 91 of 93 total
+Tests:       91 passed, 91 total
 Snapshots:   0 total
 Time:        5.811 s
 Ran all test suites.

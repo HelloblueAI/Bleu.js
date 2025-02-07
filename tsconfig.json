@@ -6,7 +6,10 @@
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["vitest", "node", "express"]
   },
   "include": [
     "backend/**/*.ts",
