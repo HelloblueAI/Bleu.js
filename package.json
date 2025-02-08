@@ -165,18 +165,10 @@
     "mit-license",
     "machine-learning"
   ],
-  "author": "Pejman Haghighatnia",
-  "contributors": [
-    {
-      "name": "Pejman Haghighatnia",
-      "email": "pejmanhnia@gmail.com",
-      "url": "https://github.com/pejmantheory"
-    },
-    {
-      "name": "HB-NLP Research Labs",
-      "url": "https://github.com/HelloblueAI"
-    }
-  ],
+  "author": {
+    "name": "HB-NLP Research Lab",
+    "url": "https://github.com/HelloblueAI"
+  },
   "bugs": {
     "url": "https://github.com/HelloblueAI/Bleu.js/issues"
   },
