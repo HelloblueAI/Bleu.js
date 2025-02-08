@@ -58,3 +58,5 @@ result.json
 *.html
 *.css
 *.js
+reports/jest-html-reporters-attach/test-report/result.js
+reports/jest-stare/jest-results.json
