@@ -725,6 +725,19 @@ done
 wait
 ```
 
+## Changelog (v1.0.35)
+
+* Fixed Babel build issues by adding missing plugins (@babel/plugin-proposal-optional-chaining, @babel/plugin-proposal-nullish-coalescing-operator).
+* Updated dependencies to address compatibility issues.
+* PM2 restart is required after pulling the latest changes.
+
+Developer Setup
+```javascript
+pnpm install
+pnpm build
+pm2 restart all
+```
+
 ## Comprehensive AI Tools
 
 With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
@@ -1984,10 +1997,10 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)
 ![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)
 ![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)
+![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)
 ![Open Source Excellence](https://img.shields.io/badge/Award-Open%20Source%20Excellence-blueviolet?style=flat-square&logo=opensourceinitiative)
 ![Top Developer Tool](https://img.shields.io/badge/Award-Top%20Developer%20Tool-green?style=flat-square&logo=githubactions)
 ![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)
-![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
 ![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
