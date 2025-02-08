@@ -60,3 +60,4 @@ result.json
 *.js
 reports/jest-html-reporters-attach/test-report/result.js
 reports/jest-stare/jest-results.json
+backend/index.mjs
