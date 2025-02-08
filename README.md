@@ -1618,7 +1618,7 @@ Ran all test suites.
 
 ![Bleu.js SVG](https://raw.githubusercontent.com/HelloblueAI/Bleu.js/46a4a1183db83ac789b4c41c9d4e2e39356cb902/Asset.svg)
 
-## Main Test Report
+### Main Test Report
 
 ```javascript
 open ./reports/test-report.html
@@ -1660,7 +1660,7 @@ ensureCodeQuality(code) {
 }
 ```
 
-## Bleu.js API Documentation
+
 
 This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
 
@@ -1673,7 +1673,7 @@ This document provides detailed information about the API endpoints available in
 | backend/services    | 90.0      | 95.0       | 88.0      | 91.0      | 45, 67              |
 | ------------------- | --------- | ---------- | --------- | --------- | ------------------- |
 
-## Test Report Overview
+### Test Report Overview
 
 Here’s a snapshot of the latest test suite execution for the Bleu.js framework. Our commitment to quality ensures a robust and reliable experience for developers.
 
@@ -1700,7 +1700,7 @@ Here’s a snapshot of the latest test suite execution for the Bleu.js framework
 
 ---
 
-## Detailed Execution
+### Detailed Execution
 
 Bleu.js ensures all test cases pass successfully, delivering a seamless experience for developers. Below are key highlights from the executed suite:
 
@@ -1733,7 +1733,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ### Limbda, Bleujs REST API tests package
 
-## Generate REST Controller
+### Generate REST Controller
 
 ```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -1815,42 +1815,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
      }' | jq '.'`;
 ```
 
-Access the Swagger UI:
-
-Open your browser and navigate to `http://localhost:3003/docs` to view the API documentation.
-
-Access the raw Swagger JSON:
-Open your browser and navigate to `http://localhost:3003/swagger`json to view the raw Swagger JSON.
-
-### Recent API Updates
-
-# GET /
-
-Returns a greeting message.
-
-- URL: /
-- Method: GET
-- Response:
-
-```javascript
-{
-  "message": "Hello, World!"
-}
-```
-
-## POST /debug
-
-Handles debug logic
-
-URL: /debug
-Method: POST
-
-## Response:
-
-```javascript
-'Debugging';
-```
-
 ### Swagger Documentation:
 
 ```javascript
@@ -1920,7 +1884,7 @@ Handles generation logic.
 `"Generating"`;
 ```
 
-## Swagger Documentation:
+### Swagger Documentation:
 
 ```javascript
 /**
@@ -1946,8 +1910,6 @@ router.post('/generate', (req, res) => {
 ### API Documentation
 
 The API documentation is available at `http://localhost:3003/docs` and provides detailed information about all available endpoints, request parameters, and response structures.
-
-## Example of Swagger Documentation
 
 Here is an example of how Swagger documentation is added for an endpoint in the backend/server.js file:
 
