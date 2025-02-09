@@ -69,9 +69,8 @@ Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code sn
 - Health monitoring
 - Graceful shutdown handling
 
-### Lambda
+### Limbda, Bleujs REST API tests package
 
-## REST API Reference
 
 Starting the Server
 
@@ -174,7 +173,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
      }'
 ```
 
-## Advanced Usage
+### Advanced Usage
 
 Event Sourcing Pattern
 
@@ -585,7 +584,7 @@ for i in {1..5}; do
 done
 ```
 
-## Error Handling
+### Error Handling
 
 Missing Required Fields
 
@@ -725,7 +724,7 @@ done
 wait
 ```
 
-## Changelog (v1.0.35)
+### Changelog (v1.0.36)
 
 * Fixed Babel build issues by adding missing plugins (@babel/plugin-proposal-optional-chaining, @babel/plugin-proposal-nullish-coalescing-operator).
 * Updated dependencies to address compatibility issues.
@@ -738,43 +737,43 @@ pnpm build
 pm2 restart all
 ```
 
-## Comprehensive AI Tools
+### Comprehensive AI Tools
 
 With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
 
-## Backend Efficiency
+### Backend Efficiency
 
 The package includes a well-structured backend setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
 
-## Testing and Quality Assurance
+### Testing and Quality Assurance
 
 bleujs integrates comprehensive testing frameworks, including Jest for unit and integration tests, and Cypress for end-to-end tests. This ensures that applications built with this package are reliable and maintain high quality standards.
 
-## Code Linting and Formatting
+### Code Linting and Formatting
 
 By including ESLint and Prettier configurations, bleujs helps developers maintain consistent coding standards and formatting, reducing errors and improving code readability.
 
-## TypeScript Support
+### TypeScript Support
 
 The package supports TypeScript, allowing developers to write safer and more maintainable code with type checking.
 
-## Swagger Documentation
+### Swagger Documentation
 
 The package includes tools for generating Swagger API documentation, making it easier for developers to document and share their API specifications.
 
-## Continuous Integration/Continuous Deployment (CI/CD)
+### Continuous Integration/Continuous Deployment (CI/CD)
 
 The package comes with a CI/CD pipeline configuration for automated testing, linting, building, and deployment. This helps teams to integrate changes continuously and deploy applications reliably.
 
-## Docker Support
+### Docker Support
 
 With Docker integration, developers can containerize their applications for consistent deployment across different environments. This ensures that the application runs seamlessly regardless of where it is deployed.
 
-## Real-time Features
+### Real-time Features
 
 With WebSocket support (ws), developers can add real-time features like live notifications and updates to their applications.
 
-## Usage
+### Usage
 
 Create an instance of the BleuJS class and use its methods to manage your code:
 
@@ -1036,13 +1035,13 @@ Time:        0.359 s, estimated 1 s
 Ran all test suites.
 ```
 
-## Constructor
+### Constructor
 
 ```javascript
 constructor();
 ```
 
-## Structure
+### Structure
 
 ```javascript
 class Bleu {
@@ -1284,8 +1283,78 @@ generateEgg(description, type, options) {
 }
 ```
 
-`cd eggs-generator`
-`pnpm run test`
+## Eggs Generator API
+
+The **Eggs Generator API** is a microservice that generates **custom AI-powered "eggs"** based on provided parameters. This API is designed for scalability, AI logic, and real-time egg generation.
+
+###  **API Endpoint**
+#### `POST /api/generate-egg`
+Generate a new egg with a custom type and parameters.
+
+#### **Request Body (JSON)**
+
+cd eggs-generator
+pnpm install
+pnpm dev
+
+in another terminal
+
+```javascript
+curl -X POST http://localhost:3003/api/generate-egg \
+     -H "Content-Type: application/json" \
+     -d '{
+          "type": "golden-egg",
+          "description": "A rare legendary egg",
+          "parameters": {"size": "large", "color": "gold"}
+        }'
+```
+
+```javascript
+curl -X POST http://localhost:3003/api/generate-egg \
+     -H "Content-Type: application/json" \
+     -d '{
+          "type": "mystic-egg",
+          "description": "A magical egg with unknown powers",
+          "parameters": {"size": "medium", "color": "purple"}
+        }'
+```
+
+```javascript
+{
+  "type": "golden-egg",
+  "description": "A rare legendary egg",
+  "parameters": {
+    "size": "large",
+    "color": "gold"
+  }
+}
+```
+
+Response (Example)
+
+```javascript
+{
+  "result": {
+    "id": "75525d38-b458-4493-80c2-a0b01ff64c66",
+    "type": "golden-egg",
+    "description": "A rare legendary egg",
+    "metadata": {
+      "size": "large",
+      "color": "gold",
+      "generatedBy": "Eggs-Generator v1.0.38",
+      "timestamp": "2025-02-09T01:12:03.933Z"
+    },
+    "createdAt": "2025-02-09T01:12:03.933Z",
+    "updatedAt": "2025-02-09T01:12:03.933Z"
+  }
+}
+```
+
+```javascript
+pnpm install
+pnpm dev
+```
+
 
 ```javascript
  PASS  tests/bleu.test.js
@@ -1331,6 +1400,7 @@ Snapshots:   0 total
 Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
+
 
 ```javascript
 pnpm test
@@ -1744,7 +1814,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 
 ---
 
-### Limbda, Bleujs REST API tests package
 
 ### Generate REST Controller
 
@@ -1770,7 +1839,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
      }' | jq '.'`;
 ```
 
-## Generate endpoint
+### Generate endpoint
 
 ```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -1791,7 +1860,7 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
      }' | jq '.'`;
 ```
 
-## LARGE NUMBER OF METHODS WITH CATEGORIZATION
+### LARGE NUMBER OF METHODS WITH CATEGORIZATION
 
 ```javascript
 `curl -X POST "http://localhost:3001/api/generate-egg" \
@@ -1885,7 +1954,7 @@ router.post('/optimize', (req, res) => {
 });
 ```
 
-## POST /generate
+### POST /generate
 
 Handles generation logic.
 

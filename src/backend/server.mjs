@@ -8,7 +8,7 @@ import { createLogger, transports, format } from 'winston';
 import apiRoutes from './src/routes/apiRoutes.mjs';
 import { connect, disconnect } from './mocks/database.mjs';
 
-// Logger Configuration
+
 const logger = createLogger({
   level: 'info',
   format: format.combine(
@@ -28,7 +28,7 @@ const logger = createLogger({
   ],
 });
 
-// Centralized Error Handling
+
 const stopServer = (server) =>
   new Promise((resolve, reject) => {
     server.close(async (err) => {
@@ -42,7 +42,7 @@ const stopServer = (server) =>
     });
   });
 
-// Define API Endpoints
+
 const configureEndpoints = (app) => {
   app.use('/api', apiRoutes);
 
@@ -61,14 +61,14 @@ const configureEndpoints = (app) => {
     }
   });
 
-  // Additional endpoints can be added here
+
 };
 
-// Initialize Express App
+
 const createApp = () => {
   const app = express();
 
-  // Middleware
+
   app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
   app.use(
     morgan('combined', {
@@ -77,10 +77,10 @@ const createApp = () => {
   );
   app.use(bodyParser.json());
 
-  // Configure Endpoints
+
   configureEndpoints(app);
 
-  // Global 404 Handler
+
   app.use((req, res) => {
     res.status(404).json({ error: 'Not Found' });
   });
@@ -110,5 +110,5 @@ const startServer = async () => {
   }
 };
 
-// Export for Testing
+
 export { createApp, startServer, stopServer };

@@ -81,7 +81,9 @@ class Bleu {
     const ast = parse(code);
     // Example: Remove unused variables
     ast.body = ast.body.filter(
-      (node) => node.type !== 'VariableDeclaration' || node.declarations.some((decl) => decl.init),
+      (node) =>
+        node.type !== 'VariableDeclaration' ||
+        node.declarations.some((decl) => decl.init),
     );
     return generate(ast)
       .replace(/\s+/g, ' ')

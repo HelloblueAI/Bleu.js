@@ -10,7 +10,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { v4 as uuidv4 } from 'uuid';
 
-// Configuration constants
+
 const CONFIG = {
   METRICS_INTERVAL: 5000,
   CPU_CORES: os.cpus().length,
@@ -85,16 +85,16 @@ const logger = winston.createLogger({
 if (cluster.isPrimary) {
   logger.info(`🚀 Primary ${process.pid} is running`);
 
-  // Graceful shutdown handling
+
   const gracefulShutdown = () => {
     logger.info('Received shutdown signal. Gracefully shutting down...');
 
-    // Notify all workers to finish their current requests
+
     for (const id in cluster.workers) {
       cluster.workers[id]?.send('shutdown');
     }
 
-    // Wait for workers to exit or force shutdown after timeout
+
     setTimeout(() => {
       logger.warn('Forced shutdown after timeout');
       process.exit(1);
@@ -104,7 +104,7 @@ if (cluster.isPrimary) {
   process.on('SIGTERM', gracefulShutdown);
   process.on('SIGINT', gracefulShutdown);
 
-  // Fork workers
+
   for (let i = 0; i < CONFIG.CPU_CORES; i++) {
     cluster.fork();
   }
@@ -185,7 +185,7 @@ if (cluster.isPrimary) {
       this.templates = new Map();
       this.helpers = new Map();
       this.cache = new Map();
-      this.cacheTTL = 300000; // 5 minutes
+      this.cacheTTL = 300000;
       this.registerDefaultHelpers();
     }
 
@@ -352,19 +352,19 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     }),
   );
 
-  // Enhanced request tracking middleware
+
   app.use((req, res, next) => {
     const requestId = uuidv4();
     const startTime = performance.now();
 
-    // Attach context to request
+
     req.context = {
       requestId,
       startTime,
       logger: logger.child({ requestId }),
     };
 
-    // Enhance response with timing header
+
     res.on('finish', () => {
       const duration = performance.now() - startTime;
       monitor.recordMetric('http.response.time', duration, {
@@ -377,7 +377,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     next();
   });
 
-  // Error handling middleware
+
   app.use((err, req, res, next) => {
     if (err instanceof AppError) {
       res.status(err.statusCode).json({
@@ -408,7 +408,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     }
   });
 
-  // API endpoints
+
   app.post('/api/generate-egg', async (req, res, next) => {
     const startTime = performance.now();
     try {
@@ -440,7 +440,7 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     }
   });
 
-  // Health endpoint with detailed metrics
+
   app.get('/api/health', (req, res) => {
     res.json({
       status: 'healthy',
@@ -456,17 +456,17 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     });
   });
 
-  // Start server
+
   const server = app.listen(port, () => {
     logger.info(`🚀 BleuJS Core Engine v1.0.32 running on port ${port}`);
   });
 
-  // Graceful shutdown handler
+
   process.on('message', (msg) => {
     if (msg === 'shutdown') {
       logger.info('Worker received shutdown signal');
 
-      // Stop accepting new connections
+
       server.close(() => {
         logger.info('Worker gracefully shut down');
         process.exit(0);
