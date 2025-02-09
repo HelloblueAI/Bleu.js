@@ -18,16 +18,16 @@ const createApp = () => {
 
   app.use(
     cors({
-      origin: '*', // Allow all origins
-      methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
-      allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
     }),
   );
 
   app.use(morgan('dev'));
   app.use(json());
 
-  app.use('/api', apiRoutes); // Use the routes defined in apiRoutes
+  app.use('/api', apiRoutes); 
 
   app.post('/api/aiService', async (req, res) => {
     try {

@@ -30,8 +30,10 @@ const logger = createLogger({
 
 const optionsSchema = Joi.object({
   type: Joi.string().required(),
+  description: Joi.string().required(),
   parameters: Joi.object().optional(),
 }).required();
+
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -63,30 +65,60 @@ app.use((req, res, next) => {
 
 app.use(compression());
 
-// Routes
+
 app.post('/api/generate-egg', async (req, res) => {
-  const { error } = optionsSchema.validate(req.body);
+  const { type, description, parameters } = req.body;
+
+  logger.info('📥 Incoming Request', { type, description, parameters });
+
+
+  const { error } = optionsSchema.validate(req.body, { abortEarly: false });
   if (error) {
-    logger.warn('Validation failed', { error: error.message });
-    return res.status(400).json({ error: 'Invalid input' });
+    const validationErrors = error.details.map((e) => e.message);
+    logger.warn('⚠️ Validation Failed', { validationErrors });
+
+    return res.status(400).json({
+      error: 'Invalid input',
+      details: validationErrors,
+    });
   }
 
   try {
-    const result = await generateEgg(req.body);
-    logger.info('Egg generated successfully', { result });
+    logger.info('🛠 Generating Egg...');
+
+    const result = await generateEgg({
+      type,
+      description,
+      parameters,
+      metadata: {
+        size: parameters?.size || 'unknown',
+        color: parameters?.color || 'unknown',
+        generatedBy: 'Eggs-Generator v1.0.37',
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    logger.info('✅ Egg Generated Successfully', { result });
+
     return res.status(200).json({ result });
   } catch (err) {
-    logger.error('Error generating egg', { error: err.message });
-    return res.status(500).json({ error: 'Internal Server Error' });
+    logger.error('❌ Egg Generation Failed', { error: err.message });
+
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'An unexpected error occurred while generating the egg.',
+    });
   }
 });
+
+
 
 app.use((err, req, res) => {
   logger.error('Unhandled error', { error: err.message });
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-// Start Server
+
 app.listen(PORT, () => {
   logger.info(`Eggs Generator running on port ${PORT}`);
 });
