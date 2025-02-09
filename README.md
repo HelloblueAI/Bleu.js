@@ -854,12 +854,12 @@ Here’s how you can use the `bleujs-utils` package in your project:
 ```javascript
 const { optimizeCode, manageDependencies } = require('bleujs-utils');
 
-// Optimize code
+
 const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log('Optimized Code:', optimizedCode);
 
-// Manage dependencies
+
 const dependencies = ['express', 'body-parser'];
 manageDependencies(dependencies);
 ```
@@ -1179,7 +1179,7 @@ bleu.manageDependencies(dependencies);
 ```
 
 ```javascript
-`pnpm run test:all`;
+pnpm test
 ```
 
 ```javascript
@@ -1297,7 +1297,7 @@ cd eggs-generator
 pnpm install
 pnpm dev
 
-in another terminal
+In another terminal
 
 ```javascript
 curl -X POST http://localhost:3003/api/generate-egg \
@@ -1309,6 +1309,12 @@ curl -X POST http://localhost:3003/api/generate-egg \
         }'
 ```
 
+Expected result
+```javascript
+{"result":{"id":"9854f6da-b409-4b72-bd30-7e545d79b1a7","type":"golden-egg","description":"A rare legendary egg","metadata":{"size":"large","color":"gold","generatedBy":"Eggs-Generator v1.0.37","timestamp":"2025-02-09T06:14:51.061Z"},"createdAt":"2025-02-09T06:14:51.061Z","updatedAt":"2025-02-09T06:14:51.061Z"}}% ```
+
+
+
 ```javascript
 curl -X POST http://localhost:3003/api/generate-egg \
      -H "Content-Type: application/json" \
@@ -1317,6 +1323,24 @@ curl -X POST http://localhost:3003/api/generate-egg \
           "description": "A magical egg with unknown powers",
           "parameters": {"size": "medium", "color": "purple"}
         }'
+```
+
+Expected result
+```javascript
+Generated Egg: {
+  id: '9854f6da-b409-4b72-bd30-7e545d79b1a7',
+  type: 'golden-egg',
+  description: 'A rare legendary egg',
+  metadata: {
+    size: 'large',
+    color: 'gold',
+    generatedBy: 'Eggs-Generator v1.0.37',
+    timestamp: '2025-02-09T06:14:51.061Z'
+  },
+  createdAt: '2025-02-09T06:14:51.061Z',
+  updatedAt: '2025-02-09T06:14:51.061Z'
+}
+2025-02-09T06:14:51.063Z [INFO]: ✅ Egg Generated Successfully {"result":{"id":"9854f6da-b409-4b72-bd30-7e545d79b1a7","type":"golden-egg","description":"A rare legendary egg","metadata":{"size":"large","color":"gold","generatedBy":"Eggs-Generator v1.0.37","timestamp":"2025-02-09T06:14:51.061Z"},"createdAt":"2025-02-09T06:14:51.061Z","updatedAt":"2025-02-09T06:14:51.061Z"}}
 ```
 
 ```javascript
@@ -1348,11 +1372,6 @@ Response (Example)
     "updatedAt": "2025-02-09T01:12:03.933Z"
   }
 }
-```
-
-```javascript
-pnpm install
-pnpm dev
 ```
 
 
@@ -1722,7 +1741,7 @@ The optimizeCode method is designed to optimize the provided code. While current
 
 ```javascript
 optimizeCode(code) {
-  // Optimization logic here
+
   const optimizedCode = code.replace(/\s+/g, ' ').trim();
   return optimizedCode;
 }
