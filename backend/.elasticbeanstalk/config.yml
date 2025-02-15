@@ -1,0 +1,22 @@
+branch-defaults:
+  default:
+    environment: bleujs-env
+    group_suffix: null
+environment-defaults:
+  bleujs-env:
+    branch: null
+    repository: null
+global:
+  application_name: BleujsAPI
+  branch: null
+  default_ec2_keyname: BleujsDeploymentKey
+  default_platform: Node.js 20 running on 64bit Amazon Linux 2023
+  default_region: us-west-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: null
+  sc: null
+  workspace_type: Application
