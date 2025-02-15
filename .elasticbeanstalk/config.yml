@@ -1,0 +1,35 @@
+branch-defaults:
+  main:
+    environment: bleujs-env
+    group_suffix: null
+
+environment-defaults:
+  bleujs-env:
+    branch: main
+    repository: origin
+    instance_type: t3.medium 
+    load_balancer_type: application
+    autoscaling: true
+    min_instances: 2
+    max_instances: 5
+    rolling_updates: true
+    healthcheck_url: /health
+
+global:
+  application_name: BleujsAPI
+  default_ec2_keyname: BleujsDeploymentKey
+  default_platform: Node.js 20 running on 64bit Amazon Linux 2023
+  default_region: us-west-2
+  include_git_submodules: true
+  instance_profile: aws-elasticbeanstalk-ec2-role
+  platform_name: null
+  platform_version: null
+  profile: default
+  sc: git
+  workspace_type: Application
+  managed_updates:
+    enabled: true
+    update_level: minor
+    maintenance_window: "Sun:10:00"
+  logging: enabled
+  monitoring: enabled

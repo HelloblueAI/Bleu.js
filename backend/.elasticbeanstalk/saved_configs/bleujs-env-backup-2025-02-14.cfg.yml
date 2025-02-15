@@ -1,0 +1,32 @@
+EnvironmentConfigurationMetadata:
+  Description: Configuration created from the EB CLI using "eb config save".
+  DateCreated: '1739512340000'
+  DateModified: '1739512340000'
+Platform:
+  PlatformArn: arn:aws:elasticbeanstalk:us-west-2::platform/Node.js 20 running on
+    64bit Amazon Linux 2023/6.4.2
+OptionSettings:
+  aws:elasticbeanstalk:command:
+    BatchSize: '30'
+    BatchSizeType: Percentage
+  aws:elb:policies:
+    ConnectionDrainingEnabled: true
+  aws:elb:loadbalancer:
+    CrossZone: true
+  aws:elasticbeanstalk:environment:
+    ServiceRole: aws-elasticbeanstalk-service-role
+    LoadBalancerType: application
+  aws:elasticbeanstalk:healthreporting:system:
+    SystemType: enhanced
+  aws:autoscaling:launchconfiguration:
+    IamInstanceProfile: aws-elasticbeanstalk-ec2-role
+  aws:autoscaling:asg:
+    MinSize: '2'
+    MaxSize: '2'
+  aws:autoscaling:updatepolicy:rollingupdate:
+    RollingUpdateType: Health
+    RollingUpdateEnabled: true
+EnvironmentTier:
+  Type: Standard
+  Name: WebServer
+AWSConfigurationTemplateVersion: 1.1.0.0
