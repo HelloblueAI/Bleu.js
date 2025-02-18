@@ -192,3 +192,22 @@ venv/
 *.tgz
 .husky/
 .lintstagedrc.json
+
+# ----------------------------------------
+# 🔥 Prioritize Python in GitHub Language Bar
+# ----------------------------------------
+*.js linguist-vendored
+*.jsx linguist-vendored
+*.ts linguist-vendored
+*.tsx linguist-vendored
+*.json linguist-vendored
+*.css linguist-vendored
+*.html linguist-vendored
+*.md linguist-vendored
+*.yaml linguist-vendored
+dependency-management/ linguist-vendored
+
+# 🚀 Keep Python Visible
+*.py linguist-detectable
+!dependency-management/package.json
+!dependency-management/package.json
