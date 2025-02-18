@@ -61,3 +61,11 @@ result.json
 reports/jest-html-reporters-attach/test-report/result.js
 reports/jest-stare/jest-results.json
 backend/index.mjs
+.cache_ggshield
+.husky/
+.lintstagedrc.json
+Bleu.js-mirror/
+dependency-management/.jest-cache/
+eggs_backup/
+response.json
+response_debug.bin
