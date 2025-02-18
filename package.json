@@ -19,7 +19,7 @@
     "build:backend": "npx babel src/backend --out-dir backend/dist",
     "build:eggs-generator": "npx babel eggs-generator/src --out-dir eggs-generator/dist",
     "build:watch": "npx babel src --out-dir dist --watch",
-    "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit && open coverage/html-report/report.html",
+    "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit",
     "test:coverage": "jest --coverage",
     "test:backend": "jest --detectOpenHandles --testPathPattern=backend",
     "test:all": "jest --detectOpenHandles",

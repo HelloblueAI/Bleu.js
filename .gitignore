@@ -68,8 +68,20 @@ test-report/
 reports/
 junit.xml
 *.snap
-!reports/jest-html-reporters-attach/test-report/result.js
-!reports/jest-stare/jest-results.json
+__snapshots__/
+test-results/
+playwright-report/
+**/test-results/
+**/playwright-report/
+**/dist-tests/
+.jest-cache
+jest-html-reporters-attach/
+jest-stare/
+!.jest.config.js
+!jest.config.ts
+!jest.config.cjs
+!jest.setup.js
+!jest.setup.ts
 
 # ----------------------------------------
 # 🎯 IDE and Editor Config (Ignore editor-specific files)

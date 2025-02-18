@@ -6,8 +6,9 @@ module.exports = {
 
   testEnvironment: path.resolve(__dirname, 'jest.environment.cjs'),
 
+
   moduleNameMapper: {
-    
+
     'node:crypto': '<rootDir>/src/node-shims/crypto.js',
     'crypto': '<rootDir>/src/node-shims/crypto.js',
     'node:fs': '<rootDir>/src/node-shims/fs.js',
@@ -22,7 +23,7 @@ module.exports = {
     '^@core/(.*)$': '<rootDir>/src/core/$1'
   },
 
-
+  
   transform: {
     '^.+\\.m?[tj]sx?$': [
       'babel-jest',
@@ -35,10 +36,57 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)'
   ],
+
+
   setupFiles: ['./jest.node-globals.cjs'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   globalSetup: './jest.global-setup.cjs',
   globalTeardown: './jest.teardown.cjs',
+
+
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './coverage/html-report',
+        filename: 'report.html',
+        openReport: true,
+        pageTitle: `${pkg.name} v${pkg.version} - Test Report`,
+        includeConsoleLog: true,
+        includeSuiteFailure: true,
+        expand: true,
+        hideIcon: false,
+        testCommand: 'pnpm test',
+        devCommand: 'pnpm dev',
+        darkTheme: true,
+        enableMerge: true,
+        inlineSource: true,
+        logo: path.resolve(__dirname, 'logo.png'),
+        customInfos: [
+          { title: 'Project', value: pkg.name },
+          { title: 'Version', value: pkg.version },
+          { title: 'Date', value: new Date().toISOString() },
+          { title: 'Environment', value: process.env.NODE_ENV || 'test' }
+        ],
+        automaticallyOpen: true
+      }
+    ],
+    [
+      'jest-junit',
+      {
+        outputDirectory: './coverage',
+        outputName: 'junit.xml',
+        ancestorSeparator: ' › ',
+        uniqueOutputName: false,
+        suiteNameTemplate: '{filepath}',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+        addFileAttribute: true,
+        reportTestSuiteErrors: true
+      }
+    ]
+  ],
 
   projects: [
     {
@@ -95,55 +143,25 @@ module.exports = {
       ],
       coverageThreshold: {
         global: {
-          branches: 80,
-          functions: 80,
-          lines: 85,
-          statements: 85
+          branches: 90,
+          functions: 90,
+          lines: 95,
+          statements: 95
         }
-      },
-      reporters: [
-        'default',
-        [
-          'jest-html-reporters',
-          {
-            publicPath: './coverage/html-report',
-            filename: 'report.html',
-            openReport: true,
-            pageTitle: `${pkg.name} v${pkg.version} - Test Report`,
-            includeConsoleLog: true,
-            includeSuiteFailure: true,
-            logo: path.resolve(__dirname, 'logo.png'),
-            customInfos: [
-              { title: 'Project', value: pkg.name },
-              { title: 'Version', value: pkg.version },
-              { title: 'Date', value: new Date().toISOString() }
-            ]
-          }
-        ],
-        [
-          'jest-junit',
-          {
-            outputDirectory: './coverage',
-            outputName: 'junit.xml',
-            ancestorSeparator: ' › ',
-            uniqueOutputName: false,
-            suiteNameTemplate: '{filepath}',
-            classNameTemplate: '{classname}',
-            titleTemplate: '{title}',
-            addFileAttribute: true,
-            reportTestSuiteErrors: true
-          }
-        ]
-      ]
+      }
     }
   ],
-  maxWorkers: '50%',
-  testTimeout: 60000,
+
+
+  maxWorkers: '85%',
+  testTimeout: 120000,
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
     ['jest-watch-suspend', { 'key-for-resume': 'r', 'key-for-suspend': 's' }]
   ],
+
+
   globals: {
     __DEV__: true,
     __TEST__: true,
@@ -151,10 +169,17 @@ module.exports = {
     __PROJECT__: pkg.name
   },
 
+
   verbose: true,
   bail: 1,
   cacheDirectory: '.jest-cache',
   errorOnDeprecated: true,
   notify: true,
-  notifyMode: 'failure-change'
-}
+  notifyMode: 'failure-change',
+
+
+  displayName: {
+    name: pkg.name,
+    color: 'blue'
+  }
+};
