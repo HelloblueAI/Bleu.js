@@ -1,37 +1,77 @@
-import '@testing-library/jest-dom/extend-expect';
+import { jest } from '@jest/globals';
 
-beforeAll(() => {
-  console.log('Global setup: Initializing test environment...');
-  process.env.TZ = 'UTC';
-});
+// Ensure `crypto` module is available
+import crypto from 'crypto';
+global.crypto = global.crypto || crypto;
 
+const createMock = (name) => {
+  const mock = jest.fn();
+  mock.mockName(name);
+  return mock;
+};
 
-afterEach(() => {
-  if (global.server) {
-    global.server.close(() => {
-      console.log('Server closed after test.');
-    });
-  }
-
-  
-  jest.restoreAllMocks();
+global.beforeEach(() => {
   jest.resetModules();
   jest.clearAllMocks();
-  jest.clearAllTimers();
-
-  console.log('Test environment cleaned up after test.');
+  jest.restoreAllMocks();
 });
 
-afterAll(() => {
-  console.log('Global teardown: Finalizing test environment...');
+// Mock Logger Utility
+jest.mock('./src/utils/logger', () => ({
+  info: createMock('logger.info'),
+  error: createMock('logger.error'),
+  debug: createMock('logger.debug'),
+  warn: createMock('logger.warn'),
+}));
+
+// Mock Winston Logger
+jest.mock('winston', () => {
+  const actualWinston = jest.requireActual('winston');
+  return {
+    ...actualWinston,
+    createLogger: jest.fn(() => ({
+      info: createMock('winston.info'),
+      error: createMock('winston.error'),
+      warn: createMock('winston.warn'),
+      debug: createMock('winston.debug'),
+    })),
+    format: {
+      combine: jest.fn(() => 'mockedCombine'),
+      timestamp: jest.fn(() => 'mockedTimestamp'),
+      printf: jest.fn(() => 'mockedPrintf'),
+    },
+    transports: {
+      Console: jest.fn(() => ({
+        log: createMock('winston.Console.log'),
+      })),
+    },
+  };
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  throw reason;
+// Mock MongoMemoryServer
+jest.mock('mongodb-memory-server', () => {
+  return {
+    MongoMemoryServer: class {
+      constructor() {
+        this.getUri = jest.fn().mockResolvedValue('mongodb://localhost:27017/testdb');
+      }
+      start() {
+        return jest.fn();
+      }
+      stop() {
+        return jest.fn();
+      }
+    },
+  };
 });
 
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  throw err;
+// Handle Global Errors
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled Promise Rejection:', reason);
+  process.exit(1);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  process.exit(1);
 });

@@ -1,0 +1,14 @@
+{
+  "binary": {
+    "version": "6.0.12",
+    "skipMD5": true,
+    "downloadDir": "./.mongodb-binaries"
+  },
+  "autoStart": false,
+  "instance": {
+    "port": 27017,
+    "dbName": "testdb",
+    "storageEngine": "wiredTiger"
+  },
+  "debug": false
+}

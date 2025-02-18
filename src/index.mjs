@@ -10,7 +10,6 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { v4 as uuidv4 } from 'uuid';
 
-
 const CONFIG = {
   METRICS_INTERVAL: 5000,
   CPU_CORES: os.cpus().length,
@@ -85,15 +84,12 @@ const logger = winston.createLogger({
 if (cluster.isPrimary) {
   logger.info(`🚀 Primary ${process.pid} is running`);
 
-
   const gracefulShutdown = () => {
     logger.info('Received shutdown signal. Gracefully shutting down...');
-
 
     for (const id in cluster.workers) {
       cluster.workers[id]?.send('shutdown');
     }
-
 
     setTimeout(() => {
       logger.warn('Forced shutdown after timeout');
@@ -103,7 +99,6 @@ if (cluster.isPrimary) {
 
   process.on('SIGTERM', gracefulShutdown);
   process.on('SIGINT', gracefulShutdown);
-
 
   for (let i = 0; i < CONFIG.CPU_CORES; i++) {
     cluster.fork();
@@ -352,18 +347,15 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     }),
   );
 
-
   app.use((req, res, next) => {
     const requestId = uuidv4();
     const startTime = performance.now();
-
 
     req.context = {
       requestId,
       startTime,
       logger: logger.child({ requestId }),
     };
-
 
     res.on('finish', () => {
       const duration = performance.now() - startTime;
@@ -376,7 +368,6 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
 
     next();
   });
-
 
   app.use((err, req, res, next) => {
     if (err instanceof AppError) {
@@ -407,7 +398,6 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
       });
     }
   });
-
 
   app.post('/api/generate-egg', async (req, res, next) => {
     const startTime = performance.now();
@@ -440,7 +430,6 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     }
   });
 
-
   app.get('/api/health', (req, res) => {
     res.json({
       status: 'healthy',
@@ -456,16 +445,13 @@ export class ${helpers.get('capitalize')(context.name)}Service implements OnModu
     });
   });
 
-
   const server = app.listen(port, () => {
     logger.info(`🚀 BleuJS Core Engine v1.0.32 running on port ${port}`);
   });
 
-
   process.on('message', (msg) => {
     if (msg === 'shutdown') {
       logger.info('Worker received shutdown signal');
-
 
       server.close(() => {
         logger.info('Worker gracefully shut down');

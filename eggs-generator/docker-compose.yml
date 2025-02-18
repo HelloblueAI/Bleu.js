@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3003:3003'
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://egg-app-user:Redmond8665@mongodb:27017/eggs-db?authSource=eggs-db
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=egg-admin
+      - MONGO_INITDB_ROOT_PASSWORD=Redmond8665
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=egg-admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=Redmond8665
+      - ME_CONFIG_MONGODB_URL=mongodb://egg-admin:Redmond8665@mongodb:27017/
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:

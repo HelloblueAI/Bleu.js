@@ -133,10 +133,8 @@ class DecisionTree {
     if (node.isLeaf) {
       console.log(`${indent}Leaf: ${node.result}`);
     } else {
-
-
       this.visualize(node.trueBranch, indent + '  ');
-      
+
       this.visualize(node.falseBranch, indent + '  ');
     }
   }

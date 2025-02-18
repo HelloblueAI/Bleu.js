@@ -1,63 +1,191 @@
-# Dependency directories
+# ----------------------------------------
+# 🚀 Dependencies (Ignore installed packages & caches)
+# ----------------------------------------
 node_modules/
-backend/node_modules/
+**/node_modules/
+.pnp/
+.pnp.js
+.yarn/
+.pnpm-store/
+!yarn/patches/
+!yarn/plugins/
+!yarn/releases/
+!yarn/sdks/
+!yarn/versions/
 
-# Coverage directories and files
-coverage/
-backend/coverage/
-coverage/**/*.html
-backend/coverage/**/*.html
+# ----------------------------------------
+# 🚀 Lock Files (Should be committed)
+# ----------------------------------------
+!pnpm-lock.yaml  # Ensure dependency consistency
+package-lock.json
+yarn.lock
+**/package-lock.json
+**/yarn.lock
 
-# Build output
+# ----------------------------------------
+# 🔐 Environment & Secrets (Do NOT commit)
+# ----------------------------------------
+.env
+.env.*
+!**/.env.example
+**/.env
+**/.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+config/secrets.yml
+config/local_settings.py
+
+# ----------------------------------------
+# 🏗️ Build Output & Generated Files
+# ----------------------------------------
 dist/
 build/
-backend/build/
+out/
+.output/
+.cache/
+.temp/
+.next/
+.nuxt/
+.docusaurus/
+.dynamodb/
+.parcel-cache/
+.turbo/
+.webpack/
+storybook-static/
+__sapper__/
+.cdk.out/
 
-# Logs and backups
-*.log
-*.bak
-
-# Allow specific test report files
+# ----------------------------------------
+# 🧪 Testing and Coverage
+# ----------------------------------------
+coverage/
+**/coverage/
+.nyc_output/
+test-report/
+reports/
+junit.xml
+*.snap
 !reports/jest-html-reporters-attach/test-report/result.js
 !reports/jest-stare/jest-results.json
 
-
-# Operating system and IDE specific files
-.DS_Store
-Thumbs.db
+# ----------------------------------------
+# 🎯 IDE and Editor Config (Ignore editor-specific files)
+# ----------------------------------------
 .idea/
 .vscode/
+.history/
+*.swp
+*.swo
+.vs/
+*.sublime-workspace
+*.sublime-project
 
-# Environment files
-.env
-*.env
-
-# Python-related files and directories
-__pycache__/
-*.py[cod]
-language-plugins/python/venv/
-new_venv/
+# ----------------------------------------
+# 🐍 Python Virtual Environments & Bytecode
+# ----------------------------------------
 venv/
+**/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+mypy_cache/
+*.pyc
+*.pyo
+*.pyd
 
-# Lock files
-pnpm-lock.yaml
+# ----------------------------------------
+# 🐳 Docker & Containers
+# ----------------------------------------
+.dockerignore
+docker-compose.override.yml
+**/.docker/
+**/.container/
+.dockerenv
+.docker-compose-logs/
+
+# ----------------------------------------
+# 📝 Logs & Debug Files (Ignore logs, temp files, and debug artifacts)
+# ----------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+debug.log
+*.err
+*.out
+logfile.txt
+app.log
+
+# ----------------------------------------
+# ⚡ Caches & Temporary Files (Prevent committing unwanted system/cache files)
+# ----------------------------------------
+.cache/
+.eslintcache
+.stylelintcache
+*.bak
+*.swp
+*.swo
+*.lock
+*.tmp
+*.pid
+*.seed
+*.log.[0-9]
+.trash/
+.trash-*/
+
+# ----------------------------------------
+# 🛠️ CI/CD & Dependency Management (Ignore temporary dependency/config files)
+# ----------------------------------------
 pnpm-lock.yaml.bak
+node_modules/.package-lock.json
+dependency-management/.cspell.json
+dependency-management/.husky/
+dependency-management/.jest-cache/
+dependency-management/__mocks__/
+dependency-management/jest.config.cjs
 
-# Test reports
-test-report/
-**/test-report/
+# ----------------------------------------
+# 🖥️ System & OS Generated Files
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+*.swo
+*.lock
+*.tmp
+*.pid
+*.seed
+*.log.[0-9]
 
+# ----------------------------------------
+# 🔥 Git Specific (Ignore internal Git files except .gitignore)
+# ----------------------------------------
+.git/
+.gitmodules
+.gitattributes
+.gitkeep
+*.orig
+*.rej
+tsconfig.tsbuildinfo
+eggs_backup/
 
-result.js
-result.json
-**/result.js
-**/result.json
-/output/
-/coverage/
-/html-report/
-*.html
-*.css
-*.js
-reports/jest-html-reporters-attach/test-report/result.js
-reports/jest-stare/jest-results.json
-backend/index.mjs
+# ----------------------------------------
+# 🚀 Custom Project Exclusions
+# ----------------------------------------
+response.json
+response_debug.bin
+.cache_ggshield
+Bleu.js-mirror/
+Bleu.js-mirror.bfg-report/
+venv/
+dependency-management/
+.jest-cache
+venv/
+venv/

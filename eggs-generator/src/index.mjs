@@ -1,124 +1,182 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: '../../.env' });
+
 import express from 'express';
-import bodyParser from 'body-parser';
-import Joi from 'joi';
-import { createLogger, transports, format } from 'winston';
+import mongoose from 'mongoose';
+import cluster from 'cluster';
+import os from 'os';
+import helmet from 'helmet';
 import compression from 'compression';
-import { generateEgg } from './generateEgg.js';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import { createLogger, transports, format } from 'winston';
+import { WebSocketServer } from 'ws';
+import { createClient } from 'redis';
+import eggRoutes from './routes/egg.routes.js';
 
-const { json } = bodyParser;
+const numCPUs = os.cpus().length;
+const PORT = process.env.PORT || 3003;
+const WS_PORT = process.env.WS_PORT || 8081;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+const REDIS_HOST = process.env.REDIS_HOST || '127.0.0.1';
+const REDIS_PORT = parseInt(process.env.REDIS_PORT, 10) || 6379;
+const CORS_ALLOWED = process.env.CORS_ORIGINS?.split(',') || ['http://localhost:4002'];
 
+/** 📌 Logger Configuration */
 const logger = createLogger({
   level: 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.printf(
-      ({ timestamp, level, message, ...meta }) =>
-        `${timestamp} [${level.toUpperCase()}]: ${message} ${
-          Object.keys(meta).length ? JSON.stringify(meta) : ''
-        }`,
-    ),
-  ),
+  format: format.combine(format.timestamp(), format.json()),
   transports: [
-    new transports.Console(),
-    new transports.File({
-      filename: 'logs/app.log',
-      maxsize: 5 * 1024 * 1024,
-      maxFiles: 5,
-    }),
+    new transports.Console({ format: format.combine(format.colorize(), format.simple()) }),
+    new transports.File({ filename: 'logs/error.log', level: 'error', maxsize: 10 * 1024 * 1024 }),
+    new transports.File({ filename: 'logs/app.log', maxsize: 10 * 1024 * 1024 }),
   ],
 });
 
-const optionsSchema = Joi.object({
-  type: Joi.string().required(),
-  description: Joi.string().required(),
-  parameters: Joi.object().optional(),
-}).required();
-
-
-const app = express();
-const PORT = process.env.PORT || 3003;
-
-app.use(json());
-
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',')
-  : ['http://localhost:4002'];
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:4002');
+/** 🔧 MongoDB Connection */
+async function connectToMongoDB() {
+  let retries = 5;
+  while (retries) {
+    try {
+      await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      logger.info(`✅ MongoDB Connected: ${mongoose.connection.host}`);
+      return;
+    } catch (error) {
+      logger.error(`❌ MongoDB Connection Failed (${retries} retries left):`, error);
+      retries -= 1;
+      await new Promise((res) => setTimeout(res, Math.pow(2, 5 - retries) * 1000));
+    }
   }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, X-Requested-With',
-  );
-  res.header('Access-Control-Allow-Credentials', 'true');
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  return next();
-});
+  process.exit(1);
+}
 
-app.use(compression());
+/** 📡 Redis Client */
+const redisClient = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } });
+redisClient.on('error', (err) => logger.error('❌ Redis Connection Failed:', err));
+await redisClient.connect();
 
+/** 🔗 WebSocket Clients */
+const activeClients = new Set();
 
-app.post('/api/generate-egg', async (req, res) => {
-  const { type, description, parameters } = req.body;
+/** 📢 Broadcast Messages */
+const broadcastMessage = (message, sender = null) => {
+  activeClients.forEach((client) => {
+    if (client !== sender && client.readyState === client.OPEN) {
+      client.send(JSON.stringify(message));
+    }
+  });
+};
 
-  logger.info('📥 Incoming Request', { type, description, parameters });
+/** 🔥 WebSocket Handler */
+const handleWebSocket = (wss) => {
+  wss.on('connection', (ws) => {
+    activeClients.add(ws);
+    const requestId = `ws-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    logger.info(`🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
 
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message);
+        if (!data || typeof data !== 'object' || !data.event) {
+          throw new Error("Invalid message format. Expected JSON object with 'event' field.");
+        }
 
-  const { error } = optionsSchema.validate(req.body, { abortEarly: false });
-  if (error) {
-    const validationErrors = error.details.map((e) => e.message);
-    logger.warn('⚠️ Validation Failed', { validationErrors });
+        logger.info(`📨 WS Message Received [${requestId}]: ${JSON.stringify(data)}`);
 
-    return res.status(400).json({
-      error: 'Invalid input',
-      details: validationErrors,
+        switch (data.event) {
+          case 'ping':
+            ws.send(JSON.stringify({ event: 'pong', timestamp: Date.now() }));
+            break;
+
+          case 'generate_egg': {
+            if (!data.type || !data.rarity || !data.power) {
+              ws.send(JSON.stringify({ error: "Missing fields: type, rarity, or power" }));
+              return;
+            }
+            const egg = {
+              event: "egg_generated",
+              type: data.type,
+              rarity: data.rarity,
+              power: data.power,
+              timestamp: Date.now(),
+            };
+            ws.send(JSON.stringify(egg));
+            broadcastMessage(egg, ws);
+            break;
+          }
+
+          case 'subscribe':
+            if (!data.category) {
+              ws.send(JSON.stringify({ error: "Missing 'category' field in subscribe event." }));
+              return;
+            }
+            ws.send(JSON.stringify({ event: "subscribed", category: data.category }));
+            break;
+
+          default:
+            ws.send(JSON.stringify({ error: 'Unknown event type' }));
+        }
+      } catch (error) {
+        logger.error(`❌ WS Error [${requestId}]: ${error.message}`);
+        ws.send(JSON.stringify({ error: "Invalid WebSocket message format." }));
+      }
     });
-  }
 
-  try {
-    logger.info('🛠 Generating Egg...');
-
-    const result = await generateEgg({
-      type,
-      description,
-      parameters,
-      metadata: {
-        size: parameters?.size || 'unknown',
-        color: parameters?.color || 'unknown',
-        generatedBy: 'Eggs-Generator v1.0.37',
-        timestamp: new Date().toISOString(),
-      },
+    ws.on('close', () => {
+      activeClients.delete(ws);
+      logger.info(`❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
     });
 
-    logger.info('✅ Egg Generated Successfully', { result });
-
-    return res.status(200).json({ result });
-  } catch (err) {
-    logger.error('❌ Egg Generation Failed', { error: err.message });
-
-    return res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'An unexpected error occurred while generating the egg.',
+    ws.on('error', (error) => {
+      logger.error(`🚨 WS Connection Error [${requestId}]:`, error);
     });
-  }
-});
+  });
 
+  return wss;
+};
 
+/** 🚀 Cluster Mode */
+if (cluster.isPrimary) {
+  logger.info(`🚀 Master process ${process.pid} managing ${numCPUs} workers`);
 
-app.use((err, req, res) => {
-  logger.error('Unhandled error', { error: err.message });
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+  for (let i = 0; i < numCPUs; i++) cluster.fork();
 
+  cluster.on('exit', (worker) => {
+    logger.warn(`⚠️ Worker ${worker.process.pid} died. Restarting...`);
+    cluster.fork();
+  });
 
-app.listen(PORT, () => {
-  logger.info(`Eggs Generator running on port ${PORT}`);
-});
+  setInterval(() => {
+    redisClient.publish('market-update', JSON.stringify({ event: 'market_update', timestamp: Date.now() }));
+  }, 5000);
+
+  const wss = new WebSocketServer({ port: WS_PORT });
+  handleWebSocket(wss);
+} else {
+  const app = express();
+  await connectToMongoDB();
+
+  app.use(helmet());
+  app.use(compression());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use(cors({ origin: CORS_ALLOWED, credentials: true }));
+
+  app.use(rateLimit({
+    windowMs: 60 * 1000,
+    max: async (req) => (req.ip.startsWith('192.168.') ? 2000 : 1000),
+    message: { error: 'Rate limit exceeded', upgrade: 'https://bleujs.com/pricing' },
+  }));
+
+  app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', version: '4.0.0' }));
+
+  app.use('/api/eggs', eggRoutes);
+
+  app.use((err, req, res, next) => {
+    logger.error('❌ Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  });
+
+  app.listen(PORT, () => logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`));
+}

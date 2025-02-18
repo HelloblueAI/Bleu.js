@@ -1,6 +1,6 @@
 {
   "name": "core-engine",
-  "version": "1.0.36",
+  "version": "1.1.0",
   "type": "module",
   "main": "src/index.mjs",
   "scripts": {
@@ -10,13 +10,13 @@
   "dependencies": {
     "body-parser": "^1.20.3",
     "cluster": "^0.7.7",
-    "compression": "^1.7.5",
+    "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-prom-bundle": "^8.0.0",
     "helmet": "^8.0.0",
-    "ioredis": "^5.4.2",
+    "ioredis": "^5.5.0",
     "redis": "^4.7.0",
     "uuid": "^11.0.5",
     "validator": "^13.12.0",

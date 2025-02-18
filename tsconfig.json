@@ -1,23 +1,17 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "NodeNext",
     "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext", "DOM"],
+    "rootDir": "./src",
+    "outDir": "./dist",
     "strict": true,
-    "jsx": "react-jsx",
-    "moduleResolution": "node",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["vitest", "node", "express"]
+    "resolveJsonModule": true,
+    "declaration": true
   },
-  "include": [
-    "backend/**/*.ts",
-    "frontend/**/*.ts",
-    "test/setup.ts",
-    "src/**/*",
-    "test/**/*",
-    "core-engine/src/core/circuit-breaker.mjs",
-    "core-engine/src/core/service-generator.mjs"
-  ]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,5 @@
-import { post } from 'axios'; 
+import { post } from 'axios';
 import AiQuery from '../models/AiQuery';
-
 
 const callAIModel = async (query) => {
   try {
