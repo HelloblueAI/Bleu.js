@@ -189,3 +189,4 @@ dependency-management/
 .jest-cache
 venv/
 venv/
+*.tgz
