@@ -1,0 +1,29 @@
+{
+  "name": "bleujs-dependency-management",
+  "version": "1.0.36",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "dependency",
+    "management",
+    "bleujs"
+  ],
+  "author": "Pejman Haghighatnia",
+  "license": "MIT",
+  "description": "Module for managing and resolving dependencies for Bleu.js.",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/jest": "^29.5.14",
+    "jest": "^26.6.3",
+    "jest-environment-node": "^29.7.0",
+    "ts-jest": "^29.2.5"
+  }
+}
