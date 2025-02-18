@@ -3833,28 +3833,16 @@ All files          |       0 |        0 |       0 |       0 |
  dist/utils/lib    |       0 |        0 |       0 |       0 |
   Bleu.js          |       0 |        0 |       0 |       0 | 5-78
 -------------------|---------|----------|---------|---------|-------------------
-Test Suites: 2 skipped, 91 passed, 91 of 93 total
-Tests:       91 passed, 91 total
+Test Suites: 7 skipped, 128 passed, 128 of 135 total
+Tests:       128 passed, 128 total
 Snapshots:   0 total
-Time:        5.811 s
+Time:        0.456 s, estimated 1 s
 Ran all test suites.
 📦 report is created on: /Users/pejmanhaghighatnia/Bleu.js/reports/test-report.html
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html      **
 ```
 
 ![Bleu.js SVG](https://raw.githubusercontent.com/HelloblueAI/Bleu.js/46a4a1183db83ac789b4c41c9d4e2e39356cb902/Asset.svg)
-
-### Main Test Report
-
-```javascript
-open ./reports/test-report.html
-```
-
-Detailed Jest Report
-
-```javascript
-open ./reports/jest-stare/index.html
-```
 
 ### optimizeCode Method:
 
