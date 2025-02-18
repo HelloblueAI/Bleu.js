@@ -69,3 +69,6 @@ dependency-management/.jest-cache/
 eggs_backup/
 response.json
 response_debug.bin
+Bleu.js-mirror.bfg-report/
+Bleujs-1.1.0.tgz
+dependency-management/.cspell.json
