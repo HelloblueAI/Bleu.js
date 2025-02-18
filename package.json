@@ -1,5 +1,5 @@
 {
-  "name": "@bleujs/core",
+  "name": "@bleujs/framework",
   "version": "1.1.0",
   "description": "A production-ready AI framework for Decision Tree services, supporting Deep Learning, Neural Networks, and Model Deployment.",
   "main": "index.mjs",
