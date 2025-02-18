@@ -2777,6 +2777,21 @@ pm2 restart all
 
 With built-in AI services like Natural Language Processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
 
+## 🐍 Python AI Components
+
+- **NLP Engine**: `language-plugins/python/`
+- **ML Models**: `src/backend/src/ml/models/`
+  - Training: `train.py`
+  - Evaluation: `evaluate.py`
+- **Core Application**: `app.py`
+
+The Python components power our advanced AI and ML capabilities:
+- Natural Language Processing
+- Decision Tree Models
+- Model Training & Evaluation
+- Real-time Performance Optimization
+
+
 ### Backend Efficiency
 
 The package includes setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
@@ -4124,3 +4139,4 @@ a company dedicated to advanced innovations in AI solutions.
 # Author
 
 Pejman Haghighatnia
+
