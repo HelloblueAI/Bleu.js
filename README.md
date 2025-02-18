@@ -17,21 +17,24 @@
 - Support for multiple programming languages
 - Manage Dependencies: Handle project dependencies efficiently
 
-###  Prerequisites
+### Prerequisites
 
 Install the `bleujs` package using **pnpm**:
 
 ```javascript
 pnpm add bleujs
 ```
+
 ```javascript
 bleujs start
 ```
+
 or
 
 ```javascript
 pnpm install bleujs@latest
 ```
+
 ```javascript
 pnpm run start
 ```
@@ -41,6 +44,7 @@ Retrieve Package Information
 ```javascript
 pnpm info bleujs
 ```
+
 ```javascript
 pnpm list | grep bleujs
 ```
@@ -71,8 +75,7 @@ pnpm list | grep bleujs
 - Health monitoring
 - Graceful shutdown handling
 
-
-##  Generate a UsersController with Bleu.js
+## Generate a UsersController with Bleu.js
 
 Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
 
@@ -81,11 +84,13 @@ After installing **Bleu.js** via `pnpm`, you can generate a **UsersController** 
 Ensure you have a Valid JWT Token
 
 Generate a valid JWT Token
+
 ```javascript
 openssl rand -base64 32
 ```
 
 Replace YOUR_JWT_TOKEN with your valid JWT, and test it with this cURL in another terminal
+
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
@@ -107,9 +112,11 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 ```
 
 ### Limbda, Bleujs REST API cURL Tests Package
+
 A complete set of cURL requests for generating services, models, APIs, event-driven services, and advanced system configurations.
 
 Starting the Server
+
 ```javascript
 cd core-engine
 ```
@@ -223,7 +230,6 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
           }
         }" | jq '.'
 ```
-
 
 ### Generate Microservice with Advanced Features
 
@@ -417,7 +423,6 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
           }
       }'
 ```
-
 
 ### Generate Deployment Config
 
@@ -2227,7 +2232,7 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 
 ### Enterprise-grade
 
- Health Check Test (/api/health)
+Health Check Test (/api/health)
 
 ```javascript
 curl -X GET "http://localhost:3001/api/health" \
@@ -2236,7 +2241,7 @@ curl -X GET "http://localhost:3001/api/health" \
      -H "Accept: application/json" | jq '.'
 ```
 
-🚀 Enterprise API cURL Test of Lambda
+Enterprise API cURL Test of Lambda
 
 ```javascript
 for i in {1..10}; do
@@ -2268,7 +2273,7 @@ done
 wait
 ```
 
-🛠 Debugging Unexpected Outputs (Capturing Responses)
+Debugging Unexpected Outputs (Capturing Responses)
 (Logs and saves API responses for analysis)
 
 ```javascript
@@ -2288,8 +2293,9 @@ done
 wait
 ```
 
-🌍 CORS & OPTIONS Method Test
+CORS & OPTIONS Method Test
 (Ensures the API supports Cross-Origin Resource Sharing for frontend requests)
+
 ```javascript
 curl -v -X OPTIONS "$HOST/api/generate-egg" \
      -H "Origin: http://localhost:3000" \
@@ -2297,10 +2303,10 @@ curl -v -X OPTIONS "$HOST/api/generate-egg" \
      -H "Access-Control-Request-Headers: Content-Type"
 ```
 
-❌ Missing X-Request-ID Test
+Missing X-Request-ID Test
 (Verifies API error handling when required headers are missing)
 
-```javascript
+````javascript
 curl -X POST "$HOST/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "Accept: application/json" \
@@ -2311,7 +2317,7 @@ curl -X POST "$HOST/api/generate-egg" \
          "methods": ["test"]
        }
  ```    }' | jq '.'
-```
+````
 
 Service Generation (Highly Scalable & Resilient)
 
@@ -2753,7 +2759,6 @@ Large Number of Methods With Categorization
      }' | jq '.'`;
 ```
 
-
 ### Changelog (v1.1.0)
 
 - Fixed Babel build issues by adding missing plugins (@babel/plugin-proposal-optional-chaining, @babel/plugin-proposal-nullish-coalescing-operator).
@@ -2804,7 +2809,6 @@ With Docker integration, developers can containerize their applications for cons
 
 To add real-time features like live notifications and updates to their applications.
 
-
 ### Usage
 
 Create an instance of the BleuJS class and use its methods to manage your code:
@@ -2849,7 +2853,6 @@ pip install bleujs-utils
 `bleujs-utils`
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
 
-
 ### Example 1: General Utility Function
 
 ```javascript
@@ -2868,11 +2871,9 @@ response = ai_query('What is the weather today?')
 print(response)
 ```
 
-
 - AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
 - Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
 - Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
-
 
 ### Example 3: CLI Tool
 
@@ -3286,7 +3287,6 @@ The generateEgg method is responsible for generating a new code 'egg'. This meth
 
 The **Eggs Generator API** is a microservice that generates **custom AI-powered "eggs"** based on provided parameters. This API is designed for scalability, AI logic, and real-time egg generation.
 
-
 If you want faster execution and better debugging, use:
 
 ```javascript
@@ -3324,7 +3324,7 @@ curl -X POST http://localhost:3003/api/eggs/generate-egg \
           "description": "A rare legendary egg",
           "parameters": { "size": "large", "color": "gold", "rarity": "legendary", "element": "magic" }
         }'
-````
+```
 
 Expected result
 
