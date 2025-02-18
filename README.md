@@ -17,28 +17,32 @@
 - Support for multiple programming languages
 - Manage Dependencies: Handle project dependencies efficiently
 
-## Installation
+###  Prerequisites
 
 Install the `bleujs` package using **pnpm**:
 
 ```javascript
-pnpm install bleujs@latest
+pnpm add bleujs
 ```
-
+```javascript
+bleujs start
+```
 or
 
 ```javascript
-pnpm add bleujs
+pnpm install bleujs@latest
 ```
-
 ```javascript
-pnpm list | grep bleujs
+pnpm run start
 ```
 
 Retrieve Package Information
 
 ```javascript
 pnpm info bleujs
+```
+```javascript
+pnpm list | grep bleujs
 ```
 
 ### Directory Structure
@@ -52,8 +56,6 @@ pnpm info bleujs
 - **code-quality-assurance**: Tools for continuous code quality checks and analysis.
 - **eggs-generator**: Tools for generating code snippets and optimization suggestions by HenFarm.js, the framework built by Helloblue.
 - **docker**: Docker configuration files.
-
-Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
 
 ### Features
 
@@ -69,23 +71,501 @@ Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code sn
 - Health monitoring
 - Graceful shutdown handling
 
-### Limbda, Bleujs REST API tests package
 
+##  Generate a UsersController with Bleu.js
+
+Bleu.js, uses the HenFarm.js framework by Helloblue, Inc. for generating code snippets, referred to as "eggs." It's an integral part of Bleu.js, providing the functionality to automatically generate new code snippets to help improve efficiency and solve coding problems.
+
+After installing **Bleu.js** via `pnpm`, you can generate a **UsersController** dynamically using the Bleu.js API.
+
+Ensure you have a Valid JWT Token
+
+Generate a valid JWT Token
+```javascript
+openssl rand -base64 32
+```
+
+Replace YOUR_JWT_TOKEN with your valid JWT, and test it with this cURL in another terminal
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-users-controller" \
+     -H "Authorization: Bearer YOUR_VALID_JWT" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "UsersController",
+         "route": "/api/users",
+         "methods": ["GET", "POST", "PUT", "DELETE"],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "user"]
+         }
+       }
+     }'
+```
+
+### Limbda, Bleujs REST API cURL Tests Package
+A complete set of cURL requests for generating services, models, APIs, event-driven services, and advanced system configurations.
 
 Starting the Server
-
 ```javascript
 cd core-engine
 ```
 
-To test All APIs
-(In a new terminal)
-
 ```javascript
-./api_test_suite.sh
+pnpm start
 ```
 
-## Generate Code Templates
+In another terminal start cURL tests:
+
+### Deep Health Check
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "HealthCheckController",
+         "route": "/api/health/deep",
+         "methods": ["GET"],
+         "logic": {
+           "GET": {
+             "description": "Performs a deep health check on services",
+             "implementation": "async function checkHealth() { return { database: 'OK', cache: 'OK', queue: 'OK' }; }"
+           }
+         }
+       }
+     }'
+```
+
+### Complex Services
+
+Authentication Service
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-auth-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -d '{
+          "type": "service",
+          "parameters": {
+              "name": "AuthenticationService",
+              "methods": [
+                  "login", "logout", "refreshToken", "validateSession",
+                  "changePassword", "resetPassword", "generateTwoFactorCode",
+                  "verifyTwoFactorCode", "revokeToken", "updateProfile"
+              ],
+              "security": {
+                  "auth": ["jwt", "oauth2"],
+                  "roles": ["admin", "user"]
+              },
+              "logging": {
+                  "enabled": true,
+                  "level": "info",
+                  "format": "json"
+              },
+              "observability": {
+                  "metrics": {
+                      "enabled": true,
+                      "system": "Prometheus"
+                  },
+                  "tracing": {
+                      "enabled": true,
+                      "system": "OpenTelemetry"
+                  }
+              },
+              "errorHandling": true,
+              "caching": {
+                  "enabled": true,
+                  "type": "redis",
+                  "expiration": 900
+              },
+              "rateLimiting": {
+                  "enabled": true,
+                  "requestsPerMinute": 5000
+              },
+              "resilience": {
+                  "circuitBreaker": {
+                      "failureThreshold": 3,
+                      "resetTimeout": 20000
+                  },
+                  "retryPolicy": {
+                      "enabled": true,
+                      "maxRetries": 3,
+                      "backoffStrategy": "exponential"
+                  }
+              },
+              "parallelExecution": {
+                  "enabled": true,
+                  "workerThreads": 5
+              },
+              "responseFormat": "JSON",
+              "versioning": "2.0.0"
+          }
+      }' | jq '.'
+```
+
+Extreme Name Length
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-long-name" \
+     -d "{
+          \"type\": \"service\",
+          \"parameters\": {
+            \"name\": \"$(printf 'a%.0s' {1..1000})Service\",
+            \"methods\": [\"method1\"]
+          }
+        }" | jq '.'
+```
+
+
+### Generate Microservice with Advanced Features
+
+### Payment Service
+
+Generate Payment Service with Advanced Features
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-payment-service" \
+     -H "Accept: application/json" \
+     -d '{
+          "type": "service",
+          "parameters": {
+              "name": "PaymentService",
+              "methods": [
+                  "processPayment",
+                  "validateCard",
+                  "calculateFees",
+                  "generateInvoice",
+                  "refundTransaction",
+                  "getTransactionHistory"
+              ],
+              "logging": true,
+              "errorHandling": true,
+              "authentication": "JWT",
+              "rateLimiting": {
+                  "enabled": true,
+                  "requestsPerMinute": 500
+              },
+              "caching": {
+                  "enabled": true,
+                  "type": "redis",
+                  "expiration": 300
+              },
+              "metrics": {
+                  "enabled": true,
+                  "system": "Prometheus"
+              },
+              "tracing": {
+                  "enabled": true,
+                  "system": "OpenTelemetry"
+              },
+              "circuitBreaker": {
+                  "enabled": true,
+                  "failureThreshold": 5,
+                  "resetTimeout": 60000
+              },
+              "retryPolicy": {
+                  "enabled": true,
+                  "maxAttempts": 3,
+                  "backoffStrategy": "exponential"
+              },
+              "observability": {
+                  "logs": "enabled",
+                  "monitoring": "enabled",
+                  "alerts": "enabled"
+              },
+              "middleware": [
+                  "validateRequest",
+                  "rateLimit",
+                  "authenticateUser",
+                  "logRequest",
+                  "handleErrors"
+              ],
+              "responseFormat": "JSON",
+              "versioning": "1.2.0"
+          }
+      }'
+```
+
+### Generate REST API with Authentication
+
+Payments Controller
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-payments-controller" \
+     -H "Accept: application/json" \
+     -d '{
+          "type": "controller",
+          "parameters": {
+              "name": "PaymentsController",
+              "route": "/api/payments",
+              "methods": ["GET", "POST", "PUT", "DELETE"],
+              "security": {
+                  "auth": ["jwt", "apiKey"],
+                  "roles": ["admin", "operator"],
+                  "rateLimit": {
+                      "enabled": true,
+                      "window": "1m",
+                      "maxRequests": 100
+                  },
+                  "cors": {
+                      "enabled": true,
+                      "allowedOrigins": ["*"],
+                      "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+                  },
+                  "csrfProtection": true,
+                  "inputSanitization": true
+              },
+              "logging": {
+                  "enabled": true,
+                  "level": "info",
+                  "format": "json"
+              },
+              "errorHandling": true,
+              "databaseIntegration": "MongoDB",
+              "schemaValidation": true,
+              "caching": {
+                  "enabled": true,
+                  "type": "redis",
+                  "expiration": 300
+              },
+              "metrics": {
+                  "enabled": true,
+                  "system": "Prometheus"
+              },
+              "tracing": {
+                  "enabled": true,
+                  "system": "OpenTelemetry"
+              },
+              "retryPolicy": {
+                  "enabled": true,
+                  "maxRetries": 3,
+                  "backoffStrategy": "exponential"
+              },
+              "middleware": [
+                  "validateRequest",
+                  "rateLimit",
+                  "authenticateUser",
+                  "logRequest",
+                  "handleErrors"
+              ],
+              "responseFormat": "JSON",
+              "versioning": "1.2.0"
+          }
+      }'
+```
+
+Generate Migration
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-migration" \
+     -H "Accept: application/json" \
+     -d '{
+          "type": "migration",
+          "parameters": {
+              "name": "AddPaymentFields",
+              "database": "postgresql",
+              "changes": [
+                  {
+                      "type": "addColumn",
+                      "table": "payments",
+                      "column": "status",
+                      "dataType": "VARCHAR(50)",
+                      "default": "pending",
+                      "constraints": ["NOT NULL"]
+                  },
+                  {
+                      "type": "createIndex",
+                      "table": "payments",
+                      "columns": ["status"],
+                      "unique": false
+                  }
+              ],
+              "rollback": {
+                  "enabled": true,
+                  "steps": [
+                      {
+                          "type": "dropColumn",
+                          "table": "payments",
+                          "column": "status"
+                      },
+                      {
+                          "type": "dropIndex",
+                          "table": "payments",
+                          "columns": ["status"]
+                      }
+                  ]
+              },
+              "logging": {
+                  "enabled": true,
+                  "level": "info",
+                  "format": "json"
+              }
+          }
+      }'
+```
+
+
+### Generate Deployment Config
+
+Payment Deployment Service
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-payment-deployment" \
+     -H "Accept: application/json" \
+     -d '{
+          "type": "service",
+          "parameters": {
+              "name": "PaymentDeploymentService",
+              "methods": [
+                  "deployToKubernetes",
+                  "scaleReplicas",
+                  "updateConfig",
+                  "restartService"
+              ],
+              "deploymentConfig": {
+                  "platform": "kubernetes",
+                  "components": [
+                      "deployment",
+                      "service",
+                      "ingress",
+                      "configmap",
+                      "secrets"
+                  ],
+                  "resources": {
+                      "cpu": "500m",
+                      "memory": "512Mi",
+                      "replicas": 3
+                  },
+                  "autoscaling": {
+                      "enabled": true,
+                      "minReplicas": 2,
+                      "maxReplicas": 10,
+                      "cpuThreshold": 80
+                  },
+                  "configmap": {
+                      "enabled": true,
+                      "variables": {
+                          "NODE_ENV": "production",
+                          "LOG_LEVEL": "info"
+                      }
+                  },
+                  "secrets": {
+                      "enabled": true,
+                      "values": {
+                          "DATABASE_URL": "encrypted_value",
+                          "API_KEY": "encrypted_value"
+                      }
+                  },
+                  "ingress": {
+                      "enabled": true,
+                      "host": "api.example.com",
+                      "tls": true
+                  }
+              },
+              "logging": {
+                  "enabled": true,
+                  "level": "info",
+                  "format": "json"
+              },
+              "observability": {
+                  "metrics": {
+                      "enabled": true,
+                      "system": "Prometheus"
+                  },
+                  "tracing": {
+                      "enabled": true,
+                      "system": "OpenTelemetry"
+                  }
+              },
+              "middleware": [
+                  "validateRequest",
+                  "logRequest",
+                  "monitorPerformance"
+              ],
+              "responseFormat": "JSON",
+              "versioning": "1.2.0"
+          }
+      }'
+```
+
+### CRUD API Service Template
+
+Generate Service Template
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-user-service" \
+     -H "Accept: application/json" \
+     -d '{
+          "type": "service",
+          "parameters": {
+              "name": "UserService",
+              "methods": [
+                  "findAll",
+                  "findById",
+                  "create",
+                  "update",
+                  "delete",
+                  "search"
+              ],
+              "logging": {
+                  "enabled": true,
+                  "level": "info",
+                  "format": "json"
+              },
+              "errorHandling": {
+                  "enabled": true,
+                  "strategy": "standard"
+              },
+              "authentication": {
+                  "enabled": true,
+                  "strategy": "JWT"
+              },
+              "rateLimiting": {
+                  "enabled": true,
+                  "requestsPerMinute": 1000
+              },
+              "caching": {
+                  "enabled": true,
+                  "type": "redis",
+                  "expiration": 300
+              },
+              "databaseIntegration": {
+                  "enabled": true,
+                  "type": "MongoDB",
+                  "schemaValidation": true
+              },
+              "middleware": [
+                  "validateRequest",
+                  "rateLimit",
+                  "authenticateUser",
+                  "logRequest",
+                  "handleErrors"
+              ],
+              "responseFormat": "JSON",
+              "versioning": "1.2.0"
+          }
+      }'
+```
+
+### Generate Code Templates
 
 Generate Model
 
@@ -93,16 +573,43 @@ Generate Model
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-model" \
+     -H "Accept: application/json" \
      -d '{
        "type": "model",
        "parameters": {
          "name": "OrderModel",
+         "fields": [
+           {"name": "id", "type": "UUID", "primaryKey": true, "autoGenerate": true},
+           {"name": "userId", "type": "UUID", "references": "UserModel"},
+           {"name": "amount", "type": "DECIMAL", "precision": 10, "scale": 2, "nullable": false},
+           {"name": "currency", "type": "STRING", "default": "USD", "maxLength": 3},
+           {"name": "status", "type": "STRING", "default": "pending", "enum": ["pending", "completed", "failed"]},
+           {"name": "createdAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP"},
+           {"name": "updatedAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP", "onUpdate": "CURRENT_TIMESTAMP"}
+         ],
+         "indexes": [
+           {"columns": ["status"], "unique": false},
+           {"columns": ["userId", "status"], "unique": false}
+         ],
          "methods": [
-           "validateBeforeSave",
-           "calculateTotals",
-           "applyDiscount",
-           "generateInvoice"
-         ]
+           "findByUserId",
+           "updateStatus",
+           "calculateTotal",
+           "deletePayment"
+         ],
+         "relations": [
+           {"type": "belongsTo", "target": "UserModel", "foreignKey": "userId"}
+         ],
+         "logging": true,
+         "errorHandling": true,
+         "caching": "redis",
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 200
+         },
+         "schemaValidation": true,
+         "databaseIntegration": "MongoDB",
+         "versioning": "1.1.0"
        }
      }'
 ```
@@ -113,40 +620,41 @@ Generate Service Class
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-service" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
          "name": "UserService",
          "methods": [
            "findAll",
-           "findOne",
+           "findById",
            "create",
            "update",
            "delete",
            "validateBeforeSave"
-         ]
-       }
-     }'
-```
-
-Generate Controller
-
-```javascript
-curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-controller" \
-     -d '{
-       "type": "controller",
-       "parameters": {
-         "name": "ProductController",
-         "methods": [
-           "listProducts",
-           "getProductDetails",
-           "createProduct",
-           "updateProduct",
-           "deleteProduct",
-           "searchProducts"
-         ]
+         ],
+         "logging": true,
+         "errorHandling": true,
+         "authentication": "JWT",
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 500
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "databaseIntegration": "MongoDB",
+         "schemaValidation": true,
+         "versioning": "1.1.0",
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser"
+         ],
+         "responseFormat": "JSON",
+         "authorizationRoles": ["admin", "user", "guest"]
        }
      }'
 ```
@@ -157,6 +665,7 @@ Generate Repository
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-repository" \
+     -H "Accept: application/json" \
      -d '{
        "type": "repository",
        "parameters": {
@@ -168,7 +677,17 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
            "createBulk",
            "updateMany",
            "softDelete"
-         ]
+         ],
+         "databaseIntegration": "MongoDB",
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "logging": true,
+         "errorHandling": true,
+         "pagination": true,
+         "schemaValidation": true
        }
      }'
 ```
@@ -181,6 +700,7 @@ Event Sourcing Pattern
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-event-sourcing" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
@@ -191,367 +711,1306 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
            "handleEventReplay",
            "manageEventStore",
            "versionSnapshot"
-         ]
+         ],
+         "databaseIntegration": "MongoDB",
+         "eventPersistence": {
+           "enabled": true,
+           "strategy": "eventStore",
+           "retentionPolicy": "7_days"
+         },
+         "distributedTracing": true,
+         "logging": true,
+         "errorHandling": true,
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 500
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600
+         },
+         "versioning": "1.1.0"
        }
      }'
+```
+
+Expected API Response
+
+```javascript
+{
+  "success": true,
+  "code": "class EventSourcingEngine {...}",
+  "metadata": {
+    "requestId": "test-event-sourcing",
+    "generatedAt": "2025-02-16T11:45:30.123Z",
+    "duration": "1.54ms",
+    "engineVersion": "bleu.js v.1.1.0",
+    "type": "service",
+    "className": "EventSourcingEngine",
+    "methodCount": 5,
+    "nodeVersion": "v20.18.1",
+    "platform": "darwin"
+  }
+}
 ```
 
 Controller generation
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "controller",
-  "parameters": {
-    "name": "UserController",
-    "actions": ["list", "create", "update", "delete", "authenticate"]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-controller" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "UserController",
+         "route": "/api/users",
+         "methods": ["GET", "POST", "PUT", "DELETE"],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "user"],
+           "rateLimit": {
+             "window": "1m",
+             "max": 100
+           },
+           "csrfProtection": true,
+           "inputSanitization": true,
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info"
+         },
+         "errorHandling": true,
+         "databaseIntegration": "MongoDB",
+         "schemaValidation": true,
+         "responseFormat": "JSON",
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "handleErrors"
+         ],
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Model generation
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "model",
-  "parameters": {
-    "name": "User",
-    "fields": ["username", "email", "password", "role"]
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-model" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "model",
+       "parameters": {
+         "name": "User",
+         "fields": [
+           {"name": "id", "type": "UUID", "primaryKey": true, "autoGenerate": true},
+           {"name": "username", "type": "STRING", "unique": true, "maxLength": 50},
+           {"name": "email", "type": "STRING", "unique": true, "validate": "email"},
+           {"name": "password", "type": "STRING", "hashing": "bcrypt"},
+           {"name": "role", "type": "STRING", "default": "user", "enum": ["user", "admin"]},
+           {"name": "createdAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP"},
+           {"name": "updatedAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP", "onUpdate": "CURRENT_TIMESTAMP"}
+         ],
+         "indexes": [
+           {"columns": ["email"], "unique": true},
+           {"columns": ["username"], "unique": true}
+         ],
+         "relations": [
+           {"type": "hasMany", "target": "Post", "foreignKey": "userId"}
+         ],
+         "schemaValidation": true,
+         "encryption": {
+           "enabled": true,
+           "fields": ["password"]
+         },
+         "logging": true,
+         "versioning": "1.1.0",
+         "databaseIntegration": "MongoDB"
+       }
+     }'
+```
+
+Expected API Response
+
+```javascript
+{
+  "success": true,
+  "code": "class UserModel {...}",
+  "metadata": {
+    "requestId": "test-model",
+    "generatedAt": "2025-02-16T12:30:45.987Z",
+    "duration": "1.45ms",
+    "engineVersion": "bleu.js v.1.1.0",
+    "type": "model",
+    "className": "User",
+    "fieldCount": 7,
+    "nodeVersion": "v20.18.1",
+    "platform": "darwin"
   }
-}'
+}
 ```
 
 Service generation
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "UserService",
-    "methods": ["getAll", "getById", "create", "update", "delete"]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-service" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserService",
+         "methods": [
+           "findAll",
+           "findById",
+           "create",
+           "update",
+           "delete"
+         ],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": {
+           "enabled": true,
+           "strategy": "global",
+           "retryPolicy": {
+             "enabled": true,
+             "maxRetries": 3,
+             "backoffStrategy": "exponential"
+           }
+         },
+         "authentication": {
+           "type": "JWT",
+           "requiredRoles": ["admin", "user", "guest"]
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 1000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600
+         },
+         "databaseIntegration": "MongoDB",
+         "schemaValidation": true,
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "circuitBreaker": {
+           "enabled": true,
+           "failureThreshold": 5,
+           "resetTimeout": 60000
+         },
+         "versioning": "1.1.0",
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON"
+       }
+     }'
 ```
 
-API endpoint generation
+### API endpoint generation
+
+Controller Generation
+
+HelloController with Advanced Features
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "api",
-  "parameters": {
-    "route": "/hello",
-    "message": "Hello World!"
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-hello-controller" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "HelloController",
+         "route": "/hello",
+         "methods": ["GET"],
+         "security": {
+           "auth": ["none"],
+           "rateLimiting": {
+             "enabled": true,
+             "requestsPerMinute": 500
+           },
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET"]
+           }
+         },
+         "caching": {
+           "enabled": true,
+           "type": "memory",
+           "expiration": 300
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "errorHandling": true,
+         "responseFormat": "JSON",
+         "middleware": ["validateRequest", "rateLimit", "monitorPerformance"],
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
+### Service Generation
+
+Generate Service Class
+
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "UserService",
-    "methods": ["findAll", "findById", "create", "update", "delete"]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserService",
+         "methods": [
+           "findAll",
+           "findOne",
+           "create",
+           "update",
+           "delete",
+           "validateBeforeSave"
+         ],
+         "logging": true,
+         "errorHandling": true,
+         "caching": "redis",
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 100
+         }
+       }
+     }'
+```
+
+UserService with Security & Caching
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-user-service" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserService",
+         "methods": ["findAll", "findById", "create", "update", "delete"],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": {
+           "enabled": true,
+           "strategy": "global",
+           "retryPolicy": {
+             "enabled": true,
+             "maxRetries": 3,
+             "backoffStrategy": "exponential"
+           }
+         },
+         "authentication": {
+           "type": "JWT",
+           "requiredRoles": ["admin", "user"],
+           "enforceSessionExpiration": true
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 1000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600,
+           "invalidateOnUpdate": true
+         },
+         "databaseIntegration": {
+           "type": "MongoDB",
+           "connectionPoolSize": 20
+         },
+         "schemaValidation": true,
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "circuitBreaker": {
+           "enabled": true,
+           "failureThreshold": 5,
+           "resetTimeout": 60000
+         },
+         "versioning": "1.2.0",
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON"
+       }
+     }'
+```
+
+"/hello" with Enhanced Configuration
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-api-hello" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "api",
+       "parameters": {
+         "route": "/hello",
+         "message": "Hello World!",
+         "security": {
+           "auth": ["none"],
+           "rateLimiting": {
+             "enabled": true,
+             "requestsPerMinute": 2000
+           },
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET"]
+           }
+         },
+         "responseFormat": "JSON",
+         "caching": {
+           "enabled": true,
+           "type": "memory",
+           "expiration": 300
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "responseValidation": {
+           "enabled": true,
+           "schema": {
+             "type": "object",
+             "properties": {
+               "message": { "type": "string" }
+             },
+             "required": ["message"]
+           }
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Generate Microservice with Advanced Features
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "PaymentService",
-    "methods": [
-      "processPayment",
-      "validateCard",
-      "calculateFees",
-      "generateInvoice",
-      "refundTransaction",
-      "getTransactionHistory"
-    ],
-    "options": {
-      "caching": true,
-      "validation": true,
-      "metrics": true,
-      "tracing": true,
-      "circuitBreaker": {
-        "failureThreshold": 5,
-        "resetTimeout": 60000
-      },
-      "retryPolicy": {
-        "maxAttempts": 3,
-        "backoff": "exponential"
-      }
-    }
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-payment-service" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "PaymentService",
+         "methods": [
+           "processPayment",
+           "validateCard",
+           "calculateFees",
+           "generateInvoice",
+           "refundTransaction",
+           "getTransactionHistory"
+         ],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": {
+           "enabled": true,
+           "strategy": "global",
+           "retryPolicy": {
+             "enabled": true,
+             "maxAttempts": 3,
+             "backoffStrategy": "exponential"
+           }
+         },
+         "authentication": {
+           "type": "JWT",
+           "requiredRoles": ["admin", "finance"]
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 5000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600,
+           "invalidateOnUpdate": true
+         },
+         "databaseIntegration": {
+           "type": "PostgreSQL",
+           "connectionPoolSize": 50
+         },
+         "schemaValidation": true,
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "circuitBreaker": {
+           "enabled": true,
+           "failureThreshold": 5,
+           "resetTimeout": 30000
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Generate REST API with Authentication
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "api",
-  "parameters": {
-    "route": "/api/payments",
-    "security": {
-      "auth": ["jwt", "apiKey"],
-      "roles": ["admin", "operator"],
-      "rateLimit": {
-        "window": "1m",
-        "max": 100
-      }
-    },
-    "methods": ["GET", "POST", "PUT", "DELETE"],
-    "validation": {
-      "schema": {
-        "amount": "number",
-        "currency": "string",
-        "description": "string?"
-      }
-    }
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-rest-api" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "api",
+       "parameters": {
+         "route": "/api/payments",
+         "security": {
+           "auth": ["jwt", "apiKey"],
+           "roles": ["admin", "operator"],
+           "rateLimit": {
+             "enabled": true,
+             "window": "1m",
+             "max": 100
+           },
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+           }
+         },
+         "methods": ["GET", "POST", "PUT", "DELETE"],
+         "validation": {
+           "enabled": true,
+           "schema": {
+             "amount": { "type": "number", "minimum": 0 },
+             "currency": { "type": "string", "enum": ["USD", "EUR", "GBP"] },
+             "description": { "type": "string", "maxLength": 255, "optional": true }
+           }
+         },
+         "responseValidation": {
+           "enabled": true,
+           "schema": {
+             "success": { "type": "boolean" },
+             "message": { "type": "string" },
+             "data": { "type": "object", "optional": true }
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "openAPIDocumentation": {
+           "enabled": true,
+           "version": "3.0.0",
+           "title": "Payments API",
+           "description": "Handles all payment-related operations"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Generate Event-Driven Service
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "NotificationService",
-    "events": [
-      "userRegistered",
-      "orderPlaced",
-      "paymentProcessed",
-      "orderShipped"
-    ],
-    "integrations": [
-      "kafka",
-      "redis",
-      "elasticsearch"
-    ],
-    "options": {
-      "retries": true,
-      "deadLetterQueue": true,
-      "monitoring": true
-    }
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-event-driven" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "NotificationService",
+         "events": [
+           "userRegistered",
+           "orderPlaced",
+           "paymentProcessed",
+           "orderShipped"
+         ],
+         "integrations": [
+           "kafka",
+           "redis",
+           "elasticsearch"
+         ],
+         "options": {
+           "retries": {
+             "enabled": true,
+             "maxAttempts": 5,
+             "backoffStrategy": "exponential"
+           },
+           "deadLetterQueue": {
+             "enabled": true,
+             "retentionPeriod": "7d"
+           },
+           "monitoring": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "schemaValidation": {
+             "enabled": true,
+             "schemas": {
+               "userRegistered": {
+                 "type": "object",
+                 "properties": {
+                   "userId": { "type": "string" },
+                   "email": { "type": "string", "format": "email" }
+                 },
+                 "required": ["userId", "email"]
+               },
+               "orderPlaced": {
+                 "type": "object",
+                 "properties": {
+                   "orderId": { "type": "string" },
+                   "totalAmount": { "type": "number", "minimum": 0 }
+                 },
+                 "required": ["orderId", "totalAmount"]
+               }
+             }
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "versioning": "1.2.0",
+         "middleware": [
+           "validateEvent",
+           "logRequest",
+           "monitorPerformance"
+         ]
+       }
+     }'
 ```
 
 Generate GraphQL API
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "graphql",
-  "parameters": {
-    "name": "UserAPI",
-    "types": [
-      {"name": "User", "fields": ["id", "name", "email"]},
-      {"name": "Order", "fields": ["id", "total", "items"]}
-    ],
-    "queries": ["getUser", "listUsers", "searchUsers"],
-    "mutations": ["createUser", "updateUser", "deleteUser"]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-graphql-api" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserGraphQLService",
+         "methods": [
+           "getUser",
+           "listUsers",
+           "searchUsers",
+           "createUser",
+           "updateUser",
+           "deleteUser"
+         ],
+         "graphqlSchema": {
+           "types": [
+             {
+               "name": "User",
+               "fields": {
+                 "id": "ID!",
+                 "name": "String!",
+                 "email": "String!"
+               }
+             },
+             {
+               "name": "Order",
+               "fields": {
+                 "id": "ID!",
+                 "total": "Float!",
+                 "items": "[String]"
+               }
+             }
+           ],
+           "queries": [
+             {
+               "name": "getUser",
+               "params": { "id": "ID!" },
+               "returnType": "User"
+             },
+             {
+               "name": "listUsers",
+               "returnType": "[User]"
+             },
+             {
+               "name": "searchUsers",
+               "params": { "name": "String!" },
+               "returnType": "[User]"
+             }
+           ],
+           "mutations": [
+             {
+               "name": "createUser",
+               "params": { "name": "String!", "email": "String!" },
+               "returnType": "User"
+             },
+             {
+               "name": "updateUser",
+               "params": { "id": "ID!", "name": "String", "email": "String" },
+               "returnType": "User"
+             },
+             {
+               "name": "deleteUser",
+               "params": { "id": "ID!" },
+               "returnType": "Boolean"
+             }
+           ]
+         },
+         "authentication": {
+           "enabled": true,
+           "type": "JWT"
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "middleware": [
+           "validateRequest",
+           "authenticateUser",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "GraphQL",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
-Deep Health Check
+Request for Load Testing Service
 
 ```javascript
-curl -X POST http://localhost:3001/api/health/deep \
--H "Content-Type: application/json" \
--d '{
-  "checkDependencies": true,
-  "timeout": 5000,
-  "services": ["database", "cache", "queue"]
-}'
-```
-
-Generate Load Test
-
-```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "test",
-  "parameters": {
-    "name": "PaymentAPILoadTest",
-    "scenarios": [
-      "highConcurrency",
-      "errorScenarios",
-      "timeouts"
-    ],
-    "metrics": [
-      "latency",
-      "throughput",
-      "errorRate"
-    ],
-    "duration": "5m",
-    "users": 1000
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-load-test" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "LoadTestingService",
+         "methods": [
+           "simulateHighConcurrency",
+           "testErrorScenarios",
+           "simulateTimeouts"
+         ],
+         "loadTestConfig": {
+           "users": 1000,
+           "duration": "5m",
+           "scenarios": [
+             "highConcurrency",
+             "errorScenarios",
+             "timeouts"
+           ],
+           "metrics": {
+             "latency": true,
+             "throughput": true,
+             "errorRate": true
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "middleware": [
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Generate Documentation
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "docs",
-  "parameters": {
-    "name": "PaymentAPI",
-    "format": "openapi",
-    "version": "3.0.0",
-    "sections": [
-      "overview",
-      "authentication",
-      "endpoints",
-      "schemas",
-      "examples"
-    ]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-api-docs" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "APIDocumentationService",
+         "methods": ["generateOpenAPI", "exportSchema", "serveSwaggerUI"],
+         "openAPIConfig": {
+           "version": "3.0.0",
+           "format": "openapi",
+           "info": {
+             "title": "Payment API",
+             "description": "Comprehensive API documentation for Payment Service",
+             "version": "1.0.0"
+           },
+           "servers": [
+             { "url": "https://api.example.com/v1", "description": "Production Server" },
+             { "url": "http://localhost:3001", "description": "Local Development Server" }
+           ],
+           "sections": [
+             "overview",
+             "authentication",
+             "endpoints",
+             "schemas",
+             "examples"
+           ],
+           "authentication": {
+             "enabled": true,
+             "type": ["JWT", "API Key"]
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "middleware": [
+           "validateRequest",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Generate Deployment Config
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "deployment",
-  "parameters": {
-    "name": "PaymentService",
-    "platform": "kubernetes",
-    "components": [
-      "deployment",
-      "service",
-      "ingress",
-      "configmap",
-      "secrets"
-    ],
-    "resources": {
-      "cpu": "500m",
-      "memory": "512Mi",
-      "replicas": 3
-    }
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-deployment-config" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "DeploymentConfigurationService",
+         "methods": ["generateKubernetesDeployment", "configureIngress", "manageSecrets"],
+         "kubernetesConfig": {
+           "platform": "kubernetes",
+           "components": [
+             "deployment",
+             "service",
+             "ingress",
+             "configmap",
+             "secrets"
+           ],
+           "resources": {
+             "cpu": "500m",
+             "memory": "512Mi",
+             "replicas": 3
+           },
+           "autoscaling": {
+             "enabled": true,
+             "minReplicas": 2,
+             "maxReplicas": 10,
+             "cpuThreshold": 80
+           },
+           "configmap": {
+             "enabled": true,
+             "variables": {
+               "NODE_ENV": "production",
+               "LOG_LEVEL": "info"
+             }
+           },
+           "secrets": {
+             "enabled": true,
+             "values": {
+               "DATABASE_URL": "encrypted_value",
+               "API_KEY": "encrypted_value"
+             }
+           },
+           "ingress": {
+             "enabled": true,
+             "host": "api.example.com",
+             "tls": true
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry"
+           }
+         },
+         "middleware": [
+           "validateRequest",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Get Metrics
 
 ```javascript
-curl http://localhost:3001/api/metrics
-```
-
-Generate Migration
-
-```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "migration",
-  "parameters": {
-    "name": "AddPaymentFields",
-    "database": "postgresql",
-    "changes": [
-      {"type": "addColumn", "table": "payments", "column": "status"},
-      {"type": "createIndex", "table": "payments", "columns": ["status"]}
-    ]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-db-model" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "model",
+       "parameters": {
+         "name": "PaymentModel",
+         "fields": [
+           {"name": "id", "type": "UUID", "primaryKey": true, "autoGenerate": true},
+           {"name": "userId", "type": "UUID", "references": "UserModel"},
+           {"name": "amount", "type": "DECIMAL", "precision": 10, "scale": 2, "nullable": false},
+           {"name": "currency", "type": "STRING", "default": "USD", "maxLength": 3},
+           {"name": "status", "type": "STRING", "default": "pending", "enum": ["pending", "completed", "failed"]},
+           {"name": "createdAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP"},
+           {"name": "updatedAt", "type": "DATETIME", "default": "CURRENT_TIMESTAMP", "onUpdate": "CURRENT_TIMESTAMP"}
+         ],
+         "indexes": [
+           {"columns": ["status"], "unique": false},
+           {"columns": ["userId", "status"], "unique": false}
+         ],
+         "methods": [
+           "findByUserId",
+           "updateStatus",
+           "calculateTotal",
+           "deletePayment"
+         ],
+         "relations": [
+           {"type": "belongsTo", "target": "UserModel", "foreignKey": "userId"}
+         ]
+       }
+     }'
 ```
 
 Generate Service Template
 
 ```javascript
 curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "UserService",
-    "methods": ["findAll", "findById", "create", "update", "delete", "search"]
-  }
-}'
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-user-service" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "UserService",
+         "methods": ["findAll", "findById", "create", "update", "delete", "search"],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": true,
+         "authentication": "JWT",
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 1000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "databaseIntegration": "MongoDB",
+         "schemaValidation": true,
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 API Template
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "api",
-  "parameters": {
-    "route": "/api/users",
-    "message": "User Management API",
-    "methods": ["GET", "POST", "PUT", "DELETE"]
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-users-api" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "UsersController",
+         "route": "/api/users",
+         "methods": ["GET", "POST", "PUT", "DELETE"],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "user"],
+           "rateLimit": {
+             "window": "1m",
+             "max": 100
+           },
+           "csrfProtection": true,
+           "inputSanitization": true,
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info"
+         },
+         "errorHandling": true,
+         "databaseIntegration": "MongoDB",
+         "schemaValidation": true,
+         "responseFormat": "JSON",
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 1000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "metrics": {
+           "enabled": true,
+           "system": "Prometheus"
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 3,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "handleErrors"
+         ],
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Test with Complex Parameters
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \
--H "Content-Type: application/json" \
--d '{
-  "type": "service",
-  "parameters": {
-    "name": "OrderService",
-    "methods": ["findAll", "findById", "create", "update", "delete", "processPayment", "calculateTotal", "validateOrder"],
-    "options": {
-      "caching": true,
-      "validation": true,
-      "metrics": true,
-      "tracing": true
-    }
-  }
-}'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-order-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "OrderService",
+         "methods": [
+           "findAll",
+           "findById",
+           "create",
+           "update",
+           "delete",
+           "processPayment",
+           "calculateTotal",
+           "validateOrder"
+         ],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": {
+           "enabled": true,
+           "logErrors": true,
+           "errorFormat": "detailed"
+         },
+         "authentication": {
+           "type": "JWT",
+           "roles": ["admin", "user"]
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 2000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "databaseIntegration": {
+           "type": "MongoDB",
+           "collections": ["orders"]
+         },
+         "schemaValidation": true,
+         "metrics": {
+           "enabled": true,
+           "system": "Prometheus"
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 3,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.1.0"
+       }
+     }'
 ```
 
-Generate API
+### Generate API
 
 ```javascript
-curl -X POST http://localhost:3001/api/generate-egg \ -H "Content-Type: application/json" \ -d '{ "type": "api", "parameters": { "route": "/users", "message": "Users API" } }'
-```
-
-Generate Service
-
-```javascript
-curl -X POST http://localhost:3001/api/generate-egg \ -H "Content-Type: application/json" \ -d '{ "type": "service", "parameters": { "name": "UserService", "methods": ["findAll", "findById", "create", "update", "delete"] } }'
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-users-controller" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "UsersController",
+         "route": "/api/users",
+         "methods": ["GET", "POST", "PUT", "DELETE"],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "user"],
+           "rateLimit": {
+             "window": "1m",
+             "max": 100
+           },
+           "csrfProtection": true,
+           "inputSanitization": true,
+           "cors": {
+             "enabled": true,
+             "allowedOrigins": ["*"],
+             "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "errorHandling": {
+           "enabled": true,
+           "logErrors": true,
+           "errorFormat": "detailed"
+         },
+         "databaseIntegration": {
+           "type": "MongoDB",
+           "collections": ["users"]
+         },
+         "schemaValidation": true,
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "metrics": {
+           "enabled": true,
+           "system": "Prometheus"
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 3,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "handleErrors"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
 ```
 
 Microservice Infrastructure
+
+Generate MI Service
 
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-microservice" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
@@ -562,7 +2021,53 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
            "setupCircuitBreaker",
            "implementRetryMechanism",
            "setupDistributedTracing"
-         ]
+         ],
+         "serviceRegistry": {
+           "enabled": true,
+           "provider": "Consul",
+           "ttl": 30
+         },
+         "serviceDiscovery": {
+           "enabled": true,
+           "strategy": "round-robin"
+         },
+         "circuitBreaker": {
+           "enabled": true,
+           "failureThreshold": 5,
+           "resetTimeout": 60000
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 3,
+           "backoffStrategy": "exponential"
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "metrics": {
+           "enabled": true,
+           "system": "Prometheus"
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "observability": {
+           "healthChecks": {
+             "enabled": true,
+             "dependencies": ["database", "cache", "queue"]
+           },
+           "performanceMonitoring": true
+         },
+         "middleware": [
+           "validateRequest",
+           "logRequest",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
        }
      }'
 ```
@@ -570,18 +2075,47 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
 Load Testing
 
 ```javascript
-for i in {1..5}; do
+for i in {1..100}; do
   curl -X POST "http://localhost:3001/api/generate-egg" \
        -H "Content-Type: application/json" \
        -H "X-Request-ID: load-test-$i" \
-       -d "{
-         \"type\": \"service\",
-         \"parameters\": {
-           \"name\": \"TestService$i\",
-           \"methods\": [\"test1\", \"test2\"]
+       -H "Authorization: Bearer YOUR_API_TOKEN" \
+       -d '{
+         "type": "service",
+         "parameters": {
+           "name": "LoadTestService",
+           "methods": ["simulateTraffic"],
+           "logging": true,
+           "errorHandling": true,
+           "rateLimiting": {
+             "enabled": true,
+             "requestsPerMinute": 5000
+           },
+           "caching": {
+             "enabled": true,
+             "type": "redis",
+             "expiration": 120
+           },
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "retryPolicy": {
+             "enabled": true,
+             "maxRetries": 3,
+             "backoffStrategy": "exponential"
+           },
+           "middleware": [
+             "validateRequest",
+             "rateLimit",
+             "logRequest"
+           ],
+           "responseFormat": "JSON",
+           "versioning": "1.2.0"
          }
-       }" &
+       }' &
 done
+wait
 ```
 
 ### Error Handling
@@ -591,8 +2125,15 @@ Missing Required Fields
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-fixed-fields" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
      -d '{
-       "type": "service"
+       "type": "service",
+       "parameters": {
+         "name": "FixedService",
+         "methods": ["testMethod"]
+       }
      }'
 ```
 
@@ -601,13 +2142,15 @@ Invalid Service Type
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-invalid-type" \
+     -H "Accept: application/json" \
      -d '{
-       "type": "invalidType",
-       "parameters": {
-         "name": "Test",
-         "methods": ["test"]
-       }
-     }'
+          "type": "invalidType",
+          "parameters": {
+              "name": "InvalidTestService",
+              "methods": ["testMethod"]
+          }
+      }'
 ```
 
 Generate Authentication Service
@@ -616,6 +2159,8 @@ Generate Authentication Service
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-auth-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
@@ -631,19 +2176,224 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
            "verifyTwoFactorCode",
            "revokeToken",
            "updateProfile"
-         ]
+         ],
+         "logging": {
+           "enabled": true,
+           "level": "info",
+           "format": "json"
+         },
+         "debug": true,
+         "dryRun": false,
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 1000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600
+         },
+         "security": {
+           "authentication": "JWT",
+           "authorizationRoles": ["admin", "user"],
+           "enforceTwoFactor": true
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           }
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 3,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
        }
      }'
 ```
 
-### Enterprise Service
+### Enterprise-grade
 
-Generate Enterprise Service
+ Health Check Test (/api/health)
+
+```javascript
+curl -X GET "http://localhost:3001/api/health" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: health-check" \
+     -H "Accept: application/json" | jq '.'
+```
+
+🚀 Enterprise API cURL Test of Lambda
+
+```javascript
+for i in {1..10}; do
+  curl -X POST "$HOST/api/generate-egg" \
+       -H "Content-Type: application/json" \
+       -H "X-Request-ID: lambda-api-test-$i" \
+       -H "Authorization: Bearer YOUR_API_TOKEN" \
+       -H "Accept: application/json" \
+       -d "{
+         \"type\": \"service\",
+         \"parameters\": {
+           \"name\": \"LambdaService$i\",
+           \"methods\": [\"method1\", \"method2\"],
+           \"tracing\": {
+              \"enabled\": true,
+              \"system\": \"AWS X-Ray\"
+           },
+           \"retryPolicy\": {
+              \"maxAttempts\": 3,
+              \"backoff\": \"exponential\"
+           },
+           \"logging\": {
+              \"enabled\": true,
+              \"level\": \"debug\"
+           }
+         }
+       }" > "lambda_response_$i.json" &
+done
+wait
+```
+
+🛠 Debugging Unexpected Outputs (Capturing Responses)
+(Logs and saves API responses for analysis)
+
+```javascript
+for i in {1..10}; do
+  curl -s -o "debug_response_$i.json" -X POST "$HOST/api/generate-egg" \
+       -H "Content-Type: application/json" \
+       -H "X-Request-ID: debug-test-$i" \
+       -H "Accept: application/json" \
+       -d "{
+         \"type\": \"service\",
+         \"parameters\": {
+           \"name\": \"DebugService$i\",
+           \"methods\": [\"debugMethod1\", \"debugMethod2\"]
+         }
+       }" &
+done
+wait
+```
+
+🌍 CORS & OPTIONS Method Test
+(Ensures the API supports Cross-Origin Resource Sharing for frontend requests)
+```javascript
+curl -v -X OPTIONS "$HOST/api/generate-egg" \
+     -H "Origin: http://localhost:3000" \
+     -H "Access-Control-Request-Method: POST" \
+     -H "Access-Control-Request-Headers: Content-Type"
+```
+
+❌ Missing X-Request-ID Test
+(Verifies API error handling when required headers are missing)
+
+```javascript
+curl -X POST "$HOST/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "Accept: application/json" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "MissingHeaderTest",
+         "methods": ["test"]
+       }
+ ```    }' | jq '.'
+```
+
+Service Generation (Highly Scalable & Resilient)
 
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
      -H "X-Request-ID: test-enterprise-scale" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -d '{
+          "type": "service",
+          "parameters": {
+              "name": "EnterpriseService",
+              "methods": [
+                  "initializeSystem", "validateConfiguration", "processRequest",
+                  "handleResponse", "manageCaching", "optimizePerformance",
+                  "handleFailover", "processQueue", "validateSecurity", "manageResources"
+              ],
+              "logging": {
+                  "enabled": true,
+                  "level": "debug",
+                  "format": "json"
+              },
+              "observability": {
+                  "metrics": {
+                      "enabled": true,
+                      "system": "Prometheus"
+                  },
+                  "tracing": {
+                      "enabled": true,
+                      "system": "OpenTelemetry"
+                  }
+              },
+              "caching": {
+                  "enabled": true,
+                  "type": "redis",
+                  "expiration": 600
+              },
+              "rateLimiting": {
+                  "enabled": true,
+                  "requestsPerMinute": 10000
+              },
+              "resilience": {
+                  "circuitBreaker": {
+                      "failureThreshold": 5,
+                      "resetTimeout": 30000
+                  },
+                  "retryPolicy": {
+                      "enabled": true,
+                      "maxRetries": 5,
+                      "backoffStrategy": "exponential"
+                  }
+              },
+              "scalability": {
+                  "loadBalancing": "round-robin",
+                  "horizontalScaling": {
+                      "enabled": true,
+                      "minInstances": 3,
+                      "maxInstances": 50
+                  }
+              },
+              "parallelExecution": {
+                  "enabled": true,
+                  "workerThreads": 10
+              },
+              "security": {
+                  "authentication": "oauth2",
+                  "authorizationRoles": ["admin", "superuser", "operator"]
+              },
+              "responseFormat": "JSON",
+              "versioning": "2.1.0"
+          }
+      }' | jq '.'
+```
+
+Service Generation
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-enterprise-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
@@ -658,55 +2408,192 @@ curl -X POST "http://localhost:3001/api/generate-egg" \
            "handleFailover",
            "processQueue",
            "validateSecurity",
-           "manageResources"
-         ]
+           "manageResources",
+           "monitorUptime",
+           "distributedLoadBalancing",
+           "autoScalingHandler",
+           "resourceOrchestration",
+           "disasterRecovery"
+         ],
+         "scalability": {
+           "enabled": true,
+           "autoscaling": {
+             "minReplicas": 5,
+             "maxReplicas": 50,
+             "cpuThreshold": 70
+           },
+           "distributedExecution": true
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry",
+             "sampleRate": 0.1
+           },
+           "logging": {
+             "enabled": true,
+             "level": "info",
+             "format": "json"
+           }
+         },
+         "security": {
+           "authorizationRoles": ["admin", "devops", "auditor"],
+           "firewallRules": {
+             "enabled": true,
+             "whitelist": ["10.0.0.0/16"],
+             "blacklist": ["192.168.1.0/24"]
+           },
+           "dataEncryption": {
+             "enabled": true,
+             "algorithm": "AES-256"
+           }
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 10_000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "distributed",
+           "backend": "Redis",
+           "expiration": 1200
+         },
+         "loadBalancing": {
+           "enabled": true,
+           "strategy": "round-robin"
+         },
+         "failover": {
+           "enabled": true,
+           "strategy": "hot-standby",
+           "replicationFactor": 3
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 5,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "logRequest",
+           "monitorPerformance",
+           "validateSecurity",
+           "handleErrors"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "2.1.0"
        }
      }'
 ```
 
-Missing Parameters
+Authentication Service
 
 ```javascript
 curl -X POST "http://localhost:3001/api/generate-egg" \
      -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-missing-params" \
-     -d '{
-       "type": "service"
-     }'
-```
-
-Expected Response:
-
-```javascript
-{
-  "success": false,
-  "error": "Missing required fields: type or parameters",
-  "metadata": {
-    "requestId": "test-missing-params",
-    "timestamp": "2025-01-28T...",
-    "duration": "0.04ms"
-  }
-}
-```
-
-### Edge Cases
-
-Edge Cases
-
-```javascript
-curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-unicode" \
+     -H "X-Request-ID: test-enterprise-auth-service" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -H "Accept: application/json" \
      -d '{
        "type": "service",
        "parameters": {
-         "name": "TestService💫",
-         "methods": ["test✨", "validate🔍", "process🔄"]
+         "name": "EnterpriseAuthenticationService",
+         "methods": [
+           "login",
+           "logout",
+           "refreshToken",
+           "validateSession",
+           "changePassword",
+           "resetPassword",
+           "generateTwoFactorCode",
+           "verifyTwoFactorCode",
+           "revokeToken",
+           "updateProfile",
+           "auditLogAccess",
+           "federatedLogin",
+           "sessionTermination",
+           "biometricAuth",
+           "adminOverride"
+         ],
+         "scalability": {
+           "enabled": true,
+           "autoscaling": {
+             "minReplicas": 3,
+             "maxReplicas": 20,
+             "cpuThreshold": 75
+           }
+         },
+         "observability": {
+           "metrics": {
+             "enabled": true,
+             "system": "Prometheus"
+           },
+           "tracing": {
+             "enabled": true,
+             "system": "OpenTelemetry",
+             "sampleRate": 0.1
+           },
+           "logging": {
+             "enabled": true,
+             "level": "debug",
+             "format": "json"
+           }
+         },
+         "security": {
+           "authentication": ["JWT", "OAuth2", "LDAP"],
+           "authorizationRoles": ["admin", "user", "auditor"],
+           "multiFactorAuth": true,
+           "biometricSupport": true
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 5000
+         },
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 900
+         },
+         "auditLogging": {
+           "enabled": true,
+           "storage": "S3",
+           "retentionPeriod": "90d"
+         },
+         "highAvailability": {
+           "enabled": true,
+           "failoverStrategy": "multi-region",
+           "replicationFactor": 3
+         },
+         "compliance": {
+           "standards": ["GDPR", "SOC2", "HIPAA"],
+           "encryption": {
+             "enabled": true,
+             "algorithms": ["AES-256", "RSA-4096"]
+           }
+         },
+         "retryPolicy": {
+           "enabled": true,
+           "maxRetries": 5,
+           "backoffStrategy": "exponential"
+         },
+         "middleware": [
+           "validateRequest",
+           "rateLimit",
+           "authenticateUser",
+           "logRequest",
+           "auditLogging",
+           "monitorPerformance"
+         ],
+         "responseFormat": "JSON",
+         "versioning": "2.0.0"
        }
      }'
 ```
 
-Load Testing Example
+Edge Cases
 
 ```javascript
 for i in {1..5}; do
@@ -719,35 +2606,179 @@ for i in {1..5}; do
            \"name\": \"Service$i\",
            \"methods\": [\"method$i\"]
          }
-       }" &
+       }" >> concurrent_test_results.log 2>&1 &
 done
 wait
 ```
 
-### Changelog (v1.0.36)
+### ProductController with full CRUD operations
 
-* Fixed Babel build issues by adding missing plugins (@babel/plugin-proposal-optional-chaining, @babel/plugin-proposal-nullish-coalescing-operator).
-* Updated dependencies to address compatibility issues.
-* PM2 restart is required after pulling the latest changes.
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-product-controller" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -d '{
+       "type": "controller",
+       "parameters": {
+         "name": "ProductController",
+         "route": "/api/products",
+         "methods": [
+           "listProducts",
+           "getProductDetails",
+           "createProduct",
+           "updateProduct",
+           "deleteProduct",
+           "searchProducts",
+           "exportToCsv",
+           "importFromCsv"
+         ],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "seller"]
+         },
+         "validation": {
+           "schema": {
+             "productName": "string",
+             "price": "number",
+             "stock": "integer",
+             "category": "string"
+           }
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info"
+         },
+         "errorHandling": true,
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 100
+         },
+         "csrfProtection": true,
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 300
+         },
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }'
+```
+
+Generate endpoint
+
+```javascript
+curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: test-factory" \
+     -H "Authorization: Bearer YOUR_API_TOKEN" \
+     -d '{
+       "type": "factory",
+       "parameters": {
+         "name": "PaymentFactory",
+         "methods": [
+           "createPaymentProcessor",
+           "createPaymentGateway",
+           "createPaymentValidator",
+           "validatePaymentMethod",
+           "processTransaction"
+         ],
+         "security": {
+           "auth": ["jwt"],
+           "roles": ["admin", "finance"]
+         },
+         "logging": {
+           "enabled": true,
+           "level": "info"
+         },
+         "errorHandling": true,
+         "caching": {
+           "enabled": true,
+           "type": "redis",
+           "expiration": 600
+         },
+         "metrics": {
+           "enabled": true,
+           "system": "Prometheus"
+         },
+         "tracing": {
+           "enabled": true,
+           "system": "OpenTelemetry"
+         },
+         "rateLimiting": {
+           "enabled": true,
+           "requestsPerMinute": 500
+         },
+         "responseFormat": "JSON",
+         "versioning": "1.2.0"
+       }
+     }' | jq '.'
+```
+
+Large Number of Methods With Categorization
+
+```javascript
+`curl -X POST "http://localhost:3001/api/generate-egg" \
+     -H "Content-Type: application/json" \
+     -H "X-Request-ID: advanced-large-methods" \
+     -d '{
+       "type": "service",
+       "parameters": {
+         "name": "EnterpriseScaleService",
+         "methods": [
+           "initializeSystem1", "initializeSystem2", "initializeSystem3", "initializeSystem4", "initializeSystem5",
+           "validateData1", "validateData2", "validateData3", "validateData4", "validateData5",
+           "processRequest1", "processRequest2", "processRequest3", "processRequest4", "processRequest5",
+           "handleResponse1", "handleResponse2", "handleResponse3", "handleResponse4", "handleResponse5",
+           "manageCaching1", "manageCaching2", "manageCaching3", "manageCaching4", "manageCaching5",
+           "optimizePerformance1", "optimizePerformance2", "optimizePerformance3", "optimizePerformance4", "optimizePerformance5",
+           "handleFailover1", "handleFailover2", "handleFailover3", "handleFailover4", "handleFailover5",
+           "processQueue1", "processQueue2", "processQueue3", "processQueue4", "processQueue5",
+           "validateSecurity1", "validateSecurity2", "validateSecurity3", "validateSecurity4", "validateSecurity5",
+           "manageResources1", "manageResources2", "manageResources3", "manageResources4", "manageResources5",
+           "handleErrors1", "handleErrors2", "handleErrors3", "handleErrors4", "handleErrors5",
+           "processEvents1", "processEvents2", "processEvents3", "processEvents4", "processEvents5",
+           "manageState1", "manageState2", "manageState3", "manageState4", "manageState5",
+           "optimizeMemory1", "optimizeMemory2", "optimizeMemory3", "optimizeMemory4", "optimizeMemory5",
+           "handleConcurrency1", "handleConcurrency2", "handleConcurrency3", "handleConcurrency4", "handleConcurrency5",
+           "processStream1", "processStream2", "processStream3", "processStream4", "processStream5",
+           "validateIntegrity1", "validateIntegrity2", "validateIntegrity3", "validateIntegrity4", "validateIntegrity5",
+           "manageConnections1", "manageConnections2", "manageConnections3", "manageConnections4", "manageConnections5",
+           "handleTimeout1", "handleTimeout2", "handleTimeout3", "handleTimeout4", "handleTimeout5",
+           "processCallback1", "processCallback2", "processCallback3", "processCallback4", "processCallback5",
+           "validatePermissions1", "validatePermissions2", "validatePermissions3", "validatePermissions4", "validatePermissions5"
+         ]
+       }
+     }' | jq '.'`;
+```
+
+
+### Changelog (v1.1.0)
+
+- Fixed Babel build issues by adding missing plugins (@babel/plugin-proposal-optional-chaining, @babel/plugin-proposal-nullish-coalescing-operator).
+- Updated dependencies to address compatibility issues.
+- PM2 restart is required after pulling the latest changes.
 
 Developer Setup
+
 ```javascript
 pnpm install
 pnpm build
 pm2 restart all
 ```
 
-### Comprehensive AI Tools
+### AI Tools
 
-With built-in AI services like natural language processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
+With built-in AI services like Natural Language Processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
 
 ### Backend Efficiency
 
-The package includes a well-structured backend setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
+The package includes setup using Express.js, MongoDB, and essential middleware like helmet for security, compression for performance, and cors for handling cross-origin requests. This allows developers to set up a scalable and secure backend efficiently.
 
 ### Testing and Quality Assurance
 
-bleujs integrates comprehensive testing frameworks, including Jest for unit and integration tests, and Cypress for end-to-end tests. This ensures that applications built with this package are reliable and maintain high quality standards.
+bleujs integrates testing frameworks, including Jest for unit and integration tests, and Cypress for end-to-end tests. This ensures that applications built with this package are reliable and maintain high quality standards.
 
 ### Code Linting and Formatting
 
@@ -771,7 +2802,8 @@ With Docker integration, developers can containerize their applications for cons
 
 ### Real-time Features
 
-With WebSocket support (ws), developers can add real-time features like live notifications and updates to their applications.
+To add real-time features like live notifications and updates to their applications.
+
 
 ### Usage
 
@@ -817,7 +2849,6 @@ pip install bleujs-utils
 `bleujs-utils`
 You can view the package on PyPI: [bleujs-utils on PyPI](https://pypi.org/project/bleujs-utils/)
 
-### Usage
 
 ### Example 1: General Utility Function
 
@@ -837,11 +2868,11 @@ response = ai_query('What is the weather today?')
 print(response)
 ```
 
-### Use Cases
 
 - AI Query Tools: Provides helper functions for querying AI models, managing requests, and handling responses.
 - Company Search: Utilities for fuzzy searching company names, perfect for customer service applications like HelloBlue.
 - Error Handling: Custom logging and debugging utilities designed to streamline development and troubleshooting.
+
 
 ### Example 3: CLI Tool
 
@@ -854,11 +2885,9 @@ Here’s how you can use the `bleujs-utils` package in your project:
 ```javascript
 const { optimizeCode, manageDependencies } = require('bleujs-utils');
 
-
 const code = 'const   x = 1;   console.log( x);';
 const optimizedCode = optimizeCode(code);
 console.log('Optimized Code:', optimizedCode);
-
 
 const dependencies = ['express', 'body-parser'];
 manageDependencies(dependencies);
@@ -1227,7 +3256,7 @@ Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
-## Initializes a new instance of the BleuJS class.
+## Initializes a new instance of the BleuJS class
 
 ### Methods
 
@@ -1253,79 +3282,52 @@ The generateEgg method is responsible for generating a new code 'egg'. This meth
 - Append the new egg to the eggs array.
 - Return the newly created egg.
 
-```javascript
-generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options);
-  const newEgg = {
-    id: this.eggs.length + 1,
-    description: this.generateDescription(type, options),
-    type,
-    code,
-    createdAt: new Date()
-  };
-  this.eggs.push(newEgg);
-  return newEgg;
-}
-```
-
-```javascript
-generateEgg(description, type, options) {
-  const code = this.henFarm.generateCode(type, options);
-  const newEgg = {
-    id: this.eggs.length + 1,
-    description: this.generateDescription(type, options),
-    type,
-    code,
-    createdAt: new Date()
-  };
-  this.eggs.push(newEgg);
-  return newEgg;
-}
-```
-
-## Eggs Generator API
+### Eggs Generator API
 
 The **Eggs Generator API** is a microservice that generates **custom AI-powered "eggs"** based on provided parameters. This API is designed for scalability, AI logic, and real-time egg generation.
 
-###  **API Endpoint**
-#### `POST /api/generate-egg`
-Generate a new egg with a custom type and parameters.
 
-#### **Request Body (JSON)**
-
-cd eggs-generator
-pnpm install
-pnpm dev
-
-In another terminal
+If you want faster execution and better debugging, use:
 
 ```javascript
-curl -X POST http://localhost:3003/api/generate-egg \
+curl -X POST http://localhost:3003/api/eggs/generate-egg \
      -H "Content-Type: application/json" \
+     -H "Accept: application/json" \
+     -H "User-Agent: Curl-Advanced-Test" \
+     -H "Cache-Control: no-cache" \
      -d '{
-          "type": "golden-egg",
+          "type": "celestial",
           "description": "A rare legendary egg",
-          "parameters": {"size": "large", "color": "gold"}
-        }'
+          "parameters": {
+              "size": "large",
+              "color": "gold",
+              "rarity": "legendary",
+              "element": "magic"
+          }
+        }' \
+     --fail --silent --show-error --output response.json
 ```
 
+Then, check your response.json
+
 Expected result
-```javascript
-{"result":{"id":"9854f6da-b409-4b72-bd30-7e545d79b1a7","type":"golden-egg","description":"A rare legendary egg","metadata":{"size":"large","color":"gold","generatedBy":"Eggs-Generator v1.0.37","timestamp":"2025-02-09T06:14:51.061Z"},"createdAt":"2025-02-09T06:14:51.061Z","updatedAt":"2025-02-09T06:14:51.061Z"}}% ```
-
-
 
 ```javascript
-curl -X POST http://localhost:3003/api/generate-egg \
+{"success":true,"result":{"id":"990321c6-7cae-472f-933d-743a9ac8022c","type":"dragon","description":"A rare legendary egg","metadata":{"tags":[],"version":"1.0.37","generatedBy":"Eggs-Generator v1.0.37","properties":{"rarity":"legendary","element":"fire"},"rarity":"legendary","attributes":[{"trait_type":"element","value":"fire","rarity_score":4,"_id":"67b0a38eae7bb50b80649417"}],"dna":"1bd6e02ead46f6927bf1c5f185bfcf38","generation":1,"aiFingerprint":"9833bf1a6f857eac2fe43e0d42d8cf6b6c45382300ff0146dc396441457c536c"},"status":"incubating","incubationConfig":{"startTime":"2025-02-15T14:24:14.877Z","duration":86400,"temperature":37,"conditions":[],"optimalTemp":37},"evolution":{"stage":1,"powerLevel":104,"experience":0,"history":[],"possibleEvolutions":[]},"interactions":{"total":0,"history":[]},"owner":"system","tradeable":true,"market":{"listed":false,"bids":[],"realTimePrice":0,"priceHistory":[]},"security":{"validation":false,"signature":"233b4233de9948536c2931dfd876e2c66ad4ffe2bb46e8e9e7fca464994d1a5a"},"_id":"67b0a38eae7bb50b80649416","ownershipHistory":[],"createdAt":"2025-02-15T14:24:14.881Z","updatedAt":"2025-02-15T14:24:14.881Z","__v":0},"market":{"tier":{"eggsPerDay":5,"rarities":["common","uncommon"],"price":0},"tradingEnabled":false}}%
+```
+
+```javascript
+curl -X POST http://localhost:3003/api/eggs/generate-egg \
      -H "Content-Type: application/json" \
      -d '{
-          "type": "mystic-egg",
-          "description": "A magical egg with unknown powers",
-          "parameters": {"size": "medium", "color": "purple"}
+          "type": "celestial",
+          "description": "A rare legendary egg",
+          "parameters": { "size": "large", "color": "gold", "rarity": "legendary", "element": "magic" }
         }'
-```
+````
 
 Expected result
+
 ```javascript
 Generated Egg: {
   id: '9854f6da-b409-4b72-bd30-7e545d79b1a7',
@@ -1374,7 +3376,6 @@ Response (Example)
 }
 ```
 
-
 ```javascript
  PASS  tests/bleu.test.js
   API Tests
@@ -1420,112 +3421,52 @@ Time:        3.707 s, estimated 4 s
 Ran all test suites.
 ```
 
-
 ```javascript
 pnpm test
 ```
 
 ```javascript
-    ~/Bleu.js  on   main *4 +10 !1  pnpm test                               ✔  3.1.0   at 03:19:23 PM 
-
-> bleujs@1.0.33 test /Users/Bleu.js
+> bleujs@1.1.0 test /Users/Bleu.js
 > jest --detectOpenHandles --forceExit
 
- PASS   lint  output/html-report/jest-html-reporters-attach/index/index.js
-  ✓ ESLint (1569 ms)
-
- PASS   lint  output/jest-html-reporters-attach/report/index.js
-  ✓ ESLint (1370 ms)
-
- PASS   lint  output/jest-html-reporters-attach/test-report/index.js
-  ✓ ESLint (1201 ms)
-
- PASS   lint  output/jest-html-reporters-attach/test-report/result.js
-  ✓ ESLint (547 ms)
-
- PASS   lint  src/backend/src/ai/decisionTree.js
-  ✓ ESLint (7 ms)
-
- PASS   lint  eggs-generator/coverage/prettify.js
-  ✓ ESLint (23 ms)
-
  PASS   lint  coverage/prettify.js
-  ✓ ESLint (18 ms)
-
- PASS   lint  output/lcov-report/prettify.js
-  ✓ ESLint (14 ms)
-
- PASS   lint  output/html-report/jest-html-reporters-attach/index/result.js
-  ✓ ESLint (16 ms)
+  ✓ ESLint (66 ms)
 
  PASS   lint  coverage/lcov-report/prettify.js
-  ✓ ESLint (13 ms)
+  ✓ ESLint (29 ms)
 
- PASS   lint  output/prettify.js
-  ✓ ESLint (14 ms)
+ PASS   lint  dependency-management/coverage/prettify.js
+  ✓ ESLint (30 ms)
 
- PASS   lint  eggs-generator/coverage/lcov-report/prettify.js
+ PASS   lint  dependency-management/coverage/lcov-report/prettify.js
+  ✓ ESLint (105 ms)
+
+ PASS   lint  venv/lib/python3.13/site-packages/werkzeug/debug/shared/debugger.js
   ✓ ESLint (12 ms)
 
- PASS   lint  src/backend/src/controllers/apiController.js
+ PASS   lint  eggs-generator/src/types/egg.types.js
   ✓ ESLint (6 ms)
 
+ PASS   lint  backend/src/src/controllers/apiController.js
+  ✓ ESLint (6 ms)
+
+ PASS   lint  eggs-generator/src/routes/egg.routes.js
+  ✓ ESLint (11 ms)
+
  PASS   lint  coverage/lcov-report/sorter.js
-  ✓ ESLint (5 ms)
-
- PASS   lint  dependency-management/src/index.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  eggs-generator/src/HenFarm.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  eggs-generator/src/Bleu.js
-  ✓ ESLint (4 ms)
-
- PASS   lint  eggs-generator/coverage/lcov-report/sorter.js
-  ✓ ESLint (4 ms)
-
- PASS   lint  src/backend/src/routes/dataRoutes.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  src/backend/routes.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  src/backend/index.js
-  ✓ ESLint (4 ms)
+  ✓ ESLint (8 ms)
 
  PASS   lint  coverage/sorter.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  coverage/block-navigation.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  output/jest-html-reporters-attach/report/result.js
-  ✓ ESLint (3 ms)
-
- PASS   lint  src/backend/src/services/aiService.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  src/backend/src/routes/index.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/tests/CustomSequencer.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  src/backend/tests/aiService.test.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  dependency-management/src/dependencyManager.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  output/sorter.js
   ✓ ESLint (4 ms)
 
- PASS   lint  output/lcov-report/sorter.js
+ PASS   lint  dependency-management/coverage/sorter.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  dependency-management/coverage/lcov-report/sorter.js
   ✓ ESLint (3 ms)
 
- PASS   lint  eggs-generator/coverage/sorter.js
-  ✓ ESLint (4 ms)
+ PASS   lint  backend/src/src/ai/decisionTree.js
+  ✓ ESLint (6 ms)
 
  PASS   lint  frontend/src/index.js
   ✓ ESLint (3 ms)
@@ -1533,166 +3474,334 @@ pnpm test
  PASS   lint  frontend/public/app.js
   ✓ ESLint (4 ms)
 
- PASS   lint  src/backend/src/controllers/dataController.js
+ PASS   lint  ./jest.setup.js
+  ✓ ESLint (7 ms)
+
+ PASS   lint  eggs-generator/src/services/egg.service.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  eggs-generator/src/events/eggEvents.js
+  ✓ ESLint (6 ms)
+
+ PASS   lint  src/backend/src/controllers/apiController.js
+  ✓ ESLint (5 ms)
+
+ PASS   lint  eggs-generator/src/Bleu.js
   ✓ ESLint (2 ms)
 
- PASS   lint  src/backend/src/ai/nlpProcessor.js
+ PASS   lint  backend/src/src/controllers/rulesController.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  backend/src/tests/CustomSequencer.js
   ✓ ESLint (2 ms)
 
- PASS   lint  src/backend/src/ml/modelManager.js
-  ✓ ESLint (2 ms)
+ PASS   lint  src/backend/routes.js
+  ✓ ESLint (6 ms)
 
- PASS   lint  src/backend/tests/decisionTree.test.js
+ PASS   lint  src/backend/src/ai/decisionTree.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  eggs-generator/src/models/egg.model.js
   ✓ ESLint (1 ms)
 
  PASS   lint  src/backend/tests/apiGenerateEgg.test.js
-  ✓ ESLint (4 ms)
-
- PASS   lint  src/backend/tests/seedDatabase.test.js
   ✓ ESLint (1 ms)
 
- PASS   lint  src/backend/tests/testSequencer.test.js
+ PASS   lint  backend/src/src/models/ruleModel.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/CustomSequencer.js
   ✓ ESLint (2 ms)
 
  PASS   lint  src/backend/tests/apiController.test.js
   ✓ ESLint (1 ms)
 
- PASS   lint  src/backend/mocks/AiQuery.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  language-plugins/javascript/src/index.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  language-plugins/javascript/src/JSProcessor.js
+ PASS   lint  backend/src/src/services/aiService.js
   ✓ ESLint (3 ms)
 
- PASS   lint  language-plugins/javascript/tests/index.test.js
+ PASS   lint  src/backend/tests/decisionTree.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/controllers/dataController.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./manualConnectionTest.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/services/aiService.js
   ✓ ESLint (1 ms)
 
  PASS   lint  coverage/lcov-report/block-navigation.js
   ✓ ESLint (1 ms)
 
- PASS   lint  ./.simple-git-hooks.js
+ PASS   lint  coverage/block-navigation.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  dependency-management/coverage/lcov-report/block-navigation.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  dependency-management/coverage/block-navigation.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  src/backend/tests/testUtils.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  backend/src/src/ai/nlpProcessor.js
   ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/__tests__/index.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/routes/apiRoutes.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/testSequencer.test.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/ai/nlpProcessor.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  dependency-management/src/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/ml/modelManager.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  backend/src/src/services/rulesEngine.js
+  ✓ ESLint (3 ms)
 
  PASS   lint  dependency-management/test.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  ./manualConnectionTest.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  output/lcov-report/block-navigation.js
   ✓ ESLint (1 ms)
 
- PASS   lint  ./eslint.generated.config.js
+ PASS   lint  backend/src/src/services/ruleService.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/ml/modelManager.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/models/egg.schema.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/controllers/dataController.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/controllers/eggController.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/seedDatabase.test.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/aiService.test.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/mocks/AiQuery.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/services/rulesEngine.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/apiRoutes.test.js
   ✓ ESLint (3 ms)
+
+ PASS   lint  backend/src/html-report/jest-html-reporters-attach/report/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/utils/testSequencer.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  language-plugins/javascript/src/index.js
+  ✓ ESLint (1 ms)
 
  PASS   lint  eggs-generator/src/generateEgg.js
   ✓ ESLint (1 ms)
 
- PASS   lint  eggs-generator/coverage/block-navigation.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  eggs-generator/tests/index.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  eggs-generator/__mocks__/HenFarm.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  code-quality-assurance/src/index.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/src/services/seedDatabase.js
+ PASS   lint  src/backend/html-report/jest-html-reporters-attach/report/index.js
   ✓ ESLint
 
- PASS   lint  src/backend/src/services/mockEngine.js
+ PASS   lint  backend/src/src/routes/dataRoutes.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/db/mongodb.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/services/decisionTreeService.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/models/userModel.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/middleware/security.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/utils/metrics.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/mocks/database.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/models/AiQuery.js
   ✓ ESLint
 
- PASS   lint  src/backend/src/services/rulesEngine.js
+ PASS   lint  src/middleware/auth.js
+  ✓ ESLint
+
+ PASS   lint  language-plugins/javascript/tests/index.test.js
   ✓ ESLint (2 ms)
-
- PASS   lint  src/backend/src/routes/simpleRoute.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/src/models/userModel.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/src/utils/logger.js
-  ✓ ESLint (1 ms)
 
  PASS   lint  src/backend/src/utils/testSequencer.js
   ✓ ESLint (1 ms)
 
- PASS   lint  src/backend/tests/apiRoutes.test.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  src/backend/tests/bleu.test.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/tests/setupTests.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/tests/globalSetup.js
+ PASS   lint  dependency-management/src/dependencyManager.js
   ✓ ESLint (1 ms)
 
  PASS   lint  src/backend/tests/aiTests.test.js
   ✓ ESLint (1 ms)
 
- PASS   lint  src/backend/tests/globalTeardown.js
-  ✓ ESLint (2 ms)
+ PASS   lint  src/backend/src/routes/dataRoutes.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/services/seedDatabase.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/HenFarm.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/utils/logger.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/mocks/AiQuery.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  language-plugins/javascript/src/JSProcessor.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/tests/globalTeardown.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/tests/globalSetup.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/routes/eggs.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/routes/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/models/userModel.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/__mocks__/HenFarm.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/deploy/deploy.js
+  ✓ ESLint
+
+ PASS   lint  src/backend/tests/bleu.test.js
+  ✓ ESLint
+
+ PASS   lint  eggs-generator/src/middleware/errorHandler.js
+  ✓ ESLint
 
  PASS   lint  src/backend/swagger.js
+  ✓ ESLint (3 ms)
+
+ PASS   lint  src/backend/src/services/seedDatabase.js
   ✓ ESLint (1 ms)
 
- PASS   lint  src/backend/html-report/jest-html-reporters-attach/report/result.js
-  ✓ ESLint (6 ms)
+ PASS   lint  src/backend/src/models/AiQuery.js
+  ✓ ESLint
 
- PASS   lint  src/backend/html-report/jest-html-reporters-attach/report/index.js
+ PASS   lint  backend/src/src/routes/simpleRoute.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  eggs-generator/test-db.js
   ✓ ESLint (1 ms)
 
- PASS   lint  language-plugins/src/index.js
+ PASS   lint  ./generateRuleId.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  eggs-generator/src/middleware/validation.js
   ✓ ESLint (1 ms)
 
- PASS   lint  ./eslint.config.js
+ PASS   lint  eggs-generator/ecosystem.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./vite.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/globalTeardown.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/utils/logger.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  code-quality-assurance/tests/index.test.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/tests/globalSetup.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  backend/src/src/services/mockEngine.js
   ✓ ESLint (1 ms)
 
  PASS   lint  scripts/preinstall.js
   ✓ ESLint (2 ms)
 
- PASS   lint  ./generateRuleId.js
-  ✓ ESLint (5 ms)
-
- PASS   lint  collaboration-tools/src/index.js
-  ✓ ESLint (4 ms)
-
- PASS   lint  ./vite.config.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  output/block-navigation.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  eggs-generator/coverage/lcov-report/block-navigation.js
-  ✓ ESLint (2 ms)
-
- PASS   lint  eggs-generator/jest.setup.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  ./jest.setup.js
-  ✓ ESLint (1 ms)
-
  PASS   lint  ./preinstall.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/setup.js
   ✓ ESLint
 
- PASS   lint  ./simple-git-hooks.js
-  ✓ ESLint (1 ms)
-
- PASS   lint  src/backend/src/models/AiQuery.js
-  ✓ ESLint (1 ms)
-
  PASS   lint  src/backend/src/utils/lib/Bleu.js
+  ✓ ESLint
+
+ PASS   lint  backend/ecosystem.config.js
   ✓ ESLint (1 ms)
 
- PASS   lint  ./simpleServer.js
+ PASS   lint  backend/src/tests/setupTests.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/tests/setupTests.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/services/mockEngine.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  ./jestSequencer.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  code-quality-assurance/src/index.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/routes/simpleRoute.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  src/backend/src/routes/index.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  ./eslint.config.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/utils/asyncHandler.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  dependency-management/jest.setup.js
+  ✓ ESLint (4 ms)
+
+ PASS   lint  src/backend/src/routes/metricsRoutes.js
+  ✓ ESLint (2 ms)
+
+ PASS   lint  src/backend/src/routes/healthRoutes.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/validators/egg.validator.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/src/middleware/metrics.js
+  ✓ ESLint (1 ms)
+
+ PASS   lint  eggs-generator/asyncHandler.js
   ✓ ESLint (1 ms)
 
 -------------------|---------|----------|---------|---------|-------------------
@@ -1715,7 +3824,6 @@ Time:        5.811 s
 Ran all test suites.
 📦 report is created on: /Users/pejmanhaghighatnia/Bleu.js/reports/test-report.html
 **  jest-stare --reporters: wrote output report to ./reports/jest-stare/index.html      **
-    ~/Bleu.js  on   main *4 +10 !3                              ✔  took 8s   3.1.0   at 03:19:33 PM 
 ```
 
 ![Bleu.js SVG](https://raw.githubusercontent.com/HelloblueAI/Bleu.js/46a4a1183db83ac789b4c41c9d4e2e39356cb902/Asset.svg)
@@ -1761,8 +3869,6 @@ ensureCodeQuality(code) {
   return isQualityCode;
 }
 ```
-
-
 
 This document provides detailed information about the API endpoints available in the Bleu.js application, including the recent updates and improvements made to the API.
 
@@ -1832,89 +3938,6 @@ Bleu.js ensures all test cases pass successfully, delivering a seamless experien
 | `/core-engine/src/index.js` | 00:00.003         | ✅ Passed  |
 
 ---
-
-
-### Generate REST Controller
-
-```javascript
-`curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-controller" \
-     -d '{
-       "type": "controller",
-       "parameters": {
-         "name": "ProductController",
-         "methods": [
-           "listProducts",
-           "getProductDetails",
-           "createProduct",
-           "updateProduct",
-           "deleteProduct",
-           "searchProducts",
-           "exportToCsv",
-           "importFromCsv"
-         ]
-       }
-     }' | jq '.'`;
-```
-
-### Generate endpoint
-
-```javascript
-`curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: test-factory" \
-     -d '{
-       "type": "factory",
-       "parameters": {
-         "name": "PaymentFactory",
-         "methods": [
-           "createPaymentProcessor",
-           "createPaymentGateway",
-           "createPaymentValidator",
-           "validatePaymentMethod",
-           "processTransaction"
-         ]
-       }
-     }' | jq '.'`;
-```
-
-### LARGE NUMBER OF METHODS WITH CATEGORIZATION
-
-```javascript
-`curl -X POST "http://localhost:3001/api/generate-egg" \
-     -H "Content-Type: application/json" \
-     -H "X-Request-ID: advanced-large-methods" \
-     -d '{
-       "type": "service",
-       "parameters": {
-         "name": "EnterpriseScaleService",
-         "methods": [
-           "initializeSystem1", "initializeSystem2", "initializeSystem3", "initializeSystem4", "initializeSystem5",
-           "validateData1", "validateData2", "validateData3", "validateData4", "validateData5",
-           "processRequest1", "processRequest2", "processRequest3", "processRequest4", "processRequest5",
-           "handleResponse1", "handleResponse2", "handleResponse3", "handleResponse4", "handleResponse5",
-           "manageCaching1", "manageCaching2", "manageCaching3", "manageCaching4", "manageCaching5",
-           "optimizePerformance1", "optimizePerformance2", "optimizePerformance3", "optimizePerformance4", "optimizePerformance5",
-           "handleFailover1", "handleFailover2", "handleFailover3", "handleFailover4", "handleFailover5",
-           "processQueue1", "processQueue2", "processQueue3", "processQueue4", "processQueue5",
-           "validateSecurity1", "validateSecurity2", "validateSecurity3", "validateSecurity4", "validateSecurity5",
-           "manageResources1", "manageResources2", "manageResources3", "manageResources4", "manageResources5",
-           "handleErrors1", "handleErrors2", "handleErrors3", "handleErrors4", "handleErrors5",
-           "processEvents1", "processEvents2", "processEvents3", "processEvents4", "processEvents5",
-           "manageState1", "manageState2", "manageState3", "manageState4", "manageState5",
-           "optimizeMemory1", "optimizeMemory2", "optimizeMemory3", "optimizeMemory4", "optimizeMemory5",
-           "handleConcurrency1", "handleConcurrency2", "handleConcurrency3", "handleConcurrency4", "handleConcurrency5",
-           "processStream1", "processStream2", "processStream3", "processStream4", "processStream5",
-           "validateIntegrity1", "validateIntegrity2", "validateIntegrity3", "validateIntegrity4", "validateIntegrity5",
-           "manageConnections1", "manageConnections2", "manageConnections3", "manageConnections4", "manageConnections5",
-           "handleTimeout1", "handleTimeout2", "handleTimeout3", "handleTimeout4", "handleTimeout5",
-           "processCallback1", "processCallback2", "processCallback3", "processCallback4", "processCallback5",
-           "validatePermissions1", "validatePermissions2", "validatePermissions3", "validatePermissions4", "validatePermissions5"
-         ]
-       }
-     }' | jq '.'`;
-```
 
 ### Swagger Documentation:
 
@@ -2078,7 +4101,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)
 ![Platform Support](https://img.shields.io/badge/Platform-Linux-green)
 ![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)
-![v1.0.36](https://img.shields.io/badge/v1.0.36-0ff?style=flat)
+![v1.1.0](https://img.shields.io/badge/v1.1.0-0ff?style=flat)
 ![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)
 ![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)

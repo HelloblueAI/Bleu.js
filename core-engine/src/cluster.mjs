@@ -199,7 +199,7 @@ class WorkerManager {
       🔌 Port:           ${process.env.PORT || 3001}
       🔧 Worker PID:     ${process.pid}
       🔄 CPU Cores:      ${this.numCPUs}
-      📊 Engine Version: ${process.env.npm_package_version || '1.0.32'}
+      📊 Engine Version: ${process.env.npm_package_version || '1.1.0'}
       -------------------------------------------
     `);
     } catch (error) {

@@ -1,0 +1,81 @@
+{
+  "compilerOptions": {
+    // 🚀 Modern JS/TS Features
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    // 🚀 Optimized Interop & Compatibility
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    // 🚀 Build Performance
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "incremental": true,
+    "tsBuildInfoFile": "./tsbuildinfo.json",
+    "skipLibCheck": true,
+    // 🚀 Type Safety & Strict Mode
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": false, // Prevents unnecessary strictness
+    "noUncheckedIndexedAccess": true,
+    // 🚀 Debugging & Code Quality
+    "sourceMap": true,
+    "noUnusedLocals": false, // Allow flexibility in development
+    "noUnusedParameters": false, // Avoid breaking function signatures
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    // 🚀 Path Aliases
+    "paths": {
+      "@backend/*": [
+        "./src/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@models/*": [
+        "./src/models/*"
+      ],
+      "@controllers/*": [
+        "./src/controllers/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ]
+    },
+    // 🚀 Type Definitions
+    "types": [
+      "node",
+      "express",
+      "vitest",
+      "jest",
+      "cors",
+      "multer",
+      "morgan",
+      "natural"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts",
+    "src/index.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}

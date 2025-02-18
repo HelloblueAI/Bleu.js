@@ -8,7 +8,6 @@ import { createLogger, transports, format } from 'winston';
 import apiRoutes from './src/routes/apiRoutes.mjs';
 import { connect, disconnect } from './mocks/database.mjs';
 
-
 const logger = createLogger({
   level: 'info',
   format: format.combine(
@@ -28,7 +27,6 @@ const logger = createLogger({
   ],
 });
 
-
 const stopServer = (server) =>
   new Promise((resolve, reject) => {
     server.close(async (err) => {
@@ -41,7 +39,6 @@ const stopServer = (server) =>
       return resolve();
     });
   });
-
 
 const configureEndpoints = (app) => {
   app.use('/api', apiRoutes);
@@ -60,14 +57,10 @@ const configureEndpoints = (app) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-
-
 };
-
 
 const createApp = () => {
   const app = express();
-
 
   app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
   app.use(
@@ -77,9 +70,7 @@ const createApp = () => {
   );
   app.use(bodyParser.json());
 
-
   configureEndpoints(app);
-
 
   app.use((req, res) => {
     res.status(404).json({ error: 'Not Found' });
@@ -109,6 +100,5 @@ const startServer = async () => {
     return null;
   }
 };
-
 
 export { createApp, startServer, stopServer };

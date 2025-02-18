@@ -1,108 +1,160 @@
-module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+const path = require('path');
+const pkg = require('./package.json');
 
-  testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    url: 'http://localhost/',
-    resources: 'usable',
-    runScripts: 'dangerously',
+module.exports = {
+  rootDir: '.',
+
+  testEnvironment: path.resolve(__dirname, 'jest.environment.cjs'),
+
+  moduleNameMapper: {
+    
+    'node:crypto': '<rootDir>/src/node-shims/crypto.js',
+    'crypto': '<rootDir>/src/node-shims/crypto.js',
+    'node:fs': '<rootDir>/src/node-shims/fs.js',
+    'node:net': '<rootDir>/src/node-shims/net.js',
+    'node:events': require.resolve('events'),
+
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@models/(.*)$': '<rootDir>/src/models/$1',
+    '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@core/(.*)$': '<rootDir>/src/core/$1'
   },
+
 
   transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.tsx?$': [
-      'ts-jest',
+    '^.+\\.m?[tj]sx?$': [
+      'babel-jest',
       {
-        tsconfig: '<rootDir>/tsconfig.json',
-        diagnostics: false,
-        isolatedModules: true,
-        esModuleInterop: true,
-      },
-    ],
+        presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
+      }
+    ]
   },
 
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node', 'mjs', 'cjs'],
-
-  testMatch: [
-    '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
-    '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
-    '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
-    '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
+  transformIgnorePatterns: [
+    'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)'
   ],
-
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/', '/reports/', '<rootDir>/build/', '<rootDir>/scripts/', '<rootDir>/public/'],
-
-  collectCoverage: true,
-  collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    'backend/src/**/*.{js,jsx,ts,tsx}',
-    'frontend/src/**/*.{js,jsx,ts,tsx}',
-    'core-engine/src/**/*.{js,jsx,ts,tsx}',
-    'language-plugins/src/**/*.{js,jsx,ts,tsx}',
-  ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['html', 'text', 'lcov', 'json-summary'],
+  setupFiles: ['./jest.node-globals.cjs'],
+  setupFilesAfterEnv: ['./jest.setup.js'],
+  globalSetup: './jest.global-setup.cjs',
+  globalTeardown: './jest.teardown.cjs',
 
   projects: [
     {
       displayName: 'lint',
       runner: 'jest-runner-eslint',
       testMatch: ['<rootDir>/**/*.{js,jsx,ts,tsx}'],
-      testPathIgnorePatterns: ['/node_modules/', '/dist/', '/reports/'],
+      testPathIgnorePatterns: [
+        '/node_modules/',
+        '/dist/',
+        '/reports/',
+        '/coverage/',
+        '/.pnpm/',
+        '/venv/',
+        '/eggs-generator/__tests__/index.test.js',
+        '/tests/egg.test.js'
+      ]
     },
     {
       displayName: 'test',
-      testEnvironment: 'jsdom',
-      testEnvironmentOptions: { resources: 'usable' },
+      testEnvironment: './jest.environment.cjs',
       testMatch: [
         '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
-        '<rootDir>/core-engine/tests/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/**/__tests__/**/*.test.{js,jsx,ts,tsx}'
       ],
-      testPathIgnorePatterns: ['/node_modules/', '/dist/', '/reports/'],
-    },
-  ],
-
-  automock: false,
-  resetMocks: true,
-  clearMocks: true,
-
-  maxWorkers: '80%',
-  maxConcurrency: 5,
-  slowTestThreshold: 3,
-  forceExit: true,
-
-  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
-
-  reporters: [
-    'default',
-    [
-      'jest-html-reporters',
-      {
-        publicPath: './reports',
-        filename: 'test-report.html',
-        expand: true,
-        pageTitle: 'Bleu.js Test Report',
-        hideIcon: false,
-        customInfos: [
-          { title: 'Project', value: 'Bleu.js' },
-          { title: 'Version', value: '1.0.35' },
+      testPathIgnorePatterns: [
+        '/node_modules/',
+        '/dist/',
+        '/coverage/',
+        '/.pnpm/',
+        '/venv/',
+        '/eggs-generator/__tests__/index.test.js',
+        '/tests/egg.test.js'
+      ],
+      coverageDirectory: 'coverage',
+      collectCoverage: true,
+      coverageReporters: ['text', 'lcov', 'html', 'json-summary', 'cobertura'],
+      collectCoverageFrom: [
+        'src/**/*.{js,jsx,ts,tsx}',
+        'backend/src/**/*.{js,jsx,ts,tsx}',
+        'frontend/src/**/*.{js,jsx,ts,tsx}',
+        'eggs-generator/src/**/*.{js,jsx,ts,tsx}',
+        '!**/node_modules/**',
+        '!**/tests/**',
+        '!**/__tests__/**',
+        '!**/coverage/**',
+        '!**/dist/**',
+        '!**/*.d.ts',
+        '!**/types/**',
+        '!**/interfaces/**',
+        '!**/constants/**',
+        '!**/config/**'
+      ],
+      coverageThreshold: {
+        global: {
+          branches: 80,
+          functions: 80,
+          lines: 85,
+          statements: 85
+        }
+      },
+      reporters: [
+        'default',
+        [
+          'jest-html-reporters',
+          {
+            publicPath: './coverage/html-report',
+            filename: 'report.html',
+            openReport: true,
+            pageTitle: `${pkg.name} v${pkg.version} - Test Report`,
+            includeConsoleLog: true,
+            includeSuiteFailure: true,
+            logo: path.resolve(__dirname, 'logo.png'),
+            customInfos: [
+              { title: 'Project', value: pkg.name },
+              { title: 'Version', value: pkg.version },
+              { title: 'Date', value: new Date().toISOString() }
+            ]
+          }
         ],
-        enableMergeData: true,
-        includeFailureMsg: true,
-      },
-    ],
-    [
-      'jest-stare',
-      {
-        resultDir: './reports/jest-stare',
-        reportTitle: 'Bleu.js Stare Report',
-        coverageLink: '../coverage/lcov-report/index.html',
-        clear: true,
-      },
-    ],
+        [
+          'jest-junit',
+          {
+            outputDirectory: './coverage',
+            outputName: 'junit.xml',
+            ancestorSeparator: ' › ',
+            uniqueOutputName: false,
+            suiteNameTemplate: '{filepath}',
+            classNameTemplate: '{classname}',
+            titleTemplate: '{title}',
+            addFileAttribute: true,
+            reportTestSuiteErrors: true
+          }
+        ]
+      ]
+    }
   ],
+  maxWorkers: '50%',
+  testTimeout: 60000,
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+    ['jest-watch-suspend', { 'key-for-resume': 'r', 'key-for-suspend': 's' }]
+  ],
+  globals: {
+    __DEV__: true,
+    __TEST__: true,
+    __VERSION__: pkg.version,
+    __PROJECT__: pkg.name
+  },
 
   verbose: true,
-};
+  bail: 1,
+  cacheDirectory: '.jest-cache',
+  errorOnDeprecated: true,
+  notify: true,
+  notifyMode: 'failure-change'
+}

@@ -1,0 +1,7 @@
+{
+  "type": "celestial",
+  "rarity": "legendary",
+  "element": "divine",
+  "description": "A rare legendary egg",
+  "parameters": { "size": "massive", "power": 9999 }
+}

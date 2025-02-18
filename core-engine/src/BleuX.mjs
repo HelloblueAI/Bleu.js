@@ -63,7 +63,7 @@ class Store {
       this._isCommitting = true;
       mutationHandler(this._state, payload);
 
-      // Notify subscribers
+ 
       this._subscribers.forEach((subscriber) =>
         subscriber(mutation, this._state),
       );
