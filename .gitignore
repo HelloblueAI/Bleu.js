@@ -190,3 +190,5 @@ dependency-management/
 venv/
 venv/
 *.tgz
+.husky/
+.lintstagedrc.json
