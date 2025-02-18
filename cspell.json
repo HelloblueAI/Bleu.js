@@ -216,6 +216,7 @@
     "esprima",
     "jackspeak",
     "jspm",
+    "pycache",
     "realpath",
     "reusify",
     "tsutils"
