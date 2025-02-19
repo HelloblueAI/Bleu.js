@@ -20,9 +20,25 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-export function reviewCode(code) {
-  return `Reviewing code: ${code}`;
-}
-export function trackIssue(issue) {
-  return `Tracking issue: ${issue}`;
-}
+module.exports = {
+  apps: [
+    {
+      name: "backend",
+      script: "./index.mjs",  
+      interpreter: "/bin/bash",
+      env: {
+        NODE_ENV: "production",
+        PATH: "/home/ec2-user/Bleu.js/backend/venv/bin:$PATH",
+        VIRTUAL_ENV: "/home/ec2-user/Bleu.js/backend/venv",
+      },
+      node_args: "--loader ts-node/esm",
+      autorestart: true,
+      watch: false,
+      instances: 1,
+      exec_mode: "fork",
+    },
+  ],
+};
+
+
+

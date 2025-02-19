@@ -6,7 +6,7 @@
   "main": "index.mjs",
   "scripts": {
     "dev": "node index.mjs",
-    "start": "NODE_ENV=production node index.mjs",
+    "start": "cross-env NODE_ENV=production node index.mjs",
     "build": "tsc",
     "test": "echo \"No tests defined yet\" && exit 0"
   },
@@ -36,6 +36,21 @@
   "author": "Pejman Haghighatnia",
   "license": "MIT",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/compression": "^1.7.4",
+    "@types/cors": "^2.8.13",
+    "@types/dotenv": "^16.4.2",
+    "@types/express": "^4.17.21",
+    "@types/express-rate-limit": "^6.0.5",
+    "@types/express-validator": "^3.0.1",
+    "@types/helmet": "^7.0.0",
+    "@types/ioredis": "^4.28.3",
+    "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.4",
+    "@types/natural": "^0.6.3",
+    "@types/openai": "^4.0.0",
+    "@types/prom-client": "^13.0.0",
+    "cross-env": "^7.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
