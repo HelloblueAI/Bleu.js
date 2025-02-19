@@ -7,8 +7,7 @@ COPY package*.json ./
 COPY pnpm-lock.yaml ./
 
 # Install pnpm globally and install dependencies
-RUN npm install -g pnpm
-RUN pnpm install
+RUN npm install -g pnpm && pnpm install
 
 # Copy the rest of the application code, excluding node_modules
 COPY . .

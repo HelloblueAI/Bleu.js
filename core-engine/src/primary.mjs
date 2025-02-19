@@ -1,4 +1,3 @@
-// src/primary.mjs
 import cluster from 'cluster';
 import os from 'os';
 

@@ -1,4 +1,3 @@
-// src/worker.mjs
 import cluster from 'cluster';
 
 export class WorkerProcess {
@@ -9,7 +8,7 @@ export class WorkerProcess {
   }
 
   setupErrorHandlers() {
-    // Domain error handler
+
     process.on('uncaughtException', (error) => {
       console.error('Uncaught Exception:', error);
       this.handleFatalError(error);

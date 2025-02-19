@@ -1,11 +1,15 @@
 {
   "name": "core-engine",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "main": "src/index.mjs",
   "scripts": {
     "start": "node src/index.mjs",
-    "dev": "nodemon src/index.mjs"
+    "dev": "nodemon --watch src --ext mjs --exec node src/index.mjs",
+    "lint": "eslint . --ext .js,.mjs",
+    "format": "prettier --write .",
+    "test": "jest --coverage",
+    "build": "tsc"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -17,12 +21,27 @@
     "express-prom-bundle": "^8.0.0",
     "helmet": "^8.0.0",
     "ioredis": "^5.5.0",
+    "morgan": "^1.10.0",
+    "mime": "3.0.0",
     "redis": "^4.7.0",
+    "send": "0.18.0",
+    "serve-static": "1.15.0",
     "uuid": "^11.0.5",
     "validator": "^13.12.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "standard-version": "^9.5.0"
+    "eslint": "^9.0.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "jest": "^30.0.0",
+    "nodemon": "^3.0.0",
+    "prettier": "^3.0.0",
+    "standard-version": "^9.5.0",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
   }
 }
