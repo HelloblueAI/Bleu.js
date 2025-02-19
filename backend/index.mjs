@@ -29,14 +29,14 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 
 
-import winston from "winston";
-import cluster from "cluster";
-import { cpus } from "os";
 import { spawn } from "child_process";
+import cluster from "cluster";
+import fs from "fs";
 import getPort from "get-port";
+import { cpus } from "os";
 import path from "path";
 import { fileURLToPath } from "url";
-import fs from "fs";
+import winston from "winston";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -157,7 +157,7 @@ if (cluster.isPrimary) {
         const executionTime = process.hrtime(startTime);
         const execTimeMs = (executionTime[0] * 1000 + executionTime[1] / 1e6).toFixed(2);
 
-        
+
         try {
           if (code === 0 && output.trim()) {
             const parsedOutput = JSON.parse(output.trim());
