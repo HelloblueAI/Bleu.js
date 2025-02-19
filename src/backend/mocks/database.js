@@ -20,35 +20,24 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-'use strict';
+import mongoose from 'mongoose';
 
-const { teardown: teardownPuppeteer } = require('jest-environment-puppeteer');
-const { teardownDatabase } = require('../path/to/your/db/teardown');
-
-/**
- * Global teardown function for Jest tests.
- * Cleans up Puppeteer environment and database.
- * @param {Object} globalConfig - Jest global configuration object.
- */
-async function globalTeardown(globalConfig) {
+export const connect = async () => {
   try {
-    console.info('🟡 Starting global teardown...');
-
-    await teardownPuppeteer(globalConfig);
-    console.info('✅ Puppeteer environment cleaned up.');
-
-    await teardownDatabase();
-    console.info('✅ Database teardown completed.');
-
-    // Remove global environment variables
-    delete process.env.TEST_GLOBAL_VARIABLE;
-
-    console.info('🛑 Global teardown completed successfully.');
+    await mongoose.connect('your-mongodb-uri');
+    console.log('Connected to MongoDB');
   } catch (error) {
-    console.error('❌ Global teardown failed:', error);
-    process.exit(1); // Exit process if teardown fails
+    console.error('MongoDB connection error:', error);
+    throw error;
   }
-}
+};
 
-module.exports = globalTeardown;
-
+export const disconnect = async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
+  } catch (error) {
+    console.error('MongoDB disconnection error:', error);
+    throw error;
+  }
+};

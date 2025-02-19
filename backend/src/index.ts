@@ -9,7 +9,7 @@ import winston from "winston";
 
 dotenv.config();
 
-// ✅ Winston Logger for structured logging
+
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -21,12 +21,12 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-// ✅ Create and Configure Express App
+
 export function createApp(): Application {
   const app = express();
 
   // ✅ Middleware Setup
-  app.use(express.json({ limit: "1mb" })); // Prevent large payloads
+  app.use(express.json({ limit: "1mb" })); 
   app.use(helmet());
   app.use(cors({ origin: "*", methods: ["GET", "POST"] })); // Adjust allowed origins if needed
   app.use(morgan("combined"));

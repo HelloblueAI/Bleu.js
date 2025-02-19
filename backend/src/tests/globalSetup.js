@@ -1,15 +1,53 @@
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 'use strict';
 
-var _Object$defineProperty = require('@babel/runtime-corejs3/core-js-stable/object/define-property');
-_Object$defineProperty(exports, '__esModule', {
-  value: true,
-});
-exports.default = globalSetup;
-var _jestEnvironmentPuppeteer = require('jest-environment-puppeteer');
-var _setup = require('../path/to/your/db/setup');
+const { setup: setupPuppeteer } = require('jest-environment-puppeteer');
+const { setupDatabase } = require('../path/to/your/db/setup');
+
+/**
+ * Global setup function for Jest tests.
+ * Initializes Puppeteer environment and sets up the database.
+ * @param {Object} globalConfig - Jest global configuration object.
+ */
 async function globalSetup(globalConfig) {
-  await (0, _jestEnvironmentPuppeteer.setup)(globalConfig);
-  await (0, _setup.setupDatabase)();
-  process.env.TEST_GLOBAL_VARIABLE = 'some_value';
-  console.log('Global setup completed.');
+  try {
+    console.info('🟢 Starting global setup...');
+
+    await setupPuppeteer(globalConfig);
+    console.info('✅ Puppeteer environment initialized.');
+
+    await setupDatabase();
+    console.info('✅ Database setup completed.');
+
+    // Set global environment variables for tests
+    process.env.TEST_GLOBAL_VARIABLE = 'some_value';
+
+    console.info('🚀 Global setup completed successfully.');
+  } catch (error) {
+    console.error('❌ Global setup failed:', error);
+    process.exit(1); // Exit process if setup fails
+  }
 }
+
+module.exports = globalSetup;

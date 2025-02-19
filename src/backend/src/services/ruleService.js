@@ -1,3 +1,4 @@
+
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 
@@ -20,35 +21,35 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-'use strict';
-
-const { teardown: teardownPuppeteer } = require('jest-environment-puppeteer');
-const { teardownDatabase } = require('../path/to/your/db/teardown');
+/**
+ * Validates the structure of a rule input
+ * @param {Object} rule - The rule object to validate
+ * @returns {boolean} - Whether the rule is valid
+ */
+export const validateRuleInput = (rule) => {
+  if (!rule) return false;
+  if (!rule.conditions || !rule.actions) return false;
+  return Array.isArray(rule.conditions) && Array.isArray(rule.actions);
+};
 
 /**
- * Global teardown function for Jest tests.
- * Cleans up Puppeteer environment and database.
- * @param {Object} globalConfig - Jest global configuration object.
+ * Trains the model with the given dataset
+ * @param {string} datasetId - ID of the dataset to train on
+ * @returns {Promise<string>} - The ID of the trained model
+ * @throws {Error} If datasetId is not provided
  */
-async function globalTeardown(globalConfig) {
-  try {
-    console.info('🟡 Starting global teardown...');
+export const trainModelLogic = async (datasetId) => {
+  if (!datasetId) throw new Error('Dataset ID is required');
 
-    await teardownPuppeteer(globalConfig);
-    console.info('✅ Puppeteer environment cleaned up.');
+  // Simulated model training logic
+  return `mock-model-${Date.now()}`;
+};
 
-    await teardownDatabase();
-    console.info('✅ Database teardown completed.');
+// Optional: Add additional validation helpers
+export const validateCondition = (condition) => {
+  return condition && typeof condition === 'object' && 'type' in condition;
+};
 
-    // Remove global environment variables
-    delete process.env.TEST_GLOBAL_VARIABLE;
-
-    console.info('🛑 Global teardown completed successfully.');
-  } catch (error) {
-    console.error('❌ Global teardown failed:', error);
-    process.exit(1); // Exit process if teardown fails
-  }
-}
-
-module.exports = globalTeardown;
-
+export const validateAction = (action) => {
+  return action && typeof action === 'object' && 'type' in action;
+};
