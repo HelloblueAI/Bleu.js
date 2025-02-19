@@ -35,17 +35,35 @@
  * @property {Object} interactionStats - Interaction statistics
  */
 
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
 import Redis from 'ioredis';
-import { createClient } from 'redis';
-import winston from 'winston';
-import { promisify } from 'util';
-import { createHash } from 'crypto';
-import { performance } from 'perf_hooks';
+
 import * as tf from '@tensorflow/tfjs-node';
 
-// Advanced event system with clustering support
+
 class ClusterAwareEventEmitter extends EventEmitter {
   constructor() {
     super();
@@ -95,10 +113,10 @@ class MultiLayerCache {
       return localResult.value;
     }
 
-    // Check Redis
+
     const redisResult = await this.redis.get(key);
     if (redisResult) {
-      // Update local cache
+
       this.localCache.set(key, {
         value: JSON.parse(redisResult),
         expiry: Date.now() + this.localCacheTTL,
@@ -274,7 +292,7 @@ EggSchema.methods.evolve = async function () {
   return false;
 };
 
-// Add machine learning capabilities
+
 EggSchema.methods.predictRarity = async function () {
   const model = await tf.loadLayersModel(
     'file://./models/rarity-predictor/model.json',
@@ -295,7 +313,7 @@ EggSchema.methods.predictRarity = async function () {
   ];
 };
 
-// Advanced static methods
+
 EggSchema.statics.findByGenetics = async function (traits) {
   return this.find({
     $or: [
@@ -305,12 +323,12 @@ EggSchema.statics.findByGenetics = async function (traits) {
   }).sort({ createdAt: -1 });
 };
 
-// Export everything
+
 export const Egg = mongoose.model('Egg', EggSchema);
 export const EggEvents = eggEvents;
 export const cache = new MultiLayerCache();
 
-// Performance monitoring
+
 const metrics = {
   eggGeneration: new Map(),
   cacheHits: 0,
