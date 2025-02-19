@@ -34,7 +34,7 @@ async function testConnection() {
     await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Fail fast
+      serverSelectionTimeoutMS: 5000, 
     });
     console.log('✅ Successfully connected to MongoDB!');
     mongoose.connection.close();

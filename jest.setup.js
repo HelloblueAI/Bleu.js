@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 
@@ -22,6 +20,7 @@ import { jest } from '@jest/globals';
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+import { jest } from '@jest/globals';
 import crypto from 'crypto';
 global.crypto = global.crypto || crypto;
 

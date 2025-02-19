@@ -1,186 +1,153 @@
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 'use strict';
 
-var _Object$defineProperty = require('@babel/runtime-corejs3/core-js-stable/object/define-property');
-var _interopRequireDefault = require('@babel/runtime-corejs3/helpers/interopRequireDefault');
-_Object$defineProperty(exports, '__esModule', {
-  value: true,
-});
-exports.updateRule =
-  exports.trainModel =
-  exports.monitorDependencies =
-  exports.getRules =
-  exports.deleteRule =
-  exports.addRule =
-    void 0;
-var _parseInt2 = _interopRequireDefault(
-  require('@babel/runtime-corejs3/core-js-stable/parse-int'),
-);
-var _ruleModel = require('../models/ruleModel.mjs');
-var _ruleService = require('../services/ruleService.mjs');
-var _joi = _interopRequireDefault(require('joi'));
-// Import Joi for validation
+/* eslint-env node */
 
-// Schema for rule validation
-const ruleSchema = _joi.default.object({
-  name: _joi.default.string().required(),
-  condition: _joi.default.string().required(),
-  action: _joi.default.string().required(),
+const logger = require('../src/utils/logger');
+const Joi = require('joi');
+const ruleModel = require('../models/RuleModel');
+const ruleService = require('../services/ruleService');
+
+/**
+ * Schema for rule validation
+ */
+const ruleSchema = Joi.object({
+  name: Joi.string().required(),
+  condition: Joi.string().required(),
+  action: Joi.string().required(),
 });
 
 /**
- * Fetch all rules from the database with pagination
+ * Fetch all rules with pagination
  */
 const getRules = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const rules = await (0, _ruleModel.findAll)()
-      .skip((page - 1) * limit)
-      .limit(limit);
-    const totalRules = await (0, _ruleModel.findAll)().countDocuments();
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+
+    const rules = await ruleModel.findAll().skip((page - 1) * limit).limit(limit);
+    const totalRules = await ruleModel.findAll().countDocuments();
+
     return res.status(200).json({
       status: 200,
       data: rules,
       total: totalRules,
-      page: (0, _parseInt2.default)(page, 10),
+      page,
       totalPages: Math.ceil(totalRules / limit),
     });
   } catch (error) {
-    console.error('Error fetching rules:', error.stack || error.message);
-    return res.status(500).json({
-      status: 500,
-      message: 'Internal Server Error',
-    });
+    logger.error(`❌ Error fetching rules: ${error.message}`);
+    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
 /**
- * Add a new rule to the database
+ * Add a new rule
  */
-exports.getRules = getRules;
 const addRule = async (req, res) => {
   try {
     const { error } = ruleSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({
-        status: 400,
-        message: error.details[0].message,
-      });
+      return res.status(400).json({ status: 400, message: error.details[0].message });
     }
-    const newRule = await (0, _ruleModel.create)(req.body);
-    return res.status(201).json({
-      status: 201,
-      data: newRule,
-    });
+
+    const newRule = await ruleModel.create(req.body);
+    return res.status(201).json({ status: 201, data: newRule });
   } catch (error) {
-    console.error('Error adding rule:', error.stack || error.message);
-    return res.status(500).json({
-      status: 500,
-      message: error.message,
-    });
+    logger.error(`❌ Error adding rule: ${error.message}`);
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
 
 /**
- * Update an existing rule by ID
+ * Update an existing rule
  */
-exports.addRule = addRule;
 const updateRule = async (req, res) => {
   try {
-    const updatedRule = await (0, _ruleModel.update)(req.params.id, req.body);
+    const updatedRule = await ruleModel.update(req.params.id, req.body);
     if (!updatedRule) {
-      return res.status(404).json({
-        status: 404,
-        message: 'Rule not found',
-      });
+      return res.status(404).json({ status: 404, message: 'Rule not found' });
     }
-    return res.status(200).json({
-      status: 200,
-      data: updatedRule,
-    });
+    return res.status(200).json({ status: 200, data: updatedRule });
   } catch (error) {
-    console.error('Error updating rule:', error.stack || error.message);
-    return res.status(500).json({
-      status: 500,
-      message: error.message,
-    });
+    logger.error(`❌ Error updating rule: ${error.message}`);
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
 
 /**
  * Delete a rule by ID
  */
-exports.updateRule = updateRule;
 const deleteRule = async (req, res) => {
   try {
-    const deleted = await (0, _ruleModel.remove)(req.params.id);
+    const deleted = await ruleModel.remove(req.params.id);
     if (!deleted) {
-      return res.status(404).json({
-        status: 404,
-        message: 'Rule not found',
-      });
+      return res.status(404).json({ status: 404, message: 'Rule not found' });
     }
-    return res.status(200).json({
-      status: 200,
-      message: 'Rule deleted successfully',
-    });
+    return res.status(200).json({ status: 200, message: 'Rule deleted successfully' });
   } catch (error) {
-    console.error('Error deleting rule:', error.stack || error.message);
-    return res.status(500).json({
-      status: 500,
-      message: error.message,
-    });
+    logger.error(`❌ Error deleting rule: ${error.message}`);
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
 
 /**
  * Monitor system dependencies
  */
-exports.deleteRule = deleteRule;
 const monitorDependencies = async (req, res) => {
   try {
     const dependencies = ['MongoDB', 'Express', 'Node.js'];
-    return res.status(200).json({
-      status: 200,
-      data: dependencies,
-    });
+    return res.status(200).json({ status: 200, data: dependencies });
   } catch (error) {
-    console.error(
-      'Error monitoring dependencies:',
-      error.stack || error.message,
-    );
-    return res.status(500).json({
-      status: 500,
-      message: 'Internal Server Error',
-    });
+    logger.error(`❌ Error monitoring dependencies: ${error.message}`);
+    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
 /**
  * Train a machine learning model
  */
-exports.monitorDependencies = monitorDependencies;
 const trainModel = async (req, res) => {
   try {
     const { datasetId } = req.body;
     if (!datasetId) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Dataset ID is required',
-      });
+      return res.status(400).json({ status: 400, message: 'Dataset ID is required' });
     }
-    const modelId = await (0, _ruleService.trainModelLogic)(datasetId);
-    return res.status(200).json({
-      status: 200,
-      data: {
-        modelId,
-      },
-    });
+
+    const modelId = await ruleService.trainModelLogic(datasetId);
+    return res.status(200).json({ status: 200, data: { modelId } });
   } catch (error) {
-    console.error('Error training model:', error.stack || error.message);
-    return res.status(500).json({
-      status: 500,
-      message: error.message,
-    });
+    logger.error(`❌ Error training model: ${error.message}`);
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
-exports.trainModel = trainModel;
+
+module.exports = {
+  getRules,
+  addRule,
+  updateRule,
+  deleteRule,
+  monitorDependencies,
+  trainModel,
+};

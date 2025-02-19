@@ -20,35 +20,31 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-'use strict';
+import DecisionTree from 'decision-tree';
 
-const { teardown: teardownPuppeteer } = require('jest-environment-puppeteer');
-const { teardownDatabase } = require('../path/to/your/db/teardown');
+class DecisionTreeService {
+  constructor() {
+    this.tree = null;
+  }
 
-/**
- * Global teardown function for Jest tests.
- * Cleans up Puppeteer environment and database.
- * @param {Object} globalConfig - Jest global configuration object.
- */
-async function globalTeardown(globalConfig) {
-  try {
-    console.info('🟡 Starting global teardown...');
+  buildDecisionTree(trainingData, className, features) {
+    this.tree = new DecisionTree(trainingData, className, features);
+    return this.tree;
+  }
 
-    await teardownPuppeteer(globalConfig);
-    console.info('✅ Puppeteer environment cleaned up.');
+  traverseDecisionTree(data) {
+    if (!this.tree) {
+      throw new Error('Decision tree has not been built yet');
+    }
+    return this.tree.predict(data);
+  }
 
-    await teardownDatabase();
-    console.info('✅ Database teardown completed.');
-
-    // Remove global environment variables
-    delete process.env.TEST_GLOBAL_VARIABLE;
-
-    console.info('🛑 Global teardown completed successfully.');
-  } catch (error) {
-    console.error('❌ Global teardown failed:', error);
-    process.exit(1); // Exit process if teardown fails
+  getAccuracy(testData) {
+    if (!this.tree) {
+      throw new Error('Decision tree has not been built yet');
+    }
+    return this.tree.evaluate(testData);
   }
 }
 
-module.exports = globalTeardown;
-
+export default new DecisionTreeService();

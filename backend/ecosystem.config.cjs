@@ -24,7 +24,7 @@ module.exports = {
   apps: [
     {
       name: "backend",
-      script: "./index.mjs",  
+      script: "./index.mjs",
       interpreter: "/bin/bash",
       env: {
         NODE_ENV: "production",

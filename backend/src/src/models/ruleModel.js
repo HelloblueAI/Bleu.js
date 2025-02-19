@@ -1,33 +1,42 @@
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 'use strict';
 
-var _Object$defineProperty = require('@babel/runtime-corejs3/core-js-stable/object/define-property');
-var _interopRequireDefault = require('@babel/runtime-corejs3/helpers/interopRequireDefault');
-_Object$defineProperty(exports, '__esModule', {
-  value: true,
-});
-exports.update =
-  exports.remove =
-  exports.findByName =
-  exports.findById =
-  exports.findAll =
-  exports.default =
-  exports.create =
-  exports.bulkCreate =
-    void 0;
-var _find = _interopRequireDefault(
-  require('@babel/runtime-corejs3/core-js-stable/instance/find'),
-);
-var _now = _interopRequireDefault(
-  require('@babel/runtime-corejs3/core-js-stable/date/now'),
-);
-var _mongoose = require('mongoose');
-const ruleSchema = new _mongoose.Schema(
+/* eslint-env node */
+const mongoose = require('mongoose');
+const logger = require('../src/utils/logger');
+
+/**
+ * Rule Schema
+ */
+const ruleSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Rule name is required.'],
       trim: true,
       unique: true,
+      index: true, // Improves search performance
     },
     description: {
       type: String,
@@ -35,7 +44,7 @@ const ruleSchema = new _mongoose.Schema(
     },
     data: {
       type: String,
-      required: true,
+      required: [true, 'Rule data is required.'],
     },
     nested: {
       level1: {
@@ -51,108 +60,162 @@ const ruleSchema = new _mongoose.Schema(
     },
     createdBy: {
       type: String,
-      required: true,
+      required: [true, 'Created by field is required.'],
     },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
-  },
+  }
 );
 
-// Model
-const Rule = (0, _mongoose.model)('Rule', ruleSchema);
+/**
+ * Indexing for optimized search queries
+ */
+ruleSchema.index({ name: 1, createdAt: -1 });
 
-// CRUD Operations
+/**
+ * Mongoose Model
+ */
+const Rule = mongoose.model('Rule', ruleSchema);
+
+/**
+ * Retrieves all active rules.
+ * @returns {Promise<Array>} List of active rules.
+ */
 const findAll = async () => {
   try {
-    return await (0, _find.default)(Rule).call(Rule, {
-      isActive: true,
-    });
+    return await Rule.find({ isActive: true });
   } catch (error) {
+    logger.error(`❌ Error fetching rules: ${error.message}`);
     throw new Error(`Error fetching rules: ${error.message}`);
   }
 };
-exports.findAll = findAll;
+
+/**
+ * Retrieves a rule by ID.
+ * @param {string} id - Rule ID.
+ * @returns {Promise<Object>} Rule object.
+ */
 const findById = async (id) => {
   try {
     const rule = await Rule.findById(id);
     if (!rule) throw new Error('Rule not found');
     return rule;
   } catch (error) {
+    logger.error(`❌ Error fetching rule: ${error.message}`);
     throw new Error(`Error fetching rule: ${error.message}`);
   }
 };
-exports.findById = findById;
+
+/**
+ * Retrieves a rule by name.
+ * @param {string} name - Rule name.
+ * @returns {Promise<Object>} Rule object.
+ */
+const findByName = async (name) => {
+  try {
+    const rule = await Rule.findOne({ name, isActive: true });
+    if (!rule) throw new Error('Rule not found');
+    return rule;
+  } catch (error) {
+    logger.error(`❌ Error fetching rule by name: ${error.message}`);
+    throw new Error(`Error fetching rule by name: ${error.message}`);
+  }
+};
+
+/**
+ * Creates a new rule.
+ * @param {Object} ruleData - Rule object.
+ * @returns {Promise<Object>} Created rule object.
+ */
 const create = async (ruleData) => {
   try {
     const rule = new Rule(ruleData);
-    return await rule.save();
+    await rule.save();
+    logger.info(`✅ Rule created: ${rule.name}`);
+    return rule;
   } catch (error) {
+    logger.error(`❌ Error creating rule: ${error.message}`);
     throw new Error(`Error creating rule: ${error.message}`);
   }
 };
-exports.create = create;
+
+/**
+ * Bulk creates rules.
+ * @param {Array} rulesData - Array of rule objects.
+ * @returns {Promise<Array>} Created rules.
+ */
+const bulkCreate = async (rulesData) => {
+  try {
+    return await Rule.insertMany(rulesData);
+  } catch (error) {
+    logger.error(`❌ Error bulk creating rules: ${error.message}`);
+    throw new Error(`Error bulk creating rules: ${error.message}`);
+  }
+};
+
+/**
+ * Updates an existing rule by ID.
+ * @param {string} id - Rule ID.
+ * @param {Object} ruleData - Rule update data.
+ * @returns {Promise<Object>} Updated rule.
+ */
 const update = async (id, ruleData) => {
   try {
     const rule = await Rule.findByIdAndUpdate(
       id,
       {
         ...ruleData,
-        updatedAt: (0, _now.default)(),
+        updatedAt: Date.now(),
       },
       {
         new: true,
         runValidators: true,
-      },
+      }
     );
     if (!rule) throw new Error('Rule not found');
+    logger.info(`🔄 Rule updated: ${rule.name}`);
     return rule;
   } catch (error) {
+    logger.error(`❌ Error updating rule: ${error.message}`);
     throw new Error(`Error updating rule: ${error.message}`);
   }
 };
-exports.update = update;
+
+/**
+ * Soft deletes a rule by setting `isActive` to false.
+ * @param {string} id - Rule ID.
+ * @returns {Promise<Object>} Updated rule (soft-deleted).
+ */
 const remove = async (id) => {
   try {
-    // Soft delete by updating isActive to false
     const rule = await Rule.findByIdAndUpdate(
       id,
       {
         isActive: false,
-        updatedAt: (0, _now.default)(),
+        updatedAt: Date.now(),
       },
       {
         new: true,
-      },
+      }
     );
     if (!rule) throw new Error('Rule not found');
+    logger.info(`🗑️ Rule soft deleted: ${rule.name}`);
     return rule;
   } catch (error) {
+    logger.error(`❌ Error deleting rule: ${error.message}`);
     throw new Error(`Error deleting rule: ${error.message}`);
   }
 };
 
-// Additional utility functions
-exports.remove = remove;
-const findByName = async (name) => {
-  try {
-    const rule = await Rule.findOne({
-      name,
-      isActive: true,
-    });
-    if (!rule) throw new Error('Rule not found');
-    return rule;
-  } catch (error) {
-    throw new Error(`Error fetching rule by name: ${error.message}`);
-  }
+// Export all CRUD functions and model
+module.exports = {
+  Rule,
+  findAll,
+  findById,
+  findByName,
+  create,
+  bulkCreate,
+  update,
+  remove,
 };
-exports.findByName = findByName;
-const bulkCreate = async (rulesData) => {
-  try {
-    return await Rule.insertMany(rulesData);
-  } catch (error) {
-    throw new Error(`Error bulk creating rules: ${error.message}`);
-  }
-};
-exports.bulkCreate = bulkCreate;
-var _default = (exports.default = Rule);
