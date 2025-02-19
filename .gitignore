@@ -1,66 +1,33 @@
 # ----------------------------------------
-# 🔥 Language Detection Control (Show Python Dominance)
-# ----------------------------------------
-# Hide other languages from GitHub statistics
-*.js linguist-vendored=true
-*.jsx linguist-vendored=true
-*.ts linguist-vendored=true
-*.tsx linguist-vendored=true
-*.mjs linguist-vendored=true
-*.cjs linguist-vendored=true
-*.json linguist-vendored=true
-*.css linguist-vendored=true
-*.scss linguist-vendored=true
-*.less linguist-vendored=true
-*.html linguist-vendored=true
-*.xml linguist-vendored=true
-*.md linguist-vendored=true
-*.yaml linguist-vendored=true
-*.yml linguist-vendored=true
-*.lock linguist-vendored=true
-*.vue linguist-vendored=true
-*.sql linguist-vendored=true
-*.prisma linguist-vendored=true
-*.graphql linguist-vendored=true
-
-# Make Python prominent
-*.py linguist-detectable=true
-*.pyx linguist-detectable=true
-*.pyi linguist-detectable=true
-requirements.txt linguist-detectable=true
-pyproject.toml linguist-detectable=true
-
-# Vendor directories
-node_modules/** linguist-vendored
-dist/** linguist-vendored
-build/** linguist-vendored
-vendor/** linguist-vendored
-dependency-management/** linguist-vendored
-
-# ----------------------------------------
-# 🚀 Dependencies
+# 🚀 Dependencies (Ignore installed packages & caches)
 # ----------------------------------------
 node_modules/
 **/node_modules/
 .pnp/
+.pnp.js
 .yarn/
 .pnpm-store/
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-*.so
-.eggs/
-*.egg-info/
-.installed.cfg
-*.egg
+!yarn/patches/
+!yarn/plugins/
+!yarn/releases/
+!yarn/sdks/
+!yarn/versions/
 
 # ----------------------------------------
-# 🔐 Environment & Secrets
+# 🚀 Lock Files (Should be committed)
+# ----------------------------------------
+!pnpm-lock.yaml  # Ensure dependency consistency
+package-lock.json
+yarn.lock
+**/package-lock.json
+**/yarn.lock
+
+# ----------------------------------------
+# 🔐 Environment & Secrets (Do NOT commit)
 # ----------------------------------------
 .env
 .env.*
-!.env.example
+!**/.env.example
 **/.env
 **/.env.*
 *.pem
@@ -70,56 +37,91 @@ __pycache__/
 *.pfx
 config/secrets.yml
 config/local_settings.py
-.python-version
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
 
 # ----------------------------------------
-# 🏗️ Build & Distribution
+# 🏗️ Build Output & Generated Files
 # ----------------------------------------
 dist/
 build/
-develop-eggs/
-downloads/
-eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-MANIFEST
-*.manifest
-*.spec
+out/
+.output/
+.cache/
+.temp/
 .next/
 .nuxt/
 .docusaurus/
-.output/
+.dynamodb/
+.parcel-cache/
+.turbo/
+.webpack/
+storybook-static/
+__sapper__/
+.cdk.out/
 
 # ----------------------------------------
 # 🧪 Testing and Coverage
 # ----------------------------------------
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-pytest_cache/
-test-reports/
-.jest-cache/
-jest-html-reporters-attach/
+coverage/
+**/coverage/
+.nyc_output/
+test-report/
+reports/
+junit.xml
+*.snap
+__snapshots__/
+test-results/
+playwright-report/
+**/test-results/
+**/playwright-report/
+**/dist-tests/
+.jest-cache
+jest-html-reporters-attach/  # Untrack HTML test reports
+jest-stare/  # Exclude Jest HTML reports
+jest-report/  # Remove unnecessary reports
+mocha-report/
+!jest.config.js
+!jest.config.ts
+!jest.config.cjs
+!jest.setup.js
+!jest.setup.ts
 
 # ----------------------------------------
-# 📝 Logs & Debug
+# 🎯 IDE and Editor Config (Ignore editor-specific files)
+# ----------------------------------------
+.idea/
+.vscode/
+.history/
+*.swp
+*.swo
+.vs/
+*.sublime-workspace
+*.sublime-project
+
+# ----------------------------------------
+# 🐍 Python Virtual Environments & Bytecode
+# ----------------------------------------
+venv/
+**/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+mypy_cache/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ----------------------------------------
+# 🐳 Docker & Containers
+# ----------------------------------------
+.dockerignore
+docker-compose.override.yml
+**/.docker/
+**/.container/
+.dockerenv
+.docker-compose-logs/
+
+# ----------------------------------------
+# 📝 Logs & Debug Files (Ignore logs, temp files, and debug artifacts)
 # ----------------------------------------
 logs/
 *.log
@@ -127,56 +129,97 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 .pnpm-debug.log*
-pip-log.txt
-pip-delete-this-directory.txt
-*.log.[0-9]
+debug.log
 *.err
 *.out
-
+logfile.txt
+app.log
 
 # ----------------------------------------
-# 🎯 IDE and Editor
+# ⚡ Caches & Temporary Files (Prevent committing unwanted system/cache files)
 # ----------------------------------------
-.idea/
-.vscode/
+.cache/
+.eslintcache
+.stylelintcache
+*.bak
 *.swp
 *.swo
-.vs/
-*.sublime-*
-.project
-.classpath
-.settings/
-*.iml
-.spyderproject
-.spyproject
-.ropeproject
+*.lock
+*.tmp
+*.pid
+*.seed
+*.log.[0-9]
+.trash/
+.trash-*/
 
 # ----------------------------------------
-# 🖥️ System & OS
+# 🛠️ CI/CD & Dependency Management (Ignore temporary dependency/config files)
+# ----------------------------------------
+pnpm-lock.yaml.bak
+node_modules/.package-lock.json
+dependency-management/.cspell.json
+dependency-management/.husky/
+dependency-management/.jest-cache/
+dependency-management/__mocks__/
+dependency-management/jest.config.cjs
+
+# ----------------------------------------
+# 🖥️ System & OS Generated Files
 # ----------------------------------------
 .DS_Store
 Thumbs.db
-desktop.ini
-$RECYCLE.BIN/
-.directory
+*.bak
+*.swp
+*.swo
+*.lock
+*.tmp
+*.pid
+*.seed
+*.log.[0-9]
 
 # ----------------------------------------
-# 🐳 Docker & Deployment
+# 🔥 Git Specific (Ignore internal Git files except .gitignore)
 # ----------------------------------------
-.dockerignore
-docker-compose.override.yml
-.docker/
-.container/
-.elasticbeanstalk/
-.serverless/
-.vercel/
-.netlify/
+.git/
+.gitmodules
+.gitattributes
+.gitkeep
+*.orig
+*.rej
+tsconfig.tsbuildinfo
+eggs_backup/
 
-# Keep specific files
-!.gitignore
-!.gitattributes
-!requirements.txt
-!pyproject.toml
-!poetry.lock
-!Pipfile
-!Pipfile.lock
+# ----------------------------------------
+# 🚀 Custom Project Exclusions
+# ----------------------------------------
+response.json
+response_debug.bin
+.cache_ggshield
+Bleu.js-mirror/
+Bleu.js-mirror.bfg-report/
+venv/
+dependency-management/
+.jest-cache
+*.tgz
+.husky/
+.lintstagedrc.json
+
+# ----------------------------------------
+# 🔥 Prioritize Python in GitHub Language Bar
+# ----------------------------------------
+*.js linguist-vendored
+*.jsx linguist-vendored
+*.ts linguist-vendored
+*.tsx linguist-vendored
+*.json linguist-vendored
+*.css linguist-vendored
+*.html linguist-vendored
+*.md linguist-vendored
+*.yaml linguist-vendored
+dependency-management/ linguist-vendored
+reports/ linguist-vendored  # Ensure test reports don't affect language stats
+
+# 🚀 Keep Python Visible
+*.py linguist-detectable
+!dependency-management/package.json
+!dependency-management/package.json
