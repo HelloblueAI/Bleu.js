@@ -1,5 +1,35 @@
 # ----------------------------------------
-# 🚀 Dependencies (Ignore installed packages & caches)
+# 🌟 BleuJS Core Ignores
+# Copyright (c) 2025, Helloblue Inc.
+# ----------------------------------------
+
+# ----------------------------------------
+# 📊 NEVER Track Any Reports
+# ----------------------------------------
+report/
+reports/
+**/report*/
+**/Report*/
+coverage/
+**/coverage*/
+test-results/
+**/test-results/
+**/test-report/
+.nyc_output/
+junit.xml
+**/playwright-report/
+jest-html-reporters-attach/
+jest-stare/
+jest-report/
+mocha-report/
+**/dist-tests/
+htmlcov/
+.coverage
+*.snap
+__snapshots__/
+
+# ----------------------------------------
+# 📦 Dependencies & Package Management
 # ----------------------------------------
 node_modules/
 **/node_modules/
@@ -13,17 +43,15 @@ node_modules/
 !yarn/sdks/
 !yarn/versions/
 
-# ----------------------------------------
-# 🚀 Lock Files (Should be committed)
-# ----------------------------------------
-!pnpm-lock.yaml  # Ensure dependency consistency
+# Lock Files (Keep pnpm-lock.yaml)
+!pnpm-lock.yaml
 package-lock.json
 yarn.lock
 **/package-lock.json
 **/yarn.lock
 
 # ----------------------------------------
-# 🔐 Environment & Secrets (Do NOT commit)
+# 🔒 Environment & Secrets
 # ----------------------------------------
 .env
 .env.*
@@ -39,7 +67,7 @@ config/secrets.yml
 config/local_settings.py
 
 # ----------------------------------------
-# 🏗️ Build Output & Generated Files
+# 🏗️ Build & Generated Files
 # ----------------------------------------
 dist/
 build/
@@ -59,46 +87,7 @@ __sapper__/
 .cdk.out/
 
 # ----------------------------------------
-# 🧪 Testing and Coverage
-# ----------------------------------------
-coverage/
-**/coverage/
-.nyc_output/
-test-report/
-reports/
-junit.xml
-*.snap
-__snapshots__/
-test-results/
-playwright-report/
-**/test-results/
-**/playwright-report/
-**/dist-tests/
-.jest-cache
-jest-html-reporters-attach/  # Untrack HTML test reports
-jest-stare/  # Exclude Jest HTML reports
-jest-report/  # Remove unnecessary reports
-mocha-report/
-!jest.config.js
-!jest.config.ts
-!jest.config.cjs
-!jest.setup.js
-!jest.setup.ts
-
-# ----------------------------------------
-# 🎯 IDE and Editor Config (Ignore editor-specific files)
-# ----------------------------------------
-.idea/
-.vscode/
-.history/
-*.swp
-*.swo
-.vs/
-*.sublime-workspace
-*.sublime-project
-
-# ----------------------------------------
-# 🐍 Python Virtual Environments & Bytecode
+# 🐍 Python & Virtual Environments
 # ----------------------------------------
 venv/
 **/venv/
@@ -111,17 +100,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # ----------------------------------------
-# 🐳 Docker & Containers
-# ----------------------------------------
-.dockerignore
-docker-compose.override.yml
-**/.docker/
-**/.container/
-.dockerenv
-.docker-compose-logs/
-
-# ----------------------------------------
-# 📝 Logs & Debug Files (Ignore logs, temp files, and debug artifacts)
+# 📝 Logs & Debug Files
 # ----------------------------------------
 logs/
 *.log
@@ -134,105 +113,74 @@ debug.log
 *.out
 logfile.txt
 app.log
+*.log.[0-9]
 
 # ----------------------------------------
-# ⚡ Caches & Temporary Files (Prevent committing unwanted system/cache files)
+# 🛠️ IDE & Editor
+# ----------------------------------------
+.idea/
+.vscode/
+.history/
+*.swp
+*.swo
+.vs/
+*.sublime-workspace
+*.sublime-project
+
+# ----------------------------------------
+# 🐳 Docker & Containers
+# ----------------------------------------
+.dockerignore
+docker-compose.override.yml
+**/.docker/
+**/.container/
+.dockerenv
+.docker-compose-logs/
+
+# ----------------------------------------
+# ⚡ Cache & Temp Files
 # ----------------------------------------
 .cache/
 .eslintcache
 .stylelintcache
 *.bak
-*.swp
-*.swo
-*.lock
 *.tmp
 *.pid
 *.seed
-*.log.[0-9]
 .trash/
 .trash-*/
 
 # ----------------------------------------
-# 🛠️ CI/CD & Dependency Management (Ignore temporary dependency/config files)
+# 🔧 Project Specific
 # ----------------------------------------
-pnpm-lock.yaml.bak
-node_modules/.package-lock.json
-dependency-management/.cspell.json
-dependency-management/.husky/
-dependency-management/.jest-cache/
-dependency-management/__mocks__/
-dependency-management/jest.config.cjs
-
-# ----------------------------------------
-# 🖥️ System & OS Generated Files
-# ----------------------------------------
-.DS_Store
-Thumbs.db
-*.bak
-*.swp
-*.swo
-*.lock
-*.tmp
-*.pid
-*.seed
-*.log.[0-9]
-
-# ----------------------------------------
-# 🔥 Git Specific (Ignore internal Git files except .gitignore)
-# ----------------------------------------
-.git/
-.gitmodules
-.gitattributes
-.gitkeep
-*.orig
-*.rej
-tsconfig.tsbuildinfo
-eggs_backup/
-
-# ----------------------------------------
-# 🚀 Custom Project Exclusions
-# ----------------------------------------
+dependency-management/
+.husky/
+.jest-cache
+*.tgz
+.lintstagedrc.json
 response.json
 response_debug.bin
 .cache_ggshield
 Bleu.js-mirror/
 Bleu.js-mirror.bfg-report/
-venv/
-dependency-management/
-.jest-cache
-*.tgz
-.husky/
-.lintstagedrc.json
+eggs_backup/
 
 # ----------------------------------------
-# 🔥 Prioritize Python in GitHub Language Bar
+# 💻 System & OS
 # ----------------------------------------
-*.js linguist-vendored
-*.jsx linguist-vendored
-*.ts linguist-vendored
-*.tsx linguist-vendored
-*.json linguist-vendored
-*.css linguist-vendored
-*.html linguist-vendored
-*.md linguist-vendored
-*.yaml linguist-vendored
-dependency-management/ linguist-vendored
-reports/ linguist-vendored  # Ensure test reports don't affect language stats
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# 🚀 Keep Python Visible
-*.py linguist-detectable
-!dependency-management/package.json
-!dependency-management/package.json
-
-
-# 🚀 Untrack HTML Reports
-coverage/
-coverage/html-report/
-*.html linguist-vendored
-report.html
-test-results/
-playwright-report/
-jest-html-reporters-attach/
-jest-stare/
-jest-report/
-mocha-report/
+# ----------------------------------------
+# ⭐ Keep These Files
+# ----------------------------------------
+!.gitignore
+!.gitattributes
+!requirements.txt
+!pyproject.toml
+!jest.config.js
+!jest.config.ts
+!jest.config.cjs
+!jest.setup.js
+!jest.setup.ts

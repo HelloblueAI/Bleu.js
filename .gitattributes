@@ -1,0 +1,122 @@
+# ----------------------------------------
+# 🌟 BleuJS - Language & Statistics Control
+# Copyright (c) 2025 Helloblue Inc.
+# ----------------------------------------
+
+# ----------------------------------------
+# 🐍 Force Python Dominance (Primary Language)
+# ----------------------------------------
+*.py       linguist-language=Python
+*.pyx      linguist-language=Python
+*.pyi      linguist-language=Python
+*.pyd      linguist-language=Python
+*.pxd      linguist-language=Python
+*.ipynb    linguist-language=Python
+*.sage     linguist-language=Python
+Pipfile    linguist-language=Python
+*.pip      linguist-language=Python
+pyproject.toml linguist-language=Python
+requirements.txt linguist-language=Python
+setup.py   linguist-language=Python
+*.pyc      linguist-language=Python
+*.pyo      linguist-language=Python
+*.pyw      linguist-language=Python
+*.pyx      linguist-language=Python
+
+# ----------------------------------------
+# 🚫 Hide All Non-Python (Mark as Vendored)
+# ----------------------------------------
+# Web Technologies
+*.html     linguist-vendored
+*.htm      linguist-vendored
+*.xhtml    linguist-vendored
+*.css      linguist-vendored
+*.scss     linguist-vendored
+*.sass     linguist-vendored
+*.less     linguist-vendored
+*.js       linguist-vendored
+*.jsx      linguist-vendored
+*.ts       linguist-vendored
+*.tsx      linguist-vendored
+*.vue      linguist-vendored
+*.svelte   linguist-vendored
+*.mjs      linguist-vendored
+*.cjs      linguist-vendored
+*.coffee   linguist-vendored
+*.hbs      linguist-vendored
+*.ejs      linguist-vendored
+*.php      linguist-vendored
+*.rb       linguist-vendored
+*.java     linguist-vendored
+*.kt       linguist-vendored
+*.go       linguist-vendored
+*.rs       linguist-vendored
+
+# Data & Config Files
+*.json     linguist-vendored
+*.yaml     linguist-vendored
+*.yml      linguist-vendored
+*.xml      linguist-vendored
+*.toml     linguist-vendored
+*.ini      linguist-vendored
+*.conf     linguist-vendored
+*.config   linguist-vendored
+*.lock     linguist-vendored
+*.sql      linguist-vendored
+*.graphql  linguist-vendored
+*.prisma   linguist-vendored
+
+# Documentation
+*.md       linguist-documentation
+*.mdx      linguist-documentation
+*.rst      linguist-documentation
+*.txt      linguist-documentation
+*.pdf      linguist-documentation
+*.doc      linguist-documentation
+*.docx     linguist-documentation
+CHANGELOG* linguist-documentation
+LICENSE*   linguist-documentation
+README*    linguist-documentation
+
+# ----------------------------------------
+# 📁 Directory-specific Settings
+# ----------------------------------------
+tests/**             linguist-vendored
+docs/**             linguist-documentation
+examples/**         linguist-documentation
+node_modules/**     linguist-vendored
+dist/**            linguist-vendored
+build/**           linguist-vendored
+vendor/**          linguist-vendored
+reports/**         linguist-vendored
+coverage/**        linguist-vendored
+static/**          linguist-vendored
+assets/**          linguist-vendored
+public/**          linguist-vendored
+*.min.*            linguist-vendored
+**/vendor/**       linguist-vendored
+**/node_modules/** linguist-vendored
+**/build/**        linguist-vendored
+**/dist/**         linguist-vendored
+
+# ----------------------------------------
+# 🔧 Special Handling
+# ----------------------------------------
+# Mark generated files
+generated/**       linguist-generated
+*.generated.*     linguist-generated
+*.min.*           linguist-generated
+*.bundle.*        linguist-generated
+
+# Binary files
+*.pkl      binary
+*.h5       binary
+*.pth      binary
+*.onnx     binary
+*.bin      binary
+*.dat      binary
+*.npy      binary
+*.npz      binary
+
+# Enforce LF line endings
+* text=auto eol=lf
