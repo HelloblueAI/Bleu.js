@@ -1,4 +1,26 @@
-// External imports
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+
 import fs from 'fs';
 import path from 'path';
 
@@ -6,10 +28,10 @@ import dotenv from 'dotenv';
 import { Schema, model, connect, disconnect } from 'mongoose';
 import winston from 'winston';
 
-// Initialize dotenv for environment variables
+
 dotenv.config();
 
-// Setup logger
+
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -34,7 +56,7 @@ function checkEnvFile() {
   logger.info('.env file found and loaded.');
 }
 
-// Validate environment variables
+
 function validateEnv() {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
@@ -44,7 +66,7 @@ function validateEnv() {
   return mongoUri;
 }
 
-// Define schema
+
 const ruleSchema = new Schema({
   name: { type: String, required: true },
   conditions: { type: [String], default: [] },
@@ -53,14 +75,14 @@ const ruleSchema = new Schema({
 
 const RuleModel = model('Rule', ruleSchema);
 
-// Perform database operations
+
 async function performDatabaseOperations() {
   const mongoUri = validateEnv();
   try {
     await connect(mongoUri);
     logger.info('Successfully connected to MongoDB.');
 
-    // Create and save a document
+
     const ruleDoc = new RuleModel({
       name: 'Test Rule',
       conditions: ['condition1', 'condition2'],
@@ -69,11 +91,11 @@ async function performDatabaseOperations() {
     await ruleDoc.save();
     logger.info('Document saved:', JSON.stringify(ruleDoc));
 
-    // Retrieve and log the saved document
+
     const retrievedDoc = await RuleModel.findOne({ name: 'Test Rule' });
     logger.info('Document retrieved:', JSON.stringify(retrievedDoc));
 
-    // Update the document
+
     const updatedDoc = await RuleModel.findOneAndUpdate(
       { name: 'Test Rule' },
       { $set: { actions: ['reject'] } },
@@ -81,7 +103,7 @@ async function performDatabaseOperations() {
     );
     logger.info('Document updated:', JSON.stringify(updatedDoc));
 
-    // Delete the document
+
     await RuleModel.deleteOne({ name: 'Test Rule' });
     logger.info('Document deleted successfully.');
   } catch (err) {
@@ -92,7 +114,7 @@ async function performDatabaseOperations() {
   }
 }
 
-// Main execution
+
 (async function runTest() {
   logger.info('Starting manual connection test...');
   checkEnvFile();

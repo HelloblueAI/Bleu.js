@@ -4,22 +4,48 @@ import { logger } from '../utils/logger.js';
 import { redisClient } from '../utils/redis.js';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import { MARKET_CONFIG } from '../config/marketConfig.js';
-import { generateDNA, calculateRarityScore, calculateInitialPower } from '../utils/eggUtils.js';
+import { generateDNA, calculateInitialPower } from '../utils/eggUtils.js';
+import { predictEggPrice } from '../utils/aiPricePredictor.js';
 import { broadcastMessage } from '../utils/webSocketUtils.js';
 import Joi from 'joi';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const router = express.Router();
 
-/** 🚀 Dynamic Rate Limiting (Prevents abuse & ensures fair monetization) */
-const rateLimiter = new RateLimiterRedis({
-  storeClient: redisClient,
-  points: 10, // Default limit: 10 requests per 60 seconds
-  duration: 60,
-  blockDuration: 30, // Block for 30 sec if limit exceeded
+
+router.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json");
+  next();
 });
 
-/** ✅ Joi Schema Validation (Ensures input integrity) */
+router.use((req, res, next) => {
+  const key = req.headers['x-api-key'];
+
+  console.log("🔑 Received API Key:", key);
+  console.log("✅ Expected API Key:", process.env.API_KEY);
+
+  if (!key || key.trim() !== process.env.API_KEY.trim()) {
+    logger.warn(`❌ Unauthorized access attempt - API Key: ${key ? key.slice(0, 4) + '***' : 'None'}`);
+    return res.status(403).json({ success: false, error: "Unauthorized. Invalid API key." });
+  }
+
+  logger.info(`✅ API Key authenticated successfully`);
+  next();
+});
+
+
+const rateLimiter = new RateLimiterRedis({
+  storeClient: redisClient,
+  points: 15,
+  duration: 60,
+  blockDuration: 30,
+  keyPrefix: 'rate-limit-eggs',
+});
+
+
 const eggSchema = Joi.object({
   type: Joi.string().valid('dragon', 'phoenix', 'celestial').required(),
   description: Joi.string().max(500).optional(),
@@ -33,49 +59,60 @@ const eggSchema = Joi.object({
   tier: Joi.string().valid('FREE', 'PRO', 'ENTERPRISE').default('FREE'),
 });
 
-/** 🔍 Fetch All Eggs (⚡ Cached for 5 minutes) */
-router.get('/', async (req, res) => {
+
+router.get('/', async (req, res, next) => {
   try {
-    const cachedEggs = await redisClient.get('eggs_cache');
-    if (cachedEggs) {
-      return res.json({ success: true, cached: true, eggs: JSON.parse(cachedEggs) });
-    }
+    const { type, rarity, listed, sort = 'createdAt', order = 'desc', page = 1, limit = 10 } = req.query;
+    const cacheKey = `eggs:${page}:${limit}:${type || 'any'}:${rarity || 'any'}`;
 
-    const eggs = await Egg.find().lean();
-    await redisClient.set('eggs_cache', JSON.stringify(eggs), { EX: 300 });
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) return res.json({ success: true, cached: true, eggs: JSON.parse(cachedData) });
 
-    res.json({ success: true, cached: false, eggs });
+    const query = {};
+    if (type) query.type = type;
+    if (rarity) query['metadata.rarity'] = rarity;
+    if (listed !== undefined) query['market.listed'] = listed === 'true';
+
+    const eggs = await Egg.find(query)
+      .select('-__v')
+      .sort({ [sort]: order === 'asc' ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .lean();
+
+    await redisClient.set(cacheKey, JSON.stringify(eggs), { EX: 300 }); // Cache for 5 minutes
+    logger.info(`📦 Eggs data cached: ${cacheKey}`);
+
+    res.json({ success: true, cached: false, page: Number(page), limit: Number(limit), eggs });
   } catch (error) {
-    logger.error('❌ Failed to fetch eggs:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch eggs' });
+    next(error);
   }
 });
 
-/** 🔍 Fetch Egg by ID */
-router.get('/:id', async (req, res) => {
+
+router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const egg = await Egg.findOne({ id });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'Invalid Egg ID' });
+    }
 
+    const egg = await Egg.findById(id).select('-__v');
     if (!egg) return res.status(404).json({ success: false, error: 'Egg not found' });
 
     res.json({ success: true, egg });
   } catch (error) {
-    logger.error('❌ Failed to fetch egg:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch egg' });
+    next(error);
   }
 });
 
-/** 🚀 Generate Egg (💰 Monetization Ready) */
-router.post('/generate-egg', async (req, res) => {
+/** 🚀 Generate Egg with AI Pricing */
+router.post('/generate-egg', async (req, res, next) => {
   try {
-    await rateLimiter.consume(req.ip); // Apply rate limiting
+    await rateLimiter.consume(req.ip);
 
-    // Validate Request Data
     const { error, value } = eggSchema.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.status(400).json({ success: false, error: 'Invalid input', details: error.details });
-    }
+    if (error) return res.status(400).json({ success: false, error: error.details });
 
     const { type, description, parameters, tier } = value;
     const tierConfig = MARKET_CONFIG.TIERS[tier];
@@ -84,68 +121,57 @@ router.post('/generate-egg', async (req, res) => {
       return res.status(403).json({ success: false, error: 'Invalid tier', availableTiers: Object.keys(MARKET_CONFIG.TIERS) });
     }
 
-    // 🛠 Egg Data Model
+    const price = predictEggPrice(parameters.rarity, parameters.element, parameters.size);
+    logger.info(`💰 AI-Priced ${parameters.rarity} ${type} egg at $${price}`);
+
     const egg = new Egg({
       id: crypto.randomUUID(),
       type,
-      description: description || `A powerful ${parameters.rarity} ${type} egg`,
+      description: description || `A ${parameters.rarity} ${type} egg`,
       metadata: {
-        tags: parameters?.tags || [],
-        version: '1.0.40',
-        generatedBy: 'Eggs-Generator v1.0.40',
         properties: parameters,
         rarity: parameters.rarity,
-        attributes: [
-          { trait_type: 'element', value: parameters.element, rarity_score: calculateRarityScore(parameters.rarity) },
-        ],
         dna: generateDNA(),
       },
       status: 'incubating',
-      incubationConfig: {
-        startTime: new Date(),
-        duration: 86400, // Default incubation period: 24 hours
-        temperature: 37,
-      },
-      evolution: {
-        stage: 1,
-        powerLevel: calculateInitialPower(parameters.rarity),
-        experience: 0,
-      },
-      market: { listed: false, bids: [] },
+      evolution: { stage: 1, powerLevel: calculateInitialPower(parameters.rarity) },
+      market: { listed: true, price },
     });
 
     await egg.save();
-    await redisClient.del('eggs_cache'); // Invalidate cache
-    broadcastMessage({ event: 'new_egg', egg }); // Notify WebSocket clients
+    await redisClient.del('eggs_cache');
+    broadcastMessage({ event: 'new_egg', egg });
 
     res.json({ success: true, result: egg, market: { tier: tierConfig, tradingEnabled: tier !== 'FREE' } });
   } catch (error) {
-    if (error.name === 'RateLimiterRes') {
-      return res.status(429).json({ success: false, error: 'Too many requests, slow down!' });
-    }
-    logger.error('❌ Egg generation failed:', error);
-    res.status(500).json({ success: false, error: 'Generation failed' });
+    next(error);
   }
 });
 
 /** 🔥 Delete Egg */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedEgg = await Egg.findOneAndDelete({ id });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'Invalid Egg ID' });
+    }
 
+    const deletedEgg = await Egg.findByIdAndDelete(id);
     if (!deletedEgg) return res.status(404).json({ success: false, error: 'Egg not found' });
 
     await redisClient.del('eggs_cache');
     broadcastMessage({ event: 'egg_deleted', id });
 
-    
     res.json({ success: true, message: 'Egg deleted successfully' });
   } catch (error) {
-    logger.error('❌ Failed to delete egg:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete egg' });
+    next(error);
   }
 });
 
+/** ❌ Centralized Error Handling */
+router.use((error, req, res, next) => {
+  logger.error(`❌ API Error: ${error.message}`, { error });
+  res.status(500).json({ success: false, error: error.message || 'Internal Server Error' });
+});
 
 export default router;

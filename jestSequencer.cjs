@@ -1,4 +1,25 @@
-// jestSequencer.cjs
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -8,7 +29,7 @@ class CustomSequencer extends Sequencer {
   sort(tests) {
     const copyTests = Array.from(tests);
 
-    // Helper to get test priority from filename
+
     const getTestPriority = (testPath) => {
       if (testPath.includes('unit')) return 1;
       if (testPath.includes('integration')) return 2;
@@ -16,7 +37,7 @@ class CustomSequencer extends Sequencer {
       return 4;
     };
 
-    // Helper to check if test name matches Bleujs naming convention
+
     const isBleuTest = (testPath) => {
       const testName = testPath.toLowerCase();
       return (
@@ -26,26 +47,26 @@ class CustomSequencer extends Sequencer {
       );
     };
 
-    // Sort tests based on multiple criteria
+
     return copyTests.sort((testA, testB) => {
       const pathA = testA.path;
       const pathB = testB.path;
 
-      // Priority 1: Bleujs-specific tests come first
+
       const isBleuA = isBleuTest(pathA);
       const isBleuB = isBleuTest(pathB);
       if (isBleuA !== isBleuB) {
         return isBleuA ? -1 : 1;
       }
 
-      // Priority 2: Test type priority (unit -> integration -> e2e)
+
       const priorityA = getTestPriority(pathA);
       const priorityB = getTestPriority(pathB);
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
       }
 
-      // Priority 3: Alphabetical order for same priority tests
+      
       return pathA.localeCompare(pathB);
     });
   }

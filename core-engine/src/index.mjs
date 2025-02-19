@@ -33,13 +33,13 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
-    winston.format.metadata(),
+    winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }),
     winston.format.json(),
     winston.format.printf(({ timestamp, level, message, metadata, stack }) => {
-      const meta = metadata.requestId ? ` [${metadata.requestId}]` : '';
+      const meta = metadata && metadata.requestId ? ` [${metadata.requestId}]` : '';
       const stackTrace = stack ? `\n${stack}` : '';
       return `${level.toUpperCase()} 📝 [${timestamp}]${meta}: ${message}${stackTrace}`;
-    }),
+    })
   ),
   transports: [
     new winston.transports.Console({
@@ -61,6 +61,11 @@ const logger = winston.createLogger({
 
 class MetricsSystem {
   static record(name, value, tags = {}) {
+    if (typeof value !== 'number' || isNaN(value)) {
+      logger.warn(`⚠️ Invalid metric value for ${name}: ${value}`);
+      return;
+    }
+
     const metricKey = `${name}_${Object.values(tags).join('_')}`;
     const current = METRICS.get(metricKey) || {
       count: 0,
@@ -78,57 +83,72 @@ class MetricsSystem {
     current.max = Math.max(current.max, value);
     current.lastUpdated = new Date();
 
+    // Bucket values for histogram (ensures clean ranges)
     const bucket = Math.floor(value / 100) * 100;
     current.histogram.set(bucket, (current.histogram.get(bucket) || 0) + 1);
 
-    METRICS.set(metricKey, current);
+    // Freeze object to prevent unintended mutations
+    METRICS.set(metricKey, Object.freeze(current));
   }
 
-  static getMetrics(options = {}) {
-    const { timeRange = 3600000 } = options;
+  static getMetrics({ timeRange = 3600000 } = {}) {
     const now = Date.now();
     const results = {};
 
     METRICS.forEach((value, key) => {
-      if (
-        value.lastUpdated &&
-        value.lastUpdated instanceof Date &&
-        now - value.lastUpdated.getTime() < timeRange
-      ) {
-        results[key] = {
-          avg: value.total / value.count,
-          min: value.min,
-          max: value.max,
-          count: value.count,
-          tags: value.tags,
-          histogram: Object.fromEntries(value.histogram),
-          p95: this.calculatePercentile(value.histogram, 95),
-          p99: this.calculatePercentile(value.histogram, 99),
-        };
+      if (!value || typeof value !== 'object') {
+        logger.warn(`⚠️ Skipping invalid metric ${key}`);
+        return;
       }
+
+      const { lastUpdated, total, count, histogram } = value;
+
+      // Ensure values are valid before processing
+      if (!lastUpdated || !(lastUpdated instanceof Date) || now - lastUpdated.getTime() > timeRange) {
+        logger.warn(`⚠️ Metric ${key} has an invalid lastUpdated. Resetting timestamp.`);
+        value.lastUpdated = new Date();
+        return;
+      }
+
+      if (count === 0 || total === 0) {
+        results[key] = { avg: 0, min: 0, max: 0, count: 0, histogram: {} };
+        return;
+      }
+
+      results[key] = {
+        avg: (total / count).toFixed(2),
+        min: value.min,
+        max: value.max,
+        count: value.count,
+        histogram: histogram instanceof Map ? Object.fromEntries(histogram) : {},
+        p95: this.calculatePercentile(histogram, 95),
+        p99: this.calculatePercentile(histogram, 99),
+      };
     });
 
     return results;
   }
 
   static calculatePercentile(histogram, percentile) {
+    if (!histogram || !(histogram instanceof Map) || histogram.size === 0) {
+      return 0;
+    }
+
     const sorted = Array.from(histogram.entries()).sort(([a], [b]) => a - b);
-    const total = Array.from(histogram.values()).reduce(
-      (sum, count) => sum + count,
-      0,
-    );
+    const total = sorted.reduce((sum, [, count]) => sum + count, 0);
     const targetCount = (total * percentile) / 100;
     let currentCount = 0;
 
     for (const [bucket, count] of sorted) {
       currentCount += count;
-      if (currentCount >= targetCount) {
-        return bucket;
-      }
+      if (currentCount >= targetCount) return bucket;
     }
+
     return sorted[sorted.length - 1]?.[0] || 0;
   }
 }
+
+
 
 class CodeGenerator {
   static methodTemplate(name, isAsync = true) {
@@ -335,7 +355,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: MAX_REQUEST_SIZE }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate Limiter Middleware
+
 const rateLimiter = (req, res, next) => {
   const clientIp = req.ip;
   const now = Date.now();
@@ -467,99 +487,93 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-app.get('/api/health', (req, res) => {
-  const health = {
-    status: 'healthy 🟢',
-    uptime: process.uptime().toFixed(2),
-    timestamp: new Date().toISOString(),
-    system: {
-      memory: {
-        total: os.totalmem(),
-        free: os.freemem(),
-        usage:
-          (((os.totalmem() - os.freemem()) / os.totalmem()) * 100).toFixed(2) +
-          '%',
-      },
-      cpu: {
-        cores: CPU_CORES,
-        load: os.loadavg(),
-        platform: os.platform(),
-        arch: os.arch(),
-      },
-      network: {
-        connections: wsManager.clients.size,
-        interfaces: os.networkInterfaces(),
-      },
-    },
-    process: {
-      pid: process.pid,
-      version: process.version,
-      env: process.env.NODE_ENV || 'development',
-      engineVersion: process.env.ENGINE_VERSION || 'bleu.js v.1.1.0',
-      memoryUsage: process.memoryUsage(),
-    },
-    metrics: MetricsSystem.getMetrics(),
-  };
+function isValidResponse(data) {
+  try {
+    JSON.stringify(data);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  res.json(health);
+app.get('/api/health', async (req, res) => {
+  try {
+    const nodeVersion = process.version || 'unknown';
+    const platform = process.platform || 'unknown';
+    const healthData = {
+      status: '🟢 OK',
+      uptime: `${process.uptime().toFixed(2)}s`,
+      timestamp: new Date().toISOString(),
+      nodeVersion,
+      platform,
+    };
+
+    if (!isValidResponse(healthData)) throw new Error("Invalid JSON response");
+
+    return res.status(200).json(healthData);
+  } catch (error) {
+    logger.error(`❌ Health check failed: ${error.message}`);
+
+    return res.status(500).json({
+      error: 'Health check failed',
+      details: error.message,
+    });
+  }
 });
 
+
+
+
 app.post('/api/generate-egg', async (req, res) => {
-  const requestId = req.headers['x-request-id'];
+  const requestId = req.headers['x-request-id'] || uuidv4();
   const startTime = performance.now();
+
+  logger.info(`[${requestId}] 🔥 Incoming request: /api/generate-egg`, { body: req.body });
 
   try {
     const { type, parameters } = req.body;
 
-    if (!type || !parameters) {
-      throw new Error('Missing required fields: type or parameters');
-    }
-
+    if (!type || !parameters) throw new Error("Missing required fields: 'type' or 'parameters'.");
     if (!ALLOWED_TYPES.includes(type)) {
-      throw new Error(
-        `Unsupported type: ${type}. Valid types are: ${ALLOWED_TYPES.join(', ')}`,
-      );
+      throw new Error(`Invalid type: '${type}'. Supported types: ${ALLOWED_TYPES.join(', ')}`);
     }
 
     if (!parameters.name || typeof parameters.name !== 'string') {
-      throw new Error('Invalid or missing name parameter');
+      throw new Error("Invalid or missing 'name' parameter.");
+    }
+    if (!Array.isArray(parameters.methods) || parameters.methods.length === 0) {
+      throw new Error("'methods' must be a non-empty array.");
     }
 
-    if (!Array.isArray(parameters.methods)) {
-      throw new Error('Methods must be an array');
-    }
 
     const sanitizedName = CodeGenerator.sanitizeName(parameters.name);
     if (sanitizedName !== parameters.name) {
-      logger.warn(`Name was sanitized`, {
-        requestId,
-        original: parameters.name,
-        sanitized: sanitizedName,
-      });
+      logger.warn(`[${requestId}] ⚠️ Name sanitized`, { original: parameters.name, sanitized: sanitizedName });
     }
 
-    const code = CodeGenerator.generateClass(type, {
-      ...parameters,
-      name: sanitizedName,
-    });
+
+    const generatedCode = CodeGenerator.generateClass(type, { ...parameters, name: sanitizedName });
+
+
+    const responseSize = Buffer.byteLength(JSON.stringify({ code: generatedCode }), 'utf8');
+    if (responseSize > 5_000_000) {
+      throw new Error("Generated response is too large. Try reducing output size.");
+    }
 
     const duration = performance.now() - startTime;
-    MetricsSystem.record('generateEgg', duration, {
-      type,
-      methodCount: parameters.methods.length,
-    });
+    MetricsSystem.record('generateEgg', duration, { type, methodCount: parameters.methods.length, requestId });
 
-    logger.info(`Code generation successful`, {
-      requestId,
+    logger.info(`[${requestId}] ✅ Code generation SUCCESS`, {
       type,
       className: sanitizedName,
       methodCount: parameters.methods.length,
       duration: `${duration.toFixed(2)}ms`,
     });
 
-    res.json({
+    // 🔥 Return safe response
+    return res.status(200).json({
       success: true,
-      code,
+      code: generatedCode,
       metadata: {
         requestId,
         generatedAt: new Date().toISOString(),
@@ -568,27 +582,22 @@ app.post('/api/generate-egg', async (req, res) => {
         type,
         className: sanitizedName,
         methodCount: parameters.methods.length,
-        originalName:
-          parameters.name !== sanitizedName ? parameters.name : undefined,
+        originalName: parameters.name !== sanitizedName ? parameters.name : undefined,
         nodeVersion: process.version,
         platform: process.platform,
+        network: safeNetworkInterfaces(), // ✅ Now using the safe function
       },
     });
-  } catch (err) {
+  } catch (error) {
     const duration = performance.now() - startTime;
-    MetricsSystem.record('generateEggError', duration, {
-      error: err.message,
-    });
+    MetricsSystem.record('generateEggError', duration, { requestId, error: error.message });
 
-    logger.error(`Code generation failed`, {
-      requestId,
-      error: err.message,
-      stack: err.stack,
-    });
+    logger.error(`[${requestId}] ❌ Code generation FAILED`, { error: error.message, stack: error.stack });
 
-    res.status(500).json({
+    // Ensure a response is always sent
+    return res.status(400).json({
       success: false,
-      error: err.message,
+      error: error.message,
       metadata: {
         requestId,
         timestamp: new Date().toISOString(),
@@ -598,38 +607,39 @@ app.post('/api/generate-egg', async (req, res) => {
   }
 });
 
+
 app.post('/api/broadcast', (req, res) => {
-  const requestId = req.headers['x-request-id'];
+  const requestId = req.headers['x-request-id'] || uuidv4();
   const { message, filter } = req.body;
 
-  if (!message) {
+  logger.info(`[${requestId}] 🔊 Received broadcast request`, { message, filter });
+
+  if (!message || typeof message !== 'string' || message.trim() === '') {
     return res.status(400).json({
       success: false,
-      error: 'Message is required',
+      error: 'Message is required and must be a non-empty string.',
       metadata: { requestId },
     });
   }
 
   try {
     let filterFunction = null;
-    if (filter) {
-      filterFunction = (client) => {
-        for (const [key, value] of Object.entries(filter)) {
-          if (client[key] !== value) return false;
-        }
-        return true;
-      };
+
+    if (filter && typeof filter === 'object') {
+      filterFunction = (client) =>
+        Object.entries(filter).every(([key, value]) => client[key] === value);
     }
+
 
     const recipientCount = wsManager.broadcast(message, filterFunction);
 
-    logger.info(`Broadcast message sent`, {
-      requestId,
+    logger.info(`[${requestId}] 📡 Broadcast message sent`, {
       recipientCount,
       messageLength: message.length,
       hasFilter: !!filter,
     });
-    res.json({
+
+    return res.status(200).json({
       success: true,
       message: 'Broadcast sent!',
       metadata: {
@@ -639,15 +649,12 @@ app.post('/api/broadcast', (req, res) => {
         filter: filter ? Object.keys(filter) : undefined,
       },
     });
-  } catch (err) {
-    logger.error(`Broadcast failed`, {
-      requestId,
-      error: err.message,
-    });
+  } catch (error) {
+    logger.error(`[${requestId}] ❌ Broadcast failed`, { error: error.message });
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      error: err.message,
+      error: error.message,
       metadata: {
         requestId,
         timestamp: new Date().toISOString(),
@@ -655,6 +662,7 @@ app.post('/api/broadcast', (req, res) => {
     });
   }
 });
+
 
 const shutdownHandler = async (signal) => {
   logger.warn(`Received ${signal}. Initiating graceful shutdown...`);
@@ -667,26 +675,24 @@ const shutdownHandler = async (signal) => {
 
   try {
     const closeWSS = new Promise((resolve) => wss.close(resolve));
-
     const closeServer = new Promise((resolve) => server.close(resolve));
+
 
     await Promise.race([
       Promise.all([closeWSS, closeServer]),
       new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Shutdown timeout')),
-          SHUTDOWN_TIMEOUT,
-        ),
+        setTimeout(() => reject(new Error('Shutdown timeout')), 10000)
       ),
     ]);
 
-    logger.info('Server closed successfully');
+    logger.info('✅ Server closed successfully');
     process.exit(0);
   } catch (err) {
-    logger.error(`Error during shutdown: ${err.message}`);
+    logger.error(`❌ Error during shutdown: ${err.message}`);
     process.exit(1);
   }
 };
+
 
 if (cluster.isPrimary) {
   logger.info(`Primary process v1.0.36 ${process.pid} is running`);
@@ -715,7 +721,7 @@ if (cluster.isPrimary) {
     process.on(signal, () => {
       logger.warn(`Primary process received ${signal}`);
 
-      // Notify all workers
+
       for (const worker of Object.values(cluster.workers)) {
         worker.send({ type: 'shutdown', signal });
       }
@@ -745,10 +751,15 @@ if (cluster.isPrimary) {
   });
 
   process.on('message', async (message) => {
-    if (message.type === 'shutdown') {
-      await shutdownHandler(message.signal);
+    try {
+      if (message.type === 'shutdown') {
+        await shutdownHandler(message.signal);
+      }
+    } catch (error) {
+      logger.error(`❌ Error handling process message: ${error.message}`);
     }
   });
+
 
   process.on('uncaughtException', (err) => {
     logger.error('Uncaught Exception', {
@@ -758,23 +769,37 @@ if (cluster.isPrimary) {
     shutdownHandler('UNCAUGHT_EXCEPTION');
   });
 
-  process.on('unhandledRejection', (reason) => {
-    logger.error('Unhandled Rejection', {
+
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error('🛑 Unhandled Rejection', {
       reason: reason instanceof Error ? reason.stack : reason,
+      promise,
     });
-    shutdownHandler('UNHANDLED_REJECTION');
+
+    if (reason instanceof Error && reason.message.includes('lookup')) {
+      logger.warn('⚠️ Ignoring minor lookup error.');
+    } else {
+      logger.warn('⚠️ Attempting graceful shutdown due to an unhandled rejection...');
+      shutdownHandler('UNHANDLED_REJECTION');
+    }
   });
+
 
   setInterval(() => {
     if (process.send) {
-      const metrics = MetricsSystem.getMetrics();
-      process.send({
-        type: 'metrics',
-        metrics,
-        workerId: process.pid,
-      });
+      try {
+        const metrics = MetricsSystem.getMetrics();
+        process.send({
+          type: 'metrics',
+          metrics,
+          workerId: process.pid,
+        });
+      } catch (error) {
+        logger.warn(`⚠️ Failed to send metrics: ${error.message}`);
+      }
     }
   }, 30000);
+
 }
 
 export { app, CodeGenerator, logger, MetricsSystem, server, wsManager, wss };
