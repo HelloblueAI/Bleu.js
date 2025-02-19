@@ -223,3 +223,16 @@ reports/ linguist-vendored  # Ensure test reports don't affect language stats
 *.py linguist-detectable
 !dependency-management/package.json
 !dependency-management/package.json
+
+
+# 🚀 Untrack HTML Reports
+coverage/
+coverage/html-report/
+*.html linguist-vendored
+report.html
+test-results/
+playwright-report/
+jest-html-reporters-attach/
+jest-stare/
+jest-report/
+mocha-report/
