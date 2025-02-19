@@ -1,3 +1,25 @@
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 import cluster from 'cluster';
 
 export class WorkerProcess {
@@ -8,27 +30,16 @@ export class WorkerProcess {
   }
 
   setupErrorHandlers() {
-
-    process.on('uncaughtException', (error) => {
-      console.error('Uncaught Exception:', error);
-      this.handleFatalError(error);
-    });
-
-    process.on('unhandledRejection', (reason, promise) => {
-      console.error('Unhandled Rejection:', reason);
-      this.handleFatalError(reason);
-    });
+    process.on('uncaughtException', (error) => this.handleFatalError(error));
+    process.on('unhandledRejection', (reason) => this.handleFatalError(reason));
   }
 
   setupProcessHandlers() {
     process.on('SIGTERM', () => this.handleGracefulShutdown());
     process.on('SIGINT', () => this.handleGracefulShutdown());
 
-    // Handle messages from master
     process.on('message', (msg) => {
-      if (msg === 'shutdown') {
-        this.handleGracefulShutdown();
-      }
+      if (msg === 'shutdown') this.handleGracefulShutdown();
     });
   }
 
@@ -36,9 +47,10 @@ export class WorkerProcess {
     if (this.isShuttingDown) return;
 
     this.isShuttingDown = true;
+
     console.error(`Fatal error in worker ${process.pid}:`, error);
 
-    // Notify master about the error
+
     if (process.send) {
       process.send({
         type: 'error',
@@ -48,7 +60,7 @@ export class WorkerProcess {
       });
     }
 
-    // Begin graceful shutdown
+
     this.handleGracefulShutdown();
   }
 
@@ -56,37 +68,29 @@ export class WorkerProcess {
     if (this.isShuttingDown) return;
 
     this.isShuttingDown = true;
-    console.log(`Worker ${process.pid} starting graceful shutdown...`);
+
+    console.log(`Worker ${process.pid} initiating graceful shutdown...`);
 
     try {
-      // Close all active connections
-      this.closeConnections();
-
-      // Wait for ongoing requests to complete (max 5 seconds)
+      await this.closeConnections();
       await this.waitForRequestsToComplete();
-
-      console.log(`Worker ${process.pid} completed graceful shutdown`);
+      console.log(`Worker ${process.pid} shutdown complete`);
       process.exit(0);
     } catch (error) {
-      console.error(`Error during shutdown of worker ${process.pid}:`, error);
+      console.error(`Shutdown error in worker ${process.pid}:`, error);
       process.exit(1);
     }
   }
 
-  closeConnections() {
-    // Implement connection closing logic here
-    // For example, close database connections, Redis clients, etc.
+  async closeConnections() {
+    // Close database, Redis, or other service connections
   }
 
   async waitForRequestsToComplete() {
-    return new Promise((resolve) => {
-      // Add logic to wait for ongoing requests
-      // For now, we'll just wait 5 seconds
-      setTimeout(resolve, 5000);
-    });
+    return new Promise((resolve) => setTimeout(resolve, 5000));
   }
 
-  // Method to report health status to master
+  
   reportHealth() {
     if (process.send) {
       process.send({
@@ -99,19 +103,11 @@ export class WorkerProcess {
   }
 }
 
-// Export a function to initialize the worker
+
 export function initializeWorker() {
-  if (cluster.isPrimary) {
-    console.warn('Worker initialization called in primary process');
-    return;
-  }
-
+  if (cluster.isPrimary) return;
   const worker = new WorkerProcess();
-
-  // Start health reporting
-  setInterval(() => {
-    worker.reportHealth();
-  }, 30000); // Report every 30 seconds
-
+  setInterval(() => worker.reportHealth(), 30000);
   return worker;
 }
+

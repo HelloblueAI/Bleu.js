@@ -1,3 +1,25 @@
+//  Copyright (c) 2025, Helloblue Inc.
+//  Open-Source Community Edition
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, subject to the following conditions:
+
+//  1. The above copyright notice and this permission notice shall be included in
+//     all copies or substantial portions of the Software.
+//  2. Contributions to this project are welcome and must adhere to the project's
+//     contribution guidelines.
+//  3. The name "Helloblue Inc." and its contributors may not be used to endorse
+//     or promote products derived from this software without prior written consent.
+
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 import cluster from 'cluster';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -83,11 +105,11 @@ class MetricsSystem {
     current.max = Math.max(current.max, value);
     current.lastUpdated = new Date();
 
-    // Bucket values for histogram (ensures clean ranges)
+
     const bucket = Math.floor(value / 100) * 100;
     current.histogram.set(bucket, (current.histogram.get(bucket) || 0) + 1);
 
-    // Freeze object to prevent unintended mutations
+
     METRICS.set(metricKey, Object.freeze(current));
   }
 
@@ -103,7 +125,7 @@ class MetricsSystem {
 
       const { lastUpdated, total, count, histogram } = value;
 
-      // Ensure values are valid before processing
+
       if (!lastUpdated || !(lastUpdated instanceof Date) || now - lastUpdated.getTime() > timeRange) {
         logger.warn(`⚠️ Metric ${key} has an invalid lastUpdated. Resetting timestamp.`);
         value.lastUpdated = new Date();
@@ -395,7 +417,7 @@ const rateLimiter = (req, res, next) => {
   next();
 };
 
-// Request Tracking Middleware
+
 const requestTracker = (req, res, next) => {
   const requestId = req.headers['x-request-id'] || uuidv4();
   const startTime = performance.now();
@@ -570,7 +592,7 @@ app.post('/api/generate-egg', async (req, res) => {
       duration: `${duration.toFixed(2)}ms`,
     });
 
-    // 🔥 Return safe response
+
     return res.status(200).json({
       success: true,
       code: generatedCode,
@@ -585,7 +607,7 @@ app.post('/api/generate-egg', async (req, res) => {
         originalName: parameters.name !== sanitizedName ? parameters.name : undefined,
         nodeVersion: process.version,
         platform: process.platform,
-        network: safeNetworkInterfaces(), // ✅ Now using the safe function
+        network: safeNetworkInterfaces(),
       },
     });
   } catch (error) {
@@ -594,7 +616,7 @@ app.post('/api/generate-egg', async (req, res) => {
 
     logger.error(`[${requestId}] ❌ Code generation FAILED`, { error: error.message, stack: error.stack });
 
-    // Ensure a response is always sent
+
     return res.status(400).json({
       success: false,
       error: error.message,
