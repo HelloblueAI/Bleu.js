@@ -214,11 +214,17 @@
     "cookiejar",
     "esniff",
     "esprima",
+    "htmlcov",
     "jackspeak",
     "jspm",
+    "nosetests",
+    "Pipfile",
     "pycache",
     "realpath",
     "reusify",
-    "tsutils"
+    "ropeproject",
+    "sdist",
+    "tsutils",
+    "vercel"
   ]
 }
