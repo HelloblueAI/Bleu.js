@@ -20,8 +20,8 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-const { TextEncoder, TextDecoder } = require('util');
 
+const { TextEncoder, TextDecoder } = require('util');
 
 if (typeof global.TextEncoder === 'undefined') {
   global.TextEncoder = TextEncoder;
@@ -57,9 +57,7 @@ jest.mock('mongoose', () => {
   };
 });
 
-
 jest.mock('supertest', () => jest.requireActual('supertest'));
 jest.mock('formidable', () => jest.requireActual('formidable'));
 
-console.log("Jest environment setup complete.");
-
+console.log('Jest environment setup complete.');

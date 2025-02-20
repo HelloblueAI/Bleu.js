@@ -30,7 +30,7 @@ import { AdvancedCircuitBreaker } from '../core/circuit-breaker.mjs';
 const circuitBreaker = new AdvancedCircuitBreaker({
   failureThreshold: 3,
   resetTimeout: 30000,
-  timeout: 5000
+  timeout: 5000,
 });
 
 export function setupBroadcastRoute(app, wsManager) {
@@ -39,7 +39,7 @@ export function setupBroadcastRoute(app, wsManager) {
     const startTime = performance.now();
 
     logger.info(`[${requestId}] 🔊 Broadcast request received`, {
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     try {
@@ -56,7 +56,6 @@ export function setupBroadcastRoute(app, wsManager) {
 
       // Send success response
       await sendSuccessResponse(res, result, startTime, requestId);
-
     } catch (error) {
       await handleBroadcastError(error, res, startTime, requestId);
     }
@@ -69,21 +68,21 @@ function validateBroadcastInput(body) {
   if (!message || typeof message !== 'string' || message.trim() === '') {
     return {
       isValid: false,
-      error: 'Message is required and must be a non-empty string.'
+      error: 'Message is required and must be a non-empty string.',
     };
   }
 
   if (filter && typeof filter !== 'object') {
     return {
       isValid: false,
-      error: 'Filter must be an object if provided.'
+      error: 'Filter must be an object if provided.',
     };
   }
 
   if (message.length > 1000000) {
     return {
       isValid: false,
-      error: 'Message exceeds maximum length of 1MB.'
+      error: 'Message exceeds maximum length of 1MB.',
     };
   }
 
@@ -98,7 +97,11 @@ async function processBroadcast(wsManager, { message, filter }, requestId) {
     logger.info(`[${requestId}] 🎯 Applying filter`, { filter });
   }
 
-  const recipientCount = await broadcastWithRetry(wsManager, message, filterFunction);
+  const recipientCount = await broadcastWithRetry(
+    wsManager,
+    message,
+    filterFunction,
+  );
 
   metrics.counter('broadcast.messages_sent', recipientCount);
   metrics.gauge('broadcast.active_clients', wsManager.getActiveClientCount());
@@ -106,7 +109,7 @@ async function processBroadcast(wsManager, { message, filter }, requestId) {
   return {
     recipientCount,
     messageLength: message.length,
-    hasFilter: !!filterFunction
+    hasFilter: !!filterFunction,
   };
 }
 
@@ -126,7 +129,12 @@ function createFilterFunction(filter) {
   };
 }
 
-async function broadcastWithRetry(wsManager, message, filterFunction, maxRetries = 3) {
+async function broadcastWithRetry(
+  wsManager,
+  message,
+  filterFunction,
+  maxRetries = 3,
+) {
   let lastError;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -137,9 +145,11 @@ async function broadcastWithRetry(wsManager, message, filterFunction, maxRetries
       return count;
     } catch (error) {
       lastError = error;
-      logger.warn(`Broadcast attempt ${attempt} failed`, { error: error.message });
+      logger.warn(`Broadcast attempt ${attempt} failed`, {
+        error: error.message,
+      });
       if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
       }
     }
   }
@@ -151,12 +161,12 @@ async function sendSuccessResponse(res, result, startTime, requestId) {
 
   metrics.record('broadcast.duration', duration, {
     recipients: result.recipientCount,
-    hasFilter: result.hasFilter
+    hasFilter: result.hasFilter,
   });
 
   logger.info(`[${requestId}] 📡 Broadcast completed`, {
     ...result,
-    duration: `${duration.toFixed(2)}ms`
+    duration: `${duration.toFixed(2)}ms`,
   });
 
   return res.status(200).json({
@@ -169,9 +179,9 @@ async function sendSuccessResponse(res, result, startTime, requestId) {
       recipientCount: result.recipientCount,
       messageStats: {
         length: result.messageLength,
-        filtered: result.hasFilter
-      }
-    }
+        filtered: result.hasFilter,
+      },
+    },
   });
 }
 
@@ -179,13 +189,13 @@ async function handleBroadcastError(error, res, startTime, requestId) {
   const duration = performance.now() - startTime;
 
   metrics.record('broadcast.error', duration, {
-    error: error.message
+    error: error.message,
   });
 
   logger.error(`[${requestId}] ❌ Broadcast failed`, {
     error: error.message,
     stack: error.stack,
-    duration: `${duration.toFixed(2)}ms`
+    duration: `${duration.toFixed(2)}ms`,
   });
 
   return res.status(500).json({
@@ -194,7 +204,7 @@ async function handleBroadcastError(error, res, startTime, requestId) {
     metadata: {
       requestId,
       timestamp: new Date().toISOString(),
-      duration: `${duration.toFixed(2)}ms`
-    }
+      duration: `${duration.toFixed(2)}ms`,
+    },
   });
 }

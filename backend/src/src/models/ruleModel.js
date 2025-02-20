@@ -65,7 +65,7 @@ const ruleSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
-  }
+  },
 );
 
 /**
@@ -171,7 +171,7 @@ const update = async (id, ruleData) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
     if (!rule) throw new Error('Rule not found');
     logger.info(`🔄 Rule updated: ${rule.name}`);
@@ -197,7 +197,7 @@ const remove = async (id) => {
       },
       {
         new: true,
-      }
+      },
     );
     if (!rule) throw new Error('Rule not found');
     logger.info(`🗑️ Rule soft deleted: ${rule.name}`);

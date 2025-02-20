@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import { jest } from '@jest/globals';
 import crypto from 'crypto';
 global.crypto = global.crypto || crypto;
@@ -36,14 +37,12 @@ global.beforeEach(() => {
   jest.restoreAllMocks();
 });
 
-
 jest.mock('./src/utils/logger', () => ({
   info: createMock('logger.info'),
   error: createMock('logger.error'),
   debug: createMock('logger.debug'),
   warn: createMock('logger.warn'),
 }));
-
 
 jest.mock('winston', () => {
   const actualWinston = jest.requireActual('winston');
@@ -68,12 +67,13 @@ jest.mock('winston', () => {
   };
 });
 
-
 jest.mock('mongodb-memory-server', () => {
   return {
     MongoMemoryServer: class {
       constructor() {
-        this.getUri = jest.fn().mockResolvedValue('mongodb://localhost:27017/testdb');
+        this.getUri = jest
+          .fn()
+          .mockResolvedValue('mongodb://localhost:27017/testdb');
       }
       start() {
         return jest.fn();
@@ -84,7 +84,6 @@ jest.mock('mongodb-memory-server', () => {
     },
   };
 });
-
 
 process.on('unhandledRejection', (reason) => {
   console.error('❌ Unhandled Promise Rejection:', reason);

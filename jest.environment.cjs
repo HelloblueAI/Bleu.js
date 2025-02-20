@@ -20,52 +20,49 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 const { TextEncoder, TextDecoder } = require('util');
 const pkg = require('./package.json');
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
-
     const testConfig = {
       projectConfig: {
         testEnvironmentOptions: {
           url: 'http://localhost',
           projectName: pkg.name,
           projectVersion: pkg.version,
-          ...config?.projectConfig?.testEnvironmentOptions
+          ...config?.projectConfig?.testEnvironmentOptions,
         },
         customExportConditions: ['node', 'node-addons'],
-        ...config?.projectConfig
+        ...config?.projectConfig,
       },
       globalConfig: {
-        ...config?.globalConfig
+        ...config?.globalConfig,
       },
-      testPath: config?.testPath
+      testPath: config?.testPath,
     };
 
     super(testConfig, context);
 
-
     this.testPath = testConfig.testPath;
     this.projectConfig = testConfig.projectConfig;
     this.globalConfig = testConfig.globalConfig;
-    this.testEnvironmentOptions = testConfig.projectConfig.testEnvironmentOptions;
+    this.testEnvironmentOptions =
+      testConfig.projectConfig.testEnvironmentOptions;
   }
 
   async setup() {
     await super.setup();
-
 
     this.global.TextEncoder = TextEncoder;
     this.global.TextDecoder = TextDecoder;
     this.global.ArrayBuffer = ArrayBuffer;
     this.global.Uint8Array = Uint8Array;
 
-
     this.global.__BLEUJS_VERSION__ = this.testEnvironmentOptions.projectVersion;
     this.global.__BLEUJS_NAME__ = this.testEnvironmentOptions.projectName;
-
 
     if (!this.global.process) {
       this.global.process = {};
@@ -76,27 +73,24 @@ class CustomEnvironment extends NodeEnvironment {
       NODE_ENV: 'test',
       JEST_WORKER_ID: process.env.JEST_WORKER_ID || '1',
       BLEUJS_VERSION: pkg.version,
-      BLEUJS_NAME: pkg.name
+      BLEUJS_NAME: pkg.name,
     };
-
 
     Object.assign(this.global, {
       isTestEnvironment: true,
       testPath: this.testPath,
-      projectRoot: process.cwd()
+      projectRoot: process.cwd(),
     });
   }
 
   async teardown() {
     try {
-
       if (this.global.gc) {
         this.global.gc();
       }
       await super.teardown();
     } catch (error) {
       console.error('Error during environment teardown:', error);
-
     }
   }
 
@@ -109,7 +103,6 @@ class CustomEnvironment extends NodeEnvironment {
       console.log(`Test event: ${event.name}`);
     }
   }
-
 
   runInEnvironment(fn) {
     return fn.call(this.global);

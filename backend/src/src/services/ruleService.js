@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 /* eslint-env node */
@@ -37,7 +38,9 @@ const validateRuleInput = (rule) => {
   }
 
   if (!Array.isArray(rule.conditions) || !Array.isArray(rule.actions)) {
-    logger.warn('⚠️ Invalid rule structure: Conditions and actions must be arrays.');
+    logger.warn(
+      '⚠️ Invalid rule structure: Conditions and actions must be arrays.',
+    );
     return false;
   }
 
@@ -50,7 +53,8 @@ const validateRuleInput = (rule) => {
  * @returns {boolean} - Whether the condition is valid.
  */
 const validateCondition = (condition) => {
-  const isValid = condition && typeof condition === 'object' && 'type' in condition;
+  const isValid =
+    condition && typeof condition === 'object' && 'type' in condition;
   if (!isValid) logger.warn('⚠️ Invalid condition format:', condition);
   return isValid;
 };
@@ -84,7 +88,9 @@ const trainModelLogic = async (datasetId) => {
     // Simulated model training logic
     const modelId = `mock-model-${Date.now()}`;
 
-    logger.info(`✅ Model training completed successfully. Model ID: ${modelId}`);
+    logger.info(
+      `✅ Model training completed successfully. Model ID: ${modelId}`,
+    );
     return modelId;
   } catch (error) {
     logger.error(`❌ Model training failed: ${error.message}`);
@@ -97,6 +103,5 @@ module.exports = {
   validateRuleInput,
   validateCondition,
   validateAction,
-  trainModelLogic
+  trainModelLogic,
 };
-

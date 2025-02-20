@@ -45,7 +45,10 @@ class DecisionTree {
   traverse(node, data) {
     if (!node) throw new Error('Decision tree is not initialized.');
     if (node.isLeaf) return node.result;
-    return this.traverse(node[node.condition(data) ? 'trueBranch' : 'falseBranch'], data);
+    return this.traverse(
+      node[node.condition(data) ? 'trueBranch' : 'falseBranch'],
+      data,
+    );
   }
 
   /**
@@ -71,7 +74,11 @@ class DecisionTree {
       return { isLeaf: true, result: this.majorityClass(data, target) };
     }
 
-    const { bestFeature, bestSplit, subsets } = this.getBestSplit(data, features, target);
+    const { bestFeature, bestSplit, subsets } = this.getBestSplit(
+      data,
+      features,
+      target,
+    );
     if (!bestSplit) {
       return { isLeaf: true, result: this.majorityClass(data, target) };
     }
@@ -79,8 +86,20 @@ class DecisionTree {
     return {
       isLeaf: false,
       condition: (data) => data[bestFeature] === bestSplit,
-      trueBranch: this.buildTree(subsets.trueSubset, features, target, maxDepth - 1, minSize),
-      falseBranch: this.buildTree(subsets.falseSubset, features, target, maxDepth - 1, minSize),
+      trueBranch: this.buildTree(
+        subsets.trueSubset,
+        features,
+        target,
+        maxDepth - 1,
+        minSize,
+      ),
+      falseBranch: this.buildTree(
+        subsets.falseSubset,
+        features,
+        target,
+        maxDepth - 1,
+        minSize,
+      ),
     };
   }
 
@@ -97,7 +116,9 @@ class DecisionTree {
       return acc;
     }, {});
 
-    return Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+    return Object.keys(counts).reduce((a, b) =>
+      counts[a] > counts[b] ? a : b,
+    );
   }
 
   /**
@@ -108,12 +129,19 @@ class DecisionTree {
    * @returns {Object} Best split details.
    */
   getBestSplit(data, features, target) {
-    let bestFeature = null, bestSplit = null, bestGini = Infinity, bestSubsets = null;
+    let bestFeature = null,
+      bestSplit = null,
+      bestGini = Infinity,
+      bestSubsets = null;
 
     features.forEach((feature) => {
       this.getSplits(data, feature).forEach((split) => {
         const subsets = this.splitData(data, feature, split);
-        const gini = this.calculateGini(subsets.trueSubset, subsets.falseSubset, target);
+        const gini = this.calculateGini(
+          subsets.trueSubset,
+          subsets.falseSubset,
+          target,
+        );
         if (gini < bestGini) {
           bestGini = gini;
           bestFeature = feature;
@@ -149,7 +177,7 @@ class DecisionTree {
         acc[item[feature] === split ? 'trueSubset' : 'falseSubset'].push(item);
         return acc;
       },
-      { trueSubset: [], falseSubset: [] }
+      { trueSubset: [], falseSubset: [] },
     );
   }
 
@@ -180,7 +208,13 @@ class DecisionTree {
       return acc;
     }, {});
 
-    return 1 - Object.values(counts).reduce((sum, count) => sum + (count / subset.length) ** 2, 0);
+    return (
+      1 -
+      Object.values(counts).reduce(
+        (sum, count) => sum + (count / subset.length) ** 2,
+        0,
+      )
+    );
   }
 
   /**

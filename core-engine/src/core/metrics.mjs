@@ -20,9 +20,9 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import os from "os";
-import { performance } from "perf_hooks";
-import { EventEmitter } from "events";
+import os from 'os';
+import { performance } from 'perf_hooks';
+import { EventEmitter } from 'events';
 
 class Metrics extends EventEmitter {
   constructor() {
@@ -40,7 +40,7 @@ class Metrics extends EventEmitter {
   startMonitoring() {
     setInterval(() => {
       this.systemStats = this.getSystemStats();
-      this.emit("metricsUpdate", this.getMetrics());
+      this.emit('metricsUpdate', this.getMetrics());
     }, 5000);
   }
 
@@ -76,24 +76,29 @@ class Metrics extends EventEmitter {
 
     const sorted = [...this.executionTimes].sort((a, b) => a - b);
     return {
-      P50: sorted[Math.floor(0.50 * sorted.length)] || 0,
+      P50: sorted[Math.floor(0.5 * sorted.length)] || 0,
       P75: sorted[Math.floor(0.75 * sorted.length)] || 0,
-      P90: sorted[Math.floor(0.90 * sorted.length)] || 0,
+      P90: sorted[Math.floor(0.9 * sorted.length)] || 0,
       P95: sorted[Math.floor(0.95 * sorted.length)] || 0,
       P99: sorted[Math.floor(0.99 * sorted.length)] || 0,
     };
   }
 
   getMetrics() {
-    const errorRate = this.requests > 0 ? (this.errors / this.requests) * 100 : 0;
+    const errorRate =
+      this.requests > 0 ? (this.errors / this.requests) * 100 : 0;
     const percentiles = this.getResponseTimePercentiles();
 
     return {
       requests: this.requests,
       successfulRequests: this.successfulRequests,
       errors: this.errors,
-      errorRate: errorRate.toFixed(2) + "%",
-      avgResponseTime: (this.executionTimes.reduce((a, b) => a + b, 0) / this.executionTimes.length || 0).toFixed(2) + " ms",
+      errorRate: errorRate.toFixed(2) + '%',
+      avgResponseTime:
+        (
+          this.executionTimes.reduce((a, b) => a + b, 0) /
+            this.executionTimes.length || 0
+        ).toFixed(2) + ' ms',
       percentiles,
       systemStats: this.systemStats,
       lastUpdated: new Date(this.lastUpdated).toISOString(),

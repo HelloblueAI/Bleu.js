@@ -63,7 +63,6 @@ import Redis from 'ioredis';
 
 import * as tf from '@tensorflow/tfjs-node';
 
-
 class ClusterAwareEventEmitter extends EventEmitter {
   constructor() {
     super();
@@ -113,10 +112,8 @@ class MultiLayerCache {
       return localResult.value;
     }
 
-
     const redisResult = await this.redis.get(key);
     if (redisResult) {
-
       this.localCache.set(key, {
         value: JSON.parse(redisResult),
         expiry: Date.now() + this.localCacheTTL,
@@ -292,7 +289,6 @@ EggSchema.methods.evolve = async function () {
   return false;
 };
 
-
 EggSchema.methods.predictRarity = async function () {
   const model = await tf.loadLayersModel(
     'file://./models/rarity-predictor/model.json',
@@ -313,7 +309,6 @@ EggSchema.methods.predictRarity = async function () {
   ];
 };
 
-
 EggSchema.statics.findByGenetics = async function (traits) {
   return this.find({
     $or: [
@@ -323,11 +318,9 @@ EggSchema.statics.findByGenetics = async function (traits) {
   }).sort({ createdAt: -1 });
 };
 
-
 export const Egg = mongoose.model('Egg', EggSchema);
 export const EggEvents = eggEvents;
 export const cache = new MultiLayerCache();
-
 
 const metrics = {
   eggGeneration: new Map(),

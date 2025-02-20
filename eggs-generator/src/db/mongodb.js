@@ -20,19 +20,19 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import winston from "winston";
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import winston from 'winston';
 
 dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
-  throw new Error("❌ MONGODB_URI is not defined in environment variables.");
+  throw new Error('❌ MONGODB_URI is not defined in environment variables.');
 }
 
 const logger = winston.createLogger({
-  level: "info",
+  level: 'info',
   format: winston.format.json(),
   transports: [new winston.transports.Console()],
 });
@@ -50,17 +50,17 @@ const connectDB = async () => {
 
     logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
 
-    mongoose.connection.on("error", (err) => {
-      logger.error("❌ MongoDB connection error:", err);
+    mongoose.connection.on('error', (err) => {
+      logger.error('❌ MongoDB connection error:', err);
     });
 
-    mongoose.connection.on("disconnected", () => {
-      logger.warn("⚠️ MongoDB disconnected");
+    mongoose.connection.on('disconnected', () => {
+      logger.warn('⚠️ MongoDB disconnected');
     });
 
     return conn;
   } catch (error) {
-    logger.error("❌ Error connecting to MongoDB:", error);
+    logger.error('❌ Error connecting to MongoDB:', error);
     process.exit(1);
   }
 };

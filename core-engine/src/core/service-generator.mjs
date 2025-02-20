@@ -180,21 +180,16 @@ class ServiceGenerator extends EventEmitter {
       };
     });
 
-
     const importStatements = this.generateImports(
       className,
       Array.from(imports),
     );
 
-
     const classDecorators = this.generateClassDecorators(options);
-
 
     const constructor = this.generateConstructor(className, methodsDetails);
 
-
     const methodsCode = this.generateServiceMethods(methods);
-
 
     const helperMethods = this.generateHelperMethods(methodsDetails);
 

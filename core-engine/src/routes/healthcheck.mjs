@@ -45,11 +45,11 @@ export function setupHealthRoute(app) {
         platform: process.platform || 'unknown',
         memoryUsage: process.memoryUsage(),
         cpuUsage: process.cpuUsage(),
-        metrics: metrics.getMetrics({ timeRange: 300000 }) // Last 5 minutes
+        metrics: metrics.getMetrics({ timeRange: 300000 }), // Last 5 minutes
       };
 
       if (!isValidResponse(healthData)) {
-        throw new Error("Invalid JSON response");
+        throw new Error('Invalid JSON response');
       }
 
       const duration = performance.now() - startTime;
@@ -57,7 +57,7 @@ export function setupHealthRoute(app) {
       metrics.gauge('healthcheck.status', 1);
 
       logger.info('Health check succeeded', {
-        duration: `${duration.toFixed(2)}ms`
+        duration: `${duration.toFixed(2)}ms`,
       });
 
       return res.status(200).json(healthData);
@@ -68,13 +68,13 @@ export function setupHealthRoute(app) {
 
       logger.error(`❌ Health check failed: ${error.message}`, {
         error: error.stack,
-        duration: `${duration.toFixed(2)}ms`
+        duration: `${duration.toFixed(2)}ms`,
       });
 
       return res.status(500).json({
         error: 'Health check failed',
         details: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   });

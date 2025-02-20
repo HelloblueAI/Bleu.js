@@ -20,212 +20,203 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
 
-import helmet from "helmet";
-import mongoose from "mongoose";
-import morgan from "morgan";
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 
+import helmet from 'helmet';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
 
-import { spawn } from "child_process";
-import cluster from "cluster";
-import fs from "fs";
-import getPort from "get-port";
-import { cpus } from "os";
-import path from "path";
-import { fileURLToPath } from "url";
-import winston from "winston";
+import { spawn } from 'child_process';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import fs from 'fs';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+import winston from 'winston';
 
 dotenv.config();
 
-const DEFAULT_PORT = process.env.PORT || 5005;
-const MONGODB_URI = process.env.MONGODB_URI || "";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PORT = process.env.PORT || 5005;
+const MONGODB_URI = process.env.MONGODB_URI || '';
 
 const logger = winston.createLogger({
-  level: "info",
+  level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/app.log", maxsize: 5 * 1024 * 1024 }),
+    new winston.transports.File({
+      filename: 'logs/app.log',
+      maxsize: 5 * 1024 * 1024,
+    }),
   ],
 });
 
-if (cluster.isPrimary) {
-  logger.info("🚀 Bleu.js Backend Initializing...");
+const app = express();
+app.use(express.json({ limit: '5mb' }));
+app.use(helmet());
+app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
+app.use(
+  morgan('tiny', { stream: { write: (msg) => logger.info(msg.trim()) } }),
+);
 
-  const numWorkers = cpus().length;
-  logger.info(`🧵 Starting ${numWorkers} workers...`);
-
-  for (let i = 0; i < numWorkers; i++) {
-    cluster.fork();
+async function connectMongoDB() {
+  if (!MONGODB_URI) {
+    logger.error('❌ MongoDB URI is missing.');
+    process.exit(1);
   }
-
-  cluster.on("exit", (worker, code, signal) => {
-    logger.warn(`⚠️ Worker ${worker.process.pid} exited (${signal || code}). Restarting...`);
-    cluster.fork();
-  });
-
-} else {
-  const app = express();
-  app.use(express.json({ limit: "2mb" }));
-  app.use(helmet());
-  app.use(cors({ origin: "*", methods: ["GET", "POST"] }));
-  app.use(morgan("tiny", { stream: { write: (msg) => logger.info(msg.trim()) } }));
-
-  async function connectMongoDB() {
-    if (!MONGODB_URI) {
-      logger.error("❌ MongoDB URI is missing.");
-      process.exit(1);
-    }
-
-    try {
-      await mongoose.connect(MONGODB_URI);
-      logger.info("✅ Connected to MongoDB.");
-    } catch (error) {
-      logger.error(`❌ MongoDB Connection Error: ${error.message}`);
-      process.exit(1);
-    }
+  try {
+    await mongoose.connect(MONGODB_URI);
+    logger.info('✅ Connected to MongoDB.');
+  } catch (error) {
+    logger.error(`❌ MongoDB Connection Error: ${error.message}`);
+    process.exit(1);
   }
-  connectMongoDB();
-
-  app.get("/", (_req, res) => {
-    res.status(200).json({
-      status: "success",
-      message: "🚀 Bleu.js Backend is Running!",
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      server: os.hostname(),
-    });
-  });
-
-  app.get("/health", async (_req, res) => {
-    const dbStatus = mongoose.connection.readyState === 1 ? "✅ Connected" : "❌ Disconnected";
-    res.json({
-      status: "success",
-      server: "Running",
-      dbStatus,
-      timestamp: new Date().toISOString(),
-      memoryUsage: process.memoryUsage(),
-      uptime: process.uptime(),
-    });
-  });
-
-  /**
-   * 🎯 **Predict Route - Calls Python XGBoost Model**
-   */
-  app.post("/predict", async (req, res) => {
-    try {
-      const { features } = req.body;
-
-      if (!Array.isArray(features) || features.length === 0) {
-        logger.warn("⚠️ Invalid request format");
-        return res.status(400).json({ status: "error", message: "Invalid input format" });
-      }
-
-      logger.info(`📡 Prediction Request: ${JSON.stringify(features)}`);
-
-      const scriptPath = path.join(__dirname, "xgboost_predict.py");
-
-      if (!fs.existsSync(scriptPath)) {
-        logger.error(`❌ Prediction script not found: ${scriptPath}`);
-        return res.status(500).json({ status: "error", message: "Prediction script not found" });
-      }
-
-      const startTime = process.hrtime();
-      const pythonProcess = spawn("python3", [scriptPath, JSON.stringify(features)], {
-        cwd: path.dirname(scriptPath),
-      });
-
-      let output = "";
-      let errorOutput = "";
-      let responseSent = false;
-
-      pythonProcess.stdout.on("data", (data) => (output += data.toString().trim()));
-      pythonProcess.stderr.on("data", (data) => (errorOutput += data.toString().trim()));
-
-      pythonProcess.on("close", (code) => {
-        if (responseSent) return;
-
-        const executionTime = process.hrtime(startTime);
-        const execTimeMs = (executionTime[0] * 1000 + executionTime[1] / 1e6).toFixed(2);
-
-
-        try {
-          if (code === 0 && output.trim()) {
-            const parsedOutput = JSON.parse(output.trim());
-            logger.info(`✅ Prediction Success in ${execTimeMs}ms: ${JSON.stringify(parsedOutput)}`);
-            responseSent = true;
-            return res.status(200).json({ status: "success", prediction: parsedOutput });
-          } else {
-            throw new Error(`Prediction failed. Exit code: ${code}, Stderr: ${errorOutput}`);
-          }
-        } catch (error) {
-          if (!responseSent) {
-            logger.error(`❌ Prediction Error: ${error.message}`);
-            responseSent = true;
-            return res.status(500).json({ status: "error", message: "Internal Server Error" });
-          }
-        }
-      });
-
-      pythonProcess.on("error", (error) => {
-        if (!responseSent) {
-          logger.error(`❌ Python Process Error: ${error.message}`);
-          responseSent = true;
-          res.status(500).json({ status: "error", message: "Internal Server Error" });
-        }
-      });
-
-    } catch (error) {
-      logger.error(`❌ Prediction Error: ${error.message}`);
-      if (!res.headersSent) {
-        res.status(500).json({ status: "error", message: "Internal Server Error" });
-      }
-    }
-  });
-
-  (async () => {
-    try {
-      const PORT = await getPort({ port: [DEFAULT_PORT, 5006, 5007, 5008] });
-      const server = app.listen(PORT, () => {
-        logger.info(`✅ Server running on http://localhost:${PORT} (Production Mode)`);
-      });
-
-      const shutdown = async (signal) => {
-        try {
-          logger.warn(`🛑 Received ${signal}. Shutting down gracefully...`);
-          await mongoose.connection.close();
-          logger.info("🛑 MongoDB Connection closed.");
-          server.close(() => {
-            logger.info("✅ Server closed.");
-            process.exit(0);
-          });
-        } catch (err) {
-          logger.error(`❌ MongoDB Shutdown Error: ${err.message}`);
-          process.exit(1);
-        }
-      };
-
-      process.on("SIGINT", () => shutdown("SIGINT"));
-      process.on("SIGTERM", () => shutdown("SIGTERM"));
-      process.on("uncaughtException", (err) => {
-        logger.error(`❌ Uncaught Exception: ${err.stack}`);
-        process.exit(1);
-      });
-      process.on("unhandledRejection", (err) => {
-        logger.error(`❌ Unhandled Rejection: ${err.stack}`);
-      });
-    } catch (err) {
-      logger.error(`❌ Fatal Error: ${err.message}`);
-      process.exit(1);
-    }
-  })();
 }
+connectMongoDB();
+
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: '🚀 Bleu.js Backend is Running!',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
+app.get('/health', async (_req, res) => {
+  const dbStatus =
+    mongoose.connection.readyState === 1 ? '✅ Connected' : '❌ Disconnected';
+  res.json({
+    status: 'success',
+    server: 'Running',
+    dbStatus,
+    timestamp: new Date().toISOString(),
+    memoryUsage: process.memoryUsage(),
+    uptime: process.uptime(),
+  });
+});
+
+/**
+ * 🎯 AI-Powered Prediction Route
+ */
+app.post('/predict', async (req, res) => {
+  try {
+    const { features } = req.body;
+    if (!Array.isArray(features) || !features.length) {
+      logger.warn('⚠️ Invalid request format');
+      return res
+        .status(400)
+        .json({ status: 'error', message: 'Invalid input format' });
+    }
+    logger.info(`📡 Prediction Request: ${JSON.stringify(features)}`);
+
+    const scriptPath = path.join(__dirname, 'xgboost_predict.py');
+    if (!fs.existsSync(scriptPath)) {
+      logger.error(`❌ Prediction script not found: ${scriptPath}`);
+      return res
+        .status(500)
+        .json({ status: 'error', message: 'Prediction script not found' });
+    }
+
+    const startTime = process.hrtime();
+    const pythonProcess = spawn('python3', [
+      scriptPath,
+      JSON.stringify(features),
+    ]);
+
+    let output = '',
+      errorOutput = '',
+      responseSent = false;
+    pythonProcess.stdout.on(
+      'data',
+      (data) => (output += data.toString().trim()),
+    );
+    pythonProcess.stderr.on(
+      'data',
+      (data) => (errorOutput += data.toString().trim()),
+    );
+
+    pythonProcess.on('close', (code) => {
+      if (responseSent) return;
+      const execTimeMs = process.hrtime(startTime);
+      const execTime = (execTimeMs[0] * 1000 + execTimeMs[1] / 1e6).toFixed(2);
+
+      try {
+        if (code === 0 && output.trim()) {
+          const parsedOutput = JSON.parse(output.trim());
+          logger.info(
+            `✅ Prediction Success in ${execTime}ms: ${JSON.stringify(parsedOutput)}`,
+          );
+          responseSent = true;
+          return res
+            .status(200)
+            .json({ status: 'success', prediction: parsedOutput });
+        } else {
+          throw new Error(
+            `Prediction failed. Exit code: ${code}, Stderr: ${errorOutput}`,
+          );
+        }
+      } catch (error) {
+        if (!responseSent) {
+          logger.error(`❌ Prediction Error: ${error.message}`);
+          responseSent = true;
+          return res
+            .status(500)
+            .json({ status: 'error', message: 'Internal Server Error' });
+        }
+      }
+    });
+
+    pythonProcess.on('error', (error) => {
+      if (!responseSent) {
+        logger.error(`❌ Python Process Error: ${error.message}`);
+        responseSent = true;
+        res
+          .status(500)
+          .json({ status: 'error', message: 'Internal Server Error' });
+      }
+    });
+  } catch (error) {
+    logger.error(`❌ Prediction Error: ${error.message}`);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+});
+
+const server = app.listen(PORT, () =>
+  logger.info(`✅ Server running on http://localhost:${PORT}`),
+);
+
+const shutdown = async (signal) => {
+  try {
+    logger.warn(`🛑 Received ${signal}. Shutting down gracefully...`);
+    await mongoose.connection.close();
+    logger.info('🛑 MongoDB Connection closed.');
+    server.close(() => {
+      logger.info('✅ Server closed.');
+      process.exit(0);
+    });
+  } catch (err) {
+    logger.error(`❌ MongoDB Shutdown Error: ${err.message}`);
+    process.exit(1);
+  }
+};
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('uncaughtException', (err) => {
+  logger.error(`❌ Uncaught Exception: ${err.stack}`);
+  process.exit(1);
+});
+process.on('unhandledRejection', (err) => {
+  logger.error(`❌ Unhandled Rejection: ${err.stack}`);
+});

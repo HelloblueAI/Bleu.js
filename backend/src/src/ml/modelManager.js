@@ -99,7 +99,11 @@ class ModelManager {
       }
 
       logger.info(`📤 Uploading dataset: ${datasetPath}`);
-      const process = spawn('python3', [this.uploadScript, '--file', datasetPath]);
+      const process = spawn('python3', [
+        this.uploadScript,
+        '--file',
+        datasetPath,
+      ]);
 
       process.stdout.on('data', (data) => {
         logger.info(`📢 Upload stdout: ${data.toString().trim()}`);
@@ -132,7 +136,12 @@ class ModelManager {
    */
   evaluateRule(ruleId, inputData) {
     return new Promise((resolve, reject) => {
-      if (!ruleId || typeof ruleId !== 'string' || !inputData || typeof inputData !== 'object') {
+      if (
+        !ruleId ||
+        typeof ruleId !== 'string' ||
+        !inputData ||
+        typeof inputData !== 'object'
+      ) {
         return reject(new Error('Invalid ruleId or inputData provided.'));
       }
 
@@ -170,4 +179,3 @@ class ModelManager {
 }
 
 module.exports = ModelManager;
-

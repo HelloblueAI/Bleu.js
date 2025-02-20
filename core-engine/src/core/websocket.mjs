@@ -20,53 +20,56 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import { logger } from "../config/logger.mjs";
-import { metrics } from "./metrics.mjs";
+import { logger } from '../config/logger.mjs';
+import { metrics } from './metrics.mjs';
 
 /**
  * Initializes WebSocket server
  * @param {import('http').Server} server - HTTP server instance
  */
 export default async function setupWebSocketServer(server) {
-  const WebSocket = await import("ws");
+  const WebSocket = await import('ws');
   const wss = new WebSocket.Server({ server });
 
-  logger.info("✅ WebSocket server initialized");
+  logger.info('✅ WebSocket server initialized');
 
-  wss.on("connection", (ws, req) => {
+  wss.on('connection', (ws, req) => {
     logger.info(`🔗 WebSocket client connected: ${req.socket.remoteAddress}`);
 
+    metrics.counter('websocket.connections');
 
-    metrics.counter("websocket.connections");
-
-    ws.on("message", (message) => {
+    ws.on('message', (message) => {
       try {
         const data = JSON.parse(message);
         logger.info(`📩 Received WebSocket message: ${message}`);
 
-        if (data.type === "broadcast") {
+        if (data.type === 'broadcast') {
           broadcastMessage(wss, data);
         }
       } catch (error) {
-        logger.error("⚠️ Invalid WebSocket message format", { error });
+        logger.error('⚠️ Invalid WebSocket message format', { error });
       }
     });
 
-    ws.on("close", () => {
-      logger.info("🔌 WebSocket client disconnected");
-      metrics.counter("websocket.disconnections");
+    ws.on('close', () => {
+      logger.info('🔌 WebSocket client disconnected');
+      metrics.counter('websocket.disconnections');
     });
 
-    ws.on("error", (error) => {
-      logger.error("❌ WebSocket error", { error });
+    ws.on('error', (error) => {
+      logger.error('❌ WebSocket error', { error });
     });
 
-    ws.send(JSON.stringify({ type: "welcome", message: "Welcome to Bleu.js WebSocket!" }));
+    ws.send(
+      JSON.stringify({
+        type: 'welcome',
+        message: 'Welcome to Bleu.js WebSocket!',
+      }),
+    );
   });
 
-
-  process.on("SIGINT", () => shutdownWebSocket(wss));
-  process.on("SIGTERM", () => shutdownWebSocket(wss));
+  process.on('SIGINT', () => shutdownWebSocket(wss));
+  process.on('SIGTERM', () => shutdownWebSocket(wss));
 }
 
 /**
@@ -77,7 +80,7 @@ export default async function setupWebSocketServer(server) {
 function broadcastMessage(wss, data) {
   wss.clients.forEach((client) => {
     if (client.readyState === 1) {
-      client.send(JSON.stringify({ type: "broadcast", message: data.message }));
+      client.send(JSON.stringify({ type: 'broadcast', message: data.message }));
     }
   });
 }
@@ -87,6 +90,6 @@ function broadcastMessage(wss, data) {
  * @param {WebSocket.Server} wss - WebSocket server instance
  */
 function shutdownWebSocket(wss) {
-  logger.warn("⚠️ WebSocket server shutting down...");
-  wss.close(() => logger.info("✅ WebSocket server closed"));
+  logger.warn('⚠️ WebSocket server shutting down...');
+  wss.close(() => logger.info('✅ WebSocket server closed'));
 }

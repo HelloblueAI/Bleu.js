@@ -23,22 +23,21 @@
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 
-import broadcastRoutes from "./broadcast.mjs";
-import generateEggRoutes from "./generate-egg.mjs";
-import healthCheckRoutes from "./healthcheck.mjs";
+import broadcastRoutes from './broadcast.mjs';
+import generateEggRoutes from './generate-egg.mjs';
+import healthCheckRoutes from './healthcheck.mjs';
 
 export { broadcastRoutes, generateEggRoutes, healthCheckRoutes };
-
 
 export const lazyLoadRoute = async (routeName) => {
   try {
     switch (routeName) {
-      case "broadcastRoutes":
-        return (await import("./broadcast.mjs")).default;
-      case "generateEggRoutes":
-        return (await import("./generate-egg.mjs")).default;
-      case "healthCheckRoutes":
-        return (await import("./healthcheck.mjs")).default;
+      case 'broadcastRoutes':
+        return (await import('./broadcast.mjs')).default;
+      case 'generateEggRoutes':
+        return (await import('./generate-egg.mjs')).default;
+      case 'healthCheckRoutes':
+        return (await import('./healthcheck.mjs')).default;
       default:
         throw new Error(`Route '${routeName}' not found.`);
     }
@@ -47,4 +46,3 @@ export const lazyLoadRoute = async (routeName) => {
     throw error;
   }
 };
-

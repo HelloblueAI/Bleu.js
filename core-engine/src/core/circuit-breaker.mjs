@@ -20,15 +20,15 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import { EventEmitter } from "events";
-import { performance } from "perf_hooks";
-import metrics from "./metrics.mjs";
+import { EventEmitter } from 'events';
+import { performance } from 'perf_hooks';
+import metrics from './metrics.mjs';
 
 class AdvancedCircuitBreaker extends EventEmitter {
   static States = {
-    CLOSED: "CLOSED",
-    OPEN: "OPEN",
-    HALF_OPEN: "HALF_OPEN",
+    CLOSED: 'CLOSED',
+    OPEN: 'OPEN',
+    HALF_OPEN: 'HALF_OPEN',
   };
 
   constructor(options = {}) {
@@ -68,7 +68,7 @@ class AdvancedCircuitBreaker extends EventEmitter {
   startMonitoring() {
     this.monitorInterval = setInterval(() => {
       this.updateStatistics();
-      this.emit("statistics", this.getStatistics());
+      this.emit('statistics', this.getStatistics());
     }, this.options.monitorInterval);
   }
 
@@ -79,7 +79,7 @@ class AdvancedCircuitBreaker extends EventEmitter {
     try {
       if (this.activeRequests > this.options.bulkhead) {
         metrics.errors++;
-        throw new Error("Circuit breaker bulkhead limit exceeded");
+        throw new Error('Circuit breaker bulkhead limit exceeded');
       }
 
       if (this.options.cache && cacheKey) {
@@ -116,14 +116,10 @@ class AdvancedCircuitBreaker extends EventEmitter {
       metrics.trackRequest(startTime, false);
       this._onFailure(error);
       throw error;
-
     }
-
-
   }
 
   _onSuccess(duration) {
-
     this.failures = 0;
     this.executionTimes.push(duration);
     if (this.executionTimes.length > 1000) {
@@ -140,7 +136,6 @@ class AdvancedCircuitBreaker extends EventEmitter {
   }
 
   _onFailure(error) {
-    
     this.failures++;
     this.lastFailureTime = Date.now();
     this.successes = 0;
@@ -165,7 +160,11 @@ class AdvancedCircuitBreaker extends EventEmitter {
     if (this.state === newState) return;
     this.state = newState;
     this.lastStateChange = Date.now();
-    this.emit("stateChange", { from: this.state, to: newState, timestamp: Date.now() });
+    this.emit('stateChange', {
+      from: this.state,
+      to: newState,
+      timestamp: Date.now(),
+    });
   }
 
   reset() {
@@ -177,7 +176,7 @@ class AdvancedCircuitBreaker extends EventEmitter {
     this.executionTimes = [];
     this.activeRequests = 0;
     this.cache.clear();
-    this.emit("reset");
+    this.emit('reset');
   }
 }
 

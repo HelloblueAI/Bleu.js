@@ -24,7 +24,7 @@ export const createMockLogger = () => ({
   info: () => {},
   warn: () => {},
   error: () => {},
-  debug: () => {}
+  debug: () => {},
 });
 
 export const createMockFormatters = () => ({
@@ -32,12 +32,12 @@ export const createMockFormatters = () => ({
   timestamp: () => {},
   printf: () => {},
   colorize: () => {},
-  json: () => {}
+  json: () => {},
 });
 
 export const createMockTransport = () => ({
   on: () => {},
-  emit: () => {}
+  emit: () => {},
 });
 
 export const createWinstonMock = () => ({
@@ -45,6 +45,6 @@ export const createWinstonMock = () => ({
   format: createMockFormatters(),
   transports: {
     Console: () => createMockTransport(),
-    File: () => createMockTransport()
-  }
+    File: () => createMockTransport(),
+  },
 });

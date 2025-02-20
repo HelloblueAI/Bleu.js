@@ -28,13 +28,18 @@ const compromise = require('compromise');
 const natural = require('natural');
 const logger = require('../../utils/logger'); // Logging added
 
-const { WordTokenizer, PorterStemmer, SentimentAnalyzer, BayesClassifier } = natural;
+const { WordTokenizer, PorterStemmer, SentimentAnalyzer, BayesClassifier } =
+  natural;
 
 class NLPProcessor {
   constructor() {
     this.tokenizer = new WordTokenizer();
     this.stemmer = PorterStemmer;
-    this.sentimentAnalyzer = new SentimentAnalyzer('English', this.stemmer, 'afinn');
+    this.sentimentAnalyzer = new SentimentAnalyzer(
+      'English',
+      this.stemmer,
+      'afinn',
+    );
     this.classifier = new BayesClassifier();
     this.ner = compromise;
   }
@@ -102,9 +107,16 @@ class NLPProcessor {
    * @throws {Error} If input is invalid
    */
   addDocument(text, category) {
-    if (!text || typeof text !== 'string' || !category || typeof category !== 'string') {
+    if (
+      !text ||
+      typeof text !== 'string' ||
+      !category ||
+      typeof category !== 'string'
+    ) {
       logger.error('❌ addDocument() -> Invalid input');
-      throw new Error('Invalid input. Text and category must be non-empty strings.');
+      throw new Error(
+        'Invalid input. Text and category must be non-empty strings.',
+      );
     }
     this.classifier.addDocument(text, category);
     logger.info(`📚 Document Added: "${text}" -> ${category}`);

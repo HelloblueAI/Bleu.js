@@ -20,12 +20,12 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 /* eslint-env node */
-const axios = require('axios');
-const logger = require('../src/utils/logger');
-const AiQuery = require('../models/AiQuery');
+import { error as _error, info } from '../src/utils/logger';
+import AiQuery from '../models/AiQuery';
 
 /**
  * Mock function to simulate AI model response.
@@ -36,7 +36,7 @@ const callAIModel = async (query) => {
   try {
     return `Mock response for query: "${query}"`;
   } catch (error) {
-    logger.error(`Error calling AI model: ${error.message}`);
+    _error(`Error calling AI model: ${error.message}`);
     return null;
   }
 };
@@ -64,14 +64,14 @@ const predict = async (req, res) => {
     });
 
     await aiQuery.save();
-    logger.info(`✅ AI query saved: ${query}`);
+    info(`✅ AI query saved: ${query}`);
 
     return res.status(200).json({
       message: 'Prediction successful!',
       response,
     });
   } catch (err) {
-    logger.error(`Error in prediction: ${err.message}`);
+    _error(`Error in prediction: ${err.message}`);
     return res.status(500).json({ error: 'Prediction failed.' });
   }
 };
@@ -159,22 +159,30 @@ const evaluateRule = (req, res) => {
 const generateEgg = (req, res) => {
   try {
     const { type, options } = req.body;
-    if (!type || !options || !options.modelName || !Array.isArray(options.fields)) {
+    if (
+      !type ||
+      !options ||
+      !options.modelName ||
+      !Array.isArray(options.fields)
+    ) {
       return res.status(400).json({ error: 'Invalid input parameters.' });
     }
 
-    const fieldsCode = options.fields.map(f => f.name + ': ' + f.type + ';').join('\n  ');
-    const modelCode = 'class ' + options.modelName + ' {\n  ' + fieldsCode + '\n}';
-    logger.info(`✅ Generated egg model: ${options.modelName}`);
+    const fieldsCode = options.fields
+      .map((f) => f.name + ': ' + f.type + ';')
+      .join('\n  ');
+    const modelCode =
+      'class ' + options.modelName + ' {\n  ' + fieldsCode + '\n}';
+    info(`✅ Generated egg model: ${options.modelName}`);
 
     return res.status(200).json({
       id: 1,
-      description: `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`,
+      description: `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`,
       type,
       code: modelCode,
     });
   } catch (error) {
-    logger.error(`❌ Error generating egg: ${error.message}`);
+    _error(`❌ Error generating egg: ${error.message}`);
     res.status(500).json({ error: 'Failed to generate egg.' });
   }
 };
@@ -189,11 +197,11 @@ const monitorDependencies = (req, res) => {
       { name: 'mongoose', version: '7.6.13', latest: '7.6.14' },
       { name: 'dotenv', version: '16.4.5', latest: '16.4.5' },
     ];
-    const outdated = dependencies.filter(dep => dep.version !== dep.latest);
+    const outdated = dependencies.filter((dep) => dep.version !== dep.latest);
 
     res.status(200).json({ dependencies, outdated });
   } catch (error) {
-    logger.error(`Error monitoring dependencies: ${error.message}`);
+    _error(`Error monitoring dependencies: ${error.message}`);
     res.status(500).json({ error: 'Dependency monitoring failed.' });
   }
 };
@@ -214,7 +222,7 @@ const resolveConflicts = (req, res) => {
 
     res.status(200).json({ resolved, conflicts });
   } catch (error) {
-    logger.error(`Error resolving conflicts: ${error.message}`);
+    _error(`Error resolving conflicts: ${error.message}`);
     res.status(500).json({ error: 'Conflict resolution failed.' });
   }
 };
@@ -234,7 +242,7 @@ const invalidRoute = (req, res) => {
 };
 
 // Exporting all controllers
-module.exports = {
+export default {
   getData,
   predict,
   processData,

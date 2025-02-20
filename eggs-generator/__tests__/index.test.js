@@ -24,17 +24,15 @@ import { jest } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 
-
 const mockGenerateEgg = jest.fn();
 const mockLogger = {
   info: jest.fn(),
   error: jest.fn(),
-  debug: jest.fn()
+  debug: jest.fn(),
 };
 
-
 jest.mock('../src/generateEgg.js', () => ({
-  generateEgg: mockGenerateEgg
+  generateEgg: mockGenerateEgg,
 }));
 
 describe('Egg Generator Tests', () => {
@@ -48,7 +46,7 @@ describe('Egg Generator Tests', () => {
       mongoose.set('strictQuery', false); // To suppress deprecation warnings
       await mongoose.connect(mongoUri, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
       });
 
       console.info('✅ MongoDB Memory Server started successfully');

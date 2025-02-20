@@ -65,7 +65,7 @@ export class MetricsCollector extends EventEmitter {
         name,
         value,
         tags: { ...this.#tags, ...tags },
-        timestamp
+        timestamp,
       });
     } catch (error) {
       this.emit('error', error);
@@ -88,7 +88,7 @@ export class MetricsCollector extends EventEmitter {
         name,
         bucket,
         count: hist.get(bucket),
-        tags: { ...this.#tags, ...tags }
+        tags: { ...this.#tags, ...tags },
       });
     } catch (error) {
       this.emit('error', error);
@@ -107,7 +107,7 @@ export class MetricsCollector extends EventEmitter {
         name,
         value: newValue,
         increment,
-        tags: { ...this.#tags, ...tags }
+        tags: { ...this.#tags, ...tags },
       });
     } catch (error) {
       this.emit('error', error);
@@ -121,13 +121,13 @@ export class MetricsCollector extends EventEmitter {
       this.#gauges.set(gaugeKey, {
         value,
         timestamp: Date.now(),
-        tags: { ...this.#tags, ...tags }
+        tags: { ...this.#tags, ...tags },
       });
 
       this.emit('gauge:updated', {
         name,
         value,
-        tags: { ...this.#tags, ...tags }
+        tags: { ...this.#tags, ...tags },
       });
     } catch (error) {
       this.emit('error', error);
@@ -140,7 +140,11 @@ export class MetricsCollector extends EventEmitter {
     const cutoff = now - this.#retentionPeriod;
 
     const filteredMetrics = this.#filterMetrics(this.#metrics, filter, cutoff);
-    const filteredHistograms = this.#filterMetrics(this.#histograms, filter, cutoff);
+    const filteredHistograms = this.#filterMetrics(
+      this.#histograms,
+      filter,
+      cutoff,
+    );
     const filteredCounters = this.#filterMetrics(this.#counters, filter);
     const filteredGauges = this.#filterMetrics(this.#gauges, filter, cutoff);
 
@@ -149,7 +153,7 @@ export class MetricsCollector extends EventEmitter {
       metrics: this.#formatMetrics(filteredMetrics, includeRaw),
       histograms: Object.fromEntries(filteredHistograms),
       counters: Object.fromEntries(filteredCounters),
-      gauges: Object.fromEntries(filteredGauges)
+      gauges: Object.fromEntries(filteredGauges),
     };
 
     this.emit('metrics:retrieved', metrics);
@@ -166,7 +170,7 @@ export class MetricsCollector extends EventEmitter {
       p99: 0,
       stddev: 0,
       values: [],
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     };
   }
 
@@ -178,8 +182,8 @@ export class MetricsCollector extends EventEmitter {
     metric.values.push({ value, timestamp });
 
     // Maintain sliding window
-    metric.values = metric.values.filter(v =>
-      v.timestamp > timestamp - this.#retentionPeriod
+    metric.values = metric.values.filter(
+      (v) => v.timestamp > timestamp - this.#retentionPeriod,
     );
 
     this.#calculatePercentiles(metric);
@@ -199,8 +203,10 @@ export class MetricsCollector extends EventEmitter {
     if (metric.count === 0) return;
 
     const mean = metric.sum / metric.count;
-    const squareDiffs = metric.values.map(v => Math.pow(v.value - mean, 2));
-    metric.stddev = Math.sqrt(squareDiffs.reduce((a, b) => a + b, 0) / metric.count);
+    const squareDiffs = metric.values.map((v) => Math.pow(v.value - mean, 2));
+    metric.stddev = Math.sqrt(
+      squareDiffs.reduce((a, b) => a + b, 0) / metric.count,
+    );
   }
 
   #calculateBucketSize(value) {
@@ -218,16 +224,15 @@ export class MetricsCollector extends EventEmitter {
 
   #filterMetrics(metricMap, filter, cutoff = null) {
     return new Map(
-      Array.from(metricMap.entries())
-        .filter(([key, value]) => {
-          if (cutoff && value.lastUpdated && value.lastUpdated < cutoff) {
-            return false;
-          }
-          if (filter && typeof filter === 'function') {
-            return filter(key, value);
-          }
-          return true;
-        })
+      Array.from(metricMap.entries()).filter(([key, value]) => {
+        if (cutoff && value.lastUpdated && value.lastUpdated < cutoff) {
+          return false;
+        }
+        if (filter && typeof filter === 'function') {
+          return filter(key, value);
+        }
+        return true;
+      }),
     );
   }
 
@@ -243,7 +248,7 @@ export class MetricsCollector extends EventEmitter {
         p95: value.p95,
         p99: value.p99,
         stddev: value.stddev,
-        lastUpdated: value.lastUpdated
+        lastUpdated: value.lastUpdated,
       };
       if (includeRaw) {
         formatted[key].values = value.values;

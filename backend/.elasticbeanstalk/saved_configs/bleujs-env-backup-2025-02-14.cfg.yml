@@ -3,7 +3,8 @@ EnvironmentConfigurationMetadata:
   DateCreated: '1739512340000'
   DateModified: '1739512340000'
 Platform:
-  PlatformArn: arn:aws:elasticbeanstalk:us-west-2::platform/Node.js 20 running on
+  PlatformArn:
+    arn:aws:elasticbeanstalk:us-west-2::platform/Node.js 20 running on
     64bit Amazon Linux 2023/6.4.2
 OptionSettings:
   aws:elasticbeanstalk:command:

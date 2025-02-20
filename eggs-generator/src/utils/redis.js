@@ -36,7 +36,9 @@ export const redisClient = createClient({
 });
 
 /** 🛠 Handle Redis Connection */
-redisClient.on('error', (err) => logger.error('❌ Redis Connection Failed:', err));
+redisClient.on('error', (err) =>
+  logger.error('❌ Redis Connection Failed:', err),
+);
 
 redisClient.connect().then(() => {
   logger.info(`✅ Connected to Redis at ${REDIS_HOST}:${REDIS_PORT}`);

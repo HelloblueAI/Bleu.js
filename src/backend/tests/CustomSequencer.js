@@ -1,4 +1,3 @@
-
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 

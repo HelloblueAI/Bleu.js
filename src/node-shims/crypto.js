@@ -1,5 +1,13 @@
 // Enhanced crypto shim for Jest environment
-import { randomBytes, createHash, createHmac, createCipheriv, createDecipheriv, scrypt, pbkdf2 } from 'crypto';
+import {
+  randomBytes,
+  createHash,
+  createHmac,
+  createCipheriv,
+  createDecipheriv,
+  scrypt,
+  pbkdf2,
+} from 'crypto';
 
 // Create a complete crypto implementation
 const enhancedCrypto = {
@@ -48,7 +56,7 @@ const enhancedCrypto = {
           algorithm,
           extractable,
           usages: keyUsages,
-          handle: Buffer.from(keyData)
+          handle: Buffer.from(keyData),
         };
       }
       throw new Error('Unsupported algorithm');
@@ -62,7 +70,7 @@ const enhancedCrypto = {
         return hmac.digest();
       }
       throw new Error('Unsupported algorithm');
-    }
+    },
   },
 
   // Constants
@@ -71,8 +79,8 @@ const enhancedCrypto = {
     SSL_OP_ALL: 0x80000000,
     SSL_OP_NO_SSLv2: 0x01000000,
     SSL_OP_NO_SSLv3: 0x02000000,
-    SSL_OP_NO_TLSv1: 0x04000000
-  }
+    SSL_OP_NO_TLSv1: 0x04000000,
+  },
 };
 
 // Handle both CommonJS and ES modules environments
@@ -113,7 +121,7 @@ export {
   createCipheriv,
   createDecipheriv,
   scrypt,
-  pbkdf2
+  pbkdf2,
 };
 
 // Export a factory function for creating new instances
