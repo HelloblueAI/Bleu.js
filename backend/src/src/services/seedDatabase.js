@@ -20,8 +20,8 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-'use strict';
 
+'use strict';
 
 /* eslint-env node */
 const RuleModel = require('../models/RuleModel');
@@ -41,8 +41,10 @@ const seedDatabase = async (customData = null) => {
     {
       name: 'High Temperature Alert',
       description: 'Triggers an alert when temperature exceeds 100°C.',
-      conditions: [{ fact: 'temperature', operator: 'greaterThan', value: 100 }],
-      actions: [{ type: 'alert', message: 'High temperature detected!' }]
+      conditions: [
+        { fact: 'temperature', operator: 'greaterThan', value: 100 },
+      ],
+      actions: [{ type: 'alert', message: 'High temperature detected!' }],
     },
   ];
 
@@ -53,7 +55,9 @@ const seedDatabase = async (customData = null) => {
 
     await RuleModel.insertMany(dataToInsert);
 
-    logger.info(`✅ Database seeded successfully with ${dataToInsert.length} entries.`);
+    logger.info(
+      `✅ Database seeded successfully with ${dataToInsert.length} entries.`,
+    );
   } catch (error) {
     logger.error('❌ Error seeding database:', error);
   }

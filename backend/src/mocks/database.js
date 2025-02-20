@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 const mongoose = require('mongoose');
@@ -53,7 +54,6 @@ const connect = async () => {
     mongoose.connection.on('disconnected', () => {
       logger.warn('⚠️ MongoDB disconnected. Attempting to reconnect...');
     });
-
   } catch (error) {
     logger.error(`❌ MongoDB connection failed: ${error.message}`);
     process.exit(1); // Exit process if DB connection fails

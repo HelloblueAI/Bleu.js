@@ -4,11 +4,7 @@
     "module": "NodeNext",
     "target": "ESNext",
     "moduleResolution": "NodeNext",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     // 🚀 Optimized Interop & Compatibility
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -39,21 +35,11 @@
     "forceConsistentCasingInFileNames": true,
     // 🚀 Path Aliases
     "paths": {
-      "@backend/*": [
-        "./src/*"
-      ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
-      "@models/*": [
-        "./src/models/*"
-      ],
-      "@controllers/*": [
-        "./src/controllers/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ]
+      "@backend/*": ["./src/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@models/*": ["./src/models/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@services/*": ["./src/services/*"]
     },
     // 🚀 Type Definitions
     "types": [
@@ -67,10 +53,7 @@
       "natural"
     ]
   },
-  "include": [
-    "./src/**/*.ts",
-    "src/index.ts"
-  ],
+  "include": ["./src/**/*.ts", "src/index.ts"],
   "exclude": [
     "node_modules",
     "dist",

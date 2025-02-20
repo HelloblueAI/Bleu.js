@@ -20,28 +20,25 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 const fs = require('fs');
 const util = require('util');
 const path = require('path');
 
 module.exports = async () => {
-
   process.env.NODE_ENV = 'test';
   process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || '1';
-
 
   global.TextEncoder = util.TextEncoder;
   global.TextDecoder = util.TextDecoder;
 
-
   const testDirs = ['coverage', 'reports'];
-  testDirs.forEach(dir => {
+  testDirs.forEach((dir) => {
     const dirPath = path.join(process.cwd(), dir);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
   });
-
 
   if (process.env.MONGODB_URI) {
     try {

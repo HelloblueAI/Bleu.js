@@ -1,4 +1,3 @@
-
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 
@@ -24,47 +23,50 @@
 /* eslint-env jest */
 const isDebug = process.env.DEBUG_TESTS === 'true';
 
-
 afterEach(() => {
-    if (global.server) {
-        try {
-            global.server.close(() => {
-                if (isDebug) console.info('✅ Server closed after test suite.');
-            });
-        } catch (error) {
-            console.error('❌ Error closing server:', error);
-        }
+  if (global.server) {
+    try {
+      global.server.close(() => {
+        if (isDebug) console.info('✅ Server closed after test suite.');
+      });
+    } catch (error) {
+      console.error('❌ Error closing server:', error);
     }
+  }
 
+  jest.restoreAllMocks();
+  jest.resetModules();
+  jest.clearAllMocks();
+  jest.clearAllTimers();
 
-    jest.restoreAllMocks();
-    jest.resetModules();
-    jest.clearAllMocks();
-    jest.clearAllTimers();
-
-    if (isDebug) console.info('✅ Jest cleanup completed.');
+  if (isDebug) console.info('✅ Jest cleanup completed.');
 });
 
-
 global.__TEST_ENV__ = {
-    apiBaseUrl: 'http://localhost:4000',
-    defaultTimeout: 5000,
+  apiBaseUrl: 'http://localhost:4000',
+  defaultTimeout: 5000,
 };
 
-
 jest.mock('fs', () => ({
-    readFileSync: jest.fn(() => 'mocked file content'),
-    writeFileSync: jest.fn(),
-    existsSync: jest.fn(() => true),
+  readFileSync: jest.fn(() => 'mocked file content'),
+  writeFileSync: jest.fn(),
+  existsSync: jest.fn(() => true),
 }));
 
 jest.mock('path', () => ({
-    join: jest.fn((...args) => args.join('/')),
+  join: jest.fn((...args) => args.join('/')),
 }));
 
-
-jest.spyOn(global.console, 'log').mockImplementation((...args) => isDebug && console.info('[LOG]:', ...args));
-jest.spyOn(global.console, 'error').mockImplementation((...args) => isDebug && console.info('[ERROR]:', ...args));
-jest.spyOn(global.console, 'warn').mockImplementation((...args) => isDebug && console.info('[WARN]:', ...args));
+jest
+  .spyOn(global.console, 'log')
+  .mockImplementation((...args) => isDebug && console.info('[LOG]:', ...args));
+jest
+  .spyOn(global.console, 'error')
+  .mockImplementation(
+    (...args) => isDebug && console.info('[ERROR]:', ...args),
+  );
+jest
+  .spyOn(global.console, 'warn')
+  .mockImplementation((...args) => isDebug && console.info('[WARN]:', ...args));
 
 if (isDebug) console.info('✅ Jest test setup initialized.');

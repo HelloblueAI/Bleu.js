@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 const path = require('path');
 const pkg = require('./package.json');
 
@@ -32,7 +33,7 @@ module.exports = {
   moduleNameMapper: {
 
     'node:crypto': '<rootDir>/src/node-shims/crypto.js',
-    'crypto': '<rootDir>/src/node-shims/crypto.js',
+    crypto: '<rootDir>/src/node-shims/crypto.js',
     'node:fs': '<rootDir>/src/node-shims/fs.js',
     'node:net': '<rootDir>/src/node-shims/net.js',
     'node:events': require.resolve('events'),
@@ -42,7 +43,7 @@ module.exports = {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
     '^@models/(.*)$': '<rootDir>/src/models/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
-    '^@core/(.*)$': '<rootDir>/src/core/$1'
+    '^@core/(.*)$': '<rootDir>/src/core/$1',
   },
 
 
@@ -50,13 +51,13 @@ module.exports = {
     '^.+\\.m?[tj]sx?$': [
       'babel-jest',
       {
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
-      }
-    ]
+        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+      },
+    ],
   },
 
   transformIgnorePatterns: [
-    'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)'
+    'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)',
   ],
 
 
@@ -89,10 +90,10 @@ module.exports = {
           { title: 'Project', value: pkg.name },
           { title: 'Version', value: pkg.version },
           { title: 'Date', value: new Date().toISOString() },
-          { title: 'Environment', value: process.env.NODE_ENV || 'test' }
+          { title: 'Environment', value: process.env.NODE_ENV || 'test' },
         ],
-        automaticallyOpen: true
-      }
+        automaticallyOpen: true,
+      },
     ],
     [
       'jest-junit',
@@ -105,9 +106,9 @@ module.exports = {
         classNameTemplate: '{classname}',
         titleTemplate: '{title}',
         addFileAttribute: true,
-        reportTestSuiteErrors: true
-      }
-    ]
+        reportTestSuiteErrors: true,
+      },
+    ],
   ],
 
   projects: [
@@ -123,8 +124,8 @@ module.exports = {
         '/.pnpm/',
         '/venv/',
         '/eggs-generator/__tests__/index.test.js',
-        '/tests/egg.test.js'
-      ]
+        '/tests/egg.test.js',
+      ],
     },
     {
       displayName: 'test',
@@ -133,7 +134,7 @@ module.exports = {
         '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
         '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
-        '<rootDir>/**/__tests__/**/*.test.{js,jsx,ts,tsx}'
+        '<rootDir>/**/__tests__/**/*.test.{js,jsx,ts,tsx}',
       ],
       testPathIgnorePatterns: [
         '/node_modules/',
@@ -142,11 +143,20 @@ module.exports = {
         '/.pnpm/',
         '/venv/',
         '/eggs-generator/__tests__/index.test.js',
-        '/tests/egg.test.js'
+        '/tests/egg.test.js',
       ],
       coverageDirectory: 'coverage',
       collectCoverage: true,
-      coverageReporters: ['text', 'lcov', 'html', 'json-summary', 'cobertura'],
+      coverageReporters: [
+        'text',
+        'text-summary',
+        'lcov',
+        'html',
+        'json',
+        'json-summary',
+        'cobertura',
+        'clover',
+      ],
       collectCoverageFrom: [
         'src/**/*.{js,jsx,ts,tsx}',
         'backend/src/**/*.{js,jsx,ts,tsx}',
@@ -161,26 +171,45 @@ module.exports = {
         '!**/types/**',
         '!**/interfaces/**',
         '!**/constants/**',
-        '!**/config/**'
+        '!**/config/**',
+        '!**/mocks/**',
+        '!**/fixtures/**',
+        '!**/stories/**',
+        '!**/*.stories.*',
+        '!**/*.style.*',
+        '!**/index.ts',
+        '!**/index.js',
       ],
       coverageThreshold: {
         global: {
           branches: 90,
           functions: 90,
           lines: 95,
-          statements: 95
-        }
-      }
-    }
+          statements: 95,
+        },
+        './src/core/': {
+          branches: 95,
+          functions: 95,
+          lines: 98,
+          statements: 98,
+        },
+        './src/utils/': {
+          branches: 90,
+          functions: 90,
+          lines: 95,
+          statements: 95,
+        },
+      },
+    },
   ],
 
-
+  
   maxWorkers: '85%',
   testTimeout: 120000,
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
-    ['jest-watch-suspend', { 'key-for-resume': 'r', 'key-for-suspend': 's' }]
+    ['jest-watch-suspend', { 'key-for-resume': 'r', 'key-for-suspend': 's' }],
   ],
 
 
@@ -188,7 +217,7 @@ module.exports = {
     __DEV__: true,
     __TEST__: true,
     __VERSION__: pkg.version,
-    __PROJECT__: pkg.name
+    __PROJECT__: pkg.name,
   },
 
 
@@ -202,6 +231,6 @@ module.exports = {
 
   displayName: {
     name: pkg.name,
-    color: 'blue'
-  }
+    color: 'blue',
+  },
 };

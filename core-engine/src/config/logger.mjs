@@ -45,19 +45,23 @@ winston.addColors(COLORS);
 const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.errors({ stack: true }),
-  winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }),
+  winston.format.metadata({
+    fillExcept: ['message', 'level', 'timestamp', 'stack'],
+  }),
   winston.format.json(),
   winston.format.printf(({ timestamp, level, message, metadata, stack }) => {
     const processType = cluster.isPrimary ? 'PRIMARY' : 'WORKER';
     const processId = process.pid;
-    const meta = metadata && metadata.requestId ? ` [${metadata.requestId}]` : '';
+    const meta =
+      metadata && metadata.requestId ? ` [${metadata.requestId}]` : '';
     const stackTrace = stack ? `\n${stack}` : '';
-    const metaString = Object.keys(metadata).length > 0
-      ? `\n${JSON.stringify(metadata, null, 2)}`
-      : '';
+    const metaString =
+      Object.keys(metadata).length > 0
+        ? `\n${JSON.stringify(metadata, null, 2)}`
+        : '';
 
     return `${level.toUpperCase()} 📝 [${timestamp}] ${processType}:${processId}${meta}: ${message}${stackTrace}${metaString}`;
-  })
+  }),
 );
 
 const logger = winston.createLogger({
@@ -68,38 +72,38 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize({ all: true }),
-        format
-      )
+        format,
+      ),
     }),
     new winston.transports.File({
       filename: 'logs/error.log',
       level: 'error',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-      format
+      format,
     }),
     new winston.transports.File({
       filename: 'logs/combined.log',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-      format
-    })
+      format,
+    }),
   ],
   exceptionHandlers: [
     new winston.transports.File({
       filename: 'logs/exceptions.log',
       maxsize: 5242880,
-      maxFiles: 5
-    })
+      maxFiles: 5,
+    }),
   ],
   rejectionHandlers: [
     new winston.transports.File({
       filename: 'logs/rejections.log',
       maxsize: 5242880,
-      maxFiles: 5
-    })
+      maxFiles: 5,
+    }),
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
 export { logger };

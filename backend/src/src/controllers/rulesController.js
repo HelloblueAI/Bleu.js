@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 /* eslint-env node */
@@ -46,7 +47,10 @@ const getRules = async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
 
-    const rules = await ruleModel.findAll().skip((page - 1) * limit).limit(limit);
+    const rules = await ruleModel
+      .findAll()
+      .skip((page - 1) * limit)
+      .limit(limit);
     const totalRules = await ruleModel.findAll().countDocuments();
 
     return res.status(200).json({
@@ -58,7 +62,9 @@ const getRules = async (req, res) => {
     });
   } catch (error) {
     logger.error(`❌ Error fetching rules: ${error.message}`);
-    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
@@ -69,7 +75,9 @@ const addRule = async (req, res) => {
   try {
     const { error } = ruleSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({ status: 400, message: error.details[0].message });
+      return res
+        .status(400)
+        .json({ status: 400, message: error.details[0].message });
     }
 
     const newRule = await ruleModel.create(req.body);
@@ -105,7 +113,9 @@ const deleteRule = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ status: 404, message: 'Rule not found' });
     }
-    return res.status(200).json({ status: 200, message: 'Rule deleted successfully' });
+    return res
+      .status(200)
+      .json({ status: 200, message: 'Rule deleted successfully' });
   } catch (error) {
     logger.error(`❌ Error deleting rule: ${error.message}`);
     return res.status(500).json({ status: 500, message: error.message });
@@ -121,7 +131,9 @@ const monitorDependencies = async (req, res) => {
     return res.status(200).json({ status: 200, data: dependencies });
   } catch (error) {
     logger.error(`❌ Error monitoring dependencies: ${error.message}`);
-    return res.status(500).json({ status: 500, message: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ status: 500, message: 'Internal Server Error' });
   }
 };
 
@@ -132,7 +144,9 @@ const trainModel = async (req, res) => {
   try {
     const { datasetId } = req.body;
     if (!datasetId) {
-      return res.status(400).json({ status: 400, message: 'Dataset ID is required' });
+      return res
+        .status(400)
+        .json({ status: 400, message: 'Dataset ID is required' });
     }
 
     const modelId = await ruleService.trainModelLogic(datasetId);

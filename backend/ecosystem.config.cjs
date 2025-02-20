@@ -23,22 +23,19 @@
 module.exports = {
   apps: [
     {
-      name: "backend",
-      script: "./index.mjs",
-      interpreter: "/bin/bash",
+      name: 'backend',
+      script: './index.mjs',
+      interpreter: '/bin/bash',
       env: {
-        NODE_ENV: "production",
-        PATH: "/home/ec2-user/Bleu.js/backend/venv/bin:$PATH",
-        VIRTUAL_ENV: "/home/ec2-user/Bleu.js/backend/venv",
+        NODE_ENV: 'production',
+        PATH: '/home/ec2-user/Bleu.js/backend/venv/bin:$PATH',
+        VIRTUAL_ENV: '/home/ec2-user/Bleu.js/backend/venv',
       },
-      node_args: "--loader ts-node/esm",
+      node_args: '--loader ts-node/esm',
       autorestart: true,
       watch: false,
       instances: 1,
-      exec_mode: "fork",
+      exec_mode: 'fork',
     },
   ],
 };
-
-
-

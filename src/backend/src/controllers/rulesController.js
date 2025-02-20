@@ -24,7 +24,6 @@ import { findAll, create, update, remove } from '../models/ruleModel.mjs';
 import { trainModelLogic } from '../services/ruleService.js';
 import Joi from 'joi';
 
-
 const ruleSchema = Joi.object({
   name: Joi.string().required(),
   condition: Joi.string().required(),

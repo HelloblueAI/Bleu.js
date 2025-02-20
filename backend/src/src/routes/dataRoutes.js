@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 import { Router } from 'express';
@@ -33,12 +34,12 @@ const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/data.log' })
-  ]
+    new winston.transports.File({ filename: 'logs/data.log' }),
+  ],
 });
 
 // ✅ Middleware for input validation
@@ -48,10 +49,14 @@ const validateRequest = (validations) => [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       logger.warn(`⚠️ Validation failed: ${JSON.stringify(errors.array())}`);
-      return res.status(400).json({ status: 'error', message: 'Invalid input', errors: errors.array() });
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid input',
+        errors: errors.array(),
+      });
     }
     next();
-  }
+  },
 ];
 
 /**
@@ -60,7 +65,9 @@ const validateRequest = (validations) => [
  */
 router.post(
   '/',
-  validateRequest([body('data').notEmpty().withMessage('Data field is required')]),
+  validateRequest([
+    body('data').notEmpty().withMessage('Data field is required'),
+  ]),
   async (req, res) => {
     try {
       const startTime = process.hrtime();
@@ -69,16 +76,18 @@ router.post(
       res.status(201).json({
         status: 'success',
         message: 'Data received successfully',
-        data: req.body.data
+        data: req.body.data,
       });
 
       const endTime = process.hrtime(startTime);
       logger.info(`✅ Data processed in ${endTime[1] / 1e6} ms`);
     } catch (error) {
       logger.error(`❌ Error in POST /: ${error.message}`);
-      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      res
+        .status(500)
+        .json({ status: 'error', message: 'Internal Server Error' });
     }
-  }
+  },
 );
 
 /**
@@ -87,20 +96,24 @@ router.post(
  */
 router.put(
   '/',
-  validateRequest([body('data').notEmpty().withMessage('Data field is required')]),
+  validateRequest([
+    body('data').notEmpty().withMessage('Data field is required'),
+  ]),
   async (req, res) => {
     try {
       logger.info(`🔄 Data updated: ${JSON.stringify(req.body)}`);
 
       res.status(200).json({
         status: 'success',
-        message: 'Data updated successfully'
+        message: 'Data updated successfully',
       });
     } catch (error) {
       logger.error(`❌ Error in PUT /: ${error.message}`);
-      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      res
+        .status(500)
+        .json({ status: 'error', message: 'Internal Server Error' });
     }
-  }
+  },
 );
 
 /**
@@ -113,7 +126,7 @@ router.delete('/', async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'Data deleted successfully'
+      message: 'Data deleted successfully',
     });
   } catch (error) {
     logger.error(`❌ Error in DELETE /: ${error.message}`);
@@ -127,20 +140,24 @@ router.delete('/', async (req, res) => {
  */
 router.patch(
   '/',
-  validateRequest([body('update').notEmpty().withMessage('Update field is required')]),
+  validateRequest([
+    body('update').notEmpty().withMessage('Update field is required'),
+  ]),
   async (req, res) => {
     try {
       logger.info(`🔧 Data patched: ${JSON.stringify(req.body)}`);
 
       res.status(200).json({
         status: 'success',
-        message: 'Data patched successfully'
+        message: 'Data patched successfully',
       });
     } catch (error) {
       logger.error(`❌ Error in PATCH /: ${error.message}`);
-      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      res
+        .status(500)
+        .json({ status: 'error', message: 'Internal Server Error' });
     }
-  }
+  },
 );
 
 /**
@@ -158,11 +175,14 @@ router.head('/', (req, res) => {
  */
 router.options('/', (req, res) => {
   logger.info('🌍 OPTIONS request received');
-  res.status(204).set({
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  }).send();
+  res
+    .status(204)
+    .set({
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    })
+    .send();
 });
 
 // ✅ Middleware: Handle 404 for undefined routes

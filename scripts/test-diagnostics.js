@@ -33,62 +33,66 @@ const updateJestConfig = () => {
   const config = {
     testEnvironment: 'node',
     testEnvironmentOptions: {
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
     },
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     testTimeout: 30000,
     modulePathIgnorePatterns: ['<rootDir>/coverage/'],
     transform: {
-      '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['@babel/preset-env'] }]
+      '^.+\\.(js|jsx|ts|tsx)$': [
+        'babel-jest',
+        { presets: ['@babel/preset-env'] },
+      ],
     },
     moduleNameMapper: {
-      '^node:(.*)$': '<rootDir>/src/node-shims/$1.js'
+      '^node:(.*)$': '<rootDir>/src/node-shims/$1.js',
     },
     extensionsToTreatAsEsm: ['.ts', '.tsx', '.jsx', '.js'],
     testRunner: 'jest-circus/runner',
     verbose: true,
     collectCoverage: true,
     coverageReporters: ['text', 'lcov', 'html'],
-    coverageDirectory: 'coverage'
+    coverageDirectory: 'coverage',
   };
 
   try {
     // Create jest.config.cjs (CommonJS format)
     writeFileSync(
       join(process.cwd(), 'jest.config.cjs'),
-      `module.exports = ${JSON.stringify(config, null, 2)};`
+      `module.exports = ${JSON.stringify(config, null, 2)};`,
     );
 
     // Create babel.config.cjs for proper transpilation
     const babelConfig = {
       presets: [
-        ['@babel/preset-env', {
-          targets: {
-            node: 'current'
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 'current',
+            },
+            modules: 'auto',
           },
-          modules: 'auto'
-        }]
+        ],
       ],
-      plugins: [
-        '@babel/plugin-transform-modules-commonjs'
-      ]
+      plugins: ['@babel/plugin-transform-modules-commonjs'],
     };
 
     writeFileSync(
       join(process.cwd(), 'babel.config.cjs'),
-      `module.exports = ${JSON.stringify(babelConfig, null, 2)};`
+      `module.exports = ${JSON.stringify(babelConfig, null, 2)};`,
     );
 
     // Create .babelrc for additional settings
     const babelRcConfig = {
-      "sourceType": "unambiguous",
-      "presets": ["@babel/preset-env"],
-      "plugins": ["@babel/plugin-transform-modules-commonjs"]
+      sourceType: 'unambiguous',
+      presets: ['@babel/preset-env'],
+      plugins: ['@babel/plugin-transform-modules-commonjs'],
     };
 
     writeFileSync(
       join(process.cwd(), '.babelrc'),
-      JSON.stringify(babelRcConfig, null, 2)
+      JSON.stringify(babelRcConfig, null, 2),
     );
 
     // Update package.json jest configuration
@@ -97,10 +101,11 @@ const updateJestConfig = () => {
 
     packageJson.scripts = {
       ...packageJson.scripts,
-      "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit",
-      "test:watch": "jest --watch --config jest.config.cjs",
-      "test:coverage": "jest --coverage --config jest.config.cjs",
-      "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --config jest.config.cjs"
+      test: 'NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit',
+      'test:watch': 'jest --watch --config jest.config.cjs',
+      'test:coverage': 'jest --coverage --config jest.config.cjs',
+      'test:debug':
+        'node --inspect-brk node_modules/.bin/jest --runInBand --config jest.config.cjs',
     };
 
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
@@ -124,7 +129,7 @@ const installDependencies = async () => {
     'jest-environment-node@29.7.0',
     'ts-jest@29.1.2',
     'mongodb-memory-server@9.1.6',
-    '@types/jest@29.5.12'
+    '@types/jest@29.5.12',
   ];
 
   try {
@@ -138,7 +143,7 @@ const installDependencies = async () => {
     // Install dependencies
     execSync(`pnpm add -D ${dependencies.join(' ')}`, {
       stdio: 'inherit',
-      env: { ...process.env, FORCE_COLOR: '1' }
+      env: { ...process.env, FORCE_COLOR: '1' },
     });
 
     return true;
@@ -155,7 +160,7 @@ const runDiagnostics = async () => {
 
   // Install dependencies first
   console.log('📦 Installing dependencies...');
-  if (!await installDependencies()) {
+  if (!(await installDependencies())) {
     console.error('Failed to install dependencies');
     return;
   }

@@ -26,7 +26,8 @@ import { logger } from './utils/logger.js';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/eggs-db';
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/eggs-db';
 
 const connectMongoDB = async () => {
   try {
@@ -40,7 +41,6 @@ const connectMongoDB = async () => {
 
     logger.info('✅ MongoDB connection successful');
 
-
     mongoose.connection.on('disconnected', () => {
       logger.warn('⚠️ MongoDB disconnected. Reconnecting...');
       connectMongoDB();
@@ -49,13 +49,10 @@ const connectMongoDB = async () => {
     mongoose.connection.on('error', (err) => {
       logger.error(`❌ MongoDB connection error: ${err.message}`);
     });
-
   } catch (err) {
     logger.error(`❌ MongoDB initial connection error: ${err.message}`);
     process.exit(1);
   }
 };
 
-
 export default connectMongoDB;
-

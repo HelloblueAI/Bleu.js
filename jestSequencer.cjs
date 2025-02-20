@@ -29,14 +29,12 @@ class CustomSequencer extends Sequencer {
   sort(tests) {
     const copyTests = Array.from(tests);
 
-
     const getTestPriority = (testPath) => {
       if (testPath.includes('unit')) return 1;
       if (testPath.includes('integration')) return 2;
       if (testPath.includes('e2e')) return 3;
       return 4;
     };
-
 
     const isBleuTest = (testPath) => {
       const testName = testPath.toLowerCase();
@@ -47,11 +45,9 @@ class CustomSequencer extends Sequencer {
       );
     };
 
-
     return copyTests.sort((testA, testB) => {
       const pathA = testA.path;
       const pathB = testB.path;
-
 
       const isBleuA = isBleuTest(pathA);
       const isBleuB = isBleuTest(pathB);
@@ -59,14 +55,12 @@ class CustomSequencer extends Sequencer {
         return isBleuA ? -1 : 1;
       }
 
-
       const priorityA = getTestPriority(pathA);
       const priorityB = getTestPriority(pathB);
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
       }
 
-      
       return pathA.localeCompare(pathB);
     });
   }
@@ -75,7 +69,7 @@ class CustomSequencer extends Sequencer {
    * Override for fail-fast functionality
    */
   async allFailedTests(tests) {
-    const failedTests = tests.filter(test => test.status === 'failed');
+    const failedTests = tests.filter((test) => test.status === 'failed');
     return failedTests.length > 0 ? failedTests : tests;
   }
 

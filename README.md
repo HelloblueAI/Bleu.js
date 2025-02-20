@@ -2773,7 +2773,6 @@ Large Number of Methods With Categorization
 - Performance Optimization Suite
 - Custom Transformer Architecture
 
-
 ### AI Tools
 
 With built-in AI services like Natural Language Processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
@@ -2787,11 +2786,11 @@ With built-in AI services like Natural Language Processing (NLP) and decision tr
 - **Core Application**: `app.py`
 
 The Python components power our advanced AI and ML capabilities:
+
 - Natural Language Processing
 - Decision Tree Models
 - Model Training & Evaluation
 - Real-time Performance Optimization
-
 
 ### Backend Efficiency
 

@@ -63,15 +63,15 @@ const fixMongoDBMemoryServer = () => {
   const config = {
     binary: {
       version: '6.0.12',
-      skipMD5: true
+      skipMD5: true,
     },
     autoStart: false,
-    instance: {}
+    instance: {},
   };
 
   return writeJsonFile(
     join(process.cwd(), 'mongodb-memory-server-config.js'),
-    config
+    config,
   );
 };
 
@@ -123,7 +123,7 @@ const createNodePolyfills = () => {
     'net.js': `
       import net from 'net';
       export default net;
-    `
+    `,
   };
 
   try {
@@ -151,22 +151,22 @@ const updatePackageJson = async () => {
 
   packageJson.scripts = {
     ...packageJson.scripts,
-    "test": "cross-env NODE_ENV=test jest --config jest.config.js --runInBand --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test:update": "jest -u",
-    "test:clear": "jest --clearCache"
+    test: 'cross-env NODE_ENV=test jest --config jest.config.js --runInBand --detectOpenHandles --forceExit',
+    'test:watch': 'jest --watch',
+    'test:coverage': 'jest --coverage',
+    'test:debug': 'node --inspect-brk node_modules/.bin/jest --runInBand',
+    'test:update': 'jest -u',
+    'test:clear': 'jest --clearCache',
   };
 
   // Add necessary devDependencies if they don't exist
   packageJson.devDependencies = {
     ...packageJson.devDependencies,
-    "@babel/preset-env": "^7.24.0",
-    "mongodb-memory-server": "^9.1.6",
-    "@types/jest": "^29.5.12",
-    "babel-jest": "^29.7.0",
-    "cross-env": "^7.0.3"
+    '@babel/preset-env': '^7.24.0',
+    'mongodb-memory-server': '^9.1.6',
+    '@types/jest': '^29.5.12',
+    'babel-jest': '^29.7.0',
+    'cross-env': '^7.0.3',
   };
 
   return writeJsonFile(packageJsonPath, packageJson);
@@ -176,35 +176,38 @@ const updatePackageJson = async () => {
 const updateJestConfig = () => {
   const config = {
     moduleNameMapper: {
-      '^node:(.*)$': '<rootDir>/src/node-shims/$1.js'
+      '^node:(.*)$': '<rootDir>/src/node-shims/$1.js',
     },
     testEnvironment: 'node',
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     testTimeout: 30000,
     modulePathIgnorePatterns: ['<rootDir>/coverage/'],
     transform: {
-      '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['@babel/preset-env'] }]
+      '^.+\\.(js|jsx|ts|tsx)$': [
+        'babel-jest',
+        { presets: ['@babel/preset-env'] },
+      ],
     },
     collectCoverageFrom: [
       'src/**/*.{js,jsx,ts,tsx}',
       '!src/**/*.d.ts',
       '!src/**/index.{js,ts}',
-      '!src/**/types.{js,ts}'
+      '!src/**/types.{js,ts}',
     ],
     coverageThreshold: {
       global: {
         branches: 80,
         functions: 80,
         lines: 80,
-        statements: 80
-      }
-    }
+        statements: 80,
+      },
+    },
   };
 
   try {
     writeFileSync(
       join(process.cwd(), 'jest.config.js'),
-      `export default ${JSON.stringify(config, null, 2)};`
+      `export default ${JSON.stringify(config, null, 2)};`,
     );
     return true;
   } catch (error) {
@@ -229,7 +232,7 @@ const main = async () => {
     { name: 'Updating Jest configuration', fn: updateJestConfig },
     { name: 'Fixing Jest mocks', fn: fixJestMocks },
     { name: 'Updating package.json', fn: updatePackageJson },
-    { name: 'Configuring MongoDB Memory Server', fn: fixMongoDBMemoryServer }
+    { name: 'Configuring MongoDB Memory Server', fn: fixMongoDBMemoryServer },
   ];
 
   let success = true;

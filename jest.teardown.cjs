@@ -23,14 +23,11 @@
 const path = require('path');
 
 module.exports = async () => {
-
   if (global.mongod) {
     await global.mongod.stop();
   }
 
-
   delete process.env.MONGODB_URI;
 
-
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 };

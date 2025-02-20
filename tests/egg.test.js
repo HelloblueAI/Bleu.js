@@ -65,7 +65,7 @@ describe('Egg Model Tests', () => {
     const updatedEgg = await Egg.findOneAndUpdate(
       { type: 'golden' },
       { status: 'active' },
-      { new: true }
+      { new: true },
     );
 
     expect(updatedEgg).not.toBeNull();
@@ -112,7 +112,7 @@ describe('Egg Model Tests', () => {
     const updatedEgg = await Egg.findOneAndUpdate(
       { type: 'nonexistent' },
       { status: 'active' },
-      { new: true }
+      { new: true },
     );
 
     expect(updatedEgg).toBeNull();

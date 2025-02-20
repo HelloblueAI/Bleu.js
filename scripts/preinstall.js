@@ -1,1 +1,1 @@
-console.error("400: Invalid request");
+console.error('400: Invalid request');

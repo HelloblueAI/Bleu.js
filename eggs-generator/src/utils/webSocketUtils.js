@@ -42,13 +42,17 @@ export const handleWebSocket = (wss) => {
     activeClients.add(ws);
     const requestId = `ws-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
-    console.log(`🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
+    console.log(
+      `🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`,
+    );
 
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message);
         if (typeof data !== 'object' || data === null || !data.event) {
-          throw new Error("Invalid message format. Expected JSON object with 'event' field.");
+          throw new Error(
+            "Invalid message format. Expected JSON object with 'event' field.",
+          );
         }
 
         console.log(`📨 WS Message Received [${requestId}]:`, data);
@@ -60,9 +64,9 @@ export const handleWebSocket = (wss) => {
 
           case 'generate_egg': {
             const egg = {
-              event: "egg_generated",
-              type: data.type || "unknown",
-              rarity: data.rarity || "common",
+              event: 'egg_generated',
+              type: data.type || 'unknown',
+              rarity: data.rarity || 'common',
               power: data.power || 1000,
               timestamp: Date.now(),
             };
@@ -73,10 +77,21 @@ export const handleWebSocket = (wss) => {
 
           case 'broadcast':
             if (!data.message) {
-              ws.send(JSON.stringify({ error: "Missing 'message' field in broadcast event." }));
+              ws.send(
+                JSON.stringify({
+                  error: "Missing 'message' field in broadcast event.",
+                }),
+              );
               return;
             }
-            broadcastMessage({ event: "broadcast", message: data.message, timestamp: Date.now() }, ws);
+            broadcastMessage(
+              {
+                event: 'broadcast',
+                message: data.message,
+                timestamp: Date.now(),
+              },
+              ws,
+            );
             break;
 
           default:
@@ -84,13 +99,15 @@ export const handleWebSocket = (wss) => {
         }
       } catch (error) {
         console.error(`❌ WS Error [${requestId}]: ${error.message}`);
-        ws.send(JSON.stringify({ error: "Invalid WebSocket message format." }));
+        ws.send(JSON.stringify({ error: 'Invalid WebSocket message format.' }));
       }
     });
 
     ws.on('close', () => {
       activeClients.delete(ws);
-      console.log(`❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
+      console.log(
+        `❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`,
+      );
     });
 
     ws.on('error', (error) => {

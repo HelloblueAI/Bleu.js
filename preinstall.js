@@ -21,13 +21,21 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-const fs = require('fs');
+import { existsSync } from 'fs';
+import { execSync } from 'child_process';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const packageLockPath = './package-lock.json';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packageLockPath = resolve(__dirname, 'package-lock.json');
 
-if (fs.existsSync(packageLockPath)) {
-  const { execSync } = require('child_process');
-  execSync('npx npm-force-resolutions', { stdio: 'inherit' });
+if (existsSync(packageLockPath)) {
+  try {
+    execSync('npx npm-force-resolutions', { stdio: 'inherit' });
+  } catch (error) {
+    console.error('Error running npm-force-resolutions:', error.message);
+    process.exit(1);
+  }
 } else {
   console.log('Skipping npm-force-resolutions: package-lock.json not found.');
 }

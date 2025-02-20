@@ -21,19 +21,18 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import rateLimiter from "./rate-limiter.mjs";
-import requestTracker from "./request-tracker.mjs";
+import rateLimiter from './rate-limiter.mjs';
+import requestTracker from './request-tracker.mjs';
 
 export { rateLimiter, requestTracker };
-
 
 export const lazyLoadMiddleware = async (middlewareName) => {
   try {
     switch (middlewareName) {
-      case "rateLimiter":
-        return (await import("./rate-limiter.mjs")).default;
-      case "requestTracker":
-        return (await import("./request-tracker.mjs")).default;
+      case 'rateLimiter':
+        return (await import('./rate-limiter.mjs')).default;
+      case 'requestTracker':
+        return (await import('./request-tracker.mjs')).default;
       default:
         throw new Error(`Middleware '${middlewareName}' not found.`);
     }

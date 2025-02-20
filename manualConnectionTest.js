@@ -28,9 +28,7 @@ import dotenv from 'dotenv';
 import { Schema, model, connect, disconnect } from 'mongoose';
 import winston from 'winston';
 
-
 dotenv.config();
-
 
 const logger = winston.createLogger({
   level: 'info',
@@ -56,7 +54,6 @@ function checkEnvFile() {
   logger.info('.env file found and loaded.');
 }
 
-
 function validateEnv() {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
@@ -66,7 +63,6 @@ function validateEnv() {
   return mongoUri;
 }
 
-
 const ruleSchema = new Schema({
   name: { type: String, required: true },
   conditions: { type: [String], default: [] },
@@ -75,13 +71,11 @@ const ruleSchema = new Schema({
 
 const RuleModel = model('Rule', ruleSchema);
 
-
 async function performDatabaseOperations() {
   const mongoUri = validateEnv();
   try {
     await connect(mongoUri);
     logger.info('Successfully connected to MongoDB.');
-
 
     const ruleDoc = new RuleModel({
       name: 'Test Rule',
@@ -91,10 +85,8 @@ async function performDatabaseOperations() {
     await ruleDoc.save();
     logger.info('Document saved:', JSON.stringify(ruleDoc));
 
-
     const retrievedDoc = await RuleModel.findOne({ name: 'Test Rule' });
     logger.info('Document retrieved:', JSON.stringify(retrievedDoc));
-
 
     const updatedDoc = await RuleModel.findOneAndUpdate(
       { name: 'Test Rule' },
@@ -102,7 +94,6 @@ async function performDatabaseOperations() {
       { new: true },
     );
     logger.info('Document updated:', JSON.stringify(updatedDoc));
-
 
     await RuleModel.deleteOne({ name: 'Test Rule' });
     logger.info('Document deleted successfully.');
@@ -113,7 +104,6 @@ async function performDatabaseOperations() {
     logger.info('Disconnected from MongoDB.');
   }
 }
-
 
 (async function runTest() {
   logger.info('Starting manual connection test...');

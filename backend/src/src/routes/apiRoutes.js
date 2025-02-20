@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 import { Router } from 'express';
@@ -31,7 +32,7 @@ import {
   updateRule,
   deleteRule,
   monitorDependencies,
-  trainModel
+  trainModel,
 } from '../controllers/rulesController.mjs';
 
 const router = Router();
@@ -41,12 +42,12 @@ const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/api.log' })
-  ]
+    new winston.transports.File({ filename: 'logs/api.log' }),
+  ],
 });
 
 // ✅ Middleware for input validation
@@ -56,10 +57,14 @@ const validateRequest = (validations) => [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       logger.warn(`⚠️ Validation failed: ${JSON.stringify(errors.array())}`);
-      return res.status(400).json({ status: 'error', message: 'Invalid input', errors: errors.array() });
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid input',
+        errors: errors.array(),
+      });
     }
     next();
-  }
+  },
 ];
 
 /**
@@ -86,7 +91,7 @@ router.post(
   '/rules',
   validateRequest([
     body('name').isString().notEmpty().withMessage('Rule name is required'),
-    body('conditions').isArray().withMessage('Conditions should be an array')
+    body('conditions').isArray().withMessage('Conditions should be an array'),
   ]),
   async (req, res, next) => {
     try {
@@ -96,7 +101,7 @@ router.post(
       logger.error(`❌ Error in POST /rules: ${error.message}`);
       next(error);
     }
-  }
+  },
 );
 
 /**
@@ -107,7 +112,7 @@ router.put(
   '/rules/:id',
   validateRequest([
     param('id').isMongoId().withMessage('Invalid rule ID'),
-    body('updates').isObject().notEmpty().withMessage('Updates are required')
+    body('updates').isObject().notEmpty().withMessage('Updates are required'),
   ]),
   async (req, res, next) => {
     try {
@@ -117,7 +122,7 @@ router.put(
       logger.error(`❌ Error in PUT /rules/:id: ${error.message}`);
       next(error);
     }
-  }
+  },
 );
 
 /**
@@ -135,7 +140,7 @@ router.delete(
       logger.error(`❌ Error in DELETE /rules/:id: ${error.message}`);
       next(error);
     }
-  }
+  },
 );
 
 /**
@@ -158,7 +163,11 @@ router.get('/dependencies', async (req, res, next) => {
  */
 router.post(
   '/trainModel',
-  validateRequest([body('trainingData').isArray().withMessage('Training data must be an array')]),
+  validateRequest([
+    body('trainingData')
+      .isArray()
+      .withMessage('Training data must be an array'),
+  ]),
   async (req, res, next) => {
     try {
       await trainModel(req, res);
@@ -167,7 +176,7 @@ router.post(
       logger.error(`❌ Error in POST /trainModel: ${error.message}`);
       next(error);
     }
-  }
+  },
 );
 
 // ✅ Middleware: Handle 404 for undefined routes

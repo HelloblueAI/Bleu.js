@@ -56,7 +56,7 @@ const AiQuerySchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Automatically manages createdAt & updatedAt
-  }
+  },
 );
 
 // Indexing for optimized search
@@ -72,4 +72,3 @@ AiQuerySchema.post('save', function (doc) {
 const AiQuery = mongoose.model('AiQuery', AiQuerySchema);
 
 module.exports = AiQuery;
-

@@ -38,7 +38,7 @@ import {
   DEFAULT_PORT,
   DEFAULT_HOST,
   CPU_CORES,
-  SHUTDOWN_TIMEOUT
+  SHUTDOWN_TIMEOUT,
 } from './config/constants.mjs';
 
 class BleuServer {
@@ -63,7 +63,6 @@ class BleuServer {
       logger.error('Server initialization failed:', error);
       process.exit(1);
     }
-
   }
   async startPrimaryProcess() {
     logger.info(`Primary process v1.0.36 ${process.pid} is running`);
@@ -82,7 +81,6 @@ class BleuServer {
 
     await this.setupWorkerComponents();
     await this.startServer();
-
   }
 
   setupClusterEvents() {
@@ -130,7 +128,7 @@ class BleuServer {
     logger.warn(`Worker ${worker.process.pid} died`, {
       code,
       signal,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     metrics.counter('cluster.worker_deaths');
@@ -142,13 +140,13 @@ class BleuServer {
     if (message.type === 'metrics') {
       metrics.record(message.name, message.value, {
         ...message.tags,
-        worker_id: worker.id
+        worker_id: worker.id,
       });
     }
   }
 
   setupProcessEvents() {
-    ['SIGTERM', 'SIGINT'].forEach(signal => {
+    ['SIGTERM', 'SIGINT'].forEach((signal) => {
       process.on(signal, () => this.handleGracefulShutdown(signal));
     });
 
@@ -186,10 +184,10 @@ class BleuServer {
   async shutdownWorkerProcess(signal) {
     try {
       if (this.wss) {
-        await new Promise(resolve => this.wss.close(resolve));
+        await new Promise((resolve) => this.wss.close(resolve));
       }
       if (this.server) {
-        await new Promise(resolve => this.server.close(resolve));
+        await new Promise((resolve) => this.server.close(resolve));
       }
       logger.info('✅ Server closed successfully');
       process.exit(0);
@@ -211,7 +209,6 @@ class BleuServer {
       📊 Engine Version: ${process.env.ENGINE_VERSION || '1.1.0'}
       -------------------------------------------
     `);
-    
 
     metrics.gauge('server.port', port);
     metrics.gauge('server.cpu_cores', CPU_CORES);

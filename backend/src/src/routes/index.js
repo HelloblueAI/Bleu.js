@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 import { Router } from 'express';
@@ -29,19 +30,17 @@ import winston from 'winston';
 
 const router = Router();
 
-
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/routes.log' })
-  ]
+    new winston.transports.File({ filename: 'logs/routes.log' }),
+  ],
 });
-
 
 router.use('/api', apiRoutes);
 router.use('/data', dataRoutes);

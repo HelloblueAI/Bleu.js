@@ -41,7 +41,7 @@ export const CIRCUIT_BREAKER_OPTIONS = {
   failureThreshold: 5,
   successThreshold: 3,
   timeout: 10000,
-  resetTimeout: 60000
+  resetTimeout: 60000,
 };
 
 export const ALLOWED_TYPES = [
@@ -50,51 +50,45 @@ export const ALLOWED_TYPES = [
   'repository',
   'model',
   'interface',
-  'factory'
+  'factory',
 ];
-
 
 export const METRICS_INTERVAL = 30000;
 export const METRICS_RETENTION = 3600000;
-
 
 export const CORS_OPTIONS = {
   allowedOrigins: [
     'http://localhost:3000',
     'http://localhost:3001',
-    process.env.ALLOWED_ORIGIN
+    process.env.ALLOWED_ORIGIN,
   ].filter(Boolean),
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'X-Request-ID'],
   exposedHeaders: ['X-Request-ID'],
   credentials: true,
-  maxAge: 86400
+  maxAge: 86400,
 };
-
 
 export const LOG_CONFIG = {
   maxSize: 5242880, // 5MB
   maxFiles: 5,
-  directory: 'logs'
+  directory: 'logs',
 };
-
 
 export const VALIDATION = {
   maxNameLength: 50,
   maxMethodsPerClass: 50,
   maxResponseSize: 5_000_000,
-  methodNamePattern: /^[a-zA-Z]\w*$/
+  methodNamePattern: /^[a-zA-Z]\w*$/,
 };
-
 
 export const SECURITY = {
-  maxTokenAge: 3600, 
+  maxTokenAge: 3600,
   bcryptRounds: 10,
-  minPasswordLength: 8
+  minPasswordLength: 8,
 };
-
 
 export const CACHE = {
   ttl: 300,
-  checkPeriod: 600
+  checkPeriod: 600,
 };

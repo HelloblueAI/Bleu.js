@@ -21,36 +21,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import { performance } from "perf_hooks";
-import { v4 as uuidv4 } from "uuid";
-import winston from "winston";
-
+import { performance } from 'perf_hooks';
+import { v4 as uuidv4 } from 'uuid';
+import winston from 'winston';
 
 const logger = winston.createLogger({
-  level: "info",
+  level: 'info',
   format: winston.format.json(),
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.colorize(),
-        winston.format.simple()
+        winston.format.simple(),
       ),
     }),
-    new winston.transports.File({ filename: "logs/request-tracker.log" }),
+    new winston.transports.File({ filename: 'logs/request-tracker.log' }),
   ],
 });
 
-
 export default function requestTracker(req, res, next) {
   const startTime = performance.now();
-  const requestId = req.headers["x-request-id"] || uuidv4();
+  const requestId = req.headers['x-request-id'] || uuidv4();
   const clientIp =
-    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-  const userAgent = req.headers["user-agent"] || "Unknown";
+    req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = req.headers['user-agent'] || 'Unknown';
   const requestMethod = req.method;
   const requestUrl = req.originalUrl;
-
 
   req.tracking = { requestId, clientIp, userAgent, startTime };
 
@@ -63,21 +60,24 @@ export default function requestTracker(req, res, next) {
     timestamp: new Date().toISOString(),
   });
 
-  res.on("finish", () => {
+  res.on('finish', () => {
     const endTime = performance.now();
     const executionTime = (endTime - startTime).toFixed(2);
     const statusCode = res.statusCode;
 
-    logger.info(`[RESPONSE] [${statusCode}] ${requestUrl} - ${executionTime}ms`, {
-      requestId,
-      clientIp,
-      userAgent,
-      method: requestMethod,
-      url: requestUrl,
-      statusCode,
-      executionTime,
-      timestamp: new Date().toISOString(),
-    });
+    logger.info(
+      `[RESPONSE] [${statusCode}] ${requestUrl} - ${executionTime}ms`,
+      {
+        requestId,
+        clientIp,
+        userAgent,
+        method: requestMethod,
+        url: requestUrl,
+        statusCode,
+        executionTime,
+        timestamp: new Date().toISOString(),
+      },
+    );
   });
 
   next();

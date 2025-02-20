@@ -50,7 +50,6 @@ export class WorkerProcess {
 
     console.error(`Fatal error in worker ${process.pid}:`, error);
 
-
     if (process.send) {
       process.send({
         type: 'error',
@@ -59,7 +58,6 @@ export class WorkerProcess {
         pid: process.pid,
       });
     }
-
 
     this.handleGracefulShutdown();
   }
@@ -90,7 +88,6 @@ export class WorkerProcess {
     return new Promise((resolve) => setTimeout(resolve, 5000));
   }
 
-  
   reportHealth() {
     if (process.send) {
       process.send({
@@ -103,11 +100,9 @@ export class WorkerProcess {
   }
 }
 
-
 export function initializeWorker() {
   if (cluster.isPrimary) return;
   const worker = new WorkerProcess();
   setInterval(() => worker.reportHealth(), 30000);
   return worker;
 }
-

@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 const NLPProcessor = require('../ai/nlpProcessor');
@@ -49,7 +50,9 @@ class AIService {
       const tokens = this.nlpProcessor.tokenize(text);
       logger.info(`📌 Tokens: ${tokens.join(', ')}`);
 
-      const stemmedTokens = tokens.map((token) => this.nlpProcessor.stem(token));
+      const stemmedTokens = tokens.map((token) =>
+        this.nlpProcessor.stem(token),
+      );
       logger.info(`📌 Stemmed Tokens: ${stemmedTokens.join(', ')}`);
 
       const sentiment = this.nlpProcessor.analyzeSentiment(text);
@@ -144,4 +147,3 @@ class AIService {
 }
 
 module.exports = AIService;
-

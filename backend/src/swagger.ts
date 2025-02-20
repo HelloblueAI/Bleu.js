@@ -47,18 +47,18 @@ const swaggerDefinition: SwaggerConfig = {
     },
     license: {
       name: 'MIT',
-      url: 'https://opensource.org/licenses/MIT'
-    }
+      url: 'https://opensource.org/licenses/MIT',
+    },
   },
   servers: [
     {
       url: process.env.API_URL ?? 'http://localhost:3003',
-      description: 'Development server'
+      description: 'Development server',
     },
     {
       url: 'https://api.bleujs.com',
-      description: 'Production server'
-    }
+      description: 'Production server',
+    },
   ],
   components: {
     securitySchemes: {
@@ -66,14 +66,14 @@ const swaggerDefinition: SwaggerConfig = {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: 'Enter JWT Bearer token'
+        description: 'Enter JWT Bearer token',
       },
       apiKeyAuth: {
         type: 'apiKey',
         in: 'header',
         name: 'X-API-KEY',
-        description: 'Enter API key'
-      }
+        description: 'Enter API key',
+      },
     },
     schemas: {
       Error: {
@@ -81,8 +81,8 @@ const swaggerDefinition: SwaggerConfig = {
         properties: {
           code: { type: 'integer', format: 'int32' },
           message: { type: 'string' },
-          details: { type: 'array', items: { type: 'string' } }
-        }
+          details: { type: 'array', items: { type: 'string' } },
+        },
       },
       User: {
         type: 'object',
@@ -92,8 +92,8 @@ const swaggerDefinition: SwaggerConfig = {
           name: { type: 'string', minLength: 2, maxLength: 50 },
           email: { type: 'string', format: 'email' },
           createdAt: { type: 'string', format: 'date-time' },
-          updatedAt: { type: 'string', format: 'date-time' }
-        }
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
       },
       Rule: {
         type: 'object',
@@ -106,17 +106,17 @@ const swaggerDefinition: SwaggerConfig = {
           isActive: { type: 'boolean', default: true },
           createdBy: { type: 'string' },
           createdAt: { type: 'string', format: 'date-time' },
-          updatedAt: { type: 'string', format: 'date-time' }
-        }
-      }
-    }
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
   },
   security: [{ bearerAuth: [] }],
   tags: [
     { name: 'Auth', description: 'Authentication endpoints' },
     { name: 'Users', description: 'User management endpoints' },
-    { name: 'Rules', description: 'Rule management endpoints' }
-  ]
+    { name: 'Rules', description: 'Rule management endpoints' },
+  ],
 };
 
 /**
@@ -125,7 +125,7 @@ const swaggerDefinition: SwaggerConfig = {
 const swaggerOptions = {
   swaggerDefinition,
   apis: ['./src/routes/*.ts', './src/routes/*.js', './dist/routes/*.js'],
-  explorer: true
+  explorer: true,
 };
 
 /**
@@ -146,6 +146,6 @@ export const serveSwaggerUI = {
     persistAuthorization: true,
     displayRequestDuration: true,
     filter: true,
-    deepLinking: true
-  }
+    deepLinking: true,
+  },
 };

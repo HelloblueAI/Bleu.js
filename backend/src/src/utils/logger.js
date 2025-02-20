@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 const winston = require('winston');
@@ -40,13 +41,12 @@ const logFormat = winston.format.printf(({ timestamp, level, message }) => {
 // Create Winston logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info', // Allow dynamic log level setting
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    logFormat
-  ),
+  format: winston.format.combine(winston.format.timestamp(), logFormat),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: path.join(logDirectory, 'app.log') }) // File logging
+    new winston.transports.File({
+      filename: path.join(logDirectory, 'app.log'),
+    }), // File logging
   ],
 });
 
@@ -56,4 +56,3 @@ logger.on('error', (err) => {
 });
 
 module.exports = logger;
-

@@ -22,7 +22,8 @@
 //  THE SOFTWARE.
 const express = require('express');
 const router = express.Router();
-const { apiKeyAuth, jwtAuth, apiLimiter } = require('../middleware/auth.js').default;
+const { apiKeyAuth, jwtAuth, apiLimiter } =
+  require('../middleware/auth.js').default;
 const { generateEgg } = require('../controllers/eggController');
 
 router.use(apiLimiter);

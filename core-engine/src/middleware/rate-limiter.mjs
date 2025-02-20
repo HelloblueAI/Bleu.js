@@ -26,7 +26,7 @@ import { logger } from '../config/logger.mjs';
 import {
   RATE_LIMIT_WINDOW,
   RATE_LIMIT_MAX_REQUESTS,
-  RATE_LIMIT_WHITELIST
+  RATE_LIMIT_WHITELIST,
 } from '../config/constants.mjs';
 
 class RateLimiter {
@@ -42,12 +42,11 @@ class RateLimiter {
     const {
       window = RATE_LIMIT_WINDOW,
       maxRequests = RATE_LIMIT_MAX_REQUESTS,
-      whitelist = RATE_LIMIT_WHITELIST
+      whitelist = RATE_LIMIT_WHITELIST,
     } = options;
 
     return (req, res, next) => {
       const clientIp = this.#getClientIp(req);
-
 
       if (whitelist.includes(clientIp)) {
         return next();
@@ -64,7 +63,6 @@ class RateLimiter {
           return this.#sendRateLimitResponse(res, result);
         }
 
-
         this.#setRateLimitHeaders(res, result);
         next();
       } catch (error) {
@@ -79,15 +77,17 @@ class RateLimiter {
   }
 
   #getClientIp(req) {
-    return req.headers['x-forwarded-for']?.split(',')[0].trim()
-      || req.socket.remoteAddress;
+    return (
+      req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+      req.socket.remoteAddress
+    );
   }
 
   #checkRateLimit(key, now, window, maxRequests) {
     const record = this.#store.get(key) || {
       timestamps: [],
       blocked: false,
-      blockExpiry: 0
+      blockExpiry: 0,
     };
 
     if (record.blocked && now < record.blockExpiry) {
@@ -95,11 +95,11 @@ class RateLimiter {
         allowed: false,
         remaining: 0,
         reset: Math.ceil((record.blockExpiry - now) / 1000),
-        blocked: true
+        blocked: true,
       };
     }
 
-    record.timestamps = record.timestamps.filter(time => now - time < window);
+    record.timestamps = record.timestamps.filter((time) => now - time < window);
 
     const count = record.timestamps.length;
     if (count >= maxRequests) {
@@ -111,7 +111,7 @@ class RateLimiter {
         allowed: false,
         remaining: 0,
         reset: Math.ceil(window / 1000),
-        blocked: true
+        blocked: true,
       };
     }
 
@@ -122,7 +122,7 @@ class RateLimiter {
       allowed: true,
       remaining: maxRequests - record.timestamps.length,
       reset: Math.ceil((record.timestamps[0] + window - now) / 1000),
-      blocked: false
+      blocked: false,
     };
   }
 
@@ -137,7 +137,7 @@ class RateLimiter {
       success: false,
       error: 'Rate limit exceeded',
       retryAfter: result.reset,
-      message: `Too many requests. Please try again in ${result.reset} seconds.`
+      message: `Too many requests. Please try again in ${result.reset} seconds.`,
     });
   }
 
@@ -155,7 +155,9 @@ class RateLimiter {
       let cleanedKeys = 0;
 
       this.#store.forEach((record, key) => {
-        if (record.timestamps.every(time => now - time >= RATE_LIMIT_WINDOW)) {
+        if (
+          record.timestamps.every((time) => now - time >= RATE_LIMIT_WINDOW)
+        ) {
           this.#store.delete(key);
           cleanedKeys++;
         }

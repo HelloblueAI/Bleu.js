@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 'use strict';
 
 import { Router } from 'express';
@@ -31,12 +32,12 @@ const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/simpleRoute.log' })
-  ]
+    new winston.transports.File({ filename: 'logs/simpleRoute.log' }),
+  ],
 });
 router.get('/simple', (req, res) => {
   logger.info(`📡 Simple route accessed from ${req.ip}`);
@@ -47,7 +48,6 @@ router.get('/simple', (req, res) => {
     server: process.env.SERVER_NAME || 'Bleu.js API Server',
   });
 });
-
 
 router.use((req, res) => {
   logger.warn(`⚠️ 404 Not Found: ${req.method} ${req.originalUrl}`);
