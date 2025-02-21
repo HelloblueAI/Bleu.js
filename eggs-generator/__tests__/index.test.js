@@ -20,62 +20,140 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
+
 import { jest } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 
-const mockGenerateEgg = jest.fn();
+
 const mockLogger = {
   info: jest.fn(),
   error: jest.fn(),
   debug: jest.fn(),
+  warn: jest.fn()
 };
 
+
+jest.mock('../src/utils/logger.js', () => mockLogger);
 jest.mock('../src/generateEgg.js', () => ({
-  generateEgg: mockGenerateEgg,
+  generateEgg: jest.fn()
 }));
 
 describe('Egg Generator Tests', () => {
   let mongoServer;
+  const TEST_TIMEOUT = 10000;
+  const TEST_DB_NAME = 'jest-test-db';
+  let loggerCalls = [];
 
   beforeAll(async () => {
-    try {
-      mongoServer = await MongoMemoryServer.create();
-      const mongoUri = mongoServer.getUri();
+    jest.setTimeout(TEST_TIMEOUT);
 
-      mongoose.set('strictQuery', false); // To suppress deprecation warnings
-      await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+    try {
+
+      loggerCalls = [];
+      mockLogger.info.mockImplementation((...args) => {
+        loggerCalls.push(['info', ...args]);
       });
 
-      console.info('✅ MongoDB Memory Server started successfully');
+
+      mongoServer = await MongoMemoryServer.create();
+      const mongoUri = await mongoServer.getUri();
+
+
+      await mongoose.connect(mongoUri, {
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 5000,
+        dbName: TEST_DB_NAME
+      });
+
+      mockLogger.info('MongoDB Memory Server started successfully');
     } catch (err) {
-      console.error('❌ Error starting MongoMemoryServer:', err);
+      mockLogger.error('Error starting MongoMemoryServer:', err);
+      throw err;
     }
   });
 
   afterAll(async () => {
     try {
-      await mongoose.connection.close();
-      await mongoServer.stop();
-      console.info('🛑 MongoDB Memory Server stopped successfully');
+      if (mongoose.connection.readyState !== 0) {
+        await mongoose.connection.dropDatabase();
+        await mongoose.connection.close();
+      }
+
+      if (mongoServer) {
+        await mongoServer.stop({ doCleanup: true, force: true });
+      }
     } catch (err) {
-      console.error('❌ Error stopping MongoMemoryServer:', err);
+      mockLogger.error('Error during cleanup:', err);
+      throw err;
     }
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Don't clear the mock calls, just reset the implementation
+    Object.values(mockLogger).forEach(mock =>
+      mock.mockImplementation((...args) => loggerCalls.push([mock.name, ...args]))
+    );
   });
 
-  test('should generate egg correctly', async () => {
-    const mockEgg = { id: 1, type: 'test' };
-    mockGenerateEgg.mockResolvedValueOnce(mockEgg);
+  describe('Database Connection', () => {
+    it('should connect to mock database successfully', () => {
+      expect(mongoose.connection.readyState).toBe(1);
+      expect(mongoose.connection.db.databaseName).toBe(TEST_DB_NAME);
+    });
 
-    const result = await mockGenerateEgg();
+    it('should have logged server startup correctly', () => {
 
-    expect(mockGenerateEgg).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockEgg);
+      const infoMessages = loggerCalls
+        .filter(call => call[0] === 'info')
+        .map(call => call[1]);
+
+      expect(infoMessages).toContain('MongoDB Memory Server started successfully');
+    });
+  });
+
+  describe('Egg Generation', () => {
+    const testEgg = {
+      id: 'test-id',
+      type: 'celestial',
+      rarity: 'legendary',
+      element: 'divine',
+      properties: {
+        size: 'massive',
+        power: 9999
+      },
+      createdAt: new Date()
+    };
+
+    beforeEach(() => {
+      jest.resetModules();
+      const { generateEgg } = require('../src/generateEgg.js');
+      generateEgg.mockReset();
+    });
+
+    it('should generate egg correctly', async () => {
+      const { generateEgg } = require('../src/generateEgg.js');
+      generateEgg.mockResolvedValueOnce(testEgg);
+
+      const result = await generateEgg();
+
+      expect(generateEgg).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(testEgg);
+      expect(result).toMatchObject({
+        type: 'celestial',
+        rarity: 'legendary',
+        element: 'divine'
+      });
+    });
+
+    it('should handle egg generation failure', async () => {
+      const { generateEgg } = require('../src/generateEgg.js');
+      const error = new Error('Failed to generate egg');
+      generateEgg.mockRejectedValueOnce(error);
+
+      await expect(generateEgg()).rejects.toThrow('Failed to generate egg');
+      expect(generateEgg).toHaveBeenCalledTimes(1);
+    });
   });
 });

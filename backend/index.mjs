@@ -36,6 +36,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import winston from 'winston';
+import rateLimit from 'express-rate-limit';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -44,11 +46,14 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 5005;
 const MONGODB_URI = process.env.MONGODB_URI || '';
 
+/**
+ * 🚀 Logger Configuration
+ */
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json(),
+    winston.format.json()
   ),
   transports: [
     new winston.transports.Console(),
@@ -59,45 +64,86 @@ const logger = winston.createLogger({
   ],
 });
 
+/**
+ * 🌐 Express App Configuration
+ */
 const app = express();
 app.use(express.json({ limit: '5mb' }));
 app.use(helmet());
 app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
-app.use(
-  morgan('tiny', { stream: { write: (msg) => logger.info(msg.trim()) } }),
-);
+app.use(morgan('tiny', { stream: { write: (msg) => logger.info(msg.trim()) } }));
 
+/**
+ * 🔐 API Key Authentication
+ */
+const validApiKeys = new Map([
+  ['your-api-key-1', true],
+  ['your-api-key-2', true],
+]);
+const generateApiKey = () => crypto.randomBytes(16).toString('hex');
+app.use((req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || !validApiKeys.has(apiKey)) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
+  }
+  next();
+});
+
+/**
+ * ⚡ Rate Limiting
+ */
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests from this IP, please try again later.',
+});
+app.use(limiter);
+
+/**
+ * 🔄 MongoDB Connection with Auto-Reconnect
+ */
 async function connectMongoDB() {
   if (!MONGODB_URI) {
     logger.error('❌ MongoDB URI is missing.');
     process.exit(1);
   }
   try {
-    await mongoose.connect(MONGODB_URI);
-    logger.info('✅ Connected to MongoDB.');
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      autoIndex: true,
+    });
+
+    mongoose.connection.on('connected', () => {
+      logger.info('✅ MongoDB connected successfully.');
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      logger.warn('⚠️ MongoDB disconnected. Reconnecting...');
+      setTimeout(connectMongoDB, 5000);
+    });
+
+    mongoose.connection.on('error', (error) => {
+      logger.error(`❌ MongoDB Connection Error: ${error.message}`);
+      process.exit(1);
+    });
   } catch (error) {
-    logger.error(`❌ MongoDB Connection Error: ${error.message}`);
+    logger.error(`❌ MongoDB Initial Connection Failed: ${error.message}`);
     process.exit(1);
   }
 }
 connectMongoDB();
 
-app.get('/', (_req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: '🚀 Bleu.js Backend is Running!',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  });
-});
-
+/**
+ * 📡 Health Check Routes
+ */
 app.get('/health', async (_req, res) => {
-  const dbStatus =
-    mongoose.connection.readyState === 1 ? '✅ Connected' : '❌ Disconnected';
+
   res.json({
     status: 'success',
     server: 'Running',
-    dbStatus,
+    dbStatus: mongoose.connection.readyState === 1 ? '✅ Connected' : '❌ Disconnected',
     timestamp: new Date().toISOString(),
     memoryUsage: process.memoryUsage(),
     uptime: process.uptime(),
@@ -105,118 +151,52 @@ app.get('/health', async (_req, res) => {
 });
 
 /**
- * 🎯 AI-Powered Prediction Route
+ * 🎯 AI-Powered Prediction Route with Caching
  */
+const predictionCache = new Map();
 app.post('/predict', async (req, res) => {
   try {
     const { features } = req.body;
+
     if (!Array.isArray(features) || !features.length) {
       logger.warn('⚠️ Invalid request format');
-      return res
-        .status(400)
-        .json({ status: 'error', message: 'Invalid input format' });
+      return res.status(400).json({ status: 'error', message: 'Invalid input format' });
     }
-    logger.info(`📡 Prediction Request: ${JSON.stringify(features)}`);
+
+    const cacheKey = JSON.stringify(features);
+    if (predictionCache.has(cacheKey)) {
+      logger.info(`📡 Using cached prediction for: ${cacheKey}`);
+      return res.status(200).json({ status: 'success', prediction: predictionCache.get(cacheKey) });
+    }
 
     const scriptPath = path.join(__dirname, 'xgboost_predict.py');
     if (!fs.existsSync(scriptPath)) {
       logger.error(`❌ Prediction script not found: ${scriptPath}`);
-      return res
-        .status(500)
-        .json({ status: 'error', message: 'Prediction script not found' });
+      return res.status(500).json({ status: 'error', message: 'Prediction script not found' });
     }
 
-    const startTime = process.hrtime();
-    const pythonProcess = spawn('python3', [
-      scriptPath,
-      JSON.stringify(features),
-    ]);
+    const pythonProcess = spawn('python3', [scriptPath, JSON.stringify(features)]);
+    let output = '';
 
-    let output = '',
-      errorOutput = '',
-      responseSent = false;
-    pythonProcess.stdout.on(
-      'data',
-      (data) => (output += data.toString().trim()),
-    );
-    pythonProcess.stderr.on(
-      'data',
-      (data) => (errorOutput += data.toString().trim()),
-    );
+    pythonProcess.stdout.on('data', (data) => (output += data.toString().trim()));
+    pythonProcess.stderr.on('data', (data) => logger.error(`❌ Python Error: ${data.toString().trim()}`));
 
     pythonProcess.on('close', (code) => {
-      if (responseSent) return;
-      const execTimeMs = process.hrtime(startTime);
-      const execTime = (execTimeMs[0] * 1000 + execTimeMs[1] / 1e6).toFixed(2);
-
-      try {
-        if (code === 0 && output.trim()) {
-          const parsedOutput = JSON.parse(output.trim());
-          logger.info(
-            `✅ Prediction Success in ${execTime}ms: ${JSON.stringify(parsedOutput)}`,
-          );
-          responseSent = true;
-          return res
-            .status(200)
-            .json({ status: 'success', prediction: parsedOutput });
-        } else {
-          throw new Error(
-            `Prediction failed. Exit code: ${code}, Stderr: ${errorOutput}`,
-          );
-        }
-      } catch (error) {
-        if (!responseSent) {
-          logger.error(`❌ Prediction Error: ${error.message}`);
-          responseSent = true;
-          return res
-            .status(500)
-            .json({ status: 'error', message: 'Internal Server Error' });
-        }
-      }
-    });
-
-    pythonProcess.on('error', (error) => {
-      if (!responseSent) {
-        logger.error(`❌ Python Process Error: ${error.message}`);
-        responseSent = true;
-        res
-          .status(500)
-          .json({ status: 'error', message: 'Internal Server Error' });
+      if (code === 0 && output.trim()) {
+        const parsedOutput = JSON.parse(output.trim());
+        predictionCache.set(cacheKey, parsedOutput);
+        return res.status(200).json({ status: 'success', prediction: parsedOutput });
+      } else {
+        return res.status(500).json({ status: 'error', message: 'Prediction failed' });
       }
     });
   } catch (error) {
     logger.error(`❌ Prediction Error: ${error.message}`);
-    if (!res.headersSent) {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
   }
 });
 
-const server = app.listen(PORT, () =>
-  logger.info(`✅ Server running on http://localhost:${PORT}`),
-);
-
-const shutdown = async (signal) => {
-  try {
-    logger.warn(`🛑 Received ${signal}. Shutting down gracefully...`);
-    await mongoose.connection.close();
-    logger.info('🛑 MongoDB Connection closed.');
-    server.close(() => {
-      logger.info('✅ Server closed.');
-      process.exit(0);
-    });
-  } catch (err) {
-    logger.error(`❌ MongoDB Shutdown Error: ${err.message}`);
-    process.exit(1);
-  }
-};
-
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('uncaughtException', (err) => {
-  logger.error(`❌ Uncaught Exception: ${err.stack}`);
-  process.exit(1);
-});
-process.on('unhandledRejection', (err) => {
-  logger.error(`❌ Unhandled Rejection: ${err.stack}`);
-});
+/**
+ * 🚀 Start Server
+ */
+const server = app.listen(PORT, () => logger.info(`✅ Server running on http://localhost:${PORT}`));

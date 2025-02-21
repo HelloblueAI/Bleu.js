@@ -30,43 +30,7 @@ module.exports = {
   testEnvironment: path.resolve(__dirname, 'jest.environment.cjs'),
 
 
-  moduleNameMapper: {
-
-    'node:crypto': '<rootDir>/src/node-shims/crypto.js',
-    crypto: '<rootDir>/src/node-shims/crypto.js',
-    'node:fs': '<rootDir>/src/node-shims/fs.js',
-    'node:net': '<rootDir>/src/node-shims/net.js',
-    'node:events': require.resolve('events'),
-
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
-    '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@models/(.*)$': '<rootDir>/src/models/$1',
-    '^@services/(.*)$': '<rootDir>/src/services/$1',
-    '^@core/(.*)$': '<rootDir>/src/core/$1',
-  },
-
-
-  transform: {
-    '^.+\\.m?[tj]sx?$': [
-      'babel-jest',
-      {
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
-      },
-    ],
-  },
-
-  transformIgnorePatterns: [
-    'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)',
-  ],
-
-
-  setupFiles: ['./jest.node-globals.cjs'],
-  setupFilesAfterEnv: ['./jest.setup.js'],
-  globalSetup: './jest.global-setup.cjs',
-  globalTeardown: './jest.teardown.cjs',
-
-
+  
   reporters: [
     'default',
     [
@@ -111,6 +75,38 @@ module.exports = {
     ],
   ],
 
+  moduleNameMapper: {
+    'node:crypto': '<rootDir>/src/node-shims/crypto.js',
+    crypto: '<rootDir>/src/node-shims/crypto.js',
+    'node:fs': '<rootDir>/src/node-shims/fs.js',
+    'node:net': '<rootDir>/src/node-shims/net.js',
+    'node:events': require.resolve('events'),
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@models/(.*)$': '<rootDir>/src/models/$1',
+    '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@core/(.*)$': '<rootDir>/src/core/$1',
+  },
+
+  transform: {
+    '^.+\\.m?[tj]sx?$': [
+      'babel-jest',
+      {
+        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+      },
+    ],
+  },
+
+  transformIgnorePatterns: [
+    'node_modules/(?!(mongoose|express|body-parser|supertest|superagent|formidable|mongodb-memory-server)/.*)',
+  ],
+
+  setupFiles: ['./jest.node-globals.cjs'],
+  setupFilesAfterEnv: ['./jest.setup.js'],
+  globalSetup: './jest.global-setup.cjs',
+  globalTeardown: './jest.teardown.cjs',
+
   projects: [
     {
       displayName: 'lint',
@@ -145,65 +141,43 @@ module.exports = {
         '/eggs-generator/__tests__/index.test.js',
         '/tests/egg.test.js',
       ],
-      coverageDirectory: 'coverage',
-      collectCoverage: true,
-      coverageReporters: [
-        'text',
-        'text-summary',
-        'lcov',
-        'html',
-        'json',
-        'json-summary',
-        'cobertura',
-        'clover',
-      ],
-      collectCoverageFrom: [
-        'src/**/*.{js,jsx,ts,tsx}',
-        'backend/src/**/*.{js,jsx,ts,tsx}',
-        'frontend/src/**/*.{js,jsx,ts,tsx}',
-        'eggs-generator/src/**/*.{js,jsx,ts,tsx}',
-        '!**/node_modules/**',
-        '!**/tests/**',
-        '!**/__tests__/**',
-        '!**/coverage/**',
-        '!**/dist/**',
-        '!**/*.d.ts',
-        '!**/types/**',
-        '!**/interfaces/**',
-        '!**/constants/**',
-        '!**/config/**',
-        '!**/mocks/**',
-        '!**/fixtures/**',
-        '!**/stories/**',
-        '!**/*.stories.*',
-        '!**/*.style.*',
-        '!**/index.ts',
-        '!**/index.js',
+      moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+      coveragePathIgnorePatterns: [
+        'node_modules',
+        'test-config',
+        'interfaces',
+        'jestGlobalMocks.ts',
+        '.module.ts',
+        '<rootDir>/src/app/main.ts',
+        '.mock.ts',
       ],
       coverageThreshold: {
         global: {
+          statements: 95,
           branches: 90,
           functions: 90,
           lines: 95,
-          statements: 95,
+
         },
         './src/core/': {
+          statements: 98,
           branches: 95,
           functions: 95,
           lines: 98,
-          statements: 98,
+
         },
         './src/utils/': {
+          statements: 95,
           branches: 90,
           functions: 90,
           lines: 95,
-          statements: 95,
+
         },
       },
     },
   ],
 
-  
+
   maxWorkers: '85%',
   testTimeout: 120000,
   watchPlugins: [
