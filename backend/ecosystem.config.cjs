@@ -20,22 +20,68 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 module.exports = {
   apps: [
     {
       name: 'backend',
       script: './index.mjs',
-      interpreter: '/bin/bash',
+
+
       env: {
         NODE_ENV: 'production',
-        PATH: '/home/ec2-user/Bleu.js/backend/venv/bin:$PATH',
-        VIRTUAL_ENV: '/home/ec2-user/Bleu.js/backend/venv',
+        PATH: `${process.env.HOME}/Bleu.js/backend/venv/bin:${process.env.PATH}`,
+        VIRTUAL_ENV: `${process.env.HOME}/Bleu.js/backend/venv`,
+        PORT: 3000,
+        TZ: 'UTC',
       },
-      node_args: '--loader ts-node/esm',
+
+
+      increment_var: 'PORT',
+      instances: 2,
+      exec_mode: 'fork',
+      instance_var: 'INSTANCE_ID',
+
+
+      node_args: [
+        '--experimental-specifier-resolution=node',
+        '--max-old-space-size=4096',
+        '--trace-warnings',
+        '--unhandled-rejections=strict'
+      ],
+
+
       autorestart: true,
       watch: false,
-      instances: 1,
-      exec_mode: 'fork',
-    },
-  ],
+      max_memory_restart: '2G',
+      force: true,
+
+
+      error_log: './logs/pm2/error.log',
+      out_log: './logs/pm2/out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      log_type: 'json',
+
+
+      max_restarts: 3,
+      min_uptime: '30s',
+      kill_timeout: 8000,
+      wait_ready: true,
+
+
+      exp_backoff_restart_delay: 100,
+      listen_timeout: 10000,
+
+
+      shutdown_with_message: true,
+
+
+      deep_monitoring: true,
+      status_interval: 30000,  // Status check every 30s
+
+
+      source_map_support: true,
+    }
+  ]
 };

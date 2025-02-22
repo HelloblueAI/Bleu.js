@@ -24,12 +24,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import sys
 import json
 import numpy as np
 import xgboost as xgb
 import joblib
 import os
+import logging
+
+# Enable logging for debugging and monitoring
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Load the model safely with absolute path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -41,24 +48,41 @@ if not os.path.exists(MODEL_PATH):
 
 try:
     model = joblib.load(MODEL_PATH)
-    expected_features = model.get_booster().num_features()  # ✅ Ensure expected feature size
+    expected_features = model.get_booster().num_features()
+    logging.info(f"✅ Model loaded successfully! Expected features: {expected_features}")
 except Exception as e:
     print(json.dumps({"error": f"❌ Failed to load model: {str(e)}"}))
     sys.exit(1)
 
 def predict(features):
-    """Perform prediction using the XGBoost model."""
+    """Perform prediction using the XGBoost model, ensuring feature consistency."""
     try:
         features_array = np.array(features, dtype=np.float32)
 
-        if features_array.shape[0] != expected_features:
-            return {"error": f"❌ Feature shape mismatch, expected: {expected_features}, got {features_array.shape[0]}"}
+        # Handle incorrect input size by padding with zeros (optional)
+        if features_array.shape[0] < expected_features:
+            features_array = np.pad(features_array, (0, expected_features - features_array.shape[0]), 'constant')
+            logging.warning(f"⚠️ Input features padded: {features_array}")
+
+        elif features_array.shape[0] > expected_features:
+            return {
+                "error": f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}"
+            }
 
         features_array = features_array.reshape(1, -1)
-        prediction = model.predict(features_array)
 
-        return {"prediction": prediction.tolist()}
+        # Make prediction and get probability scores
+        prediction = model.predict(features_array)
+        prediction_prob = model.predict_proba(features_array)
+
+        logging.info(f"🔮 Prediction: {prediction.tolist()}, Confidence: {prediction_prob.tolist()}")
+
+        return {
+            "prediction": int(prediction[0]),
+            "confidence": float(max(prediction_prob[0]))  # Return the highest confidence score
+        }
     except Exception as e:
+        logging.error(f"❌ Prediction error: {str(e)}")
         return {"error": f"❌ Prediction error: {str(e)}"}
 
 if __name__ == "__main__":
@@ -66,8 +90,10 @@ if __name__ == "__main__":
         features = json.loads(sys.argv[1])
         if not isinstance(features, list):
             raise ValueError("Input must be a list of numbers.")
+
         result = predict(features)
-        print(json.dumps(result))
+        print(json.dumps(result, indent=2))  # Pretty print for easier debugging
     except Exception as e:
+        logging.error(f"❌ Invalid input: {str(e)}")
         print(json.dumps({"error": f"❌ Invalid input: {str(e)}"}))
         sys.exit(1)

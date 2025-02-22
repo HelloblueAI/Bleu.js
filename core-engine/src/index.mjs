@@ -29,9 +29,9 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { performance } from 'perf_hooks';
 import { logger } from './config/logger.mjs';
-import { metrics } from './core/metrics.mjs';
+import metrics from './core/metrics.mjs';
 import { AdvancedCircuitBreaker } from './core/circuit-breaker.mjs';
-import { setupRoutes } from './routes/index.mjs';
+import { setupAllRoutes } from './routes/index.mjs';
 import { setupMiddleware } from './middleware/index.mjs';
 import { setupWebSocketServer } from './core/websocket.mjs';
 import {
@@ -39,6 +39,7 @@ import {
   DEFAULT_HOST,
   CPU_CORES,
   SHUTDOWN_TIMEOUT,
+  SHUTDOWN_SIGNALS,
 } from './config/constants.mjs';
 
 class BleuServer {
@@ -60,13 +61,13 @@ class BleuServer {
         await this.startWorkerProcess();
       }
     } catch (error) {
-      logger.error('Server initialization failed:', error);
+      logger.error('❌ Server initialization failed:', error);
       process.exit(1);
     }
   }
+
   async startPrimaryProcess() {
-    logger.info(`Primary process v1.0.36 ${process.pid} is running`);
-    metrics.gauge('cluster.master_pid', process.pid);
+    logger.info(`🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`);
 
     this.setupClusterEvents();
     this.forkWorkers();
@@ -91,13 +92,13 @@ class BleuServer {
   forkWorkers() {
     for (let i = 0; i < CPU_CORES; i++) {
       const worker = cluster.fork();
-      metrics.gauge(`cluster.worker_${worker.id}_pid`, worker.process.pid);
+      logger.info(`🚀 Forked worker ${worker.id} [PID: ${worker.process.pid}]`);
     }
   }
 
   async setupWorkerComponents() {
     setupMiddleware(this.app);
-    setupRoutes(this.app, this.circuitBreaker);
+    setupAllRoutes(this.app);
     setupWebSocketServer(this.wss);
     this.setupHealthCheck();
   }
@@ -115,38 +116,34 @@ class BleuServer {
   }
 
   setupHealthCheck() {
-    const startTime = this.startTime;
     setInterval(() => {
-      const uptime = performance.now() - startTime;
-      metrics.gauge('server.uptime', uptime);
-      metrics.gauge('server.memory_usage', process.memoryUsage().heapUsed);
-      metrics.gauge('server.cpu_usage', process.cpuUsage().user);
+      if (typeof metrics.gauge === 'function') {
+        metrics.gauge('server.uptime', performance.now() - this.startTime);
+        metrics.gauge('server.memory_usage', process.memoryUsage().heapUsed);
+        metrics.gauge('server.cpu_usage', process.cpuUsage().user);
+      } else {
+        logger.warn('⚠️ metrics.gauge is not a function. Health checks skipped.');
+      }
     }, 30000);
   }
 
   handleWorkerExit(worker, code, signal) {
-    logger.warn(`Worker ${worker.process.pid} died`, {
-      code,
-      signal,
-      timestamp: new Date().toISOString(),
-    });
+    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Restarting...`, { code, signal });
 
-    metrics.counter('cluster.worker_deaths');
-    const newWorker = cluster.fork();
-    metrics.gauge(`cluster.worker_${newWorker.id}_pid`, newWorker.process.pid);
+    setTimeout(() => {
+      const newWorker = cluster.fork();
+      logger.info(`🔄 New worker forked [PID: ${newWorker.process.pid}]`);
+    }, 5000); // Delay restart to prevent rapid failure loops
   }
 
   handleWorkerMessage(worker, message) {
     if (message.type === 'metrics') {
-      metrics.record(message.name, message.value, {
-        ...message.tags,
-        worker_id: worker.id,
-      });
+      metrics.trackRequest(0, true, { endpoint: message.endpoint, worker_id: worker.id });
     }
   }
 
   setupProcessEvents() {
-    ['SIGTERM', 'SIGINT'].forEach((signal) => {
+    SHUTDOWN_SIGNALS.forEach((signal) => {
       process.on(signal, () => this.handleGracefulShutdown(signal));
     });
 
@@ -155,46 +152,36 @@ class BleuServer {
   }
 
   async handleGracefulShutdown(signal) {
-    logger.warn(`Received ${signal}. Initiating graceful shutdown...`);
-    metrics.counter('server.shutdown_initiated');
+    logger.warn(`⚠️ Received ${signal}. Shutting down gracefully...`);
 
     try {
       if (cluster.isPrimary) {
-        await this.shutdownPrimaryProcess(signal);
+        for (const worker of Object.values(cluster.workers)) {
+          worker.send({ type: 'shutdown', signal });
+        }
+        setTimeout(() => {
+          logger.error('🚨 Forced shutdown due to timeout');
+          process.exit(1);
+        }, SHUTDOWN_TIMEOUT).unref();
       } else {
-        await this.shutdownWorkerProcess(signal);
+        if (this.wss) await new Promise((resolve) => this.wss.close(resolve));
+        if (this.server) await new Promise((resolve) => this.server.close(resolve));
+        logger.info('✅ Server shut down successfully');
+        process.exit(0);
       }
     } catch (error) {
-      logger.error('Shutdown error:', error);
+      logger.error('❌ Error during shutdown:', error);
       process.exit(1);
     }
   }
 
-  async shutdownPrimaryProcess(signal) {
-    for (const worker of Object.values(cluster.workers)) {
-      worker.send({ type: 'shutdown', signal });
-    }
-
-    setTimeout(() => {
-      logger.error('Forced shutdown due to timeout');
-      process.exit(1);
-    }, SHUTDOWN_TIMEOUT).unref();
+  handleUncaughtException(error) {
+    logger.error('❌ Uncaught Exception:', error);
+    process.exit(1);
   }
 
-  async shutdownWorkerProcess(signal) {
-    try {
-      if (this.wss) {
-        await new Promise((resolve) => this.wss.close(resolve));
-      }
-      if (this.server) {
-        await new Promise((resolve) => this.server.close(resolve));
-      }
-      logger.info('✅ Server closed successfully');
-      process.exit(0);
-    } catch (error) {
-      logger.error('Error during shutdown:', error);
-      process.exit(1);
-    }
+  handleUnhandledRejection(reason, promise) {
+    logger.error('❌ Unhandled Promise Rejection:', reason);
   }
 
   logServerStart(port, host) {
@@ -210,8 +197,7 @@ class BleuServer {
       -------------------------------------------
     `);
 
-    metrics.gauge('server.port', port);
-    metrics.gauge('server.cpu_cores', CPU_CORES);
+    
   }
 }
 

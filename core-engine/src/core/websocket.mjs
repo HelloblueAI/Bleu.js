@@ -20,76 +20,134 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
+import { EventEmitter } from 'events';
+import { performance } from 'perf_hooks';
 import { logger } from '../config/logger.mjs';
-import { metrics } from './metrics.mjs';
+import metrics from '../core/metrics.mjs';
+import { WebSocketServer } from 'ws';
+import cluster from 'node:cluster';
 
-/**
- * Initializes WebSocket server
- * @param {import('http').Server} server - HTTP server instance
- */
-export default async function setupWebSocketServer(server) {
-  const WebSocket = await import('ws');
-  const wss = new WebSocket.Server({ server });
+class WebSocketManager extends EventEmitter {
+  constructor() {
+    super();
+    this.wss = null;
+    this.clients = new Map();
+    this.rooms = new Map();
+    this.connectionStats = {
+      total: 0,
+      active: 0,
+      peak: 0
+    };
+    this.heartbeatInterval = null;
+  }
 
-  logger.info('✅ WebSocket server initialized');
-
-  wss.on('connection', (ws, req) => {
-    logger.info(`🔗 WebSocket client connected: ${req.socket.remoteAddress}`);
-
-    metrics.counter('websocket.connections');
-
-    ws.on('message', (message) => {
-      try {
-        const data = JSON.parse(message);
-        logger.info(`📩 Received WebSocket message: ${message}`);
-
-        if (data.type === 'broadcast') {
-          broadcastMessage(wss, data);
-        }
-      } catch (error) {
-        logger.error('⚠️ Invalid WebSocket message format', { error });
-      }
-    });
-
-    ws.on('close', () => {
-      logger.info('🔌 WebSocket client disconnected');
-      metrics.counter('websocket.disconnections');
-    });
-
-    ws.on('error', (error) => {
-      logger.error('❌ WebSocket error', { error });
-    });
-
-    ws.send(
-      JSON.stringify({
-        type: 'welcome',
-        message: 'Welcome to Bleu.js WebSocket!',
-      }),
-    );
-  });
-
-  process.on('SIGINT', () => shutdownWebSocket(wss));
-  process.on('SIGTERM', () => shutdownWebSocket(wss));
-}
-
-/**
- * Broadcasts a message to all connected WebSocket clients
- * @param {WebSocket.Server} wss - WebSocket server instance
- * @param {object} data - Data to broadcast
- */
-function broadcastMessage(wss, data) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === 1) {
-      client.send(JSON.stringify({ type: 'broadcast', message: data.message }));
+  async initialize(server) {
+    // Only allow the primary worker to bind to the WebSocket port
+    if (cluster.isWorker) {
+      logger.warn(`🚧 Skipping WebSocket server in worker process ${process.pid}`);
+      return;
     }
-  });
+
+    try {
+      const port = process.env.WS_PORT || server?.address()?.port || 8080;
+
+      if (!port) {
+        throw new Error('❌ WebSocket port is missing. Ensure WS_PORT is set.');
+      }
+
+      this.wss = new WebSocketServer({ server, clientTracking: true, perMessageDeflate: true });
+
+      this.setupServerEvents();
+      this.startHeartbeat();
+
+      logger.info(`✅ WebSocket server initialized on port ${port}`);
+      return this;
+    } catch (error) {
+      logger.error('❌ WebSocket initialization failed:', { error });
+      throw error;
+    }
+  }
+
+  setupServerEvents() {
+    this.wss.on('connection', this.handleConnection.bind(this));
+    this.wss.on('error', this.handleServerError.bind(this));
+
+    ['SIGINT', 'SIGTERM'].forEach(signal => {
+      process.on(signal, () => this.shutdown());
+    });
+  }
+
+  handleConnection(ws, req) {
+    try {
+      const clientId = this.generateClientId();
+      const startTime = performance.now();
+
+      this.clients.set(ws, {
+        id: clientId,
+        ip: this.getClientIp(req),
+        connectedAt: new Date(),
+        messageCount: 0,
+        rooms: new Set(),
+        lastActivity: Date.now()
+      });
+
+      this.connectionStats.total++;
+      this.connectionStats.active++;
+      this.connectionStats.peak = Math.max(this.connectionStats.peak, this.connectionStats.active);
+
+      ws.on('message', (data) => this.handleMessage(ws, data));
+      ws.on('close', () => this.handleDisconnection(ws));
+      ws.on('error', (error) => this.handleClientError(ws, error));
+      ws.on('pong', () => this.updateClientActivity(ws));
+
+      metrics.trackRequest(startTime, true, {
+        endpoint: 'websocket.connect',
+        clientId,
+        ip: this.getClientIp(req)
+      });
+
+      logger.info(`🔗 WebSocket client connected: ${clientId} from ${this.getClientIp(req)}`);
+
+      this.sendToClient(ws, {
+        type: 'welcome',
+        clientId,
+        message: 'Welcome to Bleu.js WebSocket!',
+        features: ['broadcast', 'rooms', 'direct']
+      });
+    } catch (error) {
+      logger.error('❌ Error handling WebSocket connection:', error);
+      ws.close();
+    }
+  }
+
+  handleServerError(error) {
+    logger.error('❌ WebSocket server error', { error });
+    metrics.counter('websocket.server_errors');
+  }
+
+  async shutdown() {
+    logger.warn('⚠️ WebSocket server shutting down...');
+    clearInterval(this.heartbeatInterval);
+
+    this.wss.clients.forEach(ws => {
+      this.sendToClient(ws, { type: 'shutdown', message: 'Server is shutting down' });
+      ws.close();
+    });
+
+    await new Promise(resolve => this.wss.close(resolve));
+    logger.info('✅ WebSocket server closed');
+  }
 }
 
 /**
- * Closes WebSocket server gracefully
- * @param {WebSocket.Server} wss - WebSocket server instance
+ * Singleton instance for WebSocket server
  */
-function shutdownWebSocket(wss) {
-  logger.warn('⚠️ WebSocket server shutting down...');
-  wss.close(() => logger.info('✅ WebSocket server closed'));
+export const wsManager = new WebSocketManager();
+
+/**
+ * Function to initialize the WebSocket server
+ */
+export async function setupWebSocketServer(server) {
+  return await wsManager.initialize(server);
 }

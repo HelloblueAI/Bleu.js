@@ -14,7 +14,7 @@ overrides:
   serve-static: 1.15.0
   yaml: ^2.7.0
 
-pnpmfileChecksum: vc22zp4aw7mdhb2cpzvridpcpm
+pnpmfileChecksum: sha256-RAOORdSA7YkmNx508S5sBnOvPwBpJvhElxKDRKTmK+s=
 
 importers:
 
@@ -295,6 +295,9 @@ importers:
       '@types/morgan':
         specifier: ^1.9.9
         version: 1.9.9
+      '@types/multer':
+        specifier: ^1.4.12
+        version: 1.4.12
       '@types/natural':
         specifier: ^0.6.3
         version: 0.6.3
@@ -534,9 +537,15 @@ importers:
       eslint-plugin-security:
         specifier: ^3.0.1
         version: 3.0.1
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.13.4)(node-notifier@10.0.1)(ts-node@10.9.2(@types/node@22.13.4)(typescript@5.7.3))
+      mongodb-memory-server-core:
+        specifier: ^10.1.4
+        version: 10.1.4
       nodemon:
         specifier: ^3.1.9
         version: 3.1.9
@@ -2201,6 +2210,9 @@ packages:
 
   '@types/morgan@1.9.9':
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
+
+  '@types/multer@1.4.12':
+    resolution: {integrity: sha512-pQ2hoqvXiJt2FP9WQVLPRO+AmiIm/ZYkavPlIQnx282u4ZrVdztx0pkh3jjpQt0Kz+YI0YhSG264y08UJKoUQg==}
 
   '@types/natural@0.6.3':
     resolution: {integrity: sha512-lObtptI4gTrBKclOl/2kaYQzncYYHQGYv0ONIk94OEifByXLnxiBlZs/5s/QbMJmTRiNt5RvnNjGXRJInbd4IA==}
@@ -9296,6 +9308,10 @@ snapshots:
   '@types/morgan@1.9.9':
     dependencies:
       '@types/node': 22.13.4
+
+  '@types/multer@1.4.12':
+    dependencies:
+      '@types/express': 5.0.0
 
   '@types/natural@0.6.3':
     dependencies:

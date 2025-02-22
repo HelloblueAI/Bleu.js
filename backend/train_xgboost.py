@@ -30,20 +30,20 @@ from sklearn.metrics import accuracy_score
 
 
 rng = np.random.default_rng(42)
-X = rng.random((1000, 10))  # 1000 samples, 10 features
-y = (X.sum(axis=1) > 5).astype(int)  # Example target variable
+X = rng.random((1000, 10))
+y = (X.sum(axis=1) > 5).astype(int)  
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
 model = xgb.XGBClassifier(
-    n_estimators=200,    # Number of trees
-    max_depth=6,         # Maximum depth of each tree
-    learning_rate=0.05,  # Step size shrinkage
-    subsample=0.8,       # Randomly sample training data
-    colsample_bytree=0.8,# Subsample ratio of columns
-    objective="binary:logistic",  # Binary classification
+    n_estimators=200,
+    max_depth=6,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    objective="binary:logistic",
     eval_metric="logloss",
     use_label_encoder=False
 )
