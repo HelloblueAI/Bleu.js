@@ -20,7 +20,13 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import HenFarm from '../../eggs-generator/src/HenFarm';
+
+import HenFarm from '../../eggs-generator/src/HenFarm.mjs';
+import prettier from 'prettier';
+import { ESLint } from 'eslint';
+import { logger } from '../config/logger.mjs';
+import { EggModel } from '../database/eggSchema.mjs'; 
+import { execSync } from 'child_process';
 
 class Bleu {
   constructor() {
@@ -28,54 +34,135 @@ class Bleu {
     this.henFarm = new HenFarm();
   }
 
-  generateEgg(description, type, options) {
-    const code = this.henFarm.generateCode(type, options);
-    const newEgg = {
-      id: this.eggs.length + 1,
-      description: this.generateDescription(type, options),
-      type,
-      code,
-    };
-    this.eggs.push(newEgg);
-    return newEgg;
-  }
+  /**
+   * 🚀 Generate an "egg" (code snippet) with validation and optimization.
+   */
+  async generateEgg(description, type, options) {
+    try {
+      const code = await this.generateCode(type, options);
+      const formattedCode = await this.optimizeCode(code);
+      const isValid = await this.ensureCodeQuality(formattedCode);
 
-  generateCode(type, options) {
-    return this.henFarm.generateCode(type, options);
-  }
+      if (!isValid) throw new Error('Generated code failed ESLint validation.');
 
-  generateDescription(type, options) {
-    switch (type) {
-      case 'model':
-        return `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`;
-      case 'utility':
-        return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
-      default:
-        throw new Error(`Unknown code type: ${type}`);
+      const newEgg = {
+        id: this.eggs.length + 1,
+        description: this.generateDescription(type, options),
+        type,
+        code: formattedCode,
+        createdAt: new Date(),
+      };
+
+      this.eggs.push(newEgg);
+      await this.saveEgg(newEgg); // Save to MongoDB
+
+      return newEgg;
+    } catch (error) {
+      logger.error('❌ Error generating egg:', { error });
+      throw error;
     }
   }
 
-  optimizeCode(code) {
-    return code.replace(/\s+/g, ' ').trim();
+  /**
+   * 🏗️ Generate code using HenFarm
+   */
+  async generateCode(type, options) {
+    try {
+      return this.henFarm.generateCode(type, options);
+    } catch (error) {
+      logger.error(`❌ Error generating code for type "${type}":`, error);
+      throw error;
+    }
   }
 
+  /**
+   * 📝 Generate human-readable descriptions for the generated code
+   */
+  generateDescription(type, options) {
+    try {
+      switch (type) {
+        case 'model':
+          return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+        case 'utility':
+          return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
+        default:
+          throw new Error(`Unknown code type: ${type}`);
+      }
+    } catch (error) {
+      logger.warn(`⚠️ Failed to generate description for type "${type}"`, error);
+      return 'Unknown Egg Type';
+    }
+  }
+
+  /**
+   * 🎨 Optimize code formatting using Prettier
+   */
+  async optimizeCode(code) {
+    try {
+      return prettier.format(code, { parser: 'babel' });
+    } catch (error) {
+      logger.warn('⚠️ Prettier formatting failed, returning raw code.');
+      return code;
+    }
+  }
+
+  /**
+   * ✅ Ensure code quality using ESLint
+   */
+  async ensureCodeQuality(code) {
+    try {
+      const eslint = new ESLint();
+      const results = await eslint.lintText(code);
+      return results.every(r => r.errorCount === 0);
+    } catch (error) {
+      logger.warn('⚠️ ESLint validation failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 📦 Manage dependencies automatically
+   */
   manageDependencies(dependencies) {
-    dependencies.forEach((dep) => {
-      console.log(`Managing dependency: ${dep.name}@${dep.version}`);
-    });
+    try {
+      dependencies.forEach(dep => {
+        logger.info(`📦 Checking dependency: ${dep.name}@${dep.version}`);
+        execSync(`pnpm add ${dep.name}@${dep.version}`, { stdio: 'inherit' });
+      });
+    } catch (error) {
+      logger.error('❌ Dependency management failed:', error);
+    }
   }
 
-  ensureCodeQuality(code) {
-    return !code.includes('var');
-  }
-
+  /**
+   * 🔎 Intelligent Debugging
+   */
   debugCode(code) {
-    console.log(`Debugging code: ${code}`);
+    logger.debug('🛠 Debugging Code:', { code });
   }
 
-  generateEggs(count, description, type, options) {
+  /**
+   * 🏗️ Generate multiple eggs efficiently
+   */
+  async generateEggs(count, description, type, options) {
+    const eggs = [];
     for (let i = 0; i < count; i++) {
-      this.generateEgg(`${description} ${i + 1}`, type, options);
+      const egg = await this.generateEgg(`${description} ${i + 1}`, type, options);
+      eggs.push(egg);
+    }
+    return eggs;
+  }
+
+  /**
+   * 📌 Save generated egg to MongoDB
+   */
+  async saveEgg(newEgg) {
+    try {
+      const egg = new EggModel(newEgg);
+      await egg.save();
+      logger.info(`✅ Egg ${newEgg.id} saved successfully.`);
+    } catch (error) {
+      logger.error('❌ Error saving egg to MongoDB:', error);
     }
   }
 }

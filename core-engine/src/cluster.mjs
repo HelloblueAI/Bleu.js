@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import cluster from 'cluster';
 import os from 'os';
 import { fileURLToPath } from 'url';
@@ -36,11 +37,12 @@ const logger = winston.createLogger({
     winston.format.json(),
   ),
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    
     new winston.transports.Console({
       format: winston.format.simple(),
     }),
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
   ],
 });
 
@@ -55,7 +57,7 @@ class WorkerManager {
 
   start() {
     if (cluster.isPrimary) {
-      logger.info(`Primary process ${process.pid} is running`);
+      logger.info(`🧩 Primary process [PID: ${process.pid}] is running`);
       this.setupExitHandlers();
       this.initializeWorkers();
     } else {
@@ -71,6 +73,10 @@ class WorkerManager {
     cluster.on('exit', (worker, code, signal) => {
       this.handleWorkerExit(worker, code, signal);
     });
+
+    cluster.on('message', (worker, message) => {
+      this.handleWorkerMessage(worker, message);
+    });
   }
 
   createWorker() {
@@ -80,58 +86,48 @@ class WorkerManager {
       startTime: Date.now(),
     });
 
-    worker.on('message', (msg) => {
-      this.handleWorkerMessage(worker, msg);
-    });
+    logger.info(`🚀 Forked Worker ${worker.id} [PID: ${worker.process.pid}]`);
 
     return worker;
   }
 
   handleWorkerExit(worker, code, signal) {
-    logger.warn(
-      `Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`,
-    );
+    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Code: ${code}, Signal: ${signal}`);
 
     this.workers.delete(worker.id);
     const attempts = this.restartAttempts.get(worker.id) || 0;
 
     if (attempts < this.MAX_RESTART_ATTEMPTS) {
-      logger.info(
-        `Attempting to restart worker. Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}`,
-      );
+      logger.info(`🔄 Restarting worker [Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}]`);
 
       setTimeout(() => {
         const newWorker = this.createWorker();
         this.restartAttempts.set(newWorker.id, attempts + 1);
       }, this.RESTART_DELAY);
     } else {
-      logger.error(
-        `Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`,
-      );
+      logger.error(`❌ Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`);
       this.checkClusterHealth();
     }
   }
 
-  handleWorkerMessage(worker, msg) {
-    if (msg.type === 'error') {
-      logger.error(`Error in worker ${worker.process.pid}:`, msg.error);
-    } else if (msg.type === 'status') {
-      logger.info(`Status from worker ${worker.process.pid}:`, msg.status);
+  handleWorkerMessage(worker, message) {
+    if (message.type === 'error') {
+      logger.error(`🚨 Error in Worker ${worker.process.pid}:`, message.error);
+    } else if (message.type === 'status') {
+      logger.info(`📡 Status from Worker ${worker.process.pid}:`, message.status);
     }
   }
 
   checkClusterHealth() {
     const activeWorkers = this.workers.size;
     if (activeWorkers < this.numCPUs / 2) {
-      logger.error(
-        'Critical: More than 50% of workers are down. Initiating emergency restart.',
-      );
+      logger.error(`🔥 CRITICAL: More than 50% of workers are down!`);
       this.emergencyRestart();
     }
   }
 
   emergencyRestart() {
-    logger.warn('Initiating emergency cluster restart');
+    logger.warn(`🚨 Initiating emergency cluster restart...`);
 
     for (const id of this.workers.keys()) {
       const worker = cluster.workers[id];
@@ -157,17 +153,17 @@ class WorkerManager {
     process.on('SIGINT', this.handleProcessTermination.bind(this));
 
     process.on('uncaughtException', (error) => {
-      logger.error('Uncaught Exception in primary process:', error);
+      logger.error('💥 Uncaught Exception in Primary Process:', error);
       this.handleProcessTermination();
     });
 
     process.on('unhandledRejection', (reason, promise) => {
-      logger.error('Unhandled Rejection in primary process:', reason);
+      logger.error('❌ Unhandled Promise Rejection in Primary Process:', reason);
     });
   }
 
   handleProcessTermination() {
-    logger.info('Received termination signal. Initiating graceful shutdown...');
+    logger.info(`🛑 Received termination signal. Shutting down gracefully...`);
 
     for (const id of this.workers.keys()) {
       const worker = cluster.workers[id];
@@ -177,25 +173,25 @@ class WorkerManager {
     }
 
     setTimeout(() => {
-      logger.info('Forcing shutdown of remaining workers...');
+      logger.warn('🔻 Forcing shutdown of remaining workers...');
       process.exit(0);
     }, 10000);
   }
 
   startWorker() {
     process.on('uncaughtException', (error) => {
-      logger.error('Uncaught Exception in worker:', error);
+      logger.error('💥 Uncaught Exception in Worker:', error);
       process.send({ type: 'error', error: error.message });
     });
 
     process.on('unhandledRejection', (reason, promise) => {
-      logger.error('Unhandled Rejection in worker:', reason);
+      logger.error('❌ Unhandled Rejection in Worker:', reason);
       process.send({ type: 'error', error: reason });
     });
 
     process.on('message', (msg) => {
       if (msg === 'shutdown') {
-        logger.info(`Worker ${process.pid} received shutdown signal`);
+        logger.info(`📴 Worker ${process.pid} received shutdown signal`);
         this.gracefulShutdown();
       }
     });
@@ -204,7 +200,7 @@ class WorkerManager {
   }
 
   gracefulShutdown() {
-    logger.info(`Worker ${process.pid} is shutting down...`);
+    logger.info(`🛑 Worker ${process.pid} shutting down...`);
 
     setTimeout(() => {
       process.exit(0);
@@ -214,7 +210,7 @@ class WorkerManager {
   async startServer() {
     try {
       logger.info(`
-      🚀 Worker server started
+      🚀 Worker Server Started
       -------------------------------------------
       🏷️ Environment:    ${process.env.NODE_ENV || 'DEVELOPMENT'}
       🌍 Host:           ${process.env.HOST || '0.0.0.0'}
@@ -225,7 +221,7 @@ class WorkerManager {
       -------------------------------------------
     `);
     } catch (error) {
-      logger.error('Failed to start worker server:', error);
+      logger.error(`🚨 Failed to start worker server:`, error);
       process.exit(1);
     }
   }

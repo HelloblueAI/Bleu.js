@@ -20,13 +20,14 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 module.exports = {
   apps: [
     {
       name: 'core-engine',
       script: './src/index.mjs',
       interpreter: 'node',
-      instances: 'max',
+      instances: 4,  // Changed from 'max' to 4
       exec_mode: 'cluster',
       autorestart: true,
       watch: false,

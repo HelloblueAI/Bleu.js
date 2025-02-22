@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import { performance } from 'perf_hooks';
 import { EventEmitter } from 'events';
 
@@ -58,7 +59,7 @@ class ServiceGenerator extends EventEmitter {
   }
 
   setupMethodGenerators() {
-    // CRUD Operations
+
     this.methodGenerators.set('findAll', {
       template: this.generateFindAllMethod,
       requiredImports: ['Repository', 'FindManyOptions'],
@@ -93,7 +94,7 @@ class ServiceGenerator extends EventEmitter {
       events: ['deleted'],
     });
 
-    // Advanced Operations
+
     this.methodGenerators.set('searchByFilters', {
       template: this.generateSearchMethod,
       requiredImports: ['FilterDTO', 'QueryBuilder'],
@@ -167,7 +168,7 @@ class ServiceGenerator extends EventEmitter {
     const { name, methods, options = {} } = params;
     const className = this.formatClassName(name);
 
-    // Collect all required imports
+
     const imports = new Set(['Injectable', 'InjectRepository', 'Repository']);
     const methodsDetails = methods.map((method) => {
       const generator = this.methodGenerators.get(method);
@@ -361,4 +362,4 @@ import { LoggerService } from '../logger/logger.service';`;
   }
 }
 
-export { ServiceGenerator };
+export default ServiceGenerator;

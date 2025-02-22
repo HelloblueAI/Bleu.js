@@ -21,73 +21,104 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import { metrics } from '../core/metrics.mjs';
+
+import { performance } from 'perf_hooks';
+import metrics from '../core/metrics.mjs';
 import { logger } from '../config/logger.mjs';
 import {
   RATE_LIMIT_WINDOW,
   RATE_LIMIT_MAX_REQUESTS,
-  RATE_LIMIT_WHITELIST,
+  RATE_LIMIT_WHITELIST
 } from '../config/constants.mjs';
 
 class RateLimiter {
   #store;
   #cleanupInterval;
+  #options;
+  #adaptiveLimits;
 
   constructor() {
     this.#store = new Map();
+    this.#adaptiveLimits = new Map();
+
+    this.#options = {
+      window: RATE_LIMIT_WINDOW,
+      maxRequests: RATE_LIMIT_MAX_REQUESTS,
+      whitelist: RATE_LIMIT_WHITELIST,
+      blacklist: new Set(),
+      slidingWindowSize: 1000,
+      windowCount: 60,
+      backoff: {
+        enabled: true,
+        multiplier: 2,
+        maxDelay: 3600000 // 1 hour
+      },
+      adaptiveThreshold: 5, // Detect suspicious behavior after X violations
+      predictionWindow: 5 // Check user behavior for last 5 requests
+    };
+
     this.#startCleanup();
   }
 
   middleware(options = {}) {
-    const {
-      window = RATE_LIMIT_WINDOW,
-      maxRequests = RATE_LIMIT_MAX_REQUESTS,
-      whitelist = RATE_LIMIT_WHITELIST,
-    } = options;
+    this.#options = { ...this.#options, ...options };
 
-    return (req, res, next) => {
+    return async (req, res, next) => {
+      const startTime = performance.now();
       const clientIp = this.#getClientIp(req);
 
-      if (whitelist.includes(clientIp)) {
-        return next();
-      }
-
-      const now = Date.now();
-      const key = this.#generateKey(clientIp, req);
-
       try {
-        const result = this.#checkRateLimit(key, now, window, maxRequests);
-        this.#updateMetrics(result, clientIp);
+        if (this.#options.whitelist.includes(clientIp)) return next();
+        if (this.#options.blacklist.has(clientIp)) return this.#sendBlockedResponse(res);
+
+        const key = this.#generateKey(clientIp, req);
+        const result = await this.#checkRateLimit(key, clientIp);
+
+        this.#updateMetrics(result, clientIp, startTime);
+        this.#setRateLimitHeaders(res, result);
 
         if (!result.allowed) {
+          if (result.backoff) return this.#sendBackoffResponse(res, result);
           return this.#sendRateLimitResponse(res, result);
         }
 
-        this.#setRateLimitHeaders(res, result);
+        res.on('finish', () => {
+          const duration = performance.now() - startTime;
+          this.#trackRequestTiming(duration, clientIp, req.path);
+        });
+
         next();
       } catch (error) {
-        logger.error('Rate limiter error:', { error, clientIp });
+        logger.error('Rate limiter error:', { error, clientIp, path: req.path, method: req.method });
         next(error);
       }
     };
   }
 
   #generateKey(clientIp, req) {
-    return `${clientIp}_${req.method}_${req.path}`;
+    return `${clientIp}:${req.method}:${req.path}:${Math.floor(Date.now() / this.#options.slidingWindowSize)}`;
   }
 
   #getClientIp(req) {
-    return (
-      req.headers['x-forwarded-for']?.split(',')[0].trim() ||
-      req.socket.remoteAddress
-    );
+    const forwardedFor = req.headers['x-forwarded-for'];
+    if (forwardedFor) {
+      const ips = forwardedFor.split(',').map(ip => ip.trim());
+      return ips.find(ip => !this.#isPrivateIP(ip)) || ips[0];
+    }
+    return req.socket.remoteAddress;
   }
 
-  #checkRateLimit(key, now, window, maxRequests) {
+  #isPrivateIP(ip) {
+    return /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(ip);
+  }
+
+  async #checkRateLimit(key, clientIp) {
+    const now = Date.now();
     const record = this.#store.get(key) || {
       timestamps: [],
       blocked: false,
       blockExpiry: 0,
+      attempts: 0
     };
 
     if (record.blocked && now < record.blockExpiry) {
@@ -96,40 +127,54 @@ class RateLimiter {
         remaining: 0,
         reset: Math.ceil((record.blockExpiry - now) / 1000),
         blocked: true,
+        backoff: true,
+        nextAttempt: new Date(record.blockExpiry).toISOString()
       };
     }
 
-    record.timestamps = record.timestamps.filter((time) => now - time < window);
+    const windowStart = now - this.#options.window;
+    record.timestamps = record.timestamps.filter(time => time > windowStart);
 
-    const count = record.timestamps.length;
-    if (count >= maxRequests) {
+    const adaptiveLimit = this.#getAdaptiveLimit(clientIp);
+    if (record.timestamps.length >= adaptiveLimit) {
+      record.attempts++;
       record.blocked = true;
-      record.blockExpiry = now + window;
+      record.blockExpiry = now + this.#calculateBackoff(record.attempts);
       this.#store.set(key, record);
 
       return {
         allowed: false,
         remaining: 0,
-        reset: Math.ceil(window / 1000),
+        reset: Math.ceil((record.blockExpiry - now) / 1000),
         blocked: true,
+        attempts: record.attempts,
+        nextAttempt: new Date(record.blockExpiry).toISOString()
       };
     }
 
     record.timestamps.push(now);
+    record.attempts = Math.max(0, record.attempts - 1);
     this.#store.set(key, record);
 
     return {
       allowed: true,
-      remaining: maxRequests - record.timestamps.length,
-      reset: Math.ceil((record.timestamps[0] + window - now) / 1000),
+      remaining: adaptiveLimit - record.timestamps.length,
+      reset: Math.ceil((record.timestamps[0] + this.#options.window - now) / 1000),
       blocked: false,
+      attempts: record.attempts
     };
   }
 
+  #calculateBackoff(attempts) {
+    if (!this.#options.backoff.enabled) return this.#options.window;
+    return Math.min(this.#options.window * Math.pow(this.#options.backoff.multiplier, attempts - 1), this.#options.backoff.maxDelay);
+  }
+
   #setRateLimitHeaders(res, result) {
-    res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX_REQUESTS);
+    res.setHeader('X-RateLimit-Limit', this.#getAdaptiveLimit(res.req.ip));
     res.setHeader('X-RateLimit-Remaining', result.remaining);
     res.setHeader('X-RateLimit-Reset', result.reset);
+    if (result.blocked) res.setHeader('Retry-After', result.reset);
   }
 
   #sendRateLimitResponse(res, result) {
@@ -138,42 +183,79 @@ class RateLimiter {
       error: 'Rate limit exceeded',
       retryAfter: result.reset,
       message: `Too many requests. Please try again in ${result.reset} seconds.`,
+      nextAttempt: result.nextAttempt
     });
   }
 
-  #updateMetrics(result, clientIp) {
-    metrics.counter('rate_limit.requests', 1, { clientIp });
-    if (!result.allowed) {
-      metrics.counter('rate_limit.blocked', 1, { clientIp });
-    }
-    metrics.gauge('rate_limit.remaining', result.remaining, { clientIp });
+  #sendBackoffResponse(res, result) {
+    return res.status(429).json({
+      success: false,
+      error: 'Rate limit exceeded - backoff in effect',
+      retryAfter: result.reset,
+      message: `Too many attempts. Please wait until ${result.nextAttempt}`,
+      attempts: result.attempts,
+      nextAttempt: result.nextAttempt
+    });
+  }
+
+  #sendBlockedResponse(res) {
+    return res.status(403).json({
+      success: false,
+      error: 'IP blocked',
+      message: 'Your IP address has been blocked.'
+    });
+  }
+
+  #updateMetrics(result, clientIp, startTime) {
+    const duration = performance.now() - startTime;
+    metrics.trackRequest(startTime, result.allowed, {
+      endpoint: 'rate_limiter',
+      clientIp,
+      duration,
+      blocked: result.blocked,
+      attempts: result.attempts
+    });
+  }
+
+  #trackRequestTiming(duration, clientIp, path) {
+    metrics.record('rate_limit.request_duration', duration, { clientIp, path });
   }
 
   #startCleanup() {
     this.#cleanupInterval = setInterval(() => {
       const now = Date.now();
-      let cleanedKeys = 0;
+      const stats = { cleaned: 0, remaining: 0, blocked: 0 };
 
       this.#store.forEach((record, key) => {
-        if (
-          record.timestamps.every((time) => now - time >= RATE_LIMIT_WINDOW)
-        ) {
+        if (this.#shouldCleanRecord(record, now)) {
           this.#store.delete(key);
-          cleanedKeys++;
+          stats.cleaned++;
+        } else {
+          stats.remaining++;
+          if (record.blocked) stats.blocked++;
         }
       });
 
-      metrics.gauge('rate_limit.active_keys', this.#store.size);
-      metrics.counter('rate_limit.cleaned_keys', cleanedKeys);
-    }, RATE_LIMIT_WINDOW);
+      metrics.gauge('rate_limit.active_records', stats.remaining);
+      metrics.gauge('rate_limit.blocked_records', stats.blocked);
+      metrics.counter('rate_limit.cleaned_records', stats.cleaned);
+    }, this.#options.window / 2);
+  }
+
+  #getAdaptiveLimit(clientIp) {
+    return this.#adaptiveLimits.get(clientIp) || this.#options.maxRequests;
+  }
+
+  #shouldCleanRecord(record, now) {
+    return record.timestamps.length === 0 && (!record.blocked || now >= record.blockExpiry);
   }
 
   destroy() {
-    if (this.#cleanupInterval) {
-      clearInterval(this.#cleanupInterval);
-    }
+    if (this.#cleanupInterval) clearInterval(this.#cleanupInterval);
     this.#store.clear();
+    logger.info('Rate limiter destroyed');
   }
 }
 
-export const rateLimiter = new RateLimiter();
+export { RateLimiter };
+
