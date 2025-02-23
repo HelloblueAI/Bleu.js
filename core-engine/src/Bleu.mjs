@@ -25,7 +25,7 @@ import HenFarm from '../../eggs-generator/src/HenFarm.mjs';
 import prettier from 'prettier';
 import { ESLint } from 'eslint';
 import { logger } from '../config/logger.mjs';
-import { EggModel } from '../database/eggSchema.mjs'; 
+import { EggModel } from '../database/eggSchema.mjs';
 import { execSync } from 'child_process';
 
 class Bleu {
@@ -121,13 +121,16 @@ class Bleu {
   }
 
   /**
-   * 📦 Manage dependencies automatically
+   * 📦 Manage dependencies safely
    */
   manageDependencies(dependencies) {
     try {
       dependencies.forEach(dep => {
+        if (!/^[a-zA-Z0-9@._-]+$/.test(dep.name) || !/^[a-zA-Z0-9@._-]+$/.test(dep.version)) {
+          throw new Error(`Invalid dependency name or version: ${dep.name}@${dep.version}`);
+        }
         logger.info(`📦 Checking dependency: ${dep.name}@${dep.version}`);
-        execSync(`pnpm add ${dep.name}@${dep.version}`, { stdio: 'inherit' });
+        execSync(`pnpm add ${dep.name}@${dep.version}`, { stdio: 'inherit', shell: true });
       });
     } catch (error) {
       logger.error('❌ Dependency management failed:', error);

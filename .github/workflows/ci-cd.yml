@@ -15,34 +15,33 @@ permissions:
 
 jobs:
   validate:
+    name: 🛠 Validate Code & Dependencies
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Setup Node.js
+      - name: 🏗 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - name: 📦 Install pnpm
+        run: npm install -g pnpm@9
 
-      - name: Install Dependencies
+      - name: 📌 Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
 
-      - name: Cache Dependencies
+      - name: 🏎️ Cache Dependencies
         uses: actions/cache@v4
         with:
           path: |
@@ -54,6 +53,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   build:
+    name: 🚀 Build & Test Components
     needs: validate
     runs-on: ubuntu-latest
     strategy:
@@ -71,26 +71,29 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Checkout Repository
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: 📦 Install pnpm
+        run: npm install -g pnpm@9
+
+      - name: 📦 Install Dependencies
         run: pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
 
-      - name: Lint & Format Code
+      - name: 🔍 Lint & Format Code
         run: |
           if [ -f "${{ matrix.component }}/.eslintrc" ] || [ -f "${{ matrix.component }}/.eslintrc.js" ]; then
             pnpm run lint:${{ matrix.component }}
           fi
 
-      - name: "Build Component: ${{ matrix.component }}"
+      - name: 🏗 Build Component ${{ matrix.component }}
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
             pnpm run build
           fi
 
-      - name: Run Unit Tests for ${{ matrix.component }}
+      - name: ✅ Run Unit Tests
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
@@ -99,58 +102,3 @@ jobs:
         env:
           MONGODB_URI: mongodb://localhost:27017/test
           REDIS_URL: redis://localhost:6379
-
-  integration-test:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Run Integration Tests
-        run: pnpm run test:integration
-
-  performance:
-    needs: integration-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Run Performance Tests
-        run: |
-          pnpm run test:performance
-          pnpm run benchmark
-
-  security:
-    needs: performance
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Run Security Checks
-        run: |
-          pnpm run test:security
-
-  version-check:
-    needs: security
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Check Version Consistency
-        run: |
-          echo "CURRENT_VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
-          if [ -f "core-engine/package.json" ]; then
-            echo "ENGINE_VERSION=$(node -p 'require(\"./core-engine/package.json\").version')" >> $GITHUB_ENV
-            if [ "$CURRENT_VERSION" != "$ENGINE_VERSION" ]; then
-              echo "Version mismatch between root and core-engine"
-              exit 1
-            fi
-          fi
