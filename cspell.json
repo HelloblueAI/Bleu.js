@@ -216,6 +216,7 @@
     "esprima",
     "htmlcov",
     "jackspeak",
+    "joblib",
     "jspm",
     "nosetests",
     "Pipfile",

@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import express from 'express';
 import { Egg } from '../models/egg.model.js';
 import { logger } from '../utils/logger.js';
@@ -37,21 +38,25 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 
+/** 🛠 Apply JSON Response Headers Middleware */
 router.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
   next();
 });
 
+/** 🔐 API Key Authentication with Logging */
 router.use((req, res, next) => {
   const key = req.headers['x-api-key'];
 
-  console.log('🔑 Received API Key:', key);
-  console.log('✅ Expected API Key:', process.env.API_KEY);
+  if (!key) {
+    logger.warn('❌ Unauthorized access attempt - No API Key provided');
+    return res
+      .status(403)
+      .json({ success: false, error: 'Unauthorized. API Key is required.' });
+  }
 
-  if (!key || key.trim() !== process.env.API_KEY.trim()) {
-    logger.warn(
-      `❌ Unauthorized access attempt - API Key: ${key ? key.slice(0, 4) + '***' : 'None'}`,
-    );
+  if (key.trim() !== process.env.API_KEY?.trim()) {
+    logger.warn(`❌ Invalid API Key attempt - Provided: ${key.slice(0, 4)}***`);
     return res
       .status(403)
       .json({ success: false, error: 'Unauthorized. Invalid API key.' });
@@ -61,14 +66,16 @@ router.use((req, res, next) => {
   next();
 });
 
+/** 🚀 Dynamic Rate Limiting */
 const rateLimiter = new RateLimiterRedis({
   storeClient: redisClient,
-  points: 15,
+  points: 15, // 15 requests per minute
   duration: 60,
-  blockDuration: 30,
+  blockDuration: 30, // Block for 30 sec if exceeded
   keyPrefix: 'rate-limit-eggs',
 });
 
+/** ✅ Joi Schema Validation */
 const eggSchema = Joi.object({
   type: Joi.string().valid('dragon', 'phoenix', 'celestial').required(),
   description: Joi.string().max(500).optional(),
@@ -94,6 +101,7 @@ const eggSchema = Joi.object({
   tier: Joi.string().valid('FREE', 'PRO', 'ENTERPRISE').default('FREE'),
 });
 
+/** 🔍 Fetch Eggs (⚡ Cached, Paginated & Filtered) */
 router.get('/', async (req, res, next) => {
   try {
     const {
@@ -105,7 +113,7 @@ router.get('/', async (req, res, next) => {
       page = 1,
       limit = 10,
     } = req.query;
-    const cacheKey = `eggs:${page}:${limit}:${type || 'any'}:${rarity || 'any'}`;
+    const cacheKey = `eggs_page_${page}_limit_${limit}_type_${type}_rarity_${rarity}`;
 
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData)
@@ -127,9 +135,7 @@ router.get('/', async (req, res, next) => {
       .limit(Number(limit))
       .lean();
 
-    await redisClient.set(cacheKey, JSON.stringify(eggs), { EX: 300 }); // Cache for 5 minutes
-    logger.info(`📦 Eggs data cached: ${cacheKey}`);
-
+    await redisClient.set(cacheKey, JSON.stringify(eggs), { EX: 300 });
     res.json({
       success: true,
       cached: false,
@@ -138,10 +144,12 @@ router.get('/', async (req, res, next) => {
       eggs,
     });
   } catch (error) {
+    logger.error('❌ Error fetching eggs:', error);
     next(error);
   }
 });
 
+/** 🔍 Fetch Egg by ID */
 router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -155,6 +163,7 @@ router.get('/:id', async (req, res, next) => {
 
     res.json({ success: true, egg });
   } catch (error) {
+    logger.error('❌ Error fetching egg by ID:', error);
     next(error);
   }
 });
@@ -186,7 +195,6 @@ router.post('/generate-egg', async (req, res, next) => {
       parameters.element,
       parameters.size,
     );
-    logger.info(`💰 AI-Priced ${parameters.rarity} ${type} egg at $${price}`);
 
     const egg = new Egg({
       id: crypto.randomUUID(),
@@ -215,6 +223,7 @@ router.post('/generate-egg', async (req, res, next) => {
       market: { tier: tierConfig, tradingEnabled: tier !== 'FREE' },
     });
   } catch (error) {
+    logger.error('❌ Error generating egg:', error);
     next(error);
   }
 });
@@ -236,13 +245,14 @@ router.delete('/:id', async (req, res, next) => {
 
     res.json({ success: true, message: 'Egg deleted successfully' });
   } catch (error) {
+    logger.error('❌ Error deleting egg:', error);
     next(error);
   }
 });
 
 /** ❌ Centralized Error Handling */
 router.use((error, req, res, next) => {
-  logger.error(`❌ API Error: ${error.message}`, { error });
+  logger.error('❌ API Error:', error);
   res
     .status(500)
     .json({ success: false, error: error.message || 'Internal Server Error' });
