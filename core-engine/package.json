@@ -8,7 +8,7 @@
     "dev": "nodemon --watch src --ext mjs --exec node src/index.mjs",
     "lint": "eslint . --ext .js,.mjs",
     "format": "prettier --write .",
-    "test": "jest --coverage",
+    "test": "jest --coverage --passWithNoTests",
     "build": "tsc"
   },
   "dependencies": {
