@@ -97,7 +97,11 @@ jobs:
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
-            pnpm run test
+            if [ -d "tests" ] || [ -d "__tests__" ]; then
+              pnpm run test
+            else
+              echo "⚠️ No test files found, skipping tests."
+            fi
           fi
         env:
           MONGODB_URI: mongodb://localhost:27017/test
