@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bleu.js API Documentation</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://yourdomain.com/favicon.png">
+
+    <!-- Swagger UI & Custom Styling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-bundle.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .top-bar {
+            background: linear-gradient(90deg, #007bff, #6610f2);
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        #swagger-ui {
+            max-width: 90%;
+            margin: auto;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Swagger UI overrides */
+        .swagger-ui .topbar {
+            background: transparent !important;
+        }
+
+        .swagger-ui .scheme-container {
+            background: #272727 !important;
+        }
+
+        .swagger-ui .info {
+            color: #ddd !important;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">Bleu.js API Documentation 🚀</div>
+
+    <div id="swagger-ui"></div>
+
+    <script>
+        const ui = SwaggerUIBundle({
+            url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod/api-docs",
+            dom_id: "#swagger-ui",
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            layout: "BaseLayout",
+            defaultModelsExpandDepth: -1,
+            theme: "dark"
+        });
+    </script>
+
+    <div class="footer">
+        © 2025 Bleu.js | <a href="https://bleujs.com">Visit Website</a>
+    </div>
+
+</body>
+</html>

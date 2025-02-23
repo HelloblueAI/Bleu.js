@@ -1,6 +1,6 @@
 {
   "name": "Bleujs",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "An AI-powered framework for Decision Trees, Deep Learning, and Model Deployment, optimizing ML workflows with Express & MongoDB.",
   "main": "index.mjs",
   "type": "module",
@@ -20,6 +20,7 @@
     "build:backend": "npx babel src/backend --out-dir backend/dist",
     "build:eggs-generator": "npx babel eggs-generator/src --out-dir eggs-generator/dist",
     "build:watch": "npx babel src --out-dir dist --watch",
+    "dev": "pnpm run start:dev",
     "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit",
     "test:coverage": "jest --coverage",
     "test:backend": "jest --detectOpenHandles --testPathPattern=backend",
@@ -66,6 +67,7 @@
     "micromatch": "4.0.8",
     "mime": "4.0.6",
     "mongodb-memory-server": "10.1.4",
+    "mongoose": "^8.10.1",
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "node-fetch": "^3.3.2",
@@ -96,7 +98,6 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.4",
-    
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.20.1",
@@ -167,6 +168,14 @@
       "mime": "3.0.0",
       "serve-static": "1.15.0",
       "yaml": "^2.7.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@scarf/scarf",
+      "bcrypt",
+      "es5-ext",
+      "esbuild",
+      "mongodb-memory-server",
+      "sonar-scanner"
+    ]
   }
 }
