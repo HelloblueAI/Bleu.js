@@ -1,29 +1,133 @@
 version: '3.8'
 
 services:
+  # MongoDB Database
   mongo:
     image: mongo
+    container_name: bleujs-mongo
+    restart: always
     ports:
-      - '27017:27017'
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: pass
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - bleujs-network
 
+  # Mongo Express (Database Admin UI)
   mongo-express:
     image: mongo-express
+    container_name: bleujs-mongo-express
+    restart: always
     ports:
-      - '8081:8081'
+      - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: pass
+      ME_CONFIG_MONGODB_SERVER: mongo
     depends_on:
       - mongo
+    networks:
+      - bleujs-network
 
+  # Redis (Optional, used for caching)
+  redis:
+    image: redis:latest
+    container_name: bleujs-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - bleujs-network
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bleujs-backend
+    restart: always
+    ports:
+      - "4003:4003"
+    environment:
+      PORT: 4003
+      MONGODB_URI: mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
+      REDIS_HOST: redis
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - bleujs-network
+
+  # Core Engine (Processing Logic)
+  core-engine:
+    build:
+      context: ./core-engine
+      dockerfile: Dockerfile
+    container_name: bleujs-core-engine
+    restart: always
+    ports:
+      - "6000:6000"
+    environment:
+      CORE_ENGINE_PORT: 6000
+      BACKEND_API: http://backend:4003
+      REDIS_HOST: redis
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - bleujs-network
+
+  # Eggs Generator (AI Model)
+  eggs-generator:
+    build:
+      context: ./eggs-generator
+      dockerfile: Dockerfile
+    container_name: bleujs-eggs-generator
+    restart: always
+    environment:
+      MONGODB_URI: mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
+      CORE_ENGINE_URL: http://core-engine:6000
+    depends_on:
+      - core-engine
+      - mongo
+    networks:
+      - bleujs-network
+
+  # Frontend Web App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bleujs-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URL: http://backend:4003
+    depends_on:
+      - backend
+    networks:
+      - bleujs-network
+
+  # Integration Tests (Uses Dockerfile.test)
   test:
     build:
       context: .
       dockerfile: Dockerfile.test
+    container_name: bleujs-test
     environment:
-      - MONGODB_URI=mongodb://mongo:27017/bleujs
+      MONGODB_URI: mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
     depends_on:
       - mongo
+    networks:
+      - bleujs-network
+
+volumes:
+  mongo-data:
+
+networks:
+  bleujs-network:
+    driver: bridge

@@ -2,7 +2,7 @@ name: Bleu.js CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
   pull_request:
     branches: [main]
     paths-ignore:
@@ -17,26 +17,33 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - uses: actions/setup-node@v3
+          python-version: '3.11'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
-      - name: Install dependencies
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
 
-      - name: Cache pnpm
-        uses: actions/cache@v3
+      - name: Cache Dependencies
+        uses: actions/cache@v4
         with:
           path: |
             ~/.pnpm-store
@@ -46,15 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Cache Python packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-  build-and-test:
+  build:
     needs: validate
     runs-on: ubuntu-latest
     strategy:
@@ -72,37 +71,26 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install dependencies
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
 
-      - name: Lint ${{ matrix.component }}
+      - name: Lint & Format Code
         run: |
           if [ -f "${{ matrix.component }}/.eslintrc" ] || [ -f "${{ matrix.component }}/.eslintrc.js" ]; then
             pnpm run lint:${{ matrix.component }}
           fi
 
-      - name: Build ${{ matrix.component }}
+      - name: "Build Component: ${{ matrix.component }}"
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
             pnpm run build
           fi
 
-      - name: Run tests for ${{ matrix.component }}
+      - name: Run Unit Tests for ${{ matrix.component }}
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
@@ -113,12 +101,14 @@ jobs:
           REDIS_URL: redis://localhost:6379
 
   integration-test:
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Run integration tests
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Integration Tests
         run: pnpm run test:integration
 
   performance:
@@ -126,8 +116,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Run performance tests
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Performance Tests
         run: |
           pnpm run test:performance
           pnpm run benchmark
@@ -137,10 +129,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Run security checks
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Security Checks
         run: |
-          pnpm audit
           pnpm run test:security
 
   version-check:
@@ -148,12 +141,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Check version consistency
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check Version Consistency
         run: |
-          echo "CURRENT_VERSION=$(node -p 'require("./package.json").version')" >> $GITHUB_ENV
+          echo "CURRENT_VERSION=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_ENV
           if [ -f "core-engine/package.json" ]; then
-            echo "ENGINE_VERSION=$(node -p 'require("./core-engine/package.json").version')" >> $GITHUB_ENV
+            echo "ENGINE_VERSION=$(node -p 'require(\"./core-engine/package.json\").version')" >> $GITHUB_ENV
             if [ "$CURRENT_VERSION" != "$ENGINE_VERSION" ]; then
               echo "Version mismatch between root and core-engine"
               exit 1

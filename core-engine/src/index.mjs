@@ -22,7 +22,6 @@
 //  THE SOFTWARE.
 
 import cluster from 'cluster';
-
 import dotenv from 'dotenv';
 import express from 'express';
 import { createServer } from 'http';
@@ -34,6 +33,8 @@ import { AdvancedCircuitBreaker } from './core/circuit-breaker.mjs';
 import { setupAllRoutes } from './routes/index.mjs';
 import { setupMiddleware } from './middleware/index.mjs';
 import { setupWebSocketServer } from './core/websocket.mjs';
+import net from 'net';
+
 import {
   DEFAULT_PORT,
   DEFAULT_HOST,
@@ -103,8 +104,20 @@ class BleuServer {
     this.setupHealthCheck();
   }
 
+  async getAvailablePort(preferredPort) {
+    return new Promise((resolve) => {
+      const server = net.createServer();
+      server.once('error', () => resolve(0)); // If port is taken, return 0
+      server.once('listening', () => {
+        server.close(() => resolve(preferredPort));
+      });
+      server.listen(preferredPort);
+    });
+  }
+
   async startServer() {
-    const port = process.env.PORT || DEFAULT_PORT;
+    let port = parseInt(process.env.PORT, 10) || DEFAULT_PORT;
+    port = await this.getAvailablePort(port) || 0; // Use dynamic port if needed
     const host = process.env.HOST || DEFAULT_HOST;
 
     return new Promise((resolve) => {
@@ -196,8 +209,6 @@ class BleuServer {
       📊 Engine Version: ${process.env.ENGINE_VERSION || '1.1.0'}
       -------------------------------------------
     `);
-
-    
   }
 }
 
