@@ -20,24 +20,29 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import mongoose from 'mongoose';
 
-export const connect = async () => {
-  try {
-    await mongoose.connect('your-mongodb-uri');
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    throw error;
-  }
+/* eslint-env node */
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Bleu.js API",
+            version: "1.0.0",
+            description: "API documentation for Bleu.js",
+        },
+        servers: [
+            {
+                url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod",
+                description: "Production server",
+            },
+        ],
+    },
+    apis: ["./routes/*.js"],
 };
 
-export const disconnect = async () => {
-  try {
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
-  } catch (error) {
-    console.error('MongoDB disconnection error:', error);
-    throw error;
-  }
-};
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+module.exports = { swaggerUi, swaggerDocs };

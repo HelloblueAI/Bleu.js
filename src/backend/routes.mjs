@@ -20,33 +20,86 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-/* eslint-env node */
+
 import { Router } from 'express';
 import multer from 'multer';
-
-import AIService from '../services/aiService';
-import Logger from '../utils/logger';
+import AIService from '../services/aiService.mjs';
+import Logger from '../utils/logger.mjs';
 
 const router = Router();
 const upload = multer();
 const logger = new Logger();
 const aiService = new AIService();
 
+/**
+ * @swagger
+ * /debug:
+ *   post:
+ *     summary: Debug API
+ *     description: Returns a debug message.
+ *     responses:
+ *       200:
+ *         description: Debugging message.
+ */
 router.post('/debug', (req, res) => {
   logger.info('Debug endpoint hit', { endpoint: '/debug' });
   res.send('Debugging');
 });
 
+/**
+ * @swagger
+ * /optimize:
+ *   post:
+ *     summary: Optimize API
+ *     description: Returns an optimization message.
+ *     responses:
+ *       200:
+ *         description: Optimizing message.
+ */
 router.post('/optimize', (req, res) => {
   logger.info('Optimize endpoint hit', { endpoint: '/optimize' });
   res.send('Optimizing');
 });
 
+/**
+ * @swagger
+ * /generate:
+ *   post:
+ *     summary: Generate API
+ *     description: Returns a generation message.
+ *     responses:
+ *       200:
+ *         description: Generating message.
+ */
 router.post('/generate', (req, res) => {
   logger.info('Generate endpoint hit', { endpoint: '/generate' });
   res.send('Generating');
 });
 
+/**
+ * @swagger
+ * /data:
+ *   post:
+ *     summary: Submit Data
+ *     description: Receives data and processes it.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               data:
+ *                 type: string
+ *                 example: "Sample data"
+ *     responses:
+ *       201:
+ *         description: Data received successfully.
+ *       400:
+ *         description: Bad Request.
+ *       500:
+ *         description: Internal Server Error.
+ */
 router.post('/data', upload.none(), async (req, res) => {
   try {
     const { data } = req.body;
@@ -54,22 +107,6 @@ router.post('/data', upload.none(), async (req, res) => {
     if (!data) {
       logger.warn('Bad Request: No data provided', { endpoint: '/data' });
       return res.status(400).json({ message: 'Bad Request' });
-    }
-
-    if (req.headers['invalid-header']) {
-      logger.warn('Bad Request: Invalid header', { endpoint: '/data' });
-      return res.status(400).json({ message: 'Bad Request' });
-    }
-
-    if (data === 'Async Error') {
-      throw new Error('Simulated Async Error');
-    }
-
-    if (data === 'DB Test') {
-      logger.error('Internal Server Error: DB Test error', {
-        endpoint: '/data',
-      });
-      return res.status(500).json({ message: 'Internal Server Error' });
     }
 
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -85,11 +122,39 @@ router.post('/data', upload.none(), async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Root API
+ *     description: Root endpoint for health check.
+ *     responses:
+ *       200:
+ *         description: API is running.
+ */
 router.get('/', (req, res) => {
   logger.info('Root endpoint hit', { endpoint: '/' });
   res.status(200).json({ message: 'Hello, World!' });
 });
 
+/**
+ * @swagger
+ * /api/rules:
+ *   post:
+ *     summary: Add Rule
+ *     description: Adds a new AI rule.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       201:
+ *         description: Rule added successfully.
+ *       500:
+ *         description: Error adding rule.
+ */
 router.post('/api/rules', async (req, res) => {
   try {
     await aiService.addRule(req.body);
@@ -101,39 +166,24 @@ router.post('/api/rules', async (req, res) => {
   }
 });
 
-router.delete('/api/rules/:id', async (req, res) => {
-  try {
-    await aiService.removeRule(req.params.id);
-    res.status(200).json({ message: 'Rule removed successfully' });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error removing rule', error: error.message });
-  }
-});
-
-router.put('/api/rules/:id', async (req, res) => {
-  try {
-    await aiService.updateRule(req.params.id, req.body);
-    res.status(200).json({ message: 'Rule updated successfully' });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error updating rule', error: error.message });
-  }
-});
-
-router.post('/api/rules/evaluate', async (req, res) => {
-  try {
-    const result = await aiService.evaluateRules(req.body);
-    res.status(200).json({ result });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error evaluating rules', error: error.message });
-  }
-});
-
+/**
+ * @swagger
+ * /api/ai/predict:
+ *   post:
+ *     summary: AI Prediction
+ *     description: Runs AI prediction on the given input.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Returns AI prediction.
+ *       500:
+ *         description: Error predicting.
+ */
 router.post('/api/ai/predict', async (req, res) => {
   try {
     const result = await aiService.predictDecision(req.body);
@@ -145,6 +195,28 @@ router.post('/api/ai/predict', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/ai/process-text:
+ *   post:
+ *     summary: Process Text
+ *     description: Processes text using AI.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 example: "Analyze this text"
+ *     responses:
+ *       200:
+ *         description: Returns processed text result.
+ *       500:
+ *         description: Error processing text.
+ */
 router.post('/api/ai/process-text', async (req, res) => {
   try {
     const result = await aiService.processText(req.body.text);
@@ -153,21 +225,6 @@ router.post('/api/ai/process-text', async (req, res) => {
     res
       .status(500)
       .json({ message: 'Error processing text', error: error.message });
-  }
-});
-
-router.post('/api/ai/process-text-advanced', async (req, res) => {
-  try {
-    const result = await aiService.processTextAdvanced(
-      req.body.text,
-      req.body.options,
-    );
-    res.status(200).json({ result });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error processing text with advanced options',
-      error: error.message,
-    });
   }
 });
 

@@ -20,21 +20,32 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-export const find = jest.fn().mockResolvedValue([]);
-export const findById = jest.fn((id) => {
-  if (id === 'valid-id') {
-    return Promise.resolve({
-      _id: 'valid-id',
-      conditions: [{ key: 'age', operator: 'greater_than', value: 18 }],
-      actions: ['approve'],
+
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+
+export const connect = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     });
+    console.log('✅ Database connected successfully');
+  } catch (error) {
+    console.error('❌ Database connection error:', error);
+    process.exit(1);
   }
-  return Promise.resolve(null);
-});
-export const save = jest.fn().mockResolvedValue(true);
-export const findByIdAndUpdate = jest.fn().mockResolvedValue({
-  _id: 'valid-id',
-  conditions: [{ key: 'age', operator: 'greater_than', value: 18 }],
-  actions: ['reject'],
-});
-export const findByIdAndDelete = jest.fn().mockResolvedValue(true);
+};
+
+export const disconnect = async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('✅ Database disconnected successfully');
+  } catch (error) {
+    console.error('❌ Database disconnection error:', error);
+  }
+};

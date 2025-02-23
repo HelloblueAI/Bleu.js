@@ -1,6 +1,6 @@
 {
   "name": "collaboration-tools",
-  "version": "1.0.36",
+  "version": "1.1.2",
   "main": "src/index.js",
   "scripts": {
     "test": "jest"
