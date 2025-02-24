@@ -20,7 +20,9 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import { Router } from 'express';
+import logger from '../utils/logger.mjs';
 import {
   getRules,
   addRule,
@@ -33,91 +35,58 @@ import {
 const router = Router();
 
 /**
- * Route: GET /rules
- * Description: Fetch all rules
+ * Wrapper function for handling async errors.
+ * @param {Function} fn - The async route handler function.
  */
-router.get('/rules', async (req, res, next) => {
-  try {
-    await getRules(req, res);
-  } catch (error) {
-    console.error('Error in GET /rules:', error);
-    next(error);
-  }
-});
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
 /**
- * Route: POST /rules
- * Description: Add a new rule
+ * Route: GET /rules - Fetch all rules.
  */
-router.post('/rules', async (req, res, next) => {
-  try {
-    await addRule(req, res);
-  } catch (error) {
-    console.error('Error in POST /rules:', error);
-    next(error);
-  }
-});
+router.get('/rules', asyncHandler(getRules));
 
 /**
- * Route: PUT /rules/:id
- * Description: Update a specific rule by ID
+ * Route: POST /rules - Add a new rule.
  */
-router.put('/rules/:id', async (req, res, next) => {
-  try {
-    await updateRule(req, res);
-  } catch (error) {
-    console.error('Error in PUT /rules/:id:', error);
-    next(error);
-  }
-});
+router.post('/rules', asyncHandler(addRule));
 
 /**
- * Route: DELETE /rules/:id
- * Description: Delete a specific rule by ID
+ * Route: PUT /rules/:id - Update a specific rule by ID.
  */
-router.delete('/rules/:id', async (req, res, next) => {
-  try {
-    await deleteRule(req, res);
-  } catch (error) {
-    console.error('Error in DELETE /rules/:id:', error);
-    next(error);
-  }
-});
+router.put('/rules/:id', asyncHandler(updateRule));
 
 /**
- * Route: GET /dependencies
- * Description: Monitor system dependencies
+ * Route: DELETE /rules/:id - Delete a specific rule by ID.
  */
-router.get('/dependencies', async (req, res, next) => {
-  try {
-    await monitorDependencies(req, res);
-  } catch (error) {
-    console.error('Error in GET /dependencies:', error);
-    next(error);
-  }
-});
+router.delete('/rules/:id', asyncHandler(deleteRule));
 
 /**
- * Route: POST /trainModel
- * Description: Train a machine learning model
+ * Route: GET /dependencies - Monitor system dependencies.
  */
-router.post('/trainModel', async (req, res, next) => {
-  try {
-    await trainModel(req, res);
-  } catch (error) {
-    console.error('Error in POST /trainModel:', error);
-    next(error);
-  }
-});
+router.get('/dependencies', asyncHandler(monitorDependencies));
 
-// Middleware to handle 404 for undefined routes
+/**
+ * Route: POST /trainModel - Train a machine learning model.
+ */
+router.post('/trainModel', asyncHandler(trainModel));
+
+/**
+ * Middleware: Handle 404 for undefined routes.
+ */
 router.use((req, res) => {
+  logger.warn(`⚠️ Route not found: ${req.originalUrl}`);
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Global error handler
+/**
+ * Global error handler.
+ */
 router.use((err, req, res, next) => {
-  console.error('Unhandled error:', err.message);
+  logger.error(
+    `❌ Unhandled error in ${req.method} ${req.originalUrl}: ${err.message}`,
+  );
   res.status(500).json({ error: 'Internal Server Error' });
 });
 

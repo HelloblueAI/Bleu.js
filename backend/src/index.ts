@@ -32,7 +32,6 @@ import winston from 'winston';
 
 dotenv.config();
 
-
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -44,16 +43,13 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-
 export function createApp(): Application {
   const app = express();
-
 
   app.use(express.json({ limit: '1mb' }));
   app.use(helmet());
   app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
   app.use(morgan('combined'));
-
 
   const limiter: RateLimitRequestHandler = rateLimit({
     windowMs: 10 * 60 * 1000,
@@ -62,9 +58,7 @@ export function createApp(): Application {
     headers: true,
   });
 
-
   app.use(limiter as unknown as express.RequestHandler);
-
 
   app.post('/predict', async (req: Request, res: Response): Promise<void> => {
     try {
@@ -72,19 +66,27 @@ export function createApp(): Application {
 
       if (!Array.isArray(features) || features.length === 0) {
         logger.warn('Invalid request format');
-        res.status(400).json({ status: 'error', message: 'Invalid input format' });
+        res
+          .status(400)
+          .json({ status: 'error', message: 'Invalid input format' });
         return;
       }
 
       logger.info(`Received prediction request: ${JSON.stringify(features)}`);
 
-      const pythonProcess = spawn('python3', ['xgboost_predict.py', JSON.stringify(features)]);
+      const pythonProcess = spawn('python3', [
+        'xgboost_predict.py',
+        JSON.stringify(features),
+      ]);
 
       let output = '';
       let errorOutput = '';
 
       pythonProcess.stdout.on('data', (data) => (output += data.toString()));
-      pythonProcess.stderr.on('data', (data) => (errorOutput += data.toString()));
+      pythonProcess.stderr.on(
+        'data',
+        (data) => (errorOutput += data.toString()),
+      );
 
       pythonProcess.on('close', (code) => {
         if (code === 0) {
@@ -92,16 +94,20 @@ export function createApp(): Application {
           res.json({ status: 'success', prediction: JSON.parse(output) });
         } else {
           logger.error(`Prediction Failed: ${errorOutput}`);
-          res.status(500).json({ status: 'error', message: 'Prediction process failed' });
+          res
+            .status(500)
+            .json({ status: 'error', message: 'Prediction process failed' });
         }
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       logger.error(`Prediction Error: ${errorMessage}`);
-      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      res
+        .status(500)
+        .json({ status: 'error', message: 'Internal Server Error' });
     }
   });
-
 
   app.get('/', (req: Request, res: Response) => {
     res.status(200).json({
@@ -110,7 +116,6 @@ export function createApp(): Application {
       timestamp: new Date().toISOString(),
     });
   });
-
 
   app.use((req: Request, res: Response) => {
     logger.warn(`404 Not Found: ${req.method} ${req.originalUrl}`);

@@ -21,7 +21,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 import { EventEmitter } from 'events';
 import { performance } from 'perf_hooks';
 import metrics from '../core/metrics.mjs';
@@ -95,7 +94,12 @@ export class AdvancedCircuitBreaker extends EventEmitter {
   }
 
   async execute(fn, context = {}) {
-    const { cacheKey = null, requestId = null, timeout = this.options.maxExecutionTime, retryAttempts = this.options.retry.maxAttempts } = context;
+    const {
+      cacheKey = null,
+      requestId = null,
+      timeout = this.options.maxExecutionTime,
+      retryAttempts = this.options.retry.maxAttempts,
+    } = context;
 
     metrics.incrementCounter('requests_total');
     const startTime = performance.now();
@@ -113,9 +117,17 @@ export class AdvancedCircuitBreaker extends EventEmitter {
         if (cached) return cached;
       }
 
-      const result = await this.executeWithRetry(fn, { timeout, retryAttempts, requestId });
+      const result = await this.executeWithRetry(fn, {
+        timeout,
+        retryAttempts,
+        requestId,
+      });
 
-      await this.handleSuccess({ duration: performance.now() - startTime, result, cacheKey });
+      await this.handleSuccess({
+        duration: performance.now() - startTime,
+        result,
+        cacheKey,
+      });
 
       return result;
     } catch (error) {
@@ -141,10 +153,14 @@ export class AdvancedCircuitBreaker extends EventEmitter {
   calculateBackoff(attempt) {
     const { backoff, initialDelay } = this.options.retry;
     switch (backoff) {
-      case 'exponential': return initialDelay * Math.pow(2, attempt - 1);
-      case 'linear': return initialDelay * attempt;
-      case 'jitter': return initialDelay + Math.random() * initialDelay;
-      default: return initialDelay;
+      case 'exponential':
+        return initialDelay * Math.pow(2, attempt - 1);
+      case 'linear':
+        return initialDelay * attempt;
+      case 'jitter':
+        return initialDelay + Math.random() * initialDelay;
+      default:
+        return initialDelay;
     }
   }
 
@@ -182,7 +198,10 @@ export class AdvancedCircuitBreaker extends EventEmitter {
     }
 
     if (cacheKey) {
-      this.cache.set(cacheKey, { value: result, expires: Date.now() + this.options.cacheTTL * 1000 });
+      this.cache.set(cacheKey, {
+        value: result,
+        expires: Date.now() + this.options.cacheTTL * 1000,
+      });
     }
 
     metrics.trackSuccess(duration);
@@ -205,8 +224,10 @@ export class AdvancedCircuitBreaker extends EventEmitter {
   }
 
   shouldOpen() {
-    return this.failures >= this.options.failureThreshold ||
-      metrics.getErrorRate() >= this.options.errorPercentageThreshold;
+    return (
+      this.failures >= this.options.failureThreshold ||
+      metrics.getErrorRate() >= this.options.errorPercentageThreshold
+    );
   }
 
   enhanceError(error) {
@@ -226,7 +247,7 @@ export class AdvancedCircuitBreaker extends EventEmitter {
   }
 
   shouldAttemptReset() {
-    return (Date.now() - this.lastFailureTime) > this.options.resetTimeout;
+    return Date.now() - this.lastFailureTime > this.options.resetTimeout;
   }
 
   updateMetrics() {
@@ -240,18 +261,23 @@ export class AdvancedCircuitBreaker extends EventEmitter {
 
   async startHealthCheck() {
     setInterval(async () => {
-      if (this.state === AdvancedCircuitBreaker.States.OPEN && this.shouldAttemptReset()) {
+      if (
+        this.state === AdvancedCircuitBreaker.States.OPEN &&
+        this.shouldAttemptReset()
+      ) {
         this.transitionState(AdvancedCircuitBreaker.States.HALF_OPEN);
       }
     }, this.options.healthCheck.interval);
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   createTimeout(ms) {
-    return new Promise((_, reject) => setTimeout(() => reject(new Error('⏳ Execution timeout')), ms));
+    return new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('⏳ Execution timeout')), ms),
+    );
   }
 }
 

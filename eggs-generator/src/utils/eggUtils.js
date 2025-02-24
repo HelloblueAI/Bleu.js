@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import crypto from 'crypto';
 
 /** 🎲 Generate a Unique DNA String */
@@ -27,18 +28,49 @@ export function generateDNA() {
   return crypto.randomBytes(16).toString('hex');
 }
 
-/** 🔥 Calculate Rarity Score */
-export function calculateRarityScore(rarity) {
-  const scores = {
-    common: 1,
-    uncommon: 2,
-    rare: 3,
-    legendary: 4,
-    mythical: 5,
-    divine: 6,
-    unique: 7,
+/** 🛠️ Validate Required String Properties */
+export function validateString(value, name) {
+  if (!value || typeof value !== 'string' || value.trim().length === 0) {
+    throw new Error(`Invalid "${name}": Must be a non-empty string.`);
+  }
+  return value.trim(); // Return trimmed valid strings
+}
+
+/** 🔥 Calculate Egg Rarity Based on Type & Element */
+export function calculateEggRarity({ type, element }) {
+  const rarityMap = {
+    common: 0,
+    uncommon: 1,
+    rare: 2,
+    legendary: 3,
+    mythical: 4,
+    divine: 5,
+    unique: 6,
   };
-  return scores[rarity] || 1;
+
+  let rarity = type?.toLowerCase() in rarityMap ? type.toLowerCase() : 'common';
+
+  // 🔥 Ensure Elemental Boost is Applied Correctly
+  const elementBoost = {
+    fire: 'rare',
+    cosmic: 'legendary',
+    void: 'mythical',
+    celestial: 'divine',
+    inferno: 'mythical',
+    thunder: 'rare',
+  };
+
+  if (elementBoost[element?.toLowerCase()]) {
+    const currentRank = rarityMap[rarity];
+    const boostRank = rarityMap[elementBoost[element.toLowerCase()]];
+
+    // Upgrade rarity if elemental boost is higher than current rarity
+    if (boostRank > currentRank) {
+      rarity = elementBoost[element.toLowerCase()];
+    }
+  }
+
+  return rarity;
 }
 
 /** ⚡ Calculate Initial Power Level */
@@ -53,7 +85,57 @@ export function calculateInitialPower(rarity) {
     divine: 5,
     unique: 10,
   };
+
   return Math.floor(
     (Math.random() * 20 + baseStrength) * (multipliers[rarity] || 1),
   );
+}
+
+/** 🛡️ Generate Egg Defense Level */
+export function calculateDefenseLevel(rarity) {
+  const baseDefense = 30;
+  const multipliers = {
+    common: 1,
+    uncommon: 1.1,
+    rare: 1.3,
+    legendary: 1.7,
+    mythical: 2.5,
+    divine: 4,
+    unique: 7,
+  };
+
+  return Math.floor(
+    (Math.random() * 15 + baseDefense) * (multipliers[rarity] || 1),
+  );
+}
+
+/** ⚔️ Assign Special Abilities Based on Rarity */
+export function getSpecialAbilities(rarity) {
+  const abilities = {
+    common: ['none'],
+    uncommon: ['harden'],
+    rare: ['flame burst', 'ice shield'],
+    legendary: ['thunder strike', 'shadow veil'],
+    mythical: ['time warp', 'dimension shift'],
+    divine: ['phoenix rebirth', 'celestial beam'],
+    unique: ['eternal regeneration', 'god’s wrath'],
+  };
+
+  return abilities[rarity] || ['none'];
+}
+
+/** ✅ Validate Egg Parameters */
+export function validateEggParams(params) {
+  if (!params || typeof params !== 'object') {
+    throw new Error('Egg parameters must be an object.');
+  }
+
+  ['type', 'element'].forEach((prop) => {
+    if (!params[prop]) {
+      throw new Error(`Missing required parameter: "${prop}".`);
+    }
+    validateString(params[prop], prop);
+  });
+
+  return true;
 }

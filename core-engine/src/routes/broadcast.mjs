@@ -27,7 +27,6 @@ import { logger } from '../config/logger.mjs';
 import AdvancedCircuitBreaker from '../core/circuit-breaker.mjs';
 import metrics from '../core/metrics.mjs';
 
-
 const circuitBreaker = new AdvancedCircuitBreaker({
   failureThreshold: 3,
   resetTimeout: 30000,
@@ -35,12 +34,12 @@ const circuitBreaker = new AdvancedCircuitBreaker({
   bulkhead: 20,
   retryPolicy: {
     maxRetries: 3,
-    backoffStrategy: 'exponential'
+    backoffStrategy: 'exponential',
   },
   metrics: {
     enabled: true,
-    detailedErrors: true
-  }
+    detailedErrors: true,
+  },
 });
 
 export function setupBroadcastRoute(app, wsManager) {
@@ -51,12 +50,12 @@ export function setupBroadcastRoute(app, wsManager) {
     // Add request tracking
     metrics.trackRequest(startTime, true, {
       endpoint: '/api/broadcast',
-      circuitBreaker: circuitBreaker
+      circuitBreaker: circuitBreaker,
     });
 
     logger.info(`[${requestId}] 🔊 Broadcast request received`, {
       timestamp: new Date().toISOString(),
-      body: req.body
+      body: req.body,
     });
 
     try {
@@ -70,8 +69,8 @@ export function setupBroadcastRoute(app, wsManager) {
         {
           cacheKey: null,
           requestId,
-          timeout: 10000 // Increased timeout for large broadcasts
-        }
+          timeout: 10000, // Increased timeout for large broadcasts
+        },
       );
 
       await sendSuccessResponse(res, result, startTime, requestId);
@@ -87,7 +86,9 @@ function validateBroadcastInput(body) {
   const validationErrors = [];
 
   if (!message || typeof message !== 'string' || message.trim() === '') {
-    validationErrors.push('Message is required and must be a non-empty string.');
+    validationErrors.push(
+      'Message is required and must be a non-empty string.',
+    );
   }
 
   if (filter) {
@@ -109,11 +110,9 @@ function validateBroadcastInput(body) {
 
   return {
     isValid: validationErrors.length === 0,
-    error: validationErrors.join(' ')
+    error: validationErrors.join(' '),
   };
 }
-
-
 
 async function processBroadcast(wsManager, { message, filter }, requestId) {
   metrics.incrementCounter('broadcast.attempts');
@@ -123,7 +122,7 @@ async function processBroadcast(wsManager, { message, filter }, requestId) {
     filterFunction = createFilterFunction(filter);
     logger.info(`[${requestId}] 🎯 Applying filter`, {
       filter,
-      activeClients: wsManager.getActiveClientCount()
+      activeClients: wsManager.getActiveClientCount(),
     });
   }
 
@@ -131,7 +130,7 @@ async function processBroadcast(wsManager, { message, filter }, requestId) {
     wsManager,
     message,
     filterFunction,
-    requestId
+    requestId,
   );
 
   // Enhanced metrics tracking
@@ -140,15 +139,15 @@ async function processBroadcast(wsManager, { message, filter }, requestId) {
     metadata: {
       recipients: recipientCount,
       messageSize: message.length,
-      filtered: !!filterFunction
-    }
+      filtered: !!filterFunction,
+    },
   });
 
   return {
     recipientCount,
     messageLength: message.length,
     hasFilter: !!filterFunction,
-    activeClients: wsManager.getActiveClientCount()
+    activeClients: wsManager.getActiveClientCount(),
   };
 }
 
@@ -156,22 +155,22 @@ function createFilterFunction(filter) {
   const compiledFilters = Object.entries(filter).map(([key, value]) => {
     if (key === 'ip' && typeof value === 'string') {
       const ipRegex = new RegExp(value.replace(/\*/g, '.*'));
-      return client => ipRegex.test(client[key]);
+      return (client) => ipRegex.test(client[key]);
     }
     if (Array.isArray(value)) {
-      return client => value.includes(client[key]);
+      return (client) => value.includes(client[key]);
     }
-    return client => client[key] === value;
+    return (client) => client[key] === value;
   });
 
   return (client) => {
     try {
-      return compiledFilters.every(filterFn => filterFn(client));
+      return compiledFilters.every((filterFn) => filterFn(client));
     } catch (error) {
       logger.warn('Filter function error', {
         error: error.message,
         filter,
-        clientId: client.id
+        clientId: client.id,
       });
       return false;
     }
@@ -183,7 +182,7 @@ async function broadcastWithRetry(
   message,
   filterFunction,
   requestId,
-  maxRetries = 3
+  maxRetries = 3,
 ) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -196,13 +195,13 @@ async function broadcastWithRetry(
       logger.warn(`[${requestId}] Broadcast attempt ${attempt} failed`, {
         error: error.message,
         attempt,
-        maxRetries
+        maxRetries,
       });
 
       if (attempt === maxRetries) throw error;
 
       const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 }
@@ -214,13 +213,13 @@ async function sendSuccessResponse(res, result, startTime, requestId) {
   metrics.trackRequest(startTime, true, {
     endpoint: 'broadcast.complete',
     duration,
-    metadata: result
+    metadata: result,
   });
 
   logger.info(`[${requestId}] 📡 Broadcast completed`, {
     ...result,
     duration: `${duration.toFixed(2)}ms`,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   return res.status(200).json({
@@ -234,13 +233,13 @@ async function sendSuccessResponse(res, result, startTime, requestId) {
       activeClients: result.activeClients,
       messageStats: {
         length: result.messageLength,
-        filtered: result.hasFilter
+        filtered: result.hasFilter,
       },
       circuitBreaker: {
         state: circuitBreaker.state,
-        metrics: metrics.getMetrics()
-      }
-    }
+        metrics: metrics.getMetrics(),
+      },
+    },
   });
 }
 
@@ -250,14 +249,14 @@ async function handleBroadcastError(error, res, startTime, requestId) {
   metrics.trackRequest(startTime, false, {
     endpoint: 'broadcast.error',
     error: error.message,
-    duration
+    duration,
   });
 
   logger.error(`[${requestId}] ❌ Broadcast failed`, {
     error: error.message,
     stack: error.stack,
     duration: `${duration.toFixed(2)}ms`,
-    circuitBreakerState: circuitBreaker.state
+    circuitBreakerState: circuitBreaker.state,
   });
 
   return res.status(500).json({
@@ -269,8 +268,8 @@ async function handleBroadcastError(error, res, startTime, requestId) {
       duration: `${duration.toFixed(2)}ms`,
       circuitBreaker: {
         state: circuitBreaker.state,
-        metrics: metrics.getMetrics()
-      }
-    }
+        metrics: metrics.getMetrics(),
+      },
+    },
   });
 }

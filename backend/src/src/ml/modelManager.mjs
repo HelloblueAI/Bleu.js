@@ -55,7 +55,10 @@ class ModelManager {
     }
 
     logger.info('🚀 Starting model training...');
-    return this.runPythonScript(this.trainScript, ['--modelInfo', JSON.stringify(modelInfo)]);
+    return this.runPythonScript(this.trainScript, [
+      '--modelInfo',
+      JSON.stringify(modelInfo),
+    ]);
   }
 
   /**
@@ -88,14 +91,21 @@ class ModelManager {
    * @returns {Promise<string>} - Evaluation completion message.
    */
   async evaluateRule(ruleId, inputData) {
-    if (!ruleId || typeof ruleId !== 'string' || !inputData || typeof inputData !== 'object') {
+    if (
+      !ruleId ||
+      typeof ruleId !== 'string' ||
+      !inputData ||
+      typeof inputData !== 'object'
+    ) {
       throw new Error('Invalid ruleId or inputData provided.');
     }
 
     logger.info(`🔍 Evaluating rule: ${ruleId}`);
     return this.runPythonScript(this.evaluateScript, [
-      '--ruleId', ruleId,
-      '--inputData', JSON.stringify(inputData)
+      '--ruleId',
+      ruleId,
+      '--inputData',
+      JSON.stringify(inputData),
     ]);
   }
 

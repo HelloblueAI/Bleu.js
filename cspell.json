@@ -212,6 +212,7 @@
   "words": [
     "arraybuffer",
     "cookiejar",
+    "ELEMDELETE",
     "esniff",
     "esprima",
     "htmlcov",
@@ -219,6 +220,7 @@
     "joblib",
     "jspm",
     "nosetests",
+    "Optuna",
     "Pipfile",
     "pycache",
     "realpath",
@@ -226,6 +228,7 @@
     "ropeproject",
     "sdist",
     "tsutils",
-    "vercel"
+    "vercel",
+    "virtuals"
   ]
 }

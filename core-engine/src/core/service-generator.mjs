@@ -59,7 +59,6 @@ class ServiceGenerator extends EventEmitter {
   }
 
   setupMethodGenerators() {
-
     this.methodGenerators.set('findAll', {
       template: this.generateFindAllMethod,
       requiredImports: ['Repository', 'FindManyOptions'],
@@ -93,7 +92,6 @@ class ServiceGenerator extends EventEmitter {
       permissions: ['delete'],
       events: ['deleted'],
     });
-
 
     this.methodGenerators.set('searchByFilters', {
       template: this.generateSearchMethod,
@@ -167,7 +165,6 @@ class ServiceGenerator extends EventEmitter {
   async generateService(params) {
     const { name, methods, options = {} } = params;
     const className = this.formatClassName(name);
-
 
     const imports = new Set(['Injectable', 'InjectRepository', 'Repository']);
     const methodsDetails = methods.map((method) => {

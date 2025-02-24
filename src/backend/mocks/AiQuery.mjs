@@ -13,7 +13,7 @@ export const findById = jest.fn((id) => {
           conditions: [{ key: 'age', operator: 'greater_than', value: 18 }],
           actions: ['approve'],
         }
-      : null
+      : null,
   );
 });
 
@@ -33,7 +33,7 @@ export const findByIdAndUpdate = jest.fn((id) =>
     _id: id,
     conditions: [{ key: 'age', operator: 'greater_than', value: 18 }],
     actions: ['reject'],
-  })
+  }),
 );
 
 /**

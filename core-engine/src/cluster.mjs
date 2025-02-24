@@ -37,7 +37,6 @@ const logger = winston.createLogger({
     winston.format.json(),
   ),
   transports: [
-    
     new winston.transports.Console({
       format: winston.format.simple(),
     }),
@@ -92,20 +91,26 @@ class WorkerManager {
   }
 
   handleWorkerExit(worker, code, signal) {
-    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Code: ${code}, Signal: ${signal}`);
+    logger.warn(
+      `⚠️ Worker ${worker.process.pid} exited. Code: ${code}, Signal: ${signal}`,
+    );
 
     this.workers.delete(worker.id);
     const attempts = this.restartAttempts.get(worker.id) || 0;
 
     if (attempts < this.MAX_RESTART_ATTEMPTS) {
-      logger.info(`🔄 Restarting worker [Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}]`);
+      logger.info(
+        `🔄 Restarting worker [Attempt ${attempts + 1}/${this.MAX_RESTART_ATTEMPTS}]`,
+      );
 
       setTimeout(() => {
         const newWorker = this.createWorker();
         this.restartAttempts.set(newWorker.id, attempts + 1);
       }, this.RESTART_DELAY);
     } else {
-      logger.error(`❌ Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`);
+      logger.error(
+        `❌ Worker ${worker.process.pid} failed to restart after ${this.MAX_RESTART_ATTEMPTS} attempts`,
+      );
       this.checkClusterHealth();
     }
   }
@@ -114,7 +119,10 @@ class WorkerManager {
     if (message.type === 'error') {
       logger.error(`🚨 Error in Worker ${worker.process.pid}:`, message.error);
     } else if (message.type === 'status') {
-      logger.info(`📡 Status from Worker ${worker.process.pid}:`, message.status);
+      logger.info(
+        `📡 Status from Worker ${worker.process.pid}:`,
+        message.status,
+      );
     }
   }
 
@@ -158,7 +166,10 @@ class WorkerManager {
     });
 
     process.on('unhandledRejection', (reason, promise) => {
-      logger.error('❌ Unhandled Promise Rejection in Primary Process:', reason);
+      logger.error(
+        '❌ Unhandled Promise Rejection in Primary Process:',
+        reason,
+      );
     });
   }
 

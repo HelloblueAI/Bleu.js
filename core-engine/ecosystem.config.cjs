@@ -27,7 +27,7 @@ module.exports = {
       name: 'core-engine',
       script: './src/index.mjs',
       interpreter: 'node',
-      instances: 4,  // Changed from 'max' to 4
+      instances: 4, // Changed from 'max' to 4
       exec_mode: 'cluster',
       autorestart: true,
       watch: false,
