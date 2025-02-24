@@ -8,11 +8,11 @@ services:
     container_name: bleujs-backend
     restart: always
     ports:
-      - "4003:4003"
+      - '4003:4003'
     environment:
       - NODE_ENV=production
       - AI_API_URL=http://ai-service:8000/predict
-      - MONGODB_URI=mongodb://mongo:27017/bleujs  
+      - MONGODB_URI=mongodb://mongo:27017/bleujs
     depends_on:
       - ai-service
       - mongo
@@ -24,7 +24,7 @@ services:
     container_name: bleujs-ai
     restart: always
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - PYTHONUNBUFFERED=1
 

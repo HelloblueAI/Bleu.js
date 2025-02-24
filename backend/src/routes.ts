@@ -24,24 +24,19 @@
 import { Router } from 'express';
 import { transports, createLogger } from 'winston';
 
-
 const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-
 const router: Router = Router();
-
 
 router.post('/api/route', async (req, res) => {
   try {
-
     logger.info('Processing request');
-
 
     return res.json({ success: true });
   } catch (error) {
-    let errorMessage = error instanceof Error ? error.message : "Unknown error";
+    let errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Error processing request:', errorMessage);
 
     return res.status(500).json({

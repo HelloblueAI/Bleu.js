@@ -22,25 +22,25 @@
 //  THE SOFTWARE.
 
 /* eslint-env node */
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Bleu.js API",
-            version: "1.0.0",
-            description: "API documentation for Bleu.js",
-        },
-        servers: [
-            {
-                url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod",
-                description: "Production server",
-            },
-        ],
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Bleu.js API',
+      version: '1.0.0',
+      description: 'API documentation for Bleu.js',
     },
-    apis: ["./routes/*.js"],
+    servers: [
+      {
+        url: 'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod',
+        description: 'Production server',
+      },
+    ],
+  },
+  apis: ['./routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

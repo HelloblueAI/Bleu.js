@@ -63,10 +63,9 @@ const SECURITY_CONFIG = {
   MONGOOSE_RETRY_INTERVAL: 5000,
 };
 
-const CORS_WHITELIST = process.env.ALLOWED_ORIGINS ?
-  process.env.ALLOWED_ORIGINS.split(',') :
-  ['http://localhost:3000'];
-
+const CORS_WHITELIST = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000'];
 
 const collectDefaultMetrics = promClient.collectDefaultMetrics;
 const Registry = promClient.Registry;
@@ -77,9 +76,8 @@ const httpRequestDurationMicroseconds = new promClient.Histogram({
   name: 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['method', 'route', 'status_code'],
-  registers: [register]
+  registers: [register],
 });
-
 
 class EnhancedCache extends Map {
   constructor() {
@@ -102,7 +100,7 @@ class EnhancedCache extends Map {
       value,
       expiryTime,
       created: Date.now(),
-      hits: 0
+      hits: 0,
     });
 
     setTimeout(() => this.delete(hash), ttl);
@@ -128,7 +126,7 @@ class EnhancedCache extends Map {
       size: this.size,
       hits: this.hits,
       misses: this.misses,
-      hitRate: this.hits / (this.hits + this.misses) || 0
+      hitRate: this.hits / (this.hits + this.misses) || 0,
     };
   }
 }
@@ -167,7 +165,6 @@ class CircuitBreaker {
   }
 }
 
-
 const logger = winston.createLogger({
   level: NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
@@ -180,44 +177,46 @@ const logger = winston.createLogger({
         level,
         instance: INSTANCE_ID,
         message,
-        stack
+        stack,
       });
-    })
+    }),
   ),
   transports: [
     new winston.transports.Console({
-      format: winston.format.colorize({ all: true })
+      format: winston.format.colorize({ all: true }),
     }),
     new winston.transports.File({
       filename: `logs/error-${INSTANCE_ID}.log`,
       level: 'error',
       maxsize: 5 * 1024 * 1024,
-      maxFiles: 5
+      maxFiles: 5,
     }),
     new winston.transports.File({
       filename: `logs/combined-${INSTANCE_ID}.log`,
       maxsize: 5 * 1024 * 1024,
-      maxFiles: 5
-    })
-  ]
+      maxFiles: 5,
+    }),
+  ],
 });
-
 
 const predictionCache = new EnhancedCache();
 
 const app = express();
-app.use(helmet({
-  contentSecurityPolicy: NODE_ENV === 'production',
-  crossOriginEmbedderPolicy: NODE_ENV === 'production'
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: NODE_ENV === 'production',
+    crossOriginEmbedderPolicy: NODE_ENV === 'production',
+  }),
+);
 app.use(compression());
 app.use(express.json({ limit: SECURITY_CONFIG.MAX_REQUEST_SIZE }));
-app.use(cors({
-  origin: NODE_ENV === 'production' ? CORS_WHITELIST : '*',
-  methods: ['GET', 'POST'],
-  credentials: true
-}));
-
+app.use(
+  cors({
+    origin: NODE_ENV === 'production' ? CORS_WHITELIST : '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  }),
+);
 
 const requestTracker = async (req, res, next) => {
   const requestStart = Date.now();
@@ -235,7 +234,7 @@ const requestTracker = async (req, res, next) => {
       status: res.statusCode,
       duration,
       userAgent: req.get('user-agent'),
-      ip: req.ip
+      ip: req.ip,
     });
   });
 
@@ -244,16 +243,16 @@ const requestTracker = async (req, res, next) => {
 
 app.use(requestTracker);
 
-
-app.use(morgan('combined', {
-  stream: { write: (msg) => logger.info(msg.trim()) },
-  skip: (req) => req.path === '/metrics' || req.path === '/health'
-}));
-
+app.use(
+  morgan('combined', {
+    stream: { write: (msg) => logger.info(msg.trim()) },
+    skip: (req) => req.path === '/metrics' || req.path === '/health',
+  }),
+);
 
 const validApiKeys = new Map([
   [process.env.API_KEY_1 || 'your-api-key-1', true],
-  [process.env.API_KEY_2 || 'your-api-key-2', true]
+  [process.env.API_KEY_2 || 'your-api-key-2', true],
 ]);
 
 const authMiddleware = (req, res, next) => {
@@ -271,17 +270,15 @@ const authMiddleware = (req, res, next) => {
 
 app.use(authMiddleware);
 
-
 const rateLimiter = rateLimit({
   windowMs: SECURITY_CONFIG.RATE_LIMIT_WINDOW,
   max: SECURITY_CONFIG.RATE_LIMIT_MAX,
   message: { error: 'Too many requests, please try again later' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
 });
 
 app.use(rateLimiter);
-
 
 async function connectMongoDB() {
   if (!MONGODB_URI) {
@@ -289,17 +286,22 @@ async function connectMongoDB() {
     process.exit(1);
   }
 
-  const connectWithRetry = async (retries = SECURITY_CONFIG.MONGOOSE_MAX_RETRIES, interval = SECURITY_CONFIG.MONGOOSE_RETRY_INTERVAL) => {
+  const connectWithRetry = async (
+    retries = SECURITY_CONFIG.MONGOOSE_MAX_RETRIES,
+    interval = SECURITY_CONFIG.MONGOOSE_RETRY_INTERVAL,
+  ) => {
     try {
       await mongoose.connect(MONGODB_URI, {
         serverSelectionTimeoutMS: 5000,
         autoIndex: NODE_ENV !== 'production',
-        maxPoolSize: 10
+        maxPoolSize: 10,
       });
       logger.info('MongoDB connected successfully');
     } catch (error) {
       if (retries > 0) {
-        logger.warn(`MongoDB connection failed, retrying... (${retries} attempts left)`);
+        logger.warn(
+          `MongoDB connection failed, retrying... (${retries} attempts left)`,
+        );
         setTimeout(() => connectWithRetry(retries - 1, interval), interval);
       } else {
         logger.error('MongoDB connection failed after all retries');
@@ -324,7 +326,6 @@ async function connectMongoDB() {
   await connectWithRetry();
 }
 
-
 app.get('/metrics', async (req, res) => {
   try {
     res.set('Content-Type', register.contentType);
@@ -345,25 +346,26 @@ app.get('/health', async (req, res) => {
         build: BUILD_NUMBER,
         nodeVersion: process.version,
         instance: INSTANCE_ID,
-        uptime: process.uptime()
+        uptime: process.uptime(),
       },
       server: {
         environment: NODE_ENV,
         port: PORT,
         timestamp: new Date().toISOString(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       database: {
-        status: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        status:
+          mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
         host: mongoose.connection.host,
-        databaseName: mongoose.connection.name
+        databaseName: mongoose.connection.name,
       },
       resources: {
         memory: process.memoryUsage(),
         cpu: process.cpuUsage(),
-        loadAverage: os.loadavg()
+        loadAverage: os.loadavg(),
       },
-      cache: predictionCache.getStats()
+      cache: predictionCache.getStats(),
     };
 
     res.status(200).json(healthStatus);
@@ -372,11 +374,10 @@ app.get('/health', async (req, res) => {
     res.status(500).json({
       status: 'error',
       message: 'Health check failed',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
-
 
 const predictionBreaker = new CircuitBreaker();
 
@@ -387,7 +388,9 @@ app.post('/predict', async (req, res) => {
 
     if (!Array.isArray(features) || !features.length) {
       logger.warn('Invalid prediction request format');
-      return res.status(400).json({ status: 'error', message: 'Invalid input format' });
+      return res
+        .status(400)
+        .json({ status: 'error', message: 'Invalid input format' });
     }
 
     const cacheKey = JSON.stringify(features);
@@ -396,7 +399,9 @@ app.post('/predict', async (req, res) => {
     if (cachedResult) {
       logger.info(`Cache hit for prediction: ${cacheKey}`);
       end({ method: 'POST', route: '/predict', status_code: 200 });
-      return res.status(200).json({ status: 'success', prediction: cachedResult, cached: true });
+      return res
+        .status(200)
+        .json({ status: 'success', prediction: cachedResult, cached: true });
     }
 
     await predictionBreaker.execute(async () => {
@@ -405,11 +410,17 @@ app.post('/predict', async (req, res) => {
         throw new Error('Prediction script not found');
       }
 
-      const pythonProcess = spawn('python3', [scriptPath, JSON.stringify(features)]);
+      const pythonProcess = spawn('python3', [
+        scriptPath,
+        JSON.stringify(features),
+      ]);
       let output = '';
       let errorOutput = '';
 
-      pythonProcess.stdout.on('data', (data) => output += data.toString().trim());
+      pythonProcess.stdout.on(
+        'data',
+        (data) => (output += data.toString().trim()),
+      );
       pythonProcess.stderr.on('data', (data) => {
         errorOutput += data.toString().trim();
         logger.error(`Python error: ${data.toString().trim()}`);
@@ -422,11 +433,13 @@ app.post('/predict', async (req, res) => {
               const parsedOutput = JSON.parse(output.trim());
               predictionCache.set(cacheKey, parsedOutput);
               end({ method: 'POST', route: '/predict', status_code: 200 });
-              resolve(res.status(200).json({
-                status: 'success',
-                prediction: parsedOutput,
-                cached: false
-              }));
+              resolve(
+                res.status(200).json({
+                  status: 'success',
+                  prediction: parsedOutput,
+                  cached: false,
+                }),
+              );
             } catch (error) {
               reject(new Error('Failed to parse prediction result'));
             }
@@ -436,17 +449,16 @@ app.post('/predict', async (req, res) => {
         });
       });
     });
-
   } catch (error) {
     logger.error(`Prediction error: ${error.message}`);
     end({ method: 'POST', route: '/predict', status_code: 500 });
     res.status(500).json({
       status: 'error',
-      message: NODE_ENV === 'production' ? 'Internal server error' : error.message
+      message:
+        NODE_ENV === 'production' ? 'Internal server error' : error.message,
     });
   }
 });
-
 
 app.use((err, req, res, next) => {
   const errorId = crypto.randomUUID();
@@ -457,17 +469,16 @@ app.use((err, req, res, next) => {
     stack: err.stack,
     path: req.path,
     method: req.method,
-    requestId: req.id
+    requestId: req.id,
   });
 
   res.status(err.status || 500).json({
     status: 'error',
     message: NODE_ENV === 'production' ? 'Internal server error' : err.message,
     errorId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
-
 
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received, starting graceful shutdown');
@@ -478,7 +489,6 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
-
 
 const server = app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);

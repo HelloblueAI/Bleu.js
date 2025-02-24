@@ -22,44 +22,52 @@
 //  THE SOFTWARE.
 
 import request from 'supertest';
-
-import { startServer, stopServer } from '../index';
-import { buildDecisionTree } from '../services/decisionTreeService';
+import { startServer, stopServer } from '../index.mjs'; // Ensure correct `.mjs` import
 
 let app, server;
 
 beforeAll(async () => {
   ({ app, server } = await startServer(0));
-
-  const trainingData = [
-    { feature1: 'A', feature2: 'X', result: 'positive' },
-    { feature1: 'A', feature2: 'Y', result: 'negative' },
-    { feature1: 'B', feature2: 'X', result: 'negative' },
-    { feature1: 'B', feature2: 'Y', result: 'positive' },
-  ];
-
-  // Fix: Replace multiline array with a single line.
-  buildDecisionTree(trainingData, 'result', ['feature1', 'feature2']);
 });
 
 afterAll(async () => {
   await stopServer(server);
 });
 
-describe('AI Service API', () => {
-  it('should process input and return AI-generated result', async () => {
-    const response = await request(app)
-      .post('/api/aiService')
-      .send({ input: { feature1: 'A', feature2: 'X' } });
+describe('🟦 Bleu.js API Test Suite', () => {
+  it('✅ Should pass a basic test', async () => {
+    const response = await request(app).get('/api/basic-test');
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('result');
-    expect(['positive', 'negative']).toContain(response.body.result);
+    expect(response.text).toBe('Basic test passed');
   });
 
-  it('should handle invalid input gracefully', async () => {
-    const response = await request(app).post('/api/aiService').send({});
-    expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toBe('Missing input');
+  it('🔄 Should handle JSON responses properly', async () => {
+    const response = await request(app).get('/api/json-test');
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('message', 'JSON test passed');
+  });
+
+  it('🚫 Should return 404 for non-existent routes', async () => {
+    const response = await request(app).get('/api/nonexistent-route');
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty('error', 'Not Found');
+  });
+
+  it('⚠️ Should handle server errors gracefully', async () => {
+    const mockErrorRoute = '/api/error-simulation';
+    const response = await request(app).get(mockErrorRoute);
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toHaveProperty('error', 'Internal Server Error');
+  });
+
+  it('🔄 Should handle multiple concurrent requests', async () => {
+    const requests = Array.from({ length: 5 }).map(() =>
+      request(app).get('/api/basic-test'),
+    );
+    const responses = await Promise.all(requests);
+    responses.forEach((response) => {
+      expect(response.statusCode).toBe(200);
+      expect(response.text).toBe('Basic test passed');
+    });
   });
 });

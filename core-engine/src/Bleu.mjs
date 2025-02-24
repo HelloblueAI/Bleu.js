@@ -82,14 +82,17 @@ class Bleu {
     try {
       switch (type) {
         case 'model':
-          return `Model ${options.modelName} with fields ${options.fields.map(f => f.name).join(', ')}`;
+          return `Model ${options.modelName} with fields ${options.fields.map((f) => f.name).join(', ')}`;
         case 'utility':
           return `Utility ${options.utilityName} with methods ${options.methods.join(', ')}`;
         default:
           throw new Error(`Unknown code type: ${type}`);
       }
     } catch (error) {
-      logger.warn(`⚠️ Failed to generate description for type "${type}"`, error);
+      logger.warn(
+        `⚠️ Failed to generate description for type "${type}"`,
+        error,
+      );
       return 'Unknown Egg Type';
     }
   }
@@ -113,7 +116,7 @@ class Bleu {
     try {
       const eslint = new ESLint();
       const results = await eslint.lintText(code);
-      return results.every(r => r.errorCount === 0);
+      return results.every((r) => r.errorCount === 0);
     } catch (error) {
       logger.warn('⚠️ ESLint validation failed:', error);
       return false;
@@ -125,12 +128,20 @@ class Bleu {
    */
   manageDependencies(dependencies) {
     try {
-      dependencies.forEach(dep => {
-        if (!/^[a-zA-Z0-9@._-]+$/.test(dep.name) || !/^[a-zA-Z0-9@._-]+$/.test(dep.version)) {
-          throw new Error(`Invalid dependency name or version: ${dep.name}@${dep.version}`);
+      dependencies.forEach((dep) => {
+        if (
+          !/^[a-zA-Z0-9@._-]+$/.test(dep.name) ||
+          !/^[a-zA-Z0-9@._-]+$/.test(dep.version)
+        ) {
+          throw new Error(
+            `Invalid dependency name or version: ${dep.name}@${dep.version}`,
+          );
         }
         logger.info(`📦 Checking dependency: ${dep.name}@${dep.version}`);
-        execSync(`pnpm add ${dep.name}@${dep.version}`, { stdio: 'inherit', shell: true });
+        execSync(`pnpm add ${dep.name}@${dep.version}`, {
+          stdio: 'inherit',
+          shell: true,
+        });
       });
     } catch (error) {
       logger.error('❌ Dependency management failed:', error);
@@ -150,7 +161,11 @@ class Bleu {
   async generateEggs(count, description, type, options) {
     const eggs = [];
     for (let i = 0; i < count; i++) {
-      const egg = await this.generateEgg(`${description} ${i + 1}`, type, options);
+      const egg = await this.generateEgg(
+        `${description} ${i + 1}`,
+        type,
+        options,
+      );
       eggs.push(egg);
     }
     return eggs;

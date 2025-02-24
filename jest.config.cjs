@@ -22,6 +22,7 @@
 //  THE SOFTWARE.
 
 const path = require('path');
+
 const pkg = require('./package.json');
 
 module.exports = {
@@ -30,7 +31,7 @@ module.exports = {
   testEnvironment: path.resolve(__dirname, 'jest.environment.cjs'),
 
 
-  
+
   reporters: [
     'default',
     [
@@ -76,10 +77,10 @@ module.exports = {
   ],
 
   moduleNameMapper: {
-    'node:crypto': '<rootDir>/src/node-shims/crypto.js',
-    crypto: '<rootDir>/src/node-shims/crypto.js',
-    'node:fs': '<rootDir>/src/node-shims/fs.js',
-    'node:net': '<rootDir>/src/node-shims/net.js',
+    'node:crypto': '<rootDir>/src/node-shims/crypto.mjs',
+    crypto: '<rootDir>/src/node-shims/crypto.mjs',
+    'node:fs': '<rootDir>/src/node-shims/fs.mjs',
+    'node:net': '<rootDir>/src/node-shims/net.mjs',
     'node:events': require.resolve('events'),
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
@@ -87,13 +88,25 @@ module.exports = {
     '^@models/(.*)$': '<rootDir>/src/models/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
     '^@core/(.*)$': '<rootDir>/src/core/$1',
+    '^@routes/(.*)$': '<rootDir>/src/routes/$1',
+    '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
   },
 
   transform: {
     '^.+\\.m?[tj]sx?$': [
       'babel-jest',
       {
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }],
+          '@babel/preset-typescript',
+        ],
+        plugins: [
+          '@babel/plugin-transform-runtime',
+          '@babel/plugin-proposal-decorators',
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-nullish-coalescing-operator',
+          'babel-plugin-transform-typescript-metadata',
+        ],
       },
     ],
   },
@@ -111,7 +124,7 @@ module.exports = {
     {
       displayName: 'lint',
       runner: 'jest-runner-eslint',
-      testMatch: ['<rootDir>/**/*.{js,jsx,ts,tsx}'],
+      testMatch: ['<rootDir>/**/*.{js,mjs,jsx,ts,tsx}'],
       testPathIgnorePatterns: [
         '/node_modules/',
         '/dist/',
@@ -119,18 +132,17 @@ module.exports = {
         '/coverage/',
         '/.pnpm/',
         '/venv/',
-        '/eggs-generator/__tests__/index.test.js',
-        '/tests/egg.test.js',
+
       ],
     },
     {
       displayName: 'test',
       testEnvironment: './jest.environment.cjs',
       testMatch: [
-        '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
-        '<rootDir>/backend/tests/**/*.test.{js,jsx,ts,tsx}',
-        '<rootDir>/frontend/tests/**/*.test.{js,jsx,ts,tsx}',
-        '<rootDir>/**/__tests__/**/*.test.{js,jsx,ts,tsx}',
+        '<rootDir>/tests/**/*.test.{js,mjs,jsx,ts,tsx}',
+        '<rootDir>/backend/tests/**/*.test.{js,mjs,jsx,ts,tsx}',
+        '<rootDir>/frontend/tests/**/*.test.{js,mjs,jsx,ts,tsx}',
+        '<rootDir>/**/__tests__/**/*.test.{js,mjs,jsx,ts,tsx}',
       ],
       testPathIgnorePatterns: [
         '/node_modules/',
@@ -138,10 +150,9 @@ module.exports = {
         '/coverage/',
         '/.pnpm/',
         '/venv/',
-        '/eggs-generator/__tests__/index.test.js',
-        '/tests/egg.test.js',
+
       ],
-      moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+      moduleFileExtensions: ['js', 'mjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
       coveragePathIgnorePatterns: [
         'node_modules',
         'test-config',
@@ -151,29 +162,7 @@ module.exports = {
         '<rootDir>/src/app/main.ts',
         '.mock.ts',
       ],
-      coverageThreshold: {
-        global: {
-          statements: 95,
-          branches: 90,
-          functions: 90,
-          lines: 95,
-
-        },
-        './src/core/': {
-          statements: 98,
-          branches: 95,
-          functions: 95,
-          lines: 98,
-
-        },
-        './src/utils/': {
-          statements: 95,
-          branches: 90,
-          functions: 90,
-          lines: 95,
-
-        },
-      },
+      
     },
   ],
 

@@ -39,25 +39,28 @@ import cluster from 'cluster';
 const PORT = process.env.PORT || 4003;
 const NUM_CPUS = os.cpus().length;
 
-
 const logger = createLogger({
   level: 'info',
   format: format.combine(
     format.timestamp(),
     format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-    })
+    }),
   ),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'logs/server.log', maxsize: 5 * 1024 * 1024, maxFiles: 5 })
+    new transports.File({
+      filename: 'logs/server.log',
+      maxsize: 5 * 1024 * 1024,
+      maxFiles: 5,
+    }),
   ],
 });
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
-  message: 'Too many requests from this IP, please try again later.'
+  message: 'Too many requests from this IP, please try again later.',
 });
 
 const startServer = async () => {
@@ -73,30 +76,25 @@ const startServer = async () => {
   app.use(morgan('combined'));
   app.use(limiter);
 
-
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
   app.use('/api', apiRoutes);
-
 
   app.get('/', (req, res) => {
     res.status(200).json({ message: 'Welcome to Bleu.js API!' });
   });
 
-
   app.use((err, req, res, next) => {
     logger.error(`Error: ${err.message}`);
     res.status(err.status || 500).json({
       success: false,
-      error: err.message || 'Internal Server Error'
+      error: err.message || 'Internal Server Error',
     });
   });
 
   const server = app.listen(PORT, () => {
     logger.info(`🚀 Server running at http://localhost:${PORT}`);
   });
-
 
   process.on('SIGTERM', async () => {
     logger.info('Shutting down server...');
@@ -107,7 +105,6 @@ const startServer = async () => {
     });
   });
 };
-
 
 if (cluster.isPrimary) {
   logger.info(`Primary process ${process.pid} is running`);

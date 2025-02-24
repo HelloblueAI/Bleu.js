@@ -20,7 +20,7 @@ class DecisionTree {
     }
     return this.traverse(
       node[node.condition(data) ? 'trueBranch' : 'falseBranch'],
-      data
+      data,
     );
   }
 
@@ -63,7 +63,7 @@ class DecisionTree {
     const { bestFeature, bestSplit, subsets } = this.getBestSplit(
       data,
       features,
-      target
+      target,
     );
 
     if (!bestSplit) {
@@ -78,14 +78,14 @@ class DecisionTree {
         features,
         target,
         maxDepth - 1,
-        minSize
+        minSize,
       ),
       falseBranch: this.buildTree(
         subsets.falseSubset,
         features,
         target,
         maxDepth - 1,
-        minSize
+        minSize,
       ),
     };
   }
@@ -102,7 +102,9 @@ class DecisionTree {
       acc[item[target]] = (acc[item[target]] || 0) + 1;
       return acc;
     }, {});
-    return Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+    return Object.keys(counts).reduce((a, b) =>
+      counts[a] > counts[b] ? a : b,
+    );
   }
 
   /**
@@ -121,7 +123,11 @@ class DecisionTree {
     features.forEach((feature) => {
       this.getSplits(data, feature).forEach((split) => {
         const subsets = this.splitData(data, feature, split);
-        const gini = this.calculateGini(subsets.trueSubset, subsets.falseSubset, target);
+        const gini = this.calculateGini(
+          subsets.trueSubset,
+          subsets.falseSubset,
+          target,
+        );
         if (gini < bestGini) {
           bestGini = gini;
           bestFeature = feature;
@@ -157,7 +163,7 @@ class DecisionTree {
         acc[item[feature] === split ? 'trueSubset' : 'falseSubset'].push(item);
         return acc;
       },
-      { trueSubset: [], falseSubset: [] }
+      { trueSubset: [], falseSubset: [] },
     );
   }
 
@@ -190,7 +196,11 @@ class DecisionTree {
       return acc;
     }, {});
     return (
-      1 - Object.values(counts).reduce((sum, count) => sum + (count / subset.length) ** 2, 0)
+      1 -
+      Object.values(counts).reduce(
+        (sum, count) => sum + (count / subset.length) ** 2,
+        0,
+      )
     );
   }
 

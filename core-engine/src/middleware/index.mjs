@@ -34,13 +34,13 @@ try {
   requestTracker = (await import('./request-tracker.mjs')).default;
 
   if (typeof rateLimiter.middleware !== 'function') {
-    throw new Error("❌ rateLimiter is not a valid function.");
+    throw new Error('❌ rateLimiter is not a valid function.');
   }
   if (typeof requestTracker !== 'function') {
-    throw new Error("❌ requestTracker is not a valid function.");
+    throw new Error('❌ requestTracker is not a valid function.');
   }
 } catch (error) {
-  logger.error("❌ Failed to import middleware:", error);
+  logger.error('❌ Failed to import middleware:', error);
 }
 
 /**
@@ -49,7 +49,9 @@ try {
  */
 export function setupMiddleware(app) {
   if (!app || typeof app.use !== 'function') {
-    throw new Error('❌ Invalid Express app instance provided to setupMiddleware.');
+    throw new Error(
+      '❌ Invalid Express app instance provided to setupMiddleware.',
+    );
   }
 
   try {
@@ -57,21 +59,21 @@ export function setupMiddleware(app) {
 
     if (rateLimiter) {
       app.use(rateLimiter.middleware());
-      logger.info("✅ Applied rateLimiter.");
+      logger.info('✅ Applied rateLimiter.');
     } else {
-      logger.warn("⚠️ Skipping rateLimiter due to invalid function.");
+      logger.warn('⚠️ Skipping rateLimiter due to invalid function.');
     }
 
     if (requestTracker) {
       app.use(requestTracker);
-      logger.info("✅ Applied requestTracker.");
+      logger.info('✅ Applied requestTracker.');
     } else {
-      logger.warn("⚠️ Skipping requestTracker due to invalid function.");
+      logger.warn('⚠️ Skipping requestTracker due to invalid function.');
     }
 
     logger.info('✅ Middleware setup completed.');
   } catch (error) {
-    logger.error("❌ Middleware setup failed:", error);
+    logger.error('❌ Middleware setup failed:', error);
   }
 }
 
@@ -96,13 +98,15 @@ export const lazyLoadMiddleware = async (middlewareName) => {
     logger.info(`📦 Loading middleware '${middlewareName}' dynamically...`);
     const module = await import(middlewareMap[middlewareName]);
 
-    if (middlewareName === "rateLimiter") {
+    if (middlewareName === 'rateLimiter') {
       const { RateLimiter } = module;
       return new RateLimiter().middleware();
     }
 
     if (typeof module.default !== 'function') {
-      throw new Error(`⚠️ Middleware '${middlewareName}' does not export a default function.`);
+      throw new Error(
+        `⚠️ Middleware '${middlewareName}' does not export a default function.`,
+      );
     }
 
     logger.info(`✅ Successfully loaded middleware '${middlewareName}'.`);

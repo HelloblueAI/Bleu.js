@@ -27,7 +27,6 @@ module.exports = {
       name: 'backend',
       script: './index.mjs',
 
-
       env: {
         NODE_ENV: 'production',
         PATH: `${process.env.HOME}/Bleu.js/backend/venv/bin:${process.env.PATH}`,
@@ -36,26 +35,22 @@ module.exports = {
         TZ: 'UTC',
       },
 
-
       increment_var: 'PORT',
       instances: 2,
       exec_mode: 'fork',
       instance_var: 'INSTANCE_ID',
 
-
       node_args: [
         '--experimental-specifier-resolution=node',
         '--max-old-space-size=4096',
         '--trace-warnings',
-        '--unhandled-rejections=strict'
+        '--unhandled-rejections=strict',
       ],
-
 
       autorestart: true,
       watch: false,
       max_memory_restart: '2G',
       force: true,
-
 
       error_log: './logs/pm2/error.log',
       out_log: './logs/pm2/out.log',
@@ -63,25 +58,20 @@ module.exports = {
       merge_logs: true,
       log_type: 'json',
 
-
       max_restarts: 3,
       min_uptime: '30s',
       kill_timeout: 8000,
       wait_ready: true,
 
-
       exp_backoff_restart_delay: 100,
       listen_timeout: 10000,
 
-
       shutdown_with_message: true,
 
-
       deep_monitoring: true,
-      status_interval: 30000,  // Status check every 30s
-
+      status_interval: 30000, // Status check every 30s
 
       source_map_support: true,
-    }
-  ]
+    },
+  ],
 };

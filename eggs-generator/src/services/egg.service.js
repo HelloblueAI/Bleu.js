@@ -20,6 +20,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+
 import { Egg, EggEvents, cache, metrics } from '../models/egg.model.js';
 import { OpenAI } from 'openai';
 import { createHash } from 'crypto';
@@ -71,23 +72,33 @@ class EggService {
       aiEnabled: true,
       useMLPredictions: true,
       enableRealTimeUpdates: true,
-      maxWorkers: 4,
+      maxWorkers: Math.max(2, config.maxWorkers || 4), // Ensure at least 2 workers
+      cacheTTL: config.cacheTTL || 3600, // Default 1-hour cache
       ...config,
     };
 
+    this.workerPool = new Set();
     this.initialize();
   }
 
   async initialize() {
     if (cluster.isPrimary) {
-      this.workerPool = new Set();
       for (let i = 0; i < this.config.maxWorkers; i++) {
-        const worker = new Worker(path.join(__dirname, 'egg.worker.js'));
-        this.workerPool.add(worker);
+        this._spawnWorker();
       }
     }
-
     this.setupEventHandlers();
+  }
+
+  _spawnWorker() {
+    const worker = new Worker(path.join(__dirname, 'egg.worker.js'));
+    this.workerPool.add(worker);
+
+    worker.on('exit', (code) => {
+      logger.warn(`Worker exited with code ${code}. Restarting...`);
+      this.workerPool.delete(worker);
+      this._spawnWorker(); // Auto-restart worker
+    });
   }
 
   setupEventHandlers() {
@@ -102,15 +113,12 @@ class EggService {
 
     try {
       const cacheKey = this._generateCacheKey(options);
-      const cachedEgg = await cache.get(cacheKey);
-
-      if (cachedEgg) {
+      if (await cache.exists(cacheKey)) {
         metrics.cacheHits++;
-        return cachedEgg;
+        return await cache.get(cacheKey);
       }
 
       metrics.cacheMisses++;
-
       const baseEgg = await this._generateBaseEgg(options);
 
       if (this.config.aiEnabled) {
@@ -119,8 +127,7 @@ class EggService {
 
       const eggDoc = new Egg(baseEgg);
       await eggDoc.save();
-
-      await cache.set(cacheKey, baseEgg, 3600);
+      await cache.set(cacheKey, baseEgg, this.config.cacheTTL);
 
       const duration = performance.now() - startTime;
       metrics.eggGeneration.set(baseEgg.id, duration);
@@ -144,19 +151,19 @@ class EggService {
   }
 
   async _generateBaseEgg(options) {
-    const baseEgg = {
+    return {
       id: createHash('sha256').update(Date.now().toString()).digest('hex'),
-      type: options.type,
-      description: options.description,
+      type: options.type || 'common',
+      description:
+        options.description || 'A mysterious egg with unknown properties.',
       metadata: {
         ...options.metadata,
         generatedBy: 'EggService v1.0.37',
         rarity: this._calculateRarity(options),
+        timestamp: new Date().toISOString(),
       },
       status: 'incubating',
     };
-
-    return baseEgg;
   }
 
   async _enhanceWithAI(egg) {
@@ -171,7 +178,11 @@ class EggService {
         ],
       });
 
-      egg.description = completion.choices[0].message.content;
+      if (completion.choices?.[0]?.message?.content) {
+        egg.description = completion.choices[0].message.content;
+      } else {
+        logger.warn('AI response was empty, keeping original description.');
+      }
     } catch (error) {
       logger.warn('AI enhancement failed, using original description', {
         error: error.message,
@@ -180,19 +191,22 @@ class EggService {
   }
 
   _calculateRarity(options) {
-    const rarityScores = {
-      common: 70,
+    const rarityProbabilities = {
+      common: 65,
       uncommon: 20,
-      rare: 9,
-      legendary: 1,
+      rare: 10,
+      legendary: 3,
+      mythical: 1,
+      divine: 0.5,
+      unique: 0.1,
     };
 
     const random = Math.random() * 100;
-    let sum = 0;
+    let cumulativeProbability = 0;
 
-    for (const [rarity, chance] of Object.entries(rarityScores)) {
-      sum += chance;
-      if (random <= sum) {
+    for (const [rarity, probability] of Object.entries(rarityProbabilities)) {
+      cumulativeProbability += probability;
+      if (random <= cumulativeProbability) {
         return rarity;
       }
     }
@@ -223,9 +237,7 @@ class EggService {
   }
 
   _generateCacheKey(options) {
-    const hash = createHash('sha256');
-    hash.update(JSON.stringify(options));
-    return `egg:${hash.digest('hex')}`;
+    return `egg:${createHash('sha256').update(JSON.stringify(options)).digest('hex')}`;
   }
 }
 

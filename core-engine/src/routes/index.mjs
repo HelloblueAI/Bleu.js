@@ -23,87 +23,82 @@
 //  Copyright (c) 2025, Helloblue Inc.
 //  Open-Source Community Edition
 
-
 import { setupBroadcastRoute } from './broadcast.mjs';
 import { setupGenerateEggRoute } from './generate-egg.mjs';
 import { setupHealthRoute } from './healthcheck.mjs';
 
 // Export route setup functions
-export {
- setupBroadcastRoute,
- setupGenerateEggRoute,
- setupHealthRoute
-};
+export { setupBroadcastRoute, setupGenerateEggRoute, setupHealthRoute };
 
 // Enhanced lazy loading with better error handling and types
 export const lazyLoadRoute = async (routeName) => {
- try {
-   const routes = {
-     broadcast: () => import('./broadcast.mjs')
-       .then(m => m.setupBroadcastRoute),
+  try {
+    const routes = {
+      broadcast: () =>
+        import('./broadcast.mjs').then((m) => m.setupBroadcastRoute),
 
-     generateEgg: () => import('./generate-egg.mjs')
-       .then(m => m.setupGenerateEggRoute),
+      generateEgg: () =>
+        import('./generate-egg.mjs').then((m) => m.setupGenerateEggRoute),
 
-     health: () => import('./healthcheck.mjs')
-       .then(m => m.setupHealthRoute)
-   };
+      health: () => import('./healthcheck.mjs').then((m) => m.setupHealthRoute),
+    };
 
-   const loadRoute = routes[routeName];
-   if (!loadRoute) {
-     throw new Error(`Route '${routeName}' not found. Available routes: ${Object.keys(routes).join(', ')}`);
-   }
+    const loadRoute = routes[routeName];
+    if (!loadRoute) {
+      throw new Error(
+        `Route '${routeName}' not found. Available routes: ${Object.keys(routes).join(', ')}`,
+      );
+    }
 
-   return await loadRoute();
+    return await loadRoute();
+  } catch (error) {
+    console.error(`Failed to load route '${routeName}':`, {
+      error: error.message,
+      stack: error.stack,
+      routeName,
+      timestamp: new Date().toISOString(),
+    });
 
- } catch (error) {
-   console.error(`Failed to load route '${routeName}':`, {
-     error: error.message,
-     stack: error.stack,
-     routeName,
-     timestamp: new Date().toISOString()
-   });
-
-   throw new Error(`Route loading failed: ${error.message}`);
- }
+    throw new Error(`Route loading failed: ${error.message}`);
+  }
 };
 
 // Helper function to setup all routes at once
 export const setupAllRoutes = async (app) => {
- try {
-   setupBroadcastRoute(app);
-   setupGenerateEggRoute(app);
-   setupHealthRoute(app);
+  try {
+    setupBroadcastRoute(app);
+    setupGenerateEggRoute(app);
+    setupHealthRoute(app);
 
-   console.info('✅ All routes initialized successfully', {
-     timestamp: new Date().toISOString(),
-     routes: ['broadcast', 'generateEgg', 'health']
-   });
- } catch (error) {
-   console.error('❌ Failed to initialize routes:', {
-     error: error.message,
-     stack: error.stack,
-     timestamp: new Date().toISOString()
-   });
-   throw error;
- }
+    console.info('✅ All routes initialized successfully', {
+      timestamp: new Date().toISOString(),
+      routes: ['broadcast', 'generateEgg', 'health'],
+    });
+  } catch (error) {
+    console.error('❌ Failed to initialize routes:', {
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+    });
+    throw error;
+  }
 };
 
 // Route configuration for documentation/type checking
 export const routeConfig = {
- broadcast: {
-   path: '/api/broadcast',
-   methods: ['POST'],
-   requiresAuth: true
- },
- generateEgg: {
-   path: '/api/generate-egg',
-   methods: ['POST'],
-   requiresAuth: true
- },
- health: {
-   path: '/api/healthcheck',
-   methods: ['GET'],
-   requiresAuth: false
- }
+  broadcast: {
+    path: '/api/broadcast',
+    methods: ['POST'],
+    requiresAuth: true,
+  },
+  generateEgg: {
+    path: '/api/generate-egg',
+    methods: ['POST'],
+    requiresAuth: true,
+  },
+  health: {
+    path: '/api/healthcheck',
+    methods: ['GET'],
+    requiresAuth: false,
+  },
 };

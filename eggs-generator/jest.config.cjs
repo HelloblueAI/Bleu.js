@@ -4,48 +4,167 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   forceExit: true,
   detectOpenHandles: true,
-  errorOnDeprecated: true,
 
+  // Improved transform configuration
   transform: {
     '^.+\\.(js|ts|mjs)$': [
       'babel-jest',
       {
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
-        plugins: ['@babel/plugin-transform-runtime'],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: { node: 'current' },
+              modules: 'auto',
+            },
+          ],
+        ],
+        plugins: [
+          [
+            '@babel/plugin-transform-runtime',
+            {
+              corejs: 3,
+              helpers: true,
+              regenerator: true,
+              useESModules: true,
+            },
+          ],
+          '@babel/plugin-transform-modules-commonjs',
+        ],
       },
     ],
   },
 
 
-  moduleFileExtensions: ['js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/__tests__/$1',
+    '^@test/(.*)$': '<rootDir>/__tests__/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@models/(.*)$': '<rootDir>/src/models/$1',
+    '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^~/(.*)$': '<rootDir>/src/$1',
   },
 
-  testMatch: ['<rootDir>/__tests__/**/*.(test|spec).js', '<rootDir>/src/**/*.(test|spec).js'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/'],
+  testMatch: [
+    '**/__tests__/**/*.(test|spec).(js|mjs|ts)',
+    '**/tests/**/*.(test|spec).(js|mjs|ts)',
+    '**/?(*.)+(spec|test).[jt]s?(x)',
+  ],
+
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/',
+    '/.next/',
+    '/.git/',
+    '/logs/',
+  ],
+
 
   collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage',
-  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
-
-
-  collectCoverageFrom: [
-    'src/**/*.js',
-    'src/**/*.mjs',
-    'src/**/*.ts',
-    '!src/index.mjs',
-    '!src/**/*.test.js', 
+  coverageReporters: [
+    'text',
+    'lcov',
+    'html',
+    'json-summary',
+    'text-summary',
+    'cobertura',
   ],
 
-  testEnvironmentOptions: { NODE_ENV: 'test' },
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
+
+  collectCoverageFrom: [
+    'src/**/*.{js,mjs,jsx,ts,tsx}',
+    '!src/**/*.test.{js,mjs,ts}',
+    '!src/**/*.spec.{js,mjs,ts}',
+    '!src/index.{js,mjs,ts}',
+    '!src/types/**',
+    '!src/**/*.d.ts',
+    '!src/mocks/**',
+    '!**/node_modules/**',
+  ],
+
+
+  moduleFileExtensions: [
+    'js',
+    'mjs',
+    'cjs',
+    'jsx',
+    'ts',
+    'tsx',
+    'json',
+    'node',
+  ],
+
+
+  rootDir: '.',
+  roots: ['<rootDir>'],
+
 
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
 
-  globals: { 'ts-jest': { useESM: true } },
 
   verbose: true,
+  notify: true,
+  notifyMode: 'failure-change',
+
+
+  maxWorkers: '50%',
+  workerIdleMemoryLimit: '512MB',
+
+
+  bail: 1,
+  errorOnDeprecated: true,
+
+
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+    [
+      'jest-watch-suspend',
+      {
+        'key-for-resume': 'r',
+        'key-for-suspend': 's',
+      },
+    ],
+  ],
+
+
+  globals: {
+    __DEV__: true,
+    __TEST__: true,
+  },
+
+
+  cacheDirectory: '<rootDir>/.jest-cache',
+
+
+  slowTestThreshold: 5,
+
+ 
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: './coverage',
+        outputName: 'junit.xml',
+        ancestorSeparator: ' › ',
+        uniqueOutputName: 'false',
+        suiteNameTemplate: '{filepath}',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
+    ],
+  ],
 };

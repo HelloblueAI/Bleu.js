@@ -37,7 +37,7 @@ class WebSocketManager extends EventEmitter {
     this.connectionStats = {
       total: 0,
       active: 0,
-      peak: 0
+      peak: 0,
     };
     this.heartbeatInterval = null;
   }
@@ -45,7 +45,9 @@ class WebSocketManager extends EventEmitter {
   async initialize(server) {
     // Only allow the primary worker to bind to the WebSocket port
     if (cluster.isWorker) {
-      logger.warn(`🚧 Skipping WebSocket server in worker process ${process.pid}`);
+      logger.warn(
+        `🚧 Skipping WebSocket server in worker process ${process.pid}`,
+      );
       return;
     }
 
@@ -56,7 +58,11 @@ class WebSocketManager extends EventEmitter {
         throw new Error('❌ WebSocket port is missing. Ensure WS_PORT is set.');
       }
 
-      this.wss = new WebSocketServer({ server, clientTracking: true, perMessageDeflate: true });
+      this.wss = new WebSocketServer({
+        server,
+        clientTracking: true,
+        perMessageDeflate: true,
+      });
 
       this.setupServerEvents();
       this.startHeartbeat();
@@ -73,7 +79,7 @@ class WebSocketManager extends EventEmitter {
     this.wss.on('connection', this.handleConnection.bind(this));
     this.wss.on('error', this.handleServerError.bind(this));
 
-    ['SIGINT', 'SIGTERM'].forEach(signal => {
+    ['SIGINT', 'SIGTERM'].forEach((signal) => {
       process.on(signal, () => this.shutdown());
     });
   }
@@ -89,12 +95,15 @@ class WebSocketManager extends EventEmitter {
         connectedAt: new Date(),
         messageCount: 0,
         rooms: new Set(),
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
       });
 
       this.connectionStats.total++;
       this.connectionStats.active++;
-      this.connectionStats.peak = Math.max(this.connectionStats.peak, this.connectionStats.active);
+      this.connectionStats.peak = Math.max(
+        this.connectionStats.peak,
+        this.connectionStats.active,
+      );
 
       ws.on('message', (data) => this.handleMessage(ws, data));
       ws.on('close', () => this.handleDisconnection(ws));
@@ -104,16 +113,18 @@ class WebSocketManager extends EventEmitter {
       metrics.trackRequest(startTime, true, {
         endpoint: 'websocket.connect',
         clientId,
-        ip: this.getClientIp(req)
+        ip: this.getClientIp(req),
       });
 
-      logger.info(`🔗 WebSocket client connected: ${clientId} from ${this.getClientIp(req)}`);
+      logger.info(
+        `🔗 WebSocket client connected: ${clientId} from ${this.getClientIp(req)}`,
+      );
 
       this.sendToClient(ws, {
         type: 'welcome',
         clientId,
         message: 'Welcome to Bleu.js WebSocket!',
-        features: ['broadcast', 'rooms', 'direct']
+        features: ['broadcast', 'rooms', 'direct'],
       });
     } catch (error) {
       logger.error('❌ Error handling WebSocket connection:', error);
@@ -130,12 +141,15 @@ class WebSocketManager extends EventEmitter {
     logger.warn('⚠️ WebSocket server shutting down...');
     clearInterval(this.heartbeatInterval);
 
-    this.wss.clients.forEach(ws => {
-      this.sendToClient(ws, { type: 'shutdown', message: 'Server is shutting down' });
+    this.wss.clients.forEach((ws) => {
+      this.sendToClient(ws, {
+        type: 'shutdown',
+        message: 'Server is shutting down',
+      });
       ws.close();
     });
 
-    await new Promise(resolve => this.wss.close(resolve));
+    await new Promise((resolve) => this.wss.close(resolve));
     logger.info('✅ WebSocket server closed');
   }
 }

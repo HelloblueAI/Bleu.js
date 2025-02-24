@@ -40,7 +40,10 @@ class AIService {
    */
   async analyzeText(text) {
     if (!text || typeof text !== 'string') {
-      logger.error({ message: 'Invalid input. Text must be a non-empty string.', input: text });
+      logger.error({
+        message: 'Invalid input. Text must be a non-empty string.',
+        input: text,
+      });
       throw new Error('Invalid input. Text must be a non-empty string.');
     }
 
@@ -48,7 +51,9 @@ class AIService {
 
     try {
       const tokens = await this.nlpProcessor.tokenize(text);
-      const stemmedTokens = tokens.map((token) => this.nlpProcessor.stem(token));
+      const stemmedTokens = tokens.map((token) =>
+        this.nlpProcessor.stem(token),
+      );
       const sentiment = await this.nlpProcessor.analyzeSentiment(text);
       const entities = await this.nlpProcessor.namedEntityRecognition(text);
 
@@ -62,7 +67,11 @@ class AIService {
 
       return { tokens, stemmedTokens, sentiment, entities };
     } catch (error) {
-      logger.error({ message: '❌ Error during text analysis', error: error.message, stack: error.stack });
+      logger.error({
+        message: '❌ Error during text analysis',
+        error: error.message,
+        stack: error.stack,
+      });
       throw error;
     }
   }
@@ -77,10 +86,17 @@ class AIService {
 
     try {
       const result = await this.modelManager.trainModel(modelInfo);
-      logger.info({ message: '✅ Model training completed successfully', result });
+      logger.info({
+        message: '✅ Model training completed successfully',
+        result,
+      });
       return result;
     } catch (error) {
-      logger.error({ message: '❌ Error during model training', error: error.message, stack: error.stack });
+      logger.error({
+        message: '❌ Error during model training',
+        error: error.message,
+        stack: error.stack,
+      });
       throw error;
     }
   }
@@ -97,7 +113,11 @@ class AIService {
       logger.info({ message: '✅ Retrieved model training status', status });
       return status;
     } catch (error) {
-      logger.error({ message: '❌ Error fetching training status', error: error.message, stack: error.stack });
+      logger.error({
+        message: '❌ Error fetching training status',
+        error: error.message,
+        stack: error.stack,
+      });
       throw error;
     }
   }
@@ -115,7 +135,11 @@ class AIService {
       logger.info({ message: '✅ Dataset uploaded successfully', result });
       return result;
     } catch (error) {
-      logger.error({ message: '❌ Error uploading dataset', error: error.message, stack: error.stack });
+      logger.error({
+        message: '❌ Error uploading dataset',
+        error: error.message,
+        stack: error.stack,
+      });
       throw error;
     }
   }
@@ -134,7 +158,11 @@ class AIService {
       logger.info({ message: '✅ Rule evaluation successful', result });
       return result;
     } catch (error) {
-      logger.error({ message: `❌ Error evaluating rule ${ruleId}`, error: error.message, stack: error.stack });
+      logger.error({
+        message: `❌ Error evaluating rule ${ruleId}`,
+        error: error.message,
+        stack: error.stack,
+      });
       throw error;
     }
   }

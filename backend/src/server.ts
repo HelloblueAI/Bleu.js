@@ -33,10 +33,11 @@ import axios from 'axios';
 
 dotenv.config();
 
-const API_GATEWAY_URL = process.env.API_GATEWAY_URL ?? 'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod';
+const API_GATEWAY_URL =
+  process.env.API_GATEWAY_URL ??
+  'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod';
 
 const AI_API_URL = process.env.AI_API_URL ?? 'http://localhost:8000/predict';
-
 
 const logger = winston.createLogger({
   level: 'info',
@@ -44,21 +45,18 @@ const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-    })
+    }),
   ),
   transports: [new winston.transports.Console()],
 });
 
-
 export function createApp(): Application {
   const app = express();
-
 
   app.use(express.json({ limit: '1mb' }));
   app.use(helmet());
   app.use(cors({ origin: '*', methods: ['GET', 'POST'] }));
   app.use(morgan('combined'));
-
 
   const limiter: RateLimitRequestHandler = rateLimit({
     windowMs: 10 * 60 * 1000,
@@ -69,7 +67,6 @@ export function createApp(): Application {
   });
   app.use(limiter as unknown as express.RequestHandler);
 
-
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     if (req.headers['x-api-gateway-event']) {
       logger.info(`🚀 Request from API Gateway: ${req.method} ${req.url}`);
@@ -77,36 +74,48 @@ export function createApp(): Application {
     next();
   });
 
-
   app.post('/predict', async (req: Request, res: Response) => {
     try {
       const { features } = req.body;
 
       if (!Array.isArray(features) || features.length === 0) {
         logger.warn('❌ Invalid request format');
-        return res.status(400).json({ status: 'error', message: 'Invalid input format' });
+        return res
+          .status(400)
+          .json({ status: 'error', message: 'Invalid input format' });
       }
 
-      logger.info(`🔍 Received prediction request: ${JSON.stringify(features)}`);
+      logger.info(
+        `🔍 Received prediction request: ${JSON.stringify(features)}`,
+      );
 
       const aiResponse = await axios.post(AI_API_URL, { features });
 
-      logger.info(`✅ AI Prediction Success: ${JSON.stringify(aiResponse.data)}`);
+      logger.info(
+        `✅ AI Prediction Success: ${JSON.stringify(aiResponse.data)}`,
+      );
 
       return res.json({ status: 'success', prediction: aiResponse.data });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       logger.error(`❌ Prediction Error: ${errorMessage}`);
 
-      return res.status(500).json({ status: 'error', message: 'Prediction service failed' });
+      return res
+        .status(500)
+        .json({ status: 'error', message: 'Prediction service failed' });
     }
   });
 
-
   app.get('/health', (req: Request, res: Response) => {
-    res.status(200).json({ status: 'success', message: '🚀 Bleu.js Backend is Healthy!', timestamp: new Date().toISOString() });
+    res
+      .status(200)
+      .json({
+        status: 'success',
+        message: '🚀 Bleu.js Backend is Healthy!',
+        timestamp: new Date().toISOString(),
+      });
   });
-
 
   app.use((req: Request, res: Response) => {
     logger.warn(`⚠️ 404 Not Found: ${req.method} ${req.originalUrl}`);

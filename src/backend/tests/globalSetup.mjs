@@ -20,35 +20,25 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-/**
- * Validates the structure of a rule input
- * @param {Object} rule - The rule object to validate
- * @returns {boolean} - Whether the rule is valid
- */
-export const validateRuleInput = (rule) => {
-  if (!rule) return false;
-  if (!rule.conditions || !rule.actions) return false;
-  return Array.isArray(rule.conditions) && Array.isArray(rule.actions);
-};
 
-/**
- * Trains the model with the given dataset
- * @param {string} datasetId - ID of the dataset to train on
- * @returns {Promise<string>} - The ID of the trained model
- * @throws {Error} If datasetId is not provided
- */
-export const trainModelLogic = async (datasetId) => {
-  if (!datasetId) throw new Error('Dataset ID is required');
+import { setup as setupPuppeteer } from 'jest-environment-puppeteer';
+import { connect } from '../src/backend/database/db.mjs';
 
-  // Simulated model training logic
-  return `mock-model-${Date.now()}`;
-};
+export default async function globalSetup(globalConfig) {
+  console.log('🚀 Starting global test setup...');
 
-// Optional: Add additional validation helpers
-export const validateCondition = (condition) => {
-  return condition && typeof condition === 'object' && 'type' in condition;
-};
+  try {
+    await setupPuppeteer(globalConfig);
+    console.log('✅ Puppeteer setup completed.');
 
-export const validateAction = (action) => {
-  return action && typeof action === 'object' && 'type' in action;
-};
+    console.log('🔗 Connecting to the test database...');
+    await connect();
+    console.log('✅ Database setup completed.');
+
+    process.env.TEST_GLOBAL_VARIABLE = 'some_value';
+    console.log('✅ Global environment variables set.');
+  } catch (error) {
+    console.error('❌ Global setup failed:', error);
+    process.exit(1);
+  }
+}

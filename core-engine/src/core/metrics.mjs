@@ -25,31 +25,34 @@ import { performance } from 'perf_hooks';
 import { logger } from '../config/logger.mjs';
 
 class Metrics {
-    constructor() {
-        this.metricsData = {};
-    }
+  constructor() {
+    this.metricsData = {};
+  }
 
-    counter(name) {
-        if (!this.metricsData[name]) {
-            this.metricsData[name] = 0;
-        }
-        this.metricsData[name]++;
-        logger.info(`📊 Counter updated: ${name} = ${this.metricsData[name]}`);
+  counter(name) {
+    if (!this.metricsData[name]) {
+      this.metricsData[name] = 0;
     }
+    this.metricsData[name]++;
+    logger.info(`📊 Counter updated: ${name} = ${this.metricsData[name]}`);
+  }
 
-    gauge(name, value, metadata = {}) {
-        this.metricsData[name] = value;
-        logger.info(`📊 Gauge updated: ${name} = ${value}`, metadata);
-    }
+  gauge(name, value, metadata = {}) {
+    this.metricsData[name] = value;
+    logger.info(`📊 Gauge updated: ${name} = ${value}`, metadata);
+  }
 
-    trackRequest(startTime, success, metadata = {}) {
-        const duration = performance.now() - startTime;
-        logger.info(`⏱️ Request tracked: ${duration.toFixed(2)}ms`, { success, metadata });
-    }
+  trackRequest(startTime, success, metadata = {}) {
+    const duration = performance.now() - startTime;
+    logger.info(`⏱️ Request tracked: ${duration.toFixed(2)}ms`, {
+      success,
+      metadata,
+    });
+  }
 
-    getMetrics() {
-        return this.metricsData;
-    }
+  getMetrics() {
+    return this.metricsData;
+  }
 }
 
 // ✅ Exporting an **instance** of Metrics, not just the class definition

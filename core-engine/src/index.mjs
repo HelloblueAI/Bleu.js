@@ -68,7 +68,9 @@ class BleuServer {
   }
 
   async startPrimaryProcess() {
-    logger.info(`🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`);
+    logger.info(
+      `🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`,
+    );
 
     this.setupClusterEvents();
     this.forkWorkers();
@@ -117,7 +119,7 @@ class BleuServer {
 
   async startServer() {
     let port = parseInt(process.env.PORT, 10) || DEFAULT_PORT;
-    port = await this.getAvailablePort(port) || 0; // Use dynamic port if needed
+    port = (await this.getAvailablePort(port)) || 0; // Use dynamic port if needed
     const host = process.env.HOST || DEFAULT_HOST;
 
     return new Promise((resolve) => {
@@ -135,13 +137,18 @@ class BleuServer {
         metrics.gauge('server.memory_usage', process.memoryUsage().heapUsed);
         metrics.gauge('server.cpu_usage', process.cpuUsage().user);
       } else {
-        logger.warn('⚠️ metrics.gauge is not a function. Health checks skipped.');
+        logger.warn(
+          '⚠️ metrics.gauge is not a function. Health checks skipped.',
+        );
       }
     }, 30000);
   }
 
   handleWorkerExit(worker, code, signal) {
-    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Restarting...`, { code, signal });
+    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Restarting...`, {
+      code,
+      signal,
+    });
 
     setTimeout(() => {
       const newWorker = cluster.fork();
@@ -151,7 +158,10 @@ class BleuServer {
 
   handleWorkerMessage(worker, message) {
     if (message.type === 'metrics') {
-      metrics.trackRequest(0, true, { endpoint: message.endpoint, worker_id: worker.id });
+      metrics.trackRequest(0, true, {
+        endpoint: message.endpoint,
+        worker_id: worker.id,
+      });
     }
   }
 
@@ -178,7 +188,8 @@ class BleuServer {
         }, SHUTDOWN_TIMEOUT).unref();
       } else {
         if (this.wss) await new Promise((resolve) => this.wss.close(resolve));
-        if (this.server) await new Promise((resolve) => this.server.close(resolve));
+        if (this.server)
+          await new Promise((resolve) => this.server.close(resolve));
         logger.info('✅ Server shut down successfully');
         process.exit(0);
       }
