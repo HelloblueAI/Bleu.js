@@ -2,7 +2,6 @@
 # 🌟 BleuJS - Language & Statistics Control
 # Copyright (c) 2025 Helloblue Inc.
 # ----------------------------------------
-
 # ----------------------------------------
 # 🐍 Force Python Dominance (Primary Language)
 # ----------------------------------------
@@ -22,7 +21,6 @@ setup.py   linguist-language=Python
 *.pyo      linguist-language=Python
 *.pyw      linguist-language=Python
 *.pyx      linguist-language=Python
-
 # ----------------------------------------
 # 🚫 Hide All Non-Python (Mark as Vendored)
 # ----------------------------------------
@@ -51,7 +49,6 @@ setup.py   linguist-language=Python
 *.kt       linguist-vendored
 *.go       linguist-vendored
 *.rs       linguist-vendored
-
 # Data & Config Files
 *.json     linguist-vendored
 *.yaml     linguist-vendored
@@ -65,7 +62,6 @@ setup.py   linguist-language=Python
 *.sql      linguist-vendored
 *.graphql  linguist-vendored
 *.prisma   linguist-vendored
-
 # Documentation
 *.md       linguist-documentation
 *.mdx      linguist-documentation
@@ -77,7 +73,6 @@ setup.py   linguist-language=Python
 CHANGELOG* linguist-documentation
 LICENSE*   linguist-documentation
 README*    linguist-documentation
-
 # ----------------------------------------
 # 📁 Directory-specific Settings
 # ----------------------------------------
@@ -98,7 +93,6 @@ public/**          linguist-vendored
 **/node_modules/** linguist-vendored
 **/build/**        linguist-vendored
 **/dist/**         linguist-vendored
-
 # ----------------------------------------
 # 🔧 Special Handling
 # ----------------------------------------
@@ -107,7 +101,6 @@ generated/**       linguist-generated
 *.generated.*     linguist-generated
 *.min.*           linguist-generated
 *.bundle.*        linguist-generated
-
 # Binary files
 *.pkl      binary
 *.h5       binary
@@ -117,6 +110,6 @@ generated/**       linguist-generated
 *.dat      binary
 *.npy      binary
 *.npz      binary
-
 # Enforce LF line endings
 * text=auto eol=lf
+*.zip filter=lfs diff=lfs merge=lfs -text
