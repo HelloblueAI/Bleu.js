@@ -35,7 +35,6 @@ module.exports = {
     ],
   },
 
-
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@test/(.*)$': '<rootDir>/__tests__/$1',
@@ -59,7 +58,6 @@ module.exports = {
     '/.git/',
     '/logs/',
   ],
-
 
   collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage',
@@ -92,7 +90,6 @@ module.exports = {
     '!**/node_modules/**',
   ],
 
-
   moduleFileExtensions: [
     'js',
     'mjs',
@@ -104,28 +101,22 @@ module.exports = {
     'node',
   ],
 
-
   rootDir: '.',
   roots: ['<rootDir>'],
-
 
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
 
-
   verbose: true,
   notify: true,
   notifyMode: 'failure-change',
 
-
   maxWorkers: '50%',
   workerIdleMemoryLimit: '512MB',
 
-
   bail: 1,
   errorOnDeprecated: true,
-
 
   watchPlugins: [
     'jest-watch-typeahead/filename',
@@ -139,19 +130,15 @@ module.exports = {
     ],
   ],
 
-
   globals: {
     __DEV__: true,
     __TEST__: true,
   },
 
-
   cacheDirectory: '<rootDir>/.jest-cache',
-
 
   slowTestThreshold: 5,
 
- 
   reporters: [
     'default',
     [

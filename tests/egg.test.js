@@ -253,7 +253,7 @@ describe('Egg Model Tests', () => {
 
     const marketValue = savedEgg.calculateMarketValue();
     expect(marketValue).toBeGreaterThan(0);
-    // With legendary rarity and celestial type, value should be substantial
+
     expect(marketValue).toBeGreaterThan(500);
   });
 

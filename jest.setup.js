@@ -23,20 +23,34 @@
 
 import { jest } from '@jest/globals';
 import crypto from 'crypto';
+
+// Ensure global crypto API is available
 global.crypto = global.crypto || crypto;
 
+/**
+ * Utility function for creating named Jest mocks.
+ * This improves debugging and ensures better stack traces.
+ */
 const createMock = (name) => {
-  const mock = jest.fn();
-  mock.mockName(name);
-  return mock;
+  const mockFn = jest.fn();
+  mockFn.mockName(name);
+  return mockFn;
 };
 
-global.beforeEach(() => {
-  jest.resetModules();
-  jest.clearAllMocks();
-  jest.restoreAllMocks();
+/**
+ * Global setup before each test to maintain test isolation.
+ * Ensures no test pollution and restores original states.
+ */
+beforeEach(() => {
+  jest.resetModules(); // Fully reset module cache
+  jest.clearAllMocks(); // Clear mock call history
+  jest.restoreAllMocks(); // Restore all original implementations
 });
 
+/**
+ * Mock logger utility to prevent console pollution during tests.
+ * Uses structured named mocks for easier debugging.
+ */
 jest.mock('./src/utils/logger', () => ({
   info: createMock('logger.info'),
   error: createMock('logger.error'),
@@ -44,6 +58,10 @@ jest.mock('./src/utils/logger', () => ({
   warn: createMock('logger.warn'),
 }));
 
+/**
+ * Mock Winston logger to prevent test logs from polluting output.
+ * Uses named mocks for structured assertions.
+ */
 jest.mock('winston', () => {
   const actualWinston = jest.requireActual('winston');
   return {
@@ -67,30 +85,61 @@ jest.mock('winston', () => {
   };
 });
 
+/**
+ * Mock MongoDB Memory Server to avoid unnecessary in-memory DB instances.
+ * This improves test performance by reducing redundant resources.
+ */
 jest.mock('mongodb-memory-server', () => {
-  return {
-    MongoMemoryServer: class {
-      constructor() {
-        this.getUri = jest
-          .fn()
-          .mockResolvedValue('mongodb://localhost:27017/testdb');
-      }
-      start() {
-        return jest.fn();
-      }
-      stop() {
-        return jest.fn();
-      }
-    },
-  };
+  class MockMongoMemoryServer {
+    constructor() {
+      this.getUri = jest.fn().mockResolvedValue('mongodb://localhost:27017/testdb');
+    }
+
+    async start() {
+      return Promise.resolve(); // Ensure start is properly awaited
+    }
+
+    async stop() {
+      return Promise.resolve(); // Ensure stop is properly awaited
+    }
+  }
+
+  return { MongoMemoryServer: MockMongoMemoryServer };
 });
 
+/**
+ * Suppresses unnecessary logs during testing.
+ * Keeps essential logs while filtering out noisy outputs.
+ */
+global.console = {
+  ...console,
+  log: jest.fn((...args) => {
+    if (!args.some((arg) => String(arg).includes('MongoDB Memory Server'))) {
+      process.stdout.write(`LOG: ${args.join(' ')}\n`); // Optional: Keep essential logs
+    }
+  }),
+  error: jest.fn((...args) => {
+    if (!args.some((arg) => String(arg).includes('MongoDB error'))) {
+      process.stderr.write(`ERROR: ${args.join(' ')}\n`);
+    }
+  }),
+  warn: jest.fn(),
+};
+
+/**
+ * Prevents unhandled promise rejections from causing silent failures.
+ * Ensures all async errors are explicitly reported.
+ */
 process.on('unhandledRejection', (reason) => {
   console.error('❌ Unhandled Promise Rejection:', reason);
-  process.exit(1);
+  throw new Error(`Unhandled Promise Rejection: ${reason}`);
 });
 
+/**
+ * Ensures uncaught exceptions do not crash the test suite.
+ * Instead of exiting, explicitly fail the test.
+ */
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
-  process.exit(1);
+  throw new Error(`Uncaught Exception: ${error.message}`);
 });

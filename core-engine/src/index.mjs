@@ -25,23 +25,30 @@ import cluster from 'cluster';
 import dotenv from 'dotenv';
 import express from 'express';
 import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import { performance } from 'perf_hooks';
-import { logger } from './config/logger.mjs';
-import metrics from './core/metrics.mjs';
-import { AdvancedCircuitBreaker } from './core/circuit-breaker.mjs';
-import { setupAllRoutes } from './routes/index.mjs';
-import { setupMiddleware } from './middleware/index.mjs';
-import { setupWebSocketServer } from './core/websocket.mjs';
 import net from 'net';
+import { performance } from 'perf_hooks';
+import { WebSocketServer } from 'ws';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import { logger } from './config/logger.mjs';
+
+import { AdvancedCircuitBreaker } from './core/circuit-breaker.mjs';
+import metrics from './core/metrics.mjs';
+import { setupWebSocketServer } from './core/websocket.mjs';
+import { setupMiddleware } from './middleware/index.mjs';
+import { setupAllRoutes } from './routes/index.mjs';
 
 import {
-  DEFAULT_PORT,
-  DEFAULT_HOST,
+
   CPU_CORES,
-  SHUTDOWN_TIMEOUT,
   SHUTDOWN_SIGNALS,
+  SHUTDOWN_TIMEOUT,
+  
 } from './config/constants.mjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class BleuServer {
   constructor() {
@@ -55,6 +62,9 @@ class BleuServer {
   async initialize() {
     try {
       dotenv.config();
+      console.log(`🛠️ Loaded PORT from .env: ${process.env.PORT}`);
+
+      this.checkRequiredEnvVariables();
 
       if (cluster.isPrimary) {
         await this.startPrimaryProcess();
@@ -62,14 +72,23 @@ class BleuServer {
         await this.startWorkerProcess();
       }
     } catch (error) {
-      logger.error('❌ Server initialization failed:', error);
+      logger.error('❌ Server initialization failed:', { error });
       process.exit(1);
     }
   }
 
+  checkRequiredEnvVariables() {
+    const requiredEnvVars = ['PORT', 'NODE_ENV', 'MONGODB_URI'];
+    requiredEnvVars.forEach((varName) => {
+      if (!process.env[varName]) {
+        logger.warn(`⚠️ Missing environment variable: ${varName}`);
+      }
+    });
+  }
+
   async startPrimaryProcess() {
     logger.info(
-      `🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`,
+      `🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`
     );
 
     this.setupClusterEvents();
@@ -109,7 +128,7 @@ class BleuServer {
   async getAvailablePort(preferredPort) {
     return new Promise((resolve) => {
       const server = net.createServer();
-      server.once('error', () => resolve(0)); // If port is taken, return 0
+      server.once('error', () => resolve(0));
       server.once('listening', () => {
         server.close(() => resolve(preferredPort));
       });
@@ -118,15 +137,15 @@ class BleuServer {
   }
 
   async startServer() {
-    let port = parseInt(process.env.PORT, 10) || DEFAULT_PORT;
-    port = (await this.getAvailablePort(port)) || 0; // Use dynamic port if needed
-    const host = process.env.HOST || DEFAULT_HOST;
+    const port = process.env.PORT || 5005;
+    const host = '0.0.0.0';
 
     return new Promise((resolve) => {
-      this.server.listen(port, host, () => {
-        this.logServerStart(port, host);
-        resolve();
-      });
+        this.server.listen(port, host, () => {
+            console.log(`🛠️ Server is now listening on http://${host}:${port}`);
+            this.logServerStart(port, host);
+            resolve();
+        });
     });
   }
 
@@ -137,9 +156,7 @@ class BleuServer {
         metrics.gauge('server.memory_usage', process.memoryUsage().heapUsed);
         metrics.gauge('server.cpu_usage', process.cpuUsage().user);
       } else {
-        logger.warn(
-          '⚠️ metrics.gauge is not a function. Health checks skipped.',
-        );
+        logger.warn('⚠️ metrics.gauge is not a function. Health checks skipped.');
       }
     }, 30000);
   }
@@ -153,7 +170,7 @@ class BleuServer {
     setTimeout(() => {
       const newWorker = cluster.fork();
       logger.info(`🔄 New worker forked [PID: ${newWorker.process.pid}]`);
-    }, 5000); // Delay restart to prevent rapid failure loops
+    }, 5000);
   }
 
   handleWorkerMessage(worker, message) {
@@ -194,18 +211,18 @@ class BleuServer {
         process.exit(0);
       }
     } catch (error) {
-      logger.error('❌ Error during shutdown:', error);
+      logger.error('❌ Error during shutdown:', { error });
       process.exit(1);
     }
   }
 
   handleUncaughtException(error) {
-    logger.error('❌ Uncaught Exception:', error);
+    logger.error('❌ Uncaught Exception:', { error });
     process.exit(1);
   }
 
   handleUnhandledRejection(reason, promise) {
-    logger.error('❌ Unhandled Promise Rejection:', reason);
+    logger.error('❌ Unhandled Promise Rejection:', { reason });
   }
 
   logServerStart(port, host) {
@@ -223,10 +240,40 @@ class BleuServer {
   }
 }
 
+
+function patchBleuServerForPM2() {
+  const originalStartServer = BleuServer.prototype.startServer;
+
+
+  BleuServer.prototype.startServer = async function() {
+    await originalStartServer.call(this);
+
+
+    if (process.send) {
+      process.send('ready');
+      logger.info('✅ Signaled ready state to PM2');
+    }
+  };
+
+
+  if (process.env.RUNNING_UNDER_PM2 === 'true') {
+    logger.info('🔄 Running under PM2, adapting cluster behavior');
+
+
+    BleuServer.prototype.forkWorkers = function() {
+      logger.info('⚙️ PM2 is managing clustering, skipping internal worker forking');
+    };
+  }
+}
+
+
+patchBleuServerForPM2();
+
+
 const server = new BleuServer();
 await server.initialize();
 
 export const app = server.app;
 export const httpServer = server.server;
 export const wss = server.wss;
-export { metrics, logger };
+export { logger, metrics };

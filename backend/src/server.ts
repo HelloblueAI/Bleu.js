@@ -108,13 +108,11 @@ export function createApp(): Application {
   });
 
   app.get('/health', (req: Request, res: Response) => {
-    res
-      .status(200)
-      .json({
-        status: 'success',
-        message: '🚀 Bleu.js Backend is Healthy!',
-        timestamp: new Date().toISOString(),
-      });
+    res.status(200).json({
+      status: 'success',
+      message: '🚀 Bleu.js Backend is Healthy!',
+      timestamp: new Date().toISOString(),
+    });
   });
 
   app.use((req: Request, res: Response) => {

@@ -80,49 +80,72 @@ Bleu.js v1.1.2 introduces major improvements in the AI and machine learning pipe
 
 ## 🔹 Key Updates in v1.1.2
 
-###  Enhanced XGBoost Model Handling
-* The model is now **loaded safely** with **exception handling** and **feature validation**
-* Optimized **error handling** ensures smooth execution in production
+### Enhanced XGBoost Model Handling
 
-###  Improved Feature Preprocessing
-* Features are now **auto-adjusted** to match the model's expected input dimensions
-* **Padding logic** ensures that missing features do not break predictions
+- The model is now **loaded safely** with **exception handling** and **feature validation**
+- Optimized **error handling** ensures smooth execution in production
 
-###  Multi-threaded Predictions
-* Predictions now run on **separate threads**, reducing blocking behavior and improving **real-time inference** speed
+### Improved Feature Preprocessing
 
-###  Hyperparameter Optimization with Optuna
-* Uses **Optuna** to find the **best hyperparameters** dynamically
-* Optimized for **higher accuracy, faster predictions, and better generalization**
+- Features are now **auto-adjusted** to match the model's expected input dimensions
+- **Padding logic** ensures that missing features do not break predictions
 
-###  Advanced Model Performance Metrics
-* The training script now tracks **Accuracy, ROC-AUC, F1 Score, Precision, and Recall**
-* **Feature importance** analysis improves explainability
+### Multi-threaded Predictions
 
-###  Scalable Deployment Ready
-* The model and scaler are saved in **pkl format** for easy integration
-* Ready for **cloud deployment** and **enterprise usage**
+- Predictions now run on **separate threads**, reducing blocking behavior and improving **real-time inference** speed
+
+### Hyperparameter Optimization with Optuna
+
+- Uses **Optuna** to find the **best hyperparameters** dynamically
+- Optimized for **higher accuracy, faster predictions, and better generalization**
+
+### Advanced Model Performance Metrics
+
+- The training script now tracks **Accuracy, ROC-AUC, F1 Score, Precision, and Recall**
+- **Feature importance** analysis improves explainability
+
+### Scalable Deployment Ready
+
+- The model and scaler are saved in **pkl format** for easy integration
+- Ready for **cloud deployment** and **enterprise usage**
+
+
 
 ## 📂 XGBoost Model Training Overview
 
 The new version includes a **robust training pipeline** with:
 
-* **Data Scaling:** Uses `StandardScaler` for normalization
-* **Hyperparameter Optimization:** Finds the best combination of:
-  * `n_estimators`
-  * `max_depth`
-  * `learning_rate`
-  * `subsample`
-  * `colsample_bytree`
-  * `reg_alpha`
-  * `reg_lambda`
-* **Final Model Performance:**
-  * **Accuracy:** 🚀 Improved for real-world datasets
-  * **Prediction Confidence:** ✅ Higher reliability in decision-making
+- **Data Scaling:** Uses `StandardScaler` for normalization
+- **Hyperparameter Optimization:** Finds the best combination of:
+  - `n_estimators`
+  - `max_depth`
+  - `learning_rate`
+  - `subsample`
+  - `colsample_bytree`
+  - `reg_alpha`
+  - `reg_lambda`
+- **Final Model Performance:**
+  - **Accuracy:** 🚀 Improved for real-world datasets
+  - **Prediction Confidence:** ✅ Higher reliability in decision-making
 
 ## 🔧 How to Use
 
 ### 1️⃣ Model Loading
+
+
+Activate the Virtual Environment
+If you're using bash/zsh (macOS/Linux):
+```javascript
+source ~/Bleu.js/bleujs-env/bin/activate
+```
+If you're using fish shell:
+```javascript
+source ~/Bleu.js/bleujs-env/bin/activate.fish
+```
+If you're using Windows (cmd or PowerShell):
+```javascript
+~/Bleu.js/bleujs-env/Scripts/activate
+```
 
 The model is **automatically loaded** at runtime with proper exception handling:
 
@@ -154,6 +177,176 @@ The trained model can be deployed using **AWS Lambda, Flask, FastAPI, or Docker*
 - Performance Optimization Suite
 - Custom Transformer Architecture
 
+
+
+Bleu.js - LLaMA Model & Backend Debugging Guide
+===============================================
+
+🚀 Running & Debugging the LLaMA Model
+--------------------------------------
+
+```javascript
+python -m debugpy --listen 5678 --wait-for-client src/ml/models/foundation/llama.py
+```
+> This allows VSCode or another debugger to attach to the running process.
+
+###  **Profile Model Performance (Bottleneck Analysis)**
+```javascript
+python -m torch.utils.bottleneck src/ml/models/foundation/llama.py
+```
+> This provides insights into model performance bottlenecks.
+
+###  **Run LLaMA Model on GPU (if available)**
+```javascript
+CUDA_VISIBLE_DEVICES=0 python src/ml/models/foundation/llama.py
+```
+> Forces execution on GPU for better performance.
+
+### ✅ **Expected Output**
+```javascript
+✅ LLaMA Attention Output Shape: torch.Size([1, 512, 4096])
+```
+
+📌 **Profiling & Performance Analysis**
+---------------------------------------
+
+### 🔬 **cProfile Summary (Python Profiler Output)**
+
+*   torch.nn.linear and torch.matmul are the heaviest operations.
+
+*   apply\_rotary\_embedding accounts for about 10ms per call.
+
+
+### 🏆 **Top autograd Profiler Events**
+
+```javascript
+       `top 15 events sorted by cpu_time_total  ------------------  ------------  ------------  ------------  ------------  ------------  ------------                  Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls    ------------------  ------------  ------------  ------------  ------------  ------------  ------------        aten::uniform_        17.73%      62.645ms        17.73%      62.645ms      62.645ms             1          aten::linear         0.00%       2.918us        13.71%      48.415ms      48.415ms             1          aten::matmul         0.00%       9.332us        13.70%      48.404ms      48.404ms             1              aten::mm        13.70%      48.385ms        13.70%      48.385ms      48.385ms             1    ------------------  ------------  ------------  ------------  ------------  ------------  ------------`
+```
+🛠️ **Backend API & Testing**
+-----------------------------
+ **Run Python Tests with Pytest**
+
+```javascript
+pytest tests/ --disable-warnings
+```
+> Install with pip install pytest if missing.
+
+🔍 **Environment Variables & .env Setup**
+-----------------------------------------
+
+### **Verify .env File Exists**
+```javascript
+cat .env
+```
+### **Load .env Variables in Shell**
+```javascript
+export $(grep -v '^#' .env | xargs)   `
+```
+### **Verify API Key in Node.js**
+```javascript
+node -e "import 'dotenv/config'; console.log('✅ API_KEY:', process.env.API_KEY);"
+```
+### **Verify API Key in Python**
+
+```javascript
+python -c "from dotenv import load_dotenv; import os; load_dotenv(); print('✅ API_KEY:', os.getenv('API_KEY'))"
+```
+
+📂 **Find Configuration Files**
+-------------------------------
+
+### **Find launch.json for VSCode Debugging**
+```javascript
+find ~/Bleu.js -name "launch.json"   `
+```
+### **Find all .env Files in Your Project**
+```javascript
+find ~/Bleu.js -name ".env"   `
+```
+
+✅ **Final Check: Running Everything Smoothly**
+----------------------------------------------
+
+1.  **Make sure .env is loaded properly**
+
+2.  **Run AI Model tests**
+
+3.  **Run Backend tests**
+
+4.  **Monitor performance with bottleneck**
+
+```javascript
+python -m torch.utils.bottleneck src/ml/models/foundation/llama.py
+```
+### ✅ **Expected Output**
+```javascript
+Running environment analysis...
+Running your script with cProfile
+✅ LLaMA Attention Output Shape: torch.Size([1, 512, 4096])
+Running your script with the autograd profiler...
+✅ LLaMA Attention Output Shape: torch.Size([1, 512, 4096])
+
+--------------------------------------------------------------------------------
+  Environment Summary
+--------------------------------------------------------------------------------
+PyTorch 2.6.0 DEBUG not compiled w/ CUDA
+Running with Python 3.13 and
+
+`pip3 list` truncated output:
+numpy==2.2.3
+torch==2.6.0
+--------------------------------------------------------------------------------
+  cProfile output
+--------------------------------------------------------------------------------
+         1858 function calls (1810 primitive calls) in 0.408 seconds
+
+   Ordered by: internal time
+   List reduced from 269 to 15 due to restriction <15>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        4    0.209    0.052    0.209    0.052 {method 'uniform_' of 'torch._C.TensorBase' objects}
+        4    0.112    0.028    0.112    0.028 {built-in method torch._C._nn.linear}
+        1    0.021    0.021    0.021    0.021 {built-in method torch.randn}
+        2    0.018    0.009    0.018    0.009 {built-in method torch.matmul}
+        1    0.008    0.008    0.010    0.010 src/ml/models/foundation/llama.py:99(apply_rotary_embedding)
+        1    0.008    0.008    0.008    0.008 {method 'softmax' of 'torch._C.TensorBase' objects}
+        1    0.005    0.005    0.163    0.163 src/ml/models/foundation/llama.py:81(forward)
+        3    0.004    0.001    0.004    0.001 {built-in method torch.cat}
+        2    0.003    0.001    0.003    0.001 {built-in method torch.arange}
+        4    0.002    0.001    0.002    0.001 {built-in method torch.empty}
+        1    0.002    0.002    0.002    0.002 {method 'float' of 'torch._C.TensorBase' objects}
+        1    0.002    0.002    0.002    0.002 {method 'cos' of 'torch._C.TensorBase' objects}
+        1    0.001    0.001    0.001    0.001 {built-in method torch.einsum}
+        1    0.001    0.001    0.003    0.003 /Users/pejmanhaghighatnia/Bleu.js/bleujs-env/lib/python3.13/site-packages/torch/_tensor.py:1075(__rdiv__)
+        1    0.001    0.001    0.001    0.001 {built-in method torch.pow}
+
+--------------------------------------------------------------------------------
+  autograd profiler output (CPU mode)
+--------------------------------------------------------------------------------
+        top 15 events sorted by cpu_time_total
+
+------------------  ------------  ------------  ------------  ------------  ------------  ------------
+              Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls
+------------------  ------------  ------------  ------------  ------------  ------------  ------------
+    aten::uniform_        18.03%      46.352ms        18.03%      46.352ms      46.352ms             1
+    aten::uniform_        17.99%      46.245ms        17.99%      46.245ms      46.245ms             1
+    aten::uniform_        17.69%      45.479ms        17.69%      45.479ms      45.479ms             1
+    aten::uniform_        17.62%      45.306ms        17.62%      45.306ms      45.306ms             1
+      aten::linear         0.00%       4.875us         9.85%      25.333ms      25.333ms             1
+      aten::linear         0.00%       2.125us         9.81%      25.219ms      25.219ms             1
+      aten::matmul         0.00%       7.250us         9.81%      25.210ms      25.210ms             1
+          aten::mm         9.80%      25.195ms         9.80%      25.195ms      25.195ms             1
+      aten::matmul         0.00%       7.584us         9.74%      25.038ms      25.038ms             1
+          aten::mm         9.73%      25.014ms         9.73%      25.014ms      25.014ms             1
+      aten::linear         0.00%       2.957us         9.13%      23.468ms      23.468ms             1
+      aten::matmul         0.00%       6.959us         9.12%      23.455ms      23.455ms             1
+          aten::mm         9.12%      23.440ms         9.12%      23.440ms      23.440ms             1
+      aten::linear         0.00%       2.334us         8.87%      22.814ms      22.814ms             1
+      aten::matmul         0.00%       5.917us         8.87%      22.804ms      22.804ms             1
+------------------  ------------  ------------  ------------  ------------  ------------  ------------
+Self CPU time total: 257.072ms
+```
+
 ### AI Tools
 
 With built-in AI services like Natural Language Processing (NLP) and decision trees, developers can quickly integrate advanced AI capabilities into their applications without starting from scratch.
@@ -172,6 +365,9 @@ The Python components power our advanced AI and ML capabilities:
 - Decision Tree Models
 - Model Training & Evaluation
 - Real-time Performance Optimization
+
+
+
 
 ### Backend Efficiency
 

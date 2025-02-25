@@ -36,6 +36,25 @@ export function validateString(value, name) {
   return value.trim(); // Return trimmed valid strings
 }
 
+/** 🔍 Validate Egg Metadata */
+export function validateEggMetadata(metadata) {
+  if (!metadata || typeof metadata !== 'object') {
+    throw new Error('Egg metadata must be an object.');
+  }
+
+  const requiredFields = ['type', 'element', 'origin', 'age'];
+  requiredFields.forEach((field) => {
+    if (!metadata[field]) {
+      throw new Error(`Missing required metadata field: "${field}".`);
+    }
+    if (typeof metadata[field] !== 'string' || metadata[field].trim() === '') {
+      throw new Error(`Invalid "${field}": Must be a non-empty string.`);
+    }
+  });
+
+  return true;
+}
+
 /** 🔥 Calculate Egg Rarity Based on Type & Element */
 export function calculateEggRarity({ type, element }) {
   const rarityMap = {
@@ -48,7 +67,7 @@ export function calculateEggRarity({ type, element }) {
     unique: 6,
   };
 
-  let rarity = type?.toLowerCase() in rarityMap ? type.toLowerCase() : 'common';
+  let rarity = rarityMap[type?.toLowerCase()] !== undefined ? type.toLowerCase() : 'common';
 
   // 🔥 Ensure Elemental Boost is Applied Correctly
   const elementBoost = {
@@ -87,7 +106,7 @@ export function calculateInitialPower(rarity) {
   };
 
   return Math.floor(
-    (Math.random() * 20 + baseStrength) * (multipliers[rarity] || 1),
+    (Math.random() * 20 + baseStrength) * (multipliers[rarity] || 1)
   );
 }
 
@@ -105,7 +124,7 @@ export function calculateDefenseLevel(rarity) {
   };
 
   return Math.floor(
-    (Math.random() * 15 + baseDefense) * (multipliers[rarity] || 1),
+    (Math.random() * 15 + baseDefense) * (multipliers[rarity] || 1)
   );
 }
 

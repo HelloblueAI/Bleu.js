@@ -21,31 +21,61 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-const fs = require('fs');
-const util = require('util');
+const fs = require('fs').promises;
 const path = require('path');
+const mongoose = require('mongoose');
 
 module.exports = async () => {
+  console.log('🛠️ Jest Global Setup Initializing...');
+
+  // Set Environment Variables
   process.env.NODE_ENV = 'test';
   process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || '1';
 
-  global.TextEncoder = util.TextEncoder;
-  global.TextDecoder = util.TextDecoder;
+  // Ensure global utilities exist
+  if (!global.TextEncoder) global.TextEncoder = require('util').TextEncoder;
+  if (!global.TextDecoder) global.TextDecoder = require('util').TextDecoder;
 
+  // Define and create necessary test directories
   const testDirs = ['coverage', 'reports'];
-  testDirs.forEach((dir) => {
-    const dirPath = path.join(process.cwd(), dir);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-  });
+  try {
+    await Promise.all(
+      testDirs.map(async (dir) => {
+        const dirPath = path.join(process.cwd(), dir);
+        try {
+          await fs.access(dirPath);
+        } catch {
+          await fs.mkdir(dirPath, { recursive: true });
+          console.log(`📂 Created test directory: ${dirPath}`);
+        }
+      })
+    );
+  } catch (err) {
+    console.error('❌ Failed to create test directories:', err);
+  }
 
+  // Mute console.logs from MongoDB Memory Server
+  const originalConsoleLog = console.log;
+  console.log = (...args) => {
+    if (
+      args.some((arg) =>
+        String(arg).includes('MongoDB Memory Server started')
+      )
+    ) {
+      return; // Suppress MongoDB test logs
+    }
+    originalConsoleLog(...args);
+  };
+
+  // MongoDB Connection
   if (process.env.MONGODB_URI) {
     try {
-      const mongoose = require('mongoose');
+      console.log(`🔗 Connecting to MongoDB at ${process.env.MONGODB_URI}...`);
       await mongoose.connect(process.env.MONGODB_URI);
+      console.log('✅ MongoDB connected successfully.');
     } catch (error) {
-      console.error('MongoDB connection failed:', error);
+      console.error('❌ MongoDB connection failed:', error);
+      process.exit(1);
     }
   }
 };

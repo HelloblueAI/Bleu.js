@@ -25,17 +25,58 @@ module.exports = {
   apps: [
     {
       name: 'core-engine',
-      script: './src/index.mjs',
+
+      script: '/Users/pejmanhaghighatnia/Bleu.js/core-engine/src/index.mjs',
       interpreter: 'node',
-      instances: 4, // Changed from 'max' to 4
+
+
+      instances: 1,
       exec_mode: 'cluster',
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '500M',
+      instance_var: 'INSTANCE_ID',
+
       env: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        PORT: 4000,
+        CPU_CORES: '1',
+        RUNNING_UNDER_PM2: 'true',
+        TZ: 'UTC',
       },
+
+      increment_var: 'PORT',
+
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
+
+      node_args: [
+        '--experimental-specifier-resolution=node',
+        '--max-old-space-size=4096',
+        '--trace-warnings',
+        '--unhandled-rejections=strict',
+      ],
+
+      error_file: './logs/pm2/error.log',
+      out_file: './logs/pm2/out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      log_type: 'json',
+
+      max_restarts: 5,
+      min_uptime: '30s',
+      kill_timeout: 8000,
+
+
+      wait_ready: false,
+
+      exp_backoff_restart_delay: 200,
+      listen_timeout: 10000,
+
+      shutdown_with_message: true,
+
+      deep_monitoring: true,
+      status_interval: 30000,
+
+      source_map_support: true,
     },
   ],
 };

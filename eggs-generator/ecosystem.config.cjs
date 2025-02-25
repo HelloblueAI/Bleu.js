@@ -25,17 +25,58 @@ module.exports = {
   apps: [
     {
       name: 'eggs-generator',
-      script: './dist/index.mjs',
-      instances: 'max',
+      script: './src/index.mjs',
+
+
+      instances: 1,
       exec_mode: 'cluster',
-      env_production: {
+      instance_var: 'INSTANCE_ID',
+
+
+      env: {
         NODE_ENV: 'production',
         PORT: 3003,
+        TZ: 'UTC',
+        RUNNING_UNDER_PM2: 'true',
+        PM2_CLUSTER: 'true'
       },
-      max_memory_restart: '1G',
+
+      increment_var: 'PORT',
+
+      watch: false,
+      autorestart: true,
+      restart_delay: 5000,
+      exp_backoff_restart_delay: 200,
+
+      max_memory_restart: '1536M',
+      min_uptime: '30s',
+      kill_timeout: 8000,
+
+
       error_file: './logs/pm2/error.log',
       out_file: './logs/pm2/out.log',
-      time: true,
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      log_type: 'json',
+
+      max_restarts: 5,
+      listen_timeout: 10000,
+
+      source_map_support: true,
+
+      shutdown_with_message: true,
+      deep_monitoring: true,
+      status_interval: 30000,
+
+
+      wait_ready: false,
+
+      node_args: [
+        '--experimental-specifier-resolution=node',
+        '--max-old-space-size=4096',
+        '--trace-warnings',
+        '--unhandled-rejections=strict',
+      ],
     },
   ],
 };

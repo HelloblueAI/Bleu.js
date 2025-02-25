@@ -36,8 +36,8 @@ module.exports = {
       },
 
       increment_var: 'PORT',
-      instances: 2,
-      exec_mode: 'fork',
+      instances: 1,
+      exec_mode: 'cluster',
       instance_var: 'INSTANCE_ID',
 
       node_args: [
@@ -61,17 +61,20 @@ module.exports = {
       max_restarts: 3,
       min_uptime: '30s',
       kill_timeout: 8000,
-      wait_ready: true,
+      listen_timeout: 10000,
 
       exp_backoff_restart_delay: 100,
-      listen_timeout: 10000,
+
 
       shutdown_with_message: true,
 
       deep_monitoring: true,
-      status_interval: 30000, // Status check every 30s
+      status_interval: 30000,
 
       source_map_support: true,
+
+      // Set wait_ready to true when your app properly implements the 'ready' signal
+      wait_ready: false,
     },
   ],
 };

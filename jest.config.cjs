@@ -30,8 +30,6 @@ module.exports = {
 
   testEnvironment: path.resolve(__dirname, 'jest.environment.cjs'),
 
-
-
   reporters: [
     'default',
     [
@@ -132,7 +130,6 @@ module.exports = {
         '/coverage/',
         '/.pnpm/',
         '/venv/',
-
       ],
     },
     {
@@ -150,7 +147,6 @@ module.exports = {
         '/coverage/',
         '/.pnpm/',
         '/venv/',
-
       ],
       moduleFileExtensions: ['js', 'mjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
       coveragePathIgnorePatterns: [
@@ -162,10 +158,8 @@ module.exports = {
         '<rootDir>/src/app/main.ts',
         '.mock.ts',
       ],
-      
     },
   ],
-
 
   maxWorkers: '85%',
   testTimeout: 120000,
@@ -175,7 +169,6 @@ module.exports = {
     ['jest-watch-suspend', { 'key-for-resume': 'r', 'key-for-suspend': 's' }],
   ],
 
-
   globals: {
     __DEV__: true,
     __TEST__: true,
@@ -183,14 +176,12 @@ module.exports = {
     __PROJECT__: pkg.name,
   },
 
-
   verbose: true,
   bail: 1,
   cacheDirectory: '.jest-cache',
   errorOnDeprecated: true,
   notify: true,
   notifyMode: 'failure-change',
-
 
   displayName: {
     name: pkg.name,

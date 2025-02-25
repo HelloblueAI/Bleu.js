@@ -32,12 +32,21 @@ const MONGODB_URI =
 
 const connectMongoDB = async () => {
   try {
+    // Check if credentials are available
+    if (!process.env.DB_USER || !process.env.DB_PASSWORD) {
+      logger.warn(
+        '⚠️ Database credentials not provided in environment variables',
+      );
+      // For testing environments, you might want to continue with anonymous connection
+      // For production, you might want to fail fast
+    }
+
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       authSource: 'admin',
-      user: process.env.DB_USER || 'egg-admin',
-      pass: process.env.DB_PASSWORD || 'Redmond8665',
+      user: process.env.DB_USER,
+      pass: process.env.DB_PASSWORD,
     });
 
     logger.info('✅ MongoDB connection successful');
