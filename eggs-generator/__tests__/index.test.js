@@ -21,12 +21,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 import { jest } from '@jest/globals';
 
 import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
-
 
 const mockLogger = {
   info: jest.fn(console.log),
@@ -35,7 +33,6 @@ const mockLogger = {
   warn: jest.fn(console.warn),
 };
 jest.mock('../src/utils/logger.js', () => mockLogger);
-
 
 const mockGenerateEgg = jest.fn();
 jest.mock('../src/generateEgg.js', () => ({ generateEgg: mockGenerateEgg }));
@@ -91,7 +88,6 @@ const TEST_EGGS = {
     },
   },
 };
-
 
 let mongoServer;
 beforeAll(async () => {
@@ -179,7 +175,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
       );
     });
   });
-
 
   describe('Egg Generation', () => {
     test('generates a basic egg with correct properties', async () => {
@@ -275,7 +270,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
         return 'celestial';
       };
 
-
       const getElement = (index) => {
         if (index % 5 === 0) return 'earth';
         if (index % 5 === 1) return 'fire';
@@ -295,7 +289,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
         },
       }));
 
-
       mockGenerateEgg.mockImplementation((params) => {
         const egg = { ...params };
         egg.id = `generated-${Math.random().toString(36).substring(2, 9)}`;
@@ -314,11 +307,9 @@ describe('🔍 Egg Generator Integration Tests', () => {
       expect(results.length).toBe(batchSize);
       expect(elapsed).toBeLessThan(5000);
 
-
       mockLogger.info(
         `Bulk operation completed in ${elapsed}ms, avg ${elapsed / batchSize}ms per egg`,
       );
-
 
       const typeCounts = results.reduce((acc, egg) => {
         acc[egg.type] = (acc[egg.type] || 0) + 1;
@@ -332,7 +323,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
       const mockFind = jest
         .fn()
         .mockResolvedValue([TEST_EGGS.basic, TEST_EGGS.legendary]);
-
 
       const EggModel = { find: mockFind };
 
@@ -348,11 +338,9 @@ describe('🔍 Egg Generator Integration Tests', () => {
     });
   });
 
-
   describe('Error Handling', () => {
     test('handles egg generation failures', async () => {
       const error = new Error('Egg generation failed');
-
 
       mockGenerateEgg.mockImplementationOnce(() => {
         mockLogger.error('Egg generation failed');
@@ -407,7 +395,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
     });
   });
 
-
   describe('Utility Functions', () => {
     const { calculateEggRarity, validateEggParams } = jest.requireActual(
       '../src/utils/eggUtils.js',
@@ -445,13 +432,11 @@ describe('🔍 Egg Generator Integration Tests', () => {
       expect(() => validateEggParams({ type: 'invalid' })).toThrow();
       expect(() => validateEggParams({ type: 'rare' })).toThrow();
 
-
       const result = validateEggParams({
         type: 'common',
         element: 'earth',
         properties: 'not-an-object',
       });
-
 
       expect(typeof result).toBe('boolean');
     });
@@ -460,7 +445,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
       const { validateMetadata } = jest.requireActual(
         '../src/utils/eggUtils.js',
       );
-
 
       if (validateMetadata) {
         expect(
@@ -484,7 +468,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
         '../src/utils/eggUtils.js',
       );
 
-
       if (calculateEggValue) {
         expect(calculateEggValue(TEST_EGGS.basic)).toBeGreaterThan(0);
         expect(calculateEggValue(TEST_EGGS.legendary)).toBeGreaterThan(
@@ -497,11 +480,9 @@ describe('🔍 Egg Generator Integration Tests', () => {
     });
   });
 
-
   describe('Advanced Egg Features', () => {
     test('egg evolution functionality', async () => {
       const { evolveEgg } = jest.requireActual('../src/utils/eggUtils.js');
-
 
       if (evolveEgg) {
         const baseEgg = TEST_EGGS.basic;
@@ -516,7 +497,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
 
     test('egg combination mechanics', () => {
       const { combineEggs } = jest.requireActual('../src/utils/eggUtils.js');
-
 
       if (combineEggs) {
         const parentA = TEST_EGGS.rare;
@@ -535,7 +515,6 @@ describe('🔍 Egg Generator Integration Tests', () => {
       const { calculateMarketValue } = jest.requireActual(
         '../src/utils/eggUtils.js',
       );
-
 
       if (calculateMarketValue) {
         const baseValue = calculateMarketValue(TEST_EGGS.basic);

@@ -26,10 +26,15 @@ import os from 'os';
 import { logger } from '../config/logger.mjs';
 import metrics from '../core/metrics.mjs';
 
-const MEMORY_THRESHOLD = 0.9; // 90% memory usage warning
-const CPU_THRESHOLD = 0.8; // 80% CPU usage warning
-const METRICS_WINDOW = 300000; // 5 minutes
+const MEMORY_THRESHOLD = parseFloat(process.env.MEMORY_THRESHOLD) || 0.9; // Default 90%
+const CPU_THRESHOLD = parseFloat(process.env.CPU_THRESHOLD) || 0.8; // Default 80%
+const METRICS_WINDOW = parseInt(process.env.METRICS_WINDOW, 10) || 300000; // Default 5 minutes
 
+/**
+ * Checks if the response data is valid JSON.
+ * @param {object} data
+ * @returns {boolean}
+ */
 function isValidResponse(data) {
   try {
     JSON.stringify(data);
@@ -39,6 +44,10 @@ function isValidResponse(data) {
   }
 }
 
+/**
+ * Collects system metrics.
+ * @returns {object} System metrics data.
+ */
 function getSystemMetrics() {
   const memory = process.memoryUsage();
   const cpu = process.cpuUsage();
@@ -51,8 +60,7 @@ function getSystemMetrics() {
       heapUsed: memory.heapUsed,
       heapTotal: memory.heapTotal,
       rss: memory.rss,
-      memoryUsagePercent:
-        (((totalMem - freeMem) / totalMem) * 100).toFixed(2) + '%',
+      memoryUsagePercent: `${(((totalMem - freeMem) / totalMem) * 100).toFixed(2)}%`,
       warning: (totalMem - freeMem) / totalMem > MEMORY_THRESHOLD,
     },
     cpu: {
@@ -71,40 +79,60 @@ function getSystemMetrics() {
       nodeVersion: process.version,
       platform: process.platform,
       arch: process.arch,
+      env: process.env.NODE_ENV || 'development',
     },
   };
 }
 
+/**
+ * Checks the status of services like database, cache, and queues.
+ * @returns {object} Service availability.
+ */
 function checkServices() {
-  return {
+  const serviceStatus = {
     database: metrics.getMetrics().databaseConnected ? '🟢' : '🔴',
     cache: metrics.getMetrics().cacheConnected ? '🟢' : '🔴',
     queue: metrics.getMetrics().queueConnected ? '🟢' : '🔴',
   };
+
+  return serviceStatus;
 }
 
+/**
+ * Determines overall service status.
+ * @param {object} systemMetrics - System metrics.
+ * @param {object} serviceChecks - Service availability.
+ * @returns {string} Status indicator.
+ */
 function getServiceStatus(systemMetrics, serviceChecks) {
   if (Object.values(serviceChecks).some((status) => status === '🔴')) {
-    return '🔴 Critical - Service Unavailable';
+    return '🔴 CRITICAL - Service Unavailable';
   }
   if (systemMetrics.memory.warning || systemMetrics.cpu.warning) {
-    return '🟡 Warning - System Under Load';
+    return '🟡 WARNING - System Under Load';
   }
-  return '🟢 Healthy';
+  return '🟢 HEALTHY';
 }
 
+/**
+ * Sets up health check routes for the Express app.
+ * @param {object} app - Express app instance.
+ */
 export function setupHealthRoute(app) {
-  // Basic health endpoint
-  app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'OK' });
+  // ✅ Add support for `/api/health`
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: '✅ Server is running' });
   });
 
-  // Detailed health check endpoint
+  // ✅ Basic health check (legacy route)
+  app.get('/health', (req, res) => {
+    res.status(200).json({ status: '✅ OK' });
+  });
+
+  // ✅ Detailed health check
   app.get('/api/healthcheck', async (req, res) => {
     const startTime = performance.now();
-
     try {
-      // Collect system metrics
       const systemMetrics = getSystemMetrics();
       const serviceChecks = checkServices();
 
@@ -129,26 +157,16 @@ export function setupHealthRoute(app) {
       }
 
       const duration = performance.now() - startTime;
-
-      // Record metrics
-      metrics.trackRequest(startTime, true, {
-        endpoint: '/api/healthcheck',
-        duration,
-      });
+      metrics.trackRequest(startTime, true, { endpoint: '/api/healthcheck', duration });
 
       logger.info('✅ Health check succeeded', {
         status: healthData.status,
         duration: `${duration.toFixed(2)}ms`,
-        warnings: {
-          memory: systemMetrics.memory.warning,
-          cpu: systemMetrics.cpu.warning,
-        },
       });
 
       return res.status(200).json(healthData);
     } catch (error) {
       const duration = performance.now() - startTime;
-
       metrics.trackRequest(startTime, false, {
         endpoint: '/api/healthcheck',
         error: error.message,
@@ -161,15 +179,15 @@ export function setupHealthRoute(app) {
       });
 
       return res.status(503).json({
-        status: '🔴 Service Unavailable',
+        status: '🔴 SERVICE UNAVAILABLE',
         error: error.message,
         timestamp: new Date().toISOString(),
-        retryAfter: 30, // seconds
+        retryAfter: 30, // Retry in 30 seconds
       });
     }
   });
 
-  // Detailed metrics endpoint
+  // ✅ Prometheus metrics endpoint
   app.get('/api/metrics', (req, res) => {
     res.header('Content-Type', 'text/plain');
     res.send(metrics.getPrometheusMetrics());

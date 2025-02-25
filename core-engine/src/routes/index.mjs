@@ -97,8 +97,9 @@ export const routeConfig = {
     requiresAuth: true,
   },
   health: {
-    path: '/api/healthcheck',
+    path: '/api/health',
     methods: ['GET'],
     requiresAuth: false,
   },
+
 };
