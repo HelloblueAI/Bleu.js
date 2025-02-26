@@ -21,62 +21,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-module.exports = {
-  apps: [
-    {
-      name: 'core-engine',
+'use strict';
 
-      script: '/Users/pejmanhaghighatnia/Bleu.js/core-engine/src/index.mjs',
-      interpreter: 'node',
+const winston = require('winston');
+const path = require('path');
+const fs = require('fs');
 
 
-      instances: 1,
-      exec_mode: 'cluster',
-      instance_var: 'INSTANCE_ID',
-
-      env: {
-        NODE_ENV: 'production',
-        PORT: 4000,
-        CPU_CORES: '1',
-        RUNNING_UNDER_PM2: 'true',
-        TZ: 'UTC',
-      },
-
-      increment_var: 'PORT',
-
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '1G',
-
-      node_args: [
-        '--experimental-specifier-resolution=node',
-        '--max-old-space-size=4096',
-        '--trace-warnings',
-        '--unhandled-rejections=strict',
-      ],
-
-      error_file: './logs/pm2/error.log',
-      out_file: './logs/pm2/out.log',
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-      merge_logs: true,
-      log_type: 'json',
-
-      max_restarts: 5,
-      min_uptime: '30s',
-      kill_timeout: 8000,
+const logDirectory = path.join(__dirname, '../logs');
+if (!fs.existsSync(logDirectory)) {
+  fs.mkdirSync(logDirectory, { recursive: true });
+}
 
 
-      wait_ready: false,
+const logFormat = winston.format.printf(({ timestamp, level, message }) => {
+  return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+});
 
-      exp_backoff_restart_delay: 200,
-      listen_timeout: 10000,
 
-      shutdown_with_message: true,
-
-      deep_monitoring: true,
-      status_interval: 30000,
-
-      source_map_support: true,
-    },
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(winston.format.timestamp(), logFormat),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: path.join(logDirectory, 'app.log'),
+    }),
   ],
-};
+});
+
+
+logger.on('error', (err) => {
+  console.error('❌ Logger encountered an error:', err);
+});
+
+module.exports = logger;

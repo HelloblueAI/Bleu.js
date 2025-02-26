@@ -12,10 +12,12 @@ services:
     environment:
       - NODE_ENV=production
       - AI_API_URL=http://ai-service:8000/predict
-      - MONGODB_URI=mongodb://mongo:27017/bleujs
+      - MONGODB_URI=$(AWS_SECRETS_MANAGER_MONGODB_URI)
     depends_on:
       - ai-service
       - mongo
+    secrets:
+      - aws-secrets
 
   ai-service:
     build:
@@ -27,6 +29,28 @@ services:
       - '8000:8000'
     environment:
       - PYTHONUNBUFFERED=1
+
+  mongo:
+    image: mongo:latest
+    container_name: bleujs-mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=$(AWS_SECRETS_MANAGER_MONGODB_PASSWORD)
+    volumes:
+      - mongo_data:/data/db
+    secrets:
+      - aws-secrets
+
+secrets:
+  aws-secrets:
+    external: true
+
+volumes:
+  mongo_data:
+    driver: local
 
 networks:
   default:

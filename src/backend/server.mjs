@@ -45,7 +45,7 @@ const logger = createLogger({
     format.timestamp(),
     format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-    }),
+    })
   ),
   transports: [
     new transports.Console(),
@@ -70,9 +70,16 @@ const startServer = async () => {
 
   app.use(helmet());
   app.use(compression());
-  app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
-
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN || '*',
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+  );
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(morgan('combined'));
   app.use(limiter);
 
@@ -81,7 +88,7 @@ const startServer = async () => {
   app.use('/api', apiRoutes);
 
   app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Welcome to Bleu.js API!' });
+    res.status(200).json({ message: 'Welcome to Bleu.js API!', version: '1.1.2' });
   });
 
   app.use((err, req, res, next) => {

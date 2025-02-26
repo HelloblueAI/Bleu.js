@@ -13,8 +13,8 @@ reports/
 coverage/
 **/coverage*/
 test-results/
-**/test-results/
-**/test-report/
+**/test-results*/
+**/test-report*/
 .nyc_output/
 junit.xml
 **/playwright-report/
@@ -54,17 +54,27 @@ yarn.lock
 # 🔒 Environment & Secrets
 # ----------------------------------------
 .env
-.env.*
-!**/.env.example
 **/.env
 **/.env.*
+!**/.env.example
+!**/.env.sample
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
+*.csr
+*.ovpn
+.ssh/
 config/secrets.yml
 config/local_settings.py
+.aws/
+.aws/*
+.aws/credentials
+.aws/config
+.aws/sso/
+.aws/sso/cache/
+backend/src/config/awsSecrets.js
 
 # ----------------------------------------
 # 🏗️ Build & Generated Files
@@ -131,7 +141,12 @@ app.log
 # 🐳 Docker & Containers
 # ----------------------------------------
 .dockerignore
-docker-compose.override.yml
+docker-compose*.yml
+*.dockerfile
+.terraform/
+.terraform.lock.hcl
+.kube/
+.kube/config
 **/.docker/
 **/.container/
 .dockerenv

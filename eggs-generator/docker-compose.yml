@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -7,9 +9,11 @@ services:
       - '3003:3003'
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://egg-app-user:Redmond8665@mongodb:27017/eggs-db?authSource=eggs-db
+      - MONGODB_URI=mongodb://egg-app-user:${MONGODB_PASSWORD}@mongodb:27017/eggs-db?authSource=eggs-db
     depends_on:
       - mongodb
+    env_file:
+      - .env
 
   mongodb:
     image: mongo:latest
@@ -19,7 +23,9 @@ services:
       - mongodb_data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=egg-admin
-      - MONGO_INITDB_ROOT_PASSWORD=Redmond8665
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+    env_file:
+      - .env
 
   mongo-express:
     image: mongo-express
@@ -27,10 +33,12 @@ services:
       - '8081:8081'
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=egg-admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=Redmond8665
-      - ME_CONFIG_MONGODB_URL=mongodb://egg-admin:Redmond8665@mongodb:27017/
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_EXPRESS_PASSWORD}
+      - ME_CONFIG_MONGODB_URL=mongodb://egg-admin:${MONGO_EXPRESS_PASSWORD}@mongodb:27017/
     depends_on:
       - mongodb
+    env_file:
+      - .env
 
 volumes:
   mongodb_data:
