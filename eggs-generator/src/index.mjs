@@ -21,9 +21,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import dotenv from 'dotenv';
-
-
+import { getSecrets } from "../config/awsSecrets.js";
 import express from 'express';
 import mongoose from 'mongoose';
 import cluster from 'cluster';
@@ -37,15 +35,14 @@ import { WebSocketServer } from 'ws';
 import { createClient } from 'redis';
 import eggRoutes from './routes/egg.routes.js';
 
-dotenv.config({ path: `${process.cwd()}/.env` });
-
+const secrets = await getSecrets();
 const numCPUs = os.cpus().length;
-const PORT = process.env.PORT || 3003;
-const WS_PORT = process.env.WS_PORT || 8081;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
-const REDIS_HOST = process.env.REDIS_HOST || '127.0.0.1';
-const REDIS_PORT = parseInt(process.env.REDIS_PORT, 10) || 6379;
-const CORS_ALLOWED = process.env.CORS_ORIGINS?.split(',') || ['http://localhost:4002'];
+const PORT = parseInt(secrets.PORT, 10) || 3003;
+const WS_PORT = parseInt(secrets.WS_PORT, 10) || 8081;
+const MONGODB_URI = secrets.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+const REDIS_HOST = secrets.REDIS_HOST || '127.0.0.1';
+const REDIS_PORT = parseInt(secrets.REDIS_PORT, 10) || 6379;
+const CORS_ALLOWED = secrets.CORS_ORIGINS?.split(',') || ['http://localhost:4002'];
 
 /** 📌 Logger Configuration */
 const logger = createLogger({
@@ -58,18 +55,21 @@ const logger = createLogger({
   ],
 });
 
-/** 🔧 MongoDB Connection */
-async function connectToMongoDB() {
-  let retries = 5;
-  while (retries) {
+/** 🔧 MongoDB Connection with Retry Logic */
+async function connectToMongoDB(retries = 5) {
+  while (retries > 0) {
     try {
-      await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
       logger.info(`✅ MongoDB Connected: ${mongoose.connection.host}`);
       return;
     } catch (error) {
       logger.error(`❌ MongoDB Connection Failed (${retries} retries left):`, error);
       retries -= 1;
-      await new Promise((res) => setTimeout(res, Math.pow(2, 5 - retries) * 1000));
+      await new Promise((res) => setTimeout(res, (6 - retries) * 2000));
     }
   }
   process.exit(1);
@@ -103,47 +103,52 @@ const handleWebSocket = (wss) => {
       try {
         const data = JSON.parse(message);
         if (!data || typeof data !== 'object' || !data.event) {
-          throw new Error("Invalid message format. Expected JSON object with 'event' field.");
+          ws.send(JSON.stringify({ error: "Invalid message format. Expected JSON object with 'event' field." }));
+          return;
         }
 
-        logger.info(`📨 WS Message Received [${requestId}]: ${JSON.stringify(data)}`);
+        logger.info(`📨 WS Message Received: ${JSON.stringify(data)}`);
 
         switch (data.event) {
-          case 'ping':
+          case 'ping': {
             ws.send(JSON.stringify({ event: 'pong', timestamp: Date.now() }));
             break;
-          case 'generate_egg':
+          }
+
+          case 'generate_egg': {
             if (!data.type || !data.rarity || !data.power) {
               ws.send(JSON.stringify({ error: 'Missing fields: type, rarity, or power' }));
               return;
             }
-            {
-              const egg = {
-                event: 'egg_generated',
-                type: data.type,
-                rarity: data.rarity,
-                power: data.power,
-                timestamp: Date.now(),
-              };
-              ws.send(JSON.stringify(egg));
-              broadcastMessage(egg, ws);
-            }
+
+            const egg = {
+              event: 'egg_generated',
+              type: data.type,
+              rarity: data.rarity,
+              power: data.power,
+              timestamp: Date.now(),
+            };
+
+            ws.send(JSON.stringify(egg));
+            broadcastMessage(egg, ws);
             break;
+          }
 
-
-          case 'subscribe':
+          case 'subscribe': {
             if (!data.category) {
               ws.send(JSON.stringify({ error: "Missing 'category' field in subscribe event." }));
               return;
             }
             ws.send(JSON.stringify({ event: 'subscribed', category: data.category }));
             break;
+          }
 
-          default:
+          default: {
             ws.send(JSON.stringify({ error: 'Unknown event type' }));
+          }
         }
       } catch (error) {
-        logger.error(`❌ WS Error [${requestId}]: ${error.message}`);
+        logger.error(`❌ WS Error: ${error.message}`);
         ws.send(JSON.stringify({ error: 'Invalid WebSocket message format.' }));
       }
     });
@@ -166,13 +171,13 @@ if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
   logger.info(`🚀 Master process ${process.pid} managing ${numCPUs} workers`);
 
   for (let i = 0; i < numCPUs; i++) cluster.fork();
-
+  
   cluster.on('exit', (worker) => {
     logger.warn(`⚠️ Worker ${worker.process.pid} died. Restarting...`);
     cluster.fork();
   });
 
-  
+
   const wss = new WebSocketServer({ port: WS_PORT });
   handleWebSocket(wss);
 } else {
@@ -185,22 +190,9 @@ if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
   app.use(express.urlencoded({ extended: true }));
 
   app.use(cors({ origin: CORS_ALLOWED, credentials: true }));
-
-  app.use(
-    rateLimit({
-      windowMs: 60 * 1000,
-      max: async (req) => (req.ip.startsWith('192.168.') ? 2000 : 1000),
-      message: { error: 'Rate limit exceeded', upgrade: 'https://bleujs.com/pricing' },
-    })
-  );
-
-  app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', version: '4.0.0' }));
+  app.use(rateLimit({ windowMs: 60 * 1000, max: 1000, message: { error: 'Rate limit exceeded' } }));
+  app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', version: '4.0.0', uptime: process.uptime(), timestamp: new Date().toISOString() }));
   app.use('/api/eggs', eggRoutes);
-
-  app.use((err, req, res, next) => {
-    logger.error('❌ Error:', err);
-    res.status(500).json({ success: false, error: err.message });
-  });
 
   app.listen(PORT, () => logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`));
 }

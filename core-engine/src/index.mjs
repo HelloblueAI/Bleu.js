@@ -21,259 +21,171 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import cluster from 'cluster';
-import dotenv from 'dotenv';
+import { getSecrets } from "../config/awsSecrets.js";
 import express from 'express';
-import { createServer } from 'http';
-import net from 'net';
-import { performance } from 'perf_hooks';
+import mongoose from 'mongoose';
+import cluster from 'cluster';
+import os from 'os';
+import helmet from 'helmet';
+import compression from 'compression';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import { createLogger, transports, format } from 'winston';
 import { WebSocketServer } from 'ws';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from 'redis';
+import eggRoutes from './routes/egg.routes.js';
 
-import { logger } from './config/logger.mjs';
+const secrets = await getSecrets();
+const numCPUs = os.cpus().length;
+const PORT = parseInt(secrets.PORT, 10) || 3003;
+const WS_PORT = parseInt(secrets.WS_PORT, 10) || 8081;
+const MONGODB_URI = secrets.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
+const REDIS_HOST = secrets.REDIS_HOST || '127.0.0.1';
+const REDIS_PORT = parseInt(secrets.REDIS_PORT, 10) || 6379;
+const CORS_ALLOWED = secrets.CORS_ORIGINS?.split(',') || ['http://localhost:4002'];
 
-import { AdvancedCircuitBreaker } from './core/circuit-breaker.mjs';
-import metrics from './core/metrics.mjs';
-import { setupWebSocketServer } from './core/websocket.mjs';
-import { setupMiddleware } from './middleware/index.mjs';
-import { setupAllRoutes } from './routes/index.mjs';
+/** 📌 Logger Configuration */
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(format.timestamp(), format.json()),
+  transports: [
+    new transports.Console({ format: format.combine(format.colorize(), format.simple()) }),
+    new transports.File({ filename: 'logs/error.log', level: 'error', maxsize: 10 * 1024 * 1024 }),
+    new transports.File({ filename: 'logs/app.log', maxsize: 10 * 1024 * 1024 }),
+  ],
+});
 
-import {
-
-  CPU_CORES,
-  SHUTDOWN_SIGNALS,
-  SHUTDOWN_TIMEOUT,
-  
-} from './config/constants.mjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-class BleuServer {
-  constructor() {
-    this.app = null;
-    this.server = null;
-    this.wss = null;
-    this.circuitBreaker = null;
-    this.startTime = performance.now();
-  }
-
-  async initialize() {
+/** 🔧 MongoDB Connection with Retry Logic */
+async function connectToMongoDB(retries = 5) {
+  while (retries > 0) {
     try {
-      dotenv.config();
-      console.log(`🛠️ Loaded PORT from .env: ${process.env.PORT}`);
-
-      this.checkRequiredEnvVariables();
-
-      if (cluster.isPrimary) {
-        await this.startPrimaryProcess();
-      } else {
-        await this.startWorkerProcess();
-      }
+      await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      logger.info(`✅ MongoDB Connected: ${mongoose.connection.host}`);
+      return;
     } catch (error) {
-      logger.error('❌ Server initialization failed:', { error });
-      process.exit(1);
+      logger.error(`❌ MongoDB Connection Failed (${retries} retries left):`, error);
+      retries -= 1;
+      await new Promise((res) => setTimeout(res, (6 - retries) * 2000));
     }
   }
+  process.exit(1);
+}
 
-  checkRequiredEnvVariables() {
-    const requiredEnvVars = ['PORT', 'NODE_ENV', 'MONGODB_URI'];
-    requiredEnvVars.forEach((varName) => {
-      if (!process.env[varName]) {
-        logger.warn(`⚠️ Missing environment variable: ${varName}`);
-      }
-    });
-  }
+/** 📡 Redis Client */
+const redisClient = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } });
+redisClient.on('error', (err) => logger.error('❌ Redis Connection Failed:', err));
+await redisClient.connect();
 
-  async startPrimaryProcess() {
-    logger.info(
-      `🧩 Primary process v${process.env.ENGINE_VERSION || '1.1.0'} [PID: ${process.pid}] is running`
-    );
+/** 🔗 WebSocket Clients */
+const activeClients = new Set();
 
-    this.setupClusterEvents();
-    this.forkWorkers();
-    this.setupProcessEvents();
-  }
-
-  async startWorkerProcess() {
-    this.app = express();
-    this.server = createServer(this.app);
-    this.wss = new WebSocketServer({ server: this.server });
-    this.circuitBreaker = new AdvancedCircuitBreaker();
-
-    await this.setupWorkerComponents();
-    await this.startServer();
-  }
-
-  setupClusterEvents() {
-    cluster.on('exit', this.handleWorkerExit.bind(this));
-    cluster.on('message', this.handleWorkerMessage.bind(this));
-  }
-
-  forkWorkers() {
-    for (let i = 0; i < CPU_CORES; i++) {
-      const worker = cluster.fork();
-      logger.info(`🚀 Forked worker ${worker.id} [PID: ${worker.process.pid}]`);
+/** 📢 Broadcast Messages */
+const broadcastMessage = (message, sender = null) => {
+  activeClients.forEach((client) => {
+    if (client !== sender && client.readyState === client.OPEN) {
+      client.send(JSON.stringify(message));
     }
-  }
+  });
+};
 
-  async setupWorkerComponents() {
-    setupMiddleware(this.app);
-    setupAllRoutes(this.app);
-    setupWebSocketServer(this.wss);
-    this.setupHealthCheck();
-  }
+/** 🔥 WebSocket Handler */
+const handleWebSocket = (wss) => {
+  wss.on('connection', (ws) => {
+    activeClients.add(ws);
+    const requestId = `ws-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    logger.info(`🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
 
-  async getAvailablePort(preferredPort) {
-    return new Promise((resolve) => {
-      const server = net.createServer();
-      server.once('error', () => resolve(0));
-      server.once('listening', () => {
-        server.close(() => resolve(preferredPort));
-      });
-      server.listen(preferredPort);
-    });
-  }
-
-  async startServer() {
-    const port = process.env.PORT || 5005;
-    const host = '0.0.0.0';
-
-    return new Promise((resolve) => {
-        this.server.listen(port, host, () => {
-            console.log(`🛠️ Server is now listening on http://${host}:${port}`);
-            this.logServerStart(port, host);
-            resolve();
-        });
-    });
-  }
-
-  setupHealthCheck() {
-    setInterval(() => {
-      if (typeof metrics.gauge === 'function') {
-        metrics.gauge('server.uptime', performance.now() - this.startTime);
-        metrics.gauge('server.memory_usage', process.memoryUsage().heapUsed);
-        metrics.gauge('server.cpu_usage', process.cpuUsage().user);
-      } else {
-        logger.warn('⚠️ metrics.gauge is not a function. Health checks skipped.');
-      }
-    }, 30000);
-  }
-
-  handleWorkerExit(worker, code, signal) {
-    logger.warn(`⚠️ Worker ${worker.process.pid} exited. Restarting...`, {
-      code,
-      signal,
-    });
-
-    setTimeout(() => {
-      const newWorker = cluster.fork();
-      logger.info(`🔄 New worker forked [PID: ${newWorker.process.pid}]`);
-    }, 5000);
-  }
-
-  handleWorkerMessage(worker, message) {
-    if (message.type === 'metrics') {
-      metrics.trackRequest(0, true, {
-        endpoint: message.endpoint,
-        worker_id: worker.id,
-      });
-    }
-  }
-
-  setupProcessEvents() {
-    SHUTDOWN_SIGNALS.forEach((signal) => {
-      process.on(signal, () => this.handleGracefulShutdown(signal));
-    });
-
-    process.on('uncaughtException', this.handleUncaughtException.bind(this));
-    process.on('unhandledRejection', this.handleUnhandledRejection.bind(this));
-  }
-
-  async handleGracefulShutdown(signal) {
-    logger.warn(`⚠️ Received ${signal}. Shutting down gracefully...`);
-
-    try {
-      if (cluster.isPrimary) {
-        for (const worker of Object.values(cluster.workers)) {
-          worker.send({ type: 'shutdown', signal });
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message);
+        if (!data || typeof data !== 'object' || !data.event) {
+          ws.send(JSON.stringify({ error: "Invalid message format. Expected JSON object with 'event' field." }));
+          return;
         }
-        setTimeout(() => {
-          logger.error('🚨 Forced shutdown due to timeout');
-          process.exit(1);
-        }, SHUTDOWN_TIMEOUT).unref();
-      } else {
-        if (this.wss) await new Promise((resolve) => this.wss.close(resolve));
-        if (this.server)
-          await new Promise((resolve) => this.server.close(resolve));
-        logger.info('✅ Server shut down successfully');
-        process.exit(0);
+
+        logger.info(`📨 WS Message Received: ${JSON.stringify(data)}`);
+
+        switch (data.event) {
+          case 'ping': {
+            ws.send(JSON.stringify({ event: 'pong', timestamp: Date.now() }));
+            break;
+          }
+
+          case 'generate_egg': {
+            if (!data.type || !data.rarity || !data.power) {
+              ws.send(JSON.stringify({ error: 'Missing fields: type, rarity, or power' }));
+              return;
+            }
+
+            const egg = {
+              event: 'egg_generated',
+              type: data.type,
+              rarity: data.rarity,
+              power: data.power,
+              timestamp: Date.now(),
+            };
+
+            ws.send(JSON.stringify(egg));
+            broadcastMessage(egg, ws);
+            break;
+          }
+
+          case 'subscribe': {
+            if (!data.category) {
+              ws.send(JSON.stringify({ error: "Missing 'category' field in subscribe event." }));
+              return;
+            }
+            ws.send(JSON.stringify({ event: 'subscribed', category: data.category }));
+            break;
+          }
+
+          default: {
+            ws.send(JSON.stringify({ error: 'Unknown event type' }));
+          }
+        }
+      } catch (error) {
+        logger.error(`❌ WS Error: ${error.message}`);
+        ws.send(JSON.stringify({ error: 'Invalid WebSocket message format.' }));
       }
-    } catch (error) {
-      logger.error('❌ Error during shutdown:', { error });
-      process.exit(1);
-    }
-  }
+    });
 
-  handleUncaughtException(error) {
-    logger.error('❌ Uncaught Exception:', { error });
-    process.exit(1);
-  }
+    ws.on('close', () => {
+      activeClients.delete(ws);
+      logger.info(`❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
+    });
 
-  handleUnhandledRejection(reason, promise) {
-    logger.error('❌ Unhandled Promise Rejection:', { reason });
-  }
+    ws.on('error', (error) => {
+      logger.error(`🚨 WS Connection Error [${requestId}]:`, error);
+    });
+  });
 
-  logServerStart(port, host) {
-    logger.info(`
-      🚀 Worker server started
-      -------------------------------------------
-      🏷️ Environment:    ${process.env.NODE_ENV?.toUpperCase() || 'DEVELOPMENT'}
-      🌍 Host:           ${host}
-      🔌 Port:           ${port}
-      🔧 Worker PID:     ${process.pid}
-      🔄 CPU Cores:      ${CPU_CORES}
-      📊 Engine Version: ${process.env.ENGINE_VERSION || '1.1.0'}
-      -------------------------------------------
-    `);
-  }
+  return wss;
+};
+
+/** 🚀 Cluster Mode */
+if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
+  logger.info(`🚀 Master process ${process.pid} managing ${numCPUs} workers`);
+  for (let i = 0; i < numCPUs; i++) cluster.fork();
+  cluster.on('exit', (worker) => {
+    logger.warn(`⚠️ Worker ${worker.process.pid} died. Restarting...`);
+    cluster.fork();
+  });
+  const wss = new WebSocketServer({ port: WS_PORT });
+  handleWebSocket(wss);
+} else {
+  const app = express();
+  await connectToMongoDB();
+  app.use(helmet());
+  app.use(compression());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(cors({ origin: CORS_ALLOWED, credentials: true }));
+  app.use(rateLimit({ windowMs: 60 * 1000, max: 1000, message: { error: 'Rate limit exceeded' } }));
+  app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', version: '4.0.0', uptime: process.uptime(), timestamp: new Date().toISOString() }));
+  app.use('/api/eggs', eggRoutes);
+  app.listen(PORT, () => logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`));
 }
-
-
-function patchBleuServerForPM2() {
-  const originalStartServer = BleuServer.prototype.startServer;
-
-
-  BleuServer.prototype.startServer = async function() {
-    await originalStartServer.call(this);
-
-
-    if (process.send) {
-      process.send('ready');
-      logger.info('✅ Signaled ready state to PM2');
-    }
-  };
-
-
-  if (process.env.RUNNING_UNDER_PM2 === 'true') {
-    logger.info('🔄 Running under PM2, adapting cluster behavior');
-
-
-    BleuServer.prototype.forkWorkers = function() {
-      logger.info('⚙️ PM2 is managing clustering, skipping internal worker forking');
-    };
-  }
-}
-
-
-patchBleuServerForPM2();
-
-
-const server = new BleuServer();
-await server.initialize();
-
-export const app = server.app;
-export const httpServer = server.server;
-export const wss = server.wss;
-export { logger, metrics };

@@ -21,28 +21,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-/* eslint-env node */
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+import { fileURLToPath } from "url";
+import path from "path";
+import swaggerJsDoc from "swagger-jsdoc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
+  definition: {
+    openapi: "3.0.0",
     info: {
-      title: 'Bleu.js API',
-      version: '1.0.0',
-      description: 'API documentation for Bleu.js',
+      title: "Bleu.js API",
+      version: "1.1.2",
+      description: "API documentation for Bleu.js backend running on AWS.",
     },
     servers: [
-      {
-        url: 'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod',
-        description: 'Production server',
-      },
+      { url: `http://localhost:${process.env.PORT || 4003}` },
+      { url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod" },
     ],
   },
-  apis: ['./routes/*.js'],
+  apis: [
+    path.resolve(__dirname, "routes.mjs"), // Ensure this is the correct path
+    path.resolve(__dirname, "backend/dist/routes.js"),
+    path.resolve(__dirname, "backend/src/routes.ts"),
+  ],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
+export default swaggerDocs;
 
-module.exports = { swaggerUi, swaggerDocs };

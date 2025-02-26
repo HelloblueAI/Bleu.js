@@ -165,6 +165,13 @@ To train a new XGBoost model with Optuna, run:
 python train_xgboost.py
 ```
 
+Best Accuracy: `0.9450`
+Best ROC-AUC: `0.9869`
+Best F1 Score: `0.9488`
+Best Precision: `0.9444`
+Best Recall: `0.9533`
+
+
 ### 3️⃣ Deploying Bleu.js v1.1.2
 
 The trained model can be deployed using **AWS Lambda, Flask, FastAPI, or Docker**.
