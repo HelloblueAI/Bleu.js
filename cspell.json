@@ -216,6 +216,7 @@
     "czvf",
     "ELEMDELETE",
     "elif",
+    "EOFMARKER",
     "esniff",
     "esprima",
     "htmlcov",

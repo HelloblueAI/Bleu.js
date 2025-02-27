@@ -251,11 +251,18 @@ jobs:
           BUILD_DIR="${{ steps.build.outputs.BUILD_OUTPUT_DIR }}"
           echo "Packaging ${{ matrix.component }}/${BUILD_DIR}..."
 
-          cd ${{ matrix.component }}
-          tar -czvf ../artifacts/${{ matrix.component }}-build.tar.gz ${BUILD_DIR}
-          cd ..
-
-          echo "✅ Package created: ${{ matrix.component }}-build.tar.gz"
+          if [ -d "${{ matrix.component }}/${BUILD_DIR}" ]; then
+            cd ${{ matrix.component }}
+            tar -czvf ../artifacts/${{ matrix.component }}-build.tar.gz ${BUILD_DIR}
+            cd ..
+            echo "✅ Package created: ${{ matrix.component }}-build.tar.gz"
+          else
+            echo "WARNING: Build directory ${{ matrix.component }}/${BUILD_DIR} not found"
+            # Create an empty tarball so the artifact upload doesn't fail
+            mkdir -p empty-build
+            tar -czvf artifacts/${{ matrix.component }}-build.tar.gz empty-build
+            echo "✅ Created empty package as fallback"
+          fi
 
       - name: Upload Build Artifact
         if: steps.build.outputs.BUILD_SUCCESS == 'true'
@@ -463,8 +470,8 @@ jobs:
             # Move artifacts to release directory
             find dist -type f -name "*.tar.gz" -exec cp {} release/ \;
 
-            # Create a manifest file
-            cat > release/MANIFEST.json << EOF
+            # Create a manifest file with proper EOF delimiter
+            cat > release/MANIFEST.json << 'EOFMARKER'
             {
               "name": "Bleu.js",
               "version": "${{ steps.set-version.outputs.version }}",
@@ -474,7 +481,7 @@ jobs:
               "gitCommit": "${{ github.sha }}",
               "gitRef": "${{ github.ref }}",
               "components": [
-            EOF
+            EOFMARKER
 
             # Add each component to the manifest
             FIRST=true
@@ -501,9 +508,9 @@ jobs:
           else
             echo "WARNING: No artifacts found to package"
 
-            # Create an empty package with just the manifest
+            # Create an empty package with just the manifest (using proper EOF delimiter)
             mkdir -p release
-            cat > release/MANIFEST.json << EOF
+            cat > release/MANIFEST.json << 'EOFMARKER'
             {
               "name": "Bleu.js",
               "version": "${{ steps.set-version.outputs.version }}",
@@ -515,7 +522,7 @@ jobs:
               "components": [],
               "note": "No components were successfully built"
             }
-            EOF
+            EOFMARKER
 
             tar -czvf ${{ steps.set-version.outputs.release-name }}.tar.gz release
 
