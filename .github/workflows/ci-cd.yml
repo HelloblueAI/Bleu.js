@@ -99,17 +99,19 @@ jobs:
           sed -i 's/statements: 80/statements: 0/g' ${{ matrix.component }}/jest.config.cjs
           echo "Updated Jest config to disable coverage thresholds"
 
-      - name: 🏗 Build Component ${{ matrix.component }}
-        run: |
-          if [ -f "${{ matrix.component }}/package.json" ]; then
-            cd ${{ matrix.component }}
-            # For eggs-generator, override the postbuild script
-            if [ "${{ matrix.component }}" == "eggs-generator" ]; then
-              # Override the postbuild script for eggs-generator
-              npm set-script postbuild "NODE_ENV=test jest --ci --coverage --config jest.config.cjs || true"
+          - name: 🏗 Build Component ${{ matrix.component }}
+          run: |
+            if [ -f "${{ matrix.component }}/package.json" ]; then
+              cd ${{ matrix.component }}
+              # For eggs-generator, override the postbuild script
+              if [ "${{ matrix.component }}" == "eggs-generator" ]; then
+                # Correctly modify package.json using jq
+                jq '.scripts.postbuild="NODE_ENV=test jest --ci --coverage --config jest.config.cjs || true"' package.json > temp.json && mv temp.json package.json
+              fi
+              pnpm install
+              pnpm run build
             fi
-            pnpm run build
-          fi
+
 
       - name: ✅ Run Unit Tests
         run: |
