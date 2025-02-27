@@ -227,6 +227,7 @@
     "Optuna",
     "Pipfile",
     "postbuild",
+    "pozil",
     "pycache",
     "realpath",
     "reusify",
