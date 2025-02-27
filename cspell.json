@@ -229,11 +229,14 @@
     "pycache",
     "realpath",
     "reusify",
+    "romeovs",
     "ropeproject",
     "sdist",
     "tsutils",
     "vercel",
     "virtuals",
-    "worl"
+    "wagoid",
+    "worl",
+    "xzvf"
   ]
 }
