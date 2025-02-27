@@ -687,11 +687,11 @@ jobs:
       - name: Post Deployment Notification
         if: steps.deploy.outputs.DEPLOY_SUCCESS == 'true' && github.event_name != 'pull_request'
         uses: rtCamp/action-slack-notify@v2
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK }}
-          channel: 'deployments'
-          color: ${{ steps.env_step.outputs.environment == 'production' && 'good' || 'warning' }}
-          message: 'Deployed Bleu.js v${{ needs.package-release.outputs.version }} to ${{ steps.env_step.outputs.environment }}'
-          title: 'Deployment Successful'
-          username: 'GitHub Actions'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: 'deployments'
+          SLACK_COLOR: ${{ steps.env_step.outputs.environment == 'production' && 'good' || 'warning' }}
+          SLACK_MESSAGE: 'Deployed Bleu.js v${{ needs.package-release.outputs.version }} to ${{ steps.env_step.outputs.environment }}'
+          SLACK_TITLE: 'Deployment Successful'
+          SLACK_USERNAME: 'GitHub Actions'
         continue-on-error: true
