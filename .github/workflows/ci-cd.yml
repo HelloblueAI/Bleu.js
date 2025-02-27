@@ -65,10 +65,20 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis:latest
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: 📥 Checkout Repository
@@ -95,14 +105,94 @@ jobs:
 
       - name: ✅ Run Unit Tests
         run: |
-          if [ -f "${{ matrix.component }}/package.json" ]; then
+          if [ "${{ matrix.component }}" == "eggs-generator" ]; then
+            cd ${{ matrix.component }}
+            if [ -d "tests" ] || [ -d "__tests__" ]; then
+              NODE_ENV=test pnpm jest --ci --collectCoverage --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}' --coverageDirectory='../coverage/${{ matrix.component }}'
+            else
+              echo "⚠️ No test files found for ${{ matrix.component }}, skipping tests."
+            fi
+          elif [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
             if [ -d "tests" ] || [ -d "__tests__" ]; then
               pnpm run test
             else
-              echo "⚠️ No test files found, skipping tests."
+              echo "⚠️ No test files found for ${{ matrix.component }}, skipping tests."
             fi
           fi
         env:
           MONGODB_URI: mongodb://localhost:27017/test
           REDIS_URL: redis://localhost:6379
+
+  run-aiservice-tests:
+    name: 🧠 AI Service Tests with Coverage
+    needs: validate
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install pnpm
+        run: npm install -g pnpm@9
+
+      - name: 📦 Install Dependencies
+        run: pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
+
+      - name: 🧪 Run AIService Tests with Coverage
+        run: |
+          NODE_ENV=test npx jest --config jest.config.cjs --coverage --testMatch="**/src/__tests__/aiService.test.js" --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
+        env:
+          MONGODB_URI: mongodb://localhost:27017/test
+
+      - name: 📊 Upload Coverage Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-service-coverage
+          path: coverage
+          retention-days: 7
+
+  deploy:
+    name: 🚢 Deploy to Environment
+    needs: [build, run-aiservice-tests]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install Dependencies
+        run: npm install -g pnpm@9 && pnpm install
+
+      - name: 🔄 Determine Environment
+        id: env_step
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🚀 Deploy to ${{ steps.env_step.outputs.environment }}
+        run: |
+          echo "Deploying to ${{ steps.env_step.outputs.environment }}..."
+          # Add your deployment commands here
+          # For example: pnpm run deploy:${{ steps.env_step.outputs.environment }}

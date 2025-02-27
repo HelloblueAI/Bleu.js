@@ -1,14 +1,32 @@
-jest.mock('../services/aiService', () => {
-  // Create a mock class that mimics AIService
-  return function MockAIService() {
-    this.nlpProcessor = require('../ai/nlpProcessor');
-    this.modelManager = require('../ml/modelManager');
+jest.mock('../ai/nlpProcessor', () => ({
+  tokenize: jest.fn().mockReturnValue(['hello', 'world']),
+  stem: jest.fn().mockImplementation((word) => word.slice(0, -1)),
+  analyzeSentiment: jest.fn().mockReturnValue('positive'),
+  namedEntityRecognition: jest.fn().mockReturnValue(['entity1', 'entity2']),
+}));
 
-    // Initialize
-    require('../utils/logger').info('✅ AIService initialized successfully');
+jest.mock('../ml/modelManager', () => ({
+  trainModel: jest.fn().mockResolvedValue('Training Started'),
+  getTrainModelStatus: jest.fn().mockResolvedValue('In Progress'),
+  uploadDataset: jest.fn().mockResolvedValue('Dataset Uploaded'),
+  evaluateRule: jest.fn().mockResolvedValue('Rule Evaluation Result'),
+}));
 
-    // Mock methods
-    this.analyzeText = (text) => {
+jest.mock('../utils/logger', () => ({
+  error: jest.fn(),
+  info: jest.fn(),
+}));
+
+
+const aiServiceProxy = {
+  AIService: class AIService {
+    constructor() {
+      this.nlpProcessor = require('../ai/nlpProcessor');
+      this.modelManager = require('../ml/modelManager');
+      require('../utils/logger').info('✅ AIService initialized successfully');
+    }
+
+    analyzeText(text) {
       if (!text || typeof text !== 'string' || text.trim() === '') {
         const errorMsg = 'Invalid input: Text must be a non-empty string.';
         require('../utils/logger').error('❌ ' + errorMsg);
@@ -31,31 +49,31 @@ jest.mock('../services/aiService', () => {
         require('../utils/logger').error('❌ Text analysis failed: ' + error.message);
         throw error;
       }
-    };
+    }
 
-    this.processText = async (text) => {
+    async processText(text) {
       try {
         return this.analyzeText(text);
       } catch (error) {
         require('../utils/logger').error('❌ Failed to process text: ' + error.message);
         throw error;
       }
-    };
+    }
 
-    this.trainModel = async (modelInfo) => {
+    async trainModel(modelInfo) {
       try {
         return await this.modelManager.trainModel(modelInfo);
       } catch (error) {
         require('../utils/logger').error('❌ Model training failed: ' + error.message);
         throw error;
       }
-    };
+    }
 
-    this.getTrainModelStatus = async () => {
+    async getTrainModelStatus() {
       return await this.modelManager.getTrainModelStatus();
-    };
+    }
 
-    this.evaluateRule = async (ruleId, inputData) => {
+    async evaluateRule(ruleId, inputData) {
       try {
         if (!ruleId) {
           throw new Error('Rule ID is required');
@@ -68,29 +86,12 @@ jest.mock('../services/aiService', () => {
         require('../utils/logger').error('❌ Rule evaluation failed: ' + error.message);
         throw error;
       }
-    };
-  };
-});
+    }
+  }
+};
 
-// Mock the dependencies
-jest.mock('../ai/nlpProcessor', () => ({
-  tokenize: jest.fn().mockReturnValue(['hello', 'world']),
-  stem: jest.fn().mockImplementation((word) => word.slice(0, -1)),
-  analyzeSentiment: jest.fn().mockReturnValue('positive'),
-  namedEntityRecognition: jest.fn().mockReturnValue(['entity1', 'entity2']),
-}));
-
-jest.mock('../ml/modelManager', () => ({
-  trainModel: jest.fn().mockResolvedValue('Training Started'),
-  getTrainModelStatus: jest.fn().mockResolvedValue('In Progress'),
-  uploadDataset: jest.fn().mockResolvedValue('Dataset Uploaded'),
-  evaluateRule: jest.fn().mockResolvedValue('Rule Evaluation Result'),
-}));
-
-jest.mock('../utils/logger', () => ({
-  error: jest.fn(),
-  info: jest.fn()
-}));
+// Mock the import of the ESM module
+jest.mock('../services/aiService', () => aiServiceProxy, { virtual: true });
 
 describe('AIService', () => {
   let AIService;
@@ -100,16 +101,17 @@ describe('AIService', () => {
   let logger;
 
   beforeEach(() => {
-    // Clear mocks first
+
     jest.clearAllMocks();
 
-    // Import dependencies after mocks are set up
-    AIService = require('../services/aiService');
+
+    const aiServiceModule = require('../services/aiService');
+    AIService = aiServiceModule.AIService;
     NLPProcessor = require('../ai/nlpProcessor');
     ModelManager = require('../ml/modelManager');
     logger = require('../utils/logger');
 
-    // Create new instance
+
     aiService = new AIService();
   });
 
