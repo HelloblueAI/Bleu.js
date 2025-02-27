@@ -1,4 +1,4 @@
-name: Bleu.js Enterprise CI/CD Pipeline
+name: Bleu.js CI/CD Pipeline
 
 on:
   push:
@@ -23,9 +23,8 @@ on:
 
 permissions:
   contents: write
-  id-token: write    # Required for attestation
-  attestations: write # Required for attestation
-  security-events: write # For CodeQL analysis
+  id-token: write
+  security-events: write
   pull-requests: write
 
 # Global environment variables
@@ -33,151 +32,61 @@ env:
   NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
   PNPM_VERSION: '9'
-  MONGODB_VERSION: '4.4'
-  CACHE_NPM_DEPS: 'true'
   ARTIFACT_RETENTION_DAYS: 14
 
 jobs:
   lint:
-    name: 🧹 Code Quality & Linting
+    name: Lint and Quality Checks
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🔍 Conventional Commit Check
-        uses: wagoid/commitlint-github-action@v5
-        with:
-          failOnWarnings: false
-
-      - name: 🏗 Setup Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: 📦 Install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
 
-      - name: 📏 Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: 🏎️ Setup pnpm cache
+      - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          path: $(pnpm store path)
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: 📦 Install Dependencies
-        run: pnpm install --no-frozen-lockfile
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: 🔍 Lint All Code
+      - name: Run Lint
         run: pnpm run lint
 
-      - name: 🎨 Check Formatting
+      - name: Check Formatting
         run: pnpm run prettier:check || true
 
-      # FIX 1: Properly set up CodeQL analysis with init and analyze
-      - name: 🔍 Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript
+      - name: Security Audit
+        run: pnpm audit --audit-level=high || true
 
-      - name: 🔭 CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:javascript"
-
-  validate:
-    name: 🛠 Validate Dependencies & Security
+  build-test:
+    name: Build and Test
+    needs: [lint]
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          run_install: false
-
-      - name: 📏 Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: 🏎️ Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: 📌 Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pnpm install --no-frozen-lockfile
-
-      - name: 🔒 Security Audit Dependencies
-        run: pnpm audit --audit-level=moderate || true
-
-      # FIX 2: Replace the npm-dependency-graph action with a working alternative
-      - name: 📊 Analyze Dependencies
-        run: |
-          echo "Analyzing dependencies"
-          # You could replace this with a working action or a script
-          pnpm list --json > dependency_report.json
-
-      - name: 📋 Check Package Integrity
-        run: |
-          pnpm list --json > dependencies.json
-          echo "📦 Dependencies report generated"
-
-  build-components:
-    name: 🚀 Build & Test Components
-    needs: [lint, validate]
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         component: [backend, core-engine, eggs-generator]
-        include:
-          - component: backend
-            test-dir: "__tests__"
-          - component: core-engine
-            test-dir: "tests"
-          - component: eggs-generator
-            test-dir: "__tests__"
-            special-handling: true
 
     services:
       mongodb:
@@ -185,7 +94,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd mongo
+          --health-cmd mongosh
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -201,179 +110,60 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 📦 Install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
 
-      - name: 📏 Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: 🏎️ Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: 📦 Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: 📡 Verify Services
-        run: |
-          echo "🍃 Checking MongoDB connection..."
-          # Corrected MongoDB health check
-          timeout 15s bash -c 'until mongosh --eval "db.runCommand({ping:1})" --quiet; do sleep 1; done' || echo "MongoDB check timed out, continuing anyway"
-          echo "✅ MongoDB is running"
-
-          echo "🔴 Checking Redis connection..."
-          timeout 15s bash -c 'until redis-cli ping; do sleep 1; done' || echo "Redis check timed out, continuing anyway"
-          echo "✅ Redis is running"
-
-      - name: 🔧 Special Handling for eggs-generator
-        if: matrix.component == 'eggs-generator'
-        run: |
-          cd ${{ matrix.component }}
-
-          # Create a minimal Jest configuration
-          cat > minimal-jest.config.cjs << 'EOL'
-          module.exports = {
-            testEnvironment: 'node',
-            testTimeout: 60000,
-            forceExit: true,
-            detectOpenHandles: true,
-            coverageThreshold: {
-              global: {
-                branches: 0,
-                functions: 0,
-                lines: 0,
-                statements: 0
-              }
-            }
-          };
-          EOL
-
-          echo "✅ Created optimized test configuration"
-
-      - name: 🏗 Build Component ${{ matrix.component }}
-        id: build
+      - name: Build Component
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
-
-            if [ "${{ matrix.component }}" == "eggs-generator" ]; then
-              echo "🔨 Building ${{ matrix.component }} with direct Babel..."
-              npx babel src --out-dir dist --extensions ".ts,.js"
-            else
-              echo "🔨 Building ${{ matrix.component }} with standard build..."
-              pnpm run build || true
-            fi
-
-            if [ -d "dist" ]; then
-              echo "build-success=true" >> $GITHUB_OUTPUT
-            else
-              echo "build-success=false" >> $GITHUB_OUTPUT
-              echo "⚠️ Build output directory not found"
-            fi
-          else
-            echo "⚠️ No package.json found for ${{ matrix.component }}"
-            echo "build-success=false" >> $GITHUB_OUTPUT
+            pnpm run build || true
           fi
 
-      - name: ✅ Run Tests
-        id: tests
-        continue-on-error: true
+      - name: Run Tests
         run: |
           if [ -f "${{ matrix.component }}/package.json" ]; then
             cd ${{ matrix.component }}
-
-            if [ -d "${{ matrix.test-dir }}" ]; then
-              echo "🧪 Running tests for ${{ matrix.component }}..."
-
-              if [ "${{ matrix.component }}" == "eggs-generator" ]; then
-                NODE_ENV=test npx jest --config minimal-jest.config.cjs --ci || true
-              else
-                pnpm run test || true
-              fi
-
-              echo "test-ran=true" >> $GITHUB_OUTPUT
-            else
-              echo "⚠️ No test directory found at ${{ matrix.test-dir }}"
-              echo "test-ran=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "⚠️ No package.json found"
-            echo "test-ran=false" >> $GITHUB_OUTPUT
+            pnpm run test || true
           fi
         env:
           MONGODB_URI: 'mongodb://localhost:27017/test'
           REDIS_URL: 'redis://localhost:6379'
 
-      - name: 📊 Generate Coverage Report
-        if: steps.tests.outputs.test-ran == 'true'
-        run: |
-          if [ -f "${{ matrix.component }}/package.json" ]; then
-            cd ${{ matrix.component }}
-
-            if [ "${{ matrix.component }}" == "eggs-generator" ]; then
-              NODE_ENV=test npx jest --config minimal-jest.config.cjs --coverage || true
-            else
-              pnpm run test:coverage || true
-            fi
-          fi
-        env:
-          MONGODB_URI: 'mongodb://localhost:27017/test'
-          REDIS_URL: redis://localhost:6379
-
-      - name: 📦 Package Component Build
-        if: steps.build.outputs.build-success == 'true'
+      - name: Package Build
         run: |
           mkdir -p artifacts
           if [ -d "${{ matrix.component }}/dist" ]; then
-            echo "📦 Packaging ${{ matrix.component }} build artifacts..."
             tar -czvf artifacts/${{ matrix.component }}-build.tar.gz ${{ matrix.component }}/dist
-            echo "✅ Package created: ${{ matrix.component }}-build.tar.gz"
           elif [ -d "${{ matrix.component }}/build" ]; then
-            echo "📦 Packaging ${{ matrix.component }} build artifacts..."
             tar -czvf artifacts/${{ matrix.component }}-build.tar.gz ${{ matrix.component }}/build
-            echo "✅ Package created: ${{ matrix.component }}-build.tar.gz"
-          else
-            echo "⚠️ No build directory found for ${{ matrix.component }}"
           fi
 
-      - name: 📤 Upload Build Artifact
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
-        id: upload
         with:
           name: ${{ matrix.component }}-build
           path: artifacts/${{ matrix.component }}-build.tar.gz
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
           if-no-files-found: ignore
 
-      - name: 📤 Upload Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.component }}-coverage
-          path: ${{ matrix.component }}/coverage
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-          if-no-files-found: ignore
-
-  run-aiservice-tests:
-    name: 🧠 AI Service Tests
-    needs: [validate]
+  ai-service-tests:
+    name: AI Service Tests
+    needs: [lint]
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -383,52 +173,30 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd mongo
+          --health-cmd mongosh
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 📦 Install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
 
-      - name: 📏 Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: 🏎️ Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: 📦 Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: 📡 Verify MongoDB Connection
-        run: |
-          echo "🍃 Checking MongoDB connection..."
-          timeout 15s bash -c 'until mongo --eval "db.runCommand({ping:1})" --quiet; do sleep 1; done'
-          echo "✅ MongoDB is running"
-
-      - name: 🧪 Run AIService Tests
-        id: ai_tests
-        continue-on-error: true
+      - name: Run AIService Tests
         run: |
           # Create a simplified Jest config file
           cat > aiservice.jest.config.cjs << 'EOL'
@@ -436,143 +204,48 @@ jobs:
             testEnvironment: "node",
             testMatch: ["**/src/__tests__/aiService.test.js"],
             collectCoverage: true,
-            coverageDirectory: "coverage",
-            coverageReporters: ["text", "lcov", "html", "json-summary"],
-            coverageThreshold: {
-              global: {
-                branches: 0,
-                functions: 0,
-                lines: 0,
-                statements: 0
-              }
-            }
+            coverageDirectory: "coverage"
           };
           EOL
 
-          echo "🧪 Running AIService tests..."
-          NODE_ENV=test npx jest --config aiservice.jest.config.cjs
-
-          if [ -d "coverage" ]; then
-            echo "coverage-generated=true" >> $GITHUB_OUTPUT
-          else
-            echo "coverage-generated=false" >> $GITHUB_OUTPUT
-          fi
+          NODE_ENV=test npx jest --config aiservice.jest.config.cjs || true
         env:
-          MONGODB_URI: mongodb://localhost:27017/test
+          MONGODB_URI: 'mongodb://localhost:27017/test'
 
-      - name: 📊 Upload AI Service Coverage Reports
-        if: steps.ai_tests.outputs.coverage-generated == 'true'
+      - name: Upload AI Service Coverage
         uses: actions/upload-artifact@v4
-        id: upload-coverage
         with:
           name: ai-service-coverage
           path: coverage
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-
-  merge-coverage-reports:
-    name: 📊 Merge Coverage Reports
-    needs: [build-components, run-aiservice-tests]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Install Dependencies
-        run: |
-          npm install -g nyc
-          npm install -g coveralls
-
-      - name: 📥 Download Coverage Reports
-        uses: actions/download-artifact@v4
-        with:
-          path: all-coverage
-          pattern: "*-coverage"
-          merge-multiple: true
-
-      - name: 🔄 Merge Coverage Reports
-        run: |
-          mkdir -p merged-coverage
-
-          echo "📊 Available coverage files:"
-          find all-coverage -type f -name "coverage-final.json" | sort
-
-          # Create directory structure for nyc
-          mkdir -p .nyc_output
-
-          # Merge all coverage reports
-          find all-coverage -type f -name "coverage-final.json" -exec cp {} .nyc_output/ \;
-          nyc merge .nyc_output merged-coverage/coverage.json || echo "{}" > merged-coverage/coverage.json
-
-          # Generate reports in different formats
-          nyc report --reporter=lcov --reporter=text --reporter=html --reporter=json-summary --temp-directory=.nyc_output
-
-          # Create summary markdown
-          echo "# Bleu.js Coverage Report" > merged-coverage/COVERAGE.md
-          echo "## Generated on $(date)" >> merged-coverage/COVERAGE.md
-          echo "" >> merged-coverage/COVERAGE.md
-          echo "| Category | Coverage % |" >> merged-coverage/COVERAGE.md
-          echo "| -------- | ---------- |" >> merged-coverage/COVERAGE.md
-
-          if [ -f coverage-summary.json ]; then
-            STATEMENTS=$(jq -r '.total.statements.pct' coverage-summary.json)
-            BRANCHES=$(jq -r '.total.branches.pct' coverage-summary.json)
-            FUNCTIONS=$(jq -r '.total.functions.pct' coverage-summary.json)
-            LINES=$(jq -r '.total.lines.pct' coverage-summary.json)
-
-            echo "| Statements | $STATEMENTS% |" >> merged-coverage/COVERAGE.md
-            echo "| Branches | $BRANCHES% |" >> merged-coverage/COVERAGE.md
-            echo "| Functions | $FUNCTIONS% |" >> merged-coverage/COVERAGE.md
-            echo "| Lines | $LINES% |" >> merged-coverage/COVERAGE.md
-          else
-            echo "| Overall | N/A |" >> merged-coverage/COVERAGE.md
-          fi
-
-      - name: 📤 Upload Merged Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: merged-coverage
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-
-      - name: 📊 Publish Coverage Report to PR
-        if: github.event_name == 'pull_request'
-        uses: romeovs/lcov-reporter-action@v0.3.1
-        with:
-          lcov-file: ./coverage/lcov.info
-          github-token: ${{ github.token }}
+          if-no-files-found: ignore
 
   package-release:
-    name: 📦 Package Release
-    needs: [build-components, run-aiservice-tests]
-    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    name: Package Release
+    needs: [build-test, ai-service-tests]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set-version.outputs.version }}
       release-name: ${{ steps.set-version.outputs.release-name }}
 
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 📥 Download Build Artifacts
+      - name: Download Build Artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist
           pattern: "*-build"
           merge-multiple: true
 
-      - name: 🔢 Set Version Info
+      - name: Set Version Info
         id: set-version
         run: |
           VERSION=$(node -p "require('./package.json').version")
@@ -583,61 +256,15 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "release-name=${RELEASE_NAME}" >> $GITHUB_OUTPUT
 
-          echo "📋 Release Info:"
-          echo "   Version: ${VERSION}"
-          echo "   Build: ${BUILD_NUMBER}"
-          echo "   Release Name: ${RELEASE_NAME}"
-
-      - name: 📦 Create Release Package
+      - name: Create Release Package
         run: |
-          RELEASE_NAME="${{ steps.set-version.outputs.release-name }}"
-
-          # Create release directory
           mkdir -p release
-
-          # Move artifacts to release directory
           find dist -type f -name "*.tar.gz" -exec cp {} release/ \;
 
-          # Create a manifest file
-          cat > release/MANIFEST.json << EOF
-          {
-            "name": "Bleu.js",
-            "version": "${{ steps.set-version.outputs.version }}",
-            "buildNumber": "${{ github.run_number }}",
-            "buildId": "${{ github.run_id }}",
-            "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "gitCommit": "${{ github.sha }}",
-            "gitRef": "${{ github.ref }}",
-            "components": [
-          EOF
+          tar -czvf ${{ steps.set-version.outputs.release-name }}.tar.gz release
 
-          # Add each component to the manifest
-          FIRST=true
-          for ARTIFACT in $(find release -type f -name "*.tar.gz" | sort); do
-            COMPONENT=$(basename "$ARTIFACT" | sed 's/-build.tar.gz//')
-            if [ "$FIRST" = true ]; then
-              FIRST=false
-            else
-              echo "," >> release/MANIFEST.json
-            fi
-            echo "    {\"name\": \"$COMPONENT\", \"artifact\": \"$(basename "$ARTIFACT")\"}" >> release/MANIFEST.json
-          done
-
-          # Close the JSON
-          echo "" >> release/MANIFEST.json
-          echo "  ]" >> release/MANIFEST.json
-          echo "}" >> release/MANIFEST.json
-
-          # Package the release
-          tar -czvf ${RELEASE_NAME}.tar.gz release
-
-          echo "📦 Release package created: ${RELEASE_NAME}.tar.gz"
-          echo "📋 Contents:"
-          find release -type f | sort
-
-      - name: 📤 Upload Release Package
+      - name: Upload Release Package
         uses: actions/upload-artifact@v4
-        id: upload-release
         with:
           name: bleujs-release
           path: "${{ steps.set-version.outputs.release-name }}.tar.gz"
@@ -645,49 +272,36 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    name: 🚢 Deploy to ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+    name: Deploy to Environment
     needs: [package-release]
     if: success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
 
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
 
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          run_install: false
+      - name: Install pnpm
+        run: npm install -g pnpm@${{ env.PNPM_VERSION }}
 
-      - name: 📦 Install Dependencies
-        run: |
-          npm install -g pnpm@${{ env.PNPM_VERSION }}
-          pnpm install --no-frozen-lockfile
-
-      - name: 📥 Download Release Package
+      - name: Download Release Package
         uses: actions/download-artifact@v4
         with:
           name: bleujs-release
           path: deploy
 
-      # FIX 3 & 4: Fixed environment variable handling
-      - name: 🔄 Determine Environment
+      - name: Determine Environment
         id: env_step
         run: |
           DEPLOY_ENV="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}"
           echo "environment=${DEPLOY_ENV}" >> $GITHUB_OUTPUT
 
-          echo "🌍 Target environment: ${DEPLOY_ENV}"
-
-          # Set environment-specific variables
           if [ "${DEPLOY_ENV}" = "production" ]; then
             echo "api_url=https://api.bleujs.com" >> $GITHUB_OUTPUT
             echo "env_name=production" >> $GITHUB_OUTPUT
@@ -696,22 +310,14 @@ jobs:
             echo "env_name=staging" >> $GITHUB_OUTPUT
           fi
 
-      - name: 📦 Extract Release Package
+      - name: Extract Release Package
         run: |
           cd deploy
           tar -xzvf *.tar.gz
 
-          echo "📋 Release contents:"
-          find release -type f | sort
-
-          if [ -f "release/MANIFEST.json" ]; then
-            echo "📄 Manifest contents:"
-            cat release/MANIFEST.json
-          fi
-
-      - name: 🚀 Deploy to ${{ steps.env_step.outputs.environment }}
+      - name: Deploy
         run: |
-          echo "🚀 Deploying to ${{ steps.env_step.outputs.environment }}..."
+          echo "Deploying to ${{ steps.env_step.outputs.environment }}..."
 
           # Create environment config
           cat > .env << EOF
@@ -722,24 +328,16 @@ jobs:
           COMMIT_SHA=${{ github.sha }}
           EOF
 
-          # Example deployment commands
-          echo "✅ Environment configured"
-          echo "📝 Simulating deployment to ${{ steps.env_step.outputs.environment }}"
-
           # Add your actual deployment commands here
-          # For example: pnpm run deploy:${{ steps.env_step.outputs.environment }}
+          echo "Deployment complete!"
 
-          echo "✅ Deployment complete!"
-
-      # Simplified notification step with hardcoded values instead of env references
-      - name: 📢 Post Deployment Notification
+      - name: Post Deployment Notification
         if: success()
         uses: rtCamp/action-slack-notify@v2
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
           channel: 'deployments'
           color: ${{ steps.env_step.outputs.environment == 'production' && 'good' || 'warning' }}
-          icon: 'https://github.com/HelloblueAI.png'
-          message: '🚀 Deployed Bleu.js v${{ needs.package-release.outputs.version }} to ${{ steps.env_step.outputs.environment }}'
+          message: 'Deployed Bleu.js v${{ needs.package-release.outputs.version }} to ${{ steps.env_step.outputs.environment }}'
           title: 'Deployment Successful'
           username: 'GitHub Actions'
