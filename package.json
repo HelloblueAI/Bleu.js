@@ -1,5 +1,5 @@
 {
-  "name": "Bleujs",
+  "name": "bleujs",
   "version": "1.1.2",
   "description": "An AI-powered framework for Decision Trees, Deep Learning, and Model Deployment, optimizing ML workflows with Express & MongoDB.",
   "main": "index.mjs",
