@@ -24,11 +24,17 @@
     "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand --detectOpenHandles --forceExit",
     "test:coverage": "jest --coverage",
     "test:backend": "jest --detectOpenHandles --testPathPattern=backend",
+    "test:eggs-generator": "jest --detectOpenHandles --testPathPattern=eggs-generator",
+    "test:core-engine": "jest --detectOpenHandles --testPathPattern=core-engine",
+    "test:ai-service": "NODE_ENV=test jest --config jest.config.cjs --coverage --testMatch=\"**/src/__tests__/aiService.test.js\"",
     "test:all": "jest --detectOpenHandles",
+    "test:quick": "jest --bail --findRelatedTests",
+    "test:staged": "jest --bail --findRelatedTests --passWithNoTests",
     "test:ci": "pnpm test --ci",
     "lint": "eslint . --fix",
     "lint:ci": "eslint . --max-warnings=0",
     "lint:frontend": "eslint frontend/**/*.{js,vue}",
+    "lint:staged": "lint-staged",
     "release": "standard-version",
     "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --check .",
@@ -45,8 +51,17 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "test:update": "jest -u",
     "test:clear": "jest --clearCache",
-    "pre-commit": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs}": [
+      "eslint --fix",
+      "prettier --write",
+      "jest --bail --findRelatedTests --passWithNoTests"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "async_hooks": "^1.0.0",
@@ -119,6 +134,7 @@
     "jest-watch-suspend": "^1.1.2",
     "jest-watch-typeahead": "^2.2.2",
     "jsonc-eslint-parser": "^2.4.0",
+    "lint-staged": "^15.4.3",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.2",
     "rimraf": "^6.0.1",
