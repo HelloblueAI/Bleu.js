@@ -25,6 +25,7 @@
     "test:coverage": "jest --coverage",
     "test:backend": "jest --detectOpenHandles --testPathPattern=backend",
     "test:all": "jest --detectOpenHandles",
+    "test:ci": "pnpm test --ci",
     "lint": "eslint . --fix",
     "lint:ci": "eslint . --max-warnings=0",
     "lint:frontend": "eslint frontend/**/*.{js,vue}",
