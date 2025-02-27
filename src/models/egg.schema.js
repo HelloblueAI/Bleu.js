@@ -70,13 +70,32 @@ const eggSchema = new Schema(
         color: { type: String, trim: true },
         rarity: {
           type: String,
-          enum: ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythical', 'divine'],
+          enum: [
+            'common',
+            'uncommon',
+            'rare',
+            'epic',
+            'legendary',
+            'mythical',
+            'divine',
+          ],
           default: 'common',
           index: true,
         },
         element: {
           type: String,
-          enum: ['fire', 'water', 'earth', 'air', 'light', 'dark', 'cosmic', 'void', 'thunder', 'ice'],
+          enum: [
+            'fire',
+            'water',
+            'earth',
+            'air',
+            'light',
+            'dark',
+            'cosmic',
+            'void',
+            'thunder',
+            'ice',
+          ],
           required: true,
         },
         attributes: {
@@ -94,7 +113,14 @@ const eggSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['created', 'incubating', 'hatching', 'hatched', 'evolving', 'dormant'],
+      enum: [
+        'created',
+        'incubating',
+        'hatching',
+        'hatched',
+        'evolving',
+        'dormant',
+      ],
       default: 'created',
       index: true,
     },
@@ -103,7 +129,21 @@ const eggSchema = new Schema(
       expectedHatchTime: Date,
       duration: { type: Number, min: 0, default: 86400000 },
       temperature: { type: Number, min: -50, max: 100, default: 37 },
-      conditions: [{ type: String, enum: ['humid', 'dry', 'bright', 'dark', 'warm', 'cold', 'electrified', 'mystical'] }],
+      conditions: [
+        {
+          type: String,
+          enum: [
+            'humid',
+            'dry',
+            'bright',
+            'dark',
+            'warm',
+            'cold',
+            'electrified',
+            'mystical',
+          ],
+        },
+      ],
       optimalTemp: { type: Number, min: -50, max: 100 },
       progress: { type: Number, min: 0, max: 100, default: 0 },
     },
@@ -112,7 +152,11 @@ const eggSchema = new Schema(
     market: {
       listed: { type: Boolean, default: false, index: true },
       price: { type: Number, min: 0 },
-      currency: { type: String, enum: ['gold', 'gems', 'ether', 'tokens'], default: 'gold' },
+      currency: {
+        type: String,
+        enum: ['gold', 'gems', 'ether', 'tokens'],
+        default: 'gold',
+      },
       listDate: Date,
       expiryDate: Date,
       bids: [
@@ -120,19 +164,41 @@ const eggSchema = new Schema(
           bidder: { type: String, required: true },
           amount: { type: Number, required: true, min: 0 },
           timestamp: { type: Date, default: Date.now },
-          status: { type: String, enum: ['active', 'accepted', 'rejected', 'expired'], default: 'active' },
+          status: {
+            type: String,
+            enum: ['active', 'accepted', 'rejected', 'expired'],
+            default: 'active',
+          },
         },
       ],
       history: [
         {
-          action: { type: String, enum: ['listed', 'unlisted', 'sold', 'priceChanged'] },
+          action: {
+            type: String,
+            enum: ['listed', 'unlisted', 'sold', 'priceChanged'],
+          },
           price: Number,
           timestamp: { type: Date, default: Date.now },
         },
       ],
     },
-    specialAbilities: [{ name: String, description: String, cooldown: Number, unlocked: { type: Boolean, default: false } }],
-    evolutionHistory: [{ stage: Number, date: Date, previousType: String, newType: String, changes: Object }],
+    specialAbilities: [
+      {
+        name: String,
+        description: String,
+        cooldown: Number,
+        unlocked: { type: Boolean, default: false },
+      },
+    ],
+    evolutionHistory: [
+      {
+        stage: Number,
+        date: Date,
+        previousType: String,
+        newType: String,
+        changes: Object,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -142,7 +208,6 @@ const eggSchema = new Schema(
     id: false,
   },
 );
-
 
 eggSchema.index({ 'metadata.dna': 1 }, { unique: true });
 eggSchema.index({ owner: 1 });
@@ -176,8 +241,8 @@ eggSchema.methods.calculateMarketValue = function () {
 
   const attributeModifier = totalAttributes / 500;
 
-  const generationModifier = 1 + 0.1 * (Math.max(1, this.metadata?.generation || 1) - 1);
-
+  const generationModifier =
+    1 + 0.1 * (Math.max(1, this.metadata?.generation || 1) - 1);
 
   const typeMultipliers = {
     celestial: 1.5,
@@ -186,17 +251,19 @@ eggSchema.methods.calculateMarketValue = function () {
   const typeMultiplier = typeMultipliers[this.type] || 1.0;
 
   const marketValue = Math.round(
-    baseValue * (1 + attributeModifier) * generationModifier * typeMultiplier
+    baseValue * (1 + attributeModifier) * generationModifier * typeMultiplier,
   );
 
-  console.log(`Market Value Calculation: base=${baseValue}, attributes=${totalAttributes}, marketValue=${marketValue}`);
+  console.log(
+    `Market Value Calculation: base=${baseValue}, attributes=${totalAttributes}, marketValue=${marketValue}`,
+  );
 
-    return isNaN(marketValue) ? 0 : marketValue;
-  };
-
+  return isNaN(marketValue) ? 0 : marketValue;
+};
 
 eggSchema.virtual('incubationProgress').get(function () {
-  if (this.status !== 'incubating' || !this.incubationConfig?.startTime) return 0;
+  if (this.status !== 'incubating' || !this.incubationConfig?.startTime)
+    return 0;
   if (this.status === 'hatched') return 100;
 
   const start = this.incubationConfig.startTime.getTime();
@@ -206,13 +273,19 @@ eggSchema.virtual('incubationProgress').get(function () {
   return Math.min(100, Math.floor((elapsed / duration) * 100));
 });
 
-
 eggSchema.pre('save', function (next) {
-  if (this.isModified('status') && this.status === 'incubating' && this.incubationConfig?.startTime && this.incubationConfig?.duration) {
-    this.incubationConfig.expectedHatchTime = new Date(this.incubationConfig.startTime.getTime() + this.incubationConfig.duration);
+  if (
+    this.isModified('status') &&
+    this.status === 'incubating' &&
+    this.incubationConfig?.startTime &&
+    this.incubationConfig?.duration
+  ) {
+    this.incubationConfig.expectedHatchTime = new Date(
+      this.incubationConfig.startTime.getTime() +
+        this.incubationConfig.duration,
+    );
   }
   next();
 });
-
 
 export default model('Egg', eggSchema);

@@ -92,7 +92,9 @@ jest.mock('winston', () => {
 jest.mock('mongodb-memory-server', () => {
   class MockMongoMemoryServer {
     constructor() {
-      this.getUri = jest.fn().mockResolvedValue('mongodb://localhost:27017/testdb');
+      this.getUri = jest
+        .fn()
+        .mockResolvedValue('mongodb://localhost:27017/testdb');
     }
 
     async start() {

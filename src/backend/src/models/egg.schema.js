@@ -43,7 +43,7 @@ const EggSchema = new Schema(
       price: { type: Number, default: 0 },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Ensure indexes for faster queries

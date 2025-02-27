@@ -21,24 +21,23 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import cors from "cors";
+import cors from 'cors';
 
-import express from "express";
-import helmet from "helmet";
-import mongoose from "mongoose";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import winston from "winston";
+import express from 'express';
+import helmet from 'helmet';
+import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import winston from 'winston';
 
-import compression from "compression";
+import compression from 'compression';
 
-import http from "http";
-import os from "os";
-import { getSecrets } from "./src/config/awsSecrets.js";
-import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
-
+import http from 'http';
+import os from 'os';
+import { getSecrets } from './src/config/awsSecrets.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,54 +51,63 @@ async function bootstrapConfig() {
     secrets = await getSecrets();
 
     appConfig = {
-      VERSION: secrets.npm_package_version || "1.1.2",
-      BUILD_NUMBER: secrets.BUILD_NUMBER || "0",
+      VERSION: secrets.npm_package_version || '1.1.2',
+      BUILD_NUMBER: secrets.BUILD_NUMBER || '0',
       PORT: parseInt(secrets.PORT, 10) || 5007,
-      MONGODB_URI: secrets.MONGODB_URI || "",
-      INSTANCE_ID: secrets.INSTANCE_ID || secrets.NODE_APP_INSTANCE || "0",
-      NODE_ENV: secrets.NODE_ENV || "development",
-      IS_PM2: typeof process.env.PM2_HOME !== "undefined",
+      MONGODB_URI: secrets.MONGODB_URI || '',
+      INSTANCE_ID: secrets.INSTANCE_ID || secrets.NODE_APP_INSTANCE || '0',
+      NODE_ENV: secrets.NODE_ENV || 'development',
+      IS_PM2: typeof process.env.PM2_HOME !== 'undefined',
       SECURITY: {
-        MAX_REQUEST_SIZE: secrets.MAX_REQUEST_SIZE || "5mb",
+        MAX_REQUEST_SIZE: secrets.MAX_REQUEST_SIZE || '5mb',
         CONNECTION_TIMEOUT: parseInt(secrets.CONNECTION_TIMEOUT, 10) || 10000,
       },
       CORS_WHITELIST: secrets.ALLOWED_ORIGINS
-        ? secrets.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
-        : ["http://localhost:3000"],
+        ? secrets.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+        : ['http://localhost:3000'],
     };
 
     return true;
   } catch (error) {
-    console.error("❌ Failed to load configuration:", error.message);
+    console.error('❌ Failed to load configuration:', error.message);
     process.exit(1);
   }
 }
 
 /** 📝 Logger Setup */
 function setupLogging() {
-  const logsDir = path.join(__dirname, "logs");
+  const logsDir = path.join(__dirname, 'logs');
   if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
 
   const logger = winston.createLogger({
-    level: appConfig.NODE_ENV === "production" ? "info" : "debug",
+    level: appConfig.NODE_ENV === 'production' ? 'info' : 'debug',
     format: winston.format.combine(
-      winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
       winston.format.errors({ stack: true }),
-      winston.format.json()
+      winston.format.json(),
     ),
-    defaultMeta: { service: "bleu-backend", instance: appConfig.INSTANCE_ID },
+    defaultMeta: { service: 'bleu-backend', instance: appConfig.INSTANCE_ID },
     transports: [
       new winston.transports.Console({
         format: winston.format.combine(
           winston.format.colorize(),
-          winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
+          winston.format.printf(
+            (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+          ),
         ),
       }),
-      new winston.transports.File({ filename: path.join(logsDir, "error.log"), level: "error" }),
-      new winston.transports.File({ filename: path.join(logsDir, "combined.log") }),
+      new winston.transports.File({
+        filename: path.join(logsDir, 'error.log'),
+        level: 'error',
+      }),
+      new winston.transports.File({
+        filename: path.join(logsDir, 'combined.log'),
+      }),
     ],
     exceptionHandlers: [
-      new winston.transports.File({ filename: path.join(logsDir, "exceptions.log") }),
+      new winston.transports.File({
+        filename: path.join(logsDir, 'exceptions.log'),
+      }),
     ],
     exitOnError: false,
   });
@@ -110,7 +118,7 @@ function setupLogging() {
 /** 🔌 MongoDB Connection */
 async function connectMongoDB(logger) {
   if (!appConfig.MONGODB_URI) {
-    logger.error("❌ MongoDB URI is missing");
+    logger.error('❌ MongoDB URI is missing');
     process.exit(1);
   }
 
@@ -122,11 +130,17 @@ async function connectMongoDB(logger) {
       socketTimeoutMS: 45000,
     });
 
-    mongoose.connection.on("error", (err) => logger.error(`❌ MongoDB error: ${err}`));
-    mongoose.connection.on("disconnected", () => logger.warn("⚠️ MongoDB disconnected"));
-    mongoose.connection.on("reconnected", () => logger.info("✅ MongoDB reconnected"));
+    mongoose.connection.on('error', (err) =>
+      logger.error(`❌ MongoDB error: ${err}`),
+    );
+    mongoose.connection.on('disconnected', () =>
+      logger.warn('⚠️ MongoDB disconnected'),
+    );
+    mongoose.connection.on('reconnected', () =>
+      logger.info('✅ MongoDB reconnected'),
+    );
 
-    logger.info("✅ MongoDB connected successfully");
+    logger.info('✅ MongoDB connected successfully');
   } catch (error) {
     logger.error(`❌ MongoDB connection failed: ${error.message}`);
     process.exit(1);
@@ -135,11 +149,11 @@ async function connectMongoDB(logger) {
 
 /** 🏥 Health Check Endpoints */
 function configureHealthEndpoints(app, logger) {
-  app.get("/health", (req, res) => {
+  app.get('/health', (req, res) => {
     try {
       res.status(200).json({
-        status: "success",
-        service: "Bleu.js Backend",
+        status: 'success',
+        service: 'Bleu.js Backend',
         version: appConfig.VERSION,
         instance: appConfig.INSTANCE_ID,
         memory: getMemoryStats(),
@@ -149,11 +163,11 @@ function configureHealthEndpoints(app, logger) {
       });
     } catch (error) {
       res.status(500).json({
-        status: "error",
-        message: "Health check failed",
+        status: 'error',
+        message: 'Health check failed',
         error: error.message,
       });
-      logger.error("❌ Health check endpoint error:", error);
+      logger.error('❌ Health check endpoint error:', error);
     }
   });
 }
@@ -163,45 +177,49 @@ function configureSwagger(app, logger) {
   // 📌 Swagger Configuration
   const swaggerOptions = {
     definition: {
-      openapi: "3.0.0",
+      openapi: '3.0.0',
       info: {
-        title: "Bleu.js API",
+        title: 'Bleu.js API',
         version: appConfig.VERSION,
-        description: "API documentation for the Bleu.js backend deployed on AWS API Gateway.",
+        description:
+          'API documentation for the Bleu.js backend deployed on AWS API Gateway.',
       },
       servers: [
         {
           url: `http://localhost:${appConfig.PORT}`,
         },
         {
-          url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod",
-          description: "AWS API Gateway (Production)",
+          url: 'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod',
+          description: 'AWS API Gateway (Production)',
         },
       ],
     },
-    apis: ["./routes/*.js"], // Ensure routes are documented correctly
+    apis: ['./routes/*.js'], // Ensure routes are documented correctly
   };
-
 
   // Generate Swagger Docs
   const swaggerDocs = swaggerJsdoc(swaggerOptions);
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-  logger.info(`📖 Swagger UI available at: http://localhost:${appConfig.PORT}/api-docs`);
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+  logger.info(
+    `📖 Swagger UI available at: http://localhost:${appConfig.PORT}/api-docs`,
+  );
 }
 
 /** 🛡️ Security Middleware */
 function configureSecurityMiddleware(app, logger) {
-  app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin || appConfig.CORS_WHITELIST.includes(origin)) {
-        callback(null, true);
-      } else {
-        logger.warn(`❌ Blocked by CORS: ${origin}`);
-        callback(new Error("❌ Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  }));
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || appConfig.CORS_WHITELIST.includes(origin)) {
+          callback(null, true);
+        } else {
+          logger.warn(`❌ Blocked by CORS: ${origin}`);
+          callback(new Error('❌ Not allowed by CORS'));
+        }
+      },
+      credentials: true,
+    }),
+  );
 
   app.use(helmet());
   app.use(compression());
@@ -218,7 +236,9 @@ async function startServer(logger) {
   const server = http.createServer(app);
 
   server.listen(appConfig.PORT, () => {
-    logger.info(`🚀 Server running at http://localhost:${appConfig.PORT} in ${appConfig.NODE_ENV} mode`);
+    logger.info(
+      `🚀 Server running at http://localhost:${appConfig.PORT} in ${appConfig.NODE_ENV} mode`,
+    );
   });
 
   return server;
@@ -251,7 +271,7 @@ async function bootstrap() {
 }
 
 bootstrap().catch((err) => {
-  console.error("❌ Fatal error during bootstrap:", err);
+  console.error('❌ Fatal error during bootstrap:', err);
   process.exit(1);
 });
 

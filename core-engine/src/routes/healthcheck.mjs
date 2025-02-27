@@ -157,7 +157,10 @@ export function setupHealthRoute(app) {
       }
 
       const duration = performance.now() - startTime;
-      metrics.trackRequest(startTime, true, { endpoint: '/api/healthcheck', duration });
+      metrics.trackRequest(startTime, true, {
+        endpoint: '/api/healthcheck',
+        duration,
+      });
 
       logger.info('✅ Health check succeeded', {
         status: healthData.status,

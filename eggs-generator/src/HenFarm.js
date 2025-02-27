@@ -30,7 +30,9 @@ class HenFarm {
           .join('\n  ')}\n}`;
       case 'utility':
         return `class ${options.utilityName} {\n  ${options.methods
-          .map((method) => `${method}() {\n    // TODO: Implement ${method}\n  }`)
+          .map(
+            (method) => `${method}() {\n    // TODO: Implement ${method}\n  }`,
+          )
           .join('\n  ')}\n}`;
       default:
         throw new Error(`Unknown code type: ${type}`);
