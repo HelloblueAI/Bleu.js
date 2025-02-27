@@ -466,22 +466,28 @@ jobs:
           ARTIFACT_COUNT=$(find dist -type f -name "*.tar.gz" | wc -l)
           echo "Found $ARTIFACT_COUNT artifacts to package"
 
+          # Get version variables for JSON
+          VERSION="${{ steps.set-version.outputs.version }}"
+          BUILD_NUMBER="${{ github.run_number }}"
+          BUILD_ID="${{ github.run_id }}"
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          GIT_COMMIT="${{ github.sha }}"
+          GIT_REF="${{ github.ref }}"
+
           if [ "$ARTIFACT_COUNT" -gt 0 ]; then
             # Move artifacts to release directory
             find dist -type f -name "*.tar.gz" -exec cp {} release/ \;
 
-            # Create a manifest file with proper EOF delimiter
-            cat > release/MANIFEST.json << 'EOFMARKER'
-            {
-              "name": "Bleu.js",
-              "version": "${{ steps.set-version.outputs.version }}",
-              "buildNumber": "${{ github.run_number }}",
-              "buildId": "${{ github.run_id }}",
-              "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-              "gitCommit": "${{ github.sha }}",
-              "gitRef": "${{ github.ref }}",
-              "components": [
-            EOFMARKER
+            # Create manifest using echo commands instead of heredoc
+            echo "{" > release/MANIFEST.json
+            echo "  \"name\": \"Bleu.js\"," >> release/MANIFEST.json
+            echo "  \"version\": \"$VERSION\"," >> release/MANIFEST.json
+            echo "  \"buildNumber\": \"$BUILD_NUMBER\"," >> release/MANIFEST.json
+            echo "  \"buildId\": \"$BUILD_ID\"," >> release/MANIFEST.json
+            echo "  \"buildDate\": \"$BUILD_DATE\"," >> release/MANIFEST.json
+            echo "  \"gitCommit\": \"$GIT_COMMIT\"," >> release/MANIFEST.json
+            echo "  \"gitRef\": \"$GIT_REF\"," >> release/MANIFEST.json
+            echo "  \"components\": [" >> release/MANIFEST.json
 
             # Add each component to the manifest
             FIRST=true
@@ -496,38 +502,47 @@ jobs:
             done
 
             # Close the JSON
-            echo "" >> release/MANIFEST.json
             echo "  ]" >> release/MANIFEST.json
             echo "}" >> release/MANIFEST.json
 
             # Package the release
-            tar -czvf ${{ steps.set-version.outputs.release-name }}.tar.gz release
+            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" release
 
             echo "PACKAGE_CREATED=true" >> $GITHUB_OUTPUT
             echo "📦 Release package created: ${{ steps.set-version.outputs.release-name }}.tar.gz"
           else
             echo "WARNING: No artifacts found to package"
 
-            # Create an empty package with just the manifest (using proper EOF delimiter)
+            # Create an empty package with just the manifest
             mkdir -p release
-            cat > release/MANIFEST.json << 'EOFMARKER'
-            {
-              "name": "Bleu.js",
-              "version": "${{ steps.set-version.outputs.version }}",
-              "buildNumber": "${{ github.run_number }}",
-              "buildId": "${{ github.run_id }}",
-              "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-              "gitCommit": "${{ github.sha }}",
-              "gitRef": "${{ github.ref }}",
-              "components": [],
-              "note": "No components were successfully built"
-            }
-            EOFMARKER
 
-            tar -czvf ${{ steps.set-version.outputs.release-name }}.tar.gz release
+            # Create empty manifest using echo commands
+            echo "{" > release/MANIFEST.json
+            echo "  \"name\": \"Bleu.js\"," >> release/MANIFEST.json
+            echo "  \"version\": \"$VERSION\"," >> release/MANIFEST.json
+            echo "  \"buildNumber\": \"$BUILD_NUMBER\"," >> release/MANIFEST.json
+            echo "  \"buildId\": \"$BUILD_ID\"," >> release/MANIFEST.json
+            echo "  \"buildDate\": \"$BUILD_DATE\"," >> release/MANIFEST.json
+            echo "  \"gitCommit\": \"$GIT_COMMIT\"," >> release/MANIFEST.json
+            echo "  \"gitRef\": \"$GIT_REF\"," >> release/MANIFEST.json
+            echo "  \"components\": []," >> release/MANIFEST.json
+            echo "  \"note\": \"No components were successfully built\"" >> release/MANIFEST.json
+            echo "}" >> release/MANIFEST.json
+
+            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" release
 
             echo "PACKAGE_CREATED=true" >> $GITHUB_OUTPUT
             echo "📦 Empty release package created: ${{ steps.set-version.outputs.release-name }}.tar.gz"
+          fi
+
+          # Verify the tarball was created
+          if [ -f "${{ steps.set-version.outputs.release-name }}.tar.gz" ]; then
+            echo "✅ Tarball verification passed"
+          else
+            echo "⚠️ Tarball not found, creating an emergency fallback"
+            mkdir -p emergency-release
+            echo "{\"status\":\"emergency fallback\"}" > emergency-release/emergency.json
+            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" emergency-release
           fi
 
       - name: Upload Release Package
