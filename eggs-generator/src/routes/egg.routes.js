@@ -52,11 +52,7 @@ import { Egg } from '../models/egg.model.js';
 import { logger } from '../utils/logger.js';
 import { redisClient } from '../utils/redis.js';
 import { broadcastMessage } from '../utils/webSocketUtils.js';
-import {
-  generateDNA,
-  calculateInitialPower,
-
-} from '../utils/eggUtils.js';
+import { generateDNA, calculateInitialPower } from '../utils/eggUtils.js';
 import { predictEggPrice } from '../utils/aiPricePredictor.js';
 
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -72,13 +68,11 @@ const CACHE_TTL = 300; // 5 minutes
 /** 🔒 Secure API Key Middleware */
 router.use((req, res, next) => {
   const key = req.headers['x-api-key'];
-  
 
   if (!key || !API_KEY) {
     logger.warn('🔒 Missing API Key', { ip: req.ip, path: req.path });
     return res.status(403).json({ success: false, error: 'Unauthorized' });
   }
-
 
   try {
     const keyBuffer = Buffer.from(key.trim());
@@ -87,10 +81,12 @@ router.use((req, res, next) => {
       throw new Error('Invalid API Key');
     }
   } catch (error) {
-    logger.error('🔐 Authentication error', { error: error.message, ip: req.ip });
+    logger.error('🔐 Authentication error', {
+      error: error.message,
+      ip: req.ip,
+    });
     return res.status(403).json({ success: false, error: 'Unauthorized' });
   }
-
 
   next();
 });
@@ -106,7 +102,9 @@ const rateLimiter = new RateLimiterRedis({
 
 router.use(async (req, res, next) => {
   try {
-    const keyHash = hashWithSalt(`${req.ip}_${req.headers['x-api-key'] || 'nokey'}`);
+    const keyHash = hashWithSalt(
+      `${req.ip}_${req.headers['x-api-key'] || 'nokey'}`,
+    );
     await rateLimiter.consume(keyHash);
     next();
   } catch (error) {
@@ -124,16 +122,32 @@ const eggSchema = Joi.object({
   description: Joi.string().max(500).optional(),
   parameters: Joi.object({
     rarity: Joi.string()
-      .valid('common', 'uncommon', 'rare', 'legendary', 'mythical', 'divine', 'unique')
+      .valid(
+        'common',
+        'uncommon',
+        'rare',
+        'legendary',
+        'mythical',
+        'divine',
+        'unique',
+      )
       .required(),
     element: Joi.string()
-      .valid('fire', 'water', 'earth', 'air', 'divine', 'shadow', 'void', 'thunder', 'ice')
+      .valid(
+        'fire',
+        'water',
+        'earth',
+        'air',
+        'divine',
+        'shadow',
+        'void',
+        'thunder',
+        'ice',
+      )
       .required(),
 
     power: Joi.number().integer().min(100).max(9999).optional(),
-
   }).required(),
-
 });
 
 /** 🔄 Retrieve Cached Data */
@@ -176,10 +190,12 @@ router.get(
     const cacheKey = `${CACHE_PREFIX}egg_${id}`;
 
     const cachedEgg = await getCachedData(cacheKey);
-    if (cachedEgg) return res.json({ success: true, cached: true, egg: cachedEgg });
+    if (cachedEgg)
+      return res.json({ success: true, cached: true, egg: cachedEgg });
 
     const egg = await Egg.findById(id).select('-__v').lean();
-    if (!egg) return res.status(404).json({ success: false, error: 'Egg not found' });
+    if (!egg)
+      return res.status(404).json({ success: false, error: 'Egg not found' });
 
     await redisClient.set(cacheKey, JSON.stringify(egg), { EX: CACHE_TTL });
 
@@ -191,7 +207,9 @@ router.get(
 router.post(
   '/generate',
   asyncHandler(async (req, res) => {
-    const { error, value } = eggSchema.validate(req.body, { abortEarly: false });
+    const { error, value } = eggSchema.validate(req.body, {
+      abortEarly: false,
+    });
     if (error) {
       return res.status(400).json({
         success: false,
@@ -202,9 +220,7 @@ router.post(
     const { type, description, parameters } = value;
     const eggId = crypto.randomUUID();
 
-
     const dna = generateDNA();
-
 
     const powerLevel = calculateInitialPower(parameters.rarity);
     const price = predictEggPrice(parameters.rarity, parameters.element);

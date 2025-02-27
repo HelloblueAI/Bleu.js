@@ -101,5 +101,4 @@ export const routeConfig = {
     methods: ['GET'],
     requiresAuth: false,
   },
-
 };

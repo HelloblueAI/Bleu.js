@@ -67,7 +67,10 @@ export function calculateEggRarity({ type, element }) {
     unique: 6,
   };
 
-  let rarity = rarityMap[type?.toLowerCase()] !== undefined ? type.toLowerCase() : 'common';
+  let rarity =
+    rarityMap[type?.toLowerCase()] !== undefined
+      ? type.toLowerCase()
+      : 'common';
 
   // 🔥 Ensure Elemental Boost is Applied Correctly
   const elementBoost = {
@@ -106,7 +109,7 @@ export function calculateInitialPower(rarity) {
   };
 
   return Math.floor(
-    (Math.random() * 20 + baseStrength) * (multipliers[rarity] || 1)
+    (Math.random() * 20 + baseStrength) * (multipliers[rarity] || 1),
   );
 }
 
@@ -124,7 +127,7 @@ export function calculateDefenseLevel(rarity) {
   };
 
   return Math.floor(
-    (Math.random() * 15 + baseDefense) * (multipliers[rarity] || 1)
+    (Math.random() * 15 + baseDefense) * (multipliers[rarity] || 1),
   );
 }
 

@@ -21,33 +21,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import { fileURLToPath } from "url";
-import path from "path";
-import swaggerJsDoc from "swagger-jsdoc";
+import { fileURLToPath } from 'url';
+import path from 'path';
+import swaggerJsDoc from 'swagger-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const swaggerOptions = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Bleu.js API",
-      version: "1.1.2",
-      description: "API documentation for Bleu.js backend running on AWS.",
+      title: 'Bleu.js API',
+      version: '1.1.2',
+      description: 'API documentation for Bleu.js backend running on AWS.',
     },
     servers: [
       { url: `http://localhost:${process.env.PORT || 4003}` },
-      { url: "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod" },
+      { url: 'https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod' },
     ],
   },
   apis: [
-    path.resolve(__dirname, "routes.mjs"), // Ensure this is the correct path
-    path.resolve(__dirname, "backend/dist/routes.js"),
-    path.resolve(__dirname, "backend/src/routes.ts"),
+    path.resolve(__dirname, 'routes.mjs'), // Ensure this is the correct path
+    path.resolve(__dirname, 'backend/dist/routes.js'),
+    path.resolve(__dirname, 'backend/src/routes.ts'),
   ],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 export default swaggerDocs;
-

@@ -21,7 +21,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import { getSecrets } from "../config/awsSecrets.js";
+import { getSecrets } from '../config/awsSecrets.js';
 import express from 'express';
 import mongoose from 'mongoose';
 import cluster from 'cluster';
@@ -42,16 +42,27 @@ const WS_PORT = parseInt(secrets.WS_PORT, 10) || 8081;
 const MONGODB_URI = secrets.MONGODB_URI || 'mongodb://localhost:27017/bleujs';
 const REDIS_HOST = secrets.REDIS_HOST || '127.0.0.1';
 const REDIS_PORT = parseInt(secrets.REDIS_PORT, 10) || 6379;
-const CORS_ALLOWED = secrets.CORS_ORIGINS?.split(',') || ['http://localhost:4002'];
+const CORS_ALLOWED = secrets.CORS_ORIGINS?.split(',') || [
+  'http://localhost:4002',
+];
 
 /** 📌 Logger Configuration */
 const logger = createLogger({
   level: 'info',
   format: format.combine(format.timestamp(), format.json()),
   transports: [
-    new transports.Console({ format: format.combine(format.colorize(), format.simple()) }),
-    new transports.File({ filename: 'logs/error.log', level: 'error', maxsize: 10 * 1024 * 1024 }),
-    new transports.File({ filename: 'logs/app.log', maxsize: 10 * 1024 * 1024 }),
+    new transports.Console({
+      format: format.combine(format.colorize(), format.simple()),
+    }),
+    new transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      maxsize: 10 * 1024 * 1024,
+    }),
+    new transports.File({
+      filename: 'logs/app.log',
+      maxsize: 10 * 1024 * 1024,
+    }),
   ],
 });
 
@@ -67,7 +78,10 @@ async function connectToMongoDB(retries = 5) {
       logger.info(`✅ MongoDB Connected: ${mongoose.connection.host}`);
       return;
     } catch (error) {
-      logger.error(`❌ MongoDB Connection Failed (${retries} retries left):`, error);
+      logger.error(
+        `❌ MongoDB Connection Failed (${retries} retries left):`,
+        error,
+      );
       retries -= 1;
       await new Promise((res) => setTimeout(res, (6 - retries) * 2000));
     }
@@ -76,8 +90,12 @@ async function connectToMongoDB(retries = 5) {
 }
 
 /** 📡 Redis Client */
-const redisClient = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } });
-redisClient.on('error', (err) => logger.error('❌ Redis Connection Failed:', err));
+const redisClient = createClient({
+  socket: { host: REDIS_HOST, port: REDIS_PORT },
+});
+redisClient.on('error', (err) =>
+  logger.error('❌ Redis Connection Failed:', err),
+);
 await redisClient.connect();
 
 /** 🔗 WebSocket Clients */
@@ -97,13 +115,20 @@ const handleWebSocket = (wss) => {
   wss.on('connection', (ws) => {
     activeClients.add(ws);
     const requestId = `ws-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-    logger.info(`🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
+    logger.info(
+      `🔗 WebSocket Connected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`,
+    );
 
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message);
         if (!data || typeof data !== 'object' || !data.event) {
-          ws.send(JSON.stringify({ error: "Invalid message format. Expected JSON object with 'event' field." }));
+          ws.send(
+            JSON.stringify({
+              error:
+                "Invalid message format. Expected JSON object with 'event' field.",
+            }),
+          );
           return;
         }
 
@@ -117,7 +142,11 @@ const handleWebSocket = (wss) => {
 
           case 'generate_egg': {
             if (!data.type || !data.rarity || !data.power) {
-              ws.send(JSON.stringify({ error: 'Missing fields: type, rarity, or power' }));
+              ws.send(
+                JSON.stringify({
+                  error: 'Missing fields: type, rarity, or power',
+                }),
+              );
               return;
             }
 
@@ -136,10 +165,16 @@ const handleWebSocket = (wss) => {
 
           case 'subscribe': {
             if (!data.category) {
-              ws.send(JSON.stringify({ error: "Missing 'category' field in subscribe event." }));
+              ws.send(
+                JSON.stringify({
+                  error: "Missing 'category' field in subscribe event.",
+                }),
+              );
               return;
             }
-            ws.send(JSON.stringify({ event: 'subscribed', category: data.category }));
+            ws.send(
+              JSON.stringify({ event: 'subscribed', category: data.category }),
+            );
             break;
           }
 
@@ -155,7 +190,9 @@ const handleWebSocket = (wss) => {
 
     ws.on('close', () => {
       activeClients.delete(ws);
-      logger.info(`❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`);
+      logger.info(
+        `❌ WebSocket Disconnected | Active Clients: ${activeClients.size} | RequestID: ${requestId}`,
+      );
     });
 
     ws.on('error', (error) => {
@@ -184,8 +221,25 @@ if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cors({ origin: CORS_ALLOWED, credentials: true }));
-  app.use(rateLimit({ windowMs: 60 * 1000, max: 1000, message: { error: 'Rate limit exceeded' } }));
-  app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', version: '4.0.0', uptime: process.uptime(), timestamp: new Date().toISOString() }));
+  app.use(
+    rateLimit({
+      windowMs: 60 * 1000,
+      max: 1000,
+      message: { error: 'Rate limit exceeded' },
+    }),
+  );
+  app.get('/health', (req, res) =>
+    res
+      .status(200)
+      .json({
+        status: 'healthy',
+        version: '4.0.0',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+      }),
+  );
   app.use('/api/eggs', eggRoutes);
-  app.listen(PORT, () => logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`));
+  app.listen(PORT, () =>
+    logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`),
+  );
 }

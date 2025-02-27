@@ -21,65 +21,65 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-const fs = require("fs");
+const fs = require('fs');
 
-if (!fs.existsSync("./logs")) {
-  fs.mkdirSync("./logs", { recursive: true });
+if (!fs.existsSync('./logs')) {
+  fs.mkdirSync('./logs', { recursive: true });
 }
 
 module.exports = {
   apps: [
     {
-      name: "bleujs-backend",
-      script: "./backend/index.mjs",
-      instances: "max",
-      exec_mode: "cluster",
+      name: 'bleujs-backend',
+      script: './backend/index.mjs',
+      instances: 'max',
+      exec_mode: 'cluster',
       env: {
-        NODE_ENV: "production"
+        NODE_ENV: 'production',
       },
-      instance_var: "INSTANCE_ID",
+      instance_var: 'INSTANCE_ID',
       exp_backoff_restart_delay: 200,
-      max_memory_restart: "1G",
-      out_file: "./logs/bleujs-backend.log",
-      error_file: "./logs/bleujs-backend-error.log",
+      max_memory_restart: '1G',
+      out_file: './logs/bleujs-backend.log',
+      error_file: './logs/bleujs-backend-error.log',
       combine_logs: true,
-      log_date_format: "YYYY-MM-DD HH:mm:ss",
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
       watch: false,
       autorestart: true,
     },
     {
-      name: "core-engine",
-      script: "./core-engine/src/index.mjs",
-      instances: "max",
-      exec_mode: "cluster",
+      name: 'core-engine',
+      script: './core-engine/src/index.mjs',
+      instances: 'max',
+      exec_mode: 'cluster',
       env: {
-        NODE_ENV: "production"
+        NODE_ENV: 'production',
       },
-      instance_var: "INSTANCE_ID",
+      instance_var: 'INSTANCE_ID',
       exp_backoff_restart_delay: 200,
-      max_memory_restart: "2G",
-      out_file: "./logs/core-engine.log",
-      error_file: "./logs/core-engine-error.log",
+      max_memory_restart: '2G',
+      out_file: './logs/core-engine.log',
+      error_file: './logs/core-engine-error.log',
       combine_logs: true,
-      log_date_format: "YYYY-MM-DD HH:mm:ss",
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
       watch: false,
       autorestart: true,
     },
     {
-      name: "eggs-generator",
-      script: "./eggs-generator/src/index.mjs",
-      instances: 1, 
-      exec_mode: "fork",
+      name: 'eggs-generator',
+      script: './eggs-generator/src/index.mjs',
+      instances: 1,
+      exec_mode: 'fork',
       env: {
-        NODE_ENV: "production"
+        NODE_ENV: 'production',
       },
-      instance_var: "INSTANCE_ID",
+      instance_var: 'INSTANCE_ID',
       exp_backoff_restart_delay: 100,
-      max_memory_restart: "1G",
-      out_file: "./logs/eggs-generator.log",
-      error_file: "./logs/eggs-generator-error.log",
+      max_memory_restart: '1G',
+      out_file: './logs/eggs-generator.log',
+      error_file: './logs/eggs-generator-error.log',
       combine_logs: true,
-      log_date_format: "YYYY-MM-DD HH:mm:ss",
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
       watch: false,
       autorestart: true,
     },

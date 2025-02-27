@@ -151,7 +151,7 @@ beforeEach(() => {
 });
 
 describe('🔍 Egg Generator Integration Tests', () => {
-  // ✅ Database Connection Tests
+
   describe('Database Connection', () => {
     test('validates MongoDB connection state', () => {
       expect(mongoose.connection.readyState).toBe(1);

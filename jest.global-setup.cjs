@@ -48,7 +48,7 @@ module.exports = async () => {
           await fs.mkdir(dirPath, { recursive: true });
           console.log(`📂 Created test directory: ${dirPath}`);
         }
-      })
+      }),
     );
   } catch (err) {
     console.error('❌ Failed to create test directories:', err);
@@ -58,9 +58,7 @@ module.exports = async () => {
   const originalConsoleLog = console.log;
   console.log = (...args) => {
     if (
-      args.some((arg) =>
-        String(arg).includes('MongoDB Memory Server started')
-      )
+      args.some((arg) => String(arg).includes('MongoDB Memory Server started'))
     ) {
       return; // Suppress MongoDB test logs
     }

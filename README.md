@@ -45,7 +45,6 @@ Retrieve Package Information
 pnpm info bleujs
 ```
 
-
 ### Directory Structure
 
 - **core-engine**: Contains the main logic for code generation, optimization, and debugging.
@@ -109,8 +108,6 @@ Bleu.js v1.1.2 introduces major improvements in the AI and machine learning pipe
 - The model and scaler are saved in **pkl format** for easy integration
 - Ready for **cloud deployment** and **enterprise usage**
 
-
-
 ## 📂 XGBoost Model Training Overview
 
 The new version includes a **robust training pipeline** with:
@@ -132,17 +129,21 @@ The new version includes a **robust training pipeline** with:
 
 ### 1️⃣ Model Loading
 
-
 Activate the Virtual Environment
 If you're using bash/zsh (macOS/Linux):
+
 ```javascript
 source ~/Bleu.js/bleujs-env/bin/activate
 ```
+
 If you're using fish shell:
+
 ```javascript
 source ~/Bleu.js/bleujs-env/bin/activate.fish
 ```
+
 If you're using Windows (cmd or PowerShell):
+
 ```javascript
 ~/Bleu.js/bleujs-env/Scripts/activate
 ```
@@ -171,7 +172,6 @@ Best F1 Score: `0.9488`
 Best Precision: `0.9444`
 Best Recall: `0.9533`
 
-
 ### 3️⃣ Deploying Bleu.js v1.1.2
 
 The trained model can be deployed using **AWS Lambda, Flask, FastAPI, or Docker**.
@@ -184,95 +184,103 @@ The trained model can be deployed using **AWS Lambda, Flask, FastAPI, or Docker*
 - Performance Optimization Suite
 - Custom Transformer Architecture
 
+# Bleu.js - LLaMA Model & Backend Debugging Guide
 
-
-Bleu.js - LLaMA Model & Backend Debugging Guide
-===============================================
-
-🚀 Running & Debugging the LLaMA Model
---------------------------------------
+## 🚀 Running & Debugging the LLaMA Model
 
 ```javascript
 python -m debugpy --listen 5678 --wait-for-client src/ml/models/foundation/llama.py
 ```
+
 > This allows VSCode or another debugger to attach to the running process.
 
-###  **Profile Model Performance (Bottleneck Analysis)**
+### **Profile Model Performance (Bottleneck Analysis)**
+
 ```javascript
 python -m torch.utils.bottleneck src/ml/models/foundation/llama.py
 ```
+
 > This provides insights into model performance bottlenecks.
 
-###  **Run LLaMA Model on GPU (if available)**
+### **Run LLaMA Model on GPU (if available)**
+
 ```javascript
 CUDA_VISIBLE_DEVICES=0 python src/ml/models/foundation/llama.py
 ```
+
 > Forces execution on GPU for better performance.
 
 ### ✅ **Expected Output**
+
 ```javascript
 ✅ LLaMA Attention Output Shape: torch.Size([1, 512, 4096])
 ```
 
-📌 **Profiling & Performance Analysis**
----------------------------------------
+## 📌 **Profiling & Performance Analysis**
 
 ### 🔬 **cProfile Summary (Python Profiler Output)**
 
-*   torch.nn.linear and torch.matmul are the heaviest operations.
+- torch.nn.linear and torch.matmul are the heaviest operations.
 
-*   apply\_rotary\_embedding accounts for about 10ms per call.
-
+- apply_rotary_embedding accounts for about 10ms per call.
 
 ### 🏆 **Top autograd Profiler Events**
 
 ```javascript
-       `top 15 events sorted by cpu_time_total  ------------------  ------------  ------------  ------------  ------------  ------------  ------------                  Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls    ------------------  ------------  ------------  ------------  ------------  ------------  ------------        aten::uniform_        17.73%      62.645ms        17.73%      62.645ms      62.645ms             1          aten::linear         0.00%       2.918us        13.71%      48.415ms      48.415ms             1          aten::matmul         0.00%       9.332us        13.70%      48.404ms      48.404ms             1              aten::mm        13.70%      48.385ms        13.70%      48.385ms      48.385ms             1    ------------------  ------------  ------------  ------------  ------------  ------------  ------------`
+`top 15 events sorted by cpu_time_total  ------------------  ------------  ------------  ------------  ------------  ------------  ------------                  Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls    ------------------  ------------  ------------  ------------  ------------  ------------  ------------        aten::uniform_        17.73%      62.645ms        17.73%      62.645ms      62.645ms             1          aten::linear         0.00%       2.918us        13.71%      48.415ms      48.415ms             1          aten::matmul         0.00%       9.332us        13.70%      48.404ms      48.404ms             1              aten::mm        13.70%      48.385ms        13.70%      48.385ms      48.385ms             1    ------------------  ------------  ------------  ------------  ------------  ------------  ------------`;
 ```
-🛠️ **Backend API & Testing**
------------------------------
- **Run Python Tests with Pytest**
+
+## 🛠️ **Backend API & Testing**
+
+**Run Python Tests with Pytest**
 
 ```javascript
 pytest tests/ --disable-warnings
 ```
+
 > Install with pip install pytest if missing.
 
-🔍 **Environment Variables & .env Setup**
------------------------------------------
+## 🔍 **Environment Variables & .env Setup**
 
 ### **Verify .env File Exists**
+
 ```javascript
-cat .env
+cat.env;
 ```
+
 ### **Load .env Variables in Shell**
+
 ```javascript
 export $(grep -v '^#' .env | xargs)   `
 ```
+
 ### **Verify API Key in Node.js**
+
 ```javascript
 node -e "import 'dotenv/config'; console.log('✅ API_KEY:', process.env.API_KEY);"
 ```
+
 ### **Verify API Key in Python**
 
 ```javascript
 python -c "from dotenv import load_dotenv; import os; load_dotenv(); print('✅ API_KEY:', os.getenv('API_KEY'))"
 ```
 
-📂 **Find Configuration Files**
--------------------------------
+## 📂 **Find Configuration Files**
 
 ### **Find launch.json for VSCode Debugging**
+
 ```javascript
 find ~/Bleu.js -name "launch.json"   `
 ```
+
 ### **Find all .env Files in Your Project**
+
 ```javascript
 find ~/Bleu.js -name ".env"   `
 ```
 
-✅ **Final Check: Running Everything Smoothly**
-----------------------------------------------
+## ✅ **Final Check: Running Everything Smoothly**
 
 1.  **Make sure .env is loaded properly**
 
@@ -285,7 +293,9 @@ find ~/Bleu.js -name ".env"   `
 ```javascript
 python -m torch.utils.bottleneck src/ml/models/foundation/llama.py
 ```
+
 ### ✅ **Expected Output**
+
 ```javascript
 Running environment analysis...
 Running your script with cProfile
@@ -372,9 +382,6 @@ The Python components power our advanced AI and ML capabilities:
 - Decision Tree Models
 - Model Training & Evaluation
 - Real-time Performance Optimization
-
-
-
 
 ### Backend Efficiency
 

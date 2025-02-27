@@ -20,7 +20,6 @@
     "docker:build": "docker build -t bleujs-eggs .",
     "docker:run": "docker run -d -p 3003:3003 --name eggs-api bleujs-eggs",
     "k8s:deploy": "kubectl apply -f k8s/eggs-deployment.yaml",
-    "prepare": "husky install",
     "pretest": "npm run clean",
     "postbuild": "npm run test:ci"
   },
