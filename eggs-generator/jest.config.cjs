@@ -79,12 +79,12 @@ module.exports = {
       statements: 0,
     },
     // Set more reasonable thresholds for files with existing coverage
-    "./src/utils/eggUtils.js": {
+    './src/utils/eggUtils.js': {
       branches: 45,
       functions: 40,
       lines: 45,
-      statements: 45
-    }
+      statements: 45,
+    },
   },
 
   collectCoverageFrom: [
