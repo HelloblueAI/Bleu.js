@@ -17,7 +17,6 @@ jest.mock('../utils/logger', () => ({
   info: jest.fn(),
 }));
 
-
 const aiServiceProxy = {
   AIService: class AIService {
     constructor() {
@@ -35,7 +34,9 @@ const aiServiceProxy = {
 
       try {
         const tokens = this.nlpProcessor.tokenize(text);
-        const stemmedTokens = tokens.map(token => this.nlpProcessor.stem(token));
+        const stemmedTokens = tokens.map((token) =>
+          this.nlpProcessor.stem(token),
+        );
         const sentiment = this.nlpProcessor.analyzeSentiment(text);
         const entities = this.nlpProcessor.namedEntityRecognition(text);
 
@@ -43,10 +44,12 @@ const aiServiceProxy = {
           tokens,
           stemmedTokens,
           sentiment,
-          entities
+          entities,
         };
       } catch (error) {
-        require('../utils/logger').error('❌ Text analysis failed: ' + error.message);
+        require('../utils/logger').error(
+          '❌ Text analysis failed: ' + error.message,
+        );
         throw error;
       }
     }
@@ -55,7 +58,9 @@ const aiServiceProxy = {
       try {
         return this.analyzeText(text);
       } catch (error) {
-        require('../utils/logger').error('❌ Failed to process text: ' + error.message);
+        require('../utils/logger').error(
+          '❌ Failed to process text: ' + error.message,
+        );
         throw error;
       }
     }
@@ -64,7 +69,9 @@ const aiServiceProxy = {
       try {
         return await this.modelManager.trainModel(modelInfo);
       } catch (error) {
-        require('../utils/logger').error('❌ Model training failed: ' + error.message);
+        require('../utils/logger').error(
+          '❌ Model training failed: ' + error.message,
+        );
         throw error;
       }
     }
@@ -83,11 +90,13 @@ const aiServiceProxy = {
         }
         return await this.modelManager.evaluateRule(ruleId, inputData);
       } catch (error) {
-        require('../utils/logger').error('❌ Rule evaluation failed: ' + error.message);
+        require('../utils/logger').error(
+          '❌ Rule evaluation failed: ' + error.message,
+        );
         throw error;
       }
     }
-  }
+  },
 };
 
 // Mock the import of the ESM module
@@ -101,9 +110,7 @@ describe('AIService', () => {
   let logger;
 
   beforeEach(() => {
-
     jest.clearAllMocks();
-
 
     const aiServiceModule = require('../services/aiService');
     AIService = aiServiceModule.AIService;
@@ -111,13 +118,14 @@ describe('AIService', () => {
     ModelManager = require('../ml/modelManager');
     logger = require('../utils/logger');
 
-
     aiService = new AIService();
   });
 
   /** 🟢 Initialization */
   test('should initialize AIService successfully', () => {
-    expect(logger.info).toHaveBeenCalledWith('✅ AIService initialized successfully');
+    expect(logger.info).toHaveBeenCalledWith(
+      '✅ AIService initialized successfully',
+    );
     expect(aiService.nlpProcessor).toBeDefined();
     expect(aiService.modelManager).toBeDefined();
   });
@@ -139,8 +147,12 @@ describe('AIService', () => {
   });
 
   test('should throw an error if analyzeText is called with invalid input', () => {
-    expect(() => aiService.analyzeText(null)).toThrow('Invalid input: Text must be a non-empty string.');
-    expect(logger.error).toHaveBeenCalledWith('❌ Invalid input: Text must be a non-empty string.');
+    expect(() => aiService.analyzeText(null)).toThrow(
+      'Invalid input: Text must be a non-empty string.',
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      '❌ Invalid input: Text must be a non-empty string.',
+    );
   });
 
   test('should handle errors during text analysis gracefully', () => {
@@ -148,8 +160,12 @@ describe('AIService', () => {
       throw new Error('Tokenization failed');
     });
 
-    expect(() => aiService.analyzeText('Hello world')).toThrow('Tokenization failed');
-    expect(logger.error).toHaveBeenCalledWith('❌ Text analysis failed: Tokenization failed');
+    expect(() => aiService.analyzeText('Hello world')).toThrow(
+      'Tokenization failed',
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      '❌ Text analysis failed: Tokenization failed',
+    );
   });
 
   /** 🟢 Process Text */
@@ -172,8 +188,12 @@ describe('AIService', () => {
       throw new Error('Processing failed');
     });
 
-    await expect(aiService.processText('AI is powerful')).rejects.toThrow('Processing failed');
-    expect(logger.error).toHaveBeenCalledWith('❌ Failed to process text: Processing failed');
+    await expect(aiService.processText('AI is powerful')).rejects.toThrow(
+      'Processing failed',
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      '❌ Failed to process text: Processing failed',
+    );
   });
 
   /** 🟢 Model Training */
@@ -187,8 +207,12 @@ describe('AIService', () => {
   test('should handle errors in trainModel', async () => {
     ModelManager.trainModel.mockRejectedValueOnce(new Error('Training failed'));
 
-    await expect(aiService.trainModel({ name: 'AI Model' })).rejects.toThrow('Training failed');
-    expect(logger.error).toHaveBeenCalledWith('❌ Model training failed: Training failed');
+    await expect(aiService.trainModel({ name: 'AI Model' })).rejects.toThrow(
+      'Training failed',
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      '❌ Model training failed: Training failed',
+    );
   });
 
   /** 🟢 Get Training Status */
@@ -211,6 +235,8 @@ describe('AIService', () => {
   test('should throw an error if evaluateRule is called with missing parameters', async () => {
     await expect(aiService.evaluateRule(null, {})).rejects.toThrow();
     await expect(aiService.evaluateRule('rule-123', null)).rejects.toThrow();
-    expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('❌ Rule evaluation failed'));
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining('❌ Rule evaluation failed'),
+    );
   });
 });

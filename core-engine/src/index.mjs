@@ -229,14 +229,12 @@ if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
     }),
   );
   app.get('/health', (req, res) =>
-    res
-      .status(200)
-      .json({
-        status: 'healthy',
-        version: '4.0.0',
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-      }),
+    res.status(200).json({
+      status: 'healthy',
+      version: '4.0.0',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    }),
   );
   app.use('/api/eggs', eggRoutes);
   app.listen(PORT, () =>

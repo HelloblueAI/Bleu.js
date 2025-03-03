@@ -438,7 +438,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: dist
-          pattern: "*-build"
+          pattern: '*-build'
           merge-multiple: true
 
       - name: Set Version Info
@@ -550,7 +550,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bleujs-release
-          path: "${{ steps.set-version.outputs.release-name }}.tar.gz"
+          path: '${{ steps.set-version.outputs.release-name }}.tar.gz'
           retention-days: 14
 
   deploy:
