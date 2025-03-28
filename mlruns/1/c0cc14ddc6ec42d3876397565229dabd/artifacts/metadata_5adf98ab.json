@@ -1,0 +1,94 @@
+{
+    "model_id": "5adf98ab",
+    "timestamp": "20250326_113944",
+    "metrics": {
+        "accuracy": 0.9845,
+        "roc_auc": 0.9982303471117318,
+        "f1": 0.9913140935836369,
+        "precision": 0.9966197183098592,
+        "recall": 0.9860646599777034,
+        "confusion_matrix": [
+            [
+                200,
+                6
+            ],
+            [
+                25,
+                1769
+            ]
+        ],
+        "classification_report": {
+            "0": {
+                "precision": 0.8888888888888888,
+                "recall": 0.970873786407767,
+                "f1-score": 0.9280742459396751,
+                "support": 206.0
+            },
+            "1": {
+                "precision": 0.9966197183098592,
+                "recall": 0.9860646599777034,
+                "f1-score": 0.9913140935836369,
+                "support": 1794.0
+            },
+            "accuracy": 0.9845,
+            "macro avg": {
+                "precision": 0.942754303599374,
+                "recall": 0.9784692231927352,
+                "f1-score": 0.959694169761656,
+                "support": 2000.0
+            },
+            "weighted avg": {
+                "precision": 0.9855234428794992,
+                "recall": 0.9845,
+                "f1-score": 0.9848003892763088,
+                "support": 2000.0
+            }
+        },
+        "model_version": "v1.0.0",
+        "timestamp": "20250326_113944"
+    },
+    "hyperparameters": {
+        "n_estimators": 1850,
+        "max_depth": 4,
+        "learning_rate": 0.0716912230690751,
+        "subsample": 0.7296965110249929,
+        "colsample_bytree": 0.9652471778014398,
+        "min_child_weight": 1,
+        "gamma": 0.34224473428923796,
+        "reg_alpha": 0.3856554933666422,
+        "reg_lambda": 7.723067982719893
+    },
+    "model_version": "v1.0.0",
+    "training_config": {
+        "n_splits": 5,
+        "n_trials": 100,
+        "early_stopping_rounds": 50,
+        "random_state": 42,
+        "test_size": 0.2,
+        "n_jobs": -1,
+        "mlflow_experiment_name": "aerospace_xgboost",
+        "model_version": "v1.0.0"
+    },
+    "feature_names": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3",
+        "Feature 4",
+        "Feature 5",
+        "Feature 6",
+        "Feature 7",
+        "Feature 8",
+        "Feature 9",
+        "Feature 10",
+        "Feature 11",
+        "Feature 12",
+        "Feature 13",
+        "Feature 14",
+        "Feature 15",
+        "Feature 16",
+        "Feature 17",
+        "Feature 18",
+        "Feature 19",
+        "Feature 20"
+    ]
+}

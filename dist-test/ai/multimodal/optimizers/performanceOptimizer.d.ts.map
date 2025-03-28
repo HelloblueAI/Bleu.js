@@ -1,0 +1,1 @@
+{"version":3,"file":"performanceOptimizer.d.ts","sourceRoot":"","sources":["../../../../src/ai/multimodal/optimizers/performanceOptimizer.ts"],"names":[],"mappings":"AAEA,qBAAa,oBAAoB;IAC/B,OAAO,CAAC,WAAW,CAAkB;IAE/B,UAAU,IAAI,OAAO,CAAC,IAAI,CAAC;IAW3B,QAAQ,IAAI,OAAO,CAAC,IAAI,CAAC;IAOzB,OAAO,IAAI,OAAO,CAAC,IAAI,CAAC;CAG/B"}

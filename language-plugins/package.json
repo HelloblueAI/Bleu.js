@@ -7,6 +7,8 @@
     "python"
   ],
   "dependencies": {
-    "force": "^0.0.3"
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "winston": "^3.17.0"
   }
 }

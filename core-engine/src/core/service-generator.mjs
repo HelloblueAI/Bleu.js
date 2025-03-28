@@ -32,6 +32,7 @@ class ServiceGenerator extends EventEmitter {
     this.validators = new Map();
     this.customizations = new Map();
     this.methodGenerators = new Map();
+    this.cache = new Map();
     this.hooks = {
       beforeGeneration: [],
       afterGeneration: [],
@@ -39,6 +40,28 @@ class ServiceGenerator extends EventEmitter {
     };
     this.setupDefaultTemplates();
     this.setupMethodGenerators();
+    this.setupCache();
+  }
+
+  setupCache() {
+    // Cache configuration
+    this.cacheConfig = {
+      maxSize: 1000,
+      ttl: 3600000, // 1 hour
+      cleanupInterval: 1800000, // 30 minutes
+    };
+    
+    // Setup cache cleanup
+    setInterval(() => this.cleanupCache(), this.cacheConfig.cleanupInterval);
+  }
+
+  cleanupCache() {
+    const now = Date.now();
+    for (const [key, value] of this.cache.entries()) {
+      if (now - value.timestamp > this.cacheConfig.ttl) {
+        this.cache.delete(key);
+      }
+    }
   }
 
   setupDefaultTemplates() {
@@ -305,8 +328,16 @@ import { LoggerService } from '../logger/logger.service';`;
 
   async generate(type, parameters) {
     const start = performance.now();
+    const cacheKey = this.generateCacheKey(type, parameters);
 
     try {
+      // Check cache first
+      const cached = this.cache.get(cacheKey);
+      if (cached && Date.now() - cached.timestamp < this.cacheConfig.ttl) {
+        this.metrics.counter('cache.hit');
+        return cached.data;
+      }
+
       // Run pre-generation hooks
       for (const hook of this.hooks.beforeGeneration) {
         await hook(type, parameters);
@@ -327,6 +358,15 @@ import { LoggerService } from '../logger/logger.service';`;
       // Run post-generation hooks
       for (const hook of this.hooks.afterGeneration) {
         await hook(type, parameters, code);
+      }
+
+      // Cache the result
+      if (this.cache.size < this.cacheConfig.maxSize) {
+        this.cache.set(cacheKey, {
+          data: code,
+          timestamp: Date.now()
+        });
+        this.metrics.counter('cache.miss');
       }
 
       const duration = performance.now() - start;
@@ -356,6 +396,10 @@ import { LoggerService } from '../logger/logger.service';`;
 
       throw error;
     }
+  }
+
+  generateCacheKey(type, parameters) {
+    return `${type}:${JSON.stringify(parameters)}`;
   }
 }
 

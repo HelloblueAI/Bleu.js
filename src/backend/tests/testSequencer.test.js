@@ -21,38 +21,84 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 import request from 'supertest';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { startServer, stopServer } from '../../index.mjs';
 
-import { startServer, stopServer } from '../index';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-let app, server;
+describe('Test Sequencer', () => {
+  let server;
 
-beforeAll(async () => {
-  try {
-    ({ app, server } = await startServer(0));
-  } catch (err) {
-    console.error('Error starting server:', err);
-    throw err;
-  }
-});
+  beforeAll(async () => {
+    server = await startServer();
+  });
 
-afterAll(async () => {
-  try {
-    await stopServer(server);
-  } catch (err) {
-    console.error('Error stopping server:', err);
-    throw err;
-  }
+  afterAll(async () => {
+    await stopServer();
+  });
+
+  it('should run tests in sequence', async () => {
+    const response = await request(server)
+      .post('/api/tests/sequence')
+      .send({
+        tests: [
+          { name: 'test1', command: 'echo "test1"' },
+          { name: 'test2', command: 'echo "test2"' }
+        ]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.results).toHaveLength(2);
+    expect(response.body.results[0].name).toBe('test1');
+    expect(response.body.results[1].name).toBe('test2');
+  });
+
+  it('should handle test failures gracefully', async () => {
+    const response = await request(server)
+      .post('/api/tests/sequence')
+      .send({
+        tests: [
+          { name: 'test1', command: 'echo "test1"' },
+          { name: 'test2', command: 'false' },
+          { name: 'test3', command: 'echo "test3"' }
+        ]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.results).toHaveLength(3);
+    expect(response.body.results[1].status).toBe('failed');
+  });
+
+  it('should respect test dependencies', async () => {
+    const response = await request(server)
+      .post('/api/tests/sequence')
+      .send({
+        tests: [
+          { name: 'test1', command: 'echo "test1"' },
+          { name: 'test2', command: 'echo "test2"', dependsOn: ['test1'] },
+          { name: 'test3', command: 'echo "test3"', dependsOn: ['test2'] }
+        ]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.results).toHaveLength(3);
+    expect(response.body.results[0].name).toBe('test1');
+    expect(response.body.results[1].name).toBe('test2');
+    expect(response.body.results[2].name).toBe('test3');
+  });
 });
 
 describe('API Integration Tests', () => {
   it('should return 200 for the basic test endpoint', async () => {
-    const response = await request(app).get('/api/basic-test');
+    const response = await request(server).get('/api/basic-test');
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe('Basic test passed');
   });
 
   it('should return dependencies and outdated modules from /api/dependencies', async () => {
-    const response = await request(app).get('/api/dependencies');
+    const response = await request(server).get('/api/dependencies');
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('dependencies');
     expect(Array.isArray(response.body.dependencies)).toBe(true);
@@ -61,7 +107,7 @@ describe('API Integration Tests', () => {
   });
 
   it('should resolve and return conflicts from /api/dependencies/conflicts', async () => {
-    const response = await request(app).get('/api/dependencies/conflicts');
+    const response = await request(server).get('/api/dependencies/conflicts');
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('resolved');
     expect(Array.isArray(response.body.resolved)).toBe(true);
@@ -71,7 +117,7 @@ describe('API Integration Tests', () => {
 
   it('should generate an egg successfully with valid input', async () => {
     const eggOptions = { type: 'chicken', color: 'brown' };
-    const response = await request(app)
+    const response = await request(server)
       .post('/api/generate-egg')
       .send(eggOptions);
     expect(response.statusCode).toBe(200);
@@ -81,7 +127,7 @@ describe('API Integration Tests', () => {
 
   it('should return 400 for invalid egg generation input', async () => {
     const invalidOptions = { type: '', color: 'brown' };
-    const response = await request(app)
+    const response = await request(server)
       .post('/api/generate-egg')
       .send(invalidOptions);
     expect(response.statusCode).toBe(400);

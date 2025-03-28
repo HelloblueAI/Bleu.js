@@ -1,22 +1,51 @@
-# Directories
-node_modules/
-frontend/
-backend/
-tests/
-venv/
+# ----------------------------------------
+# 📦 NPM Package Ignores
+# ----------------------------------------
+
+# ----------------------------------------
+# 🏗️ Build & Source
+# ----------------------------------------
+src/
+!dist/
+!dist/**/*
+*.ts
+*.tsx
+*.js.map
+*.d.ts
+*.d.ts.map
+
+# ----------------------------------------
+# 🧪 Testing & Coverage
+# ----------------------------------------
+__tests__/
+__mocks__/
+*.test.*
+*.spec.*
 coverage/
-dist/
-reports/
-html-report/
 .nyc_output/
-logs/
+jest.config.*
+vitest.config.*
+playwright.config.*
+cypress.config.*
+cypress/
+__snapshots__/
+*.snap
 
-# Version control
-.git/
-*.gitignore
-*.gitmodules
+# ----------------------------------------
+# 📝 Documentation
+# ----------------------------------------
+docs/
+*.md
+!README.md
+!LICENSE.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+!SECURITY.md
+!CODE_OF_CONDUCT.md
 
-# Configuration files
+# ----------------------------------------
+# 🔧 Development Tools
+# ----------------------------------------
 .eslintrc.*
 .prettierrc.*
 .babelrc.*
@@ -24,59 +53,142 @@ logs/
 *.config.cjs
 *.config.json
 *.config.ts
-
-# Logs and lock files
-*.log
-*.lock
-*.bak
-*.swp
-*.tmp
-
-# Editor directories and files
+.editorconfig
+.stylelintrc.*
+.commitlintrc.*
+.husky/
+.lint-staged.*
+.github/
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS generated files
-.DS_Store
-Thumbs.db
-*.~
-
-# Temporary and miscellaneous files
-*.tmp
-*.bak
-*.orig
-*.rej
-*.old
-
-# Python virtual environment
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-
-# Build and distribution
-*.tgz
-*.tar.gz
-
-# Environment and secrets
+# ----------------------------------------
+# 🔒 Security & Environment
+# ----------------------------------------
 .env
 .env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
-# Testing and CI/CD
-*.test.*
-*.spec.*
-.jest/
-.jest-cache/
+# ----------------------------------------
+# 📦 Package Management
+# ----------------------------------------
+node_modules/
+.pnp/
+.pnp.js
+.yarn/
+.pnpm-store/
+package-lock.json
+yarn.lock
+!pnpm-lock.yaml
 
-# Additional large files
-*.dmg
-*.exe
-*.dll
-*.iso
+# Package Archives
+*.tgz
+*.zip
+*.tar.gz
+*.tar
+*.gz
+*.rar
+*.7z
 
-# Files specific to your project
+# ----------------------------------------
+# 🗑️ Temporary & System
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+.cache/
+.temp/
+.tmp/
+
+# ----------------------------------------
+# 🐳 Docker & CI/CD
+# ----------------------------------------
 Dockerfile*
-lerna.json
-pnpm-workspace.yaml
+.dockerignore
+.github/
+.gitlab/
+.circleci/
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# ----------------------------------------
+# 🤖 Machine Learning & Data
+# ----------------------------------------
+*.pkl
+*.h5
+*.model
+*.joblib
+*.bin
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.npy
+*.npz
+*.parquet
+*.feather
+*.arrow
+mlflow.db
+xgboost_training.log
+scaler.pkl
+model.json
+
+# ----------------------------------------
+# 🎨 Media & Large Files
+# ----------------------------------------
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.m4a
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.webp
+*.svg
+*.ico
+
+# ----------------------------------------
+# 📊 Performance & Analysis
+# ----------------------------------------
+.cpuprofile
+.heapprofile
+.flamegraph
+*.prof
+stats.html
+bundle-analysis/
+webpack-bundle-analyzer/
+
+# ----------------------------------------
+# 📦 Keep These Files
+# ----------------------------------------
+!package.json
+!package-lock.json
+!pnpm-lock.yaml
+!README.md
+!LICENSE.md
+!CHANGELOG.md
+!dist/
+!dist/**/*

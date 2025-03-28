@@ -1,13 +1,14 @@
 {
   "name": "eggs-generator",
-  "version": "1.1.2",
-  "description": "AI-powered microservice for generating eggs with intelligent decision-making.",
+  "version": "1.2.0",
+  "description": "Next-generation AI-powered egg generation system with blockchain integration and advanced analytics",
   "type": "module",
   "main": "src/index.mjs",
   "scripts": {
-    "start": "node src/index.mjs",
-    "dev": "nodemon --inspect --experimental-worker src/index.mjs",
+    "start": "node dist/index.js",
+    "dev": "nodemon --inspect --experimental-worker src/index.ts",
     "build": "babel src --out-dir dist --extensions \".ts,.js\"",
+    "build:types": "tsc --emitDeclarationOnly",
     "test": "NODE_ENV=test jest --config jest.config.cjs --runInBand",
     "test:watch": "jest --watch --config jest.config.cjs",
     "test:ci": "jest --ci --coverage --coverageThreshold='{\"global\":{\"statements\":0,\"branches\":0,\"functions\":0,\"lines\":0}}' --config jest.config.cjs",
@@ -17,32 +18,39 @@
     "lint:check": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "clean": "rimraf dist logs coverage",
-    "debug": "node --inspect-brk src/index.mjs",
+    "debug": "node --inspect-brk src/index.ts",
     "docker:build": "docker build -t bleujs-eggs .",
     "docker:run": "docker run -d -p 3003:3003 --name eggs-api bleujs-eggs",
     "k8s:deploy": "kubectl apply -f k8s/eggs-deployment.yaml",
     "pretest": "npm run clean",
-    "postbuild": "npm run test:ci || true"
+    "postbuild": "npm run test:ci || true",
+    "security:audit": "pnpm audit",
+    "security:monitor": "pnpm audit",
+    "security:deps": "pnpm audit",
+    "security:lint": "eslint . --plugin security",
+    "security:container": "docker scan bleujs-eggs:latest",
+    "security:k8s": "kube-score score k8s/eggs-deployment.yaml",
+    "ai:train": "node dist/scripts/trainAI.js",
+    "ai:generate": "node dist/scripts/generateEggs.js",
+    "blockchain:deploy": "node dist/scripts/deploySmartContract.js",
+    "blockchain:verify": "node dist/scripts/verifyOwnership.js",
+    "analytics:start": "node dist/scripts/startAnalytics.js",
+    "genetic:evolve": "node dist/scripts/evolveEggs.js",
+    "monitor:start": "node dist/scripts/startMonitoring.js",
+    "security:scan": "node dist/scripts/securityScan.js",
+    "performance:test": "node dist/scripts/performanceTest.js"
   },
   "dependencies": {
-    "body-parser": "^1.20.3",
-    "compression": "^1.8.0",
-    "cors": "^2.8.5",
-    "detect-port": "^2.1.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "express-validator": "^7.2.1",
-    "helmet": "^8.0.0",
-    "joi": "^17.13.3",
-    "mongoose": "^8.10.1",
-    "morgan": "^1.10.0",
-    "pino": "^9.6.0",
-    "rate-limiter-flexible": "^5.0.5",
-    "redis": "^4.7.0",
-    "uuid": "^11.0.5",
-    "winston": "^3.17.0",
-    "ws": "^8.18.0"
+    "@helia/http": "^2.0.5",
+    "ethers": "^6.11.1",
+    "genetic-js": "^0.1.14",
+    "ml-knn": "^3.0.0",
+    "ml-matrix": "^6.11.0",
+    "ml-random-forest": "^2.1.0",
+    "ml-regression": "^5.0.0",
+    "prom-client": "^15.1.0",
+    "reflect-metadata": "^0.2.2",
+    "web3": "^4.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
@@ -51,6 +59,11 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-typescript": "^7.26.0",
     "@babel/runtime-corejs3": "^7.26.9",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
     "babel-jest": "^29.7.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "eslint": "^9.20.1",
@@ -58,16 +71,13 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^3.0.1",
-    "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "jest-summary-reporter": "^0.0.2",
-    "mongodb-memory-server-core": "^10.1.4",
-    "nodemon": "^3.1.9",
-    "prettier": "^3.5.1",
-    "rimraf": "^6.0.1",
-    "supertest": "^7.0.0",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.3.3"
   },
   "eslintConfig": {
     "env": {
@@ -88,6 +98,16 @@
       "no-unused-vars": "warn",
       "no-console": "off",
       "security/detect-object-injection": "warn",
+      "security/detect-non-literal-fs-filename": "error",
+      "security/detect-eval-with-expression": "error",
+      "security/detect-no-csrf-before-method-override": "error",
+      "security/detect-buffer-noassert": "error",
+      "security/detect-child-process": "error",
+      "security/detect-disable-mustache-escape": "error",
+      "security/detect-new-buffer": "error",
+      "security/detect-possible-timing-attacks": "error",
+      "security/detect-pseudoRandomBytes": "error",
+      "security/detect-unsafe-regex": "error",
       "import/no-unresolved": "error",
       "node/no-unsupported-features/es-syntax": "off"
     }
@@ -104,11 +124,19 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "statements": 0,
-        "branches": 0,
-        "functions": 0,
-        "lines": 0
+        "statements": 90,
+        "branches": 85,
+        "functions": 90,
+        "lines": 90
       }
     }
+  },
+  "security": {
+    "audit": true,
+    "monitor": true,
+    "scan": true,
+    "lint": true,
+    "blockchain": true,
+    "ai": true
   }
 }

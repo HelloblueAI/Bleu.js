@@ -21,7 +21,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
+const { Schema, Types } = mongoose;
 
 /**
  * 🚀 Next-Gen AI-Powered Egg Schema for Bleu.js
@@ -30,6 +31,17 @@ import { Schema, model } from 'mongoose';
  * - Auto-optimized incubation system
  * - Smart evolution tracking with predictive analysis
  */
+
+const AttributeSchema = new Schema({
+  trait_type: {
+    type: String,
+    required: [true, 'Trait type is required']
+  },
+  value: {
+    type: mongoose.Schema.Types.Mixed,
+    required: [true, 'Trait value is required']
+  }
+}, { _id: false });
 
 const eggSchema = new Schema(
   {
@@ -43,7 +55,7 @@ const eggSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ['dragon', 'phoenix', 'celestial', 'mythic', 'elemental', 'cosmic'],
+      enum: ['common', 'rare', 'epic', 'legendary'],
       index: true,
     },
     description: {
@@ -53,6 +65,44 @@ const eggSchema = new Schema(
       maxlength: 500,
     },
     metadata: {
+      dna: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true,
+        validate: {
+          validator: function(v) {
+            return /^0x[0-9a-fA-F]+$/.test(v);
+          },
+          message: 'DNA must be a valid hexadecimal string starting with 0x'
+        },
+      },
+      rarity: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100,
+        index: true,
+      },
+      attributes: {
+        type: [AttributeSchema],
+        required: [true, 'At least one attribute is required'],
+        validate: {
+          validator: function(v) {
+            return Array.isArray(v) && v.length > 0;
+          },
+          message: 'Attributes array cannot be empty'
+        }
+      },
+      generation: {
+        type: Number,
+        required: true,
+        min: 0,
+      },
+      birthDate: {
+        type: Date,
+        default: Date.now,
+      },
       tags: [{ type: String, lowercase: true, trim: true }],
       version: {
         type: String,
@@ -61,55 +111,19 @@ const eggSchema = new Schema(
       },
       generatedBy: String,
       createdAt: { type: Date, default: Date.now, immutable: true },
+      updatedAt: { type: Date, default: Date.now },
       properties: {
-        size: {
-          type: String,
-          enum: ['tiny', 'small', 'medium', 'large', 'massive'],
-          default: 'medium',
-        },
-        color: { type: String, trim: true },
-        rarity: {
-          type: String,
-          enum: [
-            'common',
-            'uncommon',
-            'rare',
-            'epic',
-            'legendary',
-            'mythical',
-            'divine',
-          ],
-          default: 'common',
-          index: true,
-        },
-        element: {
-          type: String,
-          enum: [
-            'fire',
-            'water',
-            'earth',
-            'air',
-            'light',
-            'dark',
-            'cosmic',
-            'void',
-            'thunder',
-            'ice',
-          ],
-          required: true,
-        },
-        attributes: {
-          power: { type: Number, min: 0, max: 1000, default: 50 },
-          wisdom: { type: Number, min: 0, max: 1000, default: 50 },
-          harmony: { type: Number, min: 0, max: 1000, default: 50 },
-          speed: { type: Number, min: 0, max: 1000, default: 50 },
-          resilience: { type: Number, min: 0, max: 1000, default: 50 },
-        },
-      },
-      dna: { type: String, required: true, unique: true, index: true },
-      generation: { type: Number, default: 1, min: 1, max: 100 },
-      parentIds: [String],
-      evolutionStage: { type: Number, default: 0, min: 0 },
+        type: Types.Mixed,
+        default: {}
+      }
+    },
+    parents: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Egg'
+    }],
+    lastEvolution: {
+      type: Date,
+      default: Date.now
     },
     status: {
       type: String,
@@ -147,15 +161,25 @@ const eggSchema = new Schema(
       optimalTemp: { type: Number, min: -50, max: 100 },
       progress: { type: Number, min: 0, max: 100, default: 0 },
     },
-    owner: { type: String, required: true, index: true },
+    owner: {
+      type: String,
+      required: true,
+      index: true,
+    },
     tradeable: { type: Boolean, default: true },
     market: {
-      listed: { type: Boolean, default: false, index: true },
-      price: { type: Number, min: 0 },
+      listed: {
+        type: Boolean,
+        default: false,
+        index: true,
+      },
+      price: {
+        type: Number,
+        min: 0,
+      },
       currency: {
         type: String,
-        enum: ['gold', 'gems', 'ether', 'tokens'],
-        default: 'gold',
+        enum: ['ETH', 'USDC', 'BLEU'],
       },
       listDate: Date,
       expiryDate: Date,
@@ -182,110 +206,246 @@ const eggSchema = new Schema(
         },
       ],
     },
-    specialAbilities: [
-      {
-        name: String,
-        description: String,
-        cooldown: Number,
-        unlocked: { type: Boolean, default: false },
+    stats: {
+      strength: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 100,
       },
-    ],
-    evolutionHistory: [
-      {
-        stage: Number,
-        date: Date,
-        previousType: String,
-        newType: String,
-        changes: Object,
+      agility: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 100,
       },
-    ],
+      intelligence: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 100,
+      },
+      vitality: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 100,
+      },
+    },
+    abilities: [{
+      name: {
+        type: String,
+        required: true,
+      },
+      description: String,
+      cooldown: {
+        type: Number,
+        min: 0,
+      },
+      damage: {
+        type: Number,
+        min: 0,
+      },
+    }],
+    evolution: {
+      stage: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 3,
+      },
+      progress: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100,
+      },
+      requirements: {
+        level: {
+          type: Number,
+          min: 1
+        },
+        items: [{
+          type: String,
+          ref: 'Item'
+        }]
+      }
+    },
+    breeding: {
+      readyTime: Date,
+      cooldownTime: {
+        type: Number,
+        default: 0
+      },
+      breedCount: {
+        type: Number,
+        default: 0,
+        min: 0
+      }
+    }
   },
   {
     timestamps: true,
-    versionKey: '__v',
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-    id: false,
-  },
+    toObject: { virtuals: true }
+  }
 );
 
-eggSchema.index({ 'metadata.dna': 1 }, { unique: true });
-eggSchema.index({ owner: 1 });
-eggSchema.index({ 'market.listed': 1 });
+// Compound indexes
 eggSchema.index({ 'metadata.rarity': 1, type: 1 });
-eggSchema.index({ 'metadata.properties.element': 1 });
-eggSchema.index({ status: 1, 'incubationConfig.expectedHatchTime': 1 });
+eggSchema.index({ 'market.listed': 1, 'market.price': 1 });
+eggSchema.index({ owner: 1, type: 1 });
 
-eggSchema.methods.calculateMarketValue = function () {
-  const baseValues = {
-    common: 10,
-    uncommon: 25,
-    rare: 75,
-    epic: 200,
-    legendary: 500,
-    mythical: 1200,
-    divine: 3000,
-  };
-
-  const rarity = this.metadata?.properties?.rarity || 'common';
-  const baseValue = baseValues[rarity] || 10;
-
-  const attributes = this.metadata?.properties?.attributes || {};
-  const totalAttributes = [
-    attributes.power || 0,
-    attributes.wisdom || 0,
-    attributes.harmony || 0,
-    attributes.speed || 0,
-    attributes.resilience || 0,
-  ].reduce((sum, value) => sum + value, 0);
-
-  const attributeModifier = totalAttributes / 500;
-
-  const generationModifier =
-    1 + 0.1 * (Math.max(1, this.metadata?.generation || 1) - 1);
-
-  const typeMultipliers = {
-    celestial: 1.5,
-    phoenix: 1.3,
-  };
-  const typeMultiplier = typeMultipliers[this.type] || 1.0;
-
-  const marketValue = Math.round(
-    baseValue * (1 + attributeModifier) * generationModifier * typeMultiplier,
-  );
-
-  console.log(
-    `Market Value Calculation: base=${baseValue}, attributes=${totalAttributes}, marketValue=${marketValue}`,
-  );
-
-  return isNaN(marketValue) ? 0 : marketValue;
-};
-
-eggSchema.virtual('incubationProgress').get(function () {
-  if (this.status !== 'incubating' || !this.incubationConfig?.startTime)
-    return 0;
-  if (this.status === 'hatched') return 100;
-
-  const start = this.incubationConfig.startTime.getTime();
-  const duration = this.incubationConfig.duration || 86400000;
-  const elapsed = Date.now() - start;
-
-  return Math.min(100, Math.floor((elapsed / duration) * 100));
+// Virtual fields
+eggSchema.virtual('isBreedingReady').get(function() {
+  return !this.breeding.readyTime || this.breeding.readyTime <= new Date();
 });
 
-eggSchema.pre('save', function (next) {
-  if (
-    this.isModified('status') &&
-    this.status === 'incubating' &&
-    this.incubationConfig?.startTime &&
-    this.incubationConfig?.duration
-  ) {
-    this.incubationConfig.expectedHatchTime = new Date(
-      this.incubationConfig.startTime.getTime() +
-        this.incubationConfig.duration,
-    );
+eggSchema.virtual('marketStatus').get(function() {
+  if (!this.market.listed) return 'not_listed';
+  return 'listed';
+});
+
+eggSchema.virtual('age').get(function() {
+  return Math.floor((Date.now() - this.metadata.birthDate) / (1000 * 60 * 60 * 24));
+});
+
+// Methods
+eggSchema.methods.evolve = async function() {
+  const now = new Date();
+  const minTimeForEvolution = 24 * 60 * 60 * 1000; // 24 hours
+
+  if (now.getTime() - this.lastEvolution.getTime() < minTimeForEvolution) {
+    return false;
   }
+
+  const evolutionStages = {
+    common: 'rare',
+    rare: 'epic',
+    epic: 'legendary'
+  };
+
+  if (evolutionStages[this.type]) {
+    this.type = evolutionStages[this.type];
+    this.lastEvolution = now;
+    this.metadata.rarity = Math.min(100, this.metadata.rarity + 10);
+    this.metadata.generation += 1;
+    this.metadata.updatedAt = now;
+    return true;
+  }
+
+  return false;
+};
+
+eggSchema.methods.breed = async function(otherEgg) {
+  if (this.type !== otherEgg.type) {
+    throw new Error('Cannot breed eggs of different types');
+  }
+
+  const childEgg = new this.constructor({
+    id: `${this.id}_${otherEgg.id}_${Date.now()}`,
+    type: this.type,
+    description: `Offspring of ${this.id} and ${otherEgg.id}`,
+    metadata: {
+      dna: this.generateChildDNA(otherEgg),
+      rarity: Math.floor((this.metadata.rarity + otherEgg.metadata.rarity) / 2),
+      attributes: this.combineAttributes(this.metadata.attributes, otherEgg.metadata.attributes),
+      generation: Math.max(this.metadata.generation, otherEgg.metadata.generation) + 1,
+      birthDate: new Date(),
+      tags: [...new Set([...this.metadata.tags, ...otherEgg.metadata.tags])],
+      version: this.metadata.version,
+      generatedBy: 'breeding',
+      updatedAt: new Date()
+    },
+    parents: [this._id, otherEgg._id],
+    properties: this.combineProperties(this.metadata.properties, otherEgg.metadata.properties)
+  });
+
+  return childEgg.save();
+};
+
+eggSchema.methods.generateChildDNA = function(otherEgg) {
+  const dna1 = this.metadata.dna;
+  const dna2 = otherEgg.metadata.dna;
+  const midPoint = Math.floor(dna1.length / 2);
+  return dna1.slice(0, midPoint) + dna2.slice(midPoint);
+};
+
+eggSchema.methods.combineAttributes = function(attrs1, attrs2) {
+  const combinedAttributes = new Map();
+  
+  [...attrs1, ...attrs2].forEach(attr => {
+    if (!combinedAttributes.has(attr.trait_type)) {
+      combinedAttributes.set(attr.trait_type, attr.value);
+    } else {
+      if (typeof attr.value === 'number' && typeof combinedAttributes.get(attr.trait_type) === 'number') {
+        combinedAttributes.set(attr.trait_type, 
+          (attr.value + combinedAttributes.get(attr.trait_type)) / 2
+        );
+      } else if (Array.isArray(attr.value) && Array.isArray(combinedAttributes.get(attr.trait_type))) {
+        combinedAttributes.set(attr.trait_type, 
+          [...new Set([...attr.value, ...combinedAttributes.get(attr.trait_type)])]
+        );
+      } else if (typeof attr.value === 'object' && typeof combinedAttributes.get(attr.trait_type) === 'object') {
+        combinedAttributes.set(attr.trait_type, 
+          { ...combinedAttributes.get(attr.trait_type), ...attr.value }
+        );
+      }
+    }
+  });
+
+  return Array.from(combinedAttributes.entries()).map(([trait_type, value]) => ({
+    trait_type,
+    value
+  }));
+};
+
+eggSchema.methods.combineProperties = function(props1, props2) {
+  const combined = { ...props1 };
+  for (const [key, value] of Object.entries(props2)) {
+    if (typeof value === 'number') {
+      combined[key] = Math.floor((props1[key] || 0 + value) / 2);
+    } else if (Array.isArray(value)) {
+      combined[key] = [...(props1[key] || []), ...value];
+    } else if (typeof value === 'object') {
+      combined[key] = this.combineProperties(props1[key] || {}, value);
+    } else {
+      combined[key] = Math.random() < 0.5 ? props1[key] : value;
+    }
+  }
+  return combined;
+};
+
+// Statics
+eggSchema.statics.findByRarity = function(rarity) {
+  return this.find({ 'metadata.rarity': rarity });
+};
+
+eggSchema.statics.findBreedingReady = function() {
+  return this.find({
+    $or: [
+      { 'breeding.readyTime': { $exists: false } },
+      { 'breeding.readyTime': { $lte: new Date() } }
+    ]
+  });
+};
+
+eggSchema.statics.findByDNA = function(dna) {
+  return this.findOne({ 'metadata.dna': dna });
+};
+
+// Middleware
+eggSchema.pre('save', function(next) {
+  if (this.isModified('evolution.stage')) {
+    // Update stats based on evolution stage
+    const multiplier = 1 + (this.evolution.stage * 0.2);
+    this.stats.strength *= multiplier;
+    this.stats.agility *= multiplier;
+    this.stats.intelligence *= multiplier;
+    this.stats.vitality *= multiplier;
+  }
+  this.metadata.updatedAt = new Date();
   next();
 });
 
-export default model('Egg', eggSchema);
+export default mongoose.model('Egg', eggSchema);

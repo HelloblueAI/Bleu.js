@@ -50,6 +50,38 @@ yarn.lock
 **/package-lock.json
 **/yarn.lock
 
+# Package Archives
+*.tgz
+*.zip
+*.tar.gz
+*.tar
+*.gz
+*.rar
+*.7z
+
+# ----------------------------------------
+# 🔄 Version Control
+# ----------------------------------------
+.git/
+.git/objects/
+.git/refs/
+.git/hooks/
+.git/COMMIT_EDITMSG
+.git/HEAD
+.git/index
+.git/logs/
+.git/ORIG_HEAD
+.git/config
+.git/description
+.git/info/
+.git/packed-refs
+.git/FETCH_HEAD
+.git/MERGE_HEAD
+.git/MERGE_MSG
+.git/MERGE_RR
+.git/SQUASH_MSG
+.git/TAG_EDITMSG
+
 # ----------------------------------------
 # 🔒 Environment & Secrets
 # ----------------------------------------
@@ -58,6 +90,16 @@ yarn.lock
 **/.env.*
 !**/.env.example
 !**/.env.sample
+.env.development
+.env.test
+.env.production
+.env.staging
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+.env.*.local
 *.pem
 *.key
 *.crt
@@ -110,6 +152,85 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # ----------------------------------------
+# 🤖 Machine Learning & Model Files
+# ----------------------------------------
+# Model files
+*.pkl
+*.h5
+*.hdf5
+*.model
+*.joblib
+*.bin
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.pb
+*.savedmodel
+*.tflite
+*.mlmodel
+*.mlflow
+scaler.pkl
+model.json
+
+# ML Framework specific
+ray/
+**/ray/
+optuna/
+**/optuna/
+wandb/
+**/wandb/
+tensorboard/
+**/tensorboard/
+mlflow/
+**/mlflow/
+lightgbm/
+**/lightgbm/
+xgboost/
+**/xgboost/
+pytorch/
+**/pytorch/
+tensorflow/
+**/tensorflow/
+transformers/
+**/transformers/
+huggingface/
+**/huggingface/
+
+# Data files
+*.csv
+*.npy
+*.npz
+*.parquet
+*.feather
+*.arrow
+*.db
+*.sqlite
+*.sqlite3
+mlflow.db
+xgboost_training.log
+
+# MLflow artifacts
+mlruns/
+mlflow/
+**/mlruns/
+**/mlflow/
+.mlflow/
+**/.mlflow/
+
+# Model checkpoints and artifacts
+checkpoints/
+**/checkpoints/
+artifacts/
+**/artifacts/
+runs/
+**/runs/
+wandb/
+**/wandb/
+tensorboard/
+**/tensorboard/
+
+# ----------------------------------------
 # 📝 Logs & Debug Files
 # ----------------------------------------
 logs/
@@ -124,6 +245,10 @@ debug.log
 logfile.txt
 app.log
 *.log.[0-9]
+xgboost_training.log
+mlflow.log
+*.training.log
+*.training.*.log
 
 # ----------------------------------------
 # 🛠️ IDE & Editor
@@ -164,14 +289,14 @@ docker-compose*.yml
 *.seed
 .trash/
 .trash-*/
+.temp/
+.tmp/
 
 # ----------------------------------------
 # 🔧 Project Specific
 # ----------------------------------------
 dependency-management/
 .husky/
-.jest-cache
-*.tgz
 .lintstagedrc.json
 response.json
 response_debug.bin
@@ -179,13 +304,29 @@ response_debug.bin
 Bleu.js-mirror/
 Bleu.js-mirror.bfg-report/
 eggs_backup/
+frontend/
+backend/
+.local/
+*.local
 
 # ----------------------------------------
 # 💻 System & OS
 # ----------------------------------------
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 desktop.ini
+
+# ----------------------------------------
+# 📊 Performance & Analysis
+# ----------------------------------------
+stats.html
+bundle-analysis/
+webpack-bundle-analyzer/
 
 # ----------------------------------------
 # ⭐ Keep These Files
@@ -199,3 +340,226 @@ desktop.ini
 !jest.config.cjs
 !jest.setup.js
 !jest.setup.ts
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+.pnpm-store/
+.yarn/
+.yarnrc
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.cache/
+.temp/
+
+# Testing
+coverage/
+.nyc_output/
+.nyc_cache/
+__snapshots__/
+*.lcov
+.jest/
+.jest-cache/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Cache directories
+.cache/
+.temp/
+.tmp/
+.eslintcache
+.stylelintcache
+
+# Documentation
+docs/_build/
+site/
+.docusaurus/
+
+# Quantum computing specific
+.quantum-cache/
+.quantum-temp/
+.quantum-debug/
+
+# Security specific
+.security-cache/
+.security-temp/
+.security-debug/
+
+# Multimodal specific
+.multimodal-cache/
+.multimodal-temp/
+.multimodal-debug/
+
+# TensorFlow.js specific
+.tfjs-cache/
+.tfjs-temp/
+.tfjs-debug/
+
+# Model files
+*.h5
+*.pkl
+*.onnx
+*.tflite
+*.pb
+*.pt
+*.pth
+*.bin
+*.weights
+*.model
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.m4a
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.webp
+*.svg
+*.ico
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.swo
+*.swp
+*~
+
+# System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Project specific
+frontend/
+backend/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# CI/CD
+.github/workflows/
+.gitlab-ci.yml
+.circleci/
+.travis.yml
+.azure-pipelines/
+.jenkins/
+.husky/
+.lint-staged/
+
+# Performance profiling
+.cpuprofile
+.heapprofile
+.flamegraph
+*.prof
+
+# Bundle analysis
+stats.html
+bundle-analysis/
+webpack-bundle-analyzer/
+
+# Local development
+.local/
+*.local
+
