@@ -30,6 +30,16 @@ dotenv.config();
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost:27017/eggs-db';
 
+// Replace hard-coded credentials with environment variables
+const DB_USER = process.env.TEST_DB_USER || 'test_user';
+const DB_PASSWORD = process.env.TEST_DB_PASSWORD || 'test_password';
+const DB_HOST = process.env.TEST_DB_HOST || 'localhost';
+const DB_PORT = process.env.TEST_DB_PORT || '27017';
+const DB_NAME = process.env.TEST_DB_NAME || 'test_db';
+
+// Use environment variables for connection
+const connectionString = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+
 const connectMongoDB = async () => {
   try {
     // Check if credentials are available
@@ -41,7 +51,7 @@ const connectMongoDB = async () => {
       // For production, you might want to fail fast
     }
 
-    await mongoose.connect(MONGODB_URI, {
+    await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       authSource: 'admin',

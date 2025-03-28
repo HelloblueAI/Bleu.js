@@ -20,58 +20,80 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import { model as _model, Schema, connection } from 'mongoose';
+import mongoose from 'mongoose';
 import request from 'supertest';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { startServer, stopServer } from '../../index.mjs';
 
-import { startServer, stopServer } from '../index';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-let app, server;
+describe('Database Seeding', () => {
+  let server;
+  let connection;
 
-const TestModel = _model(
-  'Test',
-  new Schema({
-    name: String,
-    value: Number,
-  }),
-);
-
-beforeAll(async () => {
-  ({ app, server } = await startServer(0));
-});
-
-afterAll(async () => {
-  await stopServer(server);
-  await connection.dropDatabase();
-});
-
-describe('Seed Database', () => {
-  it('should seed database successfully', async () => {
-    const testData = [
-      { name: 'Item 1', value: 10 },
-      { name: 'Item 2', value: 20 },
-    ];
-
-    const response = await request(app)
-      .post('/api/seedDatabase')
-      .send({ data: testData, model: 'Test' });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty(
-      'message',
-      'Database seeded successfully',
-    );
-    expect(response.body).toHaveProperty('insertedCount', 2);
-
-    const insertedData = await TestModel.find();
-    expect(insertedData).toHaveLength(2);
-    expect(insertedData[0].name).toBe('Item 1');
-    expect(insertedData[1].value).toBe(20);
+  beforeAll(async () => {
+    server = await startServer();
+    connection = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/test');
   });
 
-  it('should handle missing data or model', async () => {
-    const response = await request(app).post('/api/seedDatabase').send({});
+  afterAll(async () => {
+    await mongoose.connection.close();
+    await stopServer();
+  });
 
-    expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('error', 'Missing data or model');
+  beforeEach(async () => {
+    await mongoose.connection.collection('eggs').deleteMany({});
+  });
+
+  it('should seed database with initial data', async () => {
+    const response = await request(server)
+      .post('/api/db/seed')
+      .send({
+        count: 5,
+        rarity: 'common'
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.seeded).toBe(5);
+
+    const eggs = await mongoose.connection.collection('eggs').find({}).toArray();
+    expect(eggs).toHaveLength(5);
+    expect(eggs[0].rarity).toBe('common');
+  });
+
+  it('should handle seeding errors gracefully', async () => {
+    const response = await request(server)
+      .post('/api/db/seed')
+      .send({
+        count: -1,
+        rarity: 'invalid'
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBeDefined();
+  });
+
+  it('should respect rarity distribution', async () => {
+    const response = await request(server)
+      .post('/api/db/seed')
+      .send({
+        count: 100,
+        rarity: 'random'
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.seeded).toBe(100);
+
+    const eggs = await mongoose.connection.collection('eggs').find({}).toArray();
+    const rarityCounts = eggs.reduce((acc, egg) => {
+      acc[egg.rarity] = (acc[egg.rarity] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Check if distribution is reasonable
+    expect(rarityCounts.common).toBeGreaterThan(rarityCounts.rare);
+    expect(rarityCounts.rare).toBeGreaterThan(rarityCounts.legendary);
   });
 });

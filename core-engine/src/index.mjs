@@ -34,6 +34,13 @@ import { createLogger, transports, format } from 'winston';
 import { WebSocketServer } from 'ws';
 import { createClient } from 'redis';
 import eggRoutes from './routes/egg.routes.js';
+import { logger } from './config/logger.mjs';
+import { ClusterManager } from './cluster/manager.mjs';
+import { WorkerManager } from './cluster/worker.mjs';
+import { AIOptimizer } from './ai/optimizer.mjs';
+import { PerformanceMonitor } from './performance/monitor.mjs';
+import { SecurityManager } from './security/manager.mjs';
+import { QuantumProcessor } from './quantum/processor.mjs';
 
 const secrets = await getSecrets();
 const numCPUs = os.cpus().length;
@@ -241,3 +248,311 @@ if (cluster.isPrimary && !process.env.RUNNING_UNDER_PM2) {
     logger.info(`🚀 API running on port ${PORT} | Worker ${process.pid}`),
   );
 }
+
+export class BleuEngine {
+  constructor(options = {}) {
+    this.options = {
+      enableQuantum: true,
+      enableAI: true,
+      enableSecurity: true,
+      enableClustering: true,
+      numWorkers: options.numWorkers || 4,
+      ...options,
+    };
+
+    this.initialized = false;
+    this.components = {
+      cluster: null,
+      worker: null,
+      ai: null,
+      performance: null,
+      security: null,
+      quantum: null,
+    };
+  }
+
+  /**
+   * Initialize Bleu engine
+   */
+  async initialize() {
+    try {
+      // Initialize components based on options
+      if (this.options.enableClustering) {
+        this.components.cluster = new ClusterManager();
+        this.components.worker = new WorkerManager();
+      }
+
+      if (this.options.enableAI) {
+        this.components.ai = new AIOptimizer(process.env.OPENAI_API_KEY);
+      }
+
+      if (this.options.enableSecurity) {
+        this.components.security = new SecurityManager();
+      }
+
+      if (this.options.enableQuantum) {
+        this.components.quantum = new QuantumProcessor();
+      }
+
+      this.components.performance = new PerformanceMonitor();
+
+      // Initialize all components
+      await Promise.all(
+        Object.values(this.components)
+          .filter(Boolean)
+          .map(component => component.initialize())
+      );
+
+      // Start cluster if enabled
+      if (this.options.enableClustering) {
+        await this.components.cluster.start({
+          numWorkers: this.options.numWorkers,
+        });
+      }
+
+      this.initialized = true;
+      logger.info('✅ Bleu engine initialized');
+    } catch (error) {
+      logger.error('❌ Failed to initialize Bleu engine:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate code with enhanced capabilities
+   */
+  async generateCode(description, options = {}) {
+    try {
+      if (!this.initialized) await this.initialize();
+
+      const operationId = this.components.performance.startMonitoring('code-generation');
+
+      try {
+        // Generate code using AI
+        let code;
+        if (this.options.enableAI) {
+          code = await this.components.ai.generateCode(description, options);
+        } else {
+          throw new Error('AI code generation is disabled');
+        }
+
+        // Enhance with quantum properties if enabled
+        if (this.options.enableQuantum) {
+          code = await this.components.quantum.enhanceCode(code);
+        }
+
+        // Validate security if enabled
+        if (this.options.enableSecurity) {
+          await this.components.security.validateCode(code);
+        }
+
+        // Analyze performance
+        const performanceAnalysis = await this.components.performance.analyzePerformance(code);
+
+        return {
+          code,
+          performance: performanceAnalysis,
+          security: this.options.enableSecurity ? {
+            validated: true,
+            score: await this.components.security.calculateSecurityScore(code),
+          } : null,
+          quantum: this.options.enableQuantum ? {
+            enhanced: true,
+            properties: await this.components.quantum.getMetrics(),
+          } : null,
+        };
+      } finally {
+        this.components.performance.stopMonitoring(operationId);
+      }
+    } catch (error) {
+      logger.error('❌ Code generation failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Optimize code with enhanced capabilities
+   */
+  async optimizeCode(code, options = {}) {
+    try {
+      if (!this.initialized) await this.initialize();
+
+      const operationId = this.components.performance.startMonitoring('code-optimization');
+
+      try {
+        // Optimize using AI
+        let optimizedCode;
+        if (this.options.enableAI) {
+          optimizedCode = await this.components.ai.optimizeCode(code, options);
+        } else {
+          throw new Error('AI optimization is disabled');
+        }
+
+        // Enhance with quantum properties if enabled
+        if (this.options.enableQuantum) {
+          optimizedCode = await this.components.quantum.optimizeCode(optimizedCode);
+        }
+
+        // Validate security if enabled
+        if (this.options.enableSecurity) {
+          await this.components.security.validateCode(optimizedCode);
+        }
+
+        // Analyze performance
+        const performanceAnalysis = await this.components.performance.analyzePerformance(optimizedCode);
+
+        return {
+          originalCode: code,
+          optimizedCode,
+          performance: performanceAnalysis,
+          security: this.options.enableSecurity ? {
+            validated: true,
+            score: await this.components.security.calculateSecurityScore(optimizedCode),
+          } : null,
+          quantum: this.options.enableQuantum ? {
+            enhanced: true,
+            properties: await this.components.quantum.getMetrics(),
+          } : null,
+        };
+      } finally {
+        this.components.performance.stopMonitoring(operationId);
+      }
+    } catch (error) {
+      logger.error('❌ Code optimization failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Analyze code with enhanced capabilities
+   */
+  async analyzeCode(code, options = {}) {
+    try {
+      if (!this.initialized) await this.initialize();
+
+      const operationId = this.components.performance.startMonitoring('code-analysis');
+
+      try {
+        // Perform AI analysis
+        let aiAnalysis;
+        if (this.options.enableAI) {
+          aiAnalysis = await this.components.ai.analyzeCode(code);
+        }
+
+        // Perform quantum analysis if enabled
+        let quantumAnalysis;
+        if (this.options.enableQuantum) {
+          quantumAnalysis = await this.components.quantum.analyzeCode(code);
+        }
+
+        // Perform security analysis if enabled
+        let securityAnalysis;
+        if (this.options.enableSecurity) {
+          securityAnalysis = {
+            score: await this.components.security.calculateSecurityScore(code),
+            vulnerabilities: await this.components.security.validateCode(code),
+          };
+        }
+
+        // Analyze performance
+        const performanceAnalysis = await this.components.performance.analyzePerformance(code);
+
+        return {
+          ai: aiAnalysis,
+          quantum: quantumAnalysis,
+          security: securityAnalysis,
+          performance: performanceAnalysis,
+        };
+      } finally {
+        this.components.performance.stopMonitoring(operationId);
+      }
+    } catch (error) {
+      logger.error('❌ Code analysis failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update engine settings
+   */
+  async updateSettings(settings) {
+    try {
+      this.options = {
+        ...this.options,
+        ...settings,
+      };
+
+      // Update component settings
+      if (settings.cluster && this.components.cluster) {
+        await this.components.cluster.updateSettings(settings.cluster);
+      }
+
+      if (settings.worker && this.components.worker) {
+        await this.components.worker.updateSettings(settings.worker);
+      }
+
+      if (settings.ai && this.components.ai) {
+        await this.components.ai.updateSettings(settings.ai);
+      }
+
+      if (settings.performance && this.components.performance) {
+        await this.components.performance.updateThresholds(settings.performance);
+      }
+
+      if (settings.security && this.components.security) {
+        await this.components.security.updateSettings(settings.security);
+      }
+
+      if (settings.quantum && this.components.quantum) {
+        await this.components.quantum.updateSettings(settings.quantum);
+      }
+
+      logger.info('✅ Engine settings updated');
+    } catch (error) {
+      logger.error('❌ Failed to update engine settings:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get engine metrics
+   */
+  async getMetrics() {
+    const metrics = {
+      initialized: this.initialized,
+      options: this.options,
+      components: {},
+      lastUpdate: new Date().toISOString(),
+    };
+
+    // Get metrics from each component
+    for (const [name, component] of Object.entries(this.components)) {
+      if (component) {
+        metrics.components[name] = await component.getMetrics();
+      }
+    }
+
+    return metrics;
+  }
+
+  /**
+   * Stop engine
+   */
+  async stop() {
+    try {
+      // Stop cluster if enabled
+      if (this.options.enableClustering && this.components.cluster) {
+        await this.components.cluster.stop();
+      }
+
+      this.initialized = false;
+      logger.info('✅ Bleu engine stopped');
+    } catch (error) {
+      logger.error('❌ Failed to stop Bleu engine:', error);
+      throw error;
+    }
+  }
+}
+
+// Export the engine instance
+export const bleu = new BleuEngine();

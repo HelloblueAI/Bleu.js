@@ -9,7 +9,16 @@
     "lint": "eslint . --ext .js,.mjs",
     "format": "prettier --write .",
     "test": "jest --coverage --passWithNoTests",
-    "build": "tsc"
+    "build": "tsc",
+    "security:audit": "pnpm audit && snyk test",
+    "security:monitor": "snyk monitor",
+    "security:fix": "snyk wizard",
+    "security:scan": "snyk code test && snyk container test",
+    "security:lint": "eslint . --ext .js,.mjs --plugin security",
+    "security:test": "jest --coverage --passWithNoTests --testMatch='**/__tests__/**/*.security.test.js'",
+    "security:deps": "pnpm audit && snyk test && snyk-delta",
+    "security:container": "trivy image your-image-name:latest",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -22,26 +31,48 @@
     "helmet": "^8.0.0",
     "ioredis": "^5.5.0",
     "morgan": "^1.10.0",
-    "mime": "3.0.0",
+    "mime": "^3.0.0",
     "redis": "^4.7.0",
-    "send": "0.18.0",
-    "serve-static": "1.15.0",
+    "send": "^0.19.0",
+    "serve-static": "^1.16.0",
     "uuid": "^11.0.5",
     "validator": "^13.12.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
+    "helmet-csp": "^2.1.0",
+    "hpp": "^0.2.3",
+    "xss": "^1.0.14",
+    "csrf": "^3.1.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-basic-auth": "^1.2.1"
   },
   "devDependencies": {
-    "eslint": "^8.2.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "jest": "^30.0.0",
-    "nodemon": "^3.0.0",
-    "prettier": "^3.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-security": "^1.7.1",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.5",
     "standard-version": "^9.5.0",
-    "typescript": "^5.7.3"
+    "typescript": "~5.7.3",
+    "snyk": "^1.1296.0",
+    "snyk-delta": "^1.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "security": {
+    "audit": true,
+    "monitor": true,
+    "scan": true,
+    "lint": true
   }
 }

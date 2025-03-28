@@ -24,10 +24,14 @@ const { monitorDependencies, resolveConflicts, DependencyError } = require('./sr
 const fs = require('fs');
 const { execSync } = require('child_process');
 
+// Mock fs and child_process modules
+jest.mock('fs', () => ({
+  readFileSync: jest.fn()
+}));
 
-jest.mock('fs');
-jest.mock('child_process');
-
+jest.mock('child_process', () => ({
+  execSync: jest.fn()
+}));
 
 const mockPackageJson = {
   dependencies: {
@@ -45,9 +49,7 @@ describe('Dependency Management', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-
     fs.readFileSync.mockImplementation(() => JSON.stringify(mockPackageJson));
-
 
     execSync.mockImplementation((command) => {
       const packageName = command.split(' ')[2];
