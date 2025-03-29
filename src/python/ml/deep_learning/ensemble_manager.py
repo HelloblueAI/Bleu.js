@@ -7,16 +7,12 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional, Union, Tuple, Any
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score, f1_score
-import tensorflow as tf
 from tensorflow import keras
 import structlog
-from concurrent.futures import ThreadPoolExecutor
 import ray
 from ray import tune
 import optuna
-from optuna.integration import TFKerasPruningCallback
 import mlflow
 from mlflow.tracking import MlflowClient
 

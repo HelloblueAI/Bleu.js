@@ -3,7 +3,7 @@
 import os
 import sys
 import structlog
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from datetime import datetime, UTC
 
 

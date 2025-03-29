@@ -4,12 +4,9 @@ Quantum-Enhanced Vision Model Architecture with Advanced Features
 
 import tensorflow as tf
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 import logging
-import qiskit
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal
 
 from quantum_attention import QuantumAttention, QuantumAttentionConfig
 from quantum_fusion import QuantumFusion, QuantumFusionConfig

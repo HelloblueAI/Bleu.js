@@ -3,8 +3,8 @@ Advanced caching system for the backend.
 """
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union
+from datetime import datetime
+from typing import Dict, List, Optional, Any
 import logging
 import json
 import pickle
@@ -13,7 +13,6 @@ import aioredis
 from aioredis import Redis
 import asyncio
 from functools import wraps
-import time
 
 logger = logging.getLogger(__name__)
 

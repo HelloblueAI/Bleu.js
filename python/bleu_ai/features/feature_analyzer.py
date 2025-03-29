@@ -4,17 +4,18 @@ Provides advanced feature analysis capabilities for machine learning models.
 """
 
 import logging
+from typing import Any, Dict, List, Optional
+
+import matplotlib.pyplot as plt
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union, Any
-from sklearn.feature_selection import mutual_info_regression, mutual_info_classif
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-import shap
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
+import shap
+from scipy import stats
 from scipy.stats import spearmanr
 from sklearn.ensemble import RandomForestClassifier
-from scipy import stats
+from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
 logger = logging.getLogger(__name__)
 

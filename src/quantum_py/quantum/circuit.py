@@ -5,12 +5,10 @@ from qiskit import QuantumCircuit as QiskitCircuit, QuantumRegister, ClassicalRe
 from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit_algorithms.optimizers import SPSA
 from qiskit_machine_learning.algorithms import NeuralNetworkClassifier
-from qiskit_machine_learning.circuit.library import RawFeatureVector
 from qiskit_machine_learning.neural_networks import SamplerQNN
 from qiskit.primitives import Sampler
-from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel
-from typing import Optional, Tuple, List, Dict, Any, Union
+from typing import Optional, Dict, Any
 import time
 import logging
 

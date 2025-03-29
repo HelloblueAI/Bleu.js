@@ -4,19 +4,19 @@ Implements various learning rate scheduling strategies for machine learning mode
 """
 
 import logging
+from typing import Dict, Optional
+
 import numpy as np
-from typing import Dict, Optional, Tuple, Union
+import optuna
 import torch
 import torch.nn as nn
+from sklearn.metrics import roc_auc_score
 from torch.optim.lr_scheduler import (
-    ReduceLROnPlateau,
     CosineAnnealingLR,
-    OneCycleLR,
     CyclicLR,
+    OneCycleLR,
+    ReduceLROnPlateau,
 )
-from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score, roc_auc_score
-import optuna
 
 
 class AdaptiveLearningRate:

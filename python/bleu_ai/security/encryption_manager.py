@@ -3,21 +3,21 @@ Encryption Manager Implementation
 Provides secure data handling and model protection capabilities.
 """
 
+import base64
+import json
 import logging
+import os
+import pickle
+from pathlib import Path
+from typing import Dict, Optional, Tuple, Union
+
 import numpy as np
 import torch
 import torch.nn as nn
-from typing import Dict, List, Optional, Tuple, Union
 from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
-import base64
-import os
-import json
-import pickle
-from pathlib import Path
 
 
 class EncryptionManager:

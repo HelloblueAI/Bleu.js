@@ -4,10 +4,11 @@ Combines multiple models for improved predictions.
 """
 
 import logging
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, List, Optional, Tuple, Union
+
 import numpy as np
 from sklearn.base import BaseEstimator
-from .xgboost_model import XGBoostModel
+
 
 
 class EnsembleModel:

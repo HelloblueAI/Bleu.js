@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple, Protocol, Any
+from typing import List, Dict, Optional, Protocol
 import numpy as np
 from enum import Enum, auto
 from ..core.quantum_circuit import QuantumCircuit
-from ..core.quantum_state import QuantumState
-from ..core.quantum_gate import QuantumGate
 
 
 class QuantumGateType(Enum):

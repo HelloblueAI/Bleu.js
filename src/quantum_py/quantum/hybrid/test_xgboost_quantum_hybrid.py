@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from .xgboost_quantum_hybrid import XGBoostQuantumHybrid, HybridConfig
 from ..processor import QuantumProcessor
 from typing import Tuple

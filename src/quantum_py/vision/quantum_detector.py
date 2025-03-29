@@ -4,18 +4,10 @@ import numpy as np
 import cv2
 import torch
 import torch.nn as nn
-import torchvision.models as models
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 import logging
 from dataclasses import dataclass
-from datetime import datetime
-import asyncio
 from ..quantum.processor import QuantumProcessor
-from ..quantum.self_learning import SelfLearningSystem
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal, EfficientSU2
-from qiskit.algorithms import QAOA, VQE
-from qiskit.algorithms.optimizers import SPSA, COBYLA
 from .quantum import QuantumProcessor
 from .scene import SceneAnalyzer
 from .temporal import TemporalAnalyzer

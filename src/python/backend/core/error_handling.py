@@ -4,8 +4,7 @@ Advanced error handling system for the backend.
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Type, Callable, TypeVar, Union
-import logging
+from typing import Dict, Optional, Any, Type, Callable, TypeVar
 import asyncio
 import time
 from functools import wraps

@@ -4,18 +4,14 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple, Any
+from typing import Dict, Optional, Union, Tuple, Any
 import numpy as np
-import tensorflow as tf
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit_machine_learning.neural_networks import CircuitQNN
-from qiskit_machine_learning.algorithms.classifiers import NeuralNetworkClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 import optuna
-from optuna.integration import TFKerasPruningCallback
 import structlog
-from concurrent.futures import ThreadPoolExecutor
 import ray
 from ray import tune
 import mlflow

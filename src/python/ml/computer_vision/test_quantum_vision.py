@@ -4,7 +4,7 @@ Test script for quantum-enhanced vision model
 
 import tensorflow as tf
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import List, Tuple
 import logging
 import os
 from pathlib import Path
@@ -16,7 +16,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
 import cv2
 
-from quantum_vision_model import QuantumVisionModel, QuantumVisionConfig
+from quantum_vision_model import QuantumVisionModel
 
 
 def setup_logging(log_dir: str) -> None:

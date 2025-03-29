@@ -9,7 +9,6 @@ import logging
 from ..config.settings import settings
 from .database import db_manager
 from .models import Job
-from sqlalchemy.orm import Session
 
 class JobQueueManager:
     """Job queue manager for handling background tasks."""
@@ -188,52 +187,42 @@ class JobQueueManager:
     async def _handle_train_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model training job."""
         # Implementation depends on your training logic
-        pass
         
     async def _handle_evaluate_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model evaluation job."""
         # Implementation depends on your evaluation logic
-        pass
         
     async def _handle_predict(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle prediction job."""
         # Implementation depends on your prediction logic
-        pass
         
     async def _handle_optimize_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model optimization job."""
         # Implementation depends on your optimization logic
-        pass
         
     async def _handle_process_dataset(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle dataset processing job."""
         # Implementation depends on your dataset processing logic
-        pass
         
     async def _handle_export_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model export job."""
         # Implementation depends on your export logic
-        pass
         
     async def _handle_import_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model import job."""
         # Implementation depends on your import logic
-        pass
         
     async def _handle_delete_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle model deletion job."""
         # Implementation depends on your deletion logic
-        pass
         
     async def _handle_delete_dataset(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle dataset deletion job."""
         # Implementation depends on your deletion logic
-        pass
         
     async def _handle_cleanup(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Handle cleanup job."""
         # Implementation depends on your cleanup logic
-        pass
 
 # Create global job queue manager instance
 job_queue_manager = JobQueueManager() 

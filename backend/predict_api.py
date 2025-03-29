@@ -1,12 +1,11 @@
-import json
-import numpy as np
-import xgboost as xgb
-import joblib
-import os
 import logging
+import os
+from typing import List
+
+import joblib
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
 
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

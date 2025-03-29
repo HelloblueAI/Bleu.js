@@ -1,4 +1,5 @@
 import pickle
+
 import numpy as np
 
 with open("xgboost_model.pkl", "rb") as model_file:

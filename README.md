@@ -1022,7 +1022,7 @@ For comprehensive support:
 
 ### Author
 
-Pejman Haghighatnia - Lead Developer at Helloblue, Inc.
+Pejman Haghighatnia 
 
 # License
 

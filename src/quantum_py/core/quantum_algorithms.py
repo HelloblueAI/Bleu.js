@@ -1,14 +1,13 @@
 import numpy as np
-from typing import List, Dict, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 from .quantum_circuit import QuantumCircuit
-from .quantum_processor import QuantumProcessor, ProcessorConfig
+from .quantum_processor import QuantumProcessor
 from ..utils.quantum_utils import (
     quantum_fourier_transform,
     create_phase_estimation_circuit,
     create_grover_operator,
     create_controlled_unitary,
 )
-from ..types.quantum_types import QuantumGateType, QuantumGateSpec, QuantumAlgorithmSpec
 
 
 class QuantumAlgorithms:

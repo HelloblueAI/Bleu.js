@@ -4,15 +4,11 @@ Tests for the performance optimization system.
 
 import pytest
 import asyncio
-import time
 from ..core.performance import (
     PerformanceOptimizer,
-    PerformanceMetrics,
-    ProfilingResult
+    PerformanceMetrics
 )
 from datetime import datetime
-import numpy as np
-from typing import Dict, List, Optional, Union
 
 # Create test optimizer instance
 optimizer = PerformanceOptimizer({

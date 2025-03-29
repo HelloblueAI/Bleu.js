@@ -4,15 +4,16 @@ Implements various compression techniques for machine learning models.
 """
 
 import logging
+import os
+from typing import Optional, Union
+
+import joblib
 import numpy as np
-import xgboost as xgb
-from typing import Dict, Optional, Union
 import torch
 import torch.nn as nn
 import torch.quantization
+import xgboost as xgb
 from sklearn.cluster import KMeans
-import joblib
-import os
 
 
 class ModelCompressor:

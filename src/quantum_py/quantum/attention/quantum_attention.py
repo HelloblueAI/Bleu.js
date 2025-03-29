@@ -5,11 +5,9 @@ Provides advanced quantum-enhanced attention mechanisms for machine learning mod
 
 import logging
 import numpy as np
-from typing import Dict, Optional, Union, Any, List, Tuple
+from typing import Optional, List
 import tensorflow as tf
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal, EfficientSU2
-from qiskit_machine_learning.neural_networks import CircuitQNN
 from qiskit.primitives import Sampler
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error

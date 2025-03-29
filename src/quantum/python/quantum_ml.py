@@ -1,15 +1,13 @@
 import numpy as np
-import tensorflow as tf
-from typing import Dict, List, Optional, Tuple, Union, Any
+from typing import Dict, List, Optional, Union, Any
 from dataclasses import dataclass
-import qiskit
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit.circuit.library import TwoLocal
 from qiskit_machine_learning.neural_networks import CircuitQNN
 from qiskit_machine_learning.algorithms.classifiers import NeuralNetworkClassifier
 from qiskit_machine_learning.algorithms.regressors import NeuralNetworkRegressor
 from qiskit.primitives import Sampler
-from qiskit.algorithms.optimizers import COBYLA, SPSA
+from qiskit.algorithms.optimizers import COBYLA
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import StandardScaler
 import logging

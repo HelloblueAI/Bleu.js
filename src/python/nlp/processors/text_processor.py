@@ -4,10 +4,8 @@ Enhanced text processor with advanced NLP features.
 
 from typing import List, Dict, Optional, Union, Tuple
 import torch
-import numpy as np
 from dataclasses import dataclass
 from transformers import AutoModel
-import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sentence_transformers import SentenceTransformer
 import logging

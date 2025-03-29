@@ -1,6 +1,5 @@
 """Example of using quantum-enhanced XGBoost with self-learning capabilities."""
 
-import numpy as np
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -15,7 +14,6 @@ from ..quantum.hybrid.xgboost_quantum_hybrid import XGBoostQuantumHybrid, Hybrid
 from ..quantum.processor import QuantumProcessor
 from ..quantum.self_learning import SelfLearningSystem
 import time
-from datetime import datetime
 
 
 async def main():

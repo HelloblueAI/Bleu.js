@@ -21,18 +21,22 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import os
-import joblib
-import optuna
 import logging
-import xgboost as xgb
+import os
+
+import joblib
 import numpy as np
-import pandas as pd
-
+import optuna
+import xgboost as xgb
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, precision_score, recall_score
 from sklearn.preprocessing import StandardScaler
-
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

@@ -4,17 +4,17 @@ Provides distributed training capabilities for machine learning models.
 """
 
 import logging
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.data import DataLoader, DistributedSampler
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Optional
+
 import ray
+import torch
+import torch.distributed as dist
+import torch.nn as nn
 from ray import tune
 from ray.tune.schedulers import ASHAScheduler
 from ray.tune.search.optuna import OptunaSearch
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader, DistributedSampler
 
 
 class TrainingManager:

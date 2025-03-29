@@ -6,7 +6,6 @@ import json
 import logging
 import structlog
 from datetime import datetime, UTC
-from pathlib import Path
 from typing import Dict, Any
 
 

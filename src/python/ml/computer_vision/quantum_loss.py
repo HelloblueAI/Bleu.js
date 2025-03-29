@@ -4,12 +4,11 @@ Quantum-Enhanced Loss Functions
 
 import tensorflow as tf
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
 import logging
 import qiskit
 from qiskit import QuantumCircuit as QiskitCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal
 
 
 @dataclass

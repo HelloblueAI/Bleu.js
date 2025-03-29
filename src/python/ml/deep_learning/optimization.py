@@ -4,13 +4,10 @@ Enhanced optimization module with advanced features for deep learning models.
 
 import torch
 import torch.nn as nn
-from torch.optim import Optimizer
 import numpy as np
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, Tuple
 from dataclasses import dataclass
-import optuna
 from torch.cuda.amp import autocast
-import ray
 from ray import tune
 import logging
 from torch.quantization import quantize_dynamic, prepare, convert, QConfig

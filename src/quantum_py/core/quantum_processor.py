@@ -1,10 +1,9 @@
 import numpy as np
-from typing import List, Dict, Optional, Union, Tuple, Any
+from typing import List, Dict, Tuple
 import logging
 from multiprocessing import Pool
 from dataclasses import dataclass
 from .quantum_circuit import QuantumCircuit
-from .quantum_state import QuantumState
 from .quantum_gate import QuantumGate
 
 logger = logging.getLogger(__name__)

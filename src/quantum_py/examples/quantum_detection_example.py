@@ -12,16 +12,14 @@ Key Features:
 """
 
 import numpy as np
-import torch
 from PIL import Image
 import time
 from datetime import datetime
 import json
 import os
-from typing import List, Dict, Optional, Any, Tuple
+from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 import logging
-from scipy.stats import entropy
 import psutil
 
 # Configure advanced logging

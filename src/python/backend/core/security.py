@@ -4,15 +4,14 @@ Advanced security system for the backend.
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+from typing import Dict, List
 import logging
 import hashlib
 import hmac
 import jwt
 import bcrypt
-from fastapi import HTTPException, Request
+from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel, EmailStr, constr
 import re
 from ipaddress import ip_address, ip_network
 import time

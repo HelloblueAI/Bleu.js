@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 import logging.handlers
 from pathlib import Path
-import asyncio
 
 from .config.settings import settings
 from .api.router import router

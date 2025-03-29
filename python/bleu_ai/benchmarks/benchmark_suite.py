@@ -1,13 +1,14 @@
-import numpy as np
+import logging
 import time
+from typing import Any, Dict, List
+
+import numpy as np
 import psutil
 import torch
-import tensorflow as tf
-from typing import Dict, List, Tuple, Any
-import logging
-from ..utils.quantumProcessor import QuantumProcessor
-from ..utils.performanceOptimizer import PerformanceOptimizer
+
 from ..utils.metrics import MetricsCollector
+from ..utils.performanceOptimizer import PerformanceOptimizer
+from ..utils.quantumProcessor import QuantumProcessor
 
 
 class BenchmarkSuite:
@@ -228,7 +229,6 @@ class BenchmarkSuite:
     def prepare_test_images(self, category: str) -> List[np.ndarray]:
         """Prepare test images for benchmarking."""
         # Implementation details
-        pass
 
     def calculate_accuracy_improvement(self, classical: Dict, quantum: Dict) -> float:
         """Calculate accuracy improvement percentage."""
@@ -249,14 +249,11 @@ class BenchmarkSuite:
     async def measure_response_time(self) -> float:
         """Measure system response time."""
         # Implementation details
-        pass
 
     async def measure_power_consumption(self) -> float:
         """Measure power consumption."""
         # Implementation details
-        pass
 
     def calculate_energy_efficiency(self, power_consumption: float) -> Dict[str, float]:
         """Calculate energy efficiency metrics."""
         # Implementation details
-        pass

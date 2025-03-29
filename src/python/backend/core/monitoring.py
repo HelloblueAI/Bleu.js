@@ -4,16 +4,13 @@ Advanced monitoring and analytics system for the backend.
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 import logging
-import time
 import psutil
 import prometheus_client as prom
-from opentelemetry import trace, metrics
+from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentation
 
 logger = logging.getLogger(__name__)
 
