@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Dict, Optional
 from dataclasses import dataclass
 import logging
 from ..core.quantum_state import QuantumState

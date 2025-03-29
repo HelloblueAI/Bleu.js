@@ -4,14 +4,12 @@ Provides sophisticated visualization capabilities for model analysis and perform
 """
 
 import logging
-import numpy as np
-import pandas as pd
+from typing import List, Optional, Tuple
+
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-import plotly.graph_objects as go
-import plotly.express as px
-from typing import Dict, List, Optional, Tuple, Union
-from sklearn.metrics import roc_curve, auc, confusion_matrix
+from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.preprocessing import StandardScaler
 
 

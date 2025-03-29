@@ -6,7 +6,6 @@ Bleu.js CLI - Command-line interface for the quantum-enhanced vision system
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional
 
 from .quantum_detector import AdvancedQuantumDetector
 from .utils import setup_logging

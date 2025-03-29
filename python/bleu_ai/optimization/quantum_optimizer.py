@@ -4,8 +4,9 @@ Provides quantum-enhanced optimization capabilities for machine learning models.
 """
 
 import logging
+from typing import Dict, Optional
+
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
 import pennylane as qml
 import torch
 import torch.nn as nn

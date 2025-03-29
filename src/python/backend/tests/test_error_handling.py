@@ -5,17 +5,11 @@ Tests for the error handling system.
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-from datetime import datetime
 import asyncio
 from ..core.error_handling import (
     ErrorHandler,
-    BaseAPIException,
     ValidationError,
     AuthenticationError,
-    AuthorizationError,
-    ResourceNotFoundError,
-    RateLimitError,
-    ServiceUnavailableError,
     ErrorContext
 )
 

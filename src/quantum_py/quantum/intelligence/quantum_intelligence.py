@@ -1,9 +1,8 @@
 """Advanced Quantum Intelligence System."""
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 import numpy as np
 from dataclasses import dataclass
-import asyncio
 from ..processor import QuantumProcessor
 from ...ml.enhanced_xgboost import EnhancedXGBoost
 

@@ -4,7 +4,6 @@ Tests for the MultimodalProcessor class
 
 import pytest
 import numpy as np
-from pathlib import Path
 from .multimodal_processor import (
     MultimodalProcessor,
     MultimodalConfig,

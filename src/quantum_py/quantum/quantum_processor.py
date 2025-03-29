@@ -5,18 +5,15 @@ Provides advanced quantum computing capabilities for machine learning models.
 
 import logging
 import numpy as np
-from typing import Dict, Optional, Union, Any, Callable, List, Tuple
+from typing import Optional, Callable
 import pennylane as qml
-import torch
 from sklearn.preprocessing import MinMaxScaler
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal, EfficientSU2
-from qiskit_algorithms.optimizers import SPSA, COBYLA
+from qiskit.circuit.library import TwoLocal
+from qiskit_algorithms.optimizers import SPSA
 from qiskit_machine_learning.neural_networks import CircuitQNN
 from qiskit.primitives import Sampler
-from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
-import time
 
 
 class QuantumProcessor:

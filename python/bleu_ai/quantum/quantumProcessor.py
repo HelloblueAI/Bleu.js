@@ -4,11 +4,11 @@ Provides quantum-enhanced capabilities for machine learning models.
 """
 
 import logging
+from typing import Optional
+
 import numpy as np
-from typing import Optional, Union, Tuple
 import pennylane as qml
 import torch
-import torch.nn as nn
 
 
 class QuantumProcessor:

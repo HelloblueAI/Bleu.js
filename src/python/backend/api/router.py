@@ -5,40 +5,16 @@ Main API router for the backend.
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Dict, Union
-import logging
+from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 
 from ..config.settings import settings
 from ..core.database import db_manager
-from ..core.models import User, Project, Model, Dataset, Job
+from ..core.models import User, Project, Model, Dataset
 from ..core.job_queue import job_queue_manager
-from ..core.cache import cache_manager
-from ..core.schemas import (
-    UserCreate,
-    UserResponse,
-    ProjectCreate,
-    ProjectResponse,
-    ModelCreate,
-    ModelResponse,
-    DatasetCreate,
-    DatasetResponse,
-    JobCreate,
-    JobResponse,
-    Token,
-    TokenData
-)
-from ..core.security import (
-    SECRET_KEY,
-    ALGORITHM,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    verify_password,
-    get_password_hash
-)
 from ..models.user import User
 from ..services.auth import get_current_user
 

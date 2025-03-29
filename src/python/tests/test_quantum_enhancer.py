@@ -5,18 +5,12 @@ Tests for the quantum enhancer module.
 import unittest
 import numpy as np
 import tensorflow as tf
-from pathlib import Path
 import tempfile
 import shutil
-import os
 import time
-from typing import Dict, List, Optional, Union
-from datetime import datetime
 import pytest
 
 from ..ml.deep_learning.quantum_enhancer import QuantumEnhancer
-from src.python.core.models import Model
-from src.python.core.schemas import ModelCreate
 
 
 @pytest.fixture

@@ -4,8 +4,9 @@ Provides quantum computing capabilities for machine learning models.
 """
 
 import logging
+from typing import Any, Callable, Dict, List, Optional, Union
+
 import numpy as np
-from typing import Dict, Optional, Union, Any, Callable, List
 import pennylane as qml
 import torch
 from sklearn.preprocessing import MinMaxScaler

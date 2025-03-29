@@ -2,12 +2,12 @@
 Test script to verify all critical dependencies and components.
 """
 
-import sys
 import os
-import logging
-from typing import Dict, Any
-import structlog
+import sys
 import warnings
+from typing import Any, Dict
+
+import structlog
 
 # Configure logging
 logger = structlog.get_logger()
@@ -47,7 +47,6 @@ def test_imports() -> Dict[str, Any]:
 
         results["dependencies"]["qiskit"] = qiskit.__version__
 
-        import cirq
 
         results["dependencies"][
             "cirq"

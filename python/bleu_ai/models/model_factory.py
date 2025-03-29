@@ -3,10 +3,12 @@ Model Factory for creating and managing different types of models.
 """
 
 import logging
-from typing import Dict, Optional, Type, List
+from typing import Dict, List, Optional, Type
+
 from sklearn.base import BaseEstimator
-from .xgboost_model import XGBoostModel
+
 from .ensemble_model import EnsembleModel
+from .xgboost_model import XGBoostModel
 
 
 class ModelFactory:

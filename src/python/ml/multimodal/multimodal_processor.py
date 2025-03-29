@@ -4,11 +4,9 @@ Integrates vision, text, and audio processing with quantum capabilities
 """
 
 import numpy as np
-import tensorflow as tf
-from typing import Dict, List, Optional, Tuple, Union, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import logging
-from pathlib import Path
 import asyncio
 from ..computer_vision.vision_processor import VisionProcessor, VisionConfig
 from ..quantum.quantum_enhancer import QuantumEnhancer

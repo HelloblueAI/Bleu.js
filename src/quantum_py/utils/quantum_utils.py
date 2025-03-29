@@ -1,7 +1,6 @@
 import numpy as np
-from typing import List, Dict, Optional, Tuple, Union
+from typing import List, Tuple
 from scipy import linalg
-from scipy.stats import entropy
 import logging
 
 logger = logging.getLogger(__name__)

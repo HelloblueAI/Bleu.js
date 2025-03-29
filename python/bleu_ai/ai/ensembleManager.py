@@ -4,18 +4,19 @@ Provides advanced ensemble management capabilities for machine learning models.
 """
 
 import logging
-import numpy as np
 from typing import Dict, List, Optional, Tuple, Union
+
+import catboost as cb
+import lightgbm as lgb
+import numpy as np
+import xgboost as xgb
 from sklearn.ensemble import (
-    RandomForestClassifier,
     GradientBoostingClassifier,
+    RandomForestClassifier,
     VotingClassifier,
 )
-from sklearn.model_selection import KFold
-import xgboost as xgb
-import lightgbm as lgb
-import catboost as cb
 from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.model_selection import KFold
 
 
 class EnsembleManager:

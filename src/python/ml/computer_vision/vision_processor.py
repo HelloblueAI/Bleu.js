@@ -6,9 +6,8 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import asyncio
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional
 from dataclasses import dataclass
-import logging
 from pathlib import Path
 import structlog
 

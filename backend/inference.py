@@ -13,22 +13,21 @@ Features:
 - Rich diagnostic information
 """
 
+import json
+import logging
 import os
 import sys
-import json
-import time
-import logging
 import threading
-import warnings
+import time
 import traceback
-from typing import Dict, List, Tuple, Any, Union, Optional
-from pathlib import Path
+import warnings
 from datetime import datetime
 from functools import lru_cache
+from typing import Any, Dict, List, Optional, Tuple, Union
 
+import joblib
 import numpy as np
 import xgboost as xgb
-import joblib
 
 # Suppress warnings for production use
 warnings.filterwarnings('ignore')
@@ -74,15 +73,12 @@ MODEL_CACHE = {
 
 class ModelError(Exception):
     """Custom exception for model-related errors."""
-    pass
 
 class FeatureError(Exception):
     """Custom exception for feature-related errors."""
-    pass
 
 class PredictionError(Exception):
     """Custom exception for prediction-related errors."""
-    pass
 
 @lru_cache(maxsize=1)
 def get_model_metadata() -> Dict[str, Any]:

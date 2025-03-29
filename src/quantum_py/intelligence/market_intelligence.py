@@ -1,7 +1,6 @@
 """Advanced Market Intelligence System."""
 
-from typing import Dict, List, Optional, Tuple, Union
-import numpy as np
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 import pandas as pd
 from ..quantum.intelligence.quantum_intelligence import QuantumIntelligence

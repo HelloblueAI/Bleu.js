@@ -4,7 +4,7 @@ Advanced performance optimization system for the backend.
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Callable, TypeVar, Generic
+from typing import Dict, List, Optional, Any, Callable, TypeVar
 import logging
 import time
 import cProfile
@@ -16,7 +16,6 @@ from functools import wraps
 import tracemalloc
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
-from scipy import stats
 
 logger = logging.getLogger(__name__)
 
@@ -213,12 +212,10 @@ class PerformanceOptimizer:
     async def _get_from_cache(self, key: str) -> Optional[Any]:
         """Get value from cache."""
         # Implementation depends on your caching system
-        pass
         
     async def _store_in_cache(self, key: str, value: Any, ttl: int):
         """Store value in cache."""
         # Implementation depends on your caching system
-        pass
         
     def batch_processing(
         self,

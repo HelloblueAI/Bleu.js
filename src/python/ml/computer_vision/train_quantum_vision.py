@@ -3,8 +3,7 @@ Training script for quantum-enhanced vision model
 """
 
 import tensorflow as tf
-import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Tuple
 import logging
 import os
 from pathlib import Path

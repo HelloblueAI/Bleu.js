@@ -1,8 +1,7 @@
 import pytest
 import numpy as np
-from typing import List, Dict, Optional
 from ..core.quantum_state import QuantumState
-from ..core.quantum_circuit import QuantumCircuit, QuantumGate
+from ..core.quantum_circuit import QuantumCircuit
 from ..core.quantum_processor import QuantumProcessor, ProcessorConfig
 from ..utils.quantum_utils import (
     create_bell_state,
@@ -20,16 +19,10 @@ from ..utils.quantum_utils import (
 )
 from ..types.quantum_types import (
     QuantumGateType,
-    NoiseType,
     QuantumGateSpec,
-    NoiseSpec,
-    MeasurementResult,
     QuantumStateData,
-    ErrorCorrectionData,
-    ProcessorStats,
     QuantumRegister,
     QuantumCircuitData,
-    QuantumAlgorithmSpec,
 )
 
 

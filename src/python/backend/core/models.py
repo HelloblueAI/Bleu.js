@@ -2,7 +2,7 @@
 Database models for the backend.
 """
 
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, JSON, Boolean, Text
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON, Boolean, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime

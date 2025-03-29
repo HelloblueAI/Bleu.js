@@ -24,15 +24,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import json
+import logging
+import os
+import sys
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
 import xgboost as xgb
-import joblib
-import os
-import logging
-import threading
-from typing import Tuple, Optional, Union, List
 
 # Enable logging for debugging and monitoring
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

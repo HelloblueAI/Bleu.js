@@ -1,10 +1,11 @@
-import pickle
-import os
-import shutil
 import fcntl
+import os
+import pickle
+import shutil
 import time
-from sklearn.preprocessing import StandardScaler
+
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 SCALER_PATH = "scaler.pkl"
 TEMP_SCALER_PATH = "scaler.pkl.tmp"

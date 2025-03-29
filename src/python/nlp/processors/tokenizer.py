@@ -2,15 +2,13 @@
 Enhanced tokenizer with advanced NLP features.
 """
 
-from transformers import AutoTokenizer, PreTrainedTokenizer
-from typing import List, Dict, Optional, Union, Tuple, Any
+from transformers import AutoTokenizer
+from typing import List, Dict, Optional, Union, Tuple
 import torch
 from dataclasses import dataclass
-import numpy as np
 from collections import Counter
 import re
 import spacy
-from tqdm import tqdm
 import logging
 from torch.nn.utils.rnn import pad_sequence
 

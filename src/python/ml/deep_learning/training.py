@@ -11,7 +11,6 @@ from typing import Dict, Optional, Callable
 import wandb
 import mlflow
 from tqdm import tqdm
-import numpy as np
 from dataclasses import dataclass
 import logging
 from torch.optim.lr_scheduler import OneCycleLR
