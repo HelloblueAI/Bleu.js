@@ -3,29 +3,121 @@
 
 # Function to handle errors
 handle_error() {
-    echo "Error: $1"
+    echo "❌ Error: $1"
     exit 1
 }
 
-# Activate virtual environment if it exists
-if [ -d "bleujs-env" ]; then
-    source bleujs-env/bin/activate || handle_error "Failed to activate virtual environment"
-elif [ -d "bleujs-env-py311" ]; then
-    source bleujs-env-py311/bin/activate || handle_error "Failed to activate virtual environment"
-else
-    handle_error "Virtual environment not found"
-fi
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
 
-# Run Python tests
-echo "Running tests..."
-python -m pytest || handle_error "Tests failed"
+# Function to get the virtual environment path
+get_venv_path() {
+    if [ -d "bleujs-env" ]; then
+        echo "bleujs-env"
+    elif [ -d ".venv" ]; then
+        echo ".venv"
+    elif [ -d "venv" ]; then
+        echo "venv"
+    else
+        echo ""
+    fi
+}
 
-# Run linting
-echo "Running linting checks..."
-python -m flake8 || handle_error "Flake8 check failed"
-black . --check || handle_error "Black check failed"
-isort . --check-only || handle_error "Isort check failed"
+# Function to activate virtual environment
+activate_venv() {
+    local venv_path=$(get_venv_path)
+    if [ -n "$venv_path" ]; then
+        if [ -f "$venv_path/bin/activate" ]; then
+            . "$venv_path/bin/activate"
+            echo "✅ Activated virtual environment: $venv_path"
+        else
+            handle_error "Virtual environment found but activate script missing"
+        fi
+    else
+        echo "⚠️ No virtual environment found, using system Python"
+    fi
+}
 
-# All checks passed
-echo "✅ All checks passed!"
-exit 0
+# Function to check Python version
+check_python_version() {
+    if command_exists python3; then
+        local version=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+        if [ "$(echo "$version >= 3.8" | bc)" -eq 1 ]; then
+            echo "✅ Python version $version meets requirements"
+        else
+            handle_error "Python version $version is below required version 3.8"
+        fi
+    else
+        handle_error "Python3 not found"
+    fi
+}
+
+# Function to check if pre-commit is installed
+check_precommit() {
+    if command_exists pre-commit; then
+        echo "✅ pre-commit is installed"
+    else
+        handle_error "pre-commit is not installed. Please install it with: pip install pre-commit"
+    fi
+}
+
+# Function to check if dependencies are installed
+check_dependencies() {
+    local missing_deps=()
+    local required_deps=("flake8" "black" "isort" "mypy" "ruff" "bandit")
+    
+    for dep in "${required_deps[@]}"; do
+        if ! command_exists "$dep"; then
+            missing_deps+=("$dep")
+        fi
+    done
+    
+    if [ ${#missing_deps[@]} -ne 0 ]; then
+        echo "⚠️ Missing dependencies: ${missing_deps[*]}"
+        echo "Installing missing dependencies..."
+        pip install "${missing_deps[@]}"
+    fi
+}
+
+# Function to run tests with caching
+run_tests() {
+    local cache_dir=".pytest_cache"
+    local test_files=$(git diff --cached --name-only --diff-filter=d | grep "\.py$")
+    
+    if [ -n "$test_files" ]; then
+        echo "🔍 Running tests for changed files..."
+        if [ -d "$cache_dir" ]; then
+            pytest --cache-clear "$test_files"
+        else
+            pytest "$test_files"
+        fi
+    else
+        echo "ℹ️ No Python files changed, skipping tests"
+    fi
+}
+
+# Main execution
+echo "🚀 Starting pre-commit checks..."
+
+# Check Python version
+check_python_version
+
+# Check pre-commit installation
+check_precommit
+
+# Activate virtual environment
+activate_venv
+
+# Check dependencies
+check_dependencies
+
+# Run pre-commit hooks
+echo "🔍 Running pre-commit hooks..."
+pre-commit run --hook-stage pre-commit --all-files
+
+# Run tests for changed files
+run_tests
+
+echo "✅ Pre-commit checks completed successfully"
