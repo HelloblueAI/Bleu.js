@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  backend:
+    environment:
+      NODE_ENV: production
+      ENABLE_SWAGGER: "false"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  core-engine:
+    environment:
+      NODE_ENV: production
+      ENABLE_DEBUG: "false"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  eggs-generator:
+    environment:
+      NODE_ENV: production
+      MODEL_OPTIMIZATION: "true"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  frontend:
+    environment:
+      NODE_ENV: production
+      GENERATE_SOURCEMAP: "false"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  mongo:
+    command: ["mongod", "--auth", "--bind_ip_all", "--wiredTigerCacheSizeGB", "2"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  redis:
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G 

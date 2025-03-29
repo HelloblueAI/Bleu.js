@@ -1,4 +1,39 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run test:ci
+# Activate virtual environment if it exists
+if [ -d "bleujs-env-py311" ]; then
+    source bleujs-env-py311/bin/activate
+fi
+
+# Function to check command status
+check_status() {
+    if [ $? -ne 0 ]; then
+        echo "❌ $1 failed"
+        exit 1
+    fi
+    echo "✅ $1 passed"
+}
+
+# Run Python tests
+echo "Running tests..."
+python -m pytest tests/ -v
+check_status "Tests"
+
+# Run linting
+echo "Running linting..."
+flake8 .
+check_status "Flake8"
+
+black . --check
+check_status "Black"
+
+isort . --check-only
+check_status "isort"
+
+# Run type checking
+echo "Running type checking..."
+mypy .
+check_status "Type checking"
+
+echo "✅ All checks passed!"
