@@ -1,4 +1,5 @@
 import { createLogger } from './logger';
+import { SecurityError } from '../types/errors';
 
 const logger = createLogger('Tokenizer');
 
@@ -7,74 +8,160 @@ export interface TokenizerConfig {
   padToken?: string;
   unknownToken?: string;
   vocabulary?: Map<string, number>;
+  sanitizeInput?: (input: string) => string;
+  maxTokenLength?: number;
+  cacheSize?: number;
 }
 
 export class Tokenizer {
-  private maxLength: number;
-  private padToken: string;
-  private unknownToken: string;
-  private vocabulary: Map<string, number>;
-  private reverseVocabulary: Map<number, string>;
+  private readonly padToken: string;
+  private readonly unknownToken: string;
+  private readonly vocabulary: Map<string, number>;
+  private readonly reverseVocabulary: Map<number, string>;
+  private readonly sanitizeInput: (input: string) => string;
+  private readonly maxTokenLength: number;
+  private readonly tokenCache: Map<string, number[]>;
+  private readonly CACHE_SIZE: number;
 
   constructor(config: TokenizerConfig = {}) {
-    this.maxLength = config.maxLength || 512;
-    this.padToken = config.padToken || '[PAD]';
-    this.unknownToken = config.unknownToken || '[UNK]';
-    this.vocabulary = config.vocabulary || new Map();
+    this.padToken = config.padToken ?? '<pad>';
+    this.unknownToken = config.unknownToken ?? '<unk>';
+    this.vocabulary = new Map();
     this.reverseVocabulary = new Map();
+    this.sanitizeInput = config.sanitizeInput ?? ((input: string) => input.toLowerCase().trim());
+    this.maxTokenLength = config.maxTokenLength ?? 512;
+    this.CACHE_SIZE = config.cacheSize ?? 1000;
+    this.tokenCache = new Map();
     
-    if (this.vocabulary.size === 0) {
-      this.initializeDefaultVocabulary();
+    if (config.vocabulary) {
+      Object.entries(config.vocabulary).forEach(([token, index]) => {
+        this.vocabulary.set(token, index);
+        this.reverseVocabulary.set(index, token);
+      });
     }
     
-    this.buildReverseVocabulary();
+    this.validateConfig();
   }
 
-  private initializeDefaultVocabulary(): void {
-    this.vocabulary.set(this.padToken, 0);
-    this.vocabulary.set(this.unknownToken, 1);
+  private validateConfig(): void {
+    if (this.maxTokenLength <= 0) {
+      throw new SecurityError('Invalid maxTokenLength configuration', 'INVALID_CONFIG');
+    }
+    if (this.CACHE_SIZE <= 0) {
+      throw new SecurityError('Invalid cacheSize configuration', 'INVALID_CONFIG');
+    }
   }
 
-  private buildReverseVocabulary(): void {
-    this.vocabulary.forEach((id, token) => {
-      this.reverseVocabulary.set(id, token);
-    });
+  private sanitizeText(text: string): string {
+    if (typeof text !== 'string') {
+      throw new SecurityError('Invalid input type for text sanitization', 'INVALID_INPUT');
+    }
+    
+    // Remove potentially dangerous characters
+    return text
+      .replace(/[^\w\s.,!?-]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, this.maxTokenLength);
+  }
+
+  private updateCache(text: string, tokens: number[]): void {
+    if (this.tokenCache.size >= this.CACHE_SIZE) {
+      // Remove oldest entry
+      const firstKey = this.tokenCache.keys().next().value;
+      this.tokenCache.delete(firstKey);
+    }
+    this.tokenCache.set(text, tokens);
   }
 
   public tokenize(text: string): number[] {
     try {
-      const tokens = text.toLowerCase().split(/\s+/);
-      return tokens.map(token => {
-        const id = this.vocabulary.get(token);
-        return id !== undefined ? id : this.vocabulary.get(this.unknownToken)!;
-      });
+      // Check cache first
+      if (this.tokenCache.has(text)) {
+        return this.tokenCache.get(text) ?? [];
+      }
+
+      const sanitizedText = this.sanitizeText(text);
+      
+      // Use a more efficient tokenization approach
+      const tokens = sanitizedText
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(token => token.length > 0)
+        .map(token => {
+          const id = this.vocabulary.get(token);
+          return id !== undefined ? id : this.vocabulary.get(this.unknownToken) ?? 0;
+        });
+
+      // Update cache
+      this.updateCache(text, tokens);
+      
+      return tokens;
     } catch (error) {
       logger.error('Error during tokenization:', error);
-      throw new Error('Failed to tokenize text');
+      throw new SecurityError('Failed to tokenize text', 'TOKENIZATION_ERROR');
     }
   }
 
-  public decode(ids: number[]): string {
+  public encode(text: string): number[] {
     try {
-      return ids
-        .map(id => this.reverseVocabulary.get(id) || this.unknownToken)
+      const sanitized = this.sanitizeInput(text);
+      const cacheKey = `${sanitized}_${this.maxTokenLength}`;
+      
+      if (this.tokenCache.has(cacheKey)) {
+        return this.tokenCache.get(cacheKey) ?? [];
+      }
+
+      const tokens = this.tokenize(sanitized);
+      const encoded = tokens.map(token => this.vocabulary.get(token) ?? this.vocabulary.get(this.unknownToken) ?? 0);
+      
+      // Pad or truncate to maxTokenLength
+      const result = encoded.length > this.maxTokenLength 
+        ? encoded.slice(0, this.maxTokenLength)
+        : [...encoded, ...Array(this.maxTokenLength - encoded.length).fill(this.vocabulary.get(this.padToken) ?? 0)];
+      
+      this.tokenCache.set(cacheKey, result);
+      return result;
+    } catch (error) {
+      logger.error('Error during encoding:', error);
+      throw new SecurityError('Failed to encode text', 'ENCODING_ERROR');
+    }
+  }
+
+  public decode(tokens: number[]): string {
+    try {
+      if (!Array.isArray(tokens) || tokens.some(token => typeof token !== 'number')) {
+        throw new SecurityError('Invalid input for decoding', 'INVALID_INPUT');
+      }
+
+      return tokens
+        .map(token => this.reverseVocabulary.get(token) ?? this.unknownToken)
+        .filter(token => token !== this.padToken)
         .join(' ');
     } catch (error) {
       logger.error('Error during decoding:', error);
-      throw new Error('Failed to decode token IDs');
+      throw new SecurityError('Failed to decode tokens', 'DECODING_ERROR');
     }
   }
 
   public pad(tokens: number[]): number[] {
-    if (tokens.length >= this.maxLength) {
-      return tokens.slice(0, this.maxLength);
+    if (!Array.isArray(tokens) || tokens.some(token => typeof token !== 'number')) {
+      throw new SecurityError('Invalid input for padding', 'INVALID_INPUT');
+    }
+
+    if (tokens.length >= this.maxTokenLength) {
+      return tokens.slice(0, this.maxTokenLength);
     }
     
-    const padId = this.vocabulary.get(this.padToken)!;
-    return [...tokens, ...Array(this.maxLength - tokens.length).fill(padId)];
+    const padId = this.vocabulary.get(this.padToken) ?? 0;
+    return [...tokens, ...Array(this.maxTokenLength - tokens.length).fill(padId)];
   }
 
   public addToken(token: string): void {
+    if (typeof token !== 'string' || token.length === 0) {
+      throw new SecurityError('Invalid token for addition', 'INVALID_TOKEN');
+    }
+
     if (!this.vocabulary.has(token)) {
       const newId = this.vocabulary.size;
       this.vocabulary.set(token, newId);
@@ -88,15 +175,10 @@ export class Tokenizer {
   }
 
   public getMaxLength(): number {
-    return this.maxLength;
+    return this.maxTokenLength;
   }
 
-  public setMaxLength(length: number): void {
-    if (length > 0) {
-      this.maxLength = length;
-      logger.info(`Updated max length to: ${length}`);
-    } else {
-      throw new Error('Max length must be greater than 0');
-    }
+  public clearCache(): void {
+    this.tokenCache.clear();
   }
 } 

@@ -1,29 +1,49 @@
 import { createLogger } from '../utils/logger';
-import crypto from 'crypto';
-import { promises as fs } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { SecurityError, ValidationError } from '../utils/errors';
 import { 
-  SecurityConfig, 
   SecurityScore, 
   SecurityReport, 
   Vulnerability, 
-  ScanResult,
   SecurityEventType 
 } from '../types/security';
+import { 
+  randomBytes, 
+  createHash,
+  createCipheriv,
+  createDecipheriv
+} from 'crypto';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 import { QuantumResistantCrypto } from './quantumResistantCrypto.js';
-import { AdvancedThreatDetector } from './threatDetector.js';
 import { AccessController } from './accessController.js';
 import { SecurityAuditLogger } from './securityAuditLogger.js';
 import { VulnerabilityScanner } from './vulnerabilityScanner.js';
-import { ThreatDetector } from './threatDetector.js';
 import express from 'express';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { promisify } from 'util';
 import { EventEmitter } from 'events';
+import * as tf from '@tensorflow/tfjs-node';
+import { BleuConfig } from '../types';
+import { QuantumProcessor } from '../quantum/quantumProcessor';
+import { SecurityValidator } from './validator';
+import { SecurityMonitor } from './monitor';
+import { SecurityAuditor } from './auditor';
+import { SecurityPolicy } from './policy';
+import { ThreatDetector } from './threatDetector';
+import { Request, Response, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { RateLimiter } from './rateLimiter';
+import { Logger } from '../utils/logger';
+import { JWTManager } from './jwtManager';
+import { Config } from '../config/config';
+import { Storage } from '../storage/storage';
+import rateLimit from 'express-rate-limit';
+import { CORSManager } from './corsManager';
+import { ProcessingError } from '../types/errors';
+import { SecurityConfig, ValidationResult, Request as SecurityRequest } from './types';
+import cors from 'cors';
+import helmet from 'helmet';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const logger = createLogger('SecurityManager');
 
 // Advanced security constants
@@ -50,173 +70,271 @@ const SECURITY_CONSTANTS = {
   }
 } as const;
 
+export interface ValidationResult {
+  isValid: boolean;
+  error?: string;
+}
+
+export interface Request {
+  headers: {
+    'x-api-key'?: string;
+    authorization?: string;
+    origin?: string;
+  };
+  body?: any;
+  method?: string;
+  origin?: string;
+}
+
 export class SecurityManager extends EventEmitter {
-  private config: SecurityConfig;
-  private key: Buffer;
-  private iv: Buffer;
-  private logger = createLogger('SecurityManager');
-  private threatDetector: ThreatDetector;
-  private quantumCrypto: QuantumResistantCrypto;
-  private accessController: AccessController;
-  private auditLogger: SecurityAuditLogger;
-  private vulnerabilityScanner: VulnerabilityScanner;
-  private rateLimiter: RateLimiterMemory;
-  private readonly randomBytes = promisify(crypto.randomBytes);
-  private failedAttempts: Map<string, { count: number; lastAttempt: number }> = new Map();
-  private activeSessions: Map<string, { userId: string; expiresAt: number }> = new Map();
-  private keyRotationTimer: NodeJS.Timeout | null = null;
+  private readonly logger: Logger;
+  private readonly config: SecurityConfig;
+  private readonly threatDetector: ThreatDetector;
+  private readonly key: Buffer;
+  private readonly iv: Buffer;
+  private readonly randomBytes = promisify(randomBytes);
+  private readonly failedAttempts: Map<string, { count: number; lastAttempt: number; riskScore: number }> = new Map();
+  private readonly activeSessions: Map<string, { userId: string; expiresAt: number; riskScore: number }> = new Map();
+  private readonly keyRotationTimer: NodeJS.Timeout | null = null;
+  private readonly encryptionKey: Buffer;
+  private readonly baseDir: string;
+  private readonly threatModel: tf.LayersModel | null = null;
+  private readonly securityMetrics: Map<string, number[]> = new Map();
+  private readonly adaptiveSecurityLevel: number = 1.0;
+  private readonly quantumCrypto: QuantumResistantCrypto;
+  private readonly accessController: AccessController;
+  private readonly auditLogger: SecurityAuditLogger;
+  private readonly vulnerabilityScanner: VulnerabilityScanner;
+  private readonly rateLimiter: RateLimiterMemory;
+  private readonly quantum: QuantumProcessor;
+  private readonly validator: SecurityValidator;
+  private readonly monitor: SecurityMonitor;
+  private readonly auditor: SecurityAuditor;
+  private readonly policy: SecurityPolicy;
+  private readonly jwtManager: JWTManager;
+  private readonly allowedOrigins: Set<string>;
+  private readonly storage: Storage;
+  private readonly corsManager: CORSManager;
+  private readonly rateLimiters: Map<string, { count: number; resetTime: number }>;
+  private initialized = false;
+  private rateLimits: Map<string, { count: number; timestamp: number }> = new Map();
 
-  constructor(config: Partial<SecurityConfig> = {}) {
+  constructor(config: SecurityConfig, logger: Logger) {
     super();
-    this.config = {
-      encryption: {
-        algorithm: SECURITY_CONSTANTS.DEFAULT_ALGORITHM,
-        keySize: SECURITY_CONSTANTS.DEFAULT_KEY_SIZE,
-        ivSize: SECURITY_CONSTANTS.DEFAULT_IV_SIZE,
-        keyRotationInterval: SECURITY_CONSTANTS.KEY_ROTATION_INTERVAL,
-        ...config.encryption
-      },
-      authorization: {
-        roles: SECURITY_CONSTANTS.DEFAULT_ROLES,
-        defaultRole: 'user',
-        permissions: {},
-        sessionTimeout: SECURITY_CONSTANTS.SESSION_TIMEOUT,
-        ...config.authorization
-      },
-      audit: {
-        enabled: true,
-        retentionDays: SECURITY_CONSTANTS.DEFAULT_RETENTION_DAYS,
-        logPath: 'logs/security',
-        ...config.audit
-      },
-      rateLimit: {
-        points: SECURITY_CONSTANTS.RATE_LIMIT_POINTS,
-        duration: SECURITY_CONSTANTS.RATE_LIMIT_DURATION,
-        ...config.rateLimit
-      },
-      passwordPolicy: {
-        ...SECURITY_CONSTANTS.PASSWORD_COMPLEXITY,
-        ...config.passwordPolicy
-      },
-      enabled: config.enabled ?? true,
-      encryptionKey: config.encryptionKey || 'default-key'
-    };
-
+    if (!config || !logger) {
+      throw new SecurityError('Invalid configuration or logger');
+    }
+    if (!config.jwtSecret || !config.apiKeys || !config.allowedOrigins) {
+      throw new SecurityError('Missing required security configuration');
+    }
+    this.logger = logger;
+    this.config = config;
+    this.rateLimiters = new Map();
+    this.threatDetector = new ThreatDetector(this.config);
+    this.accessController = new AccessController(this.config);
+    this.auditLogger = new SecurityAuditLogger(this.config);
     this.rateLimiter = new RateLimiterMemory({
-      points: this.config.rateLimit.points,
-      duration: this.config.rateLimit.duration
+      points: config.rateLimits.maxRequests,
+      duration: config.rateLimits.windowMs / 1000
     });
+    this.allowedOrigins = new Set(this.config.allowedOrigins || ['http://localhost:3000']);
+    this.encryptionKey = randomBytes(32);
+    this.baseDir = process.cwd();
+    this.quantumCrypto = new QuantumResistantCrypto();
+    this.vulnerabilityScanner = new VulnerabilityScanner(this.config);
+    this.quantum = new QuantumProcessor();
+    this.validator = new SecurityValidator();
+    this.monitor = new SecurityMonitor();
+    this.auditor = new SecurityAuditor();
+    this.policy = new SecurityPolicy();
+    this.jwtManager = new JWTManager(this.config.jwtSecret);
+    this.corsManager = new CORSManager(this.config.cors);
+    this.storage = new Storage({
+      path: this.baseDir,
+      retentionDays: 30,
+      compression: true
+    }, logger);
+  }
 
-    this.initializeComponents();
+  public async initialize(): Promise<void> {
+    if (this.initialized) {
+      this.logger.warn('SecurityManager already initialized');
+      return;
+    }
+
+    try {
+      await Promise.all([
+        this.threatDetector.initialize(),
+        this.accessController.initialize(),
+        this.auditLogger.initialize(),
+        this.rateLimiter.initialize(),
+        this.initializeComponents(),
+        this.loadThreatModel(),
+        this.setupKeyRotation(),
+        this.startAdaptiveSecurityLoop(),
+        this.quantum.initialize(),
+        this.validator.initialize(),
+        this.monitor.initialize(),
+        this.auditor.initialize(),
+        this.policy.initialize(),
+        this.corsManager.initialize()
+      ]);
+
+      this.initialized = true;
+      this.logger.info('SecurityManager initialized successfully');
+    } catch (error) {
+      this.logger.error('Failed to initialize SecurityManager:', error);
+      throw new ProcessingError('Failed to initialize security components');
+    }
   }
 
   private async initializeComponents(): Promise<void> {
     try {
-      this.key = await this.randomBytes(this.config.encryption.keySize);
-      this.iv = await this.randomBytes(this.config.encryption.ivSize);
+      this.key = await this.randomBytes(this.config.security.encryption.keySize);
+      this.iv = await this.randomBytes(this.config.security.encryption.ivSize);
       
-      this.threatDetector = new ThreatDetector();
-      this.quantumCrypto = new QuantumResistantCrypto();
-      this.accessController = new AccessController(this.config.authorization);
-      this.auditLogger = new SecurityAuditLogger(this.config.audit);
-      this.vulnerabilityScanner = new VulnerabilityScanner(this.config);
-
-      await this.initialize();
-      this.setupKeyRotation();
-    } catch (error) {
-      this.logger.error('Failed to initialize security components:', { error });
-      throw new Error('Security initialization failed');
-    }
-  }
-
-  private setupKeyRotation(): void {
-    if (this.keyRotationTimer) {
-      clearInterval(this.keyRotationTimer);
-    }
-
-    this.keyRotationTimer = setInterval(async () => {
-      try {
-        await this.rotateKeys();
-      } catch (error) {
-        this.logger.error('Scheduled key rotation failed:', { error });
-      }
-    }, this.config.encryption.keyRotationInterval);
-  }
-
-  async initialize(): Promise<void> {
-    const startTime = Date.now();
-    try {
-      // Validate encryption algorithm
-      if (!crypto.getCiphers().includes(this.config.encryption.algorithm)) {
-        throw new Error(`Unsupported encryption algorithm: ${this.config.encryption.algorithm}`);
-      }
-
       await Promise.all([
         this.accessController.initialize(),
         this.auditLogger.initialize(),
         this.vulnerabilityScanner.initialize()
       ]);
+    } catch (error) {
+      this.logger.error('Failed to initialize security components:', { error });
+      throw new ProcessingError('Failed to initialize security components');
+    }
+  }
 
-      this.logger.info('Security manager initialized successfully', {
-        duration: Date.now() - startTime
+  private async loadThreatModel(): Promise<void> {
+    try {
+      const modelData = await fs.readFile(join(this.baseDir, 'models', 'threat_model.json'), 'utf-8');
+      this.threatModel = await tf.loadLayersModel(tf.io.browserFiles([modelData]));
+    } catch (error) {
+      this.logger.warn('No existing threat model found, creating new one');
+      this.threatModel = this.createThreatModel();
+    }
+  }
+
+  private createThreatModel(): tf.LayersModel {
+    const model = tf.sequential({
+      layers: [
+        tf.layers.dense({ units: 64, activation: 'relu', inputShape: [10] }),
+        tf.layers.dropout({ rate: 0.2 }),
+        tf.layers.dense({ units: 32, activation: 'relu' }),
+        tf.layers.dropout({ rate: 0.2 }),
+        tf.layers.dense({ units: 1, activation: 'sigmoid' })
+      ]
+    });
+
+    model.compile({
+      optimizer: tf.train.adam(0.001),
+      loss: 'binaryCrossentropy',
+      metrics: ['accuracy']
+    });
+
+    return model;
+  }
+
+  private startAdaptiveSecurityLoop(): void {
+    setInterval(async () => {
+      await this.updateAdaptiveSecurityLevel();
+    }, 5 * 60 * 1000); // Every 5 minutes
+  }
+
+  private async updateAdaptiveSecurityLevel(): Promise<void> {
+    try {
+      const metrics = await this.calculateSecurityMetrics();
+      const riskScore = await this.predictRiskScore(metrics);
+      
+      // Adjust security level based on risk score
+      this.adaptiveSecurityLevel = Math.max(0.5, Math.min(1.5, 1.0 + (riskScore - 0.5)));
+      
+      // Update rate limiter based on security level
+      this.rateLimiter = new RateLimiterMemory({
+        points: Math.floor(this.config.rateLimits?.maxRequests * this.adaptiveSecurityLevel),
+        duration: this.config.rateLimits?.windowMs
+      });
+
+      this.logger.info('Updated adaptive security level', {
+        level: this.adaptiveSecurityLevel,
+        riskScore,
+        metrics
       });
     } catch (error) {
-      this.logger.error('Failed to initialize security manager:', { error });
-      throw error;
+      this.logger.error('Failed to update adaptive security level:', error);
     }
   }
 
-  async encrypt(data: string): Promise<string> {
-    const startTime = Date.now();
-    try {
-      const cipher = crypto.createCipheriv(
-        this.config.encryption.algorithm,
-        this.key,
-        this.iv
-      );
+  private async calculateSecurityMetrics(): Promise<number[]> {
+    const metrics: number[] = [];
+    
+    // Calculate failed attempts ratio
+    const failedAttemptsRatio = this.failedAttempts.size / this.activeSessions.size;
+    metrics.push(failedAttemptsRatio);
 
-      let encrypted = cipher.update(data, 'utf8', 'base64');
-      encrypted += cipher.final('base64');
-      const authTag = cipher.getAuthTag();
+    // Calculate average risk score of active sessions
+    const avgSessionRisk = Array.from(this.activeSessions.values())
+      .reduce((sum, session) => sum + session.riskScore, 0) / this.activeSessions.size;
+    metrics.push(avgSessionRisk);
 
-      const result = Buffer.concat([
-        this.iv,
-        Buffer.from(encrypted, 'base64'),
-        authTag
-      ]).toString('base64');
+    // Add more security metrics here...
 
-      this.logger.performance('encrypt', Date.now() - startTime);
-      return result;
-    } catch (error) {
-      this.logger.error('Encryption failed:', { error });
-      throw new Error('Encryption failed');
-    }
+    return metrics;
   }
 
-  async decrypt(encryptedData: string): Promise<string> {
-    const startTime = Date.now();
-    try {
-      const buffer = Buffer.from(encryptedData, 'base64');
-      const iv = buffer.slice(0, this.config.encryption.ivSize);
-      const authTag = buffer.slice(-this.config.encryption.ivSize);
-      const data = buffer.slice(this.config.encryption.ivSize, -this.config.encryption.ivSize);
+  private async predictRiskScore(metrics: number[]): Promise<number> {
+    if (!this.threatModel) return 0.5;
 
-      const decipher = crypto.createDecipheriv(
-        this.config.encryption.algorithm,
-        this.key,
-        iv
-      );
-      decipher.setAuthTag(authTag);
+    const input = tf.tensor2d([metrics]);
+    const prediction = this.threatModel.predict(input) as tf.Tensor;
+    const riskScore = await prediction.data();
+    
+    input.dispose();
+    prediction.dispose();
+    
+    return riskScore[0];
+  }
 
-      let decrypted = decipher.update(data.toString('base64'), 'base64', 'utf8');
-      decrypted += decipher.final('utf8');
+  private async encrypt(data: string): Promise<string> {
+    const buffer = Buffer.from(data, 'utf8');
+    const cipher = crypto.createCipheriv(
+      this.config.security.encryption.algorithm,
+      this.key,
+      this.iv
+    );
 
-      this.logger.performance('decrypt', Date.now() - startTime);
-      return decrypted;
-    } catch (error) {
-      this.logger.error('Decryption failed:', { error });
-      throw new Error('Decryption failed');
-    }
+    const encrypted = Buffer.concat([
+      cipher.update(buffer),
+      cipher.final()
+    ]);
+
+    const tag = cipher.getAuthTag();
+    const result = Buffer.concat([this.iv, tag, encrypted]);
+
+    return result.toString('base64');
+  }
+
+  private async decrypt(encryptedData: string): Promise<string> {
+    const buffer = Buffer.from(encryptedData, 'base64');
+    const iv = buffer.subarray(0, this.config.security.encryption.ivSize);
+    const tag = buffer.subarray(
+      this.config.security.encryption.ivSize,
+      this.config.security.encryption.ivSize + 16
+    );
+    const encrypted = buffer.subarray(this.config.security.encryption.ivSize + 16);
+
+    const decipher = crypto.createDecipheriv(
+      this.config.security.encryption.algorithm,
+      this.key,
+      iv
+    );
+
+    decipher.setAuthTag(tag);
+    const decrypted = Buffer.concat([
+      decipher.update(encrypted),
+      decipher.final()
+    ]);
+
+    return decrypted.toString('utf8');
   }
 
   async detectThreats(data: string): Promise<boolean> {
@@ -247,21 +365,31 @@ export class SecurityManager extends EventEmitter {
         return false;
       }
 
-      // Check session validity
-      if (!this.isSessionValid(userId)) {
+      // Check session validity and risk score
+      const session = this.activeSessions.get(userId);
+      if (!session || !this.isSessionValid(userId)) {
         this.logger.security('Access denied - invalid session', { userId });
         return false;
       }
 
+      // Apply adaptive security based on risk score
+      if (session.riskScore > 0.8) {
+        // Require additional authentication for high-risk sessions
+        if (!await this.performAdditionalAuth(userId)) {
+          return false;
+        }
+      }
+
       const userRole = await this.getUserRole(userId);
-      const permissions = this.config.authorization.permissions[userRole] || [];
+      const permissions = this.config.security.authorization.permissions[userRole] || [];
       
       const hasAccess = permissions.includes(resource);
       
       this.logger.audit('access_check', userId, {
         resource,
         role: userRole,
-        granted: hasAccess
+        granted: hasAccess,
+        riskScore: session.riskScore
       });
 
       this.logger.performance('access_check', Date.now() - startTime);
@@ -300,7 +428,7 @@ export class SecurityManager extends EventEmitter {
   }
 
   async logSecurityEvent(event: Record<string, any>): Promise<void> {
-    if (!this.config.audit.enabled) return;
+    if (!this.config.security.audit.enabled) return;
 
     try {
       const logEntry = {
@@ -335,11 +463,11 @@ export class SecurityManager extends EventEmitter {
 
   async updatePermissions(role: string, permissions: string[]): Promise<void> {
     try {
-      if (!this.config.authorization.roles.includes(role)) {
+      if (!this.config.security.authorization.roles.includes(role)) {
         throw new Error(`Invalid role: ${role}`);
       }
 
-      this.config.authorization.permissions[role] = permissions;
+      this.config.security.authorization.permissions[role] = permissions;
       this.logger.audit('permissions_updated', 'system', { role, permissions });
       this.emit(SecurityEventType.PERMISSION_CHANGE, { role, permissions });
     } catch (error) {
@@ -350,14 +478,14 @@ export class SecurityManager extends EventEmitter {
 
   private async getUserRole(userId: string): Promise<string> {
     // In a real implementation, this would fetch the user's role from a database
-    return this.config.authorization.defaultRole;
+    return this.config.security.authorization.defaultRole;
   }
 
   async cleanupAuditLogs(): Promise<void> {
-    if (!this.config.audit.enabled) return;
+    if (!this.config.security.audit.enabled) return;
 
     try {
-      const retentionMs = this.config.audit.retentionDays * 24 * 60 * 60 * 1000;
+      const retentionMs = this.config.security.audit.retentionDays * 24 * 60 * 60 * 1000;
       const cutoffDate = new Date(Date.now() - retentionMs);
 
       this.logger.audit('audit_logs_cleanup', 'system', { cutoffDate });
@@ -442,7 +570,13 @@ export class SecurityManager extends EventEmitter {
         this.quantumCrypto.dispose(),
         this.accessController.dispose(),
         this.auditLogger.dispose(),
-        this.vulnerabilityScanner.dispose()
+        this.vulnerabilityScanner.dispose(),
+        this.quantum.dispose(),
+        this.validator.dispose(),
+        this.monitor.dispose(),
+        this.auditor.dispose(),
+        this.policy.dispose(),
+        this.corsManager.dispose()
       ]);
       
       this.logger.info('Security manager disposed successfully');
@@ -453,47 +587,197 @@ export class SecurityManager extends EventEmitter {
   }
 
   getMiddleware(): express.RequestHandler {
-    return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const startTime = Date.now();
+    return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        // Rate limiting
-        await this.rateLimiter.consume(req.ip);
-
-        // Add security headers
-        res.setHeader('X-Content-Type-Options', 'nosniff');
-        res.setHeader('X-Frame-Options', 'DENY');
-        res.setHeader('X-XSS-Protection', '1; mode=block');
-        res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-        res.setHeader('Content-Security-Policy', "default-src 'self'");
-        res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-        res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-
-        // Add request ID for tracking
-        const requestId = crypto.randomBytes(16).toString('hex');
-        req.headers['x-request-id'] = requestId;
-        res.setHeader('X-Request-ID', requestId);
-
-        this.logger.performance('security_middleware', Date.now() - startTime, {
-          requestId,
-          ip: req.ip,
-          path: req.path
-        });
-
+        const validationResult = await this.validateRequest(req);
+        if (!validationResult.isValid) {
+          return res.status(401).json({ error: validationResult.error });
+        }
         next();
       } catch (error) {
-        if (error.name === 'RateLimitExceeded') {
-          this.logger.security('Rate limit exceeded', { ip: req.ip });
-          this.emit(SecurityEventType.RATE_LIMIT_EXCEEDED, { ip: req.ip });
-          res.status(429).json({ error: 'Too many requests' });
-        } else {
-          this.logger.error('Security middleware error:', { error, requestId: req.headers['x-request-id'] });
-          next(error);
-        }
+        this.logger.error('Security middleware error:', error);
+        return res.status(500).json({ error: 'Internal security error' });
       }
     };
   }
 
-  getConfig(): SecurityConfig {
-    return this.config;
+  public async validateRequest(request: Request): Promise<ValidationResult> {
+    this.logger.debug('Validating request');
+
+    // Check API key
+    const apiKey = request.headers['x-api-key'];
+    if (!apiKey) {
+      this.logger.error('No API key provided');
+      return { isValid: false, error: 'Authentication required' };
+    }
+
+    if (!this.config.apiKeys.includes(apiKey)) {
+      this.logger.error('Invalid API key');
+      return { isValid: false, error: 'Invalid API key' };
+    }
+
+    // Check JWT token if present
+    const authHeader = request.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      try {
+        await this.validateToken(token);
+      } catch (error) {
+        this.logger.error('Invalid JWT token');
+        return { isValid: false, error: 'Invalid token' };
+      }
+    }
+
+    // Check rate limit
+    if (!this.checkRateLimit(apiKey)) {
+      this.logger.error('Rate limit exceeded');
+      return { isValid: false, error: 'Rate limit exceeded' };
+    }
+
+    // Validate request body if present
+    if (request.body && !this.validateRequestBody(request.body)) {
+      this.logger.error('Invalid request body');
+      return { isValid: false, error: 'Invalid request body' };
+    }
+
+    this.logger.info('Request validated successfully');
+    return { isValid: true };
+  }
+
+  public async validateToken(token: string): Promise<any> {
+    this.logger.debug('Validating JWT token');
+    try {
+      return jwt.verify(token, this.config.jwtSecret);
+    } catch (error) {
+      this.logger.error('Failed to validate JWT token:', error);
+      throw new SecurityError('Invalid token');
+    }
+  }
+
+  public async validateCORS(request: Request): Promise<ValidationResult> {
+    this.logger.debug('Validating CORS');
+    const origin = request.origin || request.headers.origin;
+
+    if (!origin || !this.config.allowedOrigins.includes(origin)) {
+      this.logger.error('Invalid origin:', origin);
+      return { isValid: false, error: 'Invalid origin' };
+    }
+
+    this.logger.info('CORS validation successful');
+    return { isValid: true };
+  }
+
+  public async resetRateLimit(clientId: string): Promise<void> {
+    this.logger.info('Rate limit reset for client:', clientId);
+    this.rateLimits.delete(clientId);
+  }
+
+  public sanitizeError(error: Error): { message: string; stack?: string } {
+    this.logger.debug('Sanitizing error message');
+    if (!error) {
+      this.logger.error('Error object is required');
+      throw new SecurityError('Error object is required');
+    }
+
+    return {
+      message: 'An unexpected error occurred'
+    };
+  }
+
+  private validateRequestBody(body: any): boolean {
+    return body && typeof body === 'object' && !Array.isArray(body);
+  }
+
+  private checkRateLimit(clientId: string): boolean {
+    const now = Date.now();
+    const limit = this.rateLimits.get(clientId);
+
+    if (!limit) {
+      this.rateLimits.set(clientId, { count: 1, timestamp: now });
+      return true;
+    }
+
+    if (now - limit.timestamp > this.config.rateLimits.windowMs) {
+      this.rateLimits.set(clientId, { count: 1, timestamp: now });
+      return true;
+    }
+
+    if (limit.count >= this.config.rateLimits.maxRequests) {
+      return false;
+    }
+
+    limit.count++;
+    return true;
+  }
+
+  public async cleanup(): Promise<void> {
+    try {
+      this.logger.info('Cleaning up SecurityManager');
+      this.rateLimits.clear();
+      this.logger.info('SecurityManager cleanup completed');
+    } catch (error) {
+      this.logger.error('Failed to cleanup SecurityManager:', error);
+      throw new SecurityError('Failed to cleanup SecurityManager');
+    }
+  }
+
+  setupCORS(app: express.Application): void {
+    try {
+      // Configure CORS middleware
+      const corsOptions = {
+        origin: Array.from(this.allowedOrigins),
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Client-ID'],
+        credentials: true,
+        maxAge: 86400 // 24 hours
+      };
+      
+      app.use(cors(corsOptions));
+      this.logger.info('CORS middleware setup successfully');
+    } catch (error) {
+      this.logger.error('Failed to setup CORS middleware:', error);
+      throw error;
+    }
+  }
+
+  setupRateLimiting(app: express.Application): void {
+    try {
+      // Configure rate limiting middleware
+      const limiter = rateLimit({
+        windowMs: this.config.rateLimits.windowMs || 15 * 60 * 1000, // 15 minutes
+        max: this.config.rateLimits.maxRequests || 100, // limit each IP to 100 requests per windowMs
+        message: 'Too many requests from this IP, please try again later'
+      });
+      
+      app.use(limiter);
+      this.logger.info('Rate limiting middleware setup successfully');
+    } catch (error) {
+      this.logger.error('Failed to setup rate limiting middleware:', error);
+      throw error;
+    }
+  }
+
+  setupJWT(app: express.Application): void {
+    try {
+      // Configure JWT middleware
+      app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (token) {
+          try {
+            const decoded = this.validateToken(token);
+            (req as any).user = decoded;
+          } catch (error) {
+            res.status(401).send('Invalid token');
+            return;
+          }
+        }
+        next();
+      });
+      
+      this.logger.info('JWT middleware setup successfully');
+    } catch (error) {
+      this.logger.error('Failed to setup JWT middleware:', error);
+      throw error;
+    }
   }
 } 

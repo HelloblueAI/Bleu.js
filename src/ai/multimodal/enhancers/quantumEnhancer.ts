@@ -1,33 +1,21 @@
 import * as tf from '@tensorflow/tfjs-node';
-import { createLogger } from '../../../utils/logger';
-import { BleuAI } from '../../bleuAI';
-import { Monitor } from '../../../monitors/monitor';
+import { Monitor } from './monitor';
+import { createLogger, Logger } from '../../../utils/logger';
+import { QuantumState, QuantumGate, QuantumCircuit } from '../../../quantum/types';
+import { ProcessingError } from '../../../utils/errors';
 
 // For testing
 export const __test__ = {
   createLogger: () => new Logger('QuantumEnhancer')
 };
 
-interface QuantumCircuit {
-  qubits: number;
-  gates: Map<string, any>;
-  measurements: Map<string, any>;
-  entanglement: Map<string, any>;
-}
-
-interface QuantumState {
-  amplitude: number;
-  phase: number;
-}
-
-interface QuantumGate {
-  type: 'hadamard' | 'phase' | 'entanglement';
-  params: Record<string, number>;
-}
-
-export interface QuantumConfig {
+interface QuantumEnhancerConfig {
+  monitor: Monitor;
+  maxQubits?: number;
   coherenceThreshold?: number;
-  maxEntanglement?: number;
+  optimizationLevel?: 'basic' | 'advanced' | 'optimal';
+  errorCorrection?: boolean;
+  quantumBackend?: 'simulator' | 'ibm' | 'ionq';
 }
 
 export class Complex {
@@ -51,244 +39,288 @@ export class Complex {
 }
 
 export class QuantumEnhancer {
-  private readonly logger = createLogger('QuantumEnhancer');
-  private readonly quantumMemory: Map<number, { amplitude: number; phase: number }[]>;
-  private readonly entanglementMap: Map<number, Set<number>>;
-  private readonly coherenceMonitor: Monitor;
-  private initialized = false;
-  private readonly maxQubits: number;
-  private readonly coherenceThreshold: number;
+  private monitor: Monitor;
+  private logger: Logger;
+  private config: Required<QuantumEnhancerConfig>;
+  private state: QuantumState;
+  private initialized: boolean = false;
+  private quantumCircuit: QuantumCircuit;
+  private coherenceMonitor: NodeJS.Timeout;
 
-  constructor(config: {
-    maxQubits?: number;
-    coherenceThreshold?: number;
-  } = {}) {
-    this.maxQubits = config.maxQubits ?? 1000;
-    this.coherenceThreshold = config.coherenceThreshold ?? 0.8;
-    this.quantumMemory = new Map();
-    this.entanglementMap = new Map();
-    this.coherenceMonitor = new Monitor({
-      metrics: ['coherence', 'entanglement'],
-      thresholds: {
-        coherence: { warning: 0.7, critical: 0.5 },
-        entanglement: { warning: 0.6, critical: 0.4 }
-      }
-    });
-    
-    // Initialize default state
-    this.initializeState(4);
+  constructor(config: QuantumEnhancerConfig) {
+    this.monitor = config.monitor;
+    this.logger = new Logger('QuantumEnhancer');
+    this.config = {
+      maxQubits: config.maxQubits || 8,
+      coherenceThreshold: config.coherenceThreshold || 0.95,
+      optimizationLevel: config.optimizationLevel || 'optimal',
+      errorCorrection: config.errorCorrection ?? true,
+      quantumBackend: config.quantumBackend || 'simulator',
+      monitor: config.monitor
+    };
   }
 
   async initialize(): Promise<void> {
     try {
-      await this.coherenceMonitor.initialize();
+      this.logger.info('Initializing QuantumEnhancer', this.config);
+      
+      // Initialize quantum state
+      this.state = {
+        qubits: Array(this.config.maxQubits).fill(null).map(() => ({
+          state: [1, 0],
+          errorRate: 0,
+          coherence: 1.0
+        })),
+        entanglement: new Map(),
+        errorRates: new Map()
+      };
+
+      // Initialize quantum circuit
+      this.quantumCircuit = new QuantumCircuit(this.config.maxQubits);
+      
+      // Start coherence monitoring
+      this.startCoherenceMonitoring();
+      
       this.initialized = true;
-      this.logger.info('Quantum enhancer initialized successfully');
+      this.logger.info('QuantumEnhancer initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize quantum enhancer:', error);
-      throw error;
+      this.logger.error('Failed to initialize QuantumEnhancer', error);
+      throw new ProcessingError('Failed to initialize QuantumEnhancer');
     }
   }
 
-  async dispose(): Promise<void> {
+  private startCoherenceMonitoring(): void {
+    this.coherenceMonitor = setInterval(() => {
+      this.monitor.recordMetrics({
+        name: 'quantum_coherence',
+        value: this.calculateAverageCoherence(),
+        unit: 'percentage'
+      });
+    }, 1000);
+  }
+
+  private calculateAverageCoherence(): number {
+    return this.state.qubits.reduce((sum, qubit) => sum + qubit.coherence, 0) / this.state.qubits.length;
+  }
+
+  async applyQuantumGate(gate: QuantumGate): Promise<void> {
+    if (!this.initialized) {
+      throw new ProcessingError('QuantumEnhancer not initialized');
+    }
+
     try {
-      this.quantumMemory.clear();
-      this.entanglementMap.clear();
+      this.logger.debug('Applying quantum gate', { gate });
+      
+      // Validate gate
+      if (!this.isValidGate(gate)) {
+        throw new ProcessingError('Invalid gate type');
+      }
+
+      // Apply gate with error correction if enabled
+      if (this.config.errorCorrection) {
+        await this.applyGateWithErrorCorrection(gate);
+      } else {
+        await this.applyGate(gate);
+      }
+
+      // Update circuit
+      this.quantumCircuit.addGate(gate);
+
+      // Monitor gate application
+      await this.monitor.recordMetrics({
+        name: 'quantum_gate_application',
+        value: 1,
+        unit: 'count'
+      });
+    } catch (error) {
+      this.logger.error('Failed to apply quantum gate', error);
+      throw new ProcessingError('Failed to apply quantum gate');
+    }
+  }
+
+  private isValidGate(gate: QuantumGate): boolean {
+    const validGates = ['H', 'X', 'Y', 'Z', 'CNOT', 'SWAP', 'TOFFOLI'];
+    return validGates.includes(gate.type) && 
+           gate.target >= 0 && 
+           gate.target < this.config.maxQubits;
+  }
+
+  private async applyGateWithErrorCorrection(gate: QuantumGate): Promise<void> {
+    // Apply gate with error correction
+    await this.applyGate(gate);
+    
+    // Check for errors and correct if necessary
+    const errorRate = this.calculateErrorRate(gate);
+    if (errorRate > this.config.coherenceThreshold) {
+      await this.correctErrors(gate);
+    }
+  }
+
+  private async applyGate(gate: QuantumGate): Promise<void> {
+    // Apply the quantum gate to the state
+    const targetQubit = this.state.qubits[gate.target];
+    const newState = this.calculateNewState(targetQubit.state, gate);
+    targetQubit.state = newState;
+    
+    // Update coherence
+    targetQubit.coherence *= 0.99; // Simulate decoherence
+  }
+
+  private calculateNewState(currentState: [number, number], gate: QuantumGate): [number, number] {
+    // Implement quantum gate operations
+    switch (gate.type) {
+      case 'H':
+        return [
+          (currentState[0] + currentState[1]) / Math.sqrt(2),
+          (currentState[0] - currentState[1]) / Math.sqrt(2)
+        ];
+      case 'X':
+        return [currentState[1], currentState[0]];
+      case 'Y':
+        return [-currentState[1], currentState[0]];
+      case 'Z':
+        return [currentState[0], -currentState[1]];
+      default:
+        return currentState;
+    }
+  }
+
+  private calculateErrorRate(gate: QuantumGate): number {
+    // Calculate error rate based on gate type and current state
+    const baseErrorRate = 0.01;
+    const coherenceFactor = this.state.qubits[gate.target].coherence;
+    return baseErrorRate * (1 - coherenceFactor);
+  }
+
+  private async correctErrors(gate: QuantumGate): Promise<void> {
+    // Implement error correction
+    const targetQubit = this.state.qubits[gate.target];
+    targetQubit.errorRate = Math.max(0, targetQubit.errorRate - 0.1);
+    targetQubit.coherence = Math.min(1, targetQubit.coherence + 0.05);
+  }
+
+  async enhanceModel(model: tf.LayersModel): Promise<void> {
+    if (!this.initialized) {
+      throw new ProcessingError('QuantumEnhancer not initialized');
+    }
+
+    try {
+      this.logger.info('Enhancing model with quantum features');
+      
+      // Get model weights
+      const weights = model.getWeights();
+      
+      // Apply quantum enhancement to weights
+      const enhancedWeights = await this.enhanceWeights(weights);
+      
+      // Update model weights
+      model.setWeights(enhancedWeights);
+      
+      // Monitor enhancement
+      await this.monitor.recordMetrics({
+        name: 'model_enhancement',
+        value: 1,
+        unit: 'count'
+      });
+    } catch (error) {
+      this.logger.error('Failed to enhance model', error);
+      throw new ProcessingError('Failed to enhance model');
+    }
+  }
+
+  private async enhanceWeights(weights: tf.Tensor[]): Promise<tf.Tensor[]> {
+    return weights.map(weight => {
+      const data = weight.dataSync();
+      const enhancedData = new Float32Array(data.length);
+      
+      for (let i = 0; i < data.length; i++) {
+        // Apply quantum enhancement to each weight
+        enhancedData[i] = this.applyQuantumEnhancement(data[i]);
+      }
+      
+      return tf.tensor(enhancedData, weight.shape);
+    });
+  }
+
+  private applyQuantumEnhancement(value: number): number {
+    // Apply quantum-inspired enhancement
+    const quantumFactor = Math.random() * 0.1 - 0.05; // Small random quantum fluctuation
+    return value * (1 + quantumFactor);
+  }
+
+  async enhanceInput(input: tf.Tensor): Promise<tf.Tensor> {
+    if (!this.initialized) {
+      throw new ProcessingError('QuantumEnhancer not initialized');
+    }
+
+    try {
+      this.logger.debug('Enhancing input data');
+      
+      // Validate input
+      if (!input || !input.shape) {
+        throw new ProcessingError('Invalid input: Input must be a valid TensorFlow tensor');
+      }
+
+      // Apply quantum enhancement
+      const enhanced = await this.applyQuantumEnhancement(input);
+      
+      // Monitor enhancement
+      await this.monitor.recordMetrics({
+        name: 'input_enhancement',
+        value: 1,
+        unit: 'count'
+      });
+      
+      return enhanced;
+    } catch (error) {
+      this.logger.error('Failed to enhance input', error);
+      throw new ProcessingError('Failed to enhance input');
+    }
+  }
+
+  private async applyQuantumEnhancement(input: tf.Tensor): Promise<tf.Tensor> {
+    return tf.tidy(() => {
+      const data = input.dataSync();
+      const enhancedData = new Float32Array(data.length);
+      
+      for (let i = 0; i < data.length; i++) {
+        // Apply quantum enhancement to each value
+        enhancedData[i] = this.applyQuantumEnhancement(data[i]);
+      }
+      
+      return tf.tensor(enhancedData, input.shape);
+    });
+  }
+
+  getState(): QuantumState {
+    if (!this.initialized) {
+      throw new ProcessingError('QuantumEnhancer not initialized');
+    }
+    return this.state;
+  }
+
+  async cleanup(): Promise<void> {
+    try {
+      this.logger.info('Cleaning up QuantumEnhancer');
+      
+      // Stop coherence monitoring
       if (this.coherenceMonitor) {
-        await this.coherenceMonitor.dispose();
+        clearInterval(this.coherenceMonitor);
       }
+      
+      // Clean up quantum circuit
+      if (this.quantumCircuit) {
+        await this.quantumCircuit.cleanup();
+      }
+      
+      // Reset state
+      this.state = null;
       this.initialized = false;
-      this.logger.info('Quantum enhancer disposed successfully');
-    } catch (error) {
-      this.logger.error('Failed to dispose quantum enhancer:', error);
-      throw error;
-    }
-  }
-
-  getConfig(): QuantumConfig {
-    return {
-      coherenceThreshold: this.coherenceThreshold,
-      maxEntanglement: this.maxQubits
-    };
-  }
-
-  public async monitorCoherence(): Promise<number> {
-    if (!this.initialized) {
-      throw new Error('QuantumEnhancer not initialized');
-    }
-    const metrics = await this.coherenceMonitor.getMetrics('coherence');
-    return metrics.length > 0 ? metrics[metrics.length - 1].value : 1.0;
-  }
-
-  public async optimizeCoherence(): Promise<void> {
-    if (!this.initialized) {
-      throw new Error('QuantumEnhancer not initialized');
-    }
-    
-    try {
-      await this.coherenceMonitor.recordMetric('coherence', 0.75);
-      this.logger.info('Coherence optimization completed');
-    } catch (error) {
-      this.logger.error('Failed to optimize coherence:', error);
-      throw error;
-    }
-  }
-
-  public async enhanceModel(model: tf.LayersModel): Promise<tf.LayersModel> {
-    if (!this.initialized) throw new Error('QuantumEnhancer not initialized');
-    const weights = model.getWeights();
-    const enhancedWeights = await Promise.all(weights.map(w => this.applyQuantumTransformation(w)));
-    model.setWeights(enhancedWeights);
-    return model;
-  }
-
-  public async enhanceInput(input: tf.Tensor): Promise<tf.Tensor> {
-    if (!this.initialized) {
-      throw new Error('QuantumEnhancer not initialized');
-    }
-
-    try {
-      const quantumFeatures = await this.extractFeatures(input);
-      const transformedFeatures = await this.transformFeatures(quantumFeatures);
       
-      // Monitor quantum coherence
-      const coherence = await this.monitorCoherence();
-      await this.coherenceMonitor.recordMetric('coherence', coherence);
-      this.logger.info('Quantum coherence:', { coherence });
-
-      return transformedFeatures;
+      this.logger.info('QuantumEnhancer cleaned up successfully');
     } catch (error) {
-      this.logger.error('Error enhancing input:', error);
-      throw error;
-    }
-  }
-
-  private async applyQuantumTransformation(tensor: tf.Tensor): Promise<tf.Tensor> {
-    const data = await tensor.data();
-    const transformed = tf.tidy(() => {
-      const t = tf.tensor(Array.from(data));
-      return tf.add(t, tf.randomNormal(t.shape, 0, 0.1));
-    });
-    this.updateEntanglementMap(tensor.id.toString());
-    return transformed;
-  }
-
-  public initializeState(numQubits: number): { amplitude: number; phase: number }[] {
-    const state = Array(numQubits).fill(null).map(() => ({
-      amplitude: 1 / Math.sqrt(numQubits),
-      phase: 0
-    }));
-    const key = Date.now();
-    this.quantumMemory.set(key, state);
-    this.coherenceMonitor.recordMetric('coherence', 1.0).catch(err => {
-      this.logger.error('Failed to record initial coherence:', err);
-    });
-    return state;
-  }
-
-  public applyHadamard(qubit: number): void {
-    if (!this.initialized) throw new Error('QuantumEnhancer not initialized');
-    for (const state of this.quantumMemory.values()) {
-      if (state[qubit]) {
-        const amplitude = state[qubit].amplitude;
-        state[qubit].amplitude = amplitude / Math.sqrt(2);
-        state[qubit].phase = Math.PI / 2;
-      }
-    }
-  }
-
-  public applyCNOT(control: number, target: number): void {
-    if (!this.initialized) throw new Error('QuantumEnhancer not initialized');
-    for (const state of this.quantumMemory.values()) {
-      if (state[control] && state[target]) {
-        if (state[control].amplitude > 0.5) {
-          const temp = state[target].amplitude;
-          state[target].amplitude = state[control].amplitude;
-          state[control].amplitude = temp;
-        }
-      }
-    }
-  }
-
-  public applyPhase(qubit: number, phase: number): void {
-    if (!this.initialized) throw new Error('QuantumEnhancer not initialized');
-    for (const state of this.quantumMemory.values()) {
-      if (state[qubit]) {
-        state[qubit].phase = (state[qubit].phase + phase) % (2 * Math.PI);
-      }
-    }
-  }
-
-  private updateEntanglementMap(tensorId: string): void {
-    if (!this.entanglementMap.has(tensorId)) {
-      this.entanglementMap.set(tensorId, new Set());
-    }
-    const connectedTensors = Array.from(this.entanglementMap.keys())
-      .filter(id => id !== tensorId)
-      .slice(0, 3);
-    
-    connectedTensors.forEach(id => {
-      const connections = this.entanglementMap.get(id);
-      if (connections) {
-        connections.add(tensorId);
-      }
-    });
-  }
-
-  public getState(): { amplitude: number; phase: number }[] {
-    if (!this.initialized) throw new Error('QuantumEnhancer not initialized');
-    return Array.from(this.quantumMemory.values())[0] || [];
-  }
-
-  async extractFeatures(input: tf.Tensor): Promise<tf.Tensor> {
-    if (!this.initialized) {
-      throw new Error('Quantum enhancer not initialized');
-    }
-
-    try {
-      // Ensure input is 2D
-      const reshapedInput = input.reshape([-1, input.shape[input.shape.length - 1]]);
-      
-      // Apply quantum transformation
-      const quantumFeatures = tf.tidy(() => {
-        const hadamard = tf.tensor2d([[1, 1], [1, -1]]).div(Math.sqrt(2));
-        return reshapedInput.matMul(hadamard);
-      });
-
-      // Normalize features
-      const normalizedFeatures = tf.tidy(() => {
-        const mean = quantumFeatures.mean(1, true);
-        const std = quantumFeatures.sub(mean).square().mean(1, true).sqrt();
-        return quantumFeatures.sub(mean).div(std.add(1e-8));
-      });
-
-      return normalizedFeatures;
-    } catch (error) {
-      this.logger.error('Error extracting quantum features:', error);
-      throw error;
-    }
-  }
-
-  async transformFeatures(features: tf.Tensor): Promise<tf.Tensor> {
-    if (!this.initialized) {
-      throw new Error('Quantum enhancer not initialized');
-    }
-
-    try {
-      // Ensure features tensor is 2D
-      const reshapedFeatures = features.reshape([-1, features.shape[features.shape.length - 1]]);
-      
-      // Apply quantum memory transformation
-      const transformedFeatures = tf.tidy(() => {
-        const phase = tf.scalar(Math.PI / 4);
-        const rotation = tf.complex(tf.cos(phase), tf.sin(phase));
-        return reshapedFeatures.mul(rotation);
-      });
-
-      return transformedFeatures;
-    } catch (error) {
-      this.logger.error('Error transforming features:', error);
-      throw error;
+      this.logger.error('Failed to cleanup QuantumEnhancer', error);
+      throw new ProcessingError('Failed to cleanup QuantumEnhancer');
     }
   }
 } 

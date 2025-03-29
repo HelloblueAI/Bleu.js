@@ -87,7 +87,7 @@ async function analyzeWithHuggingFace(text: string): Promise<any> {
   return { message: 'HuggingFace analysis not implemented yet' };
 }
 
-export async function analyze(options: AnalyzeOptions): Promise<void> {
+export async function analyzeCode(options: AnalyzeOptions): Promise<void> {
   try {
     logger.info('Initializing BleuAI...');
     const bleuAI = new BleuAI(options.config);

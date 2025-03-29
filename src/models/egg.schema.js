@@ -43,6 +43,36 @@ const AttributeSchema = new Schema({
   }
 }, { _id: false });
 
+const metadataSchema = new Schema({
+  properties: {
+    type: {
+      type: String,
+      required: true,
+      enum: ['standard', 'rare', 'legendary', 'mythic']
+    },
+    description: String,
+    attributes: [{
+      name: String,
+      value: Schema.Types.Mixed
+    }]
+  },
+  dna: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^[A-Za-z0-9]+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid DNA string!`
+    }
+  },
+  rarity: {
+    type: String,
+    required: true,
+    enum: ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic']
+  }
+}, { _id: false });
+
 const eggSchema = new Schema(
   {
     id: {
@@ -55,7 +85,7 @@ const eggSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ['common', 'rare', 'epic', 'legendary'],
+      enum: ['standard', 'rare', 'legendary', 'mythic'],
       index: true,
     },
     description: {
@@ -65,57 +95,8 @@ const eggSchema = new Schema(
       maxlength: 500,
     },
     metadata: {
-      dna: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true,
-        validate: {
-          validator: function(v) {
-            return /^0x[0-9a-fA-F]+$/.test(v);
-          },
-          message: 'DNA must be a valid hexadecimal string starting with 0x'
-        },
-      },
-      rarity: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 100,
-        index: true,
-      },
-      attributes: {
-        type: [AttributeSchema],
-        required: [true, 'At least one attribute is required'],
-        validate: {
-          validator: function(v) {
-            return Array.isArray(v) && v.length > 0;
-          },
-          message: 'Attributes array cannot be empty'
-        }
-      },
-      generation: {
-        type: Number,
-        required: true,
-        min: 0,
-      },
-      birthDate: {
-        type: Date,
-        default: Date.now,
-      },
-      tags: [{ type: String, lowercase: true, trim: true }],
-      version: {
-        type: String,
-        default: '1.0.0',
-        match: /^\d+\.\d+\.\d+$/,
-      },
-      generatedBy: String,
-      createdAt: { type: Date, default: Date.now, immutable: true },
-      updatedAt: { type: Date, default: Date.now },
-      properties: {
-        type: Types.Mixed,
-        default: {}
-      }
+      type: metadataSchema,
+      required: true
     },
     parents: [{
       type: Schema.Types.ObjectId,
@@ -207,29 +188,23 @@ const eggSchema = new Schema(
       ],
     },
     stats: {
+      health: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100
+      },
       strength: {
         type: Number,
         required: true,
-        min: 1,
-        max: 100,
+        min: 0,
+        max: 100
       },
-      agility: {
+      speed: {
         type: Number,
         required: true,
-        min: 1,
-        max: 100,
-      },
-      intelligence: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 100,
-      },
-      vitality: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 100,
+        min: 0,
+        max: 100
       },
     },
     abilities: [{
@@ -307,34 +282,20 @@ eggSchema.virtual('marketStatus').get(function() {
 });
 
 eggSchema.virtual('age').get(function() {
-  return Math.floor((Date.now() - this.metadata.birthDate) / (1000 * 60 * 60 * 24));
+  return Date.now() - this.createdAt;
 });
 
 // Methods
 eggSchema.methods.evolve = async function() {
-  const now = new Date();
-  const minTimeForEvolution = 24 * 60 * 60 * 1000; // 24 hours
+  this.evolution.stage += 1;
+  this.evolution.progress = 0;
+  this.lastEvolution = new Date();
+  return this.save();
+};
 
-  if (now.getTime() - this.lastEvolution.getTime() < minTimeForEvolution) {
-    return false;
-  }
-
-  const evolutionStages = {
-    common: 'rare',
-    rare: 'epic',
-    epic: 'legendary'
-  };
-
-  if (evolutionStages[this.type]) {
-    this.type = evolutionStages[this.type];
-    this.lastEvolution = now;
-    this.metadata.rarity = Math.min(100, this.metadata.rarity + 10);
-    this.metadata.generation += 1;
-    this.metadata.updatedAt = now;
-    return true;
-  }
-
-  return false;
+eggSchema.methods.hatch = async function() {
+  this.status = 'hatched';
+  return this.save();
 };
 
 eggSchema.methods.breed = async function(otherEgg) {
@@ -434,18 +395,33 @@ eggSchema.statics.findByDNA = function(dna) {
   return this.findOne({ 'metadata.dna': dna });
 };
 
+eggSchema.statics.findByOwner = function(owner) {
+  return this.find({ owner });
+};
+
+eggSchema.statics.findByStatus = function(status) {
+  return this.find({ status });
+};
+
 // Middleware
 eggSchema.pre('save', function(next) {
+  if (this.isNew) {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  } else {
+    this.updatedAt = new Date();
+  }
   if (this.isModified('evolution.stage')) {
     // Update stats based on evolution stage
     const multiplier = 1 + (this.evolution.stage * 0.2);
     this.stats.strength *= multiplier;
-    this.stats.agility *= multiplier;
-    this.stats.intelligence *= multiplier;
-    this.stats.vitality *= multiplier;
+    this.stats.speed *= multiplier;
+    this.stats.health *= multiplier;
   }
   this.metadata.updatedAt = new Date();
   next();
 });
 
-export default mongoose.model('Egg', eggSchema);
+const Egg = mongoose.model('Egg', eggSchema);
+
+export default Egg;

@@ -102,6 +102,18 @@ const aiServiceProxy = {
 // Mock the import of the ESM module
 jest.mock('../services/aiService', () => aiServiceProxy, { virtual: true });
 
+const AIService = require('../services/aiService');
+
+// Mock the AIService
+jest.mock('../services/aiService', () => {
+  return {
+    generateCode: jest.fn(),
+    analyzeCode: jest.fn(),
+    optimizeCode: jest.fn(),
+    explainCode: jest.fn()
+  };
+});
+
 describe('AIService', () => {
   let AIService;
   let aiService;
@@ -238,5 +250,48 @@ describe('AIService', () => {
     expect(logger.error).toHaveBeenCalledWith(
       expect.stringContaining('❌ Rule evaluation failed'),
     );
+  });
+
+  it('should generate code successfully', async () => {
+    const mockResponse = { code: 'console.log("Hello World")' };
+    AIService.generateCode.mockResolvedValue(mockResponse);
+
+    const result = await AIService.generateCode('Write a hello world program');
+    expect(result).toEqual(mockResponse);
+    expect(AIService.generateCode).toHaveBeenCalledWith('Write a hello world program');
+  });
+
+  it('should analyze code successfully', async () => {
+    const mockResponse = { complexity: 5, maintainability: 0.8 };
+    AIService.analyzeCode.mockResolvedValue(mockResponse);
+
+    const result = await AIService.analyzeCode('const x = 1;');
+    expect(result).toEqual(mockResponse);
+    expect(AIService.analyzeCode).toHaveBeenCalledWith('const x = 1;');
+  });
+
+  it('should optimize code successfully', async () => {
+    const mockResponse = { optimizedCode: 'const x=1;' };
+    AIService.optimizeCode.mockResolvedValue(mockResponse);
+
+    const result = await AIService.optimizeCode('const x = 1;');
+    expect(result).toEqual(mockResponse);
+    expect(AIService.optimizeCode).toHaveBeenCalledWith('const x = 1;');
+  });
+
+  it('should explain code successfully', async () => {
+    const mockResponse = { explanation: 'This code declares a constant variable' };
+    AIService.explainCode.mockResolvedValue(mockResponse);
+
+    const result = await AIService.explainCode('const x = 1;');
+    expect(result).toEqual(mockResponse);
+    expect(AIService.explainCode).toHaveBeenCalledWith('const x = 1;');
+  });
+
+  it('should handle errors gracefully', async () => {
+    const error = new Error('Service error');
+    AIService.generateCode.mockRejectedValue(error);
+
+    await expect(AIService.generateCode('test')).rejects.toThrow('Service error');
   });
 });

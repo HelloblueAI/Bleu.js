@@ -1,298 +1,150 @@
 import * as tf from '@tensorflow/tfjs';
 import { logger } from '../utils/logger';
-import { CrossModalFusion } from './fusion/crossModalFusion';
-import { AdvancedFeatureExtractor } from './extractors/advancedFeatureExtractor';
-import { CrossModalAttention } from './attention/crossModalAttention';
-import { VisionLanguageModel } from './models/visionLanguageModel';
-import { AudioVisualFusion } from './fusion/audioVisualFusion';
-import { TextCodeFusion } from './fusion/textCodeFusion';
-import { createLogger } from '../utils/logger';
-import { DeepLearningModel } from '../ai/deepLearning';
+import { CrossModalFusion, CrossModalFusionConfig } from './fusion/crossModalFusion';
+import { AdvancedFeatureExtractor, FeatureExtractorConfig } from './extractors/advancedFeatureExtractor';
+import { ModelManager, ModelConfig } from './models/modelManager';
 
-interface MultiModalConfig {
-  modelPath: string;
-  visionModel: string;
-  languageModel: string;
-  audioModel: string;
-  codeModel: string;
-  fusionType: 'attention' | 'transformer' | 'graph';
-  maxSequenceLength: number;
-  batchSize: number;
+export interface MultimodalProcessorConfig {
+  fusion: CrossModalFusionConfig;
+  featureExtractor: FeatureExtractorConfig;
+  model: ModelConfig;
 }
 
 export interface MultimodalInput {
   text?: string;
-  image?: Buffer;
-  audio?: Buffer;
-  video?: Buffer;
+  image?: tf.Tensor;
+  audio?: tf.Tensor;
+  video?: tf.Tensor;
 }
 
 export interface MultimodalOutput {
-  text?: string;
-  image?: Buffer;
-  audio?: Buffer;
-  video?: Buffer;
+  features: tf.Tensor;
   confidence: number;
+  modalities: {
+    text?: number;
+    image?: number;
+    audio?: number;
+    video?: number;
+  };
 }
 
-export class MultiModalProcessor {
-  private config: MultiModalConfig;
-  private crossModalFusion: CrossModalFusion;
+export class MultimodalProcessor {
+  private config: MultimodalProcessorConfig;
+  private fusion: CrossModalFusion;
   private featureExtractor: AdvancedFeatureExtractor;
-  private crossModalAttention: CrossModalAttention;
-  private visionLanguageModel: VisionLanguageModel;
-  private audioVisualFusion: AudioVisualFusion;
-  private textCodeFusion: TextCodeFusion;
-  private metrics: {
-    fusionQuality: number;
-    attentionScore: number;
-    featureQuality: number;
-    crossModalAlignment: number;
-  };
-  private logger = createLogger('MultiModalProcessor');
-  private model: DeepLearningModel;
-  private initialized = false;
+  private modelManager: ModelManager;
+  private initialized: boolean = false;
 
-  constructor(config: MultiModalConfig, model: DeepLearningModel) {
+  constructor(config: MultimodalProcessorConfig) {
     this.config = config;
-    this.crossModalFusion = new CrossModalFusion();
-    this.featureExtractor = new AdvancedFeatureExtractor();
-    this.crossModalAttention = new CrossModalAttention();
-    this.visionLanguageModel = new VisionLanguageModel();
-    this.audioVisualFusion = new AudioVisualFusion();
-    this.textCodeFusion = new TextCodeFusion();
-    this.metrics = {
-      fusionQuality: 0,
-      attentionScore: 0,
-      featureQuality: 0,
-      crossModalAlignment: 0
-    };
-    this.model = model;
+    this.fusion = new CrossModalFusion(config.fusion);
+    this.featureExtractor = new AdvancedFeatureExtractor(config.featureExtractor);
+    this.modelManager = new ModelManager(config.model);
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) {
-      return;
-    }
-
-    logger.info('Initializing MultiModal Processor with advanced capabilities...');
-
     try {
       await Promise.all([
-        this.crossModalFusion.initialize(),
+        this.fusion.initialize(),
         this.featureExtractor.initialize(),
-        this.crossModalAttention.initialize(),
-        this.visionLanguageModel.initialize(),
-        this.audioVisualFusion.initialize(),
-        this.textCodeFusion.initialize(),
-        this.model.initialize()
+        this.modelManager.initialize()
       ]);
-
-      logger.info('✅ MultiModal Processor initialized successfully');
       this.initialized = true;
+      logger.info('MultimodalProcessor initialized successfully');
     } catch (error) {
-      logger.error('❌ Failed to initialize MultiModal Processor:', error);
+      logger.error('Failed to initialize MultimodalProcessor:', error);
       throw error;
     }
   }
 
   async process(input: MultimodalInput): Promise<MultimodalOutput> {
     if (!this.initialized) {
-      throw new Error('MultiModalProcessor not initialized');
+      throw new Error('MultimodalProcessor not initialized');
     }
 
     try {
-      // Process text if present
-      let textOutput: string | undefined;
+      const modalities: tf.Tensor[] = [];
+      const confidences: Record<string, number> = {};
+
+      // Process each modality
       if (input.text) {
-        textOutput = await this.processText(input.text);
+        const textFeatures = await this.processText(input.text);
+        modalities.push(textFeatures);
+        confidences.text = this.calculateConfidence(textFeatures);
       }
 
-      // Process image if present
-      let imageOutput: Buffer | undefined;
       if (input.image) {
-        imageOutput = await this.processImage(input.image);
+        const imageFeatures = await this.processImage(input.image);
+        modalities.push(imageFeatures);
+        confidences.image = this.calculateConfidence(imageFeatures);
       }
 
-      // Process audio if present
-      let audioOutput: Buffer | undefined;
       if (input.audio) {
-        audioOutput = await this.processAudio(input.audio);
+        const audioFeatures = await this.processAudio(input.audio);
+        modalities.push(audioFeatures);
+        confidences.audio = this.calculateConfidence(audioFeatures);
       }
 
-      // Process video if present
-      let videoOutput: Buffer | undefined;
       if (input.video) {
-        videoOutput = await this.processVideo(input.video);
+        const videoFeatures = await this.processVideo(input.video);
+        modalities.push(videoFeatures);
+        confidences.video = this.calculateConfidence(videoFeatures);
       }
+
+      // Fuse modalities
+      const fusedFeatures = await this.fusion.fuse(modalities);
 
       // Calculate overall confidence
-      const confidence = this.calculateConfidence({
-        text: textOutput,
-        image: imageOutput,
-        audio: audioOutput,
-        video: videoOutput
-      });
+      const overallConfidence = this.calculateOverallConfidence(confidences);
 
       return {
-        text: textOutput,
-        image: imageOutput,
-        audio: audioOutput,
-        video: videoOutput,
-        confidence
+        features: fusedFeatures,
+        confidence: overallConfidence,
+        modalities: confidences
       };
     } catch (error) {
-      this.logger.error('Error processing multimodal input:', error);
+      logger.error('Error during multimodal processing:', error);
       throw error;
     }
   }
 
-  private async processText(text: string): Promise<string> {
-    // Implement text processing logic
-    return text;
+  private async processText(text: string): Promise<tf.Tensor> {
+    // Convert text to tensor representation
+    const textTensor = tf.tensor1d(Array.from(text).map(c => c.charCodeAt(0)));
+    return this.featureExtractor.extractFeatures(textTensor);
   }
 
-  private async processImage(image: Buffer): Promise<Buffer> {
-    // Implement image processing logic
-    return image;
+  private async processImage(image: tf.Tensor): Promise<tf.Tensor> {
+    return this.featureExtractor.extractFeatures(image);
   }
 
-  private async processAudio(audio: Buffer): Promise<Buffer> {
-    // Implement audio processing logic
-    return audio;
+  private async processAudio(audio: tf.Tensor): Promise<tf.Tensor> {
+    return this.featureExtractor.extractFeatures(audio);
   }
 
-  private async processVideo(video: Buffer): Promise<Buffer> {
-    // Implement video processing logic
-    return video;
+  private async processVideo(video: tf.Tensor): Promise<tf.Tensor> {
+    return this.featureExtractor.extractFeatures(video);
   }
 
-  private calculateConfidence(output: MultimodalOutput): number {
-    // Implement confidence calculation logic
-    return 0.8;
+  private calculateConfidence(features: tf.Tensor): number {
+    // Calculate confidence based on feature statistics
+    const mean = tf.mean(features);
+    const std = tf.moments(features).variance.sqrt();
+    const confidence = tf.div(mean, std.add(tf.scalar(1e-6)));
+    return confidence.dataSync()[0];
   }
 
-  private async extractFeatures(input: any): Promise<{
-    text?: tf.Tensor;
-    code?: tf.Tensor;
-    image?: tf.Tensor;
-    audio?: tf.Tensor;
-    video?: tf.Tensor;
-  }> {
-    const features: any = {};
-    
-    if (input.text) {
-      features.text = await this.featureExtractor.extractText(input.text);
-    }
-    if (input.code) {
-      features.code = await this.featureExtractor.extractCode(input.code);
-    }
-    if (input.image) {
-      features.image = await this.featureExtractor.extractImage(input.image);
-    }
-    if (input.audio) {
-      features.audio = await this.featureExtractor.extractAudio(input.audio);
-    }
-    if (input.video) {
-      features.video = await this.featureExtractor.extractVideo(input.video);
-    }
-    
-    return features;
-  }
-
-  private async applySpecializedFusion(features: any): Promise<tf.Tensor> {
-    const specializedFeatures: tf.Tensor[] = [];
-    
-    // Apply vision-language fusion if both modalities are present
-    if (features.image && features.text) {
-      const visionLanguageFeatures = await this.visionLanguageModel.process(
-        features.image,
-        features.text
-      );
-      specializedFeatures.push(visionLanguageFeatures);
-    }
-    
-    // Apply audio-visual fusion if both modalities are present
-    if (features.audio && features.video) {
-      const audioVisualFeatures = await this.audioVisualFusion.process(
-        features.audio,
-        features.video
-      );
-      specializedFeatures.push(audioVisualFeatures);
-    }
-    
-    // Apply text-code fusion if both modalities are present
-    if (features.text && features.code) {
-      const textCodeFeatures = await this.textCodeFusion.process(
-        features.text,
-        features.code
-      );
-      specializedFeatures.push(textCodeFeatures);
-    }
-    
-    // Combine specialized features
-    if (specializedFeatures.length > 0) {
-      return tf.concat(specializedFeatures, -1);
-    }
-    
-    return tf.tensor([]);
-  }
-
-  private async combineFeatures(
-    fusedFeatures: tf.Tensor,
-    specializedFeatures: tf.Tensor
-  ): Promise<tf.Tensor> {
-    if (specializedFeatures.shape[0] === 0) {
-      return fusedFeatures;
-    }
-    return tf.concat([fusedFeatures, specializedFeatures], -1);
-  }
-
-  private updateMetrics(features: any, combinedFeatures: tf.Tensor): void {
-    this.metrics = {
-      fusionQuality: this.crossModalFusion.getQuality(),
-      attentionScore: this.crossModalAttention.getScore(),
-      featureQuality: this.featureExtractor.getQuality(),
-      crossModalAlignment: this.calculateCrossModalAlignment(features)
-    };
-  }
-
-  private calculateCrossModalAlignment(features: any): number {
-    // Calculate alignment score between different modalities
-    const modalities = Object.keys(features);
-    let totalAlignment = 0;
-    let count = 0;
-
-    for (let i = 0; i < modalities.length; i++) {
-      for (let j = i + 1; j < modalities.length; j++) {
-        const mod1 = modalities[i];
-        const mod2 = modalities[j];
-        if (features[mod1] && features[mod2]) {
-          totalAlignment += this.crossModalAttention.getAlignmentScore(
-            features[mod1],
-            features[mod2]
-          );
-          count++;
-        }
-      }
-    }
-
-    return count > 0 ? totalAlignment / count : 0;
-  }
-
-  getMetrics(): typeof this.metrics {
-    return this.metrics;
+  private calculateOverallConfidence(confidences: Record<string, number>): number {
+    const values = Object.values(confidences);
+    if (values.length === 0) return 0;
+    return values.reduce((a, b) => a + b, 0) / values.length;
   }
 
   async dispose(): Promise<void> {
     await Promise.all([
-      this.crossModalFusion.dispose(),
+      this.fusion.dispose(),
       this.featureExtractor.dispose(),
-      this.crossModalAttention.dispose(),
-      this.visionLanguageModel.dispose(),
-      this.audioVisualFusion.dispose(),
-      this.textCodeFusion.dispose(),
-      this.model.dispose()
+      this.modelManager.dispose()
     ]);
     this.initialized = false;
   }

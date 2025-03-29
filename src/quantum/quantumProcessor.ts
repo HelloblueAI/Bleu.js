@@ -1,121 +1,129 @@
-import { QuantumCircuit, QuantumGate, QuantumMeasurement } from '../types';
-import { QuantumOptimizer } from './optimizer';
-import { QuantumFeatureExtractor } from './featureExtractor';
-import { QuantumStateManager } from './stateManager';
-import { QuantumNoiseHandler } from './noiseHandler';
-import { QuantumEntanglementManager } from './entanglementManager';
-import { logger } from '../utils/logger';
+import { Logger } from '../utils/logger';
+import { QuantumError } from '../utils/errors';
+import { QuantumCircuit } from './circuit';
+import { QuantumGate, GateType } from './gate';
+import { Qubit } from './qubit';
+import { QuantumState } from './state';
+import { ProcessorConfig } from './types';
 
 export class QuantumProcessor {
-  private optimizer: QuantumOptimizer;
-  private featureExtractor: QuantumFeatureExtractor;
-  private stateManager: QuantumStateManager;
-  private noiseHandler: QuantumNoiseHandler;
-  private entanglementManager: QuantumEntanglementManager;
-  private metrics: {
-    circuitDepth: number;
-    entanglementEntropy: number;
-    noiseLevel: number;
-    optimizationScore: number;
-    featureQuality: number;
-    statePurity: number;
-  };
+  private state: QuantumState | null = null;
+  private circuit: QuantumCircuit | null = null;
+  private config: ProcessorConfig;
+  private logger: Logger;
 
-  constructor() {
-    this.optimizer = new QuantumOptimizer();
-    this.featureExtractor = new QuantumFeatureExtractor();
-    this.stateManager = new QuantumStateManager();
-    this.noiseHandler = new QuantumNoiseHandler();
-    this.entanglementManager = new QuantumEntanglementManager();
-    this.metrics = {
-      circuitDepth: 0,
-      entanglementEntropy: 0,
-      noiseLevel: 0,
-      optimizationScore: 0,
-      featureQuality: 0,
-      statePurity: 0
-    };
+  constructor(config: ProcessorConfig, logger: Logger) {
+    this.config = config;
+    this.logger = logger;
   }
 
   async initialize(): Promise<void> {
-    logger.info('Initializing Quantum Processor with advanced features...');
-    
-    await Promise.all([
-      this.optimizer.initialize(),
-      this.featureExtractor.initialize(),
-      this.stateManager.initialize(),
-      this.noiseHandler.initialize(),
-      this.entanglementManager.initialize()
-    ]);
-
-    logger.info('✅ Quantum Processor initialized successfully');
+    try {
+      this.logger.info('Initializing quantum processor');
+      this.state = new QuantumState(this.config.numQubits, this.logger);
+      this.circuit = new QuantumCircuit({ numQubits: this.config.numQubits }, this.logger);
+      this.logger.info('Quantum processor initialized');
+    } catch (error) {
+      this.logger.error('Failed to initialize quantum processor', error);
+      throw error;
+    }
   }
 
-  async createCircuit(numQubits: number): Promise<QuantumCircuit> {
-    return {
-      numQubits,
-      gates: [],
-      measurements: [],
-      initialize: () => {
-        this.stateManager.initializeState(numQubits);
-      },
-      addGate: (gate: QuantumGate) => {
-        this.stateManager.applyGate(gate);
-      },
-      measure: (): QuantumMeasurement[] => {
-        return this.stateManager.measure();
-      },
-      getState: (): number[] => {
-        return this.stateManager.getState();
-      },
-      getDepth: (): number => {
-        return this.stateManager.getCircuitDepth();
+  async processCircuit(circuit: QuantumCircuit): Promise<void> {
+    try {
+      if (!this.state) {
+        throw new QuantumError('Quantum processor not initialized');
       }
-    };
+
+      this.logger.info('Processing quantum circuit');
+      for (const gate of circuit.getGates()) {
+        await this.applyGate(gate);
+      }
+      this.logger.info('Circuit processing completed');
+    } catch (error) {
+      this.logger.error('Failed to process circuit', error);
+      throw error;
+    }
   }
 
-  async optimizeCircuit(circuit: QuantumCircuit): Promise<QuantumCircuit> {
-    return this.optimizer.optimize(circuit);
+  async measure(qubitIndex: number): Promise<number> {
+    try {
+      if (!this.state) {
+        throw new QuantumError('Quantum processor not initialized');
+      }
+
+      this.logger.info(`Measuring qubit ${qubitIndex}`);
+      const result = await this.state.measure(qubitIndex);
+      this.logger.info(`Measurement result: ${result}`);
+      return result;
+    } catch (error) {
+      this.logger.error('Failed to measure qubit', error);
+      throw error;
+    }
   }
 
-  async extractFeatures(data: any): Promise<number[]> {
-    return this.featureExtractor.extract(data);
+  getState(): QuantumState | null {
+    return this.state;
   }
 
-  async handleNoise(measurements: QuantumMeasurement[]): Promise<QuantumMeasurement[]> {
-    return this.noiseHandler.handle(measurements);
+  async reset(): Promise<void> {
+    try {
+      this.logger.info('Resetting quantum processor');
+      if (this.state) {
+        await this.state.reset();
+      }
+      this.logger.info('Quantum processor reset completed');
+    } catch (error) {
+      this.logger.error('Failed to reset quantum processor', error);
+      throw error;
+    }
   }
 
-  async createEntanglement(qubit1: number, qubit2: number): Promise<void> {
-    await this.entanglementManager.create(qubit1, qubit2);
+  async cleanup(): Promise<void> {
+    try {
+      this.logger.info('Cleaning up quantum processor');
+      if (this.state) {
+        await this.state.cleanup();
+      }
+      this.state = null;
+      this.circuit = null;
+      this.logger.info('Quantum processor cleanup completed');
+    } catch (error) {
+      this.logger.error('Failed to cleanup quantum processor', error);
+      throw error;
+    }
   }
 
-  async measureEntanglement(qubit1: number, qubit2: number): Promise<number> {
-    return this.entanglementManager.measure(qubit1, qubit2);
+  private async applyGate(gate: QuantumGate): Promise<void> {
+    try {
+      if (!this.state) {
+        throw new QuantumError('Quantum processor not initialized');
+      }
+
+      const targetQubit = gate.getTargetQubit();
+      const controlQubit = gate.getControlQubit();
+
+      if (gate.getType() === GateType.CNOT) {
+        if (controlQubit === undefined) {
+          throw new QuantumError('CNOT gate requires a control qubit');
+        }
+        await this.applyCNOT(controlQubit, targetQubit);
+      } else {
+        await this.applySingleQubitGate(gate);
+      }
+    } catch (error) {
+      this.logger.error('Failed to apply gate', error);
+      throw error;
+    }
   }
 
-  private updateMetrics(): void {
-    this.metrics = {
-      circuitDepth: this.stateManager.getCircuitDepth(),
-      entanglementEntropy: this.entanglementManager.getEntropy(),
-      noiseLevel: this.noiseHandler.getNoiseLevel(),
-      optimizationScore: this.optimizer.getScore(),
-      featureQuality: this.featureExtractor.getQuality(),
-      statePurity: this.stateManager.getPurity()
-    };
+  private async applySingleQubitGate(gate: QuantumGate): Promise<void> {
+    const targetQubit = gate.getTargetQubit();
+    const matrix = gate.getMatrix();
+    await this.state!.applyUnitary(targetQubit, matrix);
   }
 
-  getMetrics(): typeof this.metrics {
-    return this.metrics;
-  }
-
-  async dispose(): Promise<void> {
-    await Promise.all([
-      this.optimizer.dispose(),
-      this.featureExtractor.dispose(),
-      this.stateManager.dispose(),
-      this.noiseHandler.dispose(),
-      this.entanglementManager.dispose()
-    ]);
+  private async applyCNOT(controlQubit: number, targetQubit: number): Promise<void> {
+    await this.state!.applyCNOT(controlQubit, targetQubit);
   }
 } 

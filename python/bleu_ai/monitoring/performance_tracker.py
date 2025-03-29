@@ -16,6 +16,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import asyncio
 
 class PerformanceTracker:
     def __init__(

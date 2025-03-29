@@ -3,6 +3,20 @@ import { BleuConfig } from '../types';
 export const DEFAULT_CONFIG: BleuConfig = {
   apiKey: '',
   version: '1.1.2',
+  server: {
+    port: 3000,
+    host: 'localhost',
+    cors: {
+      allowedOrigins: ['*'],
+      allowedMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+    },
+    middleware: {
+      compression: true,
+      bodyParser: true,
+      requestLogging: true
+    }
+  },
   model: {
     name: 'default',
     version: '1.0.0',

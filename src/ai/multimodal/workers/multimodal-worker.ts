@@ -1,10 +1,9 @@
 import { BleuMultimodalAPI } from '../api';
-import { 
-  FaceAnalysisResult, 
-  SceneAnalysisResult, 
-  VoiceAnalysisResult,
-  MultimodalConfig
-} from '../types';
+import { MultimodalConfig, ProcessedResult } from '../types';
+import { Worker } from 'worker_threads';
+import { createLogger } from '../../../../utils/logger';
+
+const logger = createLogger('MultimodalWorker');
 
 // Initialize the API in the worker
 const api = new BleuMultimodalAPI({
@@ -31,7 +30,7 @@ const api = new BleuMultimodalAPI({
 
 // Initialize the API
 api.initialize().catch(error => {
-  console.error('Failed to initialize API in worker:', error);
+  logger.error('Failed to initialize API in worker:', error);
 });
 
 // Handle messages from the main thread
@@ -39,7 +38,7 @@ self.onmessage = async (event) => {
   const { type, data } = event.data;
 
   try {
-    let result;
+    let result: ProcessedResult;
 
     switch (type) {
       case 'processImage':
@@ -72,40 +71,70 @@ self.onmessage = async (event) => {
       data: result
     });
   } catch (error) {
+    logger.error(`Error processing ${type}:`, error);
     // Send error back to main thread
     self.postMessage({
       type: 'error',
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
     });
   }
 };
 
 // Process image data
-async function processImage(imageData: ImageData | HTMLImageElement | HTMLVideoElement) {
+async function processImage(imageData: ImageData | HTMLImageElement | HTMLVideoElement): Promise<ProcessedResult> {
   const [faceAnalysis, sceneAnalysis] = await Promise.all([
     api.analyzeFaces(imageData),
     api.analyzeScene(imageData)
   ]);
 
   return {
-    faceAnalysis,
-    sceneAnalysis
+    features: {
+      face: faceAnalysis,
+      scene: sceneAnalysis
+    },
+    fusionMetrics: {
+      confidence: Math.min(faceAnalysis.confidence, sceneAnalysis.confidence),
+      coherence: 1.0
+    },
+    metadata: {
+      timestamp: Date.now(),
+      modality: 'image'
+    }
   };
 }
 
 // Process audio data
-async function processAudio(audioData: ArrayBuffer | AudioBuffer) {
+async function processAudio(audioData: ArrayBuffer | AudioBuffer): Promise<ProcessedResult> {
   const voiceAnalysis = await api.analyzeVoice(audioData);
-  return voiceAnalysis;
+  
+  return {
+    features: {
+      voice: voiceAnalysis
+    },
+    fusionMetrics: {
+      confidence: voiceAnalysis.confidence,
+      coherence: 1.0
+    },
+    metadata: {
+      timestamp: Date.now(),
+      modality: 'audio'
+    }
+  };
 }
 
 // Process video data
-async function processVideo(videoElement: HTMLVideoElement) {
+async function processVideo(videoElement: HTMLVideoElement): Promise<ProcessedResult> {
   const frameAnalysis = await api.process({
     image: videoElement
   });
 
-  return frameAnalysis;
+  return {
+    ...frameAnalysis,
+    metadata: {
+      ...frameAnalysis.metadata,
+      modality: 'video'
+    }
+  };
 }
 
 // Process multimodal data
@@ -115,31 +144,44 @@ async function processMultimodal(data: {
   text?: string;
   code?: string;
   video?: HTMLVideoElement;
-}) {
+}): Promise<ProcessedResult> {
   const result = await api.process(data);
   return result;
 }
 
 // Update configuration
-async function updateConfig(newConfig: Partial<MultimodalConfig>) {
-  api.updateConfig(newConfig);
-  return api.getConfig();
+async function updateConfig(newConfig: Partial<MultimodalConfig>): Promise<ProcessedResult> {
+  await api.updateConfig(newConfig);
+  const config = api.getConfig();
+  
+  return {
+    features: {},
+    fusionMetrics: {
+      confidence: 1.0,
+      coherence: 1.0
+    },
+    metadata: {
+      timestamp: Date.now(),
+      modality: 'config',
+      config
+    }
+  };
 }
 
 // Handle errors
 self.onerror = (error) => {
-  console.error('Worker error:', error);
+  logger.error('Worker error:', error);
   self.postMessage({
     type: 'error',
-    error: error.message
+    error: error instanceof Error ? error.message : 'Unknown error occurred'
   });
 };
 
 // Handle unhandled promise rejections
 self.onunhandledrejection = (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
+  logger.error('Unhandled promise rejection:', event.reason);
   self.postMessage({
     type: 'error',
-    error: event.reason.message
+    error: event.reason instanceof Error ? event.reason.message : 'Unknown error occurred'
   });
 }; 

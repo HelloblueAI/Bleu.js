@@ -1,0 +1,32 @@
+[run]
+source = quantum
+omit = 
+    */tests/*
+    */__init__.py
+    */setup.py
+    */conftest.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    raise ImportError
+    @abstractmethod
+    @property
+    @classmethod
+    @staticmethod
+
+[html]
+directory = htmlcov
+title = Bleu Quantum Coverage Report
+
+[xml]
+output = coverage.xml
+
+[paths]
+source =
+    quantum/
+    */quantum/ 

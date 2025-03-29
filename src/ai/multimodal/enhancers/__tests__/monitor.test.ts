@@ -1,181 +1,205 @@
-import { jest } from '@jest/globals';
 import { Monitor } from '../monitor';
-import { createLogger } from '../../../../utils/logger';
-
-// Mock the logger
-jest.mock('../../../../utils/logger', () => ({
-  createLogger: jest.fn().mockReturnValue({
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn()
-  })
-}));
+import { Storage } from '../../../../storage/storage';
+import { Logger } from '../../../../utils/logger';
+import { Metric } from '../../../../types/monitor';
+import path from 'path';
+import os from 'os';
+import { promises as fs } from 'fs';
 
 describe('Monitor', () => {
   let monitor: Monitor;
+  let storage: Storage;
+  let logger: Logger;
+  let testDir: string;
 
   beforeEach(async () => {
-    monitor = new Monitor({
-      metricsInterval: 1000,
-      retentionPeriod: 24 * 60 * 60 * 1000, // 24 hours
+    logger = new Logger('MonitorTest');
+    testDir = path.join(os.tmpdir(), `monitor-test-${Date.now()}`);
+    
+    storage = new Storage({
+      path: testDir,
+      retentionDays: 7,
+      compression: false
+    }, logger);
+    
+    await storage.initialize();
+    
+    monitor = new Monitor(storage, logger, {
+      interval: 1000,
+      retentionDays: 7,
       alertThresholds: {
-        error: 0.1,
-        warning: 0.05
+        warning: 0.8,
+        critical: 0.95
       }
     });
+    
     await monitor.initialize();
   });
 
   afterEach(async () => {
-    await monitor.stop();
+    await monitor.cleanup();
+    await storage.cleanup();
+    try {
+      await fs.rm(testDir, { recursive: true, force: true });
+    } catch (error) {
+      // Ignore cleanup errors
+    }
   });
 
-  describe('Initialization', () => {
-    it('should initialize with default config', async () => {
-      const defaultMonitor = new Monitor();
-      await defaultMonitor.initialize();
-      expect(defaultMonitor.isInitialized()).toBe(true);
-      expect(defaultMonitor.getConfig()).toBeDefined();
-      await defaultMonitor.stop();
-    });
-
-    it('should initialize with custom config', () => {
-      expect(monitor.getConfig().metricsInterval).toBe(1000);
-      expect(monitor.getConfig().retentionPeriod).toBe(24 * 60 * 60 * 1000);
-    });
-  });
-
-  describe('Metrics Collection', () => {
-    it('should record metrics', async () => {
-      const metric = {
+  describe('initialize', () => {
+    it('should initialize the monitor successfully', async () => {
+      expect(monitor).toBeDefined();
+      // Verify initialization by checking if we can record metrics
+      const metric: Metric = {
         name: 'test_metric',
-        value: 0.95,
-        timestamp: Date.now(),
-        labels: { model: 'test' }
+        value: 0.5,
+        unit: 'percentage'
       };
-
-      await monitor.recordMetric(metric);
-      const metrics = await monitor.getMetrics();
-      expect(metrics).toContainEqual(expect.objectContaining(metric));
+      await monitor.recordMetrics(metric);
+      const metrics = await monitor.getMetricsInRange(
+        new Date(Date.now() - 1000),
+        new Date()
+      );
+      expect(metrics).toBeDefined();
+      expect(metrics.length).toBeGreaterThan(0);
     });
 
-    it('should aggregate metrics', async () => {
-      const metrics = [
-        { name: 'test_metric', value: 0.9, timestamp: Date.now(), labels: { model: 'test' } },
-        { name: 'test_metric', value: 0.8, timestamp: Date.now(), labels: { model: 'test' } }
-      ];
-
-      for (const metric of metrics) {
-        await monitor.recordMetric(metric);
-      }
-
-      const summary = await monitor.getMetricsSummary('test_metric');
-      expect(summary).toEqual(expect.objectContaining({
-        count: 2,
-        min: 0.8,
-        max: 0.9,
-        avg: 0.85
-      }));
+    it('should handle initialization failure', async () => {
+      const invalidStorage = new Storage({
+        path: '/invalid/path/that/should/fail',
+        retentionDays: 7,
+        compression: false
+      }, logger);
+      
+      const invalidMonitor = new Monitor(invalidStorage, logger, {
+        interval: 1000,
+        retentionDays: 7,
+        alertThresholds: {
+          warning: 0.8,
+          critical: 0.95
+        }
+      });
+      
+      await expect(invalidMonitor.initialize()).rejects.toThrow('Failed to initialize monitor');
     });
   });
 
-  describe('Alert System', () => {
-    it('should generate alert for error threshold breach', async () => {
-      const metric = {
-        name: 'error_rate',
-        value: 0.15, // Above error threshold
-        timestamp: Date.now(),
-        labels: { model: 'test' }
-      };
+  describe('recordMetrics', () => {
+    const testMetric: Metric = {
+      name: 'test_metric',
+      value: 0.5,
+      unit: 'percentage'
+    };
 
-      await monitor.recordMetric(metric);
-      const alerts = await monitor.getAlerts();
-      expect(alerts).toContainEqual(expect.objectContaining({
-        severity: 'error',
-        metric: metric.name
-      }));
+    it('should record metrics successfully', async () => {
+      await monitor.recordMetrics(testMetric);
+      const metrics = await monitor.getMetricsInRange(
+        new Date(Date.now() - 1000),
+        new Date()
+      );
+      expect(metrics).toBeDefined();
+      expect(metrics.length).toBeGreaterThan(0);
+      expect(metrics[0].name).toBe(testMetric.name);
+      expect(metrics[0].value).toBe(testMetric.value);
     });
 
-    it('should generate alert for warning threshold breach', async () => {
-      const metric = {
-        name: 'error_rate',
-        value: 0.07, // Above warning threshold
-        timestamp: Date.now(),
-        labels: { model: 'test' }
+    it('should generate warning alert when threshold exceeded', async () => {
+      const warningMetric: Metric = {
+        ...testMetric,
+        value: 0.85
       };
 
-      await monitor.recordMetric(metric);
+      await monitor.recordMetrics(warningMetric);
       const alerts = await monitor.getAlerts();
-      expect(alerts).toContainEqual(expect.objectContaining({
-        severity: 'warning',
-        metric: metric.name
-      }));
+      expect(alerts).toBeDefined();
+      expect(alerts.some(alert => alert.level === 'warning')).toBe(true);
+    });
+
+    it('should generate critical alert when threshold exceeded', async () => {
+      const criticalMetric: Metric = {
+        ...testMetric,
+        value: 0.96
+      };
+
+      await monitor.recordMetrics(criticalMetric);
+      const alerts = await monitor.getAlerts();
+      expect(alerts).toBeDefined();
+      expect(alerts.some(alert => alert.level === 'critical')).toBe(true);
+    });
+
+    it('should handle recording failure', async () => {
+      // Force a recording failure by making the storage read-only
+      await fs.chmod(testDir, 0o444);
+      await expect(monitor.recordMetrics(testMetric)).rejects.toThrow('Failed to record metrics');
     });
   });
 
-  describe('Data Management', () => {
-    it('should clean up old metrics', async () => {
-      const oldMetric = {
+  describe('cleanupOldMetrics', () => {
+    it('should cleanup old metrics successfully', async () => {
+      // Record some metrics
+      const oldMetric: Metric = {
         name: 'old_metric',
         value: 0.5,
-        timestamp: Date.now() - 48 * 60 * 60 * 1000, // 48 hours ago
-        labels: { model: 'test' }
+        unit: 'percentage',
+        timestamp: Date.now() - (8 * 24 * 60 * 60 * 1000) // 8 days old
       };
+      
+      const recentMetric: Metric = {
+        name: 'recent_metric',
+        value: 0.5,
+        unit: 'percentage',
+        timestamp: Date.now() - (3 * 24 * 60 * 60 * 1000) // 3 days old
+      };
+      
+      await monitor.recordMetrics(oldMetric);
+      await monitor.recordMetrics(recentMetric);
 
-      await monitor.recordMetric(oldMetric);
-      await monitor.cleanupOldData();
-      const metrics = await monitor.getMetrics();
-      expect(metrics).not.toContainEqual(expect.objectContaining(oldMetric));
+      await monitor.cleanupOldMetrics();
+      
+      const metrics = await monitor.getMetricsInRange(
+        new Date(Date.now() - 1000),
+        new Date()
+      );
+      expect(metrics).toBeDefined();
+      expect(metrics.length).toBe(1);
+      expect(metrics[0].name).toBe('recent_metric');
     });
 
-    it('should retrieve metrics within time range', async () => {
-      const now = Date.now();
-      const metrics = [
-        { name: 'test_metric', value: 0.9, timestamp: now - 1000, labels: { model: 'test' } },
-        { name: 'test_metric', value: 0.8, timestamp: now - 2000, labels: { model: 'test' } }
-      ];
-
-      for (const metric of metrics) {
-        await monitor.recordMetric(metric);
-      }
-
-      const rangeMetrics = await monitor.getMetricsInRange(now - 1500, now);
-      expect(rangeMetrics).toHaveLength(1);
-      expect(rangeMetrics[0].value).toBe(0.9);
+    it('should handle cleanup failure', async () => {
+      // Force a cleanup failure by making the storage inaccessible
+      await fs.chmod(testDir, 0o000);
+      await expect(monitor.cleanupOldMetrics()).rejects.toThrow('Failed to cleanup old metrics');
     });
   });
 
-  describe('Performance', () => {
-    it('should handle high frequency metric recording', async () => {
-      const promises = [];
-      for (let i = 0; i < 1000; i++) {
-        promises.push(monitor.recordMetric({
-          name: 'perf_test',
-          value: Math.random(),
-          timestamp: Date.now(),
-          labels: { model: 'test' }
-        }));
-      }
+  describe('getMetricsInRange', () => {
+    it('should retrieve metrics within time range', async () => {
+      const startTime = new Date();
+      startTime.setDate(startTime.getDate() - 1);
+      const endTime = new Date();
 
-      await expect(Promise.all(promises)).resolves.not.toThrow();
+      // Record some metrics
+      const metric: Metric = {
+        name: 'test_metric',
+        value: 0.5,
+        unit: 'percentage'
+      };
+      await monitor.recordMetrics(metric);
+
+      const metrics = await monitor.getMetricsInRange(startTime, endTime);
+      expect(metrics).toBeDefined();
+      expect(metrics.length).toBeGreaterThan(0);
+      expect(metrics[0].name).toBe(metric.name);
+      expect(metrics[0].value).toBe(metric.value);
     });
 
-    it('should maintain performance during cleanup', async () => {
-      // Record some metrics
-      for (let i = 0; i < 100; i++) {
-        await monitor.recordMetric({
-          name: 'cleanup_test',
-          value: Math.random(),
-          timestamp: Date.now() - Math.random() * 48 * 60 * 60 * 1000,
-          labels: { model: 'test' }
-        });
-      }
-
-      const startTime = Date.now();
-      await monitor.cleanupOldData();
-      const duration = Date.now() - startTime;
-      expect(duration).toBeLessThan(1000); // Should complete within 1 second
+    it('should handle retrieval failure', async () => {
+      // Force a retrieval failure by making the storage inaccessible
+      await fs.chmod(testDir, 0o000);
+      await expect(monitor.getMetricsInRange(
+        new Date(Date.now() - 1000),
+        new Date()
+      )).rejects.toThrow('Failed to retrieve metrics');
     });
   });
 }); 

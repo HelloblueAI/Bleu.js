@@ -1,8 +1,8 @@
 import { BleuConfig } from '../types';
 
 export class ServiceManager {
-  private services: Map<string, any>;
-  private config: BleuConfig;
+  private readonly services: Map<string, any>;
+  private readonly config: BleuConfig;
 
   constructor(config: BleuConfig) {
     this.services = new Map();

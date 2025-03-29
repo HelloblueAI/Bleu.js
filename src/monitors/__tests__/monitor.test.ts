@@ -1,253 +1,169 @@
-import { Monitor, MonitorError } from '../monitor';
+import { Monitor } from '../monitor';
+import { MonitorError } from '../../errors/monitorError';
+import { Storage } from '../../storage/storage';
+import { MetricsManager } from '../../utils/metrics';
 import { createLogger } from '../../utils/logger';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { ILogger } from '../../utils/logger';
 
-jest.mock('../../utils/logger', () => ({
-  createLogger: jest.fn().mockReturnValue({
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn()
-  })
-}));
-
-jest.mock('fs/promises');
+jest.mock('../../utils/logger');
+jest.mock('../../storage/storage');
+jest.mock('../../utils/metrics');
 
 describe('Monitor', () => {
   let monitor: Monitor;
-  const testStorageDir = path.join(process.cwd(), 'test-monitoring');
+  let storage: Storage;
+  let metricsManager: MetricsManager;
+  let mockLogger: ILogger;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    jest.clearAllTimers();
-    monitor = new Monitor({
-      storageDirectory: testStorageDir,
-      thresholds: {
-        'test-metric': {
-          warning: 50,
-          critical: 30
-        }
-      }
-    });
+    mockLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      security: jest.fn(),
+      audit: jest.fn(),
+      performance: jest.fn()
+    } as unknown as ILogger;
+
+    storage = {
+      initialize: jest.fn().mockResolvedValue(undefined),
+      cleanup: jest.fn().mockResolvedValue(undefined),
+      save: jest.fn().mockResolvedValue(undefined),
+      get: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
+      list: jest.fn().mockResolvedValue([]),
+      getFilePath: jest.fn().mockReturnValue('test-path'),
+      initialized: false,
+      logger: mockLogger
+    } as unknown as Storage;
+
+    metricsManager = {
+      recordMetric: jest.fn().mockResolvedValue(undefined),
+      getMetrics: jest.fn().mockResolvedValue([]),
+      cleanup: jest.fn().mockResolvedValue(undefined),
+      initialize: jest.fn().mockResolvedValue(undefined)
+    } as unknown as MetricsManager;
+
+    monitor = new Monitor(storage, {
+      monitoringInterval: 1000,
+      retentionPeriod: 3600000,
+      warningThreshold: 0.8,
+      criticalThreshold: 0.95,
+      metricsCollector: metricsManager
+    }, metricsManager, mockLogger);
+
+    await monitor.initialize();
+
+    // Initialize a test model monitor
+    await monitor.startMonitoring('test-model');
   });
 
   afterEach(async () => {
-    try {
-      await monitor.dispose();
-    } catch (error) {
-      console.error('Error in afterEach:', error);
-    }
-  });
-
-  afterAll(async () => {
-    // Ensure all timers are cleared
-    jest.clearAllTimers();
+    await monitor.cleanup();
   });
 
   describe('initialization', () => {
-    it('should initialize successfully', async () => {
-      await expect(monitor.initialize()).resolves.toBeUndefined();
-      expect(fs.mkdir).toHaveBeenCalledWith(testStorageDir, { recursive: true });
-    });
-
-    it('should handle initialization errors', async () => {
-      (fs.mkdir as jest.Mock).mockRejectedValueOnce(new Error('Storage error'));
-      await expect(monitor.initialize()).rejects.toThrow(MonitorError);
-    });
-
-    it('should not initialize twice', async () => {
-      await monitor.initialize();
-      await monitor.initialize();
-      expect(fs.mkdir).toHaveBeenCalledTimes(1);
+    it('should initialize with default config', async () => {
+      const config = monitor.getConfig();
+      expect(config).toBeDefined();
+      expect(config.monitoringInterval).toBeGreaterThan(0);
+      expect(config.retentionPeriod).toBeGreaterThan(0);
     });
   });
 
   describe('metric recording', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-    });
-
     it('should record metrics successfully', async () => {
-      await monitor.recordMetric('test-metric', 100);
-      const metrics = await monitor.getMetrics('test-metric');
-      expect(metrics).toHaveLength(1);
-      expect(metrics[0].value).toBe(100);
+      const modelId = 'test-model';
+      const metrics = { accuracy: 0.95, latency: 100 };
+
+      await monitor.recordMetrics(modelId, metrics);
+      expect(storage.save).toHaveBeenCalledWith(
+        expect.stringContaining('metrics'),
+        expect.objectContaining(metrics)
+      );
     });
 
     it('should create warning alert for threshold violation', async () => {
-      await monitor.recordMetric('test-metric', 40);
-      const alerts = await monitor.getAlerts();
-      expect(alerts).toHaveLength(1);
-      expect(alerts[0].severity).toBe('medium');
+      const modelId = 'test-model';
+      const metrics = { accuracy: 0.75 };
+
+      await monitor.recordMetrics(modelId, metrics);
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('warning'),
+        expect.objectContaining({ modelId, metrics })
+      );
     });
 
-    it('should create critical alert for threshold violation', async () => {
-      await monitor.recordMetric('test-metric', 20);
-      const alerts = await monitor.getAlerts();
-      expect(alerts).toHaveLength(1);
-      expect(alerts[0].severity).toBe('high');
-    });
+    it('should create error alert for threshold violation', async () => {
+      const modelId = 'test-model';
+      const metrics = { accuracy: 0.5 };
 
-    it('should handle recording errors', async () => {
-      await expect(monitor.recordMetric('test-metric', NaN))
-        .rejects.toThrow('Invalid metric value');
+      await monitor.recordMetrics(modelId, metrics);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('critical'),
+        expect.objectContaining({ modelId, metrics })
+      );
     });
   });
 
   describe('data retrieval', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-      await monitor.recordMetric('test-metric', 100);
-      await monitor.recordMetric('test-metric', 40);
-      await monitor.recordMetric('test-metric', 20);
-    });
-
-    it('should get all metrics', async () => {
-      const metrics = await monitor.getMetrics();
-      expect(metrics).toHaveLength(3);
-    });
-
-    it('should get metrics by name', async () => {
-      const metrics = await monitor.getMetrics('test-metric');
-      expect(metrics).toHaveLength(3);
-    });
-
     it('should get metrics within time range', async () => {
-      const now = Date.now();
-      const metrics = await monitor.getMetrics('test-metric', {
-        start: now - 1000,
-        end: now + 1000
-      });
-      expect(metrics.length).toBeGreaterThan(0);
+      const modelId = 'test-model';
+      const startTime = Date.now() - 3600000;
+      const endTime = Date.now();
+
+      await monitor.getMetricsInRange(modelId, startTime, endTime);
+      expect(storage.get).toHaveBeenCalledWith(
+        expect.stringContaining('metrics'),
+        expect.objectContaining({ startTime, endTime })
+      );
     });
 
     it('should get all alerts', async () => {
-      const alerts = await monitor.getAlerts();
-      expect(alerts).toHaveLength(2); // Warning and critical alerts
-    });
+      const modelId = 'test-model';
 
-    it('should get alerts within time range', async () => {
-      const now = Date.now();
-      const alerts = await monitor.getAlerts({
-        start: now - 1000,
-        end: now + 1000
-      });
-      expect(alerts.length).toBeGreaterThan(0);
+      await monitor.getAlerts(modelId);
+      expect(storage.get).toHaveBeenCalledWith(
+        expect.stringContaining('alerts'),
+        expect.objectContaining({ modelId })
+      );
     });
   });
 
   describe('cleanup', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-      await monitor.recordMetric('test-metric', 100);
-      await monitor.recordMetric('test-metric', 40);
-    });
-
     it('should clean up old data', async () => {
-      const now = Date.now();
-      monitor['metrics'].clear(); // Clear existing metrics
-      monitor['alerts'].length = 0; // Clear existing alerts
-      
-      const oldMetric = {
-        timestamp: now - 2000,
-        value: 100
-      };
-      const newMetric = {
-        timestamp: now,
-        value: 80 // Value above warning threshold
-      };
-      monitor['metrics'].set('test-metric', [oldMetric, newMetric]);
-
-      await monitor.cleanupOldData(1000); // Clean up data older than 1 second
-      const metrics = await monitor.getMetrics();
-      const alerts = await monitor.getAlerts();
-      expect(metrics).toHaveLength(1);
-      expect(metrics[0].value).toBe(80);
-      expect(alerts).toHaveLength(0);
-    });
-
-    it('should handle cleanup errors', async () => {
-      const originalCleanupOldData = monitor['cleanupOldData'];
-      monitor['cleanupOldData'] = async () => {
-        throw new MonitorError('Cleanup failed', 'CLEANUP_ERROR');
-      };
-      
-      await expect(monitor.cleanupOldData()).rejects.toThrow('Cleanup failed');
-      monitor['cleanupOldData'] = originalCleanupOldData;
+      await monitor.cleanupOldMetrics();
+      expect(storage.delete).toHaveBeenCalledWith(
+        expect.stringContaining('metrics'),
+        expect.any(Object)
+      );
     });
   });
 
-  describe('statistics', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-      await monitor.recordMetric('test-metric', 100);
-      await monitor.recordMetric('test-metric', 40);
-      await monitor.recordMetric('test-metric', 20);
-    });
+  describe('report generation', () => {
+    it('should generate report', async () => {
+      const modelId = 'test-model';
 
-    it('should track monitoring statistics', () => {
-      const stats = monitor.getStats();
-      expect(stats.totalMetrics).toBe(3);
-      expect(stats.totalAlerts).toBe(2);
-      expect(stats.criticalAlerts).toBe(1);
-      expect(stats.warningAlerts).toBe(1);
-      expect(stats.lastUpdate).toBeDefined();
-      expect(stats.uptime).toBeDefined();
-      expect(stats.memoryUsage).toBeDefined();
+      await monitor.generateReport(modelId);
+      expect(storage.get).toHaveBeenCalledWith(
+        expect.stringContaining('metrics'),
+        expect.objectContaining({ modelId })
+      );
     });
   });
 
-  describe('event emission', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-    });
+  describe('error handling', () => {
+    it('should handle storage errors gracefully', async () => {
+      const modelId = 'test-model';
+      const metrics = { accuracy: 0.95 };
+      (storage.save as jest.Mock).mockRejectedValueOnce(new Error('Storage error'));
 
-    it('should emit events for metric recording', (done) => {
-      monitor.once('metricRecorded', (metric) => {
-        expect(metric.value).toBe(100);
-        done();
-      });
-      monitor.recordMetric('test-metric', 100);
-    });
-
-    it('should emit events for alert creation', (done) => {
-      monitor.once('alertCreated', (alert) => {
-        expect(alert.severity).toBe('high');
-        done();
-      });
-      monitor.recordMetric('test-metric', 20);
-    });
-
-    it('should emit events for cleanup', (done) => {
-      monitor.once('cleanupCompleted', (data) => {
-        expect(data.maxAge).toBeDefined();
-        done();
-      });
-      monitor.cleanupOldData(0);
-    });
-  });
-
-  describe('disposal', () => {
-    beforeEach(async () => {
-      await monitor.initialize();
-    });
-
-    it('should dispose resources properly', async () => {
-      await monitor.initialize();
-      await monitor.dispose();
-      await monitor.initialize(); // Re-initialize to test getMetrics
-      const metrics = await monitor.getMetrics();
-      const alerts = await monitor.getAlerts();
-      expect(metrics).toHaveLength(0);
-      expect(alerts).toHaveLength(0);
-    });
-
-    it('should emit disposed event', (done) => {
-      monitor.once('disposed', () => {
-        done();
-      });
-      monitor.dispose();
+      await expect(monitor.recordMetrics(modelId, metrics)).rejects.toThrow('Storage error');
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to record metrics'),
+        expect.any(Error)
+      );
     });
   });
 }); 

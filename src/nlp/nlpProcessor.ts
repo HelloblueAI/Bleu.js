@@ -1,13 +1,15 @@
 import * as tf from '@tensorflow/tfjs';
-import { HfInference } from '@huggingface/inference';
 import { logger } from '../utils/logger';
-import { SentimentAnalyzer } from './analyzers/sentimentAnalyzer';
-import { EntityRecognizer } from './analyzers/entityRecognizer';
-import { TopicModeler } from './analyzers/topicModeler';
-import { TextSummarizer } from './analyzers/textSummarizer';
-import { QuestionAnswerer } from './analyzers/questionAnswerer';
+import { SentimentAnalyzer } from '../analyzers/sentimentAnalyzer';
+import { EntityRecognizer } from '../recognizers/entityRecognizer';
+import { TopicModeler } from '../models/topicModeler';
+import { TextSummarizer } from '../summarizers/textSummarizer';
+import { QuestionAnswerer } from '../questionAnswerers/questionAnswerer';
 import { createLogger } from '../utils/logger';
-import { DeepLearningModel } from '../ai/deepLearning';
+import { CustomModel, CustomModelConfig } from '../ai/models/customModel';
+import { Logger } from '../utils/logger';
+import { TextAnalyzer } from './textAnalyzer';
+import { ProcessingResult, Entity, Relationship, TextAnalysis, SentimentResult } from '../types/nlp';
 
 interface NLPConfig {
   modelPath: string;
@@ -17,6 +19,14 @@ interface NLPConfig {
   ffDim: number;
   learningRate: number;
   modelVersion: string;
+  vocabSize: number;
+  maxSequenceLength: number;
+  embeddingDim: number;
+  sentiment: boolean;
+  entities: boolean;
+  topics: boolean;
+  summary: boolean;
+  qa: boolean;
 }
 
 export interface NLPInput {
@@ -52,114 +62,154 @@ export interface NLPOutput {
 }
 
 export class NLPProcessor {
-  private config: NLPConfig;
-  private model: tf.LayersModel | null = null;
+  private readonly config: NLPConfig;
+  private readonly logger: Logger;
+  private readonly sentimentAnalyzer: SentimentAnalyzer;
+  private readonly entityRecognizer: EntityRecognizer;
+  private readonly topicModeler: TopicModeler;
+  private readonly textSummarizer: TextSummarizer;
+  private readonly questionAnswerer: QuestionAnswerer;
+  private model: CustomModel | null = null;
   private tokenizer: any;
-  private sentimentAnalyzer: SentimentAnalyzer;
-  private entityRecognizer: EntityRecognizer;
-  private topicModeler: TopicModeler;
-  private textSummarizer: TextSummarizer;
-  private questionAnswerer: QuestionAnswerer;
-  private hf: HfInference;
-  private logger = createLogger('NLPProcessor');
   private initialized = false;
+  private textAnalyzer: TextAnalyzer;
 
-  constructor(config: NLPConfig) {
+  constructor(
+    config: NLPConfig,
+    entityRecognizer: EntityRecognizer,
+    textAnalyzer: TextAnalyzer,
+    sentimentAnalyzer: SentimentAnalyzer,
+    logger: Logger
+  ) {
     this.config = config;
-    this.hf = new HfInference(process.env.HUGGINGFACE_TOKEN);
-    this.sentimentAnalyzer = new SentimentAnalyzer();
-    this.entityRecognizer = new EntityRecognizer();
-    this.topicModeler = new TopicModeler();
-    this.textSummarizer = new TextSummarizer();
-    this.questionAnswerer = new QuestionAnswerer();
+    this.logger = logger;
+    this.sentimentAnalyzer = sentimentAnalyzer;
+    this.entityRecognizer = entityRecognizer;
+    this.topicModeler = new TopicModeler(config.topics);
+    this.textSummarizer = new TextSummarizer(config.summary);
+    this.questionAnswerer = new QuestionAnswerer(config.qa);
+    this.textAnalyzer = textAnalyzer;
   }
 
-  public async initialize(): Promise<void> {
-    if (this.initialized) {
-      return;
-    }
-
-    logger.info('Initializing NLP Processor with advanced capabilities...');
+  async initialize(): Promise<void> {
+    if (this.initialized) return;
 
     try {
-      // Initialize tokenizer
-      this.tokenizer = await this.loadTokenizer();
-      
-      // Initialize model
-      this.model = await this.createModel();
-      
-      // Initialize specialized components
-      await Promise.all([
-        this.sentimentAnalyzer.initialize(),
-        this.entityRecognizer.initialize(),
-        this.topicModeler.initialize(),
-        this.textSummarizer.initialize(),
-        this.questionAnswerer.initialize()
-      ]);
+      // Initialize custom model
+      const modelConfig: CustomModelConfig = {
+        vocabSize: this.config.vocabSize,
+        maxSequenceLength: this.config.maxSequenceLength,
+        embeddingDim: this.config.embeddingDim,
+        numLayers: this.config.numTransformerBlocks,
+        numHeads: this.config.numHeads,
+        ffDim: this.config.ffDim,
+        dropout: 0.1
+      };
+
+      this.model = new CustomModel(modelConfig);
+      await this.model.build();
+
+      // Load tokenizer
+      await this.loadTokenizer();
 
       this.initialized = true;
-      logger.info('✅ NLP Processor initialized successfully');
+      this.logger.info('NLPProcessor initialized successfully');
     } catch (error) {
-      logger.error('❌ Failed to initialize NLP Processor:', error);
+      this.logger.error('Failed to initialize NLPProcessor:', error);
       throw error;
     }
   }
 
-  private async loadTokenizer(): Promise<any> {
-    // Load tokenizer from HuggingFace
-    return await this.hf.loadTokenizer(this.config.modelVersion);
+  private async loadTokenizer(): Promise<void> {
+    // Implement custom tokenizer loading logic here
+    // This could be a simple word-based tokenizer or a more sophisticated one
+    this.tokenizer = {
+      encode: (text: string) => {
+        // Simple word-based tokenization
+        return text.toLowerCase().split(/\s+/);
+      },
+      decode: (tokens: string[]) => {
+        return tokens.join(' ');
+      }
+    };
   }
 
-  private async createModel(): Promise<tf.LayersModel> {
-    const model = tf.sequential();
-
-    // Add embedding layer with positional encoding
-    model.add(tf.layers.embedding({
-      inputDim: this.tokenizer.vocabSize,
-      outputDim: this.config.keyDim,
-      inputLength: this.config.maxSequenceLength
-    }));
-
-    // Add positional encoding
-    model.add(tf.layers.positionalEncoding({
-      maxLen: this.config.maxSequenceLength,
-      dModel: this.config.keyDim
-    }));
-
-    // Add transformer blocks
-    for (let i = 0; i < this.config.numTransformerBlocks; i++) {
-      model.add(tf.layers.transformerEncoder({
-        numHeads: this.config.numHeads,
-        keyDim: this.config.keyDim,
-        ffDim: this.config.ffDim,
-        dropout: 0.1
-      }));
+  async processText(text: string): Promise<any> {
+    if (!this.initialized) {
+      await this.initialize();
     }
 
-    // Add output layers
-    model.add(tf.layers.dense({
-      units: this.config.keyDim,
-      activation: 'relu'
-    }));
-    model.add(tf.layers.dropout({ rate: 0.1 }));
-    model.add(tf.layers.dense({
-      units: this.tokenizer.vocabSize,
-      activation: 'softmax'
-    }));
+    try {
+      // Tokenize input text
+      const tokens = this.tokenizer.encode(text);
+      
+      // Convert tokens to tensor
+      const inputTensor = tf.tensor1d(tokens.map((token: string) => 
+        this.getTokenId(token)
+      ));
 
-    // Compile model with advanced metrics
-    model.compile({
-      optimizer: tf.train.adam(this.config.learningRate),
-      loss: 'categoricalCrossentropy',
-      metrics: [
-        'accuracy',
-        tf.metrics.precision(),
-        tf.metrics.recall(),
-        tf.metrics.f1Score()
-      ]
-    });
+      // Get model predictions
+      const predictions = await this.model?.predict(inputTensor);
+      
+      // Process predictions
+      const result = {
+        sentiment: await this.sentimentAnalyzer.analyze(text),
+        entities: await this.entityRecognizer.recognize(text),
+        topics: await this.topicModeler.model(text),
+        summary: await this.textSummarizer.summarize(text),
+        answers: await this.questionAnswerer.answer(text)
+      };
 
-    return model;
+      return result;
+    } catch (error) {
+      this.logger.error('Error processing text:', error);
+      throw error;
+    }
+  }
+
+  private getTokenId(token: string): number {
+    // Implement token to ID mapping logic
+    // This is a simple implementation - you might want to use a more sophisticated approach
+    return token.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % this.config.vocabSize;
+  }
+
+  async train(trainData: tf.Tensor, trainLabels: tf.Tensor): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    try {
+      await this.model?.train(trainData, trainLabels);
+      this.logger.info('Model training completed successfully');
+    } catch (error) {
+      this.logger.error('Error training model:', error);
+      throw error;
+    }
+  }
+
+  async saveModel(path: string): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Model not initialized');
+    }
+
+    try {
+      await this.model?.save(path);
+      this.logger.info('Model saved successfully');
+    } catch (error) {
+      this.logger.error('Error saving model:', error);
+      throw error;
+    }
+  }
+
+  async loadModel(path: string): Promise<void> {
+    try {
+      await this.model?.load(path);
+      this.initialized = true;
+      this.logger.info('Model loaded successfully');
+    } catch (error) {
+      this.logger.error('Error loading model:', error);
+      throw error;
+    }
   }
 
   public async process(input: NLPInput): Promise<NLPOutput> {
@@ -175,22 +225,22 @@ export class NLPProcessor {
 
       // Process sentiment if requested
       if (input.options?.sentiment) {
-        output.sentiment = await this.analyzeSentiment(input.text);
+        output.sentiment = await this.sentimentAnalyzer.analyze(input.text);
       }
 
       // Extract entities if requested
       if (input.options?.entities) {
-        output.entities = await this.extractEntities(input.text);
+        output.entities = await this.entityRecognizer.recognize(input.text);
       }
 
       // Extract topics if requested
       if (input.options?.topics) {
-        output.topics = await this.extractTopics(input.text);
+        output.topics = await this.topicModeler.model(input.text);
       }
 
       // Generate summary if requested
       if (input.options?.summary) {
-        output.summary = await this.generateSummary(input.text);
+        output.summary = await this.textSummarizer.summarize(input.text);
       }
 
       // Translate text if requested
@@ -205,60 +255,9 @@ export class NLPProcessor {
     }
   }
 
-  private async analyzeSentiment(text: string): Promise<NLPOutput['sentiment']> {
-    // Implement sentiment analysis logic
-    return {
-      score: 0.8,
-      label: 'positive'
-    };
-  }
-
-  private async extractEntities(text: string): Promise<NLPOutput['entities']> {
-    // Implement entity extraction logic
-    return [
-      {
-        text: 'example',
-        type: 'organization',
-        confidence: 0.9
-      }
-    ];
-  }
-
-  private async extractTopics(text: string): Promise<NLPOutput['topics']> {
-    // Implement topic extraction logic
-    return [
-      {
-        topic: 'technology',
-        confidence: 0.8
-      }
-    ];
-  }
-
-  private async generateSummary(text: string): Promise<string> {
-    // Implement text summarization logic
-    return text.substring(0, 100) + '...';
-  }
-
   private async translateText(text: string, targetLanguage: string): Promise<string> {
     // Implement translation logic
     return text;
-  }
-
-  private async tokenize(text: string): Promise<number[]> {
-    return await this.tokenizer.encode(text);
-  }
-
-  private async tensorize(tokens: number[]): Promise<tf.Tensor> {
-    return tf.tensor2d([tokens], [1, tokens.length]);
-  }
-
-  private async extractFeatures(tensor: tf.Tensor): Promise<tf.Tensor> {
-    // Extract features using the model's intermediate layers
-    const intermediateModel = tf.model({
-      inputs: this.model!.inputs,
-      outputs: this.model!.layers[this.config.numTransformerBlocks - 1].output
-    });
-    return await intermediateModel.predict(tensor) as tf.Tensor;
   }
 
   public async dispose(): Promise<void> {
@@ -275,5 +274,117 @@ export class NLPProcessor {
       this.questionAnswerer.dispose()
     ]);
     this.initialized = false;
+  }
+
+  async tokenize(text: string): Promise<string[]> {
+    try {
+      return text.split(/\s+/).filter(token => token.length > 0);
+    } catch (error) {
+      this.logger.error('Tokenization failed:', error);
+      throw new Error('Failed to tokenize text');
+    }
+  }
+
+  async process(text: string, lang: string = 'en'): Promise<ProcessingResult> {
+    try {
+      const tokens = await this.tokenize(text);
+      const entities = await this.entityRecognizer.recognize(text);
+      const relationships = await this.extractRelationships(text);
+      const sentiment = await this.sentimentAnalyzer.analyze(text, lang);
+      const analysis = await this.textAnalyzer.analyzeComplexity(text);
+
+      return {
+        tokens,
+        entities,
+        relationships,
+        sentiment,
+        analysis,
+        language: lang
+      };
+    } catch (error) {
+      this.logger.error('Text processing failed:', error);
+      throw new Error('Failed to process text');
+    }
+  }
+
+  async normalize(text: string): Promise<string> {
+    try {
+      return text.trim().toLowerCase();
+    } catch (error) {
+      this.logger.error('Text normalization failed:', error);
+      throw new Error('Failed to normalize text');
+    }
+  }
+
+  async removeStopWords(text: string): Promise<string> {
+    try {
+      const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
+      const tokens = text.split(/\s+/);
+      return tokens.filter(token => !stopWords.has(token.toLowerCase())).join(' ');
+    } catch (error) {
+      this.logger.error('Stop words removal failed:', error);
+      throw new Error('Failed to remove stop words');
+    }
+  }
+
+  async extractEntities(text: string): Promise<Entity[]> {
+    try {
+      return await this.entityRecognizer.recognize(text);
+    } catch (error) {
+      this.logger.error('Entity extraction failed:', error);
+      throw new Error('Failed to extract entities');
+    }
+  }
+
+  async extractRelationships(text: string): Promise<Relationship[]> {
+    try {
+      return await this.entityRecognizer.extractRelationships(text);
+    } catch (error) {
+      this.logger.error('Relationship extraction failed:', error);
+      throw new Error('Failed to extract relationships');
+    }
+  }
+
+  async linkEntities(entity: string): Promise<string> {
+    try {
+      return await this.entityRecognizer.linkEntities(entity);
+    } catch (error) {
+      this.logger.error('Entity linking failed:', error);
+      throw new Error('Failed to link entities');
+    }
+  }
+
+  async summarize(text: string): Promise<string> {
+    try {
+      const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+      // Simple extractive summarization - return first sentence
+      return sentences[0] || text;
+    } catch (error) {
+      this.logger.error('Text summarization failed:', error);
+      throw new Error('Failed to summarize text');
+    }
+  }
+
+  async generateEmbedding(text: string): Promise<number[]> {
+    try {
+      // Simple word2vec-style embedding simulation
+      const normalized = await this.normalize(text);
+      const tokens = await this.tokenize(normalized);
+      const dimension = 100;
+      return Array(dimension).fill(0).map(() => Math.random() * 2 - 1);
+    } catch (error) {
+      this.logger.error('Embedding generation failed:', error);
+      throw new Error('Failed to generate embedding');
+    }
+  }
+
+  async classify(text: string): Promise<string> {
+    try {
+      const sentiment = await this.sentimentAnalyzer.analyze(text);
+      return sentiment.sentiment;
+    } catch (error) {
+      this.logger.error('Text classification failed:', error);
+      throw new Error('Failed to classify text');
+    }
   }
 } 

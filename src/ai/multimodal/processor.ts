@@ -1,199 +1,309 @@
-import { logger } from '../../utils/logger';
-import { ImageProcessor } from './processors/image';
-import { AudioProcessor } from './processors/audio';
-import { VideoProcessor } from './processors/video';
-import { TextProcessor } from './processors/text';
-import { CodeProcessor } from './processors/code';
-import { CrossModalFusion } from './fusion/crossModalFusion';
-import { AdvancedFeatureExtractor } from './featureExtraction/advancedFeatureExtractor';
-import { CrossModalAttention } from './attention/crossModalAttention';
-import { MultiModalConfig, MultiModalInput, ModalityFeatures, ProcessedResult } from './types';
-import { QuantumEnhancer } from './enhancers/quantumEnhancer';
-import { SecurityManager } from './managers/securityManager';
-import { PerformanceOptimizer } from './optimizers/performanceOptimizer';
-import { AdvancedVisualizer } from './visualizers/advancedVisualizer';
-import { EnterpriseMetrics } from './metrics/enterpriseMetrics';
-import { DistributedProcessor } from './processors/distributedProcessor';
-import {
-  TextProcessorConfig,
-  CodeProcessorConfig,
-  ImageProcessorConfig,
-  AudioProcessorConfig,
-  VideoProcessorConfig
-} from './configs/processorConfigs';
+import * as tf from '@tensorflow/tfjs-node';
+import { createLogger } from '../../utils/logger';
+import { ImageProcessor } from './imageProcessor';
+import { AudioProcessor } from './audioProcessor';
+import { VideoProcessor } from './videoProcessor';
+import { NLPProcessor } from '../nlp/processor';
 
-export class MultiModalProcessor {
-  private config: MultiModalConfig;
-  private textProcessor: TextProcessor;
-  private codeProcessor: CodeProcessor;
+export interface MultimodalProcessorConfig {
+  modelPath?: string;
+  imageConfig?: {
+    maxSize?: number;
+    allowedFormats?: string[];
+  };
+  audioConfig?: {
+    sampleRate?: number;
+    maxDuration?: number;
+    allowedFormats?: string[];
+  };
+  videoConfig?: {
+    maxDuration?: number;
+    maxResolution?: number;
+    allowedFormats?: string[];
+  };
+  nlpConfig?: {
+    maxSequenceLength?: number;
+    vocabSize?: number;
+  };
+}
+
+export interface ProcessedMultimodalData {
+  text?: {
+    tokens: string[];
+    embeddings: number[][];
+    sentiment: {
+      score: number;
+      label: string;
+    };
+    entities: Array<{
+      text: string;
+      type: string;
+      start: number;
+      end: number;
+    }>;
+  };
+  image?: {
+    features: number[];
+    objects: Array<{
+      label: string;
+      confidence: number;
+      bbox: [number, number, number, number];
+    }>;
+    scene: string;
+  };
+  audio?: {
+    features: number[];
+    transcription?: string;
+    speaker?: string;
+    emotions: Array<{
+      label: string;
+      confidence: number;
+    }>;
+  };
+  video?: {
+    frames: Array<{
+      features: number[];
+      objects: Array<{
+        label: string;
+        confidence: number;
+        bbox: [number, number, number, number];
+      }>;
+    }>;
+    actions: Array<{
+      label: string;
+      confidence: number;
+      start: number;
+      end: number;
+    }>;
+  };
+}
+
+export class MultimodalProcessor {
+  private logger = createLogger('MultimodalProcessor');
   private imageProcessor: ImageProcessor;
   private audioProcessor: AudioProcessor;
   private videoProcessor: VideoProcessor;
-  private crossModalFusion: CrossModalFusion;
-  private featureExtractor: AdvancedFeatureExtractor;
-  private attentionMechanism: CrossModalAttention;
-  private quantumEnhancer: QuantumEnhancer;
-  private securityManager: SecurityManager;
-  private performanceOptimizer: PerformanceOptimizer;
-  private advancedVisualizer: AdvancedVisualizer;
-  private enterpriseMetrics: EnterpriseMetrics;
-  private distributedProcessor: DistributedProcessor;
+  private nlpProcessor: NLPProcessor;
+  private config: Required<MultimodalProcessorConfig>;
+  private initialized = false;
 
-  constructor(config: MultiModalConfig) {
-    this.config = config;
-    this.quantumEnhancer = new QuantumEnhancer();
-    this.securityManager = new SecurityManager();
-    this.performanceOptimizer = new PerformanceOptimizer();
-    this.advancedVisualizer = new AdvancedVisualizer();
-    this.enterpriseMetrics = new EnterpriseMetrics();
-    this.distributedProcessor = new DistributedProcessor();
-
-    // Initialize processors with our own models
-    const baseConfig = {
-      modelPath: config.models.text,
-      modelVersion: config.modelVersion,
-      modelType: config.modelType,
-      optimizationLevel: config.optimizationLevel,
-      company: config.company
+  constructor(config: MultimodalProcessorConfig = {}) {
+    this.config = {
+      modelPath: config.modelPath || 'models/multimodal',
+      imageConfig: {
+        maxSize: config.imageConfig?.maxSize || 1024,
+        allowedFormats: config.imageConfig?.allowedFormats || ['jpg', 'jpeg', 'png']
+      },
+      audioConfig: {
+        sampleRate: config.audioConfig?.sampleRate || 16000,
+        maxDuration: config.audioConfig?.maxDuration || 30,
+        allowedFormats: config.audioConfig?.allowedFormats || ['wav', 'mp3']
+      },
+      videoConfig: {
+        maxDuration: config.videoConfig?.maxDuration || 60,
+        maxResolution: config.videoConfig?.maxResolution || 720,
+        allowedFormats: config.videoConfig?.allowedFormats || ['mp4', 'avi']
+      },
+      nlpConfig: {
+        maxSequenceLength: config.nlpConfig?.maxSequenceLength || 512,
+        vocabSize: config.nlpConfig?.vocabSize || 50000
+      }
     };
 
-    this.textProcessor = new TextProcessor({
-      ...baseConfig,
-      modelPath: config.models.text,
-      maxSequenceLength: 512,
-      vocabularySize: 50000
-    } as TextProcessorConfig);
-
-    this.codeProcessor = new CodeProcessor({
-      ...baseConfig,
-      modelPath: config.models.code,
-      maxSequenceLength: 1024,
-      vocabularySize: 100000,
-      languageSupport: ['javascript', 'typescript', 'python', 'java', 'cpp']
-    } as CodeProcessorConfig);
-
     this.imageProcessor = new ImageProcessor({
-      ...baseConfig,
-      modelPath: config.models.image,
-      maxImageSize: 224,
-      channels: 3,
-      detectionThreshold: 0.5
-    } as ImageProcessorConfig);
+      modelPath: `${this.config.modelPath}/image`,
+      maxSize: this.config.imageConfig.maxSize,
+      allowedFormats: this.config.imageConfig.allowedFormats
+    });
 
     this.audioProcessor = new AudioProcessor({
-      ...baseConfig,
-      modelPath: config.models.audio,
-      sampleRate: 16000,
-      maxDuration: 30,
-      audioFormat: 'wav'
-    } as AudioProcessorConfig);
+      modelPath: `${this.config.modelPath}/audio`,
+      sampleRate: this.config.audioConfig.sampleRate,
+      maxDuration: this.config.audioConfig.maxDuration,
+      allowedFormats: this.config.audioConfig.allowedFormats
+    });
 
     this.videoProcessor = new VideoProcessor({
-      ...baseConfig,
-      modelPath: config.models.video,
-      maxFrames: 300,
-      frameRate: 30,
-      resolution: {
-        width: 1920,
-        height: 1080
+      modelPath: `${this.config.modelPath}/video`,
+      maxDuration: this.config.videoConfig.maxDuration,
+      maxResolution: this.config.videoConfig.maxResolution,
+      allowedFormats: this.config.videoConfig.allowedFormats,
+      imageProcessorConfig: {
+        modelPath: `${this.config.modelPath}/image`,
+        maxSize: this.config.imageConfig.maxSize,
+        allowedFormats: this.config.imageConfig.allowedFormats
       }
-    } as VideoProcessorConfig);
+    });
 
-    this.crossModalFusion = new CrossModalFusion();
-    this.featureExtractor = new AdvancedFeatureExtractor();
-    this.attentionMechanism = new CrossModalAttention();
+    this.nlpProcessor = new NLPProcessor({
+      modelPath: `${this.config.modelPath}/nlp`,
+      maxSequenceLength: this.config.nlpConfig.maxSequenceLength,
+      vocabSize: this.config.nlpConfig.vocabSize
+    });
   }
 
   async initialize(): Promise<void> {
-    logger.info('Initializing MultiModal Processor with advanced capabilities...');
-
-    // Initialize all processors
-    await Promise.all([
-      this.textProcessor.initialize(),
-      this.codeProcessor.initialize(),
-      this.imageProcessor.initialize(),
-      this.audioProcessor.initialize(),
-      this.videoProcessor.initialize()
-    ]);
-
-    // Initialize advanced components
-    await this.crossModalFusion.initialize();
-    await this.featureExtractor.initialize();
-    await this.attentionMechanism.initialize();
-
-    logger.info('MultiModal Processor initialized successfully');
+    try {
+      await Promise.all([
+        this.imageProcessor.initialize(),
+        this.audioProcessor.initialize(),
+        this.videoProcessor.initialize(),
+        this.nlpProcessor.initialize()
+      ]);
+      this.initialized = true;
+      this.logger.info('Multimodal processor initialized');
+    } catch (error) {
+      this.logger.error('Failed to initialize multimodal processor:', error);
+      throw new Error('Failed to initialize multimodal processor');
+    }
   }
 
-  async process(input: MultiModalInput): Promise<ProcessedResult> {
+  async processData(data: {
+    text?: string;
+    image?: Buffer;
+    audio?: Buffer;
+    video?: Buffer;
+  }): Promise<ProcessedMultimodalData> {
+    if (!this.initialized) {
+      throw new Error('Multimodal processor not initialized');
+    }
+
     try {
-      // Extract features from each modality
-      const features = await this.extractFeatures(input);
+      const results: ProcessedMultimodalData = {};
+      const processingPromises: Promise<void>[] = [];
 
-      // Apply cross-modal attention
-      const attendedFeatures = await this.attentionMechanism.apply(features);
+      if (data.text) {
+        processingPromises.push(
+          this.nlpProcessor.processText(data.text).then(result => {
+            results.text = result;
+          })
+        );
+      }
 
-      // Perform cross-modal fusion
-      const fusion = await this.crossModalFusion.fuse(attendedFeatures);
+      if (data.image) {
+        processingPromises.push(
+          this.imageProcessor.processImage(data.image).then(result => {
+            results.image = result;
+          })
+        );
+      }
 
-      // Extract advanced features
-      const advancedFeatures = await this.featureExtractor.extract(attendedFeatures);
+      if (data.audio) {
+        processingPromises.push(
+          this.audioProcessor.processAudio(data.audio).then(result => {
+            results.audio = result;
+          })
+        );
+      }
 
-      return {
-        text: input.text,
-        code: input.code,
-        image: input.image,
-        audio: input.audio,
-        video: input.video,
-        features: advancedFeatures,
-        fusion,
-        metadata: {
-          modalities: Object.keys(input).filter(key => input[key as keyof MultiModalInput] !== undefined),
-          processingTime: Date.now(),
-          modelVersion: this.config.modelVersion
-        }
-      };
+      if (data.video) {
+        processingPromises.push(
+          this.videoProcessor.processVideo(data.video).then(result => {
+            results.video = result;
+          })
+        );
+      }
+
+      await Promise.all(processingPromises);
+      return results;
     } catch (error) {
-      logger.error('Error processing multimodal input:', error);
+      this.logger.error('Failed to process multimodal data:', error);
       throw error;
     }
   }
 
-  private async extractFeatures(input: MultiModalInput): Promise<ModalityFeatures> {
-    const features: ModalityFeatures = {};
+  async train(data: {
+    texts?: string[];
+    images?: Buffer[];
+    audio?: Buffer[];
+    video?: Buffer[];
+  }, labels: {
+    text?: any;
+    image?: any;
+    audio?: any;
+    video?: any;
+  }): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Multimodal processor not initialized');
+    }
 
-    // Process each modality in parallel
-    const [textFeatures, codeFeatures, imageFeatures, audioFeatures, videoFeatures] = await Promise.all([
-      input.text ? this.textProcessor.extractFeatures(input.text) : Promise.resolve(undefined),
-      input.code ? this.codeProcessor.extractFeatures(input.code) : Promise.resolve(undefined),
-      input.image ? this.imageProcessor.extractFeatures(input.image) : Promise.resolve(undefined),
-      input.audio ? this.audioProcessor.extractFeatures(input.audio) : Promise.resolve(undefined),
-      input.video ? this.videoProcessor.extractFeatures(input.video) : Promise.resolve(undefined)
-    ]);
+    try {
+      const trainingPromises: Promise<void>[] = [];
 
-    if (textFeatures) features.text = textFeatures;
-    if (codeFeatures) features.code = codeFeatures;
-    if (imageFeatures) features.image = imageFeatures;
-    if (audioFeatures) features.audio = audioFeatures;
-    if (videoFeatures) features.video = videoFeatures;
+      if (data.texts && labels.text) {
+        trainingPromises.push(
+          this.nlpProcessor.train(data.texts, labels.text)
+        );
+      }
 
-    return features;
+      if (data.images && labels.image) {
+        trainingPromises.push(
+          this.imageProcessor.train(data.images, labels.image)
+        );
+      }
+
+      if (data.audio && labels.audio) {
+        trainingPromises.push(
+          this.audioProcessor.train(data.audio, labels.audio)
+        );
+      }
+
+      if (data.video && labels.video) {
+        trainingPromises.push(
+          this.videoProcessor.train(data.video, labels.video)
+        );
+      }
+
+      await Promise.all(trainingPromises);
+      this.logger.info('Multimodal models trained successfully');
+    } catch (error) {
+      this.logger.error('Failed to train multimodal models:', error);
+      throw error;
+    }
   }
 
-  dispose(): void {
-    // Clean up resources
-    this.textProcessor.dispose();
-    this.codeProcessor.dispose();
-    this.imageProcessor.dispose();
-    this.audioProcessor.dispose();
-    this.videoProcessor.dispose();
-    this.crossModalFusion.dispose();
-    this.featureExtractor.dispose();
-    this.attentionMechanism.dispose();
-    this.quantumEnhancer.dispose();
-    this.securityManager.dispose();
-    this.performanceOptimizer.dispose();
-    this.advancedVisualizer.dispose();
-    this.enterpriseMetrics.dispose();
-    this.distributedProcessor.dispose();
+  async save(): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Multimodal processor not initialized');
+    }
+
+    try {
+      await Promise.all([
+        this.imageProcessor.save(),
+        this.audioProcessor.save(),
+        this.videoProcessor.save(),
+        this.nlpProcessor.save()
+      ]);
+      this.logger.info('Multimodal models saved successfully');
+    } catch (error) {
+      this.logger.error('Failed to save multimodal models:', error);
+      throw error;
+    }
+  }
+
+  async load(): Promise<void> {
+    try {
+      await Promise.all([
+        this.imageProcessor.load(),
+        this.audioProcessor.load(),
+        this.videoProcessor.load(),
+        this.nlpProcessor.load()
+      ]);
+      this.initialized = true;
+      this.logger.info('Multimodal models loaded successfully');
+    } catch (error) {
+      this.logger.error('Failed to load multimodal models:', error);
+      throw error;
+    }
+  }
+
+  async dispose(): Promise<void> {
+    await Promise.all([
+      this.imageProcessor.dispose(),
+      this.audioProcessor.dispose(),
+      this.videoProcessor.dispose(),
+      this.nlpProcessor.dispose()
+    ]);
+    this.initialized = false;
   }
 } 

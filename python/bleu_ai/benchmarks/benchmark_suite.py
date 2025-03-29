@@ -3,7 +3,7 @@ import time
 import psutil
 import torch
 import tensorflow as tf
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 import logging
 from ..utils.quantumProcessor import QuantumProcessor
 from ..utils.performanceOptimizer import PerformanceOptimizer
@@ -71,16 +71,16 @@ class BenchmarkSuite:
         
         # Classical baseline
         classical_start = time.time()
-        classical_results = await this.run_classical_object_detection(test_images)
+        classical_results = await self.run_classical_object_detection(test_images)
         classical_time = time.time() - classical_start
         
         # Quantum-enhanced
         quantum_start = time.time()
-        quantum_results = await this.run_quantum_object_detection(test_images)
+        quantum_results = await self.run_quantum_object_detection(test_images)
         quantum_time = time.time() - quantum_start
         
         # Calculate improvements
-        mAP_improvement = this.calculate_mAP_improvement(
+        mAP_improvement = self.calculate_mAP_improvement(
             classical_results, quantum_results
         )
         speed_improvement = classical_time / quantum_time
@@ -97,20 +97,20 @@ class BenchmarkSuite:
     async def benchmark_scene_understanding(self) -> Dict[str, float]:
         """Benchmark scene understanding performance."""
         # Test data preparation
-        test_images = this.prepare_test_images("scene_understanding")
+        test_images = self.prepare_test_images("scene_understanding")
         
         # Classical baseline
         classical_start = time.time()
-        classical_results = await this.run_classical_scene_understanding(test_images)
+        classical_results = await self.run_classical_scene_understanding(test_images)
         classical_time = time.time() - classical_start
         
         # Quantum-enhanced
         quantum_start = time.time()
-        quantum_results = await this.run_quantum_scene_understanding(test_images)
+        quantum_results = await self.run_quantum_scene_understanding(test_images)
         quantum_time = time.time() - quantum_start
         
         # Calculate improvements
-        accuracy_improvement = this.calculate_accuracy_improvement(
+        accuracy_improvement = self.calculate_accuracy_improvement(
             classical_results, quantum_results
         )
         speed_improvement = classical_time / quantum_time
@@ -127,13 +127,13 @@ class BenchmarkSuite:
     async def benchmark_quantum_advantages(self) -> Dict[str, float]:
         """Benchmark quantum computing advantages."""
         # Test quantum optimization
-        optimization_results = await this.benchmark_quantum_optimization()
+        optimization_results = await self.benchmark_quantum_optimization()
         
         # Test quantum feature extraction
-        feature_results = await this.benchmark_quantum_feature_extraction()
+        feature_results = await self.benchmark_quantum_feature_extraction()
         
         # Test quantum security
-        security_results = await this.benchmark_quantum_security()
+        security_results = await self.benchmark_quantum_security()
         
         return {
             "optimization_improvement": optimization_results["improvement"],
@@ -158,7 +158,7 @@ class BenchmarkSuite:
         gpu_usage = self.get_gpu_usage()
         
         # Response time
-        response_time = await this.measure_response_time()
+        response_time = await self.measure_response_time()
         
         return {
             "memory_usage_mb": memory_usage,
@@ -171,10 +171,10 @@ class BenchmarkSuite:
     async def benchmark_energy_efficiency(self) -> Dict[str, float]:
         """Benchmark energy efficiency."""
         # Measure power consumption
-        power_consumption = await this.measure_power_consumption()
+        power_consumption = await self.measure_power_consumption()
         
         # Calculate energy efficiency metrics
-        efficiency_metrics = this.calculate_energy_efficiency(power_consumption)
+        efficiency_metrics = self.calculate_energy_efficiency(power_consumption)
         
         return {
             "power_consumption_watts": power_consumption,

@@ -1,52 +1,60 @@
-import { DeepLearningModel } from '../ai/deepLearning';
-
 export interface MonitoringConfig {
-  enabled: boolean;
-  interval: number;
-  metrics: Record<string, number>;
-  alertThresholds: {
-    lowAccuracy: number;
-    highLatency: number;
-    highErrorRate: number;
+  readonly enabled: boolean;
+  readonly interval: number;
+  readonly metrics: Record<string, number>;
+  readonly alertThresholds: {
+    readonly lowAccuracy: number;
+    readonly highLatency: number;
+    readonly highErrorRate: number;
   };
-  retention?: {
-    metrics: number;
-    alerts: number;
+  readonly retention?: {
+    readonly metrics: number;
+    readonly alerts: number;
   };
 }
 
 export interface MonitoringMetrics {
-  accuracy: number;
-  latency: number;
-  throughput: number;
-  errorRate: number;
-  timestamp: number;
+  readonly accuracy: number;
+  readonly latency: number;
+  readonly throughput: number;
+  readonly errorRate: number;
+  readonly timestamp: number;
 }
 
 export interface Alert {
-  id: string;
-  type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  message: string;
-  details?: Record<string, any>;
-  timestamp: number;
-  resolved?: boolean;
-  resolvedAt?: number;
+  readonly id: string;
+  readonly type: string;
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly message: string;
+  readonly details?: Record<string, any>;
+  readonly timestamp: number;
+  readonly resolved?: boolean;
+  readonly resolvedAt?: number;
 }
 
 export interface MetricsSnapshot {
-  timestamp: number;
-  metrics: MonitoringMetrics;
-  alerts?: Alert[];
+  readonly timestamp: number;
+  readonly metrics: MonitoringMetrics;
+  readonly alerts?: Alert[];
 }
 
 export interface Metric {
-  value: number;
-  timestamp: number;
-  tags?: Record<string, string>;
+  readonly value: number;
+  readonly timestamp: number;
+  readonly tags?: Record<string, string>;
 }
 
 export interface TimeRange {
-  start: number;
-  end: number;
+  readonly start: number;
+  readonly end: number;
+}
+
+export interface ModelMetrics {
+  timestamp: number;
+  accuracy: number;
+  loss: number;
+  latency: number;
+  memoryUsage: number;
+  gpuUsage?: number;
+  customMetrics?: Record<string, number>;
 } 

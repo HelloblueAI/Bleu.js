@@ -1,201 +1,131 @@
 import { EventEmitter } from 'events';
-import { createLogger } from '../utils/logger';
-import { ModelMonitor } from '../monitoring/modelMonitor';
-import * as path from 'path';
-import * as fs from 'fs/promises';
-import { z } from 'zod';
+import { createLogger } from '../utils/logger.js';
+import { ModelMonitor } from './modelMonitor';
+import { MonitorConfig, MonitoringStats, ModelMetrics } from '../types/monitoring';
+import { MonitorError } from '../errors/monitorError';
+import { MetricsManager } from '../utils/metrics';
+import { Storage } from '../storage/storage.js';
+import { MonitoringError } from '../types/errors.js';
+import { Logger } from '../utils/logger';
+import { Metric, Alert } from '../types/monitor';
 
 /**
- * Custom error class for Monitor-related errors
- */
-export class MonitorError extends Error {
-  constructor(message: string, public readonly code: string) {
-    super(message);
-    this.name = 'MonitorError';
-  }
-}
-
-/**
- * Configuration schema for Monitor
- */
-const MonitorConfigSchema = z.object({
-  metrics: z.array(z.string()).optional(),
-  thresholds: z.record(z.object({
-    warning: z.number(),
-    critical: z.number()
-  })).optional(),
-  storageDirectory: z.string().optional(),
-  defaultInterval: z.number().min(1000).optional(),
-  maxRetries: z.number().min(1).optional(),
-  cleanupInterval: z.number().min(1000).optional(),
-  maxStorageSize: z.number().min(1024 * 1024).optional(), // 1MB minimum
-});
-
-type MonitorConfig = z.infer<typeof MonitorConfigSchema>;
-
-/**
- * Interface for metric data
- */
-export interface Metric {
-  name: string;
-  value: number;
-  timestamp: number;
-  tags?: Record<string, string>;
-}
-
-/**
- * Interface for alert data
- */
-export interface Alert {
-  id: string;
-  type: 'warning' | 'error' | 'critical';
-  message: string;
-  timestamp: number;
-  metric?: Metric;
-}
-
-/**
- * Interface for monitoring statistics
- */
-export interface MonitoringStats {
-  totalMetrics: number;
-  totalAlerts: number;
-  criticalAlerts: number;
-  warningAlerts: number;
-  lastUpdate: number;
-  uptime: number;
-  memoryUsage: number;
-}
-
-/**
- * Main Monitor class for managing model monitoring
+ * Monitor class for managing multiple model monitors
  */
 export class Monitor extends EventEmitter {
-  private readonly monitors: Map<string, ModelMonitor>;
-  private readonly config: Required<MonitorConfig>;
   private readonly logger = createLogger('Monitor');
+  private readonly monitors: Map<string, ModelMonitor> = new Map();
+  private readonly config: MonitorConfig;
   private readonly stats: MonitoringStats;
-  private cleanupInterval?: NodeJS.Timeout;
-  private statsInterval?: NodeJS.Timeout;
-  private isInitialized = false;
-  private readonly metrics: Map<string, Metric[]>;
-  private readonly alerts: Alert[];
-  private checkInterval: NodeJS.Timeout | null = null;
+  private readonly metricsManager: MetricsManager;
+  private readonly storage: Storage;
+  private initialized: boolean = false;
+  private monitoringIntervals: Map<string, NodeJS.Timeout> = new Map();
+  private activeMonitors: Map<string, boolean>;
 
-  constructor(config: MonitorConfig = {}) {
+  constructor(storage: Storage, config: Partial<MonitorConfig> = {}, metricsManager: MetricsManager, logger: Logger) {
     super();
-    
-    // Validate and set configuration
-    const validatedConfig = MonitorConfigSchema.parse(config);
     this.config = {
-      metrics: validatedConfig.metrics ?? [],
-      thresholds: validatedConfig.thresholds ?? {},
-      storageDirectory: validatedConfig.storageDirectory ?? path.join(process.cwd(), 'monitoring'),
-      defaultInterval: validatedConfig.defaultInterval ?? 60000,
-      maxRetries: validatedConfig.maxRetries ?? 3,
-      cleanupInterval: validatedConfig.cleanupInterval ?? 3600000, // 1 hour
-      maxStorageSize: validatedConfig.maxStorageSize ?? 100 * 1024 * 1024 // 100MB
+      monitoringInterval: config.monitoringInterval || 60000,
+      retentionPeriod: config.retentionPeriod || 7 * 24 * 60 * 60 * 1000,
+      warningThreshold: config.warningThreshold || 0.8,
+      criticalThreshold: config.criticalThreshold || 0.95
     };
-
-    this.monitors = new Map();
-    this.metrics = new Map();
-    this.alerts = [];
     this.stats = {
-      totalMetrics: 0,
-      totalAlerts: 0,
-      criticalAlerts: 0,
-      warningAlerts: 0,
-      lastUpdate: Date.now(),
-      uptime: 0,
-      memoryUsage: 0
+      totalMonitors: 0,
+      activeMonitors: 0,
+      totalMetricsCollected: 0,
+      alertsTriggered: 0
     };
+    this.metricsManager = metricsManager;
+    this.storage = storage;
+    this.activeMonitors = new Map();
   }
 
   /**
-   * Check if the monitor is initialized
+   * Get the current monitor configuration
+   * @returns The monitor configuration
    */
-  isInitialized(): boolean {
-    return this.isInitialized;
+  getConfig(): MonitorConfig {
+    return { ...this.config };
   }
 
   /**
    * Initialize the monitor
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) {
-      throw new MonitorError('Monitor already initialized', 'ALREADY_INITIALIZED');
+    if (this.initialized) {
+      this.logger.info('Monitor already initialized');
+      return;
     }
 
     try {
-      await this.setupStorageDirectory();
-      
-      // Setup cleanup interval
-      this.cleanupInterval = setInterval(() => {
-        this.cleanupOldData().catch(err => {
-          this.logger.error('Cleanup failed:', err);
-        });
-      }, this.config.cleanupInterval);
-
-      // Setup stats update interval
-      this.statsInterval = setInterval(() => {
-        this.updateStats();
-      }, 60000); // Update stats every minute
-
-      await this.loadMetrics();
-      await this.loadAlerts();
-      
-      this.startMonitoring();
-      this.isInitialized = true;
-      this.logger.info('Monitor initialized successfully');
-      this.emit('initialized');
+      await this.storage.initialize();
+      this.initialized = true;
+      this.logger.info('Initialized monitor');
     } catch (error) {
-      this.logger.error('Failed to initialize monitor:', error);
-      throw new MonitorError('Failed to initialize monitor', 'INIT_ERROR');
+      this.logger.error('Failed to initialize monitor', error);
+      throw new MonitoringError('Failed to initialize model monitor');
     }
   }
 
   /**
-   * Setup storage directory
+   * Clean up resources and stop all monitoring
    */
-  private async setupStorageDirectory(): Promise<void> {
+  async cleanup(): Promise<void> {
+    if (!this.initialized) {
+      this.logger.warn('Monitor not initialized, skipping cleanup');
+      return;
+    }
+
     try {
-      await fs.mkdir(this.config.storageDirectory, { recursive: true });
+      // Stop all active monitors
+      const stopPromises = Array.from(this.monitors.keys()).map(modelId => 
+        this.stopMonitoring(modelId)
+      );
+      await Promise.all(stopPromises);
+
+      // Clear all intervals
+      this.monitoringIntervals.forEach(interval => clearInterval(interval));
+      this.monitoringIntervals.clear();
+
+      // Reset stats
+      this.stats.activeMonitors = 0;
+      this.stats.totalMetricsCollected = 0;
+      this.stats.alertsTriggered = 0;
+
+      // Clean up storage
+      await this.storage.cleanup();
+      
+      this.initialized = false;
+      this.logger.info('Monitor cleanup completed');
     } catch (error) {
-      this.logger.error('Failed to create storage directory:', error);
-      throw new MonitorError('Failed to create storage directory', 'STORAGE_ERROR');
+      this.logger.error('Failed to cleanup monitor', error);
+      throw new MonitoringError('Failed to cleanup monitor');
     }
   }
 
   /**
    * Start monitoring a model
    */
-  async startMonitoring(modelId: string, config?: Partial<MonitorConfig>): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
+  async startMonitoring(modelId: string): Promise<void> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
     }
 
     try {
-      if (this.monitors.has(modelId)) {
-        this.logger.warn(`Monitor already exists for model ${modelId}`);
+      if (this.activeMonitors.has(modelId)) {
+        this.logger.warn(`Monitor already active for model ${modelId}`);
         return;
       }
 
-      const monitor = new ModelMonitor({
-        modelId,
-        metrics: config?.metrics || [],
-        logInterval: config?.interval || this.config.defaultInterval,
-        thresholds: config?.thresholds || this.config.thresholds,
-        alertingEnabled: config?.alerting !== false,
-        storageDirectory: path.join(this.config.storageDirectory, modelId)
-      });
-
-      await monitor.start();
-      this.monitors.set(modelId, monitor);
+      await this.storage.initialize(modelId);
+      await this.metricsManager.initialize(modelId);
+      this.activeMonitors.set(modelId, true);
       this.logger.info(`Started monitoring for model ${modelId}`);
-      this.emit('monitorStarted', { modelId });
     } catch (error) {
-      this.logger.error(`Failed to start monitoring for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to start monitoring for model ${modelId}`, 'START_ERROR');
+      this.logger.error('Failed to start monitoring', { modelId, error });
+      throw new MonitorError('MONITOR_START_FAILED', `Failed to start monitoring for model ${modelId}`);
     }
   }
 
@@ -203,463 +133,296 @@ export class Monitor extends EventEmitter {
    * Stop monitoring a model
    */
   async stopMonitoring(modelId: string): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
     }
 
     try {
-      const monitor = this.monitors.get(modelId);
-      if (!monitor) {
-        this.logger.warn(`No monitor found for model ${modelId}`);
-        return;
+      if (!this.activeMonitors.has(modelId)) {
+        throw new MonitorError('MONITOR_NOT_FOUND', `No active monitor found for model ${modelId}`);
       }
 
-      await monitor.stop();
-      this.monitors.delete(modelId);
+      await this.cleanup(modelId);
+      this.activeMonitors.delete(modelId);
       this.logger.info(`Stopped monitoring for model ${modelId}`);
-      this.emit('monitorStopped', { modelId });
     } catch (error) {
-      this.logger.error(`Failed to stop monitoring for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to stop monitoring for model ${modelId}`, 'STOP_ERROR');
+      this.logger.error('Failed to stop monitoring', { modelId, error });
+      throw error;
     }
   }
 
   /**
-   * Record a metric
+   * Record metrics for a model
    */
-  async recordMetric(name: string, value: number, metadata?: Record<string, unknown>): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    try {
-      if (typeof value !== 'number' || isNaN(value)) {
-        throw new MonitorError('Invalid metric value', 'INVALID_VALUE');
-      }
-
-      const metric: Metric = {
-        name,
-        value,
-        timestamp: Date.now(),
-        metadata
-      };
-
-      // Store metric in memory
-      if (!this.metrics.has(name)) {
-        this.metrics.set(name, []);
-      }
-      this.metrics.get(name)!.push(metric);
-      this.stats.totalMetrics++;
-      this.emit('metricRecorded', metric);
-
-      // Check thresholds
-      await this.checkThresholds(metric);
-    } catch (error) {
-      this.logger.error(`Failed to record metric ${name}:`, error);
-      if (error instanceof MonitorError) {
-        throw error;
-      }
-      throw new MonitorError(`Failed to record metric ${name}`, 'RECORD_ERROR');
-    }
-  }
-
-  /**
-   * Get metrics
-   */
-  async getMetrics(name?: string, options?: { start?: number; end?: number }): Promise<Metric[]> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    try {
-      if (!name) {
-        return Array.from(this.metrics.values()).flat();
-      }
-
-      const metrics = this.metrics.get(name) || [];
-      if (!options) {
-        return metrics;
-      }
-
-      return metrics.filter(m => {
-        if (options.start && m.timestamp < options.start) return false;
-        if (options.end && m.timestamp > options.end) return false;
-        return true;
-      });
-    } catch (error) {
-      this.logger.error('Failed to get metrics:', error);
-      throw new MonitorError('Failed to get metrics', 'GET_METRICS_ERROR');
-    }
-  }
-
-  /**
-   * Check thresholds
-   */
-  private async checkThresholds(metric: Metric): Promise<void> {
-    const thresholds = this.config.thresholds[metric.name];
-    if (!thresholds) return;
-
-    if (metric.value >= thresholds.critical) {
-      await this.createAlert('critical', `Critical threshold exceeded for ${metric.name}`, metric);
-    } else if (metric.value >= thresholds.warning) {
-      await this.createAlert('warning', `Warning threshold exceeded for ${metric.name}`, metric);
-    }
-  }
-
-  /**
-   * Create an alert
-   */
-  private async createAlert(type: Alert['type'], message: string, metric?: Metric): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    try {
-      const alert: Alert = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        type,
-        message,
-        timestamp: Date.now(),
-        metric
-      };
-
-      this.alerts.push(alert);
-      this.stats.totalAlerts++;
-      if (type === 'critical') {
-        this.stats.criticalAlerts++;
-      } else {
-        this.stats.warningAlerts++;
-      }
-
-      this.emit('alertCreated', alert);
-    } catch (error) {
-      this.logger.error('Failed to create alert:', error);
-      throw new MonitorError('Failed to create alert', 'ALERT_ERROR');
-    }
-  }
-
-  /**
-   * Get alerts
-   */
-  async getAlerts(options?: { start?: number; end?: number }): Promise<Alert[]> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    try {
-      if (!options) {
-        return this.alerts;
-      }
-
-      return this.alerts.filter(a => {
-        if (options.start && a.timestamp < options.start) return false;
-        if (options.end && a.timestamp > options.end) return false;
-        return true;
-      });
-    } catch (error) {
-      this.logger.error('Failed to get alerts:', error);
-      throw new MonitorError('Failed to get alerts', 'GET_ALERTS_ERROR');
-    }
-  }
-
-  /**
-   * Generate a report for a model
-   */
-  async generateReport(modelId: string): Promise<{
-    modelId: string;
-    status: string;
-    metrics: Metric[];
-    alerts: { critical: number; warning: number };
-    lastUpdated: string;
-  }> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
+  async recordMetrics(modelId: string, metrics: Record<string, number>): Promise<void> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
     }
 
     const monitor = this.monitors.get(modelId);
     if (!monitor) {
-      throw new MonitorError(`No monitor found for model ${modelId}`, 'MONITOR_NOT_FOUND');
+      throw new MonitorError('MONITOR_NOT_FOUND', `No monitor found for model ${modelId}`);
+    }
+
+    await monitor.recordMetrics(metrics);
+    this.logger.info('Recorded metrics', { modelId });
+  }
+
+  /**
+   * Get metrics for a model within a time range
+   */
+  async getMetricsInRange(modelId: string, startTime: number, endTime: number): Promise<any[]> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
+    }
+
+    const monitor = this.monitors.get(modelId);
+    if (!monitor) {
+      throw new MonitorError('MONITOR_NOT_FOUND', `No monitor found for model ${modelId}`);
+    }
+
+    const metrics = monitor.getMetrics();
+    return metrics.filter(m => m.timestamp >= startTime && m.timestamp <= endTime);
+  }
+
+  /**
+   * Get alerts for a model
+   */
+  async getAlerts(modelId: string): Promise<any[]> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
+    }
+
+    const monitor = this.monitors.get(modelId);
+    if (!monitor) {
+      throw new MonitorError('MONITOR_NOT_FOUND', `No monitor found for model ${modelId}`);
+    }
+
+    return monitor.getAlerts();
+  }
+
+  /**
+   * Clean up old metrics
+   */
+  async cleanupOldMetrics(): Promise<void> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
     }
 
     try {
-      const metrics = await monitor.getMetrics();
-      const alerts = await monitor.getAlerts();
+      const now = Date.now();
+      const cutoff = now - this.config.retentionPeriod;
 
-      return {
-        modelId,
-        status: 'active',
-        metrics,
-        alerts: {
-          critical: alerts.filter(a => a.type === 'critical').length,
-          warning: alerts.filter(a => a.type === 'warning').length
-        },
-        lastUpdated: new Date().toISOString()
-      };
+      for (const monitor of this.monitors.values()) {
+        const metrics = monitor.getMetrics();
+        const newMetrics = metrics.filter(m => m.timestamp >= cutoff);
+        if (newMetrics.length < metrics.length) {
+          await monitor.cleanupOldData();
+        }
+      }
+
+      this.logger.info('Cleaned up old metrics');
     } catch (error) {
-      this.logger.error(`Failed to generate report for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to generate report for model ${modelId}`, 'REPORT_ERROR');
+      this.logger.error('Failed to clean up old metrics', error);
+      throw new MonitoringError('Failed to clean up old metrics');
+    }
+  }
+
+  async generateReport(modelId: string): Promise<string> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
+    }
+
+    try {
+      if (!this.activeMonitors.has(modelId)) {
+        throw new MonitorError('MONITOR_NOT_FOUND', `No active monitor found for model ${modelId}`);
+      }
+
+      const endTime = new Date();
+      const startTime = new Date(endTime.getTime() - (24 * 60 * 60 * 1000)); // Last 24 hours
+      const metrics = await this.getMetricsInRange(modelId, startTime.getTime(), endTime.getTime());
+      const alerts = await this.getAlerts(modelId);
+
+      const report = {
+        modelId,
+        timeRange: { startTime, endTime },
+        metrics: metrics.length,
+        alerts: alerts.length,
+        criticalAlerts: alerts.filter(a => a.level === 'critical').length,
+        warningAlerts: alerts.filter(a => a.level === 'warning').length,
+        averageMetricValue: metrics.reduce((sum, m) => sum + m.value, 0) / metrics.length
+      };
+
+      return JSON.stringify(report, null, 2);
+    } catch (error) {
+      this.logger.error('Failed to generate report', { modelId, error });
+      throw error;
+    }
+  }
+
+  private summarizeMetrics(metrics: Metric[]): Record<string, { min: number; max: number; avg: number }> {
+    const summary: Record<string, { min: number; max: number; sum: number; count: number }> = {};
+
+    for (const metric of metrics) {
+      if (!summary[metric.metricName]) {
+        summary[metric.metricName] = {
+          min: metric.value,
+          max: metric.value,
+          sum: metric.value,
+          count: 1
+        };
+      } else {
+        const s = summary[metric.metricName];
+        s.min = Math.min(s.min, metric.value);
+        s.max = Math.max(s.max, metric.value);
+        s.sum += metric.value;
+        s.count++;
+      }
+    }
+
+    return Object.entries(summary).reduce((acc, [name, { min, max, sum, count }]) => {
+      acc[name] = {
+        min,
+        max,
+        avg: sum / count
+      };
+      return acc;
+    }, {} as Record<string, { min: number; max: number; avg: number }>);
+  }
+
+  /**
+   * Record a metric for a model
+   * @param modelId - The ID of the model
+   * @param metric - The metric to record
+   */
+  async recordMetric(modelId: string, metric: Metric): Promise<void> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
+    }
+
+    try {
+      if (!this.activeMonitors.has(modelId)) {
+        throw new MonitorError('MONITOR_NOT_FOUND', `No active monitor found for model ${modelId}`);
+      }
+
+      await this.metricsManager.recordMetric(modelId, metric);
+
+      // Check thresholds and create alerts if needed
+      if (metric.value > this.config.criticalThreshold) {
+        await this.createAlert(modelId, {
+          type: 'CRITICAL',
+          message: `Metric ${metric.name} exceeded critical threshold`,
+          timestamp: new Date(),
+          metric
+        });
+      } else if (metric.value > this.config.warningThreshold) {
+        await this.createAlert(modelId, {
+          type: 'WARNING',
+          message: `Metric ${metric.name} exceeded warning threshold`,
+          timestamp: new Date(),
+          metric
+        });
+      }
+    } catch (error) {
+      this.logger.error('Failed to record metric', { modelId, metric, error });
+      throw error;
     }
   }
 
   /**
-   * Generate an aggregate report for all models
+   * Get metrics for a model
+   * @param modelId - The ID of the model
+   * @returns The model's metrics
    */
-  async generateAggregateReport(): Promise<{
-    timestamp: string;
-    summary: {
-      totalModels: number;
-      totalMetrics: number;
-      totalAlerts: number;
-      criticalAlerts: number;
-      status: string;
-      lastUpdated: string;
+  async getMetrics(modelId: string): Promise<Metric[]> {
+    if (!this.initialized) {
+      throw new MonitoringError('Monitor not initialized');
+    }
+
+    const monitor = this.monitors.get(modelId);
+    if (!monitor) {
+      throw new MonitorError('MONITOR_NOT_FOUND', `No monitor found for model ${modelId}`);
+    }
+    return monitor.getMetrics();
+  }
+
+  /**
+   * Generate an aggregate report for all monitored models
+   * @returns The aggregate monitoring report
+   */
+  async generateAggregateReport(): Promise<any> {
+    const reports = await Promise.all(
+      Array.from(this.monitors.keys()).map(modelId => this.generateReport(modelId))
+    );
+
+    return {
+      stats: this.stats,
+      models: reports
     };
-    models: Record<string, unknown>;
-  }> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
+  }
+
+  /**
+   * Update monitoring configuration
+   * @param modelId - The ID of the model
+   * @param config - The new configuration
+   */
+  async updateConfig(modelId: string, config: Partial<MonitorConfig>): Promise<void> {
+    const monitor = this.monitors.get(modelId);
+    if (!monitor) {
+      throw new MonitorError('MONITOR_NOT_FOUND', `No monitor found for model ${modelId}`);
     }
-
-    try {
-      const timestamp = new Date().toISOString();
-      const modelReports: Record<string, unknown> = {};
-      let totalMetrics = 0;
-      let totalAlerts = 0;
-      let criticalAlerts = 0;
-
-      for (const [modelId, monitor] of this.monitors) {
-        const report = await this.generateReport(modelId);
-        modelReports[modelId] = report;
-        totalMetrics += report.metrics.length;
-        totalAlerts += report.alerts.filter(a => a.type === 'critical').length + report.alerts.filter(a => a.type === 'warning').length;
-        criticalAlerts += report.alerts.filter(a => a.type === 'critical').length;
-      }
-
-      return {
-        timestamp,
-        summary: {
-          totalModels: this.monitors.size,
-          totalMetrics,
-          totalAlerts,
-          criticalAlerts,
-          status: criticalAlerts > 0 ? 'critical' : totalAlerts > 0 ? 'warning' : 'healthy',
-          lastUpdated: timestamp
-        },
-        models: modelReports
-      };
-    } catch (error) {
-      this.logger.error('Failed to generate aggregate report:', error);
-      throw new MonitorError('Failed to generate aggregate report', 'AGGREGATE_REPORT_ERROR');
-    }
+    await monitor.updateConfig(config);
   }
 
   /**
    * Check if a model is being monitored
+   * @param modelId - The ID of the model
+   * @returns True if the model is being monitored
    */
   isMonitoring(modelId: string): boolean {
-    return this.monitors.has(modelId);
+    const monitor = this.monitors.get(modelId);
+    return monitor ? monitor.isMonitoring() : false;
   }
 
   /**
-   * Get list of monitored models
+   * Get list of monitored model IDs
+   * @returns Array of monitored model IDs
    */
   getMonitoredModels(): string[] {
     return Array.from(this.monitors.keys());
   }
 
-  /**
-   * Update thresholds for a model
-   */
-  async updateThresholds(modelId: string, thresholds: Record<string, { warning: number; critical: number }>): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    const monitor = this.monitors.get(modelId);
-    if (!monitor) {
-      throw new MonitorError(`No monitor found for model ${modelId}`, 'MONITOR_NOT_FOUND');
-    }
-
+  private async createAlert(modelId: string, alert: Alert): Promise<void> {
     try {
-      await monitor.updateThresholds(thresholds);
-      this.emit('thresholdsUpdated', { modelId, thresholds });
+      const alerts = await this.getAlerts(modelId);
+      alerts.push(alert);
+      await this.storage.save(`${modelId}_alerts`, alerts);
+      this.logger.info('Created new alert', { modelId, alert });
     } catch (error) {
-      this.logger.error(`Failed to update thresholds for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to update thresholds for model ${modelId}`, 'UPDATE_THRESHOLDS_ERROR');
+      this.logger.error('Failed to create alert', { modelId, alert, error });
+      throw error;
     }
   }
 
-  /**
-   * Update monitoring interval for a model
-   */
-  async updateMonitoringInterval(modelId: string, interval: number): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    const monitor = this.monitors.get(modelId);
-    if (!monitor) {
-      throw new MonitorError(`No monitor found for model ${modelId}`, 'MONITOR_NOT_FOUND');
-    }
-
+  async cleanup(modelId: string): Promise<void> {
     try {
-      await monitor.updateMonitoringInterval(interval);
-      this.emit('intervalUpdated', { modelId, interval });
+      const retentionDate = new Date();
+      retentionDate.setDate(retentionDate.getDate() - this.config.retentionPeriod);
+
+      // Cleanup metrics
+      const metrics = await this.getMetrics(modelId);
+      await this.metricsManager.saveMetrics(modelId, metrics);
+
+      // Cleanup alerts
+      const alerts = (await this.getAlerts(modelId)).filter(
+        alert => alert.timestamp > retentionDate
+      );
+      await this.storage.save(`${modelId}_alerts`, alerts);
+
+      this.logger.info('Cleanup completed', { modelId });
     } catch (error) {
-      this.logger.error(`Failed to update monitoring interval for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to update monitoring interval for model ${modelId}`, 'UPDATE_INTERVAL_ERROR');
-    }
-  }
-
-  /**
-   * Toggle alerting for a model
-   */
-  async toggleAlerting(modelId: string, enabled: boolean): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    const monitor = this.monitors.get(modelId);
-    if (!monitor) {
-      throw new MonitorError(`No monitor found for model ${modelId}`, 'MONITOR_NOT_FOUND');
-    }
-
-    try {
-      await monitor.toggleAlerting(enabled);
-      this.emit('alertingToggled', { modelId, enabled });
-    } catch (error) {
-      this.logger.error(`Failed to toggle alerting for model ${modelId}:`, error);
-      throw new MonitorError(`Failed to toggle alerting for model ${modelId}`, 'TOGGLE_ALERTING_ERROR');
-    }
-  }
-
-  /**
-   * Clean up old data
-   */
-  async cleanupOldData(maxAge?: number): Promise<void> {
-    if (!this.isInitialized) {
-      throw new MonitorError('Monitor not initialized', 'NOT_INITIALIZED');
-    }
-
-    try {
-      const now = Date.now();
-      const age = maxAge || 24 * 60 * 60 * 1000; // Default to 24 hours
-
-      // Clean up metrics
-      for (const [name, metrics] of this.metrics.entries()) {
-        const filteredMetrics = metrics.filter(m => now - m.timestamp <= age);
-        if (filteredMetrics.length !== metrics.length) {
-          this.metrics.set(name, filteredMetrics);
-        }
-      }
-
-      // Clean up alerts
-      const alertIndex = this.alerts.findIndex(a => now - a.timestamp > age);
-      if (alertIndex !== -1) {
-        this.alerts.splice(0, alertIndex + 1);
-      }
-
-      this.emit('cleanupCompleted', { maxAge });
-    } catch (error) {
-      this.logger.error('Failed to clean up old data:', error);
-      throw new MonitorError('Failed to clean up old data', 'CLEANUP_ERROR');
-    }
-  }
-
-  /**
-   * Update monitoring statistics
-   */
-  private updateStats(): void {
-    this.stats.uptime = Date.now() - this.stats.lastUpdate;
-    this.stats.memoryUsage = process.memoryUsage().heapUsed;
-    this.stats.lastUpdate = Date.now();
-  }
-
-  /**
-   * Get monitoring statistics
-   */
-  getStats(): MonitoringStats {
-    return { ...this.stats };
-  }
-
-  /**
-   * Dispose of resources
-   */
-  async dispose(): Promise<void> {
-    try {
-      if (this.cleanupInterval) {
-        clearInterval(this.cleanupInterval);
-        this.cleanupInterval = undefined;
-      }
-      if (this.statsInterval) {
-        clearInterval(this.statsInterval);
-        this.statsInterval = undefined;
-      }
-      for (const [modelId, monitor] of this.monitors) {
-        await monitor.stop();
-        this.monitors.delete(modelId);
-      }
-      this.metrics.clear();
-      this.alerts.length = 0;
-      this.isInitialized = false;
-      this.emit('disposed');
-    } catch (error) {
-      this.logger.error('Failed to dispose monitor:', error);
-      throw new MonitorError('Failed to dispose monitor', 'DISPOSE_ERROR');
-    }
-  }
-
-  private startMonitoring(): void {
-    this.checkInterval = setInterval(async () => {
-      try {
-        await this.cleanupOldData();
-      } catch (error) {
-        this.logger.error('Failed to perform monitoring check:', error);
-      }
-    }, this.config.cleanupInterval);
-  }
-
-  private async loadMetrics(): Promise<void> {
-    try {
-      const metricsPath = path.join(this.config.storageDirectory, 'metrics.json');
-      const data = await fs.readFile(metricsPath, 'utf-8');
-      this.metrics = new Map(JSON.parse(data).map(([name, metrics]: [string, Metric[]]) => [name, metrics]));
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        this.logger.error('Failed to load metrics:', error);
-      }
-    }
-  }
-
-  private async loadAlerts(): Promise<void> {
-    try {
-      const alertsPath = path.join(this.config.storageDirectory, 'alerts.json');
-      const data = await fs.readFile(alertsPath, 'utf-8');
-      this.alerts = JSON.parse(data);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        this.logger.error('Failed to load alerts:', error);
-      }
-    }
-  }
-
-  private async saveMetrics(): Promise<void> {
-    try {
-      const metricsPath = path.join(this.config.storageDirectory, 'metrics.json');
-      await fs.writeFile(metricsPath, JSON.stringify(Array.from(this.metrics.entries()).map(([name, metrics]) => [name, metrics])));
-    } catch (error) {
-      this.logger.error('Failed to save metrics:', error);
-      throw new MonitorError('Failed to save metrics', 'SAVE_ERROR');
-    }
-  }
-
-  private async saveAlerts(): Promise<void> {
-    try {
-      const alertsPath = path.join(this.config.storageDirectory, 'alerts.json');
-      await fs.writeFile(alertsPath, JSON.stringify(this.alerts));
-    } catch (error) {
-      this.logger.error('Failed to save alerts:', error);
-      throw new MonitorError('Failed to save alerts', 'SAVE_ERROR');
+      this.logger.error('Failed to cleanup', { modelId, error });
+      throw error;
     }
   }
 } 

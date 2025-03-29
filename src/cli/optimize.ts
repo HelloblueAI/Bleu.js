@@ -107,7 +107,7 @@ export async function optimize(options: OptimizeOptions): Promise<void> {
   }
 }
 
-export async function optimizeCode(options: OptimizeOptions): Promise<void> {
+export async function optimizeWithAI(options: OptimizeOptions): Promise<void> {
   const { path: optimizePath, recursive = false, output = 'optimized' } = options;
 
   try {

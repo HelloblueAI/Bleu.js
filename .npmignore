@@ -192,3 +192,50 @@ webpack-bundle-analyzer/
 !CHANGELOG.md
 !dist/
 !dist/**/*
+
+# Source
+src/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Config files
+.eslintrc*
+.prettierrc*
+.editorconfig
+.gitignore
+.npmignore
+jest.config.ts
+tsconfig.json
+tsconfig.*.json
+
+# Development
+.github/
+.vscode/
+.idea/
+*.log
+coverage/
+.nyc_output/
+
+# Documentation
+docs/
+*.md
+!README.md
+!LICENSE
+
+# Test files
+__tests__/
+*.test.ts
+*.spec.ts
+test/
+tests/
+
+# Build tools
+rollup.config.js
+webpack.config.js
+babel.config.js
+
+# Misc
+.DS_Store
+.env*
+*.local

@@ -7,41 +7,36 @@ export interface QuantumRegister {
 }
 
 export interface QuantumGate {
-  name: string;
-  matrix: (number | Complex)[][];
-  targetQubits?: number[];
-  controlQubits?: number[];
-  phase?: number;
-  fidelity?: number;
+  type: 'H' | 'X' | 'Y' | 'Z' | 'CNOT' | 'SWAP' | 'TOFFOLI';
+  target: number;
+  control?: number;
+  parameters?: Record<string, number>;
+  errorRate?: number;
+  duration?: number;
 }
 
 export interface QuantumState {
-  amplitudes: Float32Array;
-  numQubits: number;
-  qram?: Float32Array;
-  entanglement?: {
-    pairs: [number, number][];
-    strength: number[];
-  };
-  decoherence?: {
-    rate: number;
-    time: number;
-  };
+  qubits: Qubit[];
+  entanglement: Map<string, number>;  // Maps qubit pairs to entanglement strength
+  errorRates: Map<string, number>;     // Maps qubit IDs to error rates
+  globalPhase?: number;
+  densityMatrix?: number[][];
 }
 
 export interface QuantumMeasurement {
   qubit: number;
-  basis: 'computational' | 'bell' | 'pauli-x' | 'pauli-y' | 'pauli-z';
+  basis: 'computational' | 'hadamard' | 'phase';
   result: number;
-  probability: number;
-  uncertainty: number;
+  timestamp: number;
+  errorRate: number;
 }
 
 export interface QuantumError {
-  type: 'bit-flip' | 'phase-flip' | 'depolarizing' | 'amplitude-damping';
-  rate: number;
-  affectedQubits: number[];
-  correctionStrategy?: string;
+  type: 'decoherence' | 'gate' | 'measurement' | 'initialization';
+  qubit: number;
+  severity: 'low' | 'medium' | 'high';
+  timestamp: number;
+  details: Record<string, any>;
 }
 
 export interface QuantumCircuitMetrics {
@@ -55,11 +50,14 @@ export interface QuantumCircuitMetrics {
 }
 
 export interface QuantumOptimizationResult {
-  circuit: QuantumCircuit;
-  metrics: QuantumCircuitMetrics;
-  measurements: QuantumMeasurement[];
-  errors: QuantumError[];
-  success: boolean;
+  originalCircuit: QuantumCircuit;
+  optimizedCircuit: QuantumCircuit;
+  improvement: {
+    gateCount: number;
+    depth: number;
+    executionTime: number;
+  };
+  metadata: Record<string, any>;
 }
 
 export interface QuantumAlgorithm {
@@ -88,6 +86,9 @@ export interface QuantumRegisterState {
   probability: number;
 }
 
+/**
+ * Represents a complex number.
+ */
 export interface Complex {
   real: number;
   imag: number;
@@ -116,20 +117,131 @@ export interface QuantumGateSet {
 }
 
 export interface QuantumCircuit {
-  config: {
-    numQubits: number;
-    depth: number;
-    optimizationLevel: number;
-    errorCorrection: boolean;
-    quantumMemory: boolean;
-  };
-  registers: QuantumRegister[];
   gates: QuantumGate[];
-  state: QuantumState;
-  metrics: QuantumCircuitMetrics;
-  memory?: QuantumMemoryCell[];
+  measurements: number[];
+  optimization: {
+    depth: number;
+    fidelity: number;
+    noise: number;
+    errorCorrection: boolean;
+  };
+  addGate(gate: QuantumGate): void;
+  optimize(): Promise<void>;
+  cleanup(): Promise<void>;
 }
 
 export function Complex(real: number, imag: number = 0): Complex {
   return { real, imag };
+}
+
+export interface QuantumOperation {
+  name: string;
+  matrix: number[][];
+  numQubits: number;
+  description: string;
+}
+
+/**
+ * Configuration for the quantum processor.
+ */
+export interface ProcessorConfig {
+  numQubits: number;
+  errorCorrection: boolean;
+  noiseModel?: NoiseModel;
+  optimizationLevel: number;
+  maxGateDepth?: number;
+  backend: 'simulator' | 'hardware';
+}
+
+/**
+ * Represents different types of quantum noise.
+ */
+export interface NoiseModel {
+  depolarizing: number;
+  amplitude: number;
+  phase: number;
+  measurement: number;
+}
+
+/**
+ * Result of a quantum computation.
+ */
+export interface QuantumResult {
+  measurements: number[];
+  probabilities: number[];
+  fidelity: number;
+  executionTime: number;
+  errorRate?: number;
+}
+
+/**
+ * Statistics about quantum circuit execution.
+ */
+export interface CircuitStats {
+  depth: number;
+  gateCount: number;
+  qubitCount: number;
+  classicalBits: number;
+  executionTime: number;
+}
+
+/**
+ * Options for quantum circuit optimization.
+ */
+export interface OptimizationOptions {
+  removeRedundant: boolean;
+  combineRotations: boolean;
+  reorderGates: boolean;
+  useTemplates: boolean;
+  maxIterations?: number;
+}
+
+/**
+ * Result of circuit optimization.
+ */
+export interface OptimizationResult {
+  originalDepth: number;
+  optimizedDepth: number;
+  gateReduction: number;
+  fidelityChange: number;
+  timeReduction: number;
+}
+
+export interface Qubit {
+  state: [number, number];  // Complex amplitudes [|0⟩, |1⟩]
+  errorRate: number;
+  coherence: number;
+  lastMeasurement?: number;
+  entanglement?: number;
+}
+
+export interface QuantumOptimization {
+  target: 'fidelity' | 'depth' | 'error_rate';
+  constraints: {
+    maxDepth?: number;
+    minFidelity?: number;
+    maxErrorRate?: number;
+  };
+  algorithm: 'greedy' | 'genetic' | 'annealing';
+  parameters: Record<string, number>;
+}
+
+export interface QuantumBackend {
+  name: 'simulator' | 'ibm' | 'ionq';
+  capabilities: {
+    maxQubits: number;
+    gateTypes: string[];
+    errorRates: Record<string, number>;
+    coherenceTime: number;
+  };
+  constraints: {
+    maxCircuitDepth: number;
+    maxGatesPerQubit: number;
+    minCoherence: number;
+  };
+  metrics: {
+    fidelity: number;
+    errorRate: number;
+    executionTime: number;
+  };
 } 
