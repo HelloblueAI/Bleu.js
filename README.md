@@ -783,6 +783,90 @@ a company dedicated to advanced innovations in AI solutions.
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
+## 🐳 Docker Setup
+
+### Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/Bleu.js.git
+cd Bleu.js
+
+# Start all services
+docker-compose up -d
+
+# Access the services:
+# - Frontend: http://localhost:3000
+# - Backend API: http://localhost:4003
+# - MongoDB Express: http://localhost:8081
+```
+
+### Available Services
+- **Frontend**: React application (port 3000)
+- **Backend API**: FastAPI server (port 4003)
+- **Core Engine**: Quantum processing engine (port 6000)
+- **MongoDB**: Database (port 27017)
+- **Redis**: Caching layer (port 6379)
+- **Eggs Generator**: AI model service
+- **MongoDB Express**: Database admin interface (port 8081)
+
+### Development Mode
+```bash
+# Start with live reload
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# View logs
+docker-compose logs -f
+
+# Rebuild specific service
+docker-compose up -d --build <service-name>
+```
+
+### Production Mode
+```bash
+# Start in production mode
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+# Scale workers
+docker-compose up -d --scale worker=3
+```
+
+### Environment Variables
+Create a `.env` file in the root directory:
+```env
+MONGODB_URI=mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
+REDIS_HOST=redis
+PORT=4003
+```
+
+### Common Commands
+```bash
+# Stop all services
+docker-compose down
+
+# View service status
+docker-compose ps
+
+# View logs of specific service
+docker-compose logs <service-name>
+
+# Enter container shell
+docker-compose exec <service-name> bash
+
+# Run tests
+docker-compose run test
+```
+
+### Troubleshooting
+1. **Services not starting**: Check logs with `docker-compose logs`
+2. **Database connection issues**: Ensure MongoDB is running with `docker-compose ps`
+3. **Permission errors**: Make sure volumes have correct permissions
+
+### Data Persistence
+Data is persisted in Docker volumes:
+- MongoDB data: `mongo-data` volume
+- Logs: `./logs` directory
+- Application data: `./data` directory
+
 
 
 
