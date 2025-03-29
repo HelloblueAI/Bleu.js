@@ -1,9 +1,13 @@
 """Advanced XGBoost training with quantum enhancements."""
 
-from typing import Dict, List, Optional, Tuple
 import numpy as np
 import xgboost as xgb
+from typing import Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass
+import logging
+import asyncio
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class TrainingConfig:
@@ -38,99 +42,134 @@ class SecurityConfig:
     privacy_budget: float = 1.0
 
 class AdvancedModelTrainer:
-    """Advanced XGBoost trainer with quantum enhancements"""
+    """Advanced XGBoost trainer with quantum enhancements and security features."""
     
     def __init__(
         self,
-        training_config: Optional[TrainingConfig] = None,
-        quantum_config: Optional[QuantumConfig] = None,
-        security_config: Optional[SecurityConfig] = None
+        training_config: Optional[Dict] = None,
+        quantum_config: Optional[Dict] = None,
+        security_config: Optional[Dict] = None
     ):
-        self.training_config = training_config or TrainingConfig()
-        self.quantum_config = quantum_config or QuantumConfig()
-        self.security_config = security_config or SecurityConfig()
+        # Convert dict configs to dataclass instances
+        self.training_config = TrainingConfig(**(training_config or {}))
+        self.quantum_config = QuantumConfig(**(quantum_config or {}))
+        self.security_config = SecurityConfig(**(security_config or {}))
         
         # Initialize XGBoost model
-        self.model = xgb.XGBClassifier(
-            n_estimators=self.training_config.n_estimators,
-            learning_rate=self.training_config.learning_rate,
-            max_depth=self.training_config.max_depth,
-            min_child_weight=self.training_config.min_child_weight,
-            subsample=self.training_config.subsample,
-            colsample_bytree=self.training_config.colsample_bytree,
-            objective=self.training_config.objective,
-            tree_method=self.training_config.tree_method,
-            use_label_encoder=False,
-            eval_metric='logloss'
-        )
+        self.model = None
+        self.feature_importance = None
+        
+        # Initialize logging
+        self._setup_logging()
     
-    async def train(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        eval_set: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None
-    ) -> Dict:
-        """Train the model with quantum enhancements"""
+    def _setup_logging(self):
+        """Setup logging configuration"""
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        self.logger = logging.getLogger(__name__)
+    
+    async def train(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, float]:
+        """Train the model with quantum enhancements and security measures."""
         try:
-            # Apply quantum enhancements if configured
-            if self.quantum_config.n_qubits > 0:
-                X = await self._apply_quantum_enhancements(X)
+            # Apply security measures
+            features_secure, labels_secure = self._apply_security_measures(features, labels)
             
-            # Apply security measures if configured
-            if self.security_config.secure_training:
-                X, y = self._apply_security_measures(X, y)
+            # Apply quantum enhancements
+            features_enhanced = await self._apply_quantum_enhancements(features_secure)
             
             # Train model
+            self.model = xgb.XGBClassifier(
+                n_estimators=self.training_config.n_estimators,
+                learning_rate=self.training_config.learning_rate,
+                max_depth=self.training_config.max_depth,
+                min_child_weight=self.training_config.min_child_weight,
+                subsample=self.training_config.subsample,
+                colsample_bytree=self.training_config.colsample_bytree,
+                objective=self.training_config.objective,
+                tree_method=self.training_config.tree_method,
+                use_gpu=self.training_config.use_gpu
+            )
+            
+            # Train with early stopping
             self.model.fit(
-                X, y,
-                eval_set=eval_set,
+                features_enhanced,
+                labels_secure,
+                eval_set=[(features_enhanced, labels_secure)],
                 early_stopping_rounds=self.training_config.early_stopping_rounds,
                 verbose=False
             )
             
             # Calculate metrics
-            metrics = self._calculate_metrics(X, y, eval_set)
+            metrics = self._calculate_metrics(features_enhanced, labels_secure)
+            
+            # Store feature importance
+            self.feature_importance = self.model.feature_importances_
             
             return metrics
             
         except Exception as e:
-            print(f"Error during training: {str(e)}")
+            self.logger.error(f"Training failed: {str(e)}")
             raise
     
-    async def _apply_quantum_enhancements(self, X: np.ndarray) -> np.ndarray:
+    async def predict(self, features: np.ndarray) -> np.ndarray:
+        """Make predictions using the trained model."""
+        try:
+            if self.model is None:
+                raise ValueError("Model has not been trained yet")
+            
+            # Apply quantum enhancements
+            features_enhanced = await self._apply_quantum_enhancements(features)
+            
+            # Make predictions
+            predictions = self.model.predict(features_enhanced)
+            
+            return predictions
+            
+        except Exception as e:
+            self.logger.error(f"Prediction failed: {str(e)}")
+            raise
+    
+    async def _apply_quantum_enhancements(self, features: np.ndarray) -> np.ndarray:
         """Apply quantum enhancements to features"""
         # Placeholder for quantum feature processing
         # This would be implemented with actual quantum circuits
-        return X
+        return features
     
     def _apply_security_measures(
         self,
-        X: np.ndarray,
-        y: np.ndarray
+        features: np.ndarray,
+        labels: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Apply security measures to data"""
         if self.security_config.differential_privacy:
             # Add noise for differential privacy
-            noise = np.random.normal(0, 1/self.security_config.privacy_budget, X.shape)
-            X = X + noise
+            rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+            noise = rng.normal(0, 1/self.security_config.privacy_budget, features.shape)
+            features = features + noise
         
-        return X, y
+        return features, labels
     
     def _calculate_metrics(
         self,
-        X: np.ndarray,
-        y: np.ndarray,
+        features: np.ndarray,
+        labels: np.ndarray,
         eval_set: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None
     ) -> Dict:
         """Calculate training metrics"""
         metrics = {}
         
         # Training metrics
-        y_pred = self.model.predict(X)
-        metrics['accuracy'] = np.mean(y_pred == y)
+        if not self.model:
+            raise ValueError("Model not initialized")
+        predictions = self.model.predict(features)
+        metrics['accuracy'] = np.mean(predictions == labels)
         
         # Validation metrics if eval_set is provided
         if eval_set:
+            if not hasattr(self.model, 'evals_result'):
+                raise ValueError("Model does not support evaluation results")
             val_metrics = self.model.evals_result()
             metrics.update({
                 'val_logloss': val_metrics['validation_0']['logloss'][-1],

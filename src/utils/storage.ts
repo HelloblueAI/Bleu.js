@@ -5,17 +5,20 @@ import { createLogger } from './logger';
 const logger = createLogger('Storage');
 
 export interface StorageConfig {
-  basePath: string;
+  path?: string;
+  basePath?: string;
   maxFileSize?: number;
   allowedExtensions?: string[];
 }
 
 export class Storage {
-  private readonly config: StorageConfig;
+  private readonly config: Required<Omit<StorageConfig, 'path' | 'basePath'>> & { basePath: string };
 
   constructor(config: StorageConfig) {
+    const basePath = config.basePath || config.path || './storage';
+    
     this.config = {
-      basePath: config.basePath,
+      basePath,
       maxFileSize: config.maxFileSize ?? 100 * 1024 * 1024, // 100MB
       allowedExtensions: config.allowedExtensions ?? ['.txt', '.json', '.csv', '.model']
     };

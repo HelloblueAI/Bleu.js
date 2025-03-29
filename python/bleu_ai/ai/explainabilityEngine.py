@@ -5,7 +5,7 @@ Provides advanced model explainability and interpretability capabilities.
 
 import logging
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union, Any
 import shap
 import lime
 import lime.lime_tabular
@@ -13,6 +13,8 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 class ExplainabilityEngine:
     def __init__(
@@ -37,52 +39,106 @@ class ExplainabilityEngine:
             logging.error(f"❌ Failed to initialize explainability engine: {str(e)}")
             raise
 
-    async def generateExplanation(
-        self,
-        model: any,
-        X: np.ndarray,
-        instance: Optional[np.ndarray] = None
-    ) -> Dict:
-        """Generate model explanations."""
+    async def generate_explanation(self, features: np.ndarray) -> Dict[str, Any]:
+        """Generate explanation for model predictions."""
         try:
-            if not self.initialized:
-                await self.initialize()
-
+            if self.method is None:
+                logger.error("Explanation method not initialized")
+                return {}
+                
             # Scale features
-            X_scaled = self.scaler.fit_transform(X)
-
-            # Generate explanations based on method
-            if self.method == 'shap':
-                explanation = await self._generate_shap_explanation(model, X_scaled, instance)
-            elif self.method == 'lime':
-                explanation = await self._generate_lime_explanation(model, X_scaled, instance)
-            else:
-                raise ValueError(f"Unsupported explanation method: {self.method}")
-
-            # Create visualization
-            await self._create_explanation_plot(explanation)
-
+            if self.scaler is None:
+                logger.error("Scaler not initialized")
+                return {}
+                
+            features_scaled = self.scaler.fit_transform(features)
+            
+            # Generate explanation
+            explanation = await self._generate_shap_explanation(features_scaled)
+            
             return explanation
-
         except Exception as e:
-            logging.error(f"❌ Explanation generation failed: {str(e)}")
-            raise
+            logger.error(f"Explanation generation error: {e}")
+            return {}
+
+    async def analyze_feature_importance(self, features: np.ndarray) -> Dict[str, float]:
+        """Analyze feature importance scores."""
+        try:
+            if self.explainer is None:
+                logger.error("Explainer not initialized")
+                return {}
+                
+            # Calculate feature importance
+            shap_values = self.explainer.shap_values(features)
+            if shap_values is None:
+                logger.error("Failed to calculate SHAP values")
+                return {}
+                
+            importance = np.abs(shap_values).mean(axis=0)
+            
+            # Create feature importance dictionary
+            feature_importance = {
+                f"feature_{i}": float(score) 
+                for i, score in enumerate(importance)
+            }
+            
+            return feature_importance
+        except Exception as e:
+            logger.error(f"Feature importance analysis error: {e}")
+            return {}
+
+    async def explain_prediction(self, features: np.ndarray) -> Dict[str, Any]:
+        """Generate detailed explanation for a single prediction."""
+        try:
+            if self.explainer is None:
+                logger.error("Explainer not initialized")
+                return {}
+                
+            if not isinstance(self.explainer, (shap.TreeExplainer, shap.KernelExplainer)):
+                logger.error("Invalid explainer type")
+                return {}
+                
+            # Get prediction
+            shap_values = self.explainer.shap_values(features)
+            if shap_values is None:
+                logger.error("Failed to calculate SHAP values")
+                return {}
+                
+            # Get feature importance
+            importance = await self.analyze_feature_importance(features)
+            
+            # Generate explanation
+            explanation = await self.generate_explanation(features)
+            
+            return {
+                'prediction': shap_values.tolist(),
+                'feature_importance': importance,
+                'explanation': explanation
+            }
+        except Exception as e:
+            logger.error(f"Prediction explanation error: {e}")
+            return {}
 
     async def _generate_shap_explanation(
         self,
-        model: any,
         X: np.ndarray,
         instance: Optional[np.ndarray] = None
     ) -> Dict:
         """Generate SHAP-based explanations."""
         try:
             # Create SHAP explainer
-            if isinstance(model, (shap.TreeExplainer, shap.KernelExplainer)):
-                self.explainer = model
+            if isinstance(self.explainer, (shap.TreeExplainer, shap.KernelExplainer)):
+                pass
             else:
-                self.explainer = shap.TreeExplainer(model)
+                self.explainer = shap.TreeExplainer(self.explainer)
 
             # Calculate SHAP values
+            if self.explainer is None:
+                raise ValueError("SHAP explainer not initialized")
+
+            if self.scaler is None:
+                raise ValueError("Scaler not initialized")
+                
             if instance is not None:
                 # For single instance
                 instance_scaled = self.scaler.transform(instance.reshape(1, -1))
@@ -108,17 +164,19 @@ class ExplainabilityEngine:
             return explanation
 
         except Exception as e:
-            logging.error(f"❌ SHAP explanation generation failed: {str(e)}")
+            logger.error(f"❌ SHAP explanation generation failed: {str(e)}")
             raise
 
     async def _generate_lime_explanation(
         self,
-        model: any,
         X: np.ndarray,
         instance: Optional[np.ndarray] = None
     ) -> Dict:
         """Generate LIME-based explanations."""
         try:
+            if self.scaler is None:
+                raise ValueError("Scaler not initialized")
+
             # Create feature names if not provided
             if self.feature_names is None:
                 self.feature_names = [f"Feature {i}" for i in range(X.shape[1])]
@@ -137,13 +195,13 @@ class ExplainabilityEngine:
                 instance_scaled = self.scaler.transform(instance.reshape(1, -1))
                 exp = self.explainer.explain_instance(
                     instance_scaled[0],
-                    model.predict_proba
+                    self.explainer.predict_proba
                 )
             else:
                 # For dataset
                 exp = self.explainer.explain_instance(
                     X[0],
-                    model.predict_proba
+                    self.explainer.predict_proba
                 )
 
             # Extract feature importance
@@ -162,7 +220,7 @@ class ExplainabilityEngine:
             return explanation
 
         except Exception as e:
-            logging.error(f"❌ LIME explanation generation failed: {str(e)}")
+            logger.error(f"❌ LIME explanation generation failed: {str(e)}")
             raise
 
     async def _create_explanation_plot(
@@ -171,6 +229,9 @@ class ExplainabilityEngine:
     ) -> None:
         """Create visualization of the explanation."""
         try:
+            if self.method is None:
+                raise ValueError("Explanation method not initialized")
+
             if self.method == 'shap':
                 # Create SHAP summary plot
                 plt.figure(figsize=(10, 6))
@@ -206,37 +267,10 @@ class ExplainabilityEngine:
                 plt.savefig('lime_explanation.png')
                 plt.close()
 
-            logging.info("✅ Explanation plots saved successfully")
+            logger.info("✅ Explanation plots saved successfully")
 
         except Exception as e:
-            logging.error(f"❌ Failed to create explanation plots: {str(e)}")
-            raise
-
-    async def explain(
-        self,
-        predictions: np.ndarray,
-        X: np.ndarray,
-        instance: Optional[np.ndarray] = None
-    ) -> Dict:
-        """Generate explanations for predictions."""
-        try:
-            # Create a simple model for explanation
-            from sklearn.ensemble import RandomForestClassifier
-            model = RandomForestClassifier(n_estimators=100)
-            model.fit(X, predictions)
-
-            # Generate explanations
-            explanation = await self.generateExplanation(model, X, instance)
-
-            # Add prediction information
-            explanation['predictions'] = predictions
-            if instance is not None:
-                explanation['instance_prediction'] = model.predict(instance.reshape(1, -1))[0]
-
-            return explanation
-
-        except Exception as e:
-            logging.error(f"❌ Prediction explanation failed: {str(e)}")
+            logger.error(f"❌ Failed to create explanation plots: {str(e)}")
             raise
 
     async def dispose(self):
@@ -244,8 +278,10 @@ class ExplainabilityEngine:
         try:
             self.explainer = None
             self.scaler = None
+            self.method = None
+            self.feature_names = None
             self.initialized = False
-            logging.info("✅ Explainability engine resources cleaned up")
+            logger.info("✅ Explainability engine resources cleaned up")
         except Exception as e:
-            logging.error(f"❌ Failed to clean up explainability engine: {str(e)}")
+            logger.error(f"❌ Failed to clean up explainability engine: {str(e)}")
             raise 

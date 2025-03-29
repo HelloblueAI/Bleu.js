@@ -4,7 +4,7 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Dict, Optional, Union, Tuple, Any, Protocol, cast, TypeVar, Generic, runtime_checkable, TypeGuard
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import tensorflow as tf
@@ -12,6 +12,8 @@ from tensorflow import keras
 import structlog
 from concurrent.futures import ThreadPoolExecutor
 import ray
+import pickle
+import os
 
 @dataclass
 class UncertaintyConfig:
@@ -21,20 +23,34 @@ class UncertaintyConfig:
     confidence_threshold: float = 0.95
     use_bayesian_approximation: bool = True
     enable_distributed_computing: bool = True
-    uncertainty_metrics: List[str] = None
+    uncertainty_metrics: Optional[List[str]] = None
 
-class UncertaintyHandler:
+T = TypeVar('T')
+
+@runtime_checkable
+class PredictorProtocol(Protocol):
+    """Protocol for objects that can make predictions"""
+    def predict(self, X: np.ndarray) -> np.ndarray: ...
+
+def is_predictor(obj: Any) -> TypeGuard[PredictorProtocol]:
+    """Type guard to check if an object implements the PredictorProtocol"""
+    return isinstance(obj, PredictorProtocol)
+
+class UncertaintyHandler(Generic[T]):
     """
     Advanced uncertainty handler that provides multiple methods for uncertainty estimation
     in machine learning predictions.
     """
     
-    def __init__(self, config: UncertaintyConfig = UncertaintyConfig()):
-        self.config = config
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        self.config = UncertaintyConfig(**(config or {}))
         self.logger = structlog.get_logger()
-        self.ensemble_models = []
-        self.bayesian_model = None
-        self.monte_carlo_samples = None
+        self.ensemble_models: List[PredictorProtocol] = []
+        self.bayesian_model: Optional[PredictorProtocol] = None
+        self.monte_carlo_samples: List[PredictorProtocol] = []
+        self.model: Optional[T] = None
+        self.uncertainty_estimator: Optional[T] = None
+        self.calibration_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
         
         if self.config.uncertainty_metrics is None:
             self.config.uncertainty_metrics = [
@@ -45,7 +61,7 @@ class UncertaintyHandler:
             ]
         
         # Initialize Ray for distributed computing if enabled
-        if config.enable_distributed_computing:
+        if self.config.enable_distributed_computing:
             if not ray.is_initialized():
                 ray.init(ignore_reinit_error=True)
 
@@ -135,11 +151,15 @@ class UncertaintyHandler:
             raise
 
     async def _calculate_entropy(self, X: np.ndarray) -> float:
-        """Calculate prediction entropy as a measure of uncertainty."""
+        """Calculate entropy of predictions."""
         if self.config.method == 'ensemble':
+            if not self.ensemble_models:
+                raise ValueError("Ensemble models not initialized")
             predictions = []
             for model in self.ensemble_models:
-                pred = model.predict_proba(X)
+                if not is_predictor(model):
+                    raise ValueError("Invalid model in ensemble")
+                pred = model.predict(X)
                 predictions.append(pred)
             
             predictions = np.array(predictions)
@@ -148,6 +168,8 @@ class UncertaintyHandler:
             return float(entropy)
         
         elif self.config.method == 'bayesian':
+            if not self.bayesian_model:
+                raise ValueError("Bayesian model not initialized")
             predictions = []
             for _ in range(self.config.n_samples):
                 pred = self.bayesian_model.predict(X, verbose=0)
@@ -159,9 +181,13 @@ class UncertaintyHandler:
             return float(entropy)
         
         else:  # monte_carlo
+            if not self.monte_carlo_samples:
+                raise ValueError("Monte Carlo samples not initialized")
             predictions = []
             for sample in self.monte_carlo_samples:
-                pred = np.dot(X, sample)
+                if not is_predictor(sample):
+                    raise ValueError("Invalid sample in Monte Carlo samples")
+                pred = sample.predict(X)
                 predictions.append(pred)
             
             predictions = np.array(predictions)
@@ -182,6 +208,8 @@ class UncertaintyHandler:
             return float(np.mean(variance))
         
         elif self.config.method == 'bayesian':
+            if not self.bayesian_model or not hasattr(self.bayesian_model, 'predict'):
+                raise ValueError("Bayesian model not properly initialized")
             predictions = []
             for _ in range(self.config.n_samples):
                 pred = self.bayesian_model.predict(X, verbose=0)
@@ -219,6 +247,8 @@ class UncertaintyHandler:
             return float(np.mean(lower)), float(np.mean(upper))
         
         elif self.config.method == 'bayesian':
+            if not self.bayesian_model or not hasattr(self.bayesian_model, 'predict'):
+                raise ValueError("Bayesian model not properly initialized")
             predictions = []
             for _ in range(self.config.n_samples):
                 pred = self.bayesian_model.predict(X, verbose=0)
@@ -258,6 +288,8 @@ class UncertaintyHandler:
             mean_pred = np.mean(predictions, axis=0)
             
         elif self.config.method == 'bayesian':
+            if not self.bayesian_model or not hasattr(self.bayesian_model, 'predict'):
+                raise ValueError("Bayesian model not properly initialized")
             predictions = []
             for _ in range(self.config.n_samples):
                 pred = self.bayesian_model.predict(X, verbose=0)
@@ -334,4 +366,66 @@ class UncertaintyHandler:
         self.bayesian_model = state['bayesian_model']
         self.monte_carlo_samples = state['monte_carlo_samples']
         
-        self.logger.info("uncertainty_handler_state_loaded", path=path) 
+        self.logger.info("uncertainty_handler_state_loaded", path=path)
+
+    async def calibrate(
+        self,
+        features: np.ndarray,
+        labels: np.ndarray
+    ) -> None:
+        """Calibrate uncertainty estimates"""
+        if self.model is None:
+            raise ValueError("Model not initialized")
+            
+        # Store calibration data
+        self.calibration_data = (features, labels)
+        
+        # Fit uncertainty estimator
+        if self.uncertainty_estimator is not None:
+            estimator = cast(T, self.uncertainty_estimator)
+            if hasattr(estimator, 'fit'):
+                estimator.fit(features, labels)
+            
+    async def get_calibration_metrics(self) -> Dict[str, float]:
+        """Get calibration metrics"""
+        if self.calibration_data is None:
+            return {}
+            
+        features, labels = self.calibration_data
+        if self.model is None:
+            return {}
+            
+        model = cast(T, self.model)
+        predictions = model.predict(features)
+        
+        # Calculate calibration metrics
+        metrics = {
+            'reliability': self._calculate_reliability(predictions, labels),
+            'sharpness': self._calculate_sharpness(predictions),
+            'resolution': self._calculate_resolution(predictions, labels)
+        }
+        
+        return metrics
+        
+    def _calculate_reliability(
+        self,
+        predictions: np.ndarray,
+        labels: np.ndarray
+    ) -> float:
+        """Calculate reliability score"""
+        # Implementation of reliability calculation
+        return 0.0
+        
+    def _calculate_sharpness(self, predictions: np.ndarray) -> float:
+        """Calculate prediction sharpness"""
+        # Implementation of sharpness calculation
+        return 0.0
+        
+    def _calculate_resolution(
+        self,
+        predictions: np.ndarray,
+        labels: np.ndarray
+    ) -> float:
+        """Calculate prediction resolution"""
+        # Implementation of resolution calculation
+        return 0.0 

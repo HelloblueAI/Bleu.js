@@ -44,7 +44,7 @@ class AdvancedCache:
         self.config = config
         self.redis: Optional[Redis] = None
         self.stats = CacheStats()
-        self._setup_redis()
+        self._init_task = asyncio.create_task(self._setup_redis())
         self._setup_cleanup_task()
         
     async def _setup_redis(self):
@@ -96,6 +96,10 @@ class AdvancedCache:
     async def get(self, key: str, prefix: str = "") -> Optional[Any]:
         """Get value from cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return None
+                
             cache_key = self._generate_key(key, prefix)
             value = await self.redis.get(cache_key)
             
@@ -118,14 +122,15 @@ class AdvancedCache:
     ) -> bool:
         """Set value in cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return False
+                
             cache_key = self._generate_key(key, prefix)
             serialized = self._serialize(value)
-            
-            if ttl is None:
-                ttl = self.config.default_ttl
-                
-            await self.redis.setex(cache_key, ttl, serialized)
-            return True
+            if ttl:
+                return await self.redis.setex(cache_key, ttl, serialized)
+            return await self.redis.set(cache_key, serialized)
         except Exception as e:
             logger.error(f"Cache set error: {e}")
             return False
@@ -133,9 +138,12 @@ class AdvancedCache:
     async def delete(self, key: str, prefix: str = "") -> bool:
         """Delete value from cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return False
+                
             cache_key = self._generate_key(key, prefix)
-            await self.redis.delete(cache_key)
-            return True
+            return await self.redis.delete(cache_key)
         except Exception as e:
             logger.error(f"Cache delete error: {e}")
             return False
@@ -143,6 +151,10 @@ class AdvancedCache:
     async def exists(self, key: str, prefix: str = "") -> bool:
         """Check if key exists in cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return False
+                
             cache_key = self._generate_key(key, prefix)
             return await self.redis.exists(cache_key)
         except Exception as e:
@@ -150,8 +162,12 @@ class AdvancedCache:
             return False
             
     async def increment(self, key: str, amount: int = 1, prefix: str = "") -> Optional[int]:
-        """Increment counter in cache."""
+        """Increment value in cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return None
+                
             cache_key = self._generate_key(key, prefix)
             return await self.redis.incrby(cache_key, amount)
         except Exception as e:
@@ -161,15 +177,13 @@ class AdvancedCache:
     async def batch_get(self, keys: List[str], prefix: str = "") -> Dict[str, Any]:
         """Get multiple values from cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return {}
+                
             cache_keys = [self._generate_key(key, prefix) for key in keys]
             values = await self.redis.mget(cache_keys)
-            
-            result = {}
-            for key, value in zip(keys, values):
-                if value:
-                    result[key] = self._deserialize(value)
-                    
-            return result
+            return {k: self._deserialize(v) for k, v in zip(keys, values) if v is not None}
         except Exception as e:
             logger.error(f"Cache batch get error: {e}")
             return {}
@@ -182,6 +196,10 @@ class AdvancedCache:
     ) -> bool:
         """Set multiple values in cache."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return False
+                
             if ttl is None:
                 ttl = self.config.default_ttl
                 
@@ -200,6 +218,10 @@ class AdvancedCache:
     async def cleanup(self):
         """Clean up expired keys and update statistics."""
         try:
+            if not self.redis:
+                logger.error("Redis connection not initialized")
+                return
+                
             info = await self.redis.info()
             self.stats.memory_usage = info["used_memory"]
             self.stats.evictions = info["evicted_keys"]

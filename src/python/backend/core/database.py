@@ -61,6 +61,8 @@ class DatabaseManager:
         """Get database session with automatic cleanup."""
         if self._SessionLocal is None:
             self.initialize()
+            if self._SessionLocal is None:
+                raise RuntimeError("Failed to initialize database session")
             
         session = self._SessionLocal()
         try:

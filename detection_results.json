@@ -1,0 +1,54 @@
+{
+  "detections": [
+    {
+      "class_name": "object",
+      "confidence": 0.18898105895053158,
+      "features": [
+        0.24254249597679314,
+        -0.603502337002185,
+        -0.24298038247848897,
+        0.44061400437223186,
+        0.2481280499296532,
+        0.04662853032497295,
+        0.2546724686054233,
+        -0.07245589517098988,
+        0.03723957079023396,
+        -0.023707604992046594,
+        0.3452531605339652,
+        -0.00813450833133346,
+        0.19871187802865733,
+        -0.08477579065218371,
+        -0.028689563359197538,
+        0.14566070266014963
+      ]
+    }
+  ],
+  "metrics": {
+    "total_detections": 1,
+    "successful_detections": 1,
+    "failed_detections": 0,
+    "error_rate": 0.0,
+    "quantum_speedup": 1.9282178487051183,
+    "coherence_time": 36.55099868774414,
+    "entanglement_quality": 0.18898105895053158,
+    "feature_map_fidelity": 0.24365870408243454,
+    "circuit_optimization_score": 0.95
+  },
+  "learning_history": [
+    {
+      "timestamp": "2025-03-29T09:24:23.721612",
+      "metrics": {
+        "total_detections": 1,
+        "successful_detections": 1,
+        "failed_detections": 0,
+        "error_rate": 0.0,
+        "quantum_speedup": 1.9282178487051183,
+        "coherence_time": 36.55099868774414,
+        "entanglement_quality": 0.18898105895053158,
+        "feature_map_fidelity": 0.24365870408243454,
+        "circuit_optimization_score": 0.95
+      },
+      "num_detections": 1
+    }
+  ]
+}

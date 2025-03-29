@@ -337,71 +337,69 @@ class EnhancedXGBoost:
             raise
     
     def predict(self, X: np.ndarray) -> np.ndarray:
-        """Enhanced prediction with security checks"""
+        """Make predictions using the model."""
         try:
-            # Process features with quantum enhancement
+            if self.model is None:
+                raise ValueError("Model not initialized. Call fit() first.")
+                
+            # Process input features
             X_processed = self.quantum_processor.process_features(X)
             
             # Verify model integrity
-            if self.security_config.tamper_detection:
+            if self.security_config and self.security_config.tamper_detection:
                 self._verify_model_integrity()
             
             # Make predictions
             predictions = self.model.predict(X_processed)
             
             # Log prediction access
-            self.security_manager.log_access(
-                'prediction',
-                'system',
-                {'samples': len(X)}
-            )
-            
+            if self.security_config and self.security_config.audit_logging:
+                self.security_manager.log_access(
+                    'prediction',
+                    'system',
+                    {'input_shape': X.shape, 'output_shape': predictions.shape}
+                )
+                
             return predictions
-            
         except Exception as e:
-            logger.error(f"Error during prediction: {str(e)}")
+            logger.error(f"Prediction error: {e}")
             raise
     
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
-        """Enhanced probability prediction"""
+        """Get probability predictions using the model."""
         try:
+            if self.model is None:
+                raise ValueError("Model not initialized. Call fit() first.")
+                
+            # Process input features
             X_processed = self.quantum_processor.process_features(X)
+            
+            # Get probability predictions
             return self.model.predict_proba(X_processed)
         except Exception as e:
-            logger.error(f"Error during probability prediction: {str(e)}")
+            logger.error(f"Probability prediction error: {e}")
             raise
     
     def save_model(self, path: str):
-        """Save model with encryption and security features"""
+        """Save the model to disk."""
         try:
-            # Serialize model
+            if self.model is None:
+                raise ValueError("No model to save. Call fit() first.")
+                
+            # Save raw model data
             model_data = self.model.save_raw()
             
-            # Encrypt model data
-            encrypted_data = self.security_manager.encrypt_model(model_data)
-            
-            # Generate signature
-            signature = self.security_manager.generate_signature(model_data)
-            
-            # Save encrypted model and metadata
-            metadata = {
-                'signature': signature,
-                'timestamp': datetime.now().isoformat(),
-                'feature_importance': self.feature_importance.tolist(),
-                'training_history': self.training_history,
-                'validation_history': self.validation_history
-            }
-            
+            # Encrypt if configured
+            if self.security_config and self.security_config.encryption_key:
+                model_data = self.security_manager.encrypt_model(model_data)
+                
+            # Save to disk
             with open(path, 'wb') as f:
-                f.write(encrypted_data)
-            
-            with open(f"{path}.meta", 'w') as f:
-                json.dump(metadata, f)
-            
-            logger.info(f"Model saved securely to {path}")
-            
+                f.write(model_data)
+                
+            logger.info(f"Model saved to {path}")
         except Exception as e:
-            logger.error(f"Error saving model: {str(e)}")
+            logger.error(f"Error saving model: {e}")
             raise
     
     def load_model(self, path: str):

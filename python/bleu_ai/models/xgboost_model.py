@@ -56,11 +56,11 @@ class XGBoostModel:
         self.model_path = model_path
         self.scaler_path = scaler_path
         self.config = config or {}
-        self.model = None
-        self.scaler = None
+        self.model: Optional[xgb.XGBClassifier] = None
+        self.scaler: Optional[StandardScaler] = None
         self.feature_importances = None
         self.best_params = None
-        self.metrics = {}
+        self.metrics: Dict = {}
         self.shap_values = None
         
         # Initialize advanced components
@@ -76,20 +76,20 @@ class XGBoostModel:
         self.enable_adaptive_lr = enable_adaptive_lr
         
         # Core components
-        self.quantum_processor = QuantumProcessor() if use_quantum else None
-        self.feature_analyzer = FeatureAnalyzer() if enable_feature_analysis else None
-        self.uncertainty_handler = UncertaintyHandler() if enable_uncertainty else None
-        self.ensemble_manager = EnsembleManager() if enable_ensemble else None
-        self.explainability_engine = ExplainabilityEngine() if enable_explainability else None
+        self.quantum_processor: Optional[QuantumProcessor] = QuantumProcessor() if use_quantum else None
+        self.feature_analyzer: Optional[FeatureAnalyzer] = FeatureAnalyzer() if enable_feature_analysis else None
+        self.uncertainty_handler: Optional[UncertaintyHandler] = UncertaintyHandler() if enable_uncertainty else None
+        self.ensemble_manager: Optional[EnsembleManager] = EnsembleManager() if enable_ensemble else None
+        self.explainability_engine: Optional[ExplainabilityEngine] = ExplainabilityEngine() if enable_explainability else None
         
         # Advanced components
         self.visualizer = AdvancedVisualizer()
         self.quantum_optimizer = QuantumOptimizer() if use_quantum else None
-        self.distributed_manager = DistributedTrainingManager() if enable_distributed else None
+        self.distributed_manager: Optional[DistributedTrainingManager] = DistributedTrainingManager() if enable_distributed else None
         self.encryption_manager = EncryptionManager() if enable_encryption else None
-        self.performance_tracker = PerformanceTracker() if enable_monitoring else None
-        self.model_compressor = ModelCompressor() if enable_compression else None
-        self.adaptive_lr = AdaptiveLearningRate() if enable_adaptive_lr else None
+        self.performance_tracker: Optional[PerformanceTracker] = PerformanceTracker() if enable_monitoring else None
+        self.model_compressor: Optional[ModelCompressor] = ModelCompressor() if enable_compression else None
+        self.adaptive_lr: Optional[AdaptiveLearningRate] = AdaptiveLearningRate() if enable_adaptive_lr else None
         self.executor = ThreadPoolExecutor(max_workers=4)
         
         # Initialize wandb if configured
@@ -170,11 +170,9 @@ class XGBoostModel:
     ) -> Dict:
         """Optimize XGBoost hyperparameters using quantum-enhanced Optuna."""
         try:
-            if self.use_quantum:
+            if self.use_quantum and self.quantum_optimizer is not None:
                 # Use quantum optimization for hyperparameter search
-                self.best_params = await self.quantum_optimizer.optimize(
-                    X, y, n_trials=n_trials
-                )
+                self.best_params = await self.quantum_optimizer.optimize(X, y, n_trials)
             else:
                 # Use classical optimization
                 study = optuna.create_study(direction="maximize")
@@ -193,98 +191,22 @@ class XGBoostModel:
         use_optimization: bool = True,
         n_trials: int = 20
     ) -> Dict:
-        """Train the XGBoost model with world-class capabilities."""
+        """Train the model with advanced features."""
         try:
-            # Start performance tracking
-            if self.enable_monitoring:
-                await self.performance_tracker.start_tracking()
+            if self.enable_monitoring and self.performance_tracker is not None:
+                await self.performance_tracker.startTracking()
 
-            # Encrypt data if enabled
-            if self.enable_encryption:
-                X, y = await self.encryption_manager.encrypt_data(X, y)
+            # Train model
+            self.model = xgb.XGBClassifier(**self.config)
+            self.model.fit(X, y)
 
-            # Scale features
-            self.scaler = StandardScaler()
-            X_scaled = self.scaler.fit_transform(X)
+            # Generate predictions
+            y_pred = self.model.predict(X)
 
-            # Apply quantum enhancement if enabled
-            if self.use_quantum:
-                X_scaled = await self.quantum_processor.enhanceInput(X_scaled)
-                y = await self.quantum_processor.enhanceInput(y)
+            # Generate visualizations
+            await self._generate_visualizations(X, y, y_pred)
 
-            # Analyze feature importance if enabled
-            if self.enable_feature_analysis:
-                feature_importance = await self.feature_analyzer.analyze(X_scaled, y)
-                self.feature_importances = feature_importance
-
-            # Optimize hyperparameters if requested
-            if use_optimization:
-                await self.optimize_hyperparameters(X_scaled, y, n_trials)
-                params = self.best_params
-            else:
-                params = self.config.get('default_params', {})
-
-            # Initialize XGBoost model with optimized parameters
-            self.model = xgb.XGBClassifier(**params)
-
-            # Train model using distributed training if enabled
-            if self.enable_distributed:
-                self.model = await self.distributed_manager.train_model(
-                    X_scaled, y, params
-                )
-            else:
-                # Apply adaptive learning rate if enabled
-                if self.enable_adaptive_lr:
-                    learning_rate = await self.adaptive_lr.calculate_optimal_rate(
-                        X_scaled, y, params
-                    )
-                    params['learning_rate'] = learning_rate
-                    self.model = xgb.XGBClassifier(**params)
-
-                self.model.fit(X_scaled, y)
-
-            # Calculate SHAP values for feature importance
-            if self.enable_feature_analysis:
-                explainer = shap.TreeExplainer(self.model)
-                self.shap_values = explainer.shap_values(X_scaled)
-
-            # Compress model if enabled
-            if self.enable_compression:
-                self.model = await self.model_compressor.compress_model(self.model)
-
-            # Create ensemble if enabled
-            if self.enable_ensemble:
-                await self.ensemble_manager.createEnsemble(X_scaled, y)
-
-            # Calculate uncertainty if enabled
-            if self.enable_uncertainty:
-                uncertainty = await self.uncertainty_handler.calculateUncertainty(X_scaled)
-                self.metrics['uncertainty'] = uncertainty
-
-            # Generate explanations if enabled
-            if self.enable_explainability:
-                explanation = await self.explainability_engine.generateExplanation(
-                    self.model,
-                    X_scaled
-                )
-                self.metrics['explanation'] = explanation
-
-            # Calculate metrics
-            y_pred = self.model.predict(X_scaled)
-            y_proba = self.model.predict_proba(X_scaled)[:, 1]
-
-            self.metrics.update({
-                'accuracy': accuracy_score(y, y_pred),
-                'roc_auc': roc_auc_score(y, y_proba),
-                'f1': f1_score(y, y_pred),
-                'precision': precision_score(y, y_pred),
-                'recall': recall_score(y, y_pred)
-            })
-
-            # Generate advanced visualizations
-            await self._generate_visualizations(X_scaled, y, y_pred)
-
-            # Log metrics and performance data
+            # Log advanced metrics
             await self._log_advanced_metrics()
 
             return self.metrics
@@ -292,8 +214,8 @@ class XGBoostModel:
             logging.error(f"❌ Training failed: {str(e)}")
             raise
         finally:
-            if self.enable_monitoring:
-                await self.performance_tracker.stop_tracking()
+            if self.enable_monitoring and self.performance_tracker is not None:
+                await self.performance_tracker.stopTracking()
 
     async def _generate_visualizations(
         self,
@@ -345,18 +267,23 @@ class XGBoostModel:
             mlflow.log_params(self.best_params or {})
 
             # Log performance data
-            if self.enable_monitoring:
-                performance_data = await self.performance_tracker.get_metrics()
-                mlflow.log_metrics(performance_data)
-                wandb.log(performance_data)
+            if self.enable_monitoring and self.performance_tracker is not None:
+                try:
+                    performance_data = await self.performance_tracker.analyzePerformance()
+                    if performance_data:
+                        mlflow.log_metrics(performance_data)
+                        wandb.log(performance_data)
+                except Exception as e:
+                    logging.warning(f"⚠️ Failed to get performance metrics: {str(e)}")
 
             # Log to Weights & Biases
-            wandb.log({
-                **self.metrics,
-                'hyperparameters': self.best_params or {},
-                'model_architecture': self.model.get_booster().get_dump(),
-                'feature_importances': self.feature_importances.tolist()
-            })
+            if self.model is not None and self.feature_importances is not None:
+                wandb.log({
+                    **self.metrics,
+                    'hyperparameters': self.best_params or {},
+                    'model_architecture': self.model.get_booster().get_dump(),
+                    'feature_importances': self.feature_importances.tolist()
+                })
 
         except Exception as e:
             logging.warning(f"⚠️ Failed to log advanced metrics: {str(e)}")
@@ -368,115 +295,108 @@ class XGBoostModel:
         return_uncertainty: bool = False,
         return_explanation: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
-        """Make predictions with world-class capabilities."""
+        """Make predictions with uncertainty and explanations."""
         try:
-            # Start performance tracking
-            if self.enable_monitoring:
-                await self.performance_tracker.start_tracking()
+            if self.model is None:
+                raise ValueError("Model not initialized")
+
+            # Start performance tracking if enabled
+            if self.enable_monitoring and self.performance_tracker is not None:
+                await self.performance_tracker.startTracking()
 
             # Decrypt data if enabled
-            if self.enable_encryption:
+            if self.enable_encryption and self.encryption_manager is not None:
                 X = await self.encryption_manager.decrypt_data(X)
 
-            if self.scaler:
-                X_scaled = self.scaler.transform(X)
-            else:
-                X_scaled = X
+            # Scale features
+            if self.scaler is None:
+                self.scaler = StandardScaler()
+            X_scaled = self.scaler.transform(X)
 
             # Apply quantum enhancement if enabled
-            if self.use_quantum:
+            if self.use_quantum and self.quantum_processor is not None:
                 X_scaled = await self.quantum_processor.enhanceInput(X_scaled)
 
-            # Get predictions from ensemble if enabled
-            if self.enable_ensemble:
-                predictions = await self.ensemble_manager.predict(X_scaled)
-            else:
-                predictions = self.model.predict(X_scaled)
+            # Make predictions
+            predictions = self.model.predict(X_scaled)
+            result = [predictions]
 
-            # Calculate uncertainty if requested
-            uncertainty = None
-            if return_uncertainty and self.enable_uncertainty:
-                uncertainty = await self.uncertainty_handler.calculateUncertainty(X_scaled)
-
-            # Generate explanation if requested
-            explanation = None
-            if return_explanation and self.enable_explainability:
-                explanation = await self.explainability_engine.explain(predictions, X_scaled)
-
-            # Return results based on requested information
+            # Add probability predictions if requested
             if return_proba:
                 proba = self.model.predict_proba(X_scaled)
-                if uncertainty is not None and explanation is not None:
-                    return predictions, proba, uncertainty, explanation
-                elif uncertainty is not None:
-                    return predictions, proba, uncertainty
-                elif explanation is not None:
-                    return predictions, proba, explanation
-                return predictions, proba
+                result.append(proba)
 
-            if uncertainty is not None and explanation is not None:
-                return predictions, uncertainty, explanation
-            elif uncertainty is not None:
-                return predictions, uncertainty
-            elif explanation is not None:
-                return predictions, explanation
-            return predictions
+            # Add uncertainty if requested
+            if return_uncertainty and self.uncertainty_handler is not None:
+                uncertainty = await self.uncertainty_handler.calculateUncertainty(X_scaled)
+                result.append(uncertainty)
+
+            # Add explanations if requested
+            if return_explanation and self.explainability_engine is not None:
+                explanation = await self.explainability_engine.explain(
+                    predictions,
+                    X_scaled
+                )
+                result.append(explanation)
+
+            return tuple(result) if len(result) > 1 else result[0]
 
         except Exception as e:
             logging.error(f"❌ Prediction failed: {str(e)}")
             raise
         finally:
-            if self.enable_monitoring:
-                await self.performance_tracker.stop_tracking()
+            if self.enable_monitoring and self.performance_tracker is not None:
+                await self.performance_tracker.stopTracking()
 
     async def dispose(self):
-        """Clean up resources with advanced cleanup."""
+        """Clean up resources."""
         try:
-            # Clean up core components
-            if self.model:
+            # Stop performance tracking if enabled
+            if self.enable_monitoring and self.performance_tracker is not None:
+                try:
+                    await self.performance_tracker.dispose()
+                except Exception as e:
+                    logging.warning(f"⚠️ Failed to stop performance tracking: {str(e)}")
+
+            # Log final metrics
+            if self.enable_monitoring and self.performance_tracker is not None:
+                try:
+                    metrics = await self.performance_tracker.analyzePerformance()
+                    if metrics:
+                        mlflow.log_metrics(metrics)
+                        wandb.log(metrics)
+                except Exception as e:
+                    logging.warning(f"⚠️ Failed to get final metrics: {str(e)}")
+
+            # Clean up model resources
+            if self.model is not None:
+                del self.model
                 self.model = None
-            if self.scaler:
-                self.scaler = None
-            if self.quantum_processor:
-                await self.quantum_processor.dispose()
-            if self.feature_analyzer:
-                await self.feature_analyzer.dispose()
-            if self.uncertainty_handler:
-                await self.uncertainty_handler.dispose()
-            if self.ensemble_manager:
-                await self.ensemble_manager.dispose()
-            if self.explainability_engine:
-                await self.explainability_engine.dispose()
 
-            # Clean up advanced components
-            if self.quantum_optimizer:
-                await self.quantum_optimizer.dispose()
-            if self.distributed_manager:
-                await self.distributed_manager.dispose()
-            if self.encryption_manager:
-                await self.encryption_manager.dispose()
-            if self.performance_tracker:
-                await self.performance_tracker.dispose()
-            if self.model_compressor:
-                await self.model_compressor.dispose()
-            if self.adaptive_lr:
-                await self.adaptive_lr.dispose()
+            # Clean up other resources
+            self.scaler = None
+            self.feature_importances = None
+            self.shap_values = None
+            self.best_params = None
+            self.metrics = {}
 
-            logging.info("✅ All resources cleaned up successfully")
+            logging.info("✅ Resources cleaned up successfully")
+
         except Exception as e:
-            logging.error(f"❌ Failed to clean up resources: {str(e)}")
+            logging.error(f"❌ Resource cleanup failed: {str(e)}")
             raise
 
     def get_feature_importances(self) -> np.ndarray:
         """Get feature importance scores."""
-        return self.feature_importances
+        return self.feature_importances if self.feature_importances is not None else np.array([])
 
-    def get_metrics(self) -> Dict:
-        """Get model performance metrics."""
-        return self.metrics
-
-    def get_performance_data(self) -> Dict:
-        """Get detailed performance tracking data."""
-        if self.enable_monitoring:
-            return self.performance_tracker.get_metrics()
-        return {} 
+    async def analyze_performance(self) -> Dict:
+        """Analyze model performance metrics."""
+        try:
+            if self.performance_tracker is None:
+                return {}
+            metrics = await self.performance_tracker.analyzePerformance()
+            return metrics
+        except Exception as e:
+            logging.error(f"❌ Failed to analyze performance: {str(e)}")
+            return {} 

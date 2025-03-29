@@ -7,7 +7,7 @@ distributed training, and advanced optimization techniques.
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union, Any
 from dataclasses import dataclass
 import ray
 from ray import tune
@@ -33,7 +33,13 @@ import psutil
 import GPUtil
 from concurrent.futures import ThreadPoolExecutor
 import warnings
-warnings.filterwarnings('ignore')
+import pickle
+
+from .features.feature_processor import FeatureProcessor
+from .quantum.quantum_processor import QuantumProcessor
+
+# Constants
+MODEL_NOT_INITIALIZED_ERROR = "Model not initialized"
 
 # Configure logging
 logging.basicConfig(
@@ -60,7 +66,7 @@ class TrainingConfig:
     num_workers: int = 4
     batch_size: int = 1024
     early_stopping_rounds: int = 50
-    eval_metric: List[str] = None
+    eval_metric: Optional[List[str]] = None
     objective: str = 'binary:logistic'
     random_state: int = 42
     n_jobs: int = -1
@@ -92,20 +98,23 @@ class AdvancedDataProcessor:
         self.scaler = StandardScaler()
         self.feature_importance = None
     
-    def process_data(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Optional[np.ndarray]]:
-        """Process data with advanced techniques"""
+    def process_data(self, features: np.ndarray, labels: Optional[np.ndarray] = None) -> Tuple[np.ndarray, Optional[np.ndarray]]:
+        """Process input data with quantum enhancements"""
+        if features is None:
+            raise ValueError("Input features cannot be None")
+            
         # Scale features
-        X_scaled = self.scaler.fit_transform(X) if y is not None else self.scaler.transform(X)
+        features_scaled = self.scaler.fit_transform(features)
         
-        # Apply quantum feature processing
-        X_quantum = self._apply_quantum_processing(X_scaled)
+        # Apply quantum processing
+        features_quantum = self._apply_quantum_processing(features_scaled)
         
-        # Combine classical and quantum features
-        X_processed = np.hstack([X_scaled, X_quantum])
+        # Final processing
+        features_processed = self._post_process(features_quantum)
         
-        return X_processed, y
+        return features_processed, labels
     
-    def _apply_quantum_processing(self, X: np.ndarray) -> np.ndarray:
+    def _apply_quantum_processing(self, features: np.ndarray) -> np.ndarray:
         """Apply quantum feature processing"""
         try:
             from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -124,16 +133,16 @@ class AdvancedDataProcessor:
                     circuit.cx(qr[i], qr[i+1])
             
             # Process features
-            quantum_features = np.zeros((X.shape[0], 2**self.quantum_config.n_qubits))
-            for i in range(X.shape[0]):
-                state = self._classical_to_quantum(X[i])
+            quantum_features = np.zeros((features.shape[0], 2**self.quantum_config.n_qubits))
+            for i in range(features.shape[0]):
+                state = self._classical_to_quantum(features[i])
                 quantum_features[i] = state
             
             return quantum_features
             
         except ImportError:
             logger.warning("Qiskit not available, skipping quantum processing")
-            return np.zeros((X.shape[0], 2**self.quantum_config.n_qubits))
+            return np.zeros((features.shape[0], 2**self.quantum_config.n_qubits))
     
     def _classical_to_quantum(self, x: np.ndarray) -> np.ndarray:
         """Convert classical data to quantum state"""
@@ -145,266 +154,309 @@ class AdvancedModelTrainer:
     
     def __init__(
         self,
-        training_config: TrainingConfig,
-        quantum_config: QuantumConfig,
-        security_config: SecurityConfig
+        config: Optional[Dict[str, Any]] = None,
+        eval_metric: Optional[List[str]] = None
     ):
-        self.training_config = training_config
-        self.quantum_config = quantum_config
-        self.security_config = security_config
-        
-        self.data_processor = AdvancedDataProcessor(quantum_config)
-        self.model = None
-        self.feature_importance = None
-        self.training_history = []
-        self.validation_history = []
+        """Initialize XGBoost trainer."""
+        self.config = config or {}
+        self.eval_metric = eval_metric or ["logloss", "auc"]
+        self.model: Optional[xgb.XGBClassifier] = None
+        self.scaler: Optional[StandardScaler] = None
+        self.feature_processor: Optional[FeatureProcessor] = None
+        self.quantum_processor: Optional[QuantumProcessor] = None
+        self.initialized = False
         
         # Initialize Ray for distributed training
         if not ray.is_initialized():
             ray.init(ignore_reinit_error=True)
     
-    def train(
-        self,
-        X_train: np.ndarray,
-        y_train: np.ndarray,
-        X_val: Optional[np.ndarray] = None,
-        y_val: Optional[np.ndarray] = None,
-        optimize_hyperparameters: bool = True
-    ) -> Dict:
-        """Train model with advanced features"""
+    async def preprocess_features(self, features: np.ndarray) -> np.ndarray:
+        """Preprocess features for training."""
         try:
-            # Process data
-            X_train_processed, y_train = self.data_processor.process_data(X_train, y_train)
-            if X_val is not None:
-                X_val_processed, y_val = self.data_processor.process_data(X_val, y_val)
-                eval_set = [(X_train_processed, y_train), (X_val_processed, y_val)]
+            if features is None or len(features) == 0:
+                raise ValueError("Empty or None features provided")
+                
+            # Scale features
+            if self.scaler is None:
+                self.scaler = StandardScaler()
+                
+            features_scaled = self.scaler.fit_transform(features)
+            
+            # Apply quantum processing if enabled
+            if self.config.get("quantum_processing", False):
+                if self.quantum_processor is None:
+                    self.quantum_processor = QuantumProcessor()
+                features_quantum = await self.quantum_processor.process(features_scaled)
             else:
-                eval_set = [(X_train_processed, y_train)]
+                features_quantum = features_scaled
+                
+            # Apply feature processing
+            if self.feature_processor is None:
+                self.feature_processor = FeatureProcessor()
+            features_processed = await self.feature_processor.process(features_quantum)
             
-            # Optimize hyperparameters if requested
-            if optimize_hyperparameters:
-                best_params = self._optimize_hyperparameters(X_train_processed, y_train)
-                self.training_config.__dict__.update(best_params)
+            return features_processed
+        except Exception as e:
+            logger.error(f"Feature preprocessing error: {e}")
+            raise
+
+    async def train(
+        self,
+        features_train: np.ndarray,
+        features_val: np.ndarray,
+        labels_train: np.ndarray,
+        labels_val: np.ndarray
+    ) -> Dict[str, Any]:
+        """Train XGBoost model."""
+        try:
+            # Preprocess features
+            features_train_processed = await self.preprocess_features(features_train)
+            features_val_processed = await self.preprocess_features(features_val)
             
-            # Initialize model
-            self.model = xgb.XGBClassifier(
-                **self.training_config.__dict__,
-                callbacks=[
-                    xgb.callback.TrainingCallback(
-                        lambda env: self._on_training_iteration(env)
-                    )
-                ]
-            )
-            
+            # Initialize model if not already done
+            if self.model is None:
+                self.model = xgb.XGBClassifier(
+                    **self.config.get("model_params", {})
+                )
+                
             # Train model
             self.model.fit(
-                X_train_processed, y_train,
-                eval_set=eval_set,
-                eval_metric=self.training_config.eval_metric or ['logloss', 'auc'],
-                early_stopping_rounds=self.training_config.early_stopping_rounds,
-                verbose=True
+                features_train_processed,
+                labels_train,
+                eval_set=[(features_val_processed, labels_val)],
+                eval_metric=self.eval_metric,
+                **self.config.get("fit_params", {})
             )
             
-            # Calculate feature importance
-            self.feature_importance = self.model.feature_importances_
+            # Get evaluation results
+            results = self.model.evals_result()
             
-            # Calculate metrics
-            metrics = self._calculate_metrics(X_train_processed, y_train, X_val_processed, y_val)
-            
-            logger.info("Model training completed successfully")
-            return metrics
-            
+            return {
+                "model": self.model,
+                "scaler": self.scaler,
+                "feature_processor": self.feature_processor,
+                "quantum_processor": self.quantum_processor,
+                "eval_results": results
+            }
         except Exception as e:
-            logger.error(f"Error during model training: {str(e)}")
+            logger.error(f"Training error: {e}")
             raise
-    
-    def _optimize_hyperparameters(
+
+    async def predict(
         self,
-        X: np.ndarray,
-        y: np.ndarray,
-        n_trials: int = 100
-    ) -> Dict:
-        """Optimize hyperparameters using quantum-enhanced search"""
-        def objective(trial):
-            param = {
-                'max_depth': trial.suggest_int('max_depth', 3, 9),
-                'learning_rate': trial.suggest_loguniform('learning_rate', 0.01, 1.0),
-                'n_estimators': trial.suggest_int('n_estimators', 50, 300),
-                'min_child_weight': trial.suggest_int('min_child_weight', 1, 7),
-                'subsample': trial.suggest_uniform('subsample', 0.6, 0.9),
-                'colsample_bytree': trial.suggest_uniform('colsample_bytree', 0.6, 0.9),
-                'gamma': trial.suggest_loguniform('gamma', 1e-8, 1.0)
+        features: np.ndarray,
+        return_proba: bool = False
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+        """Make predictions using the trained model"""
+        if not self.model:
+            raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
+                
+        # Preprocess features
+        features_processed = await self.preprocess_features(features)
+        
+        # Make predictions
+        if return_proba:
+            predictions = self.model.predict_proba(features_processed)
+            return predictions, predictions[:, 1]
+        else:
+            predictions = self.model.predict(features_processed)
+            return predictions
+
+    async def save_model(self, path: str) -> bool:
+        """Save the trained model to disk"""
+        if not self.model:
+            raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
+                
+        # Save model
+        self.model.save_raw(path)
+        
+        # Save processors
+        processors = {
+            "scaler": self.scaler,
+            "feature_processor": self.feature_processor,
+            "quantum_processor": self.quantum_processor
+        }
+        
+        with open(f"{path}_processors.pkl", "wb") as f:
+            pickle.dump(processors, f)
+            
+        return True
+
+    async def load_model(self, path: str) -> bool:
+        """Load a trained model from disk"""
+        if not self.model:
+            raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
+                
+        # Load model
+        self.model = xgb.XGBClassifier()
+        self.model.load_raw(path)
+        
+        # Load processors
+        with open(f"{path}_processors.pkl", "rb") as f:
+            processors = pickle.load(f)
+            self.scaler = processors["scaler"]
+            self.feature_processor = processors["feature_processor"]
+            self.quantum_processor = processors["quantum_processor"]
+            
+        return True
+
+    async def cross_validate(
+        self,
+        features: np.ndarray,
+        labels: np.ndarray,
+        n_splits: int = 5
+    ) -> Dict[str, float]:
+        """Perform cross-validation."""
+        try:
+            if not self.model:
+                raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
+                
+            # Initialize k-fold cross validation
+            kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+            
+            # Store results
+            results = {
+                "accuracy": [],
+                "auc": [],
+                "f1": []
             }
             
             # Perform cross-validation
-            kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=self.training_config.random_state)
-            scores = []
-            
-            for train_idx, val_idx in kf.split(X, y):
-                X_train_fold, X_val_fold = X[train_idx], X[val_idx]
-                y_train_fold, y_val_fold = y[train_idx], y[val_idx]
+            for train_idx, val_idx in kf.split(features):
+                features_train_fold = features[train_idx]
+                features_val_fold = features[val_idx]
+                labels_train_fold = labels[train_idx]
+                labels_val_fold = labels[val_idx]
                 
-                model = xgb.XGBClassifier(**param)
-                model.fit(X_train_fold, y_train_fold)
-                score = model.score(X_val_fold, y_val_fold)
-                scores.append(score)
-            
-            return np.mean(scores)
-        
-        study = optuna.create_study(direction='maximize')
-        study.optimize(objective, n_trials=n_trials)
-        
-        return study.best_params
-    
-    def _calculate_metrics(
-        self,
-        X_train: np.ndarray,
-        y_train: np.ndarray,
-        X_val: Optional[np.ndarray] = None,
-        y_val: Optional[np.ndarray] = None
-    ) -> Dict:
-        """Calculate comprehensive metrics"""
-        metrics = {}
-        
-        # Training metrics
-        y_train_pred = self.model.predict(X_train)
-        y_train_prob = self.model.predict_proba(X_train)[:, 1]
-        
-        metrics['train'] = {
-            'accuracy': accuracy_score(y_train, y_train_pred),
-            'roc_auc': roc_auc_score(y_train, y_train_prob),
-            'f1': f1_score(y_train, y_train_pred),
-            'precision': precision_score(y_train, y_train_pred),
-            'recall': recall_score(y_train, y_train_pred)
-        }
-        
-        # Validation metrics if available
-        if X_val is not None and y_val is not None:
-            y_val_pred = self.model.predict(X_val)
-            y_val_prob = self.model.predict_proba(X_val)[:, 1]
-            
-            metrics['validation'] = {
-                'accuracy': accuracy_score(y_val, y_val_pred),
-                'roc_auc': roc_auc_score(y_val, y_val_prob),
-                'f1': f1_score(y_val, y_val_pred),
-                'precision': precision_score(y_val, y_val_pred),
-                'recall': recall_score(y_val, y_val_pred)
+                # Train and evaluate
+                await self.train(
+                    features_train_fold,
+                    features_val_fold,
+                    labels_train_fold,
+                    labels_val_fold
+                )
+                
+                # Get predictions
+                predictions, probabilities = await self.predict(
+                    features_val_fold,
+                    return_proba=True
+                )
+                
+                # Calculate metrics
+                results["accuracy"].append(
+                    accuracy_score(labels_val_fold, predictions)
+                )
+                results["auc"].append(
+                    roc_auc_score(labels_val_fold, probabilities)
+                )
+                results["f1"].append(
+                    f1_score(labels_val_fold, predictions)
+                )
+                
+            # Calculate mean metrics
+            return {
+                metric: np.mean(values)
+                for metric, values in results.items()
             }
-        
-        return metrics
-    
-    def _on_training_iteration(self, env):
-        """Callback for training iteration"""
-        iteration = env.iteration
-        evaluation_result_list = env.evaluation_result_list
-        
-        # Record metrics
-        metrics = {
-            'iteration': iteration,
-            'timestamp': datetime.now().isoformat(),
-            'system_metrics': self._get_system_metrics()
-        }
-        
-        for item in evaluation_result_list:
-            metrics[item[0]] = item[1]
-        
-        self.training_history.append(metrics)
-    
-    def _get_system_metrics(self) -> Dict:
-        """Get system metrics"""
-        metrics = {
-            'cpu_percent': psutil.cpu_percent(),
-            'memory_percent': psutil.virtual_memory().percent,
-            'disk_io': psutil.disk_io_counters(),
-            'network_io': psutil.net_io_counters()
-        }
-        
-        try:
-            gpus = GPUtil.getGPUs()
-            if gpus:
-                metrics['gpu_metrics'] = [{
-                    'id': gpu.id,
-                    'load': gpu.load,
-                    'memory_used': gpu.memoryUsed,
-                    'memory_total': gpu.memoryTotal
-                } for gpu in gpus]
-        except:
-            pass
-        
-        return metrics
-    
-    def save_model(self, path: str):
-        """Save model with security features"""
-        try:
-            # Serialize model
-            model_data = self.model.save_raw()
-            
-            # Generate signature
-            signature = hashlib.sha256(model_data).hexdigest()
-            
-            # Save model and metadata
-            metadata = {
-                'signature': signature,
-                'timestamp': datetime.now().isoformat(),
-                'feature_importance': self.feature_importance.tolist(),
-                'training_history': self.training_history,
-                'validation_history': self.validation_history,
-                'training_config': self.training_config.__dict__,
-                'quantum_config': self.quantum_config.__dict__,
-                'security_config': self.security_config.__dict__
-            }
-            
-            with open(path, 'wb') as f:
-                f.write(model_data)
-            
-            with open(f"{path}.meta", 'w') as f:
-                json.dump(metadata, f)
-            
-            logger.info(f"Model saved successfully to {path}")
-            
         except Exception as e:
-            logger.error(f"Error saving model: {str(e)}")
+            logger.error(f"Cross-validation error: {e}")
             raise
 
-def main():
-    """Example usage of AdvancedModelTrainer"""
+    async def optimize_hyperparameters(
+        self,
+        features: np.ndarray,
+        labels: np.ndarray,
+        param_grid: Optional[Dict[str, List[Any]]] = None
+    ) -> Dict[str, Any]:
+        """Optimize model hyperparameters."""
+        try:
+            if not self.model:
+                raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
+                
+            # Default parameter grid
+            if param_grid is None:
+                param_grid = {
+                    "max_depth": [3, 5, 7],
+                    "learning_rate": [0.01, 0.1, 0.3],
+                    "n_estimators": [100, 200, 300],
+                    "min_child_weight": [1, 3, 5],
+                    "subsample": [0.8, 0.9, 1.0],
+                    "colsample_bytree": [0.8, 0.9, 1.0]
+                }
+                
+            # Initialize random number generator
+            rng = np.random.default_rng(42)
+            
+            # Perform random search
+            n_iter = 20
+            best_score = float("-inf")
+            best_params = None
+            
+            for _ in range(n_iter):
+                # Sample parameters
+                params = {
+                    param: rng.choice(values)
+                    for param, values in param_grid.items()
+                }
+                
+                # Update model parameters
+                self.model.set_params(**params)
+                
+                # Perform cross-validation
+                cv_results = await self.cross_validate(features, labels)
+                
+                # Update best parameters if better score
+                if cv_results["auc"] > best_score:
+                    best_score = cv_results["auc"]
+                    best_params = params
+                    
+            # Update model with best parameters
+            self.model.set_params(**best_params)
+            
+            return {
+                "best_params": best_params,
+                "best_score": best_score
+            }
+        except Exception as e:
+            logger.error(f"Hyperparameter optimization error: {e}")
+            raise
+
+async def main():
     # Generate sample data
-    X = np.random.randn(1000, 10)
-    y = np.random.randint(0, 2, 1000)
+    rng = np.random.default_rng(42)
+    n_samples = 1000
+    n_features = 10
+    
+    # Generate random features
+    features = rng.normal(0, 1, (n_samples, n_features))
+    labels = rng.integers(0, 2, n_samples)
     
     # Split data
-    from sklearn.model_selection import train_test_split
-    X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+    indices = rng.permutation(n_samples)
+    split_idx = int(0.8 * n_samples)
+    features_train = features[indices[:split_idx]]
+    features_val = features[indices[split_idx:]]
+    labels_train = labels[indices[:split_idx]]
+    labels_val = labels[indices[split_idx:]]
     
     # Initialize configurations
     training_config = TrainingConfig()
-    quantum_config = QuantumConfig()
-    security_config = SecurityConfig()
     
     # Initialize trainer
-    trainer = AdvancedModelTrainer(
-        training_config=training_config,
-        quantum_config=quantum_config,
-        security_config=security_config
-    )
+    trainer = AdvancedModelTrainer(config=training_config.__dict__)
     
     # Train model
-    metrics = trainer.train(
-        X_train=X_train,
-        y_train=y_train,
-        X_val=X_val,
-        y_val=y_val,
-        optimize_hyperparameters=True
+    metrics = await trainer.train(
+        features_train=features_train,
+        features_val=features_val,
+        labels_train=labels_train,
+        labels_val=labels_val
     )
     
-    # Print metrics
-    print("\nTraining Metrics:")
-    print(json.dumps(metrics, indent=2))
-    
-    # Save model
-    trainer.save_model('advanced_model.xgb')
+    return metrics
 
 if __name__ == "__main__":
-    main() 
+    import asyncio
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    loop.close() 

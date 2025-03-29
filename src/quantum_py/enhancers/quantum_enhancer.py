@@ -138,9 +138,12 @@ class QuantumEnhancer:
         return np.array(results)
 
     def _apply_quantum_enhancement(self, data: np.ndarray) -> np.ndarray:
-        """Apply quantum enhancement to input data."""
+        """Apply quantum enhancement to data."""
+        if self.quantum_state is None:
+            raise RuntimeError("Quantum state not initialized")
+            
         # Normalize data
-        normalized = (data - np.mean(data)) / (np.std(data) + 1e-8)
+        normalized = (data - np.mean(data)) / np.std(data)
         
         # Apply quantum operations
         enhanced = np.zeros_like(normalized)
@@ -161,6 +164,9 @@ class QuantumEnhancer:
 
     def _apply_quantum_attention(self, data: np.ndarray) -> np.ndarray:
         """Apply quantum attention mechanism."""
+        if self.quantum_state is None:
+            raise RuntimeError("Quantum state not initialized")
+            
         # Calculate attention weights using quantum states
         weights = np.zeros(len(data))
         for i in range(len(data)):

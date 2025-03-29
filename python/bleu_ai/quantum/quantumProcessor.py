@@ -83,6 +83,8 @@ class QuantumProcessor:
                     normalized = normalized[:self.n_qubits]
                 
                 # Apply quantum circuit
+                if self.circuit is None:
+                    raise RuntimeError("Quantum circuit not initialized. Call initialize() first.")
                 result = self.circuit(normalized, weights)
                 enhanced_data.append(result)
 

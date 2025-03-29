@@ -32,6 +32,7 @@ import joblib
 import os
 import logging
 import threading
+from typing import Tuple, Optional, Union, List
 
 # Enable logging for debugging and monitoring
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -40,41 +41,39 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "xgboost_model.pkl")
 
-# Function to load model with retry logic
-def load_model():
-    """Load the XGBoost model with exception handling."""
-    if not os.path.exists(MODEL_PATH):
-        logging.error("❌ Model file not found")
-        return None
-
+def load_model() -> Optional[xgb.XGBClassifier]:
+    """Load the trained XGBoost model."""
     try:
-        model = joblib.load(MODEL_PATH)
-        expected_features = model.get_booster().num_features()
-        logging.info(f"✅ Model loaded successfully! Expected features: {expected_features}")
-        return model, expected_features
+        model_path = os.path.join(os.path.dirname(__file__), 'models', 'xgboost_model.json')
+        model = xgb.XGBClassifier()
+        model.load_model(model_path)
+        return model
     except Exception as e:
         logging.error(f"❌ Failed to load model: {str(e)}")
-        return None, None
+        return None
 
 # Load the model globally
-model, expected_features = load_model()
+model = load_model()
 
 if model is None:
     print(json.dumps({"error": "❌ Model loading failed. Ensure 'xgboost_model.pkl' exists."}))
     sys.exit(1)
 
-def preprocess_features(features):
-    """Preprocess input features to match the model's expected format."""
+def preprocess_features(features: Union[List[float], np.ndarray], expected_features: int = 10) -> Tuple[Optional[np.ndarray], Optional[str]]:
+    """Preprocess input features for prediction."""
     try:
+        # Convert input to numpy array
         features_array = np.array(features, dtype=np.float32)
-
+        
         if features_array.ndim != 1:
             return None, "❌ Input must be a one-dimensional list of numbers."
 
         # Auto-adjust features to match expected size
         if features_array.shape[0] < expected_features:
-            features_array = np.pad(features_array, (0, expected_features - features_array.shape[0]), 'constant')
-            logging.warning(f"⚠️ Input features padded to {expected_features} dimensions.")
+            padding_size = expected_features - features_array.shape[0]
+            if padding_size > 0:  # Ensure positive padding size
+                features_array = np.pad(features_array, (0, padding_size), 'constant')
+                logging.warning(f"⚠️ Input features padded to {expected_features} dimensions.")
 
         elif features_array.shape[0] > expected_features:
             return None, f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}"
@@ -83,37 +82,25 @@ def preprocess_features(features):
     except Exception as e:
         return None, f"❌ Feature preprocessing error: {str(e)}"
 
-def predict(features):
-    """Perform prediction using the XGBoost model in a multi-threaded manner."""
+def predict(features: Union[List[float], np.ndarray]) -> Tuple[Optional[float], Optional[str]]:
+    """Make predictions using the loaded model."""
     try:
+        # Load model
+        model = load_model()
+        if model is None:
+            return None, "❌ Failed to load model"
+
         # Preprocess features
         processed_features, error = preprocess_features(features)
-        if error:
-            return {"error": error}
+        if processed_features is None:
+            return None, error
 
-        # Make prediction using a separate thread to prevent blocking
-        result = {}
-        def run_prediction():
-            try:
-                prediction = model.predict(processed_features)
-                prediction_prob = model.predict_proba(processed_features)
+        # Make prediction
+        prediction = model.predict(processed_features)[0]
+        return float(prediction), None
 
-                logging.info(f"🔮 Prediction: {prediction.tolist()}, Confidence: {prediction_prob.tolist()}")
-
-                result["prediction"] = int(prediction[0])
-                result["confidence"] = float(max(prediction_prob[0]))
-            except Exception as e:
-                logging.error(f"❌ Prediction error: {str(e)}")
-                result["error"] = f"❌ Prediction error: {str(e)}"
-
-        prediction_thread = threading.Thread(target=run_prediction)
-        prediction_thread.start()
-        prediction_thread.join()
-
-        return result
     except Exception as e:
-        logging.error(f"❌ General prediction error: {str(e)}")
-        return {"error": f"❌ General prediction error: {str(e)}"}
+        return None, f"❌ Prediction error: {str(e)}"
 
 if __name__ == "__main__":
     try:

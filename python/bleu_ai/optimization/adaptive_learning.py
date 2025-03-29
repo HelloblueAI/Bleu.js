@@ -38,6 +38,7 @@ class AdaptiveLearningRate:
         self.scheduler = None
         self.best_lr = None
         self.learning_history = []
+        self.initialized = False
 
     async def initialize(self):
         """Initialize the adaptive learning rate optimizer."""
@@ -45,6 +46,7 @@ class AdaptiveLearningRate:
             logging.info("Initializing adaptive learning rate optimizer...")
             # Add any initialization logic here
             logging.info("✅ Adaptive learning rate optimizer initialized successfully")
+            self.initialized = True
         except Exception as e:
             logging.error(f"❌ Failed to initialize adaptive learning rate optimizer: {str(e)}")
             raise
@@ -58,6 +60,11 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using various strategies."""
         try:
+            if not self.initialized:
+                await self.initialize()
+
+            if method is None and self.method is None:
+                raise ValueError("No learning rate method specified")
             method = method or self.method
             
             if method == 'cosine':
@@ -85,6 +92,9 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using cosine annealing."""
         try:
+            if self.max_lr is None or self.min_lr is None:
+                raise ValueError("Learning rate bounds not initialized")
+
             # Create PyTorch model for learning rate search
             model = self._create_model(X.shape[1])
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
@@ -133,6 +143,9 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using one cycle policy."""
         try:
+            if self.max_lr is None:
+                raise ValueError("Maximum learning rate not initialized")
+
             # Create PyTorch model for learning rate search
             model = self._create_model(X.shape[1])
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
@@ -183,6 +196,9 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using cyclic learning rate."""
         try:
+            if self.max_lr is None or self.min_lr is None:
+                raise ValueError("Learning rate bounds not initialized")
+
             # Create PyTorch model for learning rate search
             model = self._create_model(X.shape[1])
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
@@ -233,6 +249,9 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using reduce on plateau."""
         try:
+            if self.max_lr is None or self.min_lr is None or self.factor is None or self.patience is None:
+                raise ValueError("Learning rate parameters not initialized")
+
             # Create PyTorch model for learning rate search
             model = self._create_model(X.shape[1])
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
@@ -284,11 +303,13 @@ class AdaptiveLearningRate:
     ) -> float:
         """Calculate optimal learning rate using Optuna."""
         try:
+            if self.max_lr is None or self.min_lr is None or self.n_trials is None:
+                raise ValueError("Optimization parameters not initialized")
+
             def objective(trial):
-                lr = trial.suggest_loguniform('lr', self.min_lr, self.max_lr)
-                
-                # Create model with current learning rate
+                # Create PyTorch model for learning rate search
                 model = self._create_model(X.shape[1])
+                lr = trial.suggest_loguniform('lr', self.min_lr, self.max_lr)
                 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
                 
                 # Train model
@@ -334,7 +355,13 @@ class AdaptiveLearningRate:
     async def dispose(self):
         """Clean up resources."""
         try:
-            # Add cleanup logic here
+            self.method = None
+            self.max_lr = None
+            self.min_lr = None
+            self.factor = None
+            self.patience = None
+            self.n_trials = None
+            self.initialized = False
             logging.info("✅ Adaptive learning rate optimizer resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up adaptive learning rate optimizer: {str(e)}")

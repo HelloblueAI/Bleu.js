@@ -37,7 +37,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Failed to initialize feature analyzer: {str(e)}")
             raise
 
-    async def analyze(
+    async def analyzeFeatures(
         self,
         X: np.ndarray,
         y: np.ndarray,
@@ -48,7 +48,12 @@ class FeatureAnalyzer:
             if not self.initialized:
                 await self.initialize()
 
+            if self.method is None:
+                raise ValueError("Analysis method not initialized")
+
             # Scale features
+            if self.scaler is None:
+                self.scaler = StandardScaler()
             X_scaled = self.scaler.fit_transform(X)
 
             # Calculate feature importance based on method
@@ -155,6 +160,9 @@ class FeatureAnalyzer:
     ) -> np.ndarray:
         """Select top features based on importance scores."""
         try:
+            if self.n_features is None:
+                return importance
+                
             # Get indices of top features
             top_indices = np.argsort(importance)[-self.n_features:]
             

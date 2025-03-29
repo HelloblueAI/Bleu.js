@@ -1,17 +1,20 @@
-import { createLogger } from '../utils/logger';
+import { Logger } from '../utils/logger';
 import { SecurityError, ValidationError } from '../utils/errors';
+import { Config } from '../types';
+import { Storage } from '../utils/storage';
+import { rateLimit } from 'express-rate-limit';
+import { CORSManager } from './corsManager';
+import { ProcessingError } from '../utils/errors';
+import cors from 'cors';
+import helmet from 'helmet';
 import { 
   SecurityScore, 
   SecurityReport, 
   Vulnerability, 
-  SecurityEventType 
+  SecurityEventType,
+  SecurityConfig
 } from '../types/security';
-import { 
-  randomBytes, 
-  createHash,
-  createCipheriv,
-  createDecipheriv
-} from 'crypto';
+import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { QuantumResistantCrypto } from './quantumResistantCrypto.js';
@@ -23,7 +26,6 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { promisify } from 'util';
 import { EventEmitter } from 'events';
 import * as tf from '@tensorflow/tfjs-node';
-import { BleuConfig } from '../types';
 import { QuantumProcessor } from '../quantum/quantumProcessor';
 import { SecurityValidator } from './validator';
 import { SecurityMonitor } from './monitor';
@@ -32,19 +34,9 @@ import { SecurityPolicy } from './policy';
 import { ThreatDetector } from './threatDetector';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { RateLimiter } from './rateLimiter';
-import { Logger } from '../utils/logger';
 import { JWTManager } from './jwtManager';
-import { Config } from '../config/config';
-import { Storage } from '../storage/storage';
-import rateLimit from 'express-rate-limit';
-import { CORSManager } from './corsManager';
-import { ProcessingError } from '../types/errors';
-import { SecurityConfig, ValidationResult, Request as SecurityRequest } from './types';
-import cors from 'cors';
-import helmet from 'helmet';
 
-const logger = createLogger('SecurityManager');
+const logger = new Logger('SecurityManager');
 
 // Advanced security constants
 const SECURITY_CONSTANTS = {
@@ -105,7 +97,7 @@ export class SecurityManager extends EventEmitter {
   private readonly accessController: AccessController;
   private readonly auditLogger: SecurityAuditLogger;
   private readonly vulnerabilityScanner: VulnerabilityScanner;
-  private readonly rateLimiter: RateLimiterMemory;
+  private readonly rateLimiter: ReturnType<typeof rateLimit>;
   private readonly quantum: QuantumProcessor;
   private readonly validator: SecurityValidator;
   private readonly monitor: SecurityMonitor;
@@ -115,11 +107,10 @@ export class SecurityManager extends EventEmitter {
   private readonly allowedOrigins: Set<string>;
   private readonly storage: Storage;
   private readonly corsManager: CORSManager;
-  private readonly rateLimiters: Map<string, { count: number; resetTime: number }>;
-  private initialized = false;
-  private rateLimits: Map<string, { count: number; timestamp: number }> = new Map();
+  private readonly rateLimits: Map<string, { count: number; timestamp: number }> = new Map();
+  private readonly app: express.Application;
 
-  constructor(config: SecurityConfig, logger: Logger) {
+  constructor(config: SecurityConfig, storage: Storage) {
     super();
     if (!config || !logger) {
       throw new SecurityError('Invalid configuration or logger');
@@ -129,13 +120,11 @@ export class SecurityManager extends EventEmitter {
     }
     this.logger = logger;
     this.config = config;
-    this.rateLimiters = new Map();
-    this.threatDetector = new ThreatDetector(this.config);
-    this.accessController = new AccessController(this.config);
-    this.auditLogger = new SecurityAuditLogger(this.config);
-    this.rateLimiter = new RateLimiterMemory({
-      points: config.rateLimits.maxRequests,
-      duration: config.rateLimits.windowMs / 1000
+    this.storage = storage;
+    this.corsManager = new CORSManager(config);
+    this.rateLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100 // limit each IP to 100 requests per windowMs
     });
     this.allowedOrigins = new Set(this.config.allowedOrigins || ['http://localhost:3000']);
     this.encryptionKey = randomBytes(32);
@@ -148,12 +137,14 @@ export class SecurityManager extends EventEmitter {
     this.auditor = new SecurityAuditor();
     this.policy = new SecurityPolicy();
     this.jwtManager = new JWTManager(this.config.jwtSecret);
-    this.corsManager = new CORSManager(this.config.cors);
-    this.storage = new Storage({
-      path: this.baseDir,
-      retentionDays: 30,
-      compression: true
-    }, logger);
+    this.app = express();
+    this.setupSecurity();
+  }
+
+  private setupSecurity(): void {
+    // Apply security middleware
+    this.app.use(helmet());
+    this.app.use(this.rateLimiter.middleware());
   }
 
   public async initialize(): Promise<void> {
@@ -249,9 +240,9 @@ export class SecurityManager extends EventEmitter {
       this.adaptiveSecurityLevel = Math.max(0.5, Math.min(1.5, 1.0 + (riskScore - 0.5)));
       
       // Update rate limiter based on security level
-      this.rateLimiter = new RateLimiterMemory({
-        points: Math.floor(this.config.rateLimits?.maxRequests * this.adaptiveSecurityLevel),
-        duration: this.config.rateLimits?.windowMs
+      this.rateLimiter = rateLimit({
+        windowMs: Math.floor(this.config.rateLimits?.windowMs * this.adaptiveSecurityLevel),
+        max: this.config.rateLimits?.maxRequests
       });
 
       this.logger.info('Updated adaptive security level', {

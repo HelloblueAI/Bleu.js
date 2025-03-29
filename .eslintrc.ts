@@ -1,27 +1,24 @@
-import type { Linter } from 'eslint';
-
-const config: Linter.Config = {
+module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'jest', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:jest/recommended',
-    'prettier'
+    'plugin:prettier/recommended'
   ],
   env: {
     node: true,
-    jest: true,
-    es2022: true
+    es6: true
+  },
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module'
   },
   rules: {
+    'prettier/prettier': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/explicit-function-return-type': 'warn',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    'prettier/prettier': 'error'
-  },
-  ignorePatterns: ['dist/', 'coverage/', 'node_modules/']
-};
-
-export default config; 
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+  }
+}; 

@@ -27,6 +27,13 @@ permissions:
   security-events: write
   pull-requests: write
 
+env:
+  PYTHON_VERSION: '3.8'
+  POETRY_VERSION: '1.7.1'
+  CACHE_KEY_PREFIX: v1
+  PYPI_URL: 'https://upload.pypi.org/legacy/'
+  TEST_PYPI_URL: 'https://test.pypi.org/legacy/'
+
 jobs:
   lint:
     name: Lint and Quality Checks
@@ -39,659 +46,242 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Important: pnpm setup must come BEFORE Node.js setup when using cache: 'pnpm'
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          version: '9'
-          run_install: false
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
         with:
-          node-version: '20'
-          # Properly set the cache option to pnpm
-          cache: 'pnpm'
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
-      - name: Check Project Structure
-        id: check_structure
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ env.CACHE_KEY_PREFIX }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@v3.0.0
+
+      - name: Check Code Formatting
         run: |
-          echo "Project structure:"
-          ls -la
+          poetry run black --check src/ tests/
+          poetry run isort --check-only src/ tests/
 
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "pnpm-lock.yaml found"
-            echo "LOCK_FILE_EXISTS=true" >> $GITHUB_OUTPUT
-          else
-            echo "WARNING: pnpm-lock.yaml not found"
-            echo "LOCK_FILE_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-
-          if [ -f "package.json" ]; then
-            echo "package.json found"
-            cat package.json | grep "\"lint\"" || echo "No lint script found in package.json"
-            cat package.json | grep "\"prettier\"" || echo "No prettier script found in package.json"
-          else
-            echo "WARNING: package.json not found"
-          fi
-
-      - name: Install Dependencies
+      - name: Lint with flake8
         run: |
-          # Install unconditionally to ensure dependencies are available
-          # The --no-frozen-lockfile flag ensures it works even without a lock file
-          pnpm install --no-frozen-lockfile
+          poetry run flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          poetry run flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Run Lint
-        run: |
-          # Check if the lint script exists before running it
-          if grep -q "\"lint\"" package.json; then
-            pnpm run lint || echo "Linting had issues but continuing workflow"
-          else
-            echo "No lint script found, skipping"
-          fi
+      - name: Type Check with mypy
+        run: poetry run mypy src/ tests/
 
-      - name: Check Formatting
-        run: |
-          # Check if the prettier script exists before running it
-          if grep -q "\"prettier\"" package.json; then
-            pnpm run prettier:check || echo "Formatting had issues but continuing workflow"
-          elif grep -q "\"prettier:check\"" package.json; then
-            pnpm run prettier:check || echo "Formatting had issues but continuing workflow"
-          else
-            echo "No prettier script found, skipping"
-          fi
+      - name: Security Check with Bandit
+        run: poetry run bandit -r src/ -c pyproject.toml
 
-      - name: Security Audit
-        run: pnpm audit --audit-level=critical || echo "Audit found issues but continuing workflow"
-
-  build-test:
-    name: Build and Test Components
+  test:
+    name: Test Python Package
     needs: [lint]
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        component: [backend, core-engine, eggs-generator]
-
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "echo 'db.runCommand({ping:1})' | mongo --quiet"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10']
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
         with:
-          version: '9'
-          run_install: false
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
-      - name: Check Component Structure
-        id: check_component
-        run: |
-          if [ -d "${{ matrix.component }}" ]; then
-            echo "Component directory found: ${{ matrix.component }}"
-            echo "COMPONENT_EXISTS=true" >> $GITHUB_OUTPUT
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ env.CACHE_KEY_PREFIX }}-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-            if [ -f "${{ matrix.component }}/package.json" ]; then
-              echo "Component package.json found"
-              echo "PACKAGE_JSON_EXISTS=true" >> $GITHUB_OUTPUT
-
-              # Check for build and test scripts
-              cd ${{ matrix.component }}
-              if grep -q "\"build\"" package.json; then
-                echo "BUILD_SCRIPT_EXISTS=true" >> $GITHUB_OUTPUT
-              else
-                echo "No build script found in ${{ matrix.component }}/package.json"
-                echo "BUILD_SCRIPT_EXISTS=false" >> $GITHUB_OUTPUT
-              fi
-
-              if grep -q "\"test\"" package.json; then
-                echo "TEST_SCRIPT_EXISTS=true" >> $GITHUB_OUTPUT
-              else
-                echo "No test script found in ${{ matrix.component }}/package.json"
-                echo "TEST_SCRIPT_EXISTS=false" >> $GITHUB_OUTPUT
-              fi
-              cd ..
-            else
-              echo "WARNING: Component package.json not found for ${{ matrix.component }}"
-              echo "PACKAGE_JSON_EXISTS=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "WARNING: Component directory not found: ${{ matrix.component }}"
-            echo "COMPONENT_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Install Dependencies
-        if: steps.check_component.outputs.COMPONENT_EXISTS == 'true' && steps.check_component.outputs.PACKAGE_JSON_EXISTS == 'true'
-        run: |
-          # Install root dependencies first
-          pnpm install --no-frozen-lockfile
-
-          # Install component-specific dependencies if needed
-          if [ -f "${{ matrix.component }}/package.json" ]; then
-            cd ${{ matrix.component }}
-            if grep -q "\"dependencies\"\\|\"devDependencies\"" package.json; then
-              pnpm install --no-frozen-lockfile
-            fi
-          fi
-
-      - name: Build Component
-        id: build
-        if: steps.check_component.outputs.COMPONENT_EXISTS == 'true' && steps.check_component.outputs.PACKAGE_JSON_EXISTS == 'true' && steps.check_component.outputs.BUILD_SCRIPT_EXISTS == 'true'
-        run: |
-          cd ${{ matrix.component }}
-
-          echo "Building ${{ matrix.component }}..."
-          pnpm run build || echo "Build had issues but continuing workflow"
-
-          # Check for build output directories
-          if [ -d "dist" ]; then
-            echo "BUILD_OUTPUT_DIR=dist" >> $GITHUB_OUTPUT
-            echo "BUILD_SUCCESS=true" >> $GITHUB_OUTPUT
-          elif [ -d "build" ]; then
-            echo "BUILD_OUTPUT_DIR=build" >> $GITHUB_OUTPUT
-            echo "BUILD_SUCCESS=true" >> $GITHUB_OUTPUT
-          else
-            echo "WARNING: No build output directory found"
-            echo "BUILD_SUCCESS=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
 
       - name: Run Tests
-        id: test
-        if: steps.check_component.outputs.COMPONENT_EXISTS == 'true' && steps.check_component.outputs.PACKAGE_JSON_EXISTS == 'true' && steps.check_component.outputs.TEST_SCRIPT_EXISTS == 'true'
         run: |
-          cd ${{ matrix.component }}
-
-          echo "Testing ${{ matrix.component }}..."
-          NODE_ENV=test pnpm run test || echo "Tests had issues but continuing workflow"
-
-          # Check for coverage output
-          if [ -d "coverage" ]; then
-            echo "COVERAGE_GENERATED=true" >> $GITHUB_OUTPUT
-          else
-            echo "No coverage directory found"
-            echo "COVERAGE_GENERATED=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          MONGODB_URI: 'mongodb://localhost:27017/test'
-          REDIS_URL: 'redis://localhost:6379'
-          NODE_ENV: 'test'
-
-      - name: Package Build
-        if: steps.build.outputs.BUILD_SUCCESS == 'true'
-        run: |
-          mkdir -p artifacts
-
-          BUILD_DIR="${{ steps.build.outputs.BUILD_OUTPUT_DIR }}"
-          echo "Packaging ${{ matrix.component }}/${BUILD_DIR}..."
-
-          if [ -d "${{ matrix.component }}/${BUILD_DIR}" ]; then
-            cd ${{ matrix.component }}
-            tar -czvf ../artifacts/${{ matrix.component }}-build.tar.gz ${BUILD_DIR}
-            cd ..
-            echo "✅ Package created: ${{ matrix.component }}-build.tar.gz"
-          else
-            echo "WARNING: Build directory ${{ matrix.component }}/${BUILD_DIR} not found"
-            # Create an empty tarball so the artifact upload doesn't fail
-            mkdir -p empty-build
-            tar -czvf artifacts/${{ matrix.component }}-build.tar.gz empty-build
-            echo "✅ Created empty package as fallback"
-          fi
-
-      - name: Upload Build Artifact
-        if: steps.build.outputs.BUILD_SUCCESS == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.component }}-build
-          path: artifacts/${{ matrix.component }}-build.tar.gz
-          retention-days: 14
-          if-no-files-found: ignore
+          poetry run pytest tests/ \
+            --cov=src/ \
+            --cov-report=xml \
+            --cov-report=html \
+            -n auto \
+            --junitxml=junit/test-results-${{ matrix.python-version }}.xml
 
       - name: Upload Coverage Report
-        if: steps.test.outputs.COVERAGE_GENERATED == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.component }}-coverage
-          path: ${{ matrix.component }}/coverage
+          name: coverage-report-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            htmlcov/
+            coverage.xml
+            junit/
           retention-days: 14
-          if-no-files-found: ignore
 
-  ai-service-tests:
-    name: AI Service Tests
-    needs: [lint]
+  build:
+    name: Build Python Package
+    needs: [test]
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "echo 'db.runCommand({ping:1})' | mongo --quiet"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          version: '9'
-          run_install: false
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
-      - name: Check Project Structure
-        id: check_structure
+      - name: Build Package
+        run: poetry build
+
+      - name: Check Package
         run: |
-          echo "Project structure:"
-          ls -la
+          poetry run twine check dist/*
+          poetry run pip install dist/*.whl
+          poetry run python -c "import bleujs; print(bleujs.__version__)"
 
-          # Check for test files
-          if [ -d "src/__tests__" ]; then
-            echo "Test directory found: src/__tests__"
-            echo "TEST_DIR=src/__tests__" >> $GITHUB_OUTPUT
-
-            if [ -f "src/__tests__/aiService.test.js" ]; then
-              echo "AI Service test file found"
-              echo "AI_TEST_EXISTS=true" >> $GITHUB_OUTPUT
-            else
-              echo "WARNING: AI Service test file not found"
-              echo "AI_TEST_EXISTS=false" >> $GITHUB_OUTPUT
-            fi
-          elif [ -d "__tests__" ]; then
-            echo "Test directory found: __tests__"
-            echo "TEST_DIR=__tests__" >> $GITHUB_OUTPUT
-
-            if [ -f "__tests__/aiService.test.js" ]; then
-              echo "AI Service test file found"
-              echo "AI_TEST_EXISTS=true" >> $GITHUB_OUTPUT
-            else
-              echo "WARNING: AI Service test file not found"
-              echo "AI_TEST_EXISTS=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "WARNING: No test directory found"
-            echo "TEST_DIR=unknown" >> $GITHUB_OUTPUT
-            echo "AI_TEST_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-
-          # Look for any aiService test file
-          FOUND_TESTS=$(find . -name "aiService.test.js" | wc -l)
-          if [ "$FOUND_TESTS" -gt 0 ]; then
-            echo "Found $FOUND_TESTS AI Service test files via search"
-            echo "AI_TEST_EXISTS=true" >> $GITHUB_OUTPUT
-            echo "AI_TEST_PATH=$(find . -name "aiService.test.js" | head -n 1)" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Run AIService Tests
-        id: ai_tests
-        run: |
-          # Create a simplified Jest config file that works with different project structures
-          cat > aiservice.jest.config.cjs << 'EOL'
-          module.exports = {
-            testEnvironment: "node",
-            testMatch: [
-              "**/src/__tests__/aiService.test.js",
-              "**/__tests__/aiService.test.js",
-              "**/tests/aiService.test.js",
-              "**/*.aiService.test.js"
-            ],
-            testTimeout: 30000,
-            collectCoverage: true,
-            coverageDirectory: "coverage",
-            coverageReporters: ["text", "lcov", "html", "json-summary"],
-          };
-          EOL
-
-          echo "Running AI Service tests..."
-          NODE_ENV=test npx jest --config aiservice.jest.config.cjs || echo "AI Service tests had issues but continuing workflow"
-
-          if [ -d "coverage" ]; then
-            echo "COVERAGE_GENERATED=true" >> $GITHUB_OUTPUT
-          else
-            echo "No coverage directory found"
-            echo "COVERAGE_GENERATED=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          MONGODB_URI: 'mongodb://localhost:27017/test'
-          NODE_ENV: 'test'
-
-      - name: Upload AI Service Coverage
-        if: steps.ai_tests.outputs.COVERAGE_GENERATED == 'true'
+      - name: Upload Package Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ai-service-coverage
-          path: coverage
+          name: python-package
+          path: dist/
           retention-days: 14
-          if-no-files-found: ignore
 
-  package-release:
-    name: Package Release
-    needs: [build-test, ai-service-tests]
-    if: success() || failure() # Run even if previous jobs fail with non-critical errors
+  security-scan:
+    name: Security Scan
+    needs: [build]
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.set-version.outputs.version }}
-      release-name: ${{ steps.set-version.outputs.release-name }}
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Check for package.json
-        id: check_pkg
-        run: |
-          if [ -f "package.json" ]; then
-            VERSION=$(node -p "try { require('./package.json').version } catch(e) { console.log('0.0.0'); }")
-            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-            echo "PACKAGE_JSON_EXISTS=true" >> $GITHUB_OUTPUT
-          else
-            echo "WARNING: package.json not found, using default version"
-            echo "VERSION=0.0.0" >> $GITHUB_OUTPUT
-            echo "PACKAGE_JSON_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Download Build Artifacts
+      - name: Download Package Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: dist
-          pattern: '*-build'
-          merge-multiple: true
+          name: python-package
+          path: dist/
 
-      - name: Set Version Info
-        id: set-version
-        run: |
-          VERSION="${{ steps.check_pkg.outputs.VERSION }}"
-          BUILD_NUMBER=${{ github.run_number }}
-          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
-          RELEASE_NAME="bleujs-v${VERSION}-${TIMESTAMP}-${BUILD_NUMBER}"
-
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "release-name=${RELEASE_NAME}" >> $GITHUB_OUTPUT
-
-          echo "📋 Release Info:"
-          echo "   Version: ${VERSION}"
-          echo "   Build: ${BUILD_NUMBER}"
-          echo "   Release Name: ${RELEASE_NAME}"
-
-      - name: Create Release Package
-        id: create_package
-        run: |
-          mkdir -p release
-
-          # Check if we have any artifacts to package
-          ARTIFACT_COUNT=$(find dist -type f -name "*.tar.gz" | wc -l)
-          echo "Found $ARTIFACT_COUNT artifacts to package"
-
-          # Get version variables for JSON
-          VERSION="${{ steps.set-version.outputs.version }}"
-          BUILD_NUMBER="${{ github.run_number }}"
-          BUILD_ID="${{ github.run_id }}"
-          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          GIT_COMMIT="${{ github.sha }}"
-          GIT_REF="${{ github.ref }}"
-
-          if [ "$ARTIFACT_COUNT" -gt 0 ]; then
-            # Move artifacts to release directory
-            find dist -type f -name "*.tar.gz" -exec cp {} release/ \;
-
-            # Create manifest using echo commands instead of heredoc
-            echo "{" > release/MANIFEST.json
-            echo "  \"name\": \"Bleu.js\"," >> release/MANIFEST.json
-            echo "  \"version\": \"$VERSION\"," >> release/MANIFEST.json
-            echo "  \"buildNumber\": \"$BUILD_NUMBER\"," >> release/MANIFEST.json
-            echo "  \"buildId\": \"$BUILD_ID\"," >> release/MANIFEST.json
-            echo "  \"buildDate\": \"$BUILD_DATE\"," >> release/MANIFEST.json
-            echo "  \"gitCommit\": \"$GIT_COMMIT\"," >> release/MANIFEST.json
-            echo "  \"gitRef\": \"$GIT_REF\"," >> release/MANIFEST.json
-            echo "  \"components\": [" >> release/MANIFEST.json
-
-            # Add each component to the manifest
-            FIRST=true
-            for ARTIFACT in $(find release -type f -name "*.tar.gz" | sort); do
-              COMPONENT=$(basename "$ARTIFACT" | sed 's/-build.tar.gz//')
-              if [ "$FIRST" = true ]; then
-                FIRST=false
-              else
-                echo "," >> release/MANIFEST.json
-              fi
-              echo "    {\"name\": \"$COMPONENT\", \"artifact\": \"$(basename "$ARTIFACT")\"}" >> release/MANIFEST.json
-            done
-
-            # Close the JSON
-            echo "  ]" >> release/MANIFEST.json
-            echo "}" >> release/MANIFEST.json
-
-            # Package the release
-            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" release
-
-            echo "PACKAGE_CREATED=true" >> $GITHUB_OUTPUT
-            echo "📦 Release package created: ${{ steps.set-version.outputs.release-name }}.tar.gz"
-          else
-            echo "WARNING: No artifacts found to package"
-
-            # Create an empty package with just the manifest
-            mkdir -p release
-
-            # Create empty manifest using echo commands
-            echo "{" > release/MANIFEST.json
-            echo "  \"name\": \"Bleu.js\"," >> release/MANIFEST.json
-            echo "  \"version\": \"$VERSION\"," >> release/MANIFEST.json
-            echo "  \"buildNumber\": \"$BUILD_NUMBER\"," >> release/MANIFEST.json
-            echo "  \"buildId\": \"$BUILD_ID\"," >> release/MANIFEST.json
-            echo "  \"buildDate\": \"$BUILD_DATE\"," >> release/MANIFEST.json
-            echo "  \"gitCommit\": \"$GIT_COMMIT\"," >> release/MANIFEST.json
-            echo "  \"gitRef\": \"$GIT_REF\"," >> release/MANIFEST.json
-            echo "  \"components\": []," >> release/MANIFEST.json
-            echo "  \"note\": \"No components were successfully built\"" >> release/MANIFEST.json
-            echo "}" >> release/MANIFEST.json
-
-            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" release
-
-            echo "PACKAGE_CREATED=true" >> $GITHUB_OUTPUT
-            echo "📦 Empty release package created: ${{ steps.set-version.outputs.release-name }}.tar.gz"
-          fi
-
-          # Verify the tarball was created
-          if [ -f "${{ steps.set-version.outputs.release-name }}.tar.gz" ]; then
-            echo "✅ Tarball verification passed"
-          else
-            echo "⚠️ Tarball not found, creating an emergency fallback"
-            mkdir -p emergency-release
-            echo "{\"status\":\"emergency fallback\"}" > emergency-release/emergency.json
-            tar -czvf "${{ steps.set-version.outputs.release-name }}.tar.gz" emergency-release
-          fi
-
-      - name: Upload Release Package
-        if: steps.create_package.outputs.PACKAGE_CREATED == 'true'
-        uses: actions/upload-artifact@v4
+      - name: Run Safety Check
+        uses: pypa/gh-action-pip-audit@v1.0.8
         with:
-          name: bleujs-release
-          path: '${{ steps.set-version.outputs.release-name }}.tar.gz'
-          retention-days: 14
+          inputs: dist/*.whl
+
+      - name: Run Dependency Review
+        uses: actions/dependency-review-action@v3
+        if: github.event_name == 'pull_request'
 
   deploy:
     name: Deploy to ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
-    needs: [package-release]
-    if: (success() || failure()) && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch')
+    needs: [build, security-scan]
+    if: |
+      github.event_name == 'push' && 
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging') &&
+      !contains(github.event.head_commit.message, '[skip deploy]')
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+    environment: 
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+      url: ${{ github.ref == 'refs/heads/main' && env.PYPI_URL || env.TEST_PYPI_URL }}
+    concurrency: 
+      group: deploy-${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+      cancel-in-progress: false
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: '9'
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Download Release Package
-        id: download_release
+      - name: Download Package Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: bleujs-release
-          path: deploy
-        continue-on-error: true
+          name: python-package
+          path: dist/
 
-      - name: Check Release Download
-        id: check_release
-        run: |
-          if [ -d "deploy" ] && [ "$(ls -A deploy)" ]; then
-            echo "RELEASE_AVAILABLE=true" >> $GITHUB_OUTPUT
-            echo "Release package found"
-          else
-            echo "RELEASE_AVAILABLE=false" >> $GITHUB_OUTPUT
-            echo "WARNING: Release package not found, will create deployment config only"
-          fi
-
-      - name: Determine Environment
-        id: env_step
-        run: |
-          DEPLOY_ENV="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}"
-          echo "environment=${DEPLOY_ENV}" >> $GITHUB_OUTPUT
-
-          if [ "${DEPLOY_ENV}" = "production" ]; then
-            echo "api_url=https://api.bleujs.com" >> $GITHUB_OUTPUT
-            echo "env_name=production" >> $GITHUB_OUTPUT
-          else
-            echo "api_url=https://staging-api.bleujs.com" >> $GITHUB_OUTPUT
-            echo "env_name=staging" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Extract Release Package
-        if: steps.check_release.outputs.RELEASE_AVAILABLE == 'true'
-        run: |
-          cd deploy
-          tar -xzvf *.tar.gz || echo "Failed to extract release package"
-
-      - name: Prepare Deployment
-        run: |
-          echo "🚀 Preparing deployment to ${{ steps.env_step.outputs.environment }}..."
-
-          # Create environment config
-          cat > .env << EOF
-          NODE_ENV=${{ steps.env_step.outputs.env_name }}
-          API_URL=${{ steps.env_step.outputs.api_url }}
-          DEPLOY_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          BUILD_ID=${{ github.run_id }}
-          COMMIT_SHA=${{ github.sha }}
-          EOF
-
-          echo "✅ Environment config created"
-
-          # If you need to install any dependencies for deployment
-          pnpm install --no-frozen-lockfile
-
-          # Create a deployment log
-          mkdir -p deployment-logs
-          cat > deployment-logs/deployment-${{ steps.env_step.outputs.environment }}.json << EOF
-          {
-            "environment": "${{ steps.env_step.outputs.environment }}",
-            "apiUrl": "${{ steps.env_step.outputs.api_url }}",
-            "deployTime": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "buildId": "${{ github.run_id }}",
-            "commitSha": "${{ github.sha }}",
-            "branch": "${{ github.ref_name }}",
-            "workflow": "${{ github.workflow }}",
-            "releaseAvailable": ${{ steps.check_release.outputs.RELEASE_AVAILABLE }}
-          }
-          EOF
-
-      - name: Deploy
-        id: deploy
-        run: |
-          echo "🚀 Deploying to ${{ steps.env_step.outputs.environment }}..."
-
-          # A more robust deployment approach that handles failures gracefully
-          DEPLOY_RESULT=0
-
-          # Add your actual deployment commands here, for example:
-          #if [ "${{ steps.env_step.outputs.environment }}" = "production" ]; then
-          #  pnpm run deploy:production || DEPLOY_RESULT=$?
-          #else
-          #  pnpm run deploy:staging || DEPLOY_RESULT=$?
-          #fi
-
-          # For now, just simulate a successful deployment
-          echo "Simulating deployment to ${{ steps.env_step.outputs.environment }}..."
-
-          if [ $DEPLOY_RESULT -eq 0 ]; then
-            echo "DEPLOY_SUCCESS=true" >> $GITHUB_OUTPUT
-            echo "✅ Deployment completed successfully!"
-          else
-            echo "DEPLOY_SUCCESS=false" >> $GITHUB_OUTPUT
-            echo "⚠️ Deployment completed with issues (exit code: $DEPLOY_RESULT)"
-          fi
-
-          # Always mark as success for this simulation
-          echo "DEPLOY_SUCCESS=true" >> $GITHUB_OUTPUT
-
-      - name: Upload Deployment Logs
-        uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: deployment-logs
-          path: deployment-logs
-          retention-days: 14
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-      - name: Post Deployment Notification
-        if: steps.deploy.outputs.DEPLOY_SUCCESS == 'true' && github.event_name != 'pull_request'
-        uses: rtCamp/action-slack-notify@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Configure Poetry
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
+          poetry config pypi-token.testpypi ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Verify Package
+        run: |
+          poetry run twine check dist/*
+          echo "Package contents:"
+          poetry run pip show -f dist/*.whl
+
+      - name: Publish Package
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            poetry publish --repository pypi
+          else
+            poetry publish --repository testpypi
+          fi
+
+      - name: Create GitHub Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          fail_on_unmatched_files: true
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: 'deployments'
-          SLACK_COLOR: ${{ steps.env_step.outputs.environment == 'production' && 'good' || 'warning' }}
-          SLACK_MESSAGE: 'Deployed Bleu.js v${{ needs.package-release.outputs.version }} to ${{ steps.env_step.outputs.environment }}'
-          SLACK_TITLE: 'Deployment Successful'
-          SLACK_USERNAME: 'GitHub Actions'
-        continue-on-error: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Send Slack Notification
+        if: always()
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: 'ci-cd-notifications'
+          slack-message: 'Job ${{ github.job }} ${{ job.status }} in ${{ github.workflow }} workflow'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
