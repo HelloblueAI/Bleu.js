@@ -153,6 +153,8 @@ __pycache__/
 mypy_cache/
 pip-log.txt
 pip-delete-this-directory.txt
+bleujs-env/
+.pytest_cache/
 
 # ----------------------------------------
 # 🤖 Machine Learning & Model Files
