@@ -29,17 +29,17 @@ pip install wheel setuptools
 
 # Install core dependencies first
 echo -e "${YELLOW}Installing core dependencies...${NC}"
-pip install numpy==1.24.0
+pip install numpy>=1.24.4
 pip install tensorflow==2.15.0
 pip install torch==2.2.2 torchvision==0.17.2
 
 # Install quantum computing dependencies
 echo -e "${YELLOW}Installing quantum computing dependencies...${NC}"
-pip install qiskit==1.0.0 cirq==1.2.0 pennylane==0.30.0
+pip install qiskit>=1.1.0 cirq==1.2.0 pennylane==0.30.0
 
 # Install API and web framework
 echo -e "${YELLOW}Installing API and web framework...${NC}"
-pip install fastapi==0.115.12 uvicorn==0.34.0 python-multipart==0.0.6 pydantic==2.0.0
+pip install fastapi==0.115.12 uvicorn==0.34.0 python-multipart==0.0.6 pydantic>=2.9.2
 
 # Install database dependencies
 echo -e "${YELLOW}Installing database dependencies...${NC}"

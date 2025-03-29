@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Activate virtual environment if it exists
@@ -7,9 +7,9 @@ if [ -d "bleujs-env-py311" ]; then
 fi
 
 # Run Python tests
-python -m pytest tests/ -v
+python -m pytest
 
 # Run linting
-flake8 .
+python -m flake8
 black . --check
 isort . --check-only
