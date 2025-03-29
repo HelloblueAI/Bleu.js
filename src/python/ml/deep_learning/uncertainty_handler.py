@@ -1,0 +1,337 @@
+"""
+Uncertainty Handler for Advanced Decision Tree
+Copyright (c) 2024, Bleu.js
+"""
+
+from dataclasses import dataclass
+from typing import List, Dict, Optional, Union, Tuple
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+import tensorflow as tf
+from tensorflow import keras
+import structlog
+from concurrent.futures import ThreadPoolExecutor
+import ray
+
+@dataclass
+class UncertaintyConfig:
+    """Configuration for uncertainty estimation."""
+    method: str = 'ensemble'  # 'ensemble', 'bayesian', 'monte_carlo'
+    n_samples: int = 1000
+    confidence_threshold: float = 0.95
+    use_bayesian_approximation: bool = True
+    enable_distributed_computing: bool = True
+    uncertainty_metrics: List[str] = None
+
+class UncertaintyHandler:
+    """
+    Advanced uncertainty handler that provides multiple methods for uncertainty estimation
+    in machine learning predictions.
+    """
+    
+    def __init__(self, config: UncertaintyConfig = UncertaintyConfig()):
+        self.config = config
+        self.logger = structlog.get_logger()
+        self.ensemble_models = []
+        self.bayesian_model = None
+        self.monte_carlo_samples = None
+        
+        if self.config.uncertainty_metrics is None:
+            self.config.uncertainty_metrics = [
+                'entropy',
+                'variance',
+                'confidence_interval',
+                'calibration_score'
+            ]
+        
+        # Initialize Ray for distributed computing if enabled
+        if config.enable_distributed_computing:
+            if not ray.is_initialized():
+                ray.init(ignore_reinit_error=True)
+
+    async def initialize(self) -> None:
+        """Initialize the uncertainty handler and its components."""
+        self.logger.info("initializing_uncertainty_handler")
+        
+        try:
+            if self.config.method == 'ensemble':
+                await self._initialize_ensemble()
+            elif self.config.method == 'bayesian':
+                await self._initialize_bayesian()
+            elif self.config.method == 'monte_carlo':
+                await self._initialize_monte_carlo()
+            
+            self.logger.info("uncertainty_handler_initialized")
+            
+        except Exception as e:
+            self.logger.error("initialization_failed", error=str(e))
+            raise
+
+    async def _initialize_ensemble(self) -> None:
+        """Initialize ensemble-based uncertainty estimation."""
+        n_models = 10
+        self.ensemble_models = [
+            RandomForestClassifier(
+                n_estimators=100,
+                max_depth=10,
+                random_state=i
+            ) for i in range(n_models)
+        ]
+
+    async def _initialize_bayesian(self) -> None:
+        """Initialize Bayesian neural network for uncertainty estimation."""
+        self.bayesian_model = keras.Sequential([
+            keras.layers.Dense(64, activation='relu', input_shape=(None,)),
+            keras.layers.Dropout(0.2),
+            keras.layers.Dense(32, activation='relu'),
+            keras.layers.Dropout(0.2),
+            keras.layers.Dense(1, activation='sigmoid')
+        ])
+        
+        # Use Bayesian optimization for hyperparameter tuning
+        optimizer = keras.optimizers.Adam(learning_rate=0.001)
+        self.bayesian_model.compile(
+            optimizer=optimizer,
+            loss='binary_crossentropy',
+            metrics=['accuracy']
+        )
+
+    async def _initialize_monte_carlo(self) -> None:
+        """Initialize Monte Carlo sampling for uncertainty estimation."""
+        self.monte_carlo_samples = np.random.normal(
+            size=(self.config.n_samples, 100)
+        )
+
+    async def calculate_uncertainty(
+        self,
+        X: np.ndarray,
+        y: Optional[np.ndarray] = None
+    ) -> Dict[str, float]:
+        """
+        Calculate uncertainty metrics for the input data.
+        """
+        self.logger.info("calculating_uncertainty", data_shape=X.shape)
+        
+        try:
+            uncertainty_metrics = {}
+            
+            if 'entropy' in self.config.uncertainty_metrics:
+                uncertainty_metrics['entropy'] = await self._calculate_entropy(X)
+            
+            if 'variance' in self.config.uncertainty_metrics:
+                uncertainty_metrics['variance'] = await self._calculate_variance(X)
+            
+            if 'confidence_interval' in self.config.uncertainty_metrics:
+                uncertainty_metrics['confidence_interval'] = await self._calculate_confidence_interval(X)
+            
+            if 'calibration_score' in self.config.uncertainty_metrics and y is not None:
+                uncertainty_metrics['calibration_score'] = await self._calculate_calibration_score(X, y)
+            
+            self.logger.info("uncertainty_calculated", metrics=uncertainty_metrics)
+            return uncertainty_metrics
+            
+        except Exception as e:
+            self.logger.error("uncertainty_calculation_failed", error=str(e))
+            raise
+
+    async def _calculate_entropy(self, X: np.ndarray) -> float:
+        """Calculate prediction entropy as a measure of uncertainty."""
+        if self.config.method == 'ensemble':
+            predictions = []
+            for model in self.ensemble_models:
+                pred = model.predict_proba(X)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
+            return float(entropy)
+        
+        elif self.config.method == 'bayesian':
+            predictions = []
+            for _ in range(self.config.n_samples):
+                pred = self.bayesian_model.predict(X, verbose=0)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
+            return float(entropy)
+        
+        else:  # monte_carlo
+            predictions = []
+            for sample in self.monte_carlo_samples:
+                pred = np.dot(X, sample)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
+            return float(entropy)
+
+    async def _calculate_variance(self, X: np.ndarray) -> float:
+        """Calculate prediction variance as a measure of uncertainty."""
+        if self.config.method == 'ensemble':
+            predictions = []
+            for model in self.ensemble_models:
+                pred = model.predict_proba(X)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            variance = np.var(predictions, axis=0)
+            return float(np.mean(variance))
+        
+        elif self.config.method == 'bayesian':
+            predictions = []
+            for _ in range(self.config.n_samples):
+                pred = self.bayesian_model.predict(X, verbose=0)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            variance = np.var(predictions, axis=0)
+            return float(np.mean(variance))
+        
+        else:  # monte_carlo
+            predictions = []
+            for sample in self.monte_carlo_samples:
+                pred = np.dot(X, sample)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            variance = np.var(predictions, axis=0)
+            return float(np.mean(variance))
+
+    async def _calculate_confidence_interval(
+        self,
+        X: np.ndarray,
+        confidence: float = 0.95
+    ) -> Tuple[float, float]:
+        """Calculate confidence intervals for predictions."""
+        if self.config.method == 'ensemble':
+            predictions = []
+            for model in self.ensemble_models:
+                pred = model.predict_proba(X)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            lower = np.percentile(predictions, (1 - confidence) * 100, axis=0)
+            upper = np.percentile(predictions, confidence * 100, axis=0)
+            return float(np.mean(lower)), float(np.mean(upper))
+        
+        elif self.config.method == 'bayesian':
+            predictions = []
+            for _ in range(self.config.n_samples):
+                pred = self.bayesian_model.predict(X, verbose=0)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            lower = np.percentile(predictions, (1 - confidence) * 100, axis=0)
+            upper = np.percentile(predictions, confidence * 100, axis=0)
+            return float(np.mean(lower)), float(np.mean(upper))
+        
+        else:  # monte_carlo
+            predictions = []
+            for sample in self.monte_carlo_samples:
+                pred = np.dot(X, sample)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            lower = np.percentile(predictions, (1 - confidence) * 100, axis=0)
+            upper = np.percentile(predictions, confidence * 100, axis=0)
+            return float(np.mean(lower)), float(np.mean(upper))
+
+    async def _calculate_calibration_score(
+        self,
+        X: np.ndarray,
+        y: np.ndarray
+    ) -> float:
+        """Calculate calibration score to assess prediction reliability."""
+        from sklearn.calibration import calibration_curve
+        
+        if self.config.method == 'ensemble':
+            predictions = []
+            for model in self.ensemble_models:
+                pred = model.predict_proba(X)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+            
+        elif self.config.method == 'bayesian':
+            predictions = []
+            for _ in range(self.config.n_samples):
+                pred = self.bayesian_model.predict(X, verbose=0)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+        
+        else:  # monte_carlo
+            predictions = []
+            for sample in self.monte_carlo_samples:
+                pred = np.dot(X, sample)
+                predictions.append(pred)
+            
+            predictions = np.array(predictions)
+            mean_pred = np.mean(predictions, axis=0)
+        
+        # Calculate calibration curve
+        prob_true, prob_pred = calibration_curve(y, mean_pred, n_bins=10)
+        
+        # Calculate calibration score (Brier score)
+        brier_score = np.mean((prob_true - prob_pred) ** 2)
+        return float(1 - brier_score)  # Higher is better
+
+    async def adjust_predictions(
+        self,
+        predictions: np.ndarray,
+        uncertainty: Dict[str, float]
+    ) -> np.ndarray:
+        """
+        Adjust predictions based on uncertainty estimates.
+        """
+        # Apply uncertainty-based adjustments
+        adjusted_predictions = predictions.copy()
+        
+        # Scale predictions based on entropy
+        if 'entropy' in uncertainty:
+            entropy_factor = 1 - uncertainty['entropy']
+            adjusted_predictions *= entropy_factor
+        
+        # Apply confidence interval bounds
+        if 'confidence_interval' in uncertainty:
+            lower, upper = uncertainty['confidence_interval']
+            adjusted_predictions = np.clip(adjusted_predictions, lower, upper)
+        
+        # Apply calibration correction
+        if 'calibration_score' in uncertainty:
+            calibration_factor = uncertainty['calibration_score']
+            adjusted_predictions = adjusted_predictions * calibration_factor
+        
+        return adjusted_predictions
+
+    async def save_state(self, path: str) -> None:
+        """Save the current state of the uncertainty handler."""
+        import joblib
+        
+        state = {
+            'config': self.config,
+            'ensemble_models': self.ensemble_models,
+            'bayesian_model': self.bayesian_model,
+            'monte_carlo_samples': self.monte_carlo_samples
+        }
+        
+        joblib.dump(state, path)
+        self.logger.info("uncertainty_handler_state_saved", path=path)
+
+    async def load_state(self, path: str) -> None:
+        """Load a saved state of the uncertainty handler."""
+        import joblib
+        
+        state = joblib.load(path)
+        self.config = state['config']
+        self.ensemble_models = state['ensemble_models']
+        self.bayesian_model = state['bayesian_model']
+        self.monte_carlo_samples = state['monte_carlo_samples']
+        
+        self.logger.info("uncertainty_handler_state_loaded", path=path) 
