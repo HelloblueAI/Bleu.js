@@ -1,15 +1,31 @@
 #!/bin/sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Function to handle errors
+handle_error() {
+    echo "Error: $1"
+    exit 1
+}
+
 # Activate virtual environment if it exists
-if [ -d "bleujs-env-py311" ]; then
-    source bleujs-env-py311/bin/activate
+if [ -d "bleujs-env" ]; then
+    source bleujs-env/bin/activate || handle_error "Failed to activate virtual environment"
+elif [ -d "bleujs-env-py311" ]; then
+    source bleujs-env-py311/bin/activate || handle_error "Failed to activate virtual environment"
+else
+    handle_error "Virtual environment not found"
 fi
 
 # Run Python tests
-python -m pytest
+echo "Running tests..."
+python -m pytest || handle_error "Tests failed"
 
 # Run linting
-python -m flake8
-black . --check
-isort . --check-only
+echo "Running linting checks..."
+python -m flake8 || handle_error "Flake8 check failed"
+black . --check || handle_error "Black check failed"
+isort . --check-only || handle_error "Isort check failed"
+
+# All checks passed
+echo "✅ All checks passed!"
+exit 0
