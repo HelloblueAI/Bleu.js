@@ -13,13 +13,26 @@ export interface BleuConfig {
 }
 
 export interface ModelConfig {
-  name: string;
-  version: string;
-  architecture: string;
-  maxSequenceLength: number;
-  temperature: number;
-  maxTokens: number;
-  quantumEnabled: boolean;
+  path: string;
+  architecture: {
+    type: string;
+    layers: number;
+    attentionHeads: number;
+    hiddenSize: number;
+    vocabularySize: number;
+    maxSequenceLength: number;
+  };
+  training: {
+    batchSize: number;
+    learningRate: number;
+    epochs: number;
+    warmupSteps: number;
+  };
+  inference: {
+    defaultMaxTokens: number;
+    defaultTemperature: number;
+    defaultTopP: number;
+  };
 }
 
 export interface SecurityConfig {
@@ -267,7 +280,6 @@ export class SecurityError extends Error {
 }
 
 export interface CoreConfig {
-  huggingfaceToken: string;
   maxTokens: number;
   temperature: number;
 }

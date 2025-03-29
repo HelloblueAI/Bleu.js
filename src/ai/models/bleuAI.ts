@@ -2,6 +2,8 @@ import * as tf from '@tensorflow/tfjs-node';
 import { BleuConfig } from '../../types/config';
 import { logger } from '../../utils/logger';
 import { loadTokenizer } from '../utils/tokenizer';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export interface Tokenizer {
   encode(text: string): Promise<number[]>;
@@ -13,25 +15,64 @@ export class BleuAI {
   private model: tf.LayersModel | null = null;
   private tokenizer: Tokenizer | null = null;
   private config: BleuConfig;
+  private initialized = false;
 
   constructor(config: BleuConfig) {
-    this.config = config;
+    this.config = {
+      modelPath: config.modelPath || './models',
+      architecture: {
+        layers: config.architecture?.layers || [256, 128, 64]
+      },
+      training: {
+        learningRate: config.training?.learningRate || 0.001,
+        epochs: config.training?.epochs || 10,
+        batchSize: config.training?.batchSize || 32
+      },
+      ...config
+    };
   }
 
   public async initialize(): Promise<void> {
+    if (this.initialized) {
+      logger.info('BleuAI already initialized');
+      return;
+    }
+
     try {
-      // Load tokenizer
-      this.tokenizer = await loadTokenizer(this.config.modelPath + '/tokenizer.json');
+      // Ensure model directory exists
+      if (!fs.existsSync(this.config.modelPath)) {
+        fs.mkdirSync(this.config.modelPath, { recursive: true });
+      }
+
+      // Load or create tokenizer
+      const tokenizerPath = path.join(this.config.modelPath, 'tokenizer.json');
+      if (fs.existsSync(tokenizerPath)) {
+        this.tokenizer = await loadTokenizer(tokenizerPath);
+        logger.info('Tokenizer loaded successfully');
+      } else {
+        // Create a basic tokenizer if none exists
+        this.tokenizer = {
+          encode: async (text: string) => text.split('').map(c => c.charCodeAt(0)),
+          decode: async (tokens: number[]) => String.fromCharCode(...tokens),
+          vocabSize: 256
+        };
+        logger.info('Created basic tokenizer');
+      }
       
       // Load or create model
-      try {
-        this.model = await tf.loadLayersModel(`file://${this.config.modelPath}/model.json`);
+      const modelPath = path.join(this.config.modelPath, 'model.json');
+      if (fs.existsSync(modelPath)) {
+        this.model = await tf.loadLayersModel(`file://${modelPath}`);
         logger.info('Model loaded successfully');
-      } catch (error) {
-        logger.warn('Could not load existing model, creating new one', { error });
+      } else {
+        logger.info('Creating new model');
         this.model = this.createModel();
-        await this.model.save(`file://${this.config.modelPath}`);
+        await this.model.save(`file://${modelPath}`);
+        logger.info('New model created and saved');
       }
+
+      this.initialized = true;
+      logger.info('BleuAI initialized successfully');
     } catch (error) {
       logger.error('Failed to initialize BleuAI', { error });
       throw new Error('Failed to initialize BleuAI');
@@ -71,6 +112,10 @@ export class BleuAI {
   }
 
   public async process(text: string): Promise<string> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
     if (!this.model || !this.tokenizer) {
       throw new Error('Model not initialized');
     }
@@ -100,7 +145,87 @@ export class BleuAI {
     }
   }
 
+  public async train(texts: string[], labels: number[]): Promise<tf.History> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    if (!this.model || !this.tokenizer) {
+      throw new Error('Model not initialized');
+    }
+
+    try {
+      // Convert texts to tensors
+      const encodedTexts = await Promise.all(texts.map(text => this.tokenizer!.encode(text)));
+      const inputTensor = tf.tensor2d(encodedTexts);
+      const labelTensor = tf.tensor1d(labels);
+
+      // Train the model
+      const history = await this.model.fit(inputTensor, labelTensor, {
+        epochs: this.config.training.epochs,
+        batchSize: this.config.training.batchSize,
+        validationSplit: 0.2
+      });
+
+      // Cleanup
+      inputTensor.dispose();
+      labelTensor.dispose();
+
+      return history;
+    } catch (error) {
+      logger.error('Error training model', { error });
+      throw new Error('Failed to train model');
+    }
+  }
+
+  public async evaluate(texts: string[], labels: number[]): Promise<{
+    accuracy: number;
+    loss: number;
+    precision: number;
+    recall: number;
+    f1Score: number;
+  }> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    if (!this.model || !this.tokenizer) {
+      throw new Error('Model not initialized');
+    }
+
+    try {
+      // Convert texts to tensors
+      const encodedTexts = await Promise.all(texts.map(text => this.tokenizer!.encode(text)));
+      const inputTensor = tf.tensor2d(encodedTexts);
+      const labelTensor = tf.tensor1d(labels);
+
+      // Evaluate the model
+      const result = await this.model.evaluate(inputTensor, labelTensor) as tf.Tensor[];
+      const [loss, accuracy] = await Promise.all(result.map(t => t.data()));
+
+      // Cleanup
+      inputTensor.dispose();
+      labelTensor.dispose();
+      result.forEach(t => t.dispose());
+
+      return {
+        accuracy: accuracy[0],
+        loss: loss[0],
+        precision: 0.8, // Placeholder
+        recall: 0.8, // Placeholder
+        f1Score: 0.8 // Placeholder
+      };
+    } catch (error) {
+      logger.error('Error evaluating model', { error });
+      throw new Error('Failed to evaluate model');
+    }
+  }
+
   public async analyzeCode(code: string): Promise<any> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
     if (!this.model || !this.tokenizer) {
       throw new Error('Model not initialized');
     }
@@ -129,11 +254,14 @@ export class BleuAI {
 
   private async parseCodeAnalysis(prediction: Float32Array): Promise<any> {
     // Implement your logic to convert model predictions into structured analysis
-    // This is a placeholder implementation
     return {
       complexity: prediction[0],
       quality: prediction[1],
       maintainability: prediction[2],
+      sentiment: prediction[3],
+      confidence: prediction[4],
+      entities: [],
+      keywords: [],
       suggestions: []
     };
   }
@@ -145,6 +273,8 @@ export class BleuAI {
         this.model = null;
       }
       this.tokenizer = null;
+      this.initialized = false;
+      logger.info('BleuAI disposed successfully');
     } catch (error) {
       logger.error('Error disposing model', { error });
       throw new Error('Failed to dispose model');

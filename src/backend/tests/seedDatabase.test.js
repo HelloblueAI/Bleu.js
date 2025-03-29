@@ -20,80 +20,42 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-import mongoose from 'mongoose';
-import request from 'supertest';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { startServer, stopServer } from '../../index.mjs';
+import fs from 'fs';
+import { seedDatabase } from '../seedDatabase';
+import { mockSeedData } from '../__mocks__/seedData';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+jest.mock('fs');
 
-describe('Database Seeding', () => {
-  let server;
-  let connection;
-
-  beforeAll(async () => {
-    server = await startServer();
-    connection = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/test');
+describe('seedDatabase', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(fs, 'readdir').mockResolvedValue(['users.json', 'settings.json']);
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockSeedData));
   });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-    await stopServer();
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
-  beforeEach(async () => {
-    await mongoose.connection.collection('eggs').deleteMany({});
+  it('should read seed files and insert data', async () => {
+    const result = await seedDatabase();
+    expect(fs.readdir).toHaveBeenCalled();
+    expect(fs.readFile).toHaveBeenCalled();
+    expect(result).toBe(true);
   });
 
-  it('should seed database with initial data', async () => {
-    const response = await request(server)
-      .post('/api/db/seed')
-      .send({
-        count: 5,
-        rarity: 'common'
-      });
-
-    expect(response.status).toBe(200);
-    expect(response.body.seeded).toBe(5);
-
-    const eggs = await mongoose.connection.collection('eggs').find({}).toArray();
-    expect(eggs).toHaveLength(5);
-    expect(eggs[0].rarity).toBe('common');
+  it('should handle file read errors', async () => {
+    jest.spyOn(fs, 'readFile').mockRejectedValue(new Error('File read error'));
+    await expect(seedDatabase()).rejects.toThrow('File read error');
   });
 
-  it('should handle seeding errors gracefully', async () => {
-    const response = await request(server)
-      .post('/api/db/seed')
-      .send({
-        count: -1,
-        rarity: 'invalid'
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBeDefined();
+  it('should handle invalid JSON data', async () => {
+    jest.spyOn(fs, 'readFile').mockResolvedValue('invalid json');
+    await expect(seedDatabase()).rejects.toThrow('Invalid JSON');
   });
 
-  it('should respect rarity distribution', async () => {
-    const response = await request(server)
-      .post('/api/db/seed')
-      .send({
-        count: 100,
-        rarity: 'random'
-      });
-
-    expect(response.status).toBe(200);
-    expect(response.body.seeded).toBe(100);
-
-    const eggs = await mongoose.connection.collection('eggs').find({}).toArray();
-    const rarityCounts = eggs.reduce((acc, egg) => {
-      acc[egg.rarity] = (acc[egg.rarity] || 0) + 1;
-      return acc;
-    }, {});
-
-    // Check if distribution is reasonable
-    expect(rarityCounts.common).toBeGreaterThan(rarityCounts.rare);
-    expect(rarityCounts.rare).toBeGreaterThan(rarityCounts.legendary);
+  it('should handle directory read errors', async () => {
+    jest.spyOn(fs, 'readdir').mockRejectedValue(new Error('Directory read error'));
+    await expect(seedDatabase()).rejects.toThrow('Directory read error');
   });
 });

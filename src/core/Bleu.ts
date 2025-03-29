@@ -1,152 +1,146 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import http from 'http';
-import { logger } from '../utils/logger';
+import { Logger } from '../utils/logger';
+import { BleuConfig } from '../types/config';
 import { SecurityManager } from '../security/securityManager';
-
-export interface BleuConfig {
-  core?: {
-    port?: number;
-    environment?: string;
-    mongoUri?: string;
-    rateLimitWindow?: number;
-    rateLimitMax?: number;
-  };
-  security?: {
-    enabled?: boolean;
-    encryptionKey?: string;
-  };
-  monitoring?: {
-    enabled?: boolean;
-    interval?: number;
-  };
-}
+import { RateLimiterMemory } from 'rate-limiter-flexible';
+import cors from 'cors';
+import helmet from 'helmet';
+import { MongoClient } from 'mongodb';
 
 export class Bleu {
   private app: express.Application;
-  private server: http.Server | null = null;
-  private securityManager: SecurityManager;
-  private isShuttingDown: boolean = false;
+  private logger: Logger;
   private config: BleuConfig;
+  private securityManager: SecurityManager;
+  private mongoClient?: MongoClient;
+  private server?: any;
+  private rateLimiter: RateLimiterMemory;
+  private isRunning: boolean = false;
 
-  constructor(config: Partial<BleuConfig> = {}) {
+  constructor(config: BleuConfig, logger: Logger) {
+    this.app = express();
+    this.logger = logger;
     this.config = {
-      core: {
-        port: config.core?.port || 3000,
-        environment: config.core?.environment || 'development',
-        mongoUri: config.core?.mongoUri || 'mongodb://localhost:27017/bleu',
-        rateLimitWindow: config.core?.rateLimitWindow || 15 * 60 * 1000,
-        rateLimitMax: config.core?.rateLimitMax || 100
-      },
+      ...config,
       security: {
-        enabled: config.security?.enabled ?? true,
-        encryptionKey: config.security?.encryptionKey || 'default-key'
-      },
-      monitoring: {
-        enabled: config.monitoring?.enabled ?? true,
-        interval: config.monitoring?.interval || 60000
+        ...config.security,
+        cors: {
+          enabled: true,
+          origin: '*',
+          methods: ['GET', 'POST', 'PUT', 'DELETE'],
+          allowedHeaders: ['Content-Type', 'Authorization'],
+          ...config.security?.cors
+        }
       }
     };
-
-    this.app = express();
-    this.securityManager = new SecurityManager(this.config.security);
-
+    this.securityManager = new SecurityManager(this.config.security, this.logger);
+    this.rateLimiter = new RateLimiterMemory({
+      points: this.config.security.rateLimit.max,
+      duration: this.config.security.rateLimit.windowMs / 1000
+    });
     this.setupMiddleware();
-    this.setupRoutes();
-    this.setupErrorHandling();
   }
 
   private setupMiddleware(): void {
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    // Security middleware
+    this.app.use(helmet());
 
-    if (this.config.security.enabled) {
-      this.app.use(this.securityManager.getMiddleware());
+    // CORS configuration
+    if (this.config.security.cors.enabled) {
+      this.app.use(cors(this.config.security.cors));
     }
-  }
 
-  private setupRoutes(): void {
-    this.app.get('/health', (_req, res) => {
-      res.json({ status: 'ok' });
+    // Rate limiting
+    this.app.use((req, res, next) => {
+      this.rateLimiter.consume(req.ip)
+        .then(() => next())
+        .catch(() => {
+          res.status(429).json({
+            error: 'Too many requests. Please try again later.'
+          });
+        });
     });
-  }
 
-  private setupErrorHandling(): void {
-    this.app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-      logger.error('Unhandled error:', err);
-      res.status(500).json({ error: 'Internal server error' });
+    // Request validation
+    this.app.use(this.securityManager.validateRequest);
+
+    // Error handling
+    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      this.logger.error('Error:', err);
+      res.status(500).json({
+        error: this.config.environment === 'development' ? err.message : 'Internal server error'
+      });
+    });
+
+    // Request logging
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+      this.logger.info('Request:', {
+        method: req.method,
+        path: req.path,
+        ip: req.ip,
+        userAgent: req.get('user-agent')
+      });
+      next();
     });
   }
 
   async start(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        if (this.config.core.mongoUri) {
-          mongoose.connect(this.config.core.mongoUri)
-            .then(() => {
-              logger.info('Connected to MongoDB');
-            })
-            .catch((error) => {
-              logger.error('MongoDB connection error:', error);
-              reject(error);
-            });
-        }
-
-        this.server = this.app.listen(this.config.core.port, () => {
-          logger.info(`Server started on port ${this.config.core.port}`);
-          resolve();
-        });
-
-        this.server.on('error', (error) => {
-          logger.error('Server failed to start:', error);
-          reject(error);
-        });
-
-        process.on('SIGTERM', () => this.stop());
-        process.on('SIGINT', () => this.stop());
-      } catch (error) {
-        logger.error('Error during server startup:', error);
-        reject(error);
-      }
-    });
-  }
-
-  async stop(): Promise<void> {
-    if (this.isShuttingDown) {
+    if (this.isRunning) {
+      this.logger.warn('Server is already running');
       return;
     }
 
-    this.isShuttingDown = true;
-    logger.info('Shutting down server...');
-
-    return new Promise<void>((resolve, reject) => {
-      try {
-        if (this.server) {
-          this.server.close(async () => {
-            try {
-              if (mongoose.connection.readyState === 1) {
-                await mongoose.disconnect();
-                logger.info('Disconnected from MongoDB');
-              }
-              logger.info('Server stopped');
-              resolve();
-            } catch (error) {
-              logger.error('Error during cleanup:', error);
-              reject(error);
-            }
-          });
-        } else {
-          resolve();
-        }
-      } catch (error) {
-        logger.error('Error during server shutdown:', error);
-        reject(error);
+    try {
+      // Connect to MongoDB if configured
+      if (this.config.database?.mongodb) {
+        await mongoose.connect(this.config.database.mongodb.uri, {
+          ...this.config.database.mongodb.options,
+          useNewUrlParser: true,
+          useUnifiedTopology: true
+        });
+        this.logger.info('Connected to MongoDB');
       }
-    });
+
+      // Start server
+      const port = this.config.server?.port || 3000;
+      this.server = this.app.listen(port, () => {
+        this.isRunning = true;
+        this.logger.info(`Server running on port ${port}`);
+      });
+    } catch (error) {
+      this.logger.error('Failed to start server', error);
+      await this.cleanup();
+      throw error;
+    }
+  }
+
+  async stop(): Promise<void> {
+    if (!this.isRunning) {
+      this.logger.warn('Server is not running');
+      return;
+    }
+
+    try {
+      // Disconnect from MongoDB
+      await mongoose.disconnect();
+      this.logger.info('Disconnected from MongoDB');
+
+      // Close server
+      this.isRunning = false;
+      this.logger.info('Server stopped');
+    } catch (error) {
+      this.logger.error('Failed to stop server', error);
+      throw error;
+    }
   }
 
   getApp(): express.Application {
     return this.app;
+  }
+
+  isServerRunning(): boolean {
+    return this.isRunning;
   }
 
   getConfig(): BleuConfig {

@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as tf from '@tensorflow/tfjs-node';
 import { HfInference } from '@huggingface/inference';
 import { BleuConfig } from '../types/config';
 import { logger } from '../utils/logger';
@@ -25,12 +25,12 @@ interface OptimizationResult {
 }
 
 export class PerformanceOptimizer {
-  private config: BleuConfig;
-  private gpuManager: GPUManager;
-  private tpuManager: TPUManager;
-  private quantumCircuit: QuantumCircuit;
-  private distributedTrainer: DistributedTrainer;
-  private hf: HfInference;
+  private readonly config: BleuConfig;
+  private readonly gpuManager: GPUManager;
+  private readonly tpuManager: TPUManager;
+  private readonly quantumCircuit: QuantumCircuit;
+  private readonly distributedTrainer: DistributedTrainer;
+  private readonly hf: HfInference;
 
   constructor(config: BleuConfig) {
     this.config = config;

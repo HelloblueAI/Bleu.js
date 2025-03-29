@@ -1,218 +1,178 @@
 import { jest } from '@jest/globals';
 import { NLPProcessor } from '../nlpProcessor';
-import * as tf from '@tensorflow/tfjs-node';
-import { BleuAI } from '../models/bleuAI';
+import { Logger } from '../../utils/logger';
+import { Storage } from '../../storage/storage';
 
-// Mock BleuAI
-jest.mock('../models/bleuAI', () => {
-  return {
-    BleuAI: jest.fn().mockImplementation(() => ({
-      initialize: jest.fn().mockResolvedValue(undefined),
-      process: jest.fn().mockResolvedValue('Processed text'),
-      analyzeCode: jest.fn().mockResolvedValue({
-        complexity: 0.5,
-        quality: 0.8,
-        maintainability: 0.7,
-        suggestions: []
-      }),
-      dispose: jest.fn().mockResolvedValue(undefined)
-    }))
-  };
-});
-
-// Mock tf.loadLayersModel
-jest.mock('@tensorflow/tfjs-node', () => {
-  const originalModule = jest.requireActual('@tensorflow/tfjs-node');
-  return {
-    ...originalModule,
-    loadLayersModel: jest.fn().mockResolvedValue({
-      predict: jest.fn().mockReturnValue({
-        dataSync: jest.fn().mockReturnValue(new Float32Array([0.8, 0.2])),
-        dispose: jest.fn()
-      }),
-      dispose: jest.fn()
-    })
-  };
-});
+jest.mock('../../utils/logger');
+jest.mock('../../storage/storage');
 
 describe('NLPProcessor', () => {
   let nlpProcessor: NLPProcessor;
-  let bleuAI: BleuAI;
-  let testData: {
-    texts: string[];
-    labels: number[];
-  };
+  let mockLogger: Logger;
+  let mockStorage: Storage;
 
-  beforeEach(async () => {
-    // Initialize BleuAI
-    bleuAI = new BleuAI({
-      modelPath: './models/bleu',
-      architecture: {
-        type: 'transformer',
-        layers: [512, 256, 128],
-        attentionHeads: 8,
-        hiddenSize: 512,
-        maxSequenceLength: 1024
-      },
-      training: {
-        epochs: 10,
-        batchSize: 32,
-        learningRate: 0.001
-      }
-    });
-
-    nlpProcessor = new NLPProcessor({
-      modelPath: './models/test-nlp-model',
-      maxSequenceLength: 100,
-      vocabularySize: 10000,
-      embeddingDim: 100,
-      numLayers: 2,
-      hiddenUnits: 128,
-      dropoutRate: 0.2,
-    });
-
-    // Create real test data
-    testData = {
-      texts: [
-        'This is a positive review about the product.',
-        'I really enjoyed using this service.',
-        'The quality is excellent and the price is reasonable.',
-        'I would highly recommend this to others.',
-        'This is a negative review about the product.',
-        'I was disappointed with the service.',
-        'The quality is poor and the price is too high.',
-        'I would not recommend this to others.'
-      ],
-      labels: [1, 1, 1, 1, 0, 0, 0, 0]
+  beforeEach(() => {
+    mockLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn()
     };
+
+    mockStorage = {
+      initialize: jest.fn().mockResolvedValue(undefined),
+      save: jest.fn().mockResolvedValue(undefined),
+      get: jest.fn().mockResolvedValue({
+        weights: Array(100).fill(0).map(() => Array(100).fill(0)),
+        biases: Array(100).fill(0),
+        vocabulary: ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I']
+      }),
+      delete: jest.fn().mockResolvedValue(undefined),
+      list: jest.fn().mockResolvedValue([]),
+      clear: jest.fn().mockResolvedValue(undefined)
+    } as any;
+
+    nlpProcessor = new NLPProcessor(mockLogger, mockStorage);
   });
 
-  afterEach(async () => {
-    await nlpProcessor.dispose();
-    await bleuAI.dispose();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('initialize', () => {
-    it('should initialize the model', async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
-      // The models should be initialized successfully
-      expect(true).toBe(true);
+    it('should initialize successfully', async () => {
+      await expect(nlpProcessor.initialize()).resolves.not.toThrow();
+      expect(mockLogger.info).toHaveBeenCalledWith('NLPProcessor initialized');
+      expect(mockStorage.initialize).toHaveBeenCalled();
+    });
+
+    it('should handle initialization errors', async () => {
+      mockStorage.initialize.mockRejectedValue(new Error('Storage initialization failed'));
+
+      await expect(nlpProcessor.initialize()).rejects.toThrow('NLPProcessor initialization failed');
+      expect(mockLogger.error).toHaveBeenCalledWith('Failed to initialize NLPProcessor');
     });
   });
 
-  describe('processText', () => {
+  describe('process', () => {
     beforeEach(async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
+      await nlpProcessor.initialize();
     });
 
-    it('should process text and return prediction', async () => {
-      const result = await nlpProcessor.processText(testData.texts[0]);
-      expect(typeof result).toBe('number');
-      expect(result).toBeGreaterThanOrEqual(0);
-      expect(result).toBeLessThanOrEqual(1);
-    });
+    it('should process text successfully', async () => {
+      const text = 'Hello world';
+      const result = await nlpProcessor.process(text);
 
-    it('should throw error if model not initialized', async () => {
-      const uninitializedProcessor = new NLPProcessor({
-        modelPath: './models/test-nlp-model',
-        maxSequenceLength: 100,
-        vocabularySize: 10000,
-        embeddingDim: 100,
-        numLayers: 2,
-        hiddenUnits: 128,
-        dropoutRate: 0.2,
-      });
-      await expect(uninitializedProcessor.processText('test text'))
-        .rejects.toThrow('Model or tokenizer not initialized');
-      await uninitializedProcessor.dispose();
-    });
-  });
-
-  describe('analyzeText', () => {
-    beforeEach(async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
-    });
-
-    it('should analyze text and return sentiment', async () => {
-      const result = await nlpProcessor.analyzeText(testData.texts[0]);
-      expect(result).toHaveProperty('sentiment');
-      expect(result).toHaveProperty('entities');
-      expect(result).toHaveProperty('keywords');
-      expect(typeof result.sentiment).toBe('number');
+      expect(result).toBeDefined();
+      expect(Array.isArray(result.tokens)).toBe(true);
       expect(Array.isArray(result.entities)).toBe(true);
-      expect(Array.isArray(result.keywords)).toBe(true);
+      expect(typeof result.sentiment).toBe('number');
+      expect(result.language).toBe('en');
     });
 
-    it('should use BleuAI for advanced analysis', async () => {
-      const text = testData.texts[0];
-      const [nlpResult, bleuResult] = await Promise.all([
-        nlpProcessor.analyzeText(text),
-        bleuAI.process(text)
-      ]);
+    it('should throw error when not initialized', async () => {
+      const nlp = new NLPProcessor(mockLogger, mockStorage);
+      await expect(nlp.process('test')).rejects.toThrow('NLPProcessor not initialized');
+    });
 
-      expect(nlpResult).toBeDefined();
-      expect(bleuResult).toBeDefined();
-      expect(typeof bleuResult).toBe('string');
+    it('should handle invalid input', async () => {
+      await expect(nlpProcessor.process(null as any)).rejects.toThrow('Failed to process text');
+      await expect(nlpProcessor.process(undefined as any)).rejects.toThrow('Failed to process text');
     });
   });
 
   describe('train', () => {
     beforeEach(async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
+      await nlpProcessor.initialize();
     });
 
-    it('should train model with provided data', async () => {
-      const result = await nlpProcessor.train(testData.texts, testData.labels);
-      expect(result).toHaveProperty('history');
-      expect(result.history).toHaveProperty('loss');
-      expect(result.history).toHaveProperty('accuracy');
-      expect(Array.isArray(result.history.loss)).toBe(true);
-      expect(Array.isArray(result.history.accuracy)).toBe(true);
+    it('should train the model with provided data', async () => {
+      const trainingData = [
+        { text: 'Hello', labels: ['greeting'] },
+        { text: 'Goodbye', labels: ['farewell'] }
+      ];
+
+      await expect(nlpProcessor.train(trainingData)).resolves.not.toThrow();
+      expect(mockLogger.info).toHaveBeenCalledWith('Training completed');
+      expect(mockStorage.save).toHaveBeenCalledWith('nlp_model', expect.any(Object));
+    });
+
+    it('should throw error when not initialized', async () => {
+      const nlp = new NLPProcessor(mockLogger, mockStorage);
+      const trainingData = [{ text: 'Hello', labels: ['greeting'] }];
+      await expect(nlp.train(trainingData)).rejects.toThrow('NLPProcessor not initialized');
+    });
+
+    it('should handle invalid training data', async () => {
+      await expect(nlpProcessor.train(null as any)).rejects.toThrow('Failed to train model');
+      await expect(nlpProcessor.train([] as any)).rejects.toThrow('Failed to train model');
     });
   });
 
   describe('evaluate', () => {
     beforeEach(async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
-      await nlpProcessor.train(testData.texts, testData.labels);
+      await nlpProcessor.initialize();
     });
 
-    it('should evaluate model with provided data', async () => {
-      const result = await nlpProcessor.evaluate(testData.texts, testData.labels);
-      expect(result).toHaveProperty('loss');
-      expect(result).toHaveProperty('accuracy');
-      expect(typeof result.loss).toBe('number');
-      expect(typeof result.accuracy).toBe('number');
+    it('should evaluate model performance', async () => {
+      const testData = [
+        { text: 'Hello', labels: ['greeting'] },
+        { text: 'Goodbye', labels: ['farewell'] }
+      ];
+
+      const metrics = await nlpProcessor.evaluate(testData);
+
+      expect(metrics).toEqual({
+        accuracy: expect.any(Number),
+        loss: expect.any(Number)
+      });
+    });
+
+    it('should throw error when not initialized', async () => {
+      const nlp = new NLPProcessor(mockLogger, mockStorage);
+      const testData = [{ text: 'Hello', labels: ['greeting'] }];
+      await expect(nlp.evaluate(testData)).rejects.toThrow('NLPProcessor not initialized');
+    });
+
+    it('should handle invalid evaluation data', async () => {
+      await expect(nlpProcessor.evaluate(null as any)).rejects.toThrow('Failed to evaluate model');
+      await expect(nlpProcessor.evaluate([] as any)).rejects.toThrow('Failed to evaluate model');
     });
   });
 
-  describe('dispose', () => {
-    it('should dispose of model resources', async () => {
-      await Promise.all([
-        bleuAI.initialize(),
-        nlpProcessor.initialize()
-      ]);
-      await Promise.all([
-        bleuAI.dispose(),
-        nlpProcessor.dispose()
-      ]);
-      // The models should be disposed successfully
-      expect(true).toBe(true);
+  describe('model persistence', () => {
+    beforeEach(async () => {
+      await nlpProcessor.initialize();
+    });
+
+    it('should save model state', async () => {
+      await expect(nlpProcessor.saveModel()).resolves.not.toThrow();
+      expect(mockStorage.save).toHaveBeenCalledWith('nlp_model', expect.any(Object));
+      expect(mockLogger.info).toHaveBeenCalledWith('Model saved successfully');
+    });
+
+    it('should load model state', async () => {
+      const modelState = {
+        weights: Array(100).fill(0).map(() => Array(100).fill(0)),
+        biases: Array(100).fill(0),
+        vocabulary: ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I']
+      };
+      mockStorage.get.mockResolvedValueOnce(modelState);
+
+      const loadedState = await nlpProcessor.loadModel();
+      expect(loadedState).toEqual(modelState);
+    });
+
+    it('should handle save errors', async () => {
+      mockStorage.save.mockRejectedValue(new Error('Failed to save'));
+      await expect(nlpProcessor.saveModel()).rejects.toThrow('Failed to save model');
+      expect(mockLogger.error).toHaveBeenCalledWith('Failed to save model');
+    });
+
+    it('should handle load errors', async () => {
+      mockStorage.get.mockRejectedValue(new Error('Failed to load'));
+      await expect(nlpProcessor.loadModel()).rejects.toThrow('Failed to load model');
+      expect(mockLogger.error).toHaveBeenCalledWith('Failed to load model');
     });
   });
 }); 

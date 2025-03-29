@@ -36,7 +36,13 @@ export class AdvancedDecisionTree {
 
   constructor(config: DecisionTreeConfig) {
     this.config = config;
-    this.quantumEnhancer = new QuantumEnhancer();
+    this.quantumEnhancer = new QuantumEnhancer({
+      numQubits: config.maxFeatures,
+      learningRate: 0.01,
+      optimizationLevel: 1,
+      useQuantumMemory: true,
+      useQuantumAttention: true
+    });
     this.uncertaintyHandler = new UncertaintyHandler();
     this.featureAnalyzer = new FeatureAnalyzer();
     this.ensembleManager = new EnsembleManager();

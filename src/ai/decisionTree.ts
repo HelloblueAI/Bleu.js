@@ -22,15 +22,39 @@ export interface Node {
   right?: Node;
 }
 
+export interface PredictionResult {
+  class: number;
+  probability: number;
+  confidence: number;
+}
+
+export interface FeatureImportance {
+  feature: number;
+  importance: number;
+  standardDeviation: number;
+}
+
+export interface UncertaintyMetrics {
+  entropy: number;
+  variance: number;
+  confidence: number;
+}
+
+export interface Explanation {
+  feature: number;
+  contribution: number;
+  importance: number;
+}
+
 export class AdvancedDecisionTree {
   private model: Node | null = null;
-  private config: Required<ModelConfig>;
-  private quantumEnhancer: QuantumEnhancer;
-  private uncertaintyHandler: UncertaintyHandler;
-  private featureAnalyzer: FeatureAnalyzer;
-  private ensembleManager: EnsembleManager;
-  private explainabilityEngine: ExplainabilityEngine;
-  private logger = createLogger('DecisionTree');
+  private readonly config: Required<ModelConfig>;
+  private readonly quantumEnhancer: QuantumEnhancer;
+  private readonly uncertaintyHandler: UncertaintyHandler;
+  private readonly featureAnalyzer: FeatureAnalyzer;
+  private readonly ensembleManager: EnsembleManager;
+  private readonly explainabilityEngine: ExplainabilityEngine;
+  private readonly logger = createLogger('DecisionTree');
 
   constructor(config: ModelConfig = {}) {
     this.config = {

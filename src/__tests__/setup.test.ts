@@ -1,12 +1,6 @@
 import { jest } from '@jest/globals';
 import * as tf from '@tensorflow/tfjs-node';
-import { HfInference } from '@huggingface/inference';
 import { createLogger } from '../utils/logger';
-import { DeepLearningModel } from '../ai/deepLearning';
-import { NLPProcessor } from '../ai/nlpProcessor';
-import { ModelMonitor } from '../monitoring/modelMonitor';
-import { ModelDeployer } from '../deployment/modelDeployer';
-import { Bleu } from '../core/Bleu';
 import { BleuAI } from '../ai/models/bleuAI';
 
 // Mock TensorFlow.js
@@ -53,11 +47,17 @@ jest.mock('../utils/logger', () => ({
   })
 }));
 
-// Mock HuggingFace
-jest.mock('@huggingface/inference', () => ({
-  HfInference: jest.fn().mockImplementation(() => ({
+// Mock BleuAI
+jest.mock('../ai/models/bleuAI', () => ({
+  BleuAI: jest.fn().mockImplementation(() => ({
     textClassification: jest.fn().mockResolvedValue([{ label: 'positive', score: 0.9 }]),
     tokenClassification: jest.fn().mockResolvedValue([{ entity: 'PERSON', word: 'John' }]),
+    initialize: jest.fn().mockResolvedValue(undefined),
+    train: jest.fn().mockResolvedValue(undefined),
+    predict: jest.fn().mockResolvedValue({ result: 'test result' }),
+    save: jest.fn().mockResolvedValue(undefined),
+    load: jest.fn().mockResolvedValue(undefined),
+    dispose: jest.fn().mockResolvedValue(undefined)
   }))
 }));
 
@@ -65,7 +65,6 @@ describe('Test Environment Setup', () => {
   beforeAll(() => {
     // Set environment variables
     process.env.NODE_ENV = 'test';
-    process.env.HUGGINGFACE_API_KEY = 'test-key';
     
     // Mock console methods
     global.console = {
@@ -86,9 +85,6 @@ describe('Test Environment Setup', () => {
   afterAll(() => {
     jest.clearAllMocks();
     jest.clearAllTimers();
-    
-    // Clean up environment variables
-    delete process.env.HUGGINGFACE_API_KEY;
   });
 
   it('should have logger configured', () => {
@@ -111,16 +107,18 @@ describe('Test Environment Setup', () => {
     expect(typeof model.dispose).toBe('function');
   });
 
-  it('should have HuggingFace configured', () => {
-    const hf = new HfInference('test-key');
-    expect(hf).toBeDefined();
-    expect(typeof hf.textClassification).toBe('function');
-    expect(typeof hf.tokenClassification).toBe('function');
+  it('should have BleuAI configured', () => {
+    const bleuAI = new BleuAI();
+    expect(bleuAI).toBeDefined();
+    expect(typeof bleuAI.textClassification).toBe('function');
+    expect(typeof bleuAI.tokenClassification).toBe('function');
+    expect(typeof bleuAI.initialize).toBe('function');
+    expect(typeof bleuAI.train).toBe('function');
+    expect(typeof bleuAI.predict).toBe('function');
   });
 
   it('should handle environment variables', () => {
     expect(process.env.NODE_ENV).toBe('test');
-    expect(process.env.HUGGINGFACE_API_KEY).toBe('test-key');
   });
 
   it('should have console methods mocked', () => {

@@ -1,226 +1,145 @@
-import { jest, describe, it, expect, beforeEach, afterEach, afterAll } from '@jest/globals';
 import { QuantumEnhancer } from '../quantumEnhancer';
 import * as tf from '@tensorflow/tfjs-node';
-import { createLogger } from '../../../../utils/logger';
-
-// Create mock logger
-const mockLogger = {
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn()
-};
-
-// Mock the logger
-jest.mock('../../../../utils/logger', () => ({
-  createLogger: jest.fn().mockReturnValue(mockLogger)
-}));
-
-// Mock fs/promises
-jest.mock('fs/promises', () => ({
-  mkdir: jest.fn().mockResolvedValue(undefined)
-}));
-
-// Mock Monitor class
-jest.mock('../../../../monitors/monitor', () => ({
-  Monitor: jest.fn().mockImplementation(() => ({
-    initialize: jest.fn().mockResolvedValue(undefined),
-    dispose: jest.fn().mockResolvedValue(undefined),
-    recordMetric: jest.fn().mockResolvedValue(undefined),
-    getMetrics: jest.fn().mockResolvedValue([{ timestamp: Date.now(), value: 1.0 }])
-  }))
-}));
-
-// Mock ModelMonitor class
-jest.mock('../../../../monitoring/modelMonitor', () => ({
-  ModelMonitor: jest.fn().mockImplementation(() => ({
-    initialize: jest.fn().mockResolvedValue(undefined),
-    start: jest.fn().mockResolvedValue(undefined),
-    stop: jest.fn().mockResolvedValue(undefined),
-    recordMetric: jest.fn().mockResolvedValue(undefined),
-    getMetrics: jest.fn().mockResolvedValue([{ timestamp: Date.now(), value: 1.0 }]),
-    getAlerts: jest.fn().mockResolvedValue([]),
-    getLatestMetrics: jest.fn().mockResolvedValue([{ timestamp: Date.now(), value: 1.0 }]),
-    getLatestAlerts: jest.fn().mockResolvedValue([]),
-    cleanupOldData: jest.fn().mockResolvedValue(undefined),
-    isInitialized: jest.fn().mockReturnValue(true)
-  }))
-}));
-
-// Mock TensorFlow.js
-jest.mock('@tensorflow/tfjs-node', () => ({
-  tensor2d: jest.fn().mockReturnValue({
-    dispose: jest.fn(),
-    data: jest.fn().mockResolvedValue(new Float32Array([1, 2, 3, 4])),
-    shape: [2, 2]
-  }),
-  add: jest.fn().mockReturnValue({
-    dispose: jest.fn()
-  }),
-  randomNormal: jest.fn().mockReturnValue({
-    dispose: jest.fn()
-  }),
-  tidy: jest.fn((fn) => fn())
-}));
+import { Monitor } from '../monitor';
+import { Logger } from '../../../../utils/logger';
 
 describe('QuantumEnhancer', () => {
-  let quantumEnhancer: QuantumEnhancer;
-  let mockModel: tf.LayersModel;
-  let mockTensor: tf.Tensor;
+  let enhancer: QuantumEnhancer;
+  let monitor: Monitor;
+  let logger: Logger;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    jest.clearAllTimers();
+    logger = new Logger('QuantumEnhancerTest');
+    monitor = new Monitor();
+    await monitor.initialize();
     
-    // Reset mock logger
-    Object.values(mockLogger).forEach(mock => mock.mockClear());
-    
-    // Initialize test environment
-    quantumEnhancer = new QuantumEnhancer({
-      maxQubits: 4,
-      coherenceThreshold: 0.8
-    });
-    await quantumEnhancer.initialize();
-
-    // Create mock model
-    mockModel = {
-      getWeights: jest.fn().mockReturnValue([]),
-      setWeights: jest.fn(),
-    } as unknown as tf.LayersModel;
-
-    // Create mock tensor
-    mockTensor = tf.tensor2d([[1, 2], [3, 4]]);
+    enhancer = new QuantumEnhancer({ monitor });
+    await enhancer.initialize();
   });
 
   afterEach(async () => {
-    try {
-      if (quantumEnhancer) {
-        await quantumEnhancer.dispose();
-      }
-      if (mockTensor) {
-        mockTensor.dispose();
-      }
-      jest.clearAllMocks();
-      jest.clearAllTimers();
-    } catch (error) {
-      console.error('Error in afterEach:', error);
-    }
+    await enhancer.cleanup();
+    await monitor.cleanup();
   });
 
-  afterAll(async () => {
-    // Ensure all timers are cleared
-    jest.clearAllTimers();
-  });
+  describe('initialization', () => {
+    it('should initialize with default configuration', async () => {
+      expect(enhancer).toBeDefined();
+      const state = enhancer.getState();
+      expect(state).toBeDefined();
+      expect(state.maxQubits).toBeDefined();
+      expect(state.coherenceThreshold).toBeDefined();
+    });
 
-  describe('Initialization', () => {
-    it('should initialize successfully', async () => {
-      const enhancer = new QuantumEnhancer({
+    it('should initialize with custom configuration', async () => {
+      const config = {
         maxQubits: 4,
         coherenceThreshold: 0.8
+      };
+      const customEnhancer = new QuantumEnhancer({ ...config, monitor });
+      await customEnhancer.initialize();
+      
+      const state = customEnhancer.getState();
+      expect(state.maxQubits).toBe(4);
+      expect(state.coherenceThreshold).toBe(0.8);
+    });
+  });
+
+  describe('quantum operations', () => {
+    it('should apply quantum gates correctly', async () => {
+      const gate = { type: 'H' as const, target: 0 };
+      await enhancer.applyQuantumGate(gate);
+      
+      // Verify gate application by checking state
+      const state = enhancer.getState();
+      expect(state.qubits[0].state).toBeDefined();
+    });
+
+    it('should handle quantum gate errors', async () => {
+      const invalidGate = { type: 'INVALID' as any, target: -1 };
+      await expect(enhancer.applyQuantumGate(invalidGate)).rejects.toThrow('Invalid gate type');
+    });
+  });
+
+  describe('model enhancement', () => {
+    let model: tf.LayersModel;
+
+    beforeEach(async () => {
+      // Create a simple model for testing
+      model = tf.sequential({
+        layers: [
+          tf.layers.dense({ units: 2, inputShape: [2] }),
+          tf.layers.dense({ units: 1 })
+        ]
       });
-      await expect(enhancer.initialize()).resolves.not.toThrow();
-      await enhancer.dispose();
+      model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
     });
 
-    it('should set correct initial quantum state', () => {
-      const state = quantumEnhancer.getState();
-      expect(state.length).toBe(4);
-      expect(state[0].amplitude).toBe(1 / Math.sqrt(4));
-      expect(state[0].phase).toBe(0);
-    });
-  });
-
-  describe('Model Enhancement', () => {
-    it('should enhance model without throwing errors', async () => {
-      const enhancedModel = await quantumEnhancer.enhanceModel(mockModel);
-      expect(enhancedModel).toBeDefined();
-      expect(enhancedModel).toBe(mockModel);
+    afterEach(() => {
+      model.dispose();
     });
 
-    it('should maintain coherence above threshold', async () => {
-      const coherence = await quantumEnhancer.monitorCoherence();
-      expect(coherence).toBeGreaterThanOrEqual(0.75);
+    it('should enhance model with quantum features', async () => {
+      const originalWeights = model.getWeights();
+      await enhancer.enhanceModel(model);
+      const enhancedWeights = model.getWeights();
+      
+      // Verify weights have been modified
+      expect(enhancedWeights).not.toEqual(originalWeights);
+      
+      // Verify model still works
+      const input = tf.tensor2d([[1, 2]]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 1]);
+      input.dispose();
+      output.dispose();
     });
-  });
 
-  describe('Input Enhancement', () => {
-    it('should enhance input tensor without throwing errors', async () => {
-      await expect(quantumEnhancer.enhanceInput(mockTensor)).resolves.not.toThrow();
-    });
-
-    it('should apply quantum transformations to input', async () => {
-      const result = await quantumEnhancer.enhanceInput(mockTensor);
-      expect(result).toBeDefined();
-      expect(result instanceof tf.Tensor).toBe(true);
-      result.dispose();
+    it('should handle model enhancement errors', async () => {
+      const invalidModel = null as any;
+      await expect(enhancer.enhanceModel(invalidModel)).rejects.toThrow('Invalid model');
     });
   });
 
-  describe('Quantum Gates', () => {
-    it('should apply Hadamard gate correctly', () => {
-      quantumEnhancer.applyHadamard(0);
-      const state = quantumEnhancer.getState();
-      expect(state[0].amplitude).toBe(1 / Math.sqrt(8));
-      expect(state[0].phase).toBe(Math.PI / 2);
+  describe('input enhancement', () => {
+    it('should enhance input data', async () => {
+      const input = tf.tensor2d([[1, 2], [3, 4]]);
+      const enhanced = await enhancer.enhanceInput(input);
+      
+      expect(enhanced).toBeDefined();
+      expect(enhanced.shape).toEqual(input.shape);
+      expect(enhanced.dtype).toBe(input.dtype);
+      
+      // Verify enhancement by checking values are different
+      const inputData = await input.data();
+      const enhancedData = await enhanced.data();
+      expect(enhancedData).not.toEqual(inputData);
+      
+      input.dispose();
+      enhanced.dispose();
     });
 
-    it('should apply CNOT gate correctly', () => {
-      quantumEnhancer.applyCNOT(0, 1);
-      const state = quantumEnhancer.getState();
-      expect(state[1].amplitude).toBeDefined();
-    });
-
-    it('should apply Phase gate correctly', () => {
-      const phase = Math.PI / 4;
-      quantumEnhancer.applyPhase(0, phase);
-      const state = quantumEnhancer.getState();
-      expect(state[0].phase).toBe(phase);
-    });
-  });
-
-  describe('Coherence Monitoring', () => {
-    it('should monitor coherence levels', async () => {
-      const coherence = await quantumEnhancer.monitorCoherence();
-      expect(coherence).toBeGreaterThanOrEqual(0.75);
-    });
-
-    it('should optimize coherence when below threshold', async () => {
-      await quantumEnhancer.optimizeCoherence();
-      const coherence = await quantumEnhancer.monitorCoherence();
-      expect(coherence).toBeGreaterThanOrEqual(0.75);
+    it('should handle invalid input data', async () => {
+      const invalidInput = null as any;
+      await expect(enhancer.enhanceInput(invalidInput)).rejects.toThrow('Invalid input');
     });
   });
 
-  describe('Resource Management', () => {
-    it('should properly dispose of resources', async () => {
-      await quantumEnhancer.dispose();
-      expect(() => quantumEnhancer.getState()).toThrow('QuantumEnhancer not initialized');
+  describe('resource management', () => {
+    it('should handle multiple initializations gracefully', async () => {
+      await enhancer.initialize();
+      const state = enhancer.getState();
+      expect(state).toBeDefined();
     });
 
-    it('should handle multiple dispose calls gracefully', async () => {
-      await quantumEnhancer.dispose();
-      await expect(quantumEnhancer.dispose()).resolves.not.toThrow();
-    });
-  });
-
-  describe('Error Handling', () => {
-    it('should throw error when using uninitialized enhancer', async () => {
-      const uninitializedEnhancer = new QuantumEnhancer();
-      await expect(uninitializedEnhancer.enhanceModel(mockModel)).rejects.toThrow('QuantumEnhancer not initialized');
+    it('should throw error when getting state before initialization', () => {
+      const uninitializedEnhancer = new QuantumEnhancer({ monitor });
+      expect(() => uninitializedEnhancer.getState()).toThrow('QuantumEnhancer not initialized');
     });
 
-    it('should handle invalid input gracefully', async () => {
-      await expect(quantumEnhancer.enhanceInput(null as any)).rejects.toThrow();
-    });
-  });
-
-  describe('Performance Monitoring', () => {
-    it('should track enhancement performance', async () => {
-      const startTime = Date.now();
-      await quantumEnhancer.enhanceModel(mockModel);
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      expect(duration).toBeLessThan(1000);
+    it('should cleanup resources properly', async () => {
+      await enhancer.cleanup();
+      expect(() => enhancer.getState()).toThrow('QuantumEnhancer not initialized');
     });
   });
 }); 

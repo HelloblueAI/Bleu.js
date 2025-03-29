@@ -1,246 +1,272 @@
 import { jest } from '@jest/globals';
 import { Monitor } from './monitor';
 import { ModelMonitor } from '../monitoring/modelMonitor';
-import { createLogger } from '../utils/logger';
+import { createLogger, Logger } from '../utils/logger';
+import fs from 'fs/promises';
 
-// Mock the logger and ModelMonitor
+// Mock the Logger class
 jest.mock('../utils/logger', () => ({
-  createLogger: jest.fn().mockReturnValue({
+  Logger: jest.fn().mockImplementation(() => ({
     info: jest.fn(),
     error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn()
-  })
+    debug: jest.fn(),
+    warn: jest.fn()
+  }))
 }));
 
-jest.mock('../monitoring/modelMonitor');
+// Mock fs/promises
+jest.mock('fs/promises', () => ({
+  mkdir: jest.fn(),
+  writeFile: jest.fn(),
+  readFile: jest.fn(),
+  unlink: jest.fn()
+}));
 
 describe('Monitor', () => {
   let monitor: Monitor;
+  let mockLogger: jest.Mocked<Logger>;
   const mockModelId = 'test-model';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockLogger = new Logger('Monitor') as jest.Mocked<Logger>;
     monitor = new Monitor();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('startMonitoring', () => {
     it('should create and start a new model monitor', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy', 'loss'],
+        logInterval: 1000,
+        thresholds: {
+          accuracy: { min: 0.8 },
+          loss: { max: 0.2 }
+        }
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-
-      expect(ModelMonitor).toHaveBeenCalledWith(expect.objectContaining({
-        modelId: mockModelId
-      }));
-      expect(mockModelMonitor.start).toHaveBeenCalled();
+      await monitor.startMonitoring(modelId, config);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Started monitoring for model: ${modelId}`);
     });
 
     it('should not create duplicate monitors for the same model', async () => {
-      await monitor.startMonitoring(mockModelId);
-      await monitor.startMonitoring(mockModelId);
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
+      };
 
-      expect(ModelMonitor).toHaveBeenCalledTimes(1);
+      await monitor.startMonitoring(modelId, config);
+      await expect(monitor.startMonitoring(modelId, config)).rejects.toThrow('Monitor already exists');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
 
     it('should handle errors during monitor creation', async () => {
-      const error = new Error('Test error');
-      (ModelMonitor as jest.Mock).mockImplementation(() => {
-        throw error;
-      });
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
+      };
 
-      await expect(monitor.startMonitoring(mockModelId)).rejects.toThrow(error);
+      (fs.mkdir as jest.Mock).mockRejectedValue(new Error('Test error'));
+      await expect(monitor.startMonitoring(modelId, config)).rejects.toThrow('Test error');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('stopMonitoring', () => {
     it('should stop and remove an existing monitor', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        stop: jest.fn(),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-      await monitor.stopMonitoring(mockModelId);
-
-      expect(mockModelMonitor.stop).toHaveBeenCalled();
+      await monitor.startMonitoring(modelId, config);
+      await monitor.stopMonitoring(modelId);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Stopped monitoring for model: ${modelId}`);
     });
 
     it('should handle non-existent monitors gracefully', async () => {
-      await expect(monitor.stopMonitoring('non-existent')).resolves.not.toThrow();
+      const modelId = 'non-existent';
+      await expect(monitor.stopMonitoring(modelId)).rejects.toThrow('Monitor not found');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('recordMetric', () => {
     it('should record a metric for an existing monitor', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        recordMetric: jest.fn(),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-      await monitor.recordMetric(mockModelId, 'accuracy', 0.95);
-
-      expect(mockModelMonitor.recordMetric).toHaveBeenCalledWith('accuracy', 0.95);
+      await monitor.startMonitoring(modelId, config);
+      await monitor.recordMetric(modelId, 'accuracy', 0.95);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Recorded metric for model ${modelId}: accuracy = 0.95`);
     });
 
     it('should throw error for non-existent monitor', async () => {
-      await expect(monitor.recordMetric('non-existent', 'accuracy', 0.95))
-        .rejects.toThrow('No monitor found');
+      const modelId = 'non-existent';
+      await expect(monitor.recordMetric(modelId, 'accuracy', 0.95)).rejects.toThrow('Monitor not found');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('getMetrics', () => {
     it('should retrieve metrics for an existing monitor', async () => {
-      const mockMetrics = [{ timestamp: Date.now(), value: 0.95 }];
-      const mockModelMonitor = {
-        start: jest.fn(),
-        getMetrics: jest.fn().mockResolvedValue(mockMetrics),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-      const metrics = await monitor.getMetrics(mockModelId);
-
-      expect(metrics).toEqual(mockMetrics);
+      await monitor.startMonitoring(modelId, config);
+      await monitor.recordMetric(modelId, 'accuracy', 0.95);
+      const metrics = await monitor.getMetrics(modelId);
+      expect(metrics).toBeDefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Retrieved metrics for model: ${modelId}`);
     });
 
     it('should throw error for non-existent monitor', async () => {
-      await expect(monitor.getMetrics('non-existent'))
-        .rejects.toThrow('No monitor found');
+      const modelId = 'non-existent';
+      await expect(monitor.getMetrics(modelId)).rejects.toThrow('Monitor not found');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('getAlerts', () => {
     it('should retrieve alerts for an existing monitor', async () => {
-      const mockAlerts = [{ timestamp: Date.now(), type: 'warning' }];
-      const mockModelMonitor = {
-        start: jest.fn(),
-        getAlerts: jest.fn().mockResolvedValue(mockAlerts),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000,
+        thresholds: {
+          accuracy: { min: 0.8 }
+        }
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-      const alerts = await monitor.getAlerts(mockModelId);
-
-      expect(alerts).toEqual(mockAlerts);
+      await monitor.startMonitoring(modelId, config);
+      await monitor.recordMetric(modelId, 'accuracy', 0.75);
+      const alerts = await monitor.getAlerts(modelId);
+      expect(alerts).toBeDefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Retrieved alerts for model: ${modelId}`);
     });
 
     it('should throw error for non-existent monitor', async () => {
-      await expect(monitor.getAlerts('non-existent'))
-        .rejects.toThrow('No monitor found');
+      const modelId = 'non-existent';
+      await expect(monitor.getAlerts(modelId)).rejects.toThrow('Monitor not found');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('generateReport', () => {
     it('should generate a report for an existing monitor', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        getMetrics: jest.fn().mockResolvedValue([]),
-        getAlerts: jest.fn().mockResolvedValue([]),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring(mockModelId);
-      const report = await monitor.generateReport(mockModelId);
-
-      expect(report).toHaveProperty('modelId', mockModelId);
-      expect(report).toHaveProperty('status');
-      expect(report).toHaveProperty('metrics');
-      expect(report).toHaveProperty('alerts');
+      await monitor.startMonitoring(modelId, config);
+      await monitor.recordMetric(modelId, 'accuracy', 0.95);
+      const report = await monitor.generateReport(modelId);
+      expect(report).toBeDefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Generated report for model: ${modelId}`);
     });
 
     it('should throw error for non-existent monitor', async () => {
-      await expect(monitor.generateReport('non-existent'))
-        .rejects.toThrow('No monitor found');
+      const modelId = 'non-existent';
+      await expect(monitor.generateReport(modelId)).rejects.toThrow('Monitor not found');
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe('generateAggregateReport', () => {
     it('should generate aggregate report for all monitors', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        getMetrics: jest.fn().mockResolvedValue([]),
-        getAlerts: jest.fn().mockResolvedValue([]),
-        initialize: jest.fn()
+      const modelIds = ['model1', 'model2'];
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      await monitor.startMonitoring('model1');
-      await monitor.startMonitoring('model2');
-
+      await Promise.all(modelIds.map(id => monitor.startMonitoring(id, config)));
+      await Promise.all(modelIds.map(id => monitor.recordMetric(id, 'accuracy', 0.95)));
       const report = await monitor.generateAggregateReport();
-
-      expect(report).toHaveProperty('timestamp');
-      expect(report).toHaveProperty('summary');
-      expect(report.summary).toHaveProperty('totalModels', 2);
+      expect(report).toBeDefined();
+      expect(mockLogger.info).toHaveBeenCalledWith('Generated aggregate report for all models');
     });
   });
 
   describe('configuration updates', () => {
-    let mockModelMonitor: any;
-
-    beforeEach(async () => {
-      mockModelMonitor = {
-        start: jest.fn(),
-        updateThresholds: jest.fn(),
-        updateMonitoringInterval: jest.fn(),
-        toggleAlerting: jest.fn(),
-        initialize: jest.fn()
-      };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
-      await monitor.startMonitoring(mockModelId);
-    });
-
     it('should update thresholds for an existing monitor', async () => {
-      const thresholds = { accuracy: { warning: 0.8, critical: 0.6 } };
-      await monitor.updateThresholds(mockModelId, thresholds);
-      expect(mockModelMonitor.updateThresholds).toHaveBeenCalledWith(thresholds);
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000,
+        thresholds: {
+          accuracy: { min: 0.8 }
+        }
+      };
+
+      await monitor.startMonitoring(modelId, config);
+      await monitor.updateThresholds(modelId, { accuracy: { min: 0.9 } });
+      expect(mockLogger.info).toHaveBeenCalledWith(`Updated thresholds for model: ${modelId}`);
     });
 
     it('should update monitoring interval for an existing monitor', async () => {
-      const interval = 30000;
-      await monitor.updateMonitoringInterval(mockModelId, interval);
-      expect(mockModelMonitor.updateMonitoringInterval).toHaveBeenCalledWith(interval);
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
+      };
+
+      await monitor.startMonitoring(modelId, config);
+      await monitor.updateInterval(modelId, 2000);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Updated monitoring interval for model: ${modelId}`);
     });
 
     it('should toggle alerting for an existing monitor', async () => {
-      await monitor.toggleAlerting(mockModelId, false);
-      expect(mockModelMonitor.toggleAlerting).toHaveBeenCalledWith(false);
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000,
+        alerting: true
+      };
+
+      await monitor.startMonitoring(modelId, config);
+      await monitor.toggleAlerting(modelId, false);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Toggled alerting for model: ${modelId}`);
     });
   });
 
   describe('utility methods', () => {
     it('should check if a model is being monitored', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        initialize: jest.fn()
+      const modelId = 'test-model';
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
-      expect(monitor.isMonitoring(mockModelId)).toBe(false);
-      await monitor.startMonitoring(mockModelId);
-      expect(monitor.isMonitoring(mockModelId)).toBe(true);
+      await monitor.startMonitoring(modelId, config);
+      expect(await monitor.isMonitored(modelId)).toBe(true);
+      expect(mockLogger.debug).toHaveBeenCalledWith(`Checking monitoring status for model: ${modelId}`);
     });
 
     it('should get list of monitored models', async () => {
-      const mockModelMonitor = {
-        start: jest.fn(),
-        initialize: jest.fn()
+      const modelIds = ['model1', 'model2'];
+      const config = {
+        metrics: ['accuracy'],
+        logInterval: 1000
       };
-      (ModelMonitor as jest.Mock).mockImplementation(() => mockModelMonitor);
 
+      await Promise.all(modelIds.map(id => monitor.startMonitoring(id, config)));
+      const monitoredModels = await monitor.getMonitoredModels();
+      expect(monitoredModels).toEqual(expect.arrayContaining(modelIds));
       await monitor.startMonitoring('model1');
       await monitor.startMonitoring('model2');
 

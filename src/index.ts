@@ -1,7 +1,7 @@
 import { BleuCore } from './core/BleuCore';
 import { ServiceManager } from './core/ServiceManager';
 import { DEFAULT_CONFIG } from './config/defaultConfig';
-import { BleuConfig, ModelConfig, SecurityConfig, MonitoringConfig, DeploymentConfig, PerformanceConfig } from './types';
+import { BleuConfig } from './types';
 
 // Core exports
 export { BleuCore } from './core/BleuCore';
@@ -10,12 +10,7 @@ export { DEFAULT_CONFIG } from './config/defaultConfig';
 
 // Configuration types
 export type {
-  BleuConfig,
-  ModelConfig,
-  SecurityConfig,
-  MonitoringConfig,
-  DeploymentConfig,
-  PerformanceConfig
+  BleuConfig
 } from './types';
 
 // Version
@@ -23,7 +18,8 @@ export const VERSION = '1.1.2';
 
 // Main class
 export class Bleu extends BleuCore {
-  private serviceManager: ServiceManager;
+  private readonly config: BleuConfig;
+  private readonly serviceManager: ServiceManager;
 
   constructor(config: Partial<BleuConfig> = {}) {
     const mergedConfig = {
@@ -31,6 +27,7 @@ export class Bleu extends BleuCore {
       ...config
     };
     super(mergedConfig);
+    this.config = mergedConfig;
     this.serviceManager = new ServiceManager(mergedConfig);
   }
 

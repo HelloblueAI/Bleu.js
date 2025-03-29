@@ -111,15 +111,18 @@ export class QuantumResistantCrypto {
   async decrypt(encryptedData: Buffer, key: Buffer): Promise<Buffer> {
     try {
       // Extract IV and auth tag
-      const iv = encryptedData.slice(0, this.ivSize);
-      const authTag = encryptedData.slice(-16);
-      const data = encryptedData.slice(this.ivSize, -16);
+      const iv = encryptedData.subarray(0, this.ivSize);
+      const tag = encryptedData.subarray(
+        this.ivSize,
+        this.ivSize + 16
+      );
+      const encrypted = encryptedData.subarray(this.ivSize + 16);
 
       const decipher = crypto.createDecipheriv(this.algorithm, key, iv);
-      decipher.setAuthTag(authTag);
+      decipher.setAuthTag(tag);
 
       return Buffer.concat([
-        decipher.update(data),
+        decipher.update(encrypted),
         decipher.final()
       ]);
     } catch (error) {

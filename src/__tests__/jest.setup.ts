@@ -1,244 +1,246 @@
-import { performance } from 'perf_hooks';
-import crypto from 'crypto';
-import { promisify } from 'util';
-import fs from 'fs';
-import path from 'path';
+import { jest } from '@jest/globals';
+import mongoose from 'mongoose';
+import { MockLogger } from '../utils/logger';
+import { Storage } from '../storage/storage';
+import { SecurityManager } from '../security/securityManager';
+import { QuantumProcessor } from '../quantum/quantumProcessor';
+import { ImageProcessor } from '../ai/multimodal/imageProcessor';
+import { AudioProcessor } from '../ai/multimodal/audioProcessor';
+import { VideoProcessor } from '../ai/multimodal/videoProcessor';
+import { NLPProcessor } from '../ai/nlpProcessor';
+import { ModelMonitor } from '../monitoring/modelMonitor';
+import { BleuAI } from '../ai/bleuAI';
+import { StorageConfig } from '../storage/types';
+import { SecurityConfig } from '../security/types';
+import { MultimodalProcessor } from '../ai/multimodal/processor';
+import { BleuConfig } from '../types/config';
 
-// Set up global performance API
-global.performance = performance;
-
-// Set up global crypto API
-global.crypto = crypto;
-
-// Set up environment variables
+// Set up environment variables for testing
 process.env.NODE_ENV = 'test';
-process.env.MONGODB_URI = 'mongodb://localhost:27017/test';
+process.env.MONGODB_URI = 'mongodb://localhost:27017/bleu_test';
 process.env.AWS_REGION = 'us-east-1';
+process.env.AWS_ACCESS_KEY_ID = 'test';
+process.env.AWS_SECRET_ACCESS_KEY = 'test';
 process.env.TEST_TIMEOUT = '30000';
 process.env.MAX_WORKERS = '4';
-process.env.LOG_LEVEL = 'debug';
+process.env.LOG_LEVEL = 'error';
+process.env.TF_CPP_MIN_LOG_LEVEL = '2';
+process.env.JWT_SECRET = 'test-secret';
+process.env.API_KEY = 'test-api-key';
 
-// Mock console methods
-const originalConsole = { ...console };
-console.log = jest.fn();
-console.error = jest.fn();
-console.warn = jest.fn();
-console.info = jest.fn();
-console.debug = jest.fn();
+// Create a mock logger
+const logger = new MockLogger();
 
-// Mock fs module
-jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
-  promises: {
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    mkdir: jest.fn(),
-    readdir: jest.fn(),
-    stat: jest.fn(),
-    unlink: jest.fn(),
-    rmdir: jest.fn()
-  }
-}));
-
-// Mock path module
-jest.mock('path', () => ({
-  ...jest.requireActual('path'),
-  join: jest.fn(),
-  resolve: jest.fn(),
-  dirname: jest.fn(),
-  basename: jest.fn(),
-  extname: jest.fn()
-}));
-
-// Mock TensorFlow.js
-jest.mock('@tensorflow/tfjs-node', () => ({
-  sequential: jest.fn(),
-  layers: {
-    dense: jest.fn(),
-    dropout: jest.fn(),
-    conv2d: jest.fn(),
-    maxPooling2d: jest.fn(),
-    flatten: jest.fn()
-  },
-  train: {
-    adam: jest.fn(),
-    sgd: jest.fn(),
-    rmsprop: jest.fn()
-  },
-  metrics: {
-    binaryAccuracy: jest.fn(),
-    categoricalAccuracy: jest.fn(),
-    meanSquaredError: jest.fn()
-  },
-  io: {
-    withSaveHandler: jest.fn(),
-    withLoadHandler: jest.fn()
-  }
-}));
-
-// Mock HuggingFace
-jest.mock('@huggingface/inference', () => ({
-  HfInference: jest.fn().mockImplementation(() => ({
-    textGeneration: jest.fn(),
-    textClassification: jest.fn(),
-    translation: jest.fn(),
-    summarization: jest.fn(),
-    questionAnswering: jest.fn(),
-    zeroShotClassification: jest.fn(),
-    tokenClassification: jest.fn(),
-    languageIdentification: jest.fn(),
-    sentenceSimilarity: jest.fn()
-  }))
-}));
-
-// Mock logger
-jest.mock('../utils/logger', () => ({
-  createLogger: jest.fn().mockImplementation(() => ({
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn()
-  }))
-}));
-
-// Mock crypto
-jest.mock('crypto', () => ({
-  ...jest.requireActual('crypto'),
-  randomBytes: jest.fn(),
-  createHash: jest.fn(),
-  createHmac: jest.fn(),
-  createCipheriv: jest.fn(),
-  createDecipheriv: jest.fn()
-}));
-
-// Mock performance
-jest.mock('perf_hooks', () => ({
-  performance: {
-    now: jest.fn(),
-    mark: jest.fn(),
-    measure: jest.fn(),
-    clearMarks: jest.fn(),
-    clearMeasures: jest.fn()
-  }
-}));
-
-// Mock process
-jest.mock('process', () => ({
-  ...jest.requireActual('process'),
-  env: {
-    NODE_ENV: 'test',
-    MONGODB_URI: 'mongodb://localhost:27017/test',
-    AWS_REGION: 'us-east-1',
-    TEST_TIMEOUT: '30000',
-    MAX_WORKERS: '4',
-    LOG_LEVEL: 'debug'
-  }
-}));
-
-// Mock util
-jest.mock('util', () => ({
-  ...jest.requireActual('util'),
-  promisify: jest.fn(),
-  inherits: jest.fn(),
-  deprecate: jest.fn()
-}));
-
-// Mock fs promises
-const fsPromises = {
-  readFile: jest.fn(),
-  writeFile: jest.fn(),
-  mkdir: jest.fn(),
-  readdir: jest.fn(),
-  stat: jest.fn(),
-  unlink: jest.fn(),
-  rmdir: jest.fn()
+// Create storage config
+const storageConfig: StorageConfig = {
+  path: './test-storage',
+  retentionDays: 7,
+  compression: false
 };
 
-// Mock path functions
-const pathMocks = {
-  join: jest.fn(),
-  resolve: jest.fn(),
-  dirname: jest.fn(),
-  basename: jest.fn(),
-  extname: jest.fn()
-};
-
-// Set up test utilities
-const testUtils = {
-  mockTensor: {
-    dispose: jest.fn(),
-    dataSync: jest.fn(),
-    predict: jest.fn(),
-    trainOnBatch: jest.fn(),
-    evaluate: jest.fn(),
-    save: jest.fn(),
-    load: jest.fn()
+// Create security config
+const securityConfig: SecurityConfig = {
+  encryption: {
+    algorithm: 'aes-256-gcm',
+    keySize: 256,
+    quantumResistant: true
   },
-  mockModel: {
-    compile: jest.fn(),
-    fit: jest.fn(),
-    evaluate: jest.fn(),
-    predict: jest.fn(),
-    save: jest.fn(),
-    load: jest.fn()
+  authentication: {
+    type: 'jwt',
+    jwtSecret: process.env.JWT_SECRET || 'test-secret',
+    tokenExpiration: 3600
   },
-  mockDataset: {
-    batch: jest.fn(),
-    shuffle: jest.fn(),
-    prefetch: jest.fn(),
-    map: jest.fn(),
-    filter: jest.fn()
-  }
-};
-
-// Add test utilities to global
-declare global {
-  namespace NodeJS {
-    interface Global {
-      testUtils: typeof testUtils;
+  authorization: {
+    roles: ['admin', 'user'],
+    permissions: {
+      admin: ['read', 'write', 'delete'],
+      user: ['read']
     }
-  }
-}
+  },
+  audit: {
+    enabled: true,
+    logLevel: 'info',
+    retention: 30
+  },
+  rateLimits: {
+    maxRequests: 100,
+    windowMs: 60000
+  },
+  jwtSecret: process.env.JWT_SECRET || 'test-secret',
+  apiKeys: ['test-api-key'],
+  allowedOrigins: ['http://localhost:3000']
+};
 
-global.testUtils = testUtils;
+// Create BleuAI configuration
+const bleuConfig: BleuConfig = {
+  model: {
+    path: './test-models',
+    version: '1.0.0',
+    maxFeatures: 8,
+    quantum: {
+      numQubits: 8,
+      learningRate: 0.01,
+      optimizationLevel: 1,
+      useQuantumMemory: true,
+      useQuantumAttention: true
+    }
+  },
+  storage: {
+    path: './test-storage'
+  },
+  security: securityConfig
+};
 
-// Set up test lifecycle hooks
+// Initialize storage
+const storage = new Storage(storageConfig, logger);
+
+// Initialize security manager
+const securityManager = new SecurityManager(securityConfig, logger);
+
+// Initialize processors
+let nlpProcessor: NLPProcessor;
+let imageProcessor: ImageProcessor;
+let audioProcessor: AudioProcessor;
+let videoProcessor: VideoProcessor;
+let multimodalProcessor: MultimodalProcessor;
+let quantumProcessor: QuantumProcessor;
+
 beforeAll(async () => {
-  // Initialize test environment
-  console.log('Setting up test environment...');
+  // Initialize NLP processor
+  nlpProcessor = new NLPProcessor(logger);
+  await nlpProcessor.initialize({
+    language: 'en',
+    maxTokens: 1024,
+    model: 'gpt-3.5-turbo'
+  });
+
+  // Initialize image processor
+  imageProcessor = new ImageProcessor({
+    modelPath: './test-models/image',
+    maxSize: 1024,
+    allowedFormats: ['jpg', 'jpeg', 'png']
+  }, storage);
+
+  // Initialize audio processor
+  audioProcessor = new AudioProcessor({
+    modelPath: './test-models/audio',
+    sampleRate: 16000,
+    maxDuration: 30,
+    allowedFormats: ['wav', 'mp3']
+  }, storage);
+
+  // Initialize video processor
+  videoProcessor = new VideoProcessor({
+    modelPath: './test-models/video',
+    maxDuration: 60,
+    maxResolution: 720,
+    allowedFormats: ['mp4', 'avi'],
+    imageProcessorConfig: {
+      modelPath: './test-models/image',
+      maxSize: 1024,
+      allowedFormats: ['jpg', 'jpeg', 'png']
+    }
+  }, imageProcessor);
+
+  // Create actual quantum processor instance
+  quantumProcessor = new QuantumProcessor();
+
+  // Create actual multimodal processor instance
+  multimodalProcessor = new MultimodalProcessor({
+    modelPath: './test-models/multimodal',
+    imageConfig: {
+      maxSize: 1024,
+      allowedFormats: ['jpg', 'jpeg', 'png']
+    },
+    audioConfig: {
+      sampleRate: 16000,
+      maxDuration: 30,
+      allowedFormats: ['wav', 'mp3']
+    },
+    videoConfig: {
+      maxDuration: 60,
+      maxResolution: 720,
+      allowedFormats: ['mp4', 'avi']
+    },
+    nlpConfig: {
+      maxSequenceLength: 512,
+      vocabSize: 50000
+    }
+  }, imageProcessor, audioProcessor, videoProcessor, nlpProcessor);
 });
 
+// Create actual model monitor instance
+const modelMonitor = new ModelMonitor(storage, {
+  storage: {
+    path: './test-storage',
+    retentionDays: 30
+  },
+  thresholds: {
+    warning: {
+      cpu: 80,
+      memory: 80,
+      latency: 1000
+    },
+    error: {
+      cpu: 90,
+      memory: 90,
+      latency: 2000
+    }
+  },
+  retentionPeriod: 30 * 24 * 60 * 60 * 1000 // 30 days
+});
+
+// Create actual BleuAI instance
+const bleuAI = new BleuAI(bleuConfig);
+
+// Add custom matcher for MongoDB ObjectId
+expect.extend({
+  toBeValidObjectId(received) {
+    const isValid = mongoose.Types.ObjectId.isValid(received);
+    return {
+      message: () => `expected ${received} to be a valid MongoDB ObjectId`,
+      pass: isValid,
+    };
+  },
+});
+
+// Global setup
+beforeAll(async () => {
+  // Initialize all components
+  await Promise.all([
+    storage.initialize(),
+    securityManager.initialize(),
+    quantumProcessor.initialize(),
+    multimodalProcessor.initialize(),
+    modelMonitor.initialize(),
+    bleuAI.initialize()
+  ]);
+});
+
+// Global teardown
 afterAll(async () => {
-  // Clean up test environment
-  console.log('Cleaning up test environment...');
+  // Clean up all components
+  await Promise.all([
+    storage.cleanup(),
+    securityManager.cleanup(),
+    quantumProcessor.cleanup(),
+    multimodalProcessor.cleanup(),
+    modelMonitor.cleanup(),
+    bleuAI.cleanup()
+  ]);
 });
 
-beforeEach(() => {
-  // Reset all mocks before each test
-  jest.clearAllMocks();
-  
-  // Reset console methods
-  console.log = jest.fn();
-  console.error = jest.fn();
-  console.warn = jest.fn();
-  console.info = jest.fn();
-  console.debug = jest.fn();
-});
-
-afterEach(() => {
-  // Clean up after each test
-  jest.resetAllMocks();
-});
-
-// Handle unhandled rejections
+// Set up global error handlers
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Don't exit the process in test environment
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  // Don't exit the process in test environment
-}); 
+  logger.error('Uncaught Exception:', error);
+});
+
+// Clean up after tests
+afterAll(async () => {
+  await storage.dispose();
+  await securityManager.dispose();
+});

@@ -8,11 +8,25 @@ export interface Threat {
   details?: Record<string, any>;
 }
 
-export class ThreatDetector {
-  private logger = createLogger('ThreatDetector');
-  private patterns: Map<string, RegExp>;
+export interface ThreatDetectorConfig {
+  maxAttempts?: number;
+  timeWindow?: number;
+  blockDuration?: number;
+  ipWhitelist?: string[];
+  ipBlacklist?: string[];
+}
 
-  constructor() {
+export class ThreatDetector {
+  private readonly logger = createLogger('ThreatDetector');
+  private readonly patterns: Map<string, RegExp>;
+  private readonly config: ThreatDetectorConfig;
+
+  constructor(private readonly config: ThreatDetectorConfig = {}) {
+    this.config = {
+      sensitivity: config.sensitivity ?? 'medium',
+      maxThreats: config.maxThreats ?? 10
+    };
+
     this.patterns = new Map([
       ['sql_injection', /('.*'|".*"|`.*`|--|;|UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER)/i],
       ['xss', /<script|javascript:|on\w+\s*=|eval\s*\(|document\.cookie/i],

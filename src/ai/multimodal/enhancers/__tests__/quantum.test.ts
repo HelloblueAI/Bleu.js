@@ -1,4 +1,4 @@
-import { jest, describe, it, expect, test } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import * as tf from '@tensorflow/tfjs';
 
 describe('Quantum Features', () => {
@@ -97,11 +97,6 @@ describe('Quantum Features', () => {
       const sumValue = sum.arraySync() as number;
       
       expect(Math.abs(sumValue - 1)).toBeLessThan(1e-6);
-
-      // Cleanup
-      state.dispose();
-      probabilities.dispose();
-      sum.dispose();
     });
   });
 

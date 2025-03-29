@@ -5,6 +5,13 @@ import request from 'supertest';
 
 // Mock dependencies
 jest.mock('../../ai/deepLearning');
+jest.mock('../../quantum/quantumEnhancer', () => ({
+  QuantumEnhancer: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn(),
+    enhance: jest.fn(),
+    dispose: jest.fn()
+  }))
+}));
 jest.mock('express', () => {
   const mockExpress = () => {
     const app = {
@@ -200,8 +207,7 @@ describe('ModelDeployer', () => {
         successfulRequests: 0,
         failedRequests: 0,
         averageResponseTime: 0,
-        modelLoadTime: expect.any(Number),
-        lastModelUpdate: expect.any(Date)
+        requestsPerSecond: 0
       });
     });
   });

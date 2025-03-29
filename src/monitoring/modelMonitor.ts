@@ -1,237 +1,237 @@
-import { createLogger } from '../utils/logger';
-import * as path from 'path';
-import * as fs from 'fs/promises';
-import { EventEmitter } from 'events';
+import { Storage } from "../storage/storage";
+import { createLogger, CustomLogger } from "../utils/logger";
+import { EventEmitter } from "events";
+import { Metric, AlertThresholds } from '../types/metrics';
+import { ModelMetrics } from '../types/metrics';
+import { ProcessingError } from '../types/errors';
+import { MonitorConfig, Alert } from './types';
 
-export interface ModelMonitorConfig {
-  modelId: string;
-  metrics?: string[];
-  logInterval?: number;
-  thresholds?: Record<string, { warning: number; critical: number }>;
-  alertingEnabled?: boolean;
-  storageDirectory?: string;
-}
-
-export interface Metric {
-  timestamp: number;
-  value: number;
-  metadata?: Record<string, unknown>;
-}
-
-export interface Alert {
-  timestamp: number;
-  type: 'warning' | 'critical';
-  message: string;
-  metadata?: Record<string, unknown>;
+export interface MonitorConfig {
+  storage: {
+    path: string;
+    retentionDays: number;
+  };
+  thresholds: {
+    warning: Record<string, number>;
+    error: Record<string, number>;
+  };
+  retentionPeriod: number;
 }
 
 export class ModelMonitor extends EventEmitter {
-  private readonly logger = createLogger('ModelMonitor');
-  private readonly config: Required<ModelMonitorConfig>;
-  private readonly metrics: Metric[];
-  private readonly alerts: Alert[];
+  private readonly logger: CustomLogger;
+  private readonly storage: Storage;
+  private readonly metricsPrefix: string = 'model_metrics_';
+  private metrics: Metric[] = [];
+  private readonly alerts: Alert[] = [];
+  private readonly config: MonitorConfig;
+  private initialized: boolean = false;
+  private isMonitoring: boolean = false;
   private monitoringInterval?: NodeJS.Timeout;
-  private isInitialized = false;
+  private cleanupInterval?: NodeJS.Timeout;
 
-  constructor(config: ModelMonitorConfig) {
+  constructor(storage: Storage, config: MonitorConfig) {
     super();
-    
-    this.config = {
-      modelId: config.modelId,
-      metrics: config.metrics || [],
-      logInterval: config.logInterval || 60000,
-      thresholds: config.thresholds || {},
-      alertingEnabled: config.alertingEnabled !== false,
-      storageDirectory: config.storageDirectory || path.join(process.cwd(), 'monitoring', config.modelId)
-    };
-
-    this.metrics = [];
-    this.alerts = [];
+    this.logger = new CustomLogger(createLogger({
+      level: 'info'
+    }));
+    this.storage = storage;
+    this.config = config;
   }
 
-  /**
-   * Check if the monitor is initialized
-   */
-  isInitialized(): boolean {
-    return this.isInitialized;
-  }
-
-  /**
-   * Initialize the monitor
-   */
   async initialize(): Promise<void> {
-    if (this.isInitialized) {
-      throw new Error('Monitor already initialized');
-    }
-
     try {
-      await fs.mkdir(this.config.storageDirectory, { recursive: true });
-      this.isInitialized = true;
-      this.logger.info(`Initialized monitor for model ${this.config.modelId}`);
+      if (this.initialized) {
+        this.logger.warn('ModelMonitor already initialized');
+        return;
+      }
+
+      await this.storage.initialize();
+      this.initialized = true;
+      this.logger.info('Initialized monitor');
     } catch (error) {
-      this.logger.error(`Failed to initialize monitor for model ${this.config.modelId}:`, error);
+      this.logger.error('Failed to initialize model monitor:', error);
+      throw new ProcessingError('Failed to initialize model monitor');
+    }
+  }
+
+  async recordMetrics(metrics: Metric[]): Promise<void> {
+    try {
+      this.logger.info('Recording metrics');
+      for (const metric of metrics) {
+        await this.storage.save(`metrics:${Date.now()}`, metric);
+        await this.checkThresholds(metric);
+      }
+      this.logger.info('Metrics recorded successfully');
+    } catch (error) {
+      this.logger.error('Failed to record metrics', error);
       throw error;
     }
   }
 
-  /**
-   * Start monitoring
-   */
-  async start(): Promise<void> {
-    if (!this.isInitialized) {
-      await this.initialize();
-    }
+  private validateMetrics(metrics: Metric): boolean {
+    return (
+      typeof metrics.name === 'string' &&
+      typeof metrics.value === 'number' &&
+      typeof metrics.timestamp === 'number'
+    );
+  }
 
+  private async checkThresholds(metric: Metric): Promise<void> {
     try {
-      this.monitoringInterval = setInterval(() => {
-        this.collectMetrics().catch(err => {
-          this.logger.error('Failed to collect metrics:', err);
+      const threshold = this.config.thresholds[metric.name];
+      if (!threshold) return;
+
+      if (metric.value >= threshold.critical) {
+        await this.generateAlert({
+          level: 'critical',
+          message: `Critical threshold breach for ${metric.name}: ${metric.value}`,
+          timestamp: Date.now()
         });
-      }, this.config.logInterval);
-
-      this.logger.info(`Started monitoring for model ${this.config.modelId}`);
-      this.emit('started');
+      } else if (metric.value >= threshold.warning) {
+        await this.generateAlert({
+          level: 'warning',
+          message: `Warning threshold breach for ${metric.name}: ${metric.value}`,
+          timestamp: Date.now()
+        });
+      }
     } catch (error) {
-      this.logger.error(`Failed to start monitoring for model ${this.config.modelId}:`, error);
+      this.logger.error('Failed to check thresholds', error);
       throw error;
     }
   }
 
-  /**
-   * Stop monitoring
-   */
-  async stop(): Promise<void> {
-    if (this.monitoringInterval) {
-      clearInterval(this.monitoringInterval);
-      this.monitoringInterval = undefined;
+  private async generateAlert(alert: Alert): Promise<void> {
+    try {
+      this.alerts.push(alert);
+      await this.storage.save(`alerts:${Date.now()}`, alert);
+      
+      if (alert.level === 'critical') {
+        this.logger.error(alert.message);
+      } else {
+        this.logger.warn(alert.message);
+      }
+    } catch (error) {
+      this.logger.error('Failed to generate alert', error);
+      throw error;
     }
-
-    this.logger.info(`Stopped monitoring for model ${this.config.modelId}`);
-    this.emit('stopped');
   }
 
-  /**
-   * Record a metric
-   */
-  async recordMetric(name: string, value: number, metadata?: Record<string, unknown>): Promise<void> {
-    if (!this.isInitialized) {
+  async cleanupOldMetrics(): Promise<void> {
+    try {
+      this.logger.info('Cleaning up old metrics');
+      const cutoffTime = Date.now() - this.config.retentionPeriod;
+      const keys = await this.storage.list('metrics:');
+      
+      for (const key of keys) {
+        const timestamp = parseInt(key.split(':')[1]);
+        if (timestamp < cutoffTime) {
+          await this.storage.delete(key);
+        }
+      }
+      this.logger.info('Old metrics cleaned up');
+    } catch (error) {
+      this.logger.error('Failed to cleanup old metrics', error);
+      throw error;
+    }
+  }
+
+  async getMetricsInRange(startDate: Date, endDate: Date): Promise<Metric[]> {
+    try {
+      this.logger.info('Retrieving metrics in range');
+      const keys = await this.storage.list('metrics:');
+      const metrics: Metric[] = [];
+      
+      for (const key of keys) {
+        const timestamp = parseInt(key.split(':')[1]);
+        if (timestamp >= startDate.getTime() && timestamp <= endDate.getTime()) {
+          const metric = await this.storage.get(key);
+          if (metric) {
+            metrics.push(metric);
+          }
+        }
+      }
+      
+      this.logger.info(`Retrieved ${metrics.length} metrics`);
+      return metrics;
+    } catch (error) {
+      this.logger.error('Failed to retrieve metrics in range', error);
+      throw error;
+    }
+  }
+
+  async cleanup(): Promise<void> {
+    try {
+      this.logger.info('Cleaning up model monitor');
+      this.alerts = [];
+      this.logger.info('Model monitor cleanup completed');
+    } catch (error) {
+      this.logger.error('Failed to cleanup model monitor', error);
+      throw error;
+    }
+  }
+
+  getAlerts(): Alert[] {
+    return [...this.alerts];
+  }
+
+  async startMonitoring(): Promise<void> {
+    if (!this.initialized) {
       throw new Error('Monitor not initialized');
     }
 
-    if (!this.config.metrics.includes(name)) {
-      throw new Error('Invalid metric name');
+    if (this.isMonitoring) {
+      return;
     }
 
-    const metric: Metric = {
-      timestamp: Date.now(),
-      value,
-      metadata
-    };
-
-    this.metrics.push(metric);
-    await this.checkThresholds(name, value);
-    await this.persistMetrics();
+    try {
+      this.isMonitoring = true;
+      this.monitoringInterval = setInterval(() => this.collectMetrics(), 60000); // Every minute
+      this.cleanupInterval = setInterval(() => this.cleanupOldMetrics(), 3600000); // Every hour
+      this.logger.info('Started monitoring');
+    } catch (error) {
+      this.logger.error('Failed to start monitoring:', error);
+      throw new Error('Failed to start monitoring');
+    }
   }
 
-  /**
-   * Get metrics within time range
-   */
-  getMetrics(start?: number, end?: number): Metric[] {
-    return this.metrics.filter(metric => {
-      if (start && metric.timestamp < start) return false;
-      if (end && metric.timestamp > end) return false;
-      return true;
-    });
-  }
+  async stopMonitoring(): Promise<void> {
+    if (!this.isMonitoring) {
+      return;
+    }
 
-  /**
-   * Get alerts within time range
-   */
-  getAlerts(start?: number, end?: number): Alert[] {
-    return this.alerts.filter(alert => {
-      if (start && alert.timestamp < start) return false;
-      if (end && alert.timestamp > end) return false;
-      return true;
-    });
-  }
+    try {
+      if (this.monitoringInterval) {
+        clearInterval(this.monitoringInterval);
+        this.monitoringInterval = undefined;
+      }
 
-  /**
-   * Get latest metrics
-   */
-  getLatestMetrics(count: number = 10): Metric[] {
-    return this.metrics.slice(-count);
-  }
+      if (this.cleanupInterval) {
+        clearInterval(this.cleanupInterval);
+        this.cleanupInterval = undefined;
+      }
 
-  /**
-   * Get latest alerts
-   */
-  getLatestAlerts(count: number = 10): Alert[] {
-    return this.alerts.slice(-count);
-  }
-
-  /**
-   * Clean up old data
-   */
-  async cleanupOldData(maxAge: number = 7 * 24 * 60 * 60 * 1000): Promise<void> {
-    const cutoff = Date.now() - maxAge;
-    this.metrics.splice(0, this.metrics.findIndex(m => m.timestamp >= cutoff));
-    this.alerts.splice(0, this.alerts.findIndex(a => a.timestamp >= cutoff));
-    await this.persistMetrics();
-    await this.persistAlerts();
+      this.isMonitoring = false;
+      this.logger.info('Stopped monitoring');
+    } catch (error) {
+      this.logger.error('Failed to stop monitoring:', error);
+      throw new Error('Failed to stop monitoring');
+    }
   }
 
   private async collectMetrics(): Promise<void> {
-    // Implementation for collecting metrics
-    // This should be implemented based on the specific model being monitored
-  }
-
-  private async checkThresholds(name: string, value: number): Promise<void> {
-    const threshold = this.config.thresholds[name];
-    if (!threshold) return;
-
-    if (value <= threshold.critical) {
-      await this.createAlert('critical', `${name} threshold breached: ${value}`);
-    } else if (value <= threshold.warning) {
-      await this.createAlert('warning', `${name} threshold breached: ${value}`);
-    }
-  }
-
-  private async createAlert(type: 'warning' | 'critical', message: string, metadata?: Record<string, unknown>): Promise<void> {
-    if (!this.config.alertingEnabled) return;
-
-    const alert: Alert = {
-      timestamp: Date.now(),
-      type,
-      message,
-      metadata
-    };
-
-    this.alerts.push(alert);
-    await this.persistAlerts();
-    this.emit('alert', alert);
-  }
-
-  private async persistMetrics(): Promise<void> {
     try {
-      await fs.writeFile(
-        path.join(this.config.storageDirectory, 'metrics.json'),
-        JSON.stringify(this.metrics)
-      );
-    } catch (error) {
-      this.logger.error('Failed to persist metrics:', error);
-      throw error;
-    }
-  }
+      // This is a placeholder for actual metric collection
+      // In a real implementation, this would collect metrics from the model
+      const metrics: Metric = {
+        name: 'accuracy',
+        value: 0.95,
+        timestamp: Date.now()
+      };
 
-  private async persistAlerts(): Promise<void> {
-    try {
-      await fs.writeFile(
-        path.join(this.config.storageDirectory, 'alerts.json'),
-        JSON.stringify(this.alerts)
-      );
+      await this.recordMetrics([metrics]);
     } catch (error) {
-      this.logger.error('Failed to persist alerts:', error);
-      throw error;
+      this.logger.error('Failed to collect metrics:', error);
     }
   }
 }

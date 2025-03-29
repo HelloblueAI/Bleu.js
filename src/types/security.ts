@@ -1,120 +1,126 @@
 // import { SecurityConfig } from './index';
 
 export interface SecurityConfig {
-  encryption: {
-    algorithm: string;
-    keySize: number;
-    ivSize: number;
-    keyRotationInterval: number;
-    quantumResistant?: boolean;
-    mode?: string;
-    padding?: string;
+  readonly encryption: {
+    readonly algorithm: string;
+    readonly keySize: number;
+    readonly ivSize: number;
+    readonly keyRotationInterval: number;
+    readonly quantumResistant?: boolean;
+    readonly mode?: string;
+    readonly padding?: string;
   };
-  authorization: {
-    roles: string[];
-    defaultRole: string;
-    permissions: Record<string, string[]>;
-    sessionTimeout: number;
+  readonly authorization: {
+    readonly roles: string[];
+    readonly defaultRole: string;
+    readonly permissions: Record<string, string[]>;
+    readonly sessionTimeout: number;
   };
-  audit: {
-    enabled: boolean;
-    retentionDays: number;
-    logPath: string;
-    sensitiveFields?: string[];
+  readonly audit: {
+    readonly enabled: boolean;
+    readonly retentionDays: number;
+    readonly logPath: string;
+    readonly sensitiveFields?: string[];
   };
+  readonly rateLimit: {
+    readonly points: number;
+    readonly duration: number;
+  };
+  readonly passwordPolicy: {
+    readonly minLength: number;
+    readonly requireUppercase: boolean;
+    readonly requireLowercase: boolean;
+    readonly requireNumbers: boolean;
+    readonly requireSpecialChars: boolean;
+  };
+  readonly enabled: boolean;
+  readonly encryptionKey?: string;
+  tokenExpiry: number;
+  maxRetries: number;
   rateLimit: {
-    points: number;
-    duration: number;
+    windowMs: number;
+    maxRequests: number;
   };
-  passwordPolicy: {
-    minLength: number;
-    requireUppercase: boolean;
-    requireLowercase: boolean;
-    requireNumbers: boolean;
-    requireSpecialChars: boolean;
-  };
-  enabled: boolean;
-  encryptionKey?: string;
 }
 
 export interface SecurityReport {
-  timestamp: Date;
-  metrics: SecurityMetrics;
-  vulnerabilities: Vulnerability[];
-  dependencies: DependencyInfo[];
-  compliance: ComplianceStatus[];
-  recommendations: string[];
-  score?: SecurityScore;
+  readonly timestamp: Date;
+  readonly metrics: SecurityMetrics;
+  readonly vulnerabilities: Vulnerability[];
+  readonly dependencies: DependencyInfo[];
+  readonly compliance: ComplianceStatus[];
+  readonly recommendations: string[];
+  readonly score?: SecurityScore;
 }
 
 export interface SecurityScore {
-  overall: number;
-  components: {
-    encryption: number;
-    authentication: number;
-    authorization: number;
-    audit: number;
+  readonly overall: number;
+  readonly components: {
+    readonly encryption: number;
+    readonly authentication: number;
+    readonly authorization: number;
+    readonly audit: number;
   };
-  details: Record<string, any>;
+  readonly details: Record<string, any>;
 }
 
 export interface ComplianceStatus {
-  standard: string;
-  compliant: boolean;
-  violations: string[];
-  recommendations: string[];
-  lastChecked: Date;
+  readonly standard: string;
+  readonly compliant: boolean;
+  readonly violations: string[];
+  readonly recommendations: string[];
+  readonly lastChecked: Date;
 }
 
 export interface Vulnerability {
-  id: string;
-  name: string;
-  description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  cvss: number;
-  affected: string[];
-  fix?: string;
-  references: string[];
-  discovered: Date;
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly cvss: number;
+  readonly affected: string[];
+  readonly fix?: string;
+  readonly references: string[];
+  readonly discovered: Date;
 }
 
 export interface DependencyInfo {
-  name: string;
-  version: string;
-  vulnerabilities: Vulnerability[];
-  licenses: string[];
-  outdated: boolean;
+  readonly name: string;
+  readonly version: string;
+  readonly vulnerabilities: Vulnerability[];
+  readonly licenses: string[];
+  readonly outdated: boolean;
 }
 
 export interface EncryptionConfig {
-  algorithm: string;
-  keySize: number;
-  quantumResistant: boolean;
-  mode: string;
-  padding: string;
+  readonly algorithm: string;
+  readonly keySize: number;
+  readonly quantumResistant: boolean;
+  readonly mode: string;
+  readonly padding: string;
 }
 
 export interface SecurityMetrics {
-  encryptionStrength: number;
-  authenticationScore: number;
-  vulnerabilityCount: number;
-  complianceScore: number;
-  lastUpdated: Date;
-  threatDetections?: number;
-  blockedAttacks?: number;
-  averageResponseTime?: number;
+  readonly encryptionStrength: number;
+  readonly authenticationScore: number;
+  readonly vulnerabilityCount: number;
+  readonly complianceScore: number;
+  readonly lastUpdated: Date;
+  readonly threatDetections?: number;
+  readonly blockedAttacks?: number;
+  readonly averageResponseTime?: number;
 }
 
 export interface LogLevel {
-  name: string;
-  value: number;
-  color: string;
+  readonly name: string;
+  readonly value: number;
+  readonly color: string;
 }
 
 export interface ScanResult {
-  vulnerabilities: Vulnerability[];
-  metrics: SecurityMetrics;
-  timestamp: Date;
+  readonly vulnerabilities: Vulnerability[];
+  readonly metrics: SecurityMetrics;
+  readonly timestamp: Date;
 }
 
 export enum SecurityEventType {
@@ -127,4 +133,12 @@ export enum SecurityEventType {
   THREAT_DETECTED = 'THREAT_DETECTED',
   VULNERABILITY_FOUND = 'VULNERABILITY_FOUND',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED'
+}
+
+export interface SecurityHeaders {
+  'Content-Security-Policy': string;
+  'X-Frame-Options': string;
+  'X-Content-Type-Options': string;
+  'Strict-Transport-Security': string;
+  'X-XSS-Protection': string;
 } 

@@ -1,171 +1,187 @@
-import { jest } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import { ModelMonitor } from './modelMonitor';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { MonitorError } from '../types/errors';
+import { createLogger } from '../utils/logger';
+import { MonitoringConfig } from '../types/monitoring';
+import fs from 'fs';
 
-jest.mock('fs/promises');
-jest.mock('path');
+jest.mock('fs');
+jest.mock('../utils/logger');
 
 describe('ModelMonitor', () => {
   let monitor: ModelMonitor;
-  const mockConfig = {
-    modelId: 'test-model',
-    metrics: ['accuracy', 'latency', 'memory'],
-    logInterval: 1000,
-    thresholds: {
-      accuracy: { warning: 0.8, critical: 0.6 },
-      latency: { warning: 1000, critical: 2000 },
-      memory: { warning: 80, critical: 90 }
-    },
-    alertingEnabled: true,
-    storageDirectory: 'test_monitoring'
-  };
-
+  let mockLogger: any;
+  
   beforeEach(() => {
-    jest.useFakeTimers();
-    monitor = new ModelMonitor(mockConfig);
-    (fs.mkdir as jest.Mock).mockResolvedValue(undefined);
-    (fs.readFile as jest.Mock).mockResolvedValue('[]');
-    (fs.writeFile as jest.Mock).mockResolvedValue(undefined);
-    (path.join as jest.Mock).mockImplementation((...args) => args.join('/'));
+    mockLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn()
+    };
+    (createLogger as jest.Mock).mockReturnValue(mockLogger);
+    
+    const config: MonitoringConfig = {
+      modelId: 'test-model',
+      metrics: {
+        thresholds: {
+          accuracy: { critical: 0.6, warning: 0.8 },
+          latency: { critical: 100, warning: 50 }
+        },
+        interval: 1000
+      }
+    };
+    
+    monitor = new ModelMonitor(config);
   });
 
   afterEach(() => {
-    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
   describe('Initialization', () => {
-    it('should initialize with default values', () => {
-      const defaultMonitor = new ModelMonitor({
-        modelId: 'test-model'
-      });
-      expect(defaultMonitor['config'].alertingEnabled).toBe(true);
-      expect(defaultMonitor['config'].logInterval).toBe(60000);
+    it('should initialize successfully', async () => {
+      await expect(monitor.initialize()).resolves.not.toThrow();
+      expect(mockLogger.info).toHaveBeenCalledWith('ModelMonitor initialized');
     });
 
-    it('should create storage directory on initialization', async () => {
-      await monitor.startMonitoring();
-      expect(fs.mkdir).toHaveBeenCalledWith(mockConfig.storageDirectory, { recursive: true });
+    it('should handle initialization errors', async () => {
+      const error = new Error('Initialization failed');
+      mockLogger.info.mockImplementation(() => { throw error; });
+      await expect(monitor.initialize()).rejects.toThrow(error);
     });
   });
 
-  describe('Monitoring Lifecycle', () => {
-    it('should start monitoring successfully', async () => {
-      await monitor.startMonitoring();
-      expect(monitor['monitoring']).toBe(true);
-      expect(monitor['intervalId']).toBeDefined();
+  describe('Monitoring', () => {
+    beforeEach(async () => {
+      await monitor.initialize();
     });
 
-    it('should stop monitoring successfully', async () => {
+    it('should start monitoring', async () => {
+      await monitor.startMonitoring();
+      expect(mockLogger.info).toHaveBeenCalledWith('Monitoring started');
+    });
+
+    it('should stop monitoring', async () => {
       await monitor.startMonitoring();
       await monitor.stopMonitoring();
-      expect(monitor['monitoring']).toBe(false);
-      expect(monitor['intervalId']).toBeNull();
+      expect(mockLogger.info).toHaveBeenCalledWith('Monitoring stopped');
     });
 
-    it('should handle monitoring errors gracefully', async () => {
-      (fs.mkdir as jest.Mock).mockRejectedValue(new Error('Test error'));
-      await expect(monitor.startMonitoring()).rejects.toThrow('Test error');
-    });
-  });
-
-  describe('Metric Recording', () => {
-    beforeEach(async () => {
-      await monitor.startMonitoring();
-    });
-
-    it('should record valid metrics', async () => {
-      await monitor.recordMetric('accuracy', 0.95);
-      expect(monitor['metrics']).toHaveLength(1);
-      expect(monitor['metrics'][0].name).toBe('accuracy');
-      expect(monitor['metrics'][0].value).toBe(0.95);
-    });
-
-    it('should reject invalid metrics', async () => {
-      await expect(monitor.recordMetric('invalid', 1)).rejects.toThrow('Invalid metric');
-    });
-
-    it('should persist metrics to storage', async () => {
-      await monitor.recordMetric('accuracy', 0.95);
-      expect(fs.writeFile).toHaveBeenCalled();
-    });
-  });
-
-  describe('Alert Handling', () => {
-    beforeEach(async () => {
-      await monitor.startMonitoring();
-    });
-
-    it('should generate warning alerts', async () => {
-      await monitor.recordMetric('accuracy', 0.7);
-      expect(monitor['alerts']).toHaveLength(1);
-      expect(monitor['alerts'][0].type).toBe('warning');
-    });
-
-    it('should generate critical alerts', async () => {
-      await monitor.recordMetric('accuracy', 0.5);
-      expect(monitor['alerts']).toHaveLength(1);
-      expect(monitor['alerts'][0].type).toBe('critical');
-    });
-
-    it('should persist alerts to storage', async () => {
-      await monitor.recordMetric('accuracy', 0.5);
-      expect(fs.writeFile).toHaveBeenCalled();
+    it('should handle monitoring errors', async () => {
+      const error = new Error('Monitoring error');
+      mockLogger.info.mockImplementation(() => { throw error; });
+      await expect(monitor.startMonitoring()).rejects.toThrow(error);
     });
   });
 
   describe('Metric Collection', () => {
-    it('should collect metrics periodically', async () => {
-      await monitor.startMonitoring();
-      await monitor.recordMetric('accuracy', 0.95);
-      jest.advanceTimersByTime(mockConfig.logInterval);
-      expect(monitor['metrics'].length).toBeGreaterThan(0);
+    beforeEach(async () => {
+      await monitor.initialize();
+    });
+
+    it('should record metrics', async () => {
+      const metrics = { accuracy: 0.95, latency: 50 };
+      await monitor.recordMetric(metrics);
+      expect(mockLogger.debug).toHaveBeenCalledWith('Metric recorded:', metrics);
+    });
+
+    it('should aggregate metrics', async () => {
+      const metrics = [
+        { accuracy: 0.95, latency: 50 },
+        { accuracy: 0.90, latency: 60 }
+      ];
+      
+      for (const metric of metrics) {
+        await monitor.recordMetric(metric);
+      }
+      
+      const aggregated = await monitor.getAggregatedMetrics();
+      expect(aggregated).toBeDefined();
+      expect(aggregated.accuracy).toBeCloseTo(0.925);
+      expect(aggregated.latency).toBeCloseTo(55);
     });
 
     it('should handle collection errors gracefully', async () => {
       const consoleError = jest.spyOn(console, 'error').mockImplementation();
       await monitor.startMonitoring();
-      (fs.writeFile as jest.Mock).mockRejectedValue(new Error('Test error'));
-      await monitor.recordMetric('accuracy', 0.95);
-      expect(consoleError).toHaveBeenCalled();
+      (fs.writeFile as jest.Mock).mockImplementation((path, data, callback) => {
+        callback(new Error('Write error'));
+      });
+      await monitor.recordMetric({ accuracy: 0.95 });
+      expect(mockLogger.error).toHaveBeenCalled();
       consoleError.mockRestore();
     });
   });
 
-  describe('Report Generation', () => {
+  describe('Alert System', () => {
     beforeEach(async () => {
-      await monitor.startMonitoring();
+      await monitor.initialize();
     });
 
-    it('should generate comprehensive reports', async () => {
-      await monitor.recordMetric('accuracy', 0.95);
-      const metrics = monitor.generateMetricsSummary();
-      expect(metrics.accuracy).toBeDefined();
-      expect(metrics.accuracy.avg).toBe(0.95);
+    it('should trigger alerts for critical thresholds', async () => {
+      const metrics = { accuracy: 0.5, latency: 50 };
+      await monitor.recordMetric(metrics);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Critical threshold breach:',
+        expect.stringContaining('accuracy')
+      );
     });
 
-    it('should include alerts in reports', async () => {
-      await monitor.recordMetric('accuracy', 0.5);
-      const alerts = monitor.getAlerts();
-      expect(alerts.length).toBe(1);
-      expect(alerts[0].type).toBe('critical');
+    it('should trigger warnings for warning thresholds', async () => {
+      const metrics = { accuracy: 0.75, latency: 50 };
+      await monitor.recordMetric(metrics);
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        'Warning threshold breach:',
+        expect.stringContaining('accuracy')
+      );
     });
   });
 
-  describe('Data Persistence', () => {
+  describe('Data Management', () => {
     beforeEach(async () => {
-      await monitor.startMonitoring();
+      await monitor.initialize();
     });
 
-    it('should persist alerts successfully', async () => {
-      await monitor.recordMetric('accuracy', 0.5);
-      expect(fs.writeFile).toHaveBeenCalled();
+    it('should clean up old metrics', async () => {
+      await monitor.recordMetric('test', { value: 1 });
+      await monitor.cleanupOldMetrics(0);
+      expect(mockLogger.info).toHaveBeenCalledWith('Cleaned up old metrics');
     });
 
-    it('should handle file system errors gracefully', async () => {
-      (fs.writeFile as jest.Mock).mockRejectedValue(new Error('Test error'));
-      await expect(monitor.recordMetric('accuracy', 0.5)).rejects.toThrow('Test error');
+    it('should handle cleanup errors', async () => {
+      const error = new Error('Cleanup failed');
+      (fs.unlink as jest.Mock).mockImplementation((path, callback) => {
+        callback(error);
+      });
+
+      await monitor.cleanupOldMetrics(0);
+      expect(mockLogger.error).toHaveBeenCalledWith('Failed to clean up metrics:', error);
+    });
+  });
+
+  describe('Performance', () => {
+    beforeEach(async () => {
+      await monitor.initialize();
+    });
+
+    it('should handle concurrent metric recording', async () => {
+      const promises = Array(10).fill(null).map((_, i) =>
+        monitor.recordMetric(`test${i}`, { value: i })
+      );
+      await Promise.all(promises);
+      expect(mockLogger.debug).toHaveBeenCalledTimes(10);
+    });
+
+    it('should maintain performance under load', async () => {
+      const start = Date.now();
+      await Promise.all(
+        Array(100).fill(null).map((_, i) =>
+          monitor.recordMetric(`test${i}`, { value: i })
+        )
+      );
+      const duration = Date.now() - start;
+      expect(duration).toBeLessThan(1000);
     });
   });
 }); 

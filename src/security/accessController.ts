@@ -18,21 +18,17 @@ export interface AccessResponse {
 }
 
 export class AccessController {
-  private logger = createLogger('AccessController');
-  private roles: string[];
-  private defaultRole: string;
-  private permissions: Record<string, string[]>;
-  private userRoles: Map<string, string>;
+  private readonly logger = createLogger('AccessController');
+  private readonly roles: string[];
+  private readonly defaultRole: string;
+  private readonly userRoles: Map<string, string[]>;
+  private readonly permissions: Map<string, string[]>;
 
   constructor(config: AccessConfig = {}) {
-    this.roles = config.roles || ['admin', 'user', 'guest'];
-    this.defaultRole = config.defaultRole || 'user';
-    this.permissions = config.permissions || {
-      admin: ['*'],
-      user: ['read', 'write'],
-      guest: ['read']
-    };
+    this.roles = config.roles ?? ['admin', 'user', 'guest'];
+    this.defaultRole = config.defaultRole ?? 'user';
     this.userRoles = new Map();
+    this.permissions = new Map();
   }
 
   async initialize(): Promise<void> {
@@ -111,7 +107,7 @@ export class AccessController {
   }
 
   async getUserRole(userId: string): Promise<string> {
-    return this.userRoles.get(userId) || this.defaultRole;
+    return this.userRoles.get(userId) ?? this.defaultRole;
   }
 
   async addRole(role: string, permissions: string[] = []): Promise<void> {

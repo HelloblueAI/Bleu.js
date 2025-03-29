@@ -72,4 +72,26 @@ export interface ModelMetadata {
     trainingLoss: number;
     validationLoss: number;
   };
+}
+
+export interface BleuConfig {
+  apiKey: string;
+  environment: 'development' | 'production' | 'staging';
+  maxRetries?: number;
+  timeout?: number;
+  baseUrl?: string;
+  features?: {
+    quantum?: boolean;
+    distributed?: boolean;
+    simd?: boolean;
+    security?: boolean;
+    ai?: boolean;
+    monitoring?: boolean;
+    gpu?: boolean;
+    fast?: boolean;
+    enterprise?: boolean;
+    cloudNative?: boolean;
+    blockchain?: boolean;
+    iot?: boolean;
+  };
 } 
