@@ -13,7 +13,7 @@ setup(
         "cirq>=0.12.0",
         "pennylane>=0.19.0",
         "matplotlib>=3.4.3",
-        "scipy>=1.7.1"
+        "scipy>=1.7.1",
     ],
     extras_require={
         "dev": [
@@ -22,7 +22,7 @@ setup(
             "black>=21.7b0",
             "isort>=5.9.3",
             "mypy>=0.910",
-            "flake8>=3.9.2"
+            "flake8>=3.9.2",
         ]
     },
     python_requires=">=3.8",
@@ -34,13 +34,13 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering :: Physics",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence"
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
     keywords="quantum-computing, quantum-machine-learning, quantum-ai, bleu.js",
     url="https://github.com/bleu-js/bleu-quantum",
     project_urls={
         "Bug Tracker": "https://github.com/bleu-js/bleu-quantum/issues",
         "Documentation": "https://bleu-js.github.io/bleu-quantum",
-        "Source Code": "https://github.com/bleu-js/bleu-quantum"
-    }
-) 
+        "Source Code": "https://github.com/bleu-js/bleu-quantum",
+    },
+)

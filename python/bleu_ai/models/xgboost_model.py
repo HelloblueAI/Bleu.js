@@ -11,7 +11,15 @@ import plotly.express as px
 import shap
 from typing import Dict, List, Optional, Tuple, Union
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, precision_score, recall_score, mean_squared_error, r2_score
+from sklearn.metrics import (
+    accuracy_score,
+    roc_auc_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    mean_squared_error,
+    r2_score,
+)
 from sklearn.preprocessing import StandardScaler
 import mlflow
 import wandb
@@ -36,6 +44,7 @@ from concurrent.futures import ThreadPoolExecutor
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class XGBoostModel:
     def __init__(
         self,
@@ -51,7 +60,7 @@ class XGBoostModel:
         enable_encryption: bool = True,
         enable_monitoring: bool = True,
         enable_compression: bool = True,
-        enable_adaptive_lr: bool = True
+        enable_adaptive_lr: bool = True,
     ):
         self.model_path = model_path
         self.scaler_path = scaler_path
@@ -62,7 +71,7 @@ class XGBoostModel:
         self.best_params = None
         self.metrics: Dict = {}
         self.shap_values = None
-        
+
         # Initialize advanced components
         self.use_quantum = use_quantum
         self.enable_uncertainty = enable_uncertainty
@@ -74,28 +83,46 @@ class XGBoostModel:
         self.enable_monitoring = enable_monitoring
         self.enable_compression = enable_compression
         self.enable_adaptive_lr = enable_adaptive_lr
-        
+
         # Core components
-        self.quantum_processor: Optional[QuantumProcessor] = QuantumProcessor() if use_quantum else None
-        self.feature_analyzer: Optional[FeatureAnalyzer] = FeatureAnalyzer() if enable_feature_analysis else None
-        self.uncertainty_handler: Optional[UncertaintyHandler] = UncertaintyHandler() if enable_uncertainty else None
-        self.ensemble_manager: Optional[EnsembleManager] = EnsembleManager() if enable_ensemble else None
-        self.explainability_engine: Optional[ExplainabilityEngine] = ExplainabilityEngine() if enable_explainability else None
-        
+        self.quantum_processor: Optional[QuantumProcessor] = (
+            QuantumProcessor() if use_quantum else None
+        )
+        self.feature_analyzer: Optional[FeatureAnalyzer] = (
+            FeatureAnalyzer() if enable_feature_analysis else None
+        )
+        self.uncertainty_handler: Optional[UncertaintyHandler] = (
+            UncertaintyHandler() if enable_uncertainty else None
+        )
+        self.ensemble_manager: Optional[EnsembleManager] = (
+            EnsembleManager() if enable_ensemble else None
+        )
+        self.explainability_engine: Optional[ExplainabilityEngine] = (
+            ExplainabilityEngine() if enable_explainability else None
+        )
+
         # Advanced components
         self.visualizer = AdvancedVisualizer()
         self.quantum_optimizer = QuantumOptimizer() if use_quantum else None
-        self.distributed_manager: Optional[DistributedTrainingManager] = DistributedTrainingManager() if enable_distributed else None
+        self.distributed_manager: Optional[DistributedTrainingManager] = (
+            DistributedTrainingManager() if enable_distributed else None
+        )
         self.encryption_manager = EncryptionManager() if enable_encryption else None
-        self.performance_tracker: Optional[PerformanceTracker] = PerformanceTracker() if enable_monitoring else None
-        self.model_compressor: Optional[ModelCompressor] = ModelCompressor() if enable_compression else None
-        self.adaptive_lr: Optional[AdaptiveLearningRate] = AdaptiveLearningRate() if enable_adaptive_lr else None
+        self.performance_tracker: Optional[PerformanceTracker] = (
+            PerformanceTracker() if enable_monitoring else None
+        )
+        self.model_compressor: Optional[ModelCompressor] = (
+            ModelCompressor() if enable_compression else None
+        )
+        self.adaptive_lr: Optional[AdaptiveLearningRate] = (
+            AdaptiveLearningRate() if enable_adaptive_lr else None
+        )
         self.executor = ThreadPoolExecutor(max_workers=4)
-        
+
         # Initialize wandb if configured
-        if self.config.get('use_wandb', False):
+        if self.config.get("use_wandb", False):
             wandb.init(project="bleu-ai", config=self.config)
-        
+
         logger.info("XGBoost model initialized with configuration")
 
     async def initialize(self):
@@ -113,7 +140,7 @@ class XGBoostModel:
                 init_tasks.append(self.ensemble_manager.initialize())
             if self.explainability_engine:
                 init_tasks.append(self.explainability_engine.initialize())
-            
+
             # Initialize advanced components
             if self.quantum_optimizer:
                 init_tasks.append(self.quantum_optimizer.initialize())
@@ -127,7 +154,7 @@ class XGBoostModel:
                 init_tasks.append(self.model_compressor.initialize())
             if self.adaptive_lr:
                 init_tasks.append(self.adaptive_lr.initialize())
-            
+
             await asyncio.gather(*init_tasks)
             logging.info("✅ All components initialized successfully")
         except Exception as e:
@@ -163,10 +190,7 @@ class XGBoostModel:
             return False
 
     async def optimize_hyperparameters(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        n_trials: int = 20
+        self, X: np.ndarray, y: np.ndarray, n_trials: int = 20
     ) -> Dict:
         """Optimize XGBoost hyperparameters using quantum-enhanced Optuna."""
         try:
@@ -178,7 +202,7 @@ class XGBoostModel:
                 study = optuna.create_study(direction="maximize")
                 study.optimize(self._objective, n_trials=n_trials)
                 self.best_params = study.best_params
-            
+
             return self.best_params
         except Exception as e:
             logging.error(f"❌ Hyperparameter optimization failed: {str(e)}")
@@ -189,7 +213,7 @@ class XGBoostModel:
         X: np.ndarray,
         y: np.ndarray,
         use_optimization: bool = True,
-        n_trials: int = 20
+        n_trials: int = 20,
     ) -> Dict:
         """Train the model with advanced features."""
         try:
@@ -218,10 +242,7 @@ class XGBoostModel:
                 await self.performance_tracker.stopTracking()
 
     async def _generate_visualizations(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        y_pred: np.ndarray
+        self, X: np.ndarray, y: np.ndarray, y_pred: np.ndarray
     ):
         """Generate advanced visualizations for model analysis."""
         try:
@@ -233,10 +254,7 @@ class XGBoostModel:
 
             # SHAP values plot if available
             if self.shap_values is not None:
-                shap_fig = await self.visualizer.plot_shap_values(
-                    self.shap_values,
-                    X
-                )
+                shap_fig = await self.visualizer.plot_shap_values(self.shap_values, X)
                 wandb.log({"shap_values": wandb.Image(shap_fig)})
 
             # ROC curve
@@ -244,15 +262,13 @@ class XGBoostModel:
             wandb.log({"roc_curve": wandb.Image(roc_fig)})
 
             # Learning curves
-            learning_fig = await self.visualizer.plot_learning_curves(
-                self.model, X, y
-            )
+            learning_fig = await self.visualizer.plot_learning_curves(self.model, X, y)
             wandb.log({"learning_curves": wandb.Image(learning_fig)})
 
             # Uncertainty distribution
             if self.enable_uncertainty:
                 uncertainty_fig = await self.visualizer.plot_uncertainty_distribution(
-                    self.metrics['uncertainty']
+                    self.metrics["uncertainty"]
                 )
                 wandb.log({"uncertainty_distribution": wandb.Image(uncertainty_fig)})
 
@@ -269,7 +285,9 @@ class XGBoostModel:
             # Log performance data
             if self.enable_monitoring and self.performance_tracker is not None:
                 try:
-                    performance_data = await self.performance_tracker.analyzePerformance()
+                    performance_data = (
+                        await self.performance_tracker.analyzePerformance()
+                    )
                     if performance_data:
                         mlflow.log_metrics(performance_data)
                         wandb.log(performance_data)
@@ -278,12 +296,14 @@ class XGBoostModel:
 
             # Log to Weights & Biases
             if self.model is not None and self.feature_importances is not None:
-                wandb.log({
-                    **self.metrics,
-                    'hyperparameters': self.best_params or {},
-                    'model_architecture': self.model.get_booster().get_dump(),
-                    'feature_importances': self.feature_importances.tolist()
-                })
+                wandb.log(
+                    {
+                        **self.metrics,
+                        "hyperparameters": self.best_params or {},
+                        "model_architecture": self.model.get_booster().get_dump(),
+                        "feature_importances": self.feature_importances.tolist(),
+                    }
+                )
 
         except Exception as e:
             logging.warning(f"⚠️ Failed to log advanced metrics: {str(e)}")
@@ -293,7 +313,7 @@ class XGBoostModel:
         X: np.ndarray,
         return_proba: bool = False,
         return_uncertainty: bool = False,
-        return_explanation: bool = False
+        return_explanation: bool = False,
     ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
         """Make predictions with uncertainty and explanations."""
         try:
@@ -328,14 +348,15 @@ class XGBoostModel:
 
             # Add uncertainty if requested
             if return_uncertainty and self.uncertainty_handler is not None:
-                uncertainty = await self.uncertainty_handler.calculateUncertainty(X_scaled)
+                uncertainty = await self.uncertainty_handler.calculateUncertainty(
+                    X_scaled
+                )
                 result.append(uncertainty)
 
             # Add explanations if requested
             if return_explanation and self.explainability_engine is not None:
                 explanation = await self.explainability_engine.explain(
-                    predictions,
-                    X_scaled
+                    predictions, X_scaled
                 )
                 result.append(explanation)
 
@@ -388,7 +409,11 @@ class XGBoostModel:
 
     def get_feature_importances(self) -> np.ndarray:
         """Get feature importance scores."""
-        return self.feature_importances if self.feature_importances is not None else np.array([])
+        return (
+            self.feature_importances
+            if self.feature_importances is not None
+            else np.array([])
+        )
 
     async def analyze_performance(self) -> Dict:
         """Analyze model performance metrics."""
@@ -399,4 +424,4 @@ class XGBoostModel:
             return metrics
         except Exception as e:
             logging.error(f"❌ Failed to analyze performance: {str(e)}")
-            return {} 
+            return {}

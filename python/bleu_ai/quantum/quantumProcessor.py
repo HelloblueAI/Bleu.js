@@ -10,12 +10,10 @@ import pennylane as qml
 import torch
 import torch.nn as nn
 
+
 class QuantumProcessor:
     def __init__(
-        self,
-        n_qubits: int = 4,
-        n_layers: int = 2,
-        device: str = 'default.qubit'
+        self, n_qubits: int = 4, n_layers: int = 2, device: str = "default.qubit"
     ):
         self.n_qubits = n_qubits
         self.n_layers = n_layers
@@ -29,7 +27,7 @@ class QuantumProcessor:
         try:
             # Initialize PennyLane device
             self.dev = qml.device(self.device, wires=self.n_qubits)
-            
+
             # Define quantum circuit
             @qml.qnode(self.dev)
             def circuit(inputs, weights):
@@ -37,7 +35,7 @@ class QuantumProcessor:
                 for i in range(self.n_qubits):
                     qml.RX(inputs[i], wires=i)
                     qml.RY(inputs[i], wires=i)
-                
+
                 # Apply variational layers
                 for layer in range(self.n_layers):
                     for i in range(self.n_qubits):
@@ -45,10 +43,10 @@ class QuantumProcessor:
                     for i in range(self.n_qubits - 1):
                         qml.CNOT(wires=[i, i + 1])
                     qml.CNOT(wires=[self.n_qubits - 1, 0])
-                
+
                 # Measure observables
                 return [qml.expval(qml.PauliZ(i)) for i in range(self.n_qubits)]
-            
+
             self.circuit = circuit
             self.initialized = True
             logging.info("✅ Quantum processor initialized successfully")
@@ -57,9 +55,7 @@ class QuantumProcessor:
             raise
 
     async def enhanceInput(
-        self,
-        data: np.ndarray,
-        weights: Optional[np.ndarray] = None
+        self, data: np.ndarray, weights: Optional[np.ndarray] = None
     ) -> np.ndarray:
         """Enhance input data using quantum processing."""
         try:
@@ -74,17 +70,23 @@ class QuantumProcessor:
             enhanced_data = []
             for batch in data:
                 # Normalize batch to [-π, π]
-                normalized = np.interp(batch, (batch.min(), batch.max()), (-np.pi, np.pi))
-                
+                normalized = np.interp(
+                    batch, (batch.min(), batch.max()), (-np.pi, np.pi)
+                )
+
                 # Pad or truncate to match number of qubits
                 if len(normalized) < self.n_qubits:
-                    normalized = np.pad(normalized, (0, self.n_qubits - len(normalized)))
+                    normalized = np.pad(
+                        normalized, (0, self.n_qubits - len(normalized))
+                    )
                 else:
-                    normalized = normalized[:self.n_qubits]
-                
+                    normalized = normalized[: self.n_qubits]
+
                 # Apply quantum circuit
                 if self.circuit is None:
-                    raise RuntimeError("Quantum circuit not initialized. Call initialize() first.")
+                    raise RuntimeError(
+                        "Quantum circuit not initialized. Call initialize() first."
+                    )
                 result = self.circuit(normalized, weights)
                 enhanced_data.append(result)
 
@@ -95,10 +97,7 @@ class QuantumProcessor:
             raise
 
     async def optimizeWeights(
-        self,
-        data: np.ndarray,
-        target: np.ndarray,
-        n_steps: int = 100
+        self, data: np.ndarray, target: np.ndarray, n_steps: int = 100
     ) -> np.ndarray:
         """Optimize quantum circuit weights."""
         try:
@@ -113,16 +112,13 @@ class QuantumProcessor:
             # Training loop
             for step in range(n_steps):
                 optimizer.zero_grad()
-                
+
                 # Forward pass
                 enhanced = await self.enhanceInput(data, weights.detach().numpy())
-                
+
                 # Calculate loss
-                loss = torch.nn.MSELoss()(
-                    torch.tensor(enhanced),
-                    torch.tensor(target)
-                )
-                
+                loss = torch.nn.MSELoss()(torch.tensor(enhanced), torch.tensor(target))
+
                 # Backward pass
                 loss.backward()
                 optimizer.step()
@@ -145,4 +141,4 @@ class QuantumProcessor:
             logging.info("✅ Quantum processor resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up quantum processor: {str(e)}")
-            raise 
+            raise

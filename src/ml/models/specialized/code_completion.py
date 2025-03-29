@@ -24,9 +24,12 @@
 from transformers import pipeline
 from typing import Optional
 
+
 class CodeCompletion:
     def __init__(self):
-        self.generator: Optional[pipeline] = pipeline("text-generation", model="codellama/CodeLlama-7b")
+        self.generator: Optional[pipeline] = pipeline(
+            "text-generation", model="codellama/CodeLlama-7b"
+        )
 
     def complete_code(self, prompt: str) -> str:
         """Generate code based on a given prompt."""
@@ -36,6 +39,7 @@ class CodeCompletion:
         if not result:
             raise ValueError("No code generated")
         return result[0]["generated_text"]
+
 
 if __name__ == "__main__":
     completion = CodeCompletion()

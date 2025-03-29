@@ -19,4 +19,4 @@ __all__ = [
     "__author__",
     "__email__",
     "__license__",
-] 
+]

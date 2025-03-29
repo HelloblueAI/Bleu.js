@@ -2,4 +2,4 @@
 
 from .deep_learning import DeepLearningProcessor
 
-__all__ = ["DeepLearningProcessor"] 
+__all__ = ["DeepLearningProcessor"]

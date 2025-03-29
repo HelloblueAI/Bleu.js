@@ -18,13 +18,14 @@ from scipy import stats
 
 logger = logging.getLogger(__name__)
 
+
 class FeatureAnalyzer:
     def __init__(
         self,
-        method: str = 'shap',
+        method: str = "shap",
         n_features: Optional[int] = None,
         threshold: float = 0.01,
-        n_estimators: int = 100
+        n_estimators: int = 100,
     ):
         self.method = method
         self.n_features = n_features
@@ -46,10 +47,7 @@ class FeatureAnalyzer:
             raise
 
     async def analyze(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        feature_names: Optional[List[str]] = None
+        self, X: np.ndarray, y: np.ndarray, feature_names: Optional[List[str]] = None
     ) -> Dict:
         """Analyze features using various methods."""
         try:
@@ -82,35 +80,27 @@ class FeatureAnalyzer:
 
             # Create visualizations
             await self._create_visualizations(
-                X_scaled,
-                importance,
-                interactions,
-                feature_names
+                X_scaled, importance, interactions, feature_names
             )
 
             return {
-                'feature_importances': importance,
-                'feature_interactions': interactions,
-                'selected_features': selected,
-                'feature_names': feature_names
+                "feature_importances": importance,
+                "feature_interactions": interactions,
+                "selected_features": selected,
+                "feature_names": feature_names,
             }
 
         except Exception as e:
             logging.error(f"❌ Feature analysis failed: {str(e)}")
             raise
 
-    async def _calculate_importance(
-        self,
-        X: np.ndarray,
-        y: np.ndarray
-    ) -> np.ndarray:
+    async def _calculate_importance(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Calculate feature importance using specified method."""
         try:
-            if self.method == 'shap':
+            if self.method == "shap":
                 # Use SHAP values
                 model = RandomForestClassifier(
-                    n_estimators=self.n_estimators,
-                    random_state=42
+                    n_estimators=self.n_estimators, random_state=42
                 )
                 model.fit(X, y)
                 explainer = shap.TreeExplainer(model)
@@ -119,18 +109,17 @@ class FeatureAnalyzer:
                     importance = np.abs(shap_values[0]).mean(0)
                 else:
                     importance = np.abs(shap_values).mean(0)
-            elif self.method == 'mutual_info':
+            elif self.method == "mutual_info":
                 # Use mutual information
                 if len(np.unique(y)) > 2:
                     importance = mutual_info_classif(X, y)
                 else:
                     importance = mutual_info_regression(X, y)
-            elif self.method == 'correlation':
+            elif self.method == "correlation":
                 # Use correlation coefficients
-                importance = np.array([
-                    abs(spearmanr(X[:, i], y)[0])
-                    for i in range(X.shape[1])
-                ])
+                importance = np.array(
+                    [abs(spearmanr(X[:, i], y)[0]) for i in range(X.shape[1])]
+                )
             else:
                 raise ValueError(f"Unsupported importance method: {self.method}")
 
@@ -140,10 +129,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature importance calculation failed: {str(e)}")
             raise
 
-    async def _calculate_interactions(
-        self,
-        X: np.ndarray
-    ) -> np.ndarray:
+    async def _calculate_interactions(self, X: np.ndarray) -> np.ndarray:
         """Calculate feature interactions."""
         try:
             # Calculate correlation matrix
@@ -158,11 +144,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature interaction calculation failed: {str(e)}")
             raise
 
-    async def _select_features(
-        self,
-        X: np.ndarray,
-        y: np.ndarray
-    ) -> List[int]:
+    async def _select_features(self, X: np.ndarray, y: np.ndarray) -> List[int]:
         """Select important features based on importance scores."""
         try:
             if self.feature_importances is None:
@@ -170,7 +152,7 @@ class FeatureAnalyzer:
 
             if self.n_features is not None:
                 # Select top N features
-                selected = np.argsort(self.feature_importances)[-self.n_features:]
+                selected = np.argsort(self.feature_importances)[-self.n_features :]
             else:
                 # Select features above threshold
                 selected = np.where(self.feature_importances > self.threshold)[0]
@@ -186,21 +168,20 @@ class FeatureAnalyzer:
         X: np.ndarray,
         importance: np.ndarray,
         interactions: np.ndarray,
-        feature_names: List[str]
+        feature_names: List[str],
     ):
         """Create feature analysis visualizations."""
         try:
             # Feature importance plot
             plt.figure(figsize=(10, 6))
-            importance_df = pd.DataFrame({
-                'Feature': feature_names,
-                'Importance': importance
-            })
-            importance_df = importance_df.sort_values('Importance', ascending=True)
-            sns.barplot(data=importance_df, x='Importance', y='Feature')
-            plt.title('Feature Importance')
+            importance_df = pd.DataFrame(
+                {"Feature": feature_names, "Importance": importance}
+            )
+            importance_df = importance_df.sort_values("Importance", ascending=True)
+            sns.barplot(data=importance_df, x="Importance", y="Feature")
+            plt.title("Feature Importance")
             plt.tight_layout()
-            plt.savefig('feature_importance.png')
+            plt.savefig("feature_importance.png")
             plt.close()
 
             # Feature interaction heatmap
@@ -209,23 +190,23 @@ class FeatureAnalyzer:
                 interactions,
                 xticklabels=feature_names,
                 yticklabels=feature_names,
-                cmap='coolwarm',
+                cmap="coolwarm",
                 center=0,
-                annot=True
+                annot=True,
             )
-            plt.title('Feature Interactions')
+            plt.title("Feature Interactions")
             plt.tight_layout()
-            plt.savefig('feature_interactions.png')
+            plt.savefig("feature_interactions.png")
             plt.close()
 
             # Selected features plot
             if self.selected_features is not None:
                 plt.figure(figsize=(10, 6))
                 selected_df = importance_df.iloc[self.selected_features]
-                sns.barplot(data=selected_df, x='Importance', y='Feature')
-                plt.title('Selected Features')
+                sns.barplot(data=selected_df, x="Importance", y="Feature")
+                plt.title("Selected Features")
                 plt.tight_layout()
-                plt.savefig('selected_features.png')
+                plt.savefig("selected_features.png")
                 plt.close()
 
             logging.info("✅ Feature analysis visualizations created successfully")
@@ -264,39 +245,41 @@ class FeatureAnalyzer:
         try:
             if features is None or len(features) == 0:
                 return {}
-                
+
             # Scale features
             if self.scaler is None:
                 logger.error("Scaler not initialized")
                 return {}
-                
+
             features_scaled = self.scaler.fit_transform(features)
-            
+
             # Calculate statistics
             stats_dict = {
-                'mean': np.mean(features_scaled, axis=0),
-                'std': np.std(features_scaled, axis=0),
-                'skew': stats.skew(features_scaled),
-                'kurtosis': stats.kurtosis(features_scaled)
+                "mean": np.mean(features_scaled, axis=0),
+                "std": np.std(features_scaled, axis=0),
+                "skew": stats.skew(features_scaled),
+                "kurtosis": stats.kurtosis(features_scaled),
             }
-            
+
             return stats_dict
         except Exception as e:
             logger.error(f"Feature analysis error: {e}")
             return {}
 
-    def select_features(self, features: np.ndarray, threshold: float = 0.1) -> List[int]:
+    def select_features(
+        self, features: np.ndarray, threshold: float = 0.1
+    ) -> List[int]:
         """Select features based on importance."""
         try:
             if features is None or len(features) == 0:
                 return []
-                
+
             # Calculate feature importance
             importance = self._calculate_importance(features)
-            
+
             # Select features above threshold
             selected = np.where(importance > threshold)[0]
-            
+
             return selected.tolist()
         except Exception as e:
             logger.error(f"Feature selection error: {e}")
@@ -307,19 +290,19 @@ class FeatureAnalyzer:
         try:
             if features is None or len(features) == 0:
                 return np.array([])
-                
+
             # Apply transformations
             transformed = features.copy()
-            
+
             # Add polynomial features if configured
             if self.config.use_polynomial:
                 poly = PolynomialFeatures(degree=2)
                 transformed = poly.fit_transform(transformed)
-                
+
             # Add interaction features if configured
             if self.config.use_interactions:
                 transformed = self._add_interaction_features(transformed)
-                
+
             return transformed
         except Exception as e:
             logger.error(f"Feature transformation error: {e}")
@@ -330,10 +313,10 @@ class FeatureAnalyzer:
         try:
             if features is None or len(features) == 0:
                 return np.array([])
-                
+
             # Use mutual information for feature importance
             importance = mutual_info_classif(features, np.zeros(len(features)))
             return importance
         except Exception as e:
             logger.error(f"Feature importance calculation error: {e}")
-            return np.array([]) 
+            return np.array([])

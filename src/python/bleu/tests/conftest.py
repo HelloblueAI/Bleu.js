@@ -1,10 +1,12 @@
 """Common test fixtures and configuration."""
+
 import os
 import pytest
 import numpy as np
 import tensorflow as tf
 import torch
 from typing import Generator, Dict, Any
+
 
 @pytest.fixture(scope="session")
 def random_seed() -> int:
@@ -14,6 +16,7 @@ def random_seed() -> int:
     tf.random.set_seed(seed)
     torch.manual_seed(seed)
     return seed
+
 
 @pytest.fixture(scope="session")
 def test_data() -> Dict[str, Any]:
@@ -25,16 +28,20 @@ def test_data() -> Dict[str, Any]:
         "sample_image": np.random.randn(224, 224, 3),
     }
 
+
 @pytest.fixture(scope="session")
 def test_model() -> tf.keras.Model:
     """Create a simple test model."""
-    model = tf.keras.Sequential([
-        tf.keras.layers.Dense(64, activation="relu", input_shape=(10,)),
-        tf.keras.layers.Dense(32, activation="relu"),
-        tf.keras.layers.Dense(1, activation="sigmoid"),
-    ])
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Dense(64, activation="relu", input_shape=(10,)),
+            tf.keras.layers.Dense(32, activation="relu"),
+            tf.keras.layers.Dense(1, activation="sigmoid"),
+        ]
+    )
     model.compile(optimizer="adam", loss="binary_crossentropy")
     return model
+
 
 @pytest.fixture(scope="session")
 def test_env() -> Generator[Dict[str, str], None, None]:
@@ -54,17 +61,20 @@ def test_env() -> Generator[Dict[str, str], None, None]:
         else:
             os.environ[k] = v
 
+
 @pytest.fixture(scope="function")
 def mock_logger(mocker) -> Any:
     """Create a mock logger."""
     return mocker.patch("bleu.utils.logger")
+
 
 @pytest.fixture(scope="function")
 def mock_quantum_backend(mocker) -> Any:
     """Create a mock quantum backend."""
     return mocker.patch("bleu.quantum.backend")
 
+
 @pytest.fixture(scope="function")
 def mock_ai_model(mocker) -> Any:
     """Create a mock AI model."""
-    return mocker.patch("bleu.ai.model") 
+    return mocker.patch("bleu.ai.model")

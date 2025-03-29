@@ -9,4 +9,4 @@ __email__ = "support@helloblue.ai"
 from .quantum_detector import AdvancedQuantumDetector
 from .utils import setup_logging, get_metrics
 
-__all__ = ["AdvancedQuantumDetector", "setup_logging", "get_metrics"] 
+__all__ = ["AdvancedQuantumDetector", "setup_logging", "get_metrics"]

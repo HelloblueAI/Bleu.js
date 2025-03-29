@@ -14,12 +14,13 @@ from typing import Dict, List, Optional, Tuple, Union
 from sklearn.metrics import roc_curve, auc, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
+
 class AdvancedPlots:
     def __init__(
         self,
-        style: str = 'seaborn',
+        style: str = "seaborn",
         color_palette: Optional[List[str]] = None,
-        figsize: Tuple[int, int] = (12, 8)
+        figsize: Tuple[int, int] = (12, 8),
     ):
         self.style = style
         self.color_palette = color_palette or sns.color_palette("husl", 10)
@@ -42,7 +43,7 @@ class AdvancedPlots:
         feature_importance: np.ndarray,
         feature_names: List[str],
         title: str = "Feature Importance",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot feature importance with advanced styling."""
         try:
@@ -54,24 +55,24 @@ class AdvancedPlots:
 
             # Sort features by importance
             sorted_idx = np.argsort(feature_importance)
-            pos = np.arange(sorted_idx.shape[0]) + .5
+            pos = np.arange(sorted_idx.shape[0]) + 0.5
 
             # Create bar plot
-            plt.barh(pos, feature_importance[sorted_idx], align='center')
+            plt.barh(pos, feature_importance[sorted_idx], align="center")
             plt.yticks(pos, np.array(feature_names)[sorted_idx])
 
             # Add value labels
             for i, v in enumerate(feature_importance[sorted_idx]):
-                plt.text(v, i, f'{v:.3f}', va='center')
+                plt.text(v, i, f"{v:.3f}", va="center")
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xlabel('Importance Score')
+            plt.xlabel("Importance Score")
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ Feature importance plot saved to {save_path}")
 
             plt.close()
@@ -86,7 +87,7 @@ class AdvancedPlots:
         val_scores: np.ndarray,
         train_sizes: np.ndarray,
         title: str = "Learning Curves",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot learning curves with confidence intervals."""
         try:
@@ -103,35 +104,45 @@ class AdvancedPlots:
             plt.figure(figsize=self.figsize)
 
             # Plot learning curves
-            plt.plot(train_sizes, train_mean, label='Training score', color=self.color_palette[0])
+            plt.plot(
+                train_sizes,
+                train_mean,
+                label="Training score",
+                color=self.color_palette[0],
+            )
             plt.fill_between(
                 train_sizes,
                 train_mean - train_std,
                 train_mean + train_std,
                 alpha=0.1,
-                color=self.color_palette[0]
+                color=self.color_palette[0],
             )
 
-            plt.plot(train_sizes, val_mean, label='Cross-validation score', color=self.color_palette[1])
+            plt.plot(
+                train_sizes,
+                val_mean,
+                label="Cross-validation score",
+                color=self.color_palette[1],
+            )
             plt.fill_between(
                 train_sizes,
                 val_mean - val_std,
                 val_mean + val_std,
                 alpha=0.1,
-                color=self.color_palette[1]
+                color=self.color_palette[1],
             )
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xlabel('Training Examples')
-            plt.ylabel('Score')
+            plt.xlabel("Training Examples")
+            plt.ylabel("Score")
             plt.grid(True)
-            plt.legend(loc='best')
+            plt.legend(loc="best")
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ Learning curves plot saved to {save_path}")
 
             plt.close()
@@ -146,7 +157,7 @@ class AdvancedPlots:
         y_pred: np.ndarray,
         classes: Optional[List[str]] = None,
         title: str = "Confusion Matrix",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot confusion matrix with advanced styling."""
         try:
@@ -163,21 +174,21 @@ class AdvancedPlots:
             sns.heatmap(
                 cm,
                 annot=True,
-                fmt='d',
-                cmap='Blues',
+                fmt="d",
+                cmap="Blues",
                 xticklabels=classes or [str(i) for i in range(cm.shape[1])],
-                yticklabels=classes or [str(i) for i in range(cm.shape[0])]
+                yticklabels=classes or [str(i) for i in range(cm.shape[0])],
             )
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xlabel('Predicted')
-            plt.ylabel('True')
+            plt.xlabel("Predicted")
+            plt.ylabel("True")
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ Confusion matrix plot saved to {save_path}")
 
             plt.close()
@@ -191,7 +202,7 @@ class AdvancedPlots:
         y_true: np.ndarray,
         y_pred_proba: np.ndarray,
         title: str = "ROC Curve",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot ROC curve with AUC score."""
         try:
@@ -211,21 +222,21 @@ class AdvancedPlots:
                 tpr,
                 color=self.color_palette[0],
                 lw=2,
-                label=f'ROC curve (AUC = {roc_auc:.2f})'
+                label=f"ROC curve (AUC = {roc_auc:.2f})",
             )
-            plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+            plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xlabel('False Positive Rate')
-            plt.ylabel('True Positive Rate')
+            plt.xlabel("False Positive Rate")
+            plt.ylabel("True Positive Rate")
             plt.grid(True)
-            plt.legend(loc='lower right')
+            plt.legend(loc="lower right")
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ ROC curve plot saved to {save_path}")
 
             plt.close()
@@ -239,7 +250,7 @@ class AdvancedPlots:
         X: np.ndarray,
         feature_names: List[str],
         title: str = "Feature Correlations",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot feature correlation matrix."""
         try:
@@ -256,21 +267,21 @@ class AdvancedPlots:
             sns.heatmap(
                 corr_matrix,
                 annot=True,
-                cmap='coolwarm',
+                cmap="coolwarm",
                 center=0,
                 xticklabels=feature_names,
-                yticklabels=feature_names
+                yticklabels=feature_names,
             )
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xticks(rotation=45, ha='right')
+            plt.xticks(rotation=45, ha="right")
             plt.yticks(rotation=0)
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ Feature correlations plot saved to {save_path}")
 
             plt.close()
@@ -284,7 +295,7 @@ class AdvancedPlots:
         data: np.ndarray,
         feature_names: List[str],
         title: str = "Feature Distributions",
-        save_path: Optional[str] = None
+        save_path: Optional[str] = None,
     ) -> None:
         """Plot feature distributions with advanced styling."""
         try:
@@ -299,20 +310,20 @@ class AdvancedPlots:
                 sns.kdeplot(
                     feature,
                     label=name,
-                    color=self.color_palette[i % len(self.color_palette)]
+                    color=self.color_palette[i % len(self.color_palette)],
                 )
 
             # Customize plot
             plt.title(title, pad=20)
-            plt.xlabel('Value')
-            plt.ylabel('Density')
+            plt.xlabel("Value")
+            plt.ylabel("Density")
             plt.grid(True)
             plt.legend()
             plt.tight_layout()
 
             # Save plot if path provided
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 logging.info(f"✅ Distribution plot saved to {save_path}")
 
             plt.close()
@@ -324,9 +335,9 @@ class AdvancedPlots:
     async def dispose(self):
         """Clean up resources."""
         try:
-            plt.close('all')
+            plt.close("all")
             self.initialized = False
             logging.info("✅ Advanced plots resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up advanced plots: {str(e)}")
-            raise 
+            raise

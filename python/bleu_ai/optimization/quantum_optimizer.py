@@ -11,13 +11,14 @@ import torch
 import torch.nn as nn
 from scipy.optimize import minimize
 
+
 class QuantumOptimizer:
     def __init__(
         self,
         n_qubits: int = 4,
         n_layers: int = 2,
         learning_rate: float = 0.01,
-        device: str = 'default.qubit'
+        device: str = "default.qubit",
     ):
         self.n_qubits = n_qubits
         self.n_layers = n_layers
@@ -38,7 +39,7 @@ class QuantumOptimizer:
                             weights[layer, i, 0],
                             weights[layer, i, 1],
                             weights[layer, i, 2],
-                            wires=i
+                            wires=i,
                         )
                     for i in range(self.n_qubits - 1):
                         qml.CNOT(wires=[i, i + 1])
@@ -56,7 +57,7 @@ class QuantumOptimizer:
         objective_function: callable,
         initial_params: Optional[np.ndarray] = None,
         n_iterations: int = 100,
-        method: str = 'COBYLA'
+        method: str = "COBYLA",
     ) -> Dict:
         """Optimize parameters using quantum-enhanced optimization."""
         try:
@@ -73,11 +74,11 @@ class QuantumOptimizer:
                 if self.circuit is None:
                     raise ValueError("Quantum circuit not initialized")
                 quantum_outputs = self.circuit(params)
-                
+
                 # Combine with classical objective
                 classical_value = objective_function(params)
                 quantum_value = np.mean(quantum_outputs)
-                
+
                 # Weighted combination
                 return 0.7 * classical_value + 0.3 * quantum_value
 
@@ -86,14 +87,14 @@ class QuantumOptimizer:
                 quantum_objective,
                 initial_params,
                 method=method,
-                options={'maxiter': n_iterations}
+                options={"maxiter": n_iterations},
             )
 
             return {
-                'optimal_params': result.x,
-                'optimal_value': result.fun,
-                'success': result.success,
-                'n_iterations': result.nit
+                "optimal_params": result.x,
+                "optimal_value": result.fun,
+                "success": result.success,
+                "n_iterations": result.nit,
             }
 
         except Exception as e:
@@ -106,7 +107,7 @@ class QuantumOptimizer:
         train_data: torch.Tensor,
         train_labels: torch.Tensor,
         n_epochs: int = 10,
-        batch_size: int = 32
+        batch_size: int = 32,
     ) -> Dict:
         """Optimize a PyTorch model using quantum-enhanced training."""
         try:
@@ -118,11 +119,7 @@ class QuantumOptimizer:
             criterion = nn.CrossEntropyLoss()
 
             # Training history
-            history = {
-                'train_loss': [],
-                'train_acc': [],
-                'quantum_enhancement': []
-            }
+            history = {"train_loss": [], "train_acc": [], "quantum_enhancement": []}
 
             # Training loop
             for epoch in range(n_epochs):
@@ -133,8 +130,8 @@ class QuantumOptimizer:
 
                 # Batch training
                 for i in range(0, len(train_data), batch_size):
-                    batch_data = train_data[i:i + batch_size]
-                    batch_labels = train_labels[i:i + batch_size]
+                    batch_data = train_data[i : i + batch_size]
+                    batch_labels = train_labels[i : i + batch_size]
 
                     # Forward pass
                     outputs = model(batch_data)
@@ -161,9 +158,11 @@ class QuantumOptimizer:
                     correct += (predicted == batch_labels).sum().item()
 
                 # Record metrics
-                history['train_loss'].append(total_loss / (len(train_data) / batch_size))
-                history['train_acc'].append(100 * correct / total)
-                history['quantum_enhancement'].append(quantum_enhancement)
+                history["train_loss"].append(
+                    total_loss / (len(train_data) / batch_size)
+                )
+                history["train_acc"].append(100 * correct / total)
+                history["quantum_enhancement"].append(quantum_enhancement)
 
                 logging.info(
                     f"Epoch [{epoch + 1}/{n_epochs}], "
@@ -184,14 +183,14 @@ class QuantumOptimizer:
         train_data: np.ndarray,
         train_labels: np.ndarray,
         param_grid: Dict,
-        n_trials: int = 50
+        n_trials: int = 50,
     ) -> Dict:
         """Optimize hyperparameters using quantum-enhanced search."""
         try:
             if not self.initialized or self.circuit is None:
                 await self.initialize()
 
-            best_score = float('-inf')
+            best_score = float("-inf")
             best_params = None
             results = []
 
@@ -199,8 +198,7 @@ class QuantumOptimizer:
             for _ in range(n_trials):
                 # Sample parameters
                 params = {
-                    key: np.random.choice(values)
-                    for key, values in param_grid.items()
+                    key: np.random.choice(values) for key, values in param_grid.items()
                 }
 
                 # Create and train model
@@ -217,21 +215,23 @@ class QuantumOptimizer:
                 quantum_enhancement = np.mean(quantum_outputs)
                 enhanced_score = score * (1 + 0.1 * quantum_enhancement)
 
-                results.append({
-                    'params': params,
-                    'score': score,
-                    'quantum_enhancement': quantum_enhancement,
-                    'enhanced_score': enhanced_score
-                })
+                results.append(
+                    {
+                        "params": params,
+                        "score": score,
+                        "quantum_enhancement": quantum_enhancement,
+                        "enhanced_score": enhanced_score,
+                    }
+                )
 
                 if enhanced_score > best_score:
                     best_score = enhanced_score
                     best_params = params
 
             return {
-                'best_params': best_params,
-                'best_score': best_score,
-                'results': results
+                "best_params": best_params,
+                "best_score": best_score,
+                "results": results,
             }
 
         except Exception as e:
@@ -247,4 +247,4 @@ class QuantumOptimizer:
             logging.info("✅ Quantum optimizer resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up quantum optimizer: {str(e)}")
-            raise 
+            raise

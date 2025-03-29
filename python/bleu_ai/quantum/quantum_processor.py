@@ -10,13 +10,14 @@ import pennylane as qml
 import torch
 from sklearn.preprocessing import MinMaxScaler
 
+
 class QuantumProcessor:
     def __init__(
         self,
         n_qubits: int = 4,
         n_layers: int = 2,
-        device: str = 'default.qubit',
-        shots: int = 1000
+        device: str = "default.qubit",
+        shots: int = 1000,
     ):
         self.n_qubits = n_qubits
         self.n_layers = n_layers
@@ -65,8 +66,7 @@ class QuantumProcessor:
             raise
 
     async def enhanceInput(
-        self,
-        X: Union[np.ndarray, torch.Tensor]
+        self, X: Union[np.ndarray, torch.Tensor]
     ) -> Union[np.ndarray, torch.Tensor]:
         """Enhance input data using quantum processing."""
         try:
@@ -92,9 +92,7 @@ class QuantumProcessor:
 
             # Initialize quantum weights
             weights = np.random.uniform(
-                low=-np.pi,
-                high=np.pi,
-                size=(self.n_layers, self.n_qubits, 3)
+                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
             )
 
             # Process each sample through quantum circuit
@@ -119,10 +117,7 @@ class QuantumProcessor:
             raise
 
     async def optimizeCircuit(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        n_epochs: int = 100
+        self, X: np.ndarray, y: np.ndarray, n_epochs: int = 100
     ) -> Dict[str, Any]:
         """Optimize quantum circuit parameters."""
         try:
@@ -143,13 +138,13 @@ class QuantumProcessor:
 
             # Initialize weights
             weights = np.random.uniform(
-                low=-np.pi,
-                high=np.pi,
-                size=(self.n_layers, self.n_qubits, 3)
+                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
             )
 
             # Define cost function
-            def cost(weights: np.ndarray, X_batch: np.ndarray, y_batch: np.ndarray) -> float:
+            def cost(
+                weights: np.ndarray, X_batch: np.ndarray, y_batch: np.ndarray
+            ) -> float:
                 predictions = []
                 for x in X_batch:
                     quantum_output = circuit_fn(x, weights)
@@ -161,10 +156,7 @@ class QuantumProcessor:
             loss_history = []
 
             for epoch in range(n_epochs):
-                weights = opt.step(
-                    lambda w: cost(w, X_scaled, y),
-                    weights
-                )
+                weights = opt.step(lambda w: cost(w, X_scaled, y), weights)
                 loss = cost(weights, X_scaled, y)
                 loss_history.append(loss)
 
@@ -172,9 +164,9 @@ class QuantumProcessor:
                     logging.info(f"Epoch {epoch}: Loss = {loss:.4f}")
 
             return {
-                'optimized_weights': weights,
-                'loss_history': loss_history,
-                'final_loss': loss_history[-1]
+                "optimized_weights": weights,
+                "loss_history": loss_history,
+                "final_loss": loss_history[-1],
             }
 
         except Exception as e:
@@ -182,9 +174,7 @@ class QuantumProcessor:
             raise
 
     async def measureUncertainty(
-        self,
-        X: np.ndarray,
-        n_samples: int = 100
+        self, X: np.ndarray, n_samples: int = 100
     ) -> np.ndarray:
         """Measure quantum uncertainty in predictions."""
         try:
@@ -205,9 +195,7 @@ class QuantumProcessor:
 
             # Initialize weights
             weights = np.random.uniform(
-                low=-np.pi,
-                high=np.pi,
-                size=(self.n_layers, self.n_qubits, 3)
+                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
             )
 
             # Collect predictions
@@ -240,4 +228,4 @@ class QuantumProcessor:
             logging.info("✅ Quantum resources cleaned up successfully")
         except Exception as e:
             logging.error(f"❌ Failed to clean up quantum resources: {str(e)}")
-            raise 
+            raise

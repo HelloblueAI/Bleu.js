@@ -23,6 +23,7 @@
 
 from transformers import pipeline
 
+
 class SentimentEngine:
     def __init__(self):
         self.sentiment_model = pipeline("sentiment-analysis")
@@ -35,6 +36,7 @@ class SentimentEngine:
         if result is None or len(result) == 0:
             raise RuntimeError("Sentiment analysis failed to produce results")
         return result[0]  # Return label & confidence score
+
 
 if __name__ == "__main__":
     engine = SentimentEngine()

@@ -1,1 +1,1 @@
-"""Machine learning modules with quantum enhancements.""" 
+"""Machine learning modules with quantum enhancements."""
