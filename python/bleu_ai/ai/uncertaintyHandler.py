@@ -12,13 +12,14 @@ import torch
 import torch.nn as nn
 from torch.distributions import Normal, MultivariateNormal
 
+
 class UncertaintyHandler:
     def __init__(
         self,
-        method: str = 'ensemble',
+        method: str = "ensemble",
         n_estimators: int = 100,
         n_folds: int = 5,
-        confidence_threshold: float = 0.95
+        confidence_threshold: float = 0.95,
     ):
         self.method = method
         self.n_estimators = n_estimators
@@ -39,8 +40,7 @@ class UncertaintyHandler:
             raise
 
     async def calculate_uncertainty(
-        self,
-        features: np.ndarray
+        self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty and confidence scores."""
         try:
@@ -51,11 +51,11 @@ class UncertaintyHandler:
                 raise ValueError("Uncertainty method not initialized")
 
             # Calculate uncertainty based on method
-            if self.method == 'ensemble':
+            if self.method == "ensemble":
                 uncertainty, confidence = await self._ensemble_uncertainty(features)
-            elif self.method == 'bayesian':
+            elif self.method == "bayesian":
                 uncertainty, confidence = await self._bayesian_uncertainty(features)
-            elif self.method == 'monte_carlo':
+            elif self.method == "monte_carlo":
                 uncertainty, confidence = await self._monte_carlo_uncertainty(features)
             else:
                 raise ValueError(f"Unsupported uncertainty method: {self.method}")
@@ -71,8 +71,7 @@ class UncertaintyHandler:
             raise
 
     async def _ensemble_uncertainty(
-        self,
-        features: np.ndarray
+        self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using ensemble methods."""
         try:
@@ -82,17 +81,23 @@ class UncertaintyHandler:
             # Create ensemble of models
             if self.ensemble is None:
                 self.ensemble = RandomForestClassifier(
-                    n_estimators=self.n_estimators,
-                    n_jobs=-1
+                    n_estimators=self.n_estimators, n_jobs=-1
                 )
 
             # Fit ensemble
-            self.ensemble.fit(features, np.zeros(len(features)))  # Dummy labels for initialization
+            self.ensemble.fit(
+                features, np.zeros(len(features))
+            )  # Dummy labels for initialization
 
             # Get predictions from all trees
-            if not hasattr(self.ensemble, 'estimators_') or self.ensemble.estimators_ is None:
+            if (
+                not hasattr(self.ensemble, "estimators_")
+                or self.ensemble.estimators_ is None
+            ):
                 raise ValueError("Ensemble not properly initialized")
-            predictions = np.array([tree.predict_proba(features) for tree in self.ensemble.estimators_])
+            predictions = np.array(
+                [tree.predict_proba(features) for tree in self.ensemble.estimators_]
+            )
 
             # Calculate uncertainty (variance of predictions)
             uncertainty = np.var(predictions, axis=0).mean(axis=1)
@@ -107,8 +112,7 @@ class UncertaintyHandler:
             raise
 
     async def _bayesian_uncertainty(
-        self,
-        features: np.ndarray
+        self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using Bayesian methods."""
         try:
@@ -119,7 +123,7 @@ class UncertaintyHandler:
                     self.fc1 = nn.Linear(input_size, 64)
                     self.fc2 = nn.Linear(64, 32)
                     self.fc3 = nn.Linear(32, 1)
-                    
+
                     # Initialize parameters with normal distribution
                     self.mu1 = nn.Parameter(torch.randn(64, input_size) * 0.1)
                     self.sigma1 = nn.Parameter(torch.randn(64, input_size) * 0.1)
@@ -161,8 +165,7 @@ class UncertaintyHandler:
             raise
 
     async def _monte_carlo_uncertainty(
-        self,
-        features: np.ndarray
+        self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using Monte Carlo dropout."""
         try:
@@ -212,9 +215,7 @@ class UncertaintyHandler:
         return 1 - self.confidence_threshold
 
     def is_confident(
-        self,
-        uncertainty: float,
-        threshold: Optional[float] = None
+        self, uncertainty: float, threshold: Optional[float] = None
     ) -> bool:
         """Check if prediction is confident based on uncertainty."""
         if threshold is None:
@@ -234,4 +235,4 @@ class UncertaintyHandler:
             logging.info("✅ Uncertainty handler resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up uncertainty handler: {str(e)}")
-            raise 
+            raise

@@ -24,6 +24,7 @@
 import google.generativeai as palm
 import os
 
+
 class PalmAI:
     def __init__(self):
         palm.configure(api_key=os.getenv("PALM_API_KEY"))
@@ -32,6 +33,7 @@ class PalmAI:
         """Generate text using Google's PaLM API."""
         response = palm.generate_text(model="text-bison-001", prompt=prompt)
         return response.result
+
 
 if __name__ == "__main__":
     palm_ai = PalmAI()

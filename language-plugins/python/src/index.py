@@ -1,6 +1,7 @@
 import ast
 import astor
 
+
 class PythonProcessor:
     def parse_code(self, code):
         try:
@@ -10,8 +11,8 @@ class PythonProcessor:
 
     def optimizeCode(self, tree):
         for node in ast.walk(tree):
-            if isinstance(node, ast.Name) and node.id == 'var':
-                node.id = 'let'
+            if isinstance(node, ast.Name) and node.id == "var":
+                node.id = "let"
         return tree
 
     def generateCode(self, tree):

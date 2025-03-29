@@ -9,11 +9,12 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from .xgboost_model import XGBoostModel
 
+
 class EnsembleModel:
     def __init__(
         self,
         models: Optional[List[BaseEstimator]] = None,
-        weights: Optional[List[float]] = None
+        weights: Optional[List[float]] = None,
     ):
         self.models = models or []
         self.weights = weights or []
@@ -27,9 +28,7 @@ class EnsembleModel:
         self.weights = [w / sum(self.weights) for w in self.weights]
 
     def predict(
-        self,
-        X: np.ndarray,
-        return_proba: bool = False
+        self, X: np.ndarray, return_proba: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Make predictions using the ensemble of models."""
         try:
@@ -69,4 +68,4 @@ class EnsembleModel:
         """Set custom weights for the ensemble models."""
         if len(weights) != len(self.models):
             raise ValueError("Number of weights must match number of models")
-        self.weights = [w / sum(weights) for w in weights]  # Normalize weights 
+        self.weights = [w / sum(weights) for w in weights]  # Normalize weights

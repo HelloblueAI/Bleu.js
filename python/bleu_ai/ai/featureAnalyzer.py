@@ -13,12 +13,13 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 class FeatureAnalyzer:
     def __init__(
         self,
-        method: str = 'shap',
+        method: str = "shap",
         n_features: Optional[int] = None,
-        threshold: float = 0.01
+        threshold: float = 0.01,
     ):
         self.method = method
         self.n_features = n_features
@@ -38,10 +39,7 @@ class FeatureAnalyzer:
             raise
 
     async def analyzeFeatures(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        feature_names: Optional[List[str]] = None
+        self, X: np.ndarray, y: np.ndarray, feature_names: Optional[List[str]] = None
     ) -> np.ndarray:
         """Analyze feature importance and interactions."""
         try:
@@ -57,9 +55,9 @@ class FeatureAnalyzer:
             X_scaled = self.scaler.fit_transform(X)
 
             # Calculate feature importance based on method
-            if self.method == 'shap':
+            if self.method == "shap":
                 importance = await self._analyze_shap(X_scaled, y)
-            elif self.method == 'mutual_info':
+            elif self.method == "mutual_info":
                 importance = await self._analyze_mutual_info(X_scaled, y)
             else:
                 raise ValueError(f"Unsupported analysis method: {self.method}")
@@ -85,15 +83,12 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature analysis failed: {str(e)}")
             raise
 
-    async def _analyze_shap(
-        self,
-        X: np.ndarray,
-        y: np.ndarray
-    ) -> np.ndarray:
+    async def _analyze_shap(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Analyze feature importance using SHAP values."""
         try:
             # Create a simple model for SHAP analysis
             from sklearn.ensemble import RandomForestClassifier
+
             model = RandomForestClassifier(n_estimators=100)
             model.fit(X, y)
 
@@ -104,7 +99,9 @@ class FeatureAnalyzer:
             # Calculate mean absolute SHAP values
             if isinstance(shap_values, list):
                 # For multi-class problems
-                importance = np.mean([np.abs(sv).mean(axis=0) for sv in shap_values], axis=0)
+                importance = np.mean(
+                    [np.abs(sv).mean(axis=0) for sv in shap_values], axis=0
+                )
             else:
                 # For binary classification
                 importance = np.abs(shap_values).mean(axis=0)
@@ -115,11 +112,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ SHAP analysis failed: {str(e)}")
             raise
 
-    async def _analyze_mutual_info(
-        self,
-        X: np.ndarray,
-        y: np.ndarray
-    ) -> np.ndarray:
+    async def _analyze_mutual_info(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Analyze feature importance using mutual information."""
         try:
             # Calculate mutual information scores
@@ -136,40 +129,34 @@ class FeatureAnalyzer:
             logging.error(f"❌ Mutual information analysis failed: {str(e)}")
             raise
 
-    async def _calculate_interactions(
-        self,
-        X: np.ndarray
-    ) -> np.ndarray:
+    async def _calculate_interactions(self, X: np.ndarray) -> np.ndarray:
         """Calculate feature interactions using correlation matrix."""
         try:
             # Calculate correlation matrix
             corr_matrix = np.corrcoef(X.T)
-            
+
             # Store interactions
             self.feature_interactions = corr_matrix
-            
+
             return corr_matrix
 
         except Exception as e:
             logging.error(f"❌ Feature interaction calculation failed: {str(e)}")
             raise
 
-    def _select_top_features(
-        self,
-        importance: np.ndarray
-    ) -> np.ndarray:
+    def _select_top_features(self, importance: np.ndarray) -> np.ndarray:
         """Select top features based on importance scores."""
         try:
             if self.n_features is None:
                 return importance
-                
+
             # Get indices of top features
-            top_indices = np.argsort(importance)[-self.n_features:]
-            
+            top_indices = np.argsort(importance)[-self.n_features :]
+
             # Create mask for top features
             mask = np.zeros_like(importance)
             mask[top_indices] = importance[top_indices]
-            
+
             return mask
 
         except Exception as e:
@@ -177,31 +164,26 @@ class FeatureAnalyzer:
             raise
 
     async def _plot_feature_importance(
-        self,
-        importance: np.ndarray,
-        feature_names: List[str]
+        self, importance: np.ndarray, feature_names: List[str]
     ):
         """Plot feature importance scores."""
         try:
             # Create DataFrame for plotting
-            df = pd.DataFrame({
-                'Feature': feature_names,
-                'Importance': importance
-            })
-            
+            df = pd.DataFrame({"Feature": feature_names, "Importance": importance})
+
             # Sort by importance
-            df = df.sort_values('Importance', ascending=True)
-            
+            df = df.sort_values("Importance", ascending=True)
+
             # Create plot
             plt.figure(figsize=(10, 6))
-            sns.barplot(data=df, x='Importance', y='Feature')
-            plt.title('Feature Importance')
+            sns.barplot(data=df, x="Importance", y="Feature")
+            plt.title("Feature Importance")
             plt.tight_layout()
-            
+
             # Save plot
-            plt.savefig('feature_importance.png')
+            plt.savefig("feature_importance.png")
             plt.close()
-            
+
             logging.info("✅ Feature importance plot saved")
 
         except Exception as e:
@@ -218,4 +200,4 @@ class FeatureAnalyzer:
             logging.info("✅ Feature analyzer resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up feature analyzer: {str(e)}")
-            raise 
+            raise

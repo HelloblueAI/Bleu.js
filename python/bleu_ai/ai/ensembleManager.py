@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from sklearn.ensemble import (
     RandomForestClassifier,
     GradientBoostingClassifier,
-    VotingClassifier
+    VotingClassifier,
 )
 from sklearn.model_selection import KFold
 import xgboost as xgb
@@ -17,13 +17,14 @@ import lightgbm as lgb
 import catboost as cb
 from sklearn.metrics import accuracy_score, roc_auc_score
 
+
 class EnsembleManager:
     def __init__(
         self,
-        methods: List[str] = ['rf', 'gb', 'xgb', 'lgb', 'catboost'],
+        methods: List[str] = ["rf", "gb", "xgb", "lgb", "catboost"],
         n_estimators: int = 100,
         n_folds: int = 5,
-        voting: str = 'soft'
+        voting: str = "soft",
     ):
         self.methods = methods
         self.n_estimators = n_estimators
@@ -43,10 +44,7 @@ class EnsembleManager:
             raise
 
     async def createEnsemble(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        weights: Optional[Dict[str, float]] = None
+        self, X: np.ndarray, y: np.ndarray, weights: Optional[Dict[str, float]] = None
     ) -> None:
         """Create and train ensemble of models."""
         try:
@@ -57,27 +55,25 @@ class EnsembleManager:
             if self.models is None:
                 self.models = {}
             for method in self.methods:
-                if method == 'rf':
+                if method == "rf":
                     self.models[method] = RandomForestClassifier(
-                        n_estimators=self.n_estimators,
-                        n_jobs=-1
+                        n_estimators=self.n_estimators, n_jobs=-1
                     )
-                elif method == 'gb':
+                elif method == "gb":
                     self.models[method] = GradientBoostingClassifier(
                         n_estimators=self.n_estimators
                     )
-                elif method == 'xgb':
+                elif method == "xgb":
                     self.models[method] = xgb.XGBClassifier(
                         n_estimators=self.n_estimators
                     )
-                elif method == 'lgb':
+                elif method == "lgb":
                     self.models[method] = lgb.LGBMClassifier(
                         n_estimators=self.n_estimators
                     )
-                elif method == 'catboost':
+                elif method == "catboost":
                     self.models[method] = cb.CatBoostClassifier(
-                        iterations=self.n_estimators,
-                        verbose=False
+                        iterations=self.n_estimators, verbose=False
                     )
                 else:
                     raise ValueError(f"Unsupported model method: {method}")
@@ -93,42 +89,37 @@ class EnsembleManager:
                 for method, model in self.models.items():
                     # Train model
                     model.fit(X_train, y_train)
-                    
+
                     # Get predictions
                     y_pred = model.predict_proba(X_val)[:, 1]
-                    
+
                     # Calculate score
                     score = roc_auc_score(y_val, y_pred)
                     cv_scores[method].append(score)
 
             # Calculate average scores and weights
             avg_scores = {
-                method: np.mean(scores)
-                for method, scores in cv_scores.items()
+                method: np.mean(scores) for method, scores in cv_scores.items()
             }
 
             # Normalize weights
             if weights is None:
                 total_score = sum(avg_scores.values())
                 self.weights = {
-                    method: score / total_score
-                    for method, score in avg_scores.items()
+                    method: score / total_score for method, score in avg_scores.items()
                 }
             else:
                 self.weights = weights
 
             # Create voting classifier
-            estimators = [
-                (method, model)
-                for method, model in self.models.items()
-            ]
-            
+            estimators = [(method, model) for method, model in self.models.items()]
+
             self.voting_clf = VotingClassifier(
                 estimators=estimators,
                 voting=self.voting,
-                weights=list(self.weights.values())
+                weights=list(self.weights.values()),
             )
-            
+
             # Train voting classifier
             self.voting_clf.fit(X, y)
 
@@ -140,13 +131,11 @@ class EnsembleManager:
             raise
 
     async def predict(
-        self,
-        X: np.ndarray,
-        return_proba: bool = False
+        self, X: np.ndarray, return_proba: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Make predictions using the ensemble."""
         try:
-            if not hasattr(self, 'voting_clf') or self.voting_clf is None:
+            if not hasattr(self, "voting_clf") or self.voting_clf is None:
                 raise ValueError("Ensemble not created. Call createEnsemble first.")
 
             # Get predictions
@@ -166,10 +155,7 @@ class EnsembleManager:
             return {}
         return self.weights
 
-    async def updateWeights(
-        self,
-        weights: Dict[str, float]
-    ) -> None:
+    async def updateWeights(self, weights: Dict[str, float]) -> None:
         """Update model weights."""
         try:
             # Validate weights
@@ -180,9 +166,9 @@ class EnsembleManager:
 
             # Update weights
             self.weights = weights
-            
+
             # Update voting classifier
-            if hasattr(self, 'voting_clf') and self.voting_clf is not None:
+            if hasattr(self, "voting_clf") and self.voting_clf is not None:
                 self.voting_clf.weights = list(weights.values())
 
             logging.info("✅ Model weights updated successfully")
@@ -193,29 +179,24 @@ class EnsembleManager:
             raise
 
     async def getModelPerformance(
-        self,
-        X: np.ndarray,
-        y: np.ndarray
+        self, X: np.ndarray, y: np.ndarray
     ) -> Dict[str, float]:
         """Get performance metrics for each model."""
         try:
             performance = {}
-            
+
             if self.models is None:
                 return performance
-                
+
             for method, model in self.models.items():
                 # Get predictions
                 y_pred = model.predict(X)
-                
+
                 # Calculate metrics
                 accuracy = accuracy_score(y, y_pred)
                 auc = roc_auc_score(y, model.predict_proba(X)[:, 1])
-                
-                performance[method] = {
-                    'accuracy': accuracy,
-                    'auc': auc
-                }
+
+                performance[method] = {"accuracy": accuracy, "auc": auc}
 
             return performance
 
@@ -230,10 +211,10 @@ class EnsembleManager:
                 self.models.clear()
             if self.weights is not None:
                 self.weights.clear()
-            if hasattr(self, 'voting_clf') and self.voting_clf is not None:
+            if hasattr(self, "voting_clf") and self.voting_clf is not None:
                 del self.voting_clf
             self.initialized = False
             logging.info("✅ Ensemble manager resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up ensemble manager: {str(e)}")
-            raise 
+            raise

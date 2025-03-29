@@ -18,16 +18,17 @@ from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 import time
 
+
 class QuantumProcessor:
     def __init__(
         self,
         n_qubits: int = 4,
         n_layers: int = 2,
-        device: str = 'default.qubit',
+        device: str = "default.qubit",
         shots: int = 1000,
         error_correction: bool = True,
         use_annealing: bool = True,
-        optimization_level: int = 2
+        optimization_level: int = 2,
     ):
         self.n_qubits = n_qubits
         self.n_layers = n_layers
@@ -50,8 +51,7 @@ class QuantumProcessor:
         noise_model = NoiseModel()
         # Add depolarizing noise
         noise_model.add_all_qubit_quantum_error(
-            depolarizing_error(0.01, 1),
-            ['u1', 'u2', 'u3']
+            depolarizing_error(0.01, 1), ["u1", "u2", "u3"]
         )
         # Add readout error
         noise_model.add_all_qubit_readout_error([[0.9, 0.1], [0.1, 0.9]])
@@ -66,10 +66,12 @@ class QuantumProcessor:
                     self.device,
                     wires=self.n_qubits,
                     shots=self.shots,
-                    error_correction=True
+                    error_correction=True,
                 )
             else:
-                self.dev = qml.device(self.device, wires=self.n_qubits, shots=self.shots)
+                self.dev = qml.device(
+                    self.device, wires=self.n_qubits, shots=self.shots
+                )
 
             # Define enhanced quantum circuit
             @qml.qnode(self.dev)
@@ -152,7 +154,9 @@ class QuantumProcessor:
             # Measure with different noise levels
             noisy_measurement = qml.expval(qml.PauliZ(i))
             # Apply error mitigation
-            mitigated_measurement = self._apply_zero_noise_extrapolation(noisy_measurement)
+            mitigated_measurement = self._apply_zero_noise_extrapolation(
+                noisy_measurement
+            )
             measurements.append(mitigated_measurement)
         return measurements
 
@@ -164,14 +168,12 @@ class QuantumProcessor:
         return np.polyfit(noise_levels, measurements, 1)[0]
 
     async def process_quantum_features(
-        self,
-        features: np.ndarray,
-        optimize: bool = True
+        self, features: np.ndarray, optimize: bool = True
     ) -> np.ndarray:
         """Process features using quantum computing with optimization."""
         if not self.initialized:
             raise RuntimeError("Quantum processor not initialized")
-            
+
         if self.circuit is None:
             raise RuntimeError("Quantum circuit not initialized")
 
@@ -185,14 +187,18 @@ class QuantumProcessor:
             quantum_features = []
             for feature in features_scaled:
                 # Apply quantum processing
-                result = self.circuit(feature, self.rng.standard_normal((self.n_layers, self.n_qubits, 3)))
+                result = self.circuit(
+                    feature, self.rng.standard_normal((self.n_layers, self.n_qubits, 3))
+                )
                 quantum_features.append(result)
 
             quantum_features = np.array(quantum_features)
 
             # Apply optimization if requested
             if optimize:
-                quantum_features = await self._optimize_quantum_features(quantum_features)
+                quantum_features = await self._optimize_quantum_features(
+                    quantum_features
+                )
 
             return quantum_features
 
@@ -211,26 +217,26 @@ class QuantumProcessor:
             # Add variational circuit
             var_form = TwoLocal(
                 self.n_qubits,
-                rotation_blocks=['ry', 'rz'],
-                entanglement_blocks='cx',
-                reps=3
+                rotation_blocks=["ry", "rz"],
+                entanglement_blocks="cx",
+                reps=3,
             )
             circuit.compose(var_form)
 
             # Create QNN
             qnn = CircuitQNN(
                 circuit=circuit,
-                input_params=var_form.parameters[:self.n_qubits],
-                weight_params=var_form.parameters[self.n_qubits:],
+                input_params=var_form.parameters[: self.n_qubits],
+                weight_params=var_form.parameters[self.n_qubits :],
                 sampling=True,
-                sampler=self.sampler
+                sampler=self.sampler,
             )
 
             # Optimize parameters
             initial_params = self.rng.standard_normal(len(var_form.parameters))
             optimized_params = self.optimizer.optimize(
                 len(initial_params),
-                lambda x: self._objective_function(x, features, qnn)
+                lambda x: self._objective_function(x, features, qnn),
             )
 
             # Apply optimized parameters
@@ -243,21 +249,18 @@ class QuantumProcessor:
             return features
 
     def _objective_function(
-        self,
-        params: np.ndarray,
-        features: np.ndarray,
-        qnn: CircuitQNN
+        self, params: np.ndarray, features: np.ndarray, qnn: CircuitQNN
     ) -> float:
         """Objective function for quantum optimization."""
         try:
             # Compute QNN output
             output = qnn.forward(features, params)
-            
+
             # Compute loss (example: reconstruction error)
             loss = np.mean((output - features) ** 2)
-            
+
             return loss
 
         except Exception as e:
             logging.error(f"Error in objective function: {str(e)}")
-            return float('inf') 
+            return float("inf")

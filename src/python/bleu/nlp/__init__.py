@@ -2,4 +2,4 @@
 
 from .processors import NLPProcessor
 
-__all__ = ["NLPProcessor"] 
+__all__ = ["NLPProcessor"]

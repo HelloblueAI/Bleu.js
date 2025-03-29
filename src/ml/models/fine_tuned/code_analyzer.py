@@ -27,6 +27,7 @@ from collections import defaultdict
 import joblib
 import os
 
+
 class CodeAnalyzer:
     def __init__(self, model_path=None):
         self.model = None
@@ -56,8 +57,11 @@ class CodeAnalyzer:
         if not self.model:
             return "🔍 ML model not loaded. Skipping prediction."
 
-        features = list(self.analyze_code(code).values())[:10]  # Convert AST stats to ML input
+        features = list(self.analyze_code(code).values())[
+            :10
+        ]  # Convert AST stats to ML input
         return self.model.predict([features])[0]
+
 
 if __name__ == "__main__":
     analyzer = CodeAnalyzer()

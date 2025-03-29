@@ -24,6 +24,7 @@
 import requests
 import os
 
+
 class ClaudeAPI:
     def __init__(self, api_key=None):
         self.api_key = api_key or os.getenv("CLAUDE_API_KEY")
@@ -31,11 +32,15 @@ class ClaudeAPI:
 
     def query(self, prompt):
         """Send query to Claude AI API."""
-        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
         data = {"prompt": prompt, "max_tokens": 150}
 
         response = requests.post(self.endpoint, json=data, headers=headers)
         return response.json()
+
 
 if __name__ == "__main__":
     claude = ClaudeAPI()

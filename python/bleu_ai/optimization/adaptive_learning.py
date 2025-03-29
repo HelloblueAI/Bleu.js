@@ -12,21 +12,22 @@ from torch.optim.lr_scheduler import (
     ReduceLROnPlateau,
     CosineAnnealingLR,
     OneCycleLR,
-    CyclicLR
+    CyclicLR,
 )
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, roc_auc_score
 import optuna
 
+
 class AdaptiveLearningRate:
     def __init__(
         self,
-        method: str = 'cosine',
+        method: str = "cosine",
         min_lr: float = 1e-6,
         max_lr: float = 1e-2,
         patience: int = 10,
         factor: float = 0.5,
-        n_trials: int = 20
+        n_trials: int = 20,
     ):
         self.method = method
         self.min_lr = min_lr
@@ -48,15 +49,13 @@ class AdaptiveLearningRate:
             logging.info("✅ Adaptive learning rate optimizer initialized successfully")
             self.initialized = True
         except Exception as e:
-            logging.error(f"❌ Failed to initialize adaptive learning rate optimizer: {str(e)}")
+            logging.error(
+                f"❌ Failed to initialize adaptive learning rate optimizer: {str(e)}"
+            )
             raise
 
     async def calculate_optimal_rate(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict,
-        method: Optional[str] = None
+        self, X: np.ndarray, y: np.ndarray, params: Dict, method: Optional[str] = None
     ) -> float:
         """Calculate optimal learning rate using various strategies."""
         try:
@@ -66,16 +65,16 @@ class AdaptiveLearningRate:
             if method is None and self.method is None:
                 raise ValueError("No learning rate method specified")
             method = method or self.method
-            
-            if method == 'cosine':
+
+            if method == "cosine":
                 return await self._cosine_schedule(X, y, params)
-            elif method == 'one_cycle':
+            elif method == "one_cycle":
                 return await self._one_cycle_schedule(X, y, params)
-            elif method == 'cyclic':
+            elif method == "cyclic":
                 return await self._cyclic_schedule(X, y, params)
-            elif method == 'reduce_on_plateau':
+            elif method == "reduce_on_plateau":
                 return await self._reduce_on_plateau(X, y, params)
-            elif method == 'optuna':
+            elif method == "optuna":
                 return await self._optuna_optimization(X, y, params)
             else:
                 raise ValueError(f"Unsupported learning rate method: {method}")
@@ -85,10 +84,7 @@ class AdaptiveLearningRate:
             raise
 
     async def _cosine_schedule(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict
+        self, X: np.ndarray, y: np.ndarray, params: Dict
     ) -> float:
         """Calculate optimal learning rate using cosine annealing."""
         try:
@@ -98,16 +94,12 @@ class AdaptiveLearningRate:
             # Create PyTorch model for learning rate search
             model = self._create_model(X.shape[1])
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
-            scheduler = CosineAnnealingLR(
-                optimizer,
-                T_max=100,
-                eta_min=self.min_lr
-            )
-            
+            scheduler = CosineAnnealingLR(optimizer, T_max=100, eta_min=self.min_lr)
+
             # Train model with cosine annealing
             best_lr = self.max_lr
             best_score = 0
-            
+
             for epoch in range(100):
                 # Train one epoch
                 model.train()
@@ -117,18 +109,18 @@ class AdaptiveLearningRate:
                 loss.backward()
                 optimizer.step()
                 scheduler.step()
-                
+
                 # Evaluate
                 model.eval()
                 with torch.no_grad():
                     outputs = model(torch.FloatTensor(X))
                     predictions = torch.sigmoid(outputs).numpy()
                     score = roc_auc_score(y, predictions)
-                    
+
                     if score > best_score:
                         best_score = score
-                        best_lr = optimizer.param_groups[0]['lr']
-            
+                        best_lr = optimizer.param_groups[0]["lr"]
+
             return best_lr
 
         except Exception as e:
@@ -136,10 +128,7 @@ class AdaptiveLearningRate:
             raise
 
     async def _one_cycle_schedule(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict
+        self, X: np.ndarray, y: np.ndarray, params: Dict
     ) -> float:
         """Calculate optimal learning rate using one cycle policy."""
         try:
@@ -154,13 +143,13 @@ class AdaptiveLearningRate:
                 max_lr=self.max_lr,
                 epochs=100,
                 steps_per_epoch=1,
-                pct_start=0.3
+                pct_start=0.3,
             )
-            
+
             # Train model with one cycle policy
             best_lr = self.max_lr
             best_score = 0
-            
+
             for epoch in range(100):
                 # Train one epoch
                 model.train()
@@ -170,18 +159,18 @@ class AdaptiveLearningRate:
                 loss.backward()
                 optimizer.step()
                 scheduler.step()
-                
+
                 # Evaluate
                 model.eval()
                 with torch.no_grad():
                     outputs = model(torch.FloatTensor(X))
                     predictions = torch.sigmoid(outputs).numpy()
                     score = roc_auc_score(y, predictions)
-                    
+
                     if score > best_score:
                         best_score = score
-                        best_lr = optimizer.param_groups[0]['lr']
-            
+                        best_lr = optimizer.param_groups[0]["lr"]
+
             return best_lr
 
         except Exception as e:
@@ -189,10 +178,7 @@ class AdaptiveLearningRate:
             raise
 
     async def _cyclic_schedule(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict
+        self, X: np.ndarray, y: np.ndarray, params: Dict
     ) -> float:
         """Calculate optimal learning rate using cyclic learning rate."""
         try:
@@ -207,13 +193,13 @@ class AdaptiveLearningRate:
                 base_lr=self.min_lr,
                 max_lr=self.max_lr,
                 step_size_up=20,
-                step_size_down=20
+                step_size_down=20,
             )
-            
+
             # Train model with cyclic learning rate
             best_lr = self.max_lr
             best_score = 0
-            
+
             for epoch in range(100):
                 # Train one epoch
                 model.train()
@@ -223,18 +209,18 @@ class AdaptiveLearningRate:
                 loss.backward()
                 optimizer.step()
                 scheduler.step()
-                
+
                 # Evaluate
                 model.eval()
                 with torch.no_grad():
                     outputs = model(torch.FloatTensor(X))
                     predictions = torch.sigmoid(outputs).numpy()
                     score = roc_auc_score(y, predictions)
-                    
+
                     if score > best_score:
                         best_score = score
-                        best_lr = optimizer.param_groups[0]['lr']
-            
+                        best_lr = optimizer.param_groups[0]["lr"]
+
             return best_lr
 
         except Exception as e:
@@ -242,14 +228,16 @@ class AdaptiveLearningRate:
             raise
 
     async def _reduce_on_plateau(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict
+        self, X: np.ndarray, y: np.ndarray, params: Dict
     ) -> float:
         """Calculate optimal learning rate using reduce on plateau."""
         try:
-            if self.max_lr is None or self.min_lr is None or self.factor is None or self.patience is None:
+            if (
+                self.max_lr is None
+                or self.min_lr is None
+                or self.factor is None
+                or self.patience is None
+            ):
                 raise ValueError("Learning rate parameters not initialized")
 
             # Create PyTorch model for learning rate search
@@ -257,16 +245,16 @@ class AdaptiveLearningRate:
             optimizer = torch.optim.Adam(model.parameters(), lr=self.max_lr)
             scheduler = ReduceLROnPlateau(
                 optimizer,
-                mode='max',
+                mode="max",
                 factor=self.factor,
                 patience=self.patience,
-                min_lr=self.min_lr
+                min_lr=self.min_lr,
             )
-            
+
             # Train model with reduce on plateau
             best_lr = self.max_lr
             best_score = 0
-            
+
             for epoch in range(100):
                 # Train one epoch
                 model.train()
@@ -275,20 +263,20 @@ class AdaptiveLearningRate:
                 loss = nn.BCEWithLogitsLoss()(outputs, torch.FloatTensor(y))
                 loss.backward()
                 optimizer.step()
-                
+
                 # Evaluate
                 model.eval()
                 with torch.no_grad():
                     outputs = model(torch.FloatTensor(X))
                     predictions = torch.sigmoid(outputs).numpy()
                     score = roc_auc_score(y, predictions)
-                    
+
                     scheduler.step(score)
-                    
+
                     if score > best_score:
                         best_score = score
-                        best_lr = optimizer.param_groups[0]['lr']
-            
+                        best_lr = optimizer.param_groups[0]["lr"]
+
             return best_lr
 
         except Exception as e:
@@ -296,10 +284,7 @@ class AdaptiveLearningRate:
             raise
 
     async def _optuna_optimization(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        params: Dict
+        self, X: np.ndarray, y: np.ndarray, params: Dict
     ) -> float:
         """Calculate optimal learning rate using Optuna."""
         try:
@@ -309,9 +294,9 @@ class AdaptiveLearningRate:
             def objective(trial):
                 # Create PyTorch model for learning rate search
                 model = self._create_model(X.shape[1])
-                lr = trial.suggest_loguniform('lr', self.min_lr, self.max_lr)
+                lr = trial.suggest_loguniform("lr", self.min_lr, self.max_lr)
                 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-                
+
                 # Train model
                 model.train()
                 for epoch in range(10):
@@ -320,21 +305,21 @@ class AdaptiveLearningRate:
                     loss = nn.BCEWithLogitsLoss()(outputs, torch.FloatTensor(y))
                     loss.backward()
                     optimizer.step()
-                
+
                 # Evaluate
                 model.eval()
                 with torch.no_grad():
                     outputs = model(torch.FloatTensor(X))
                     predictions = torch.sigmoid(outputs).numpy()
                     score = roc_auc_score(y, predictions)
-                
+
                 return score
-            
+
             # Create study and optimize
-            study = optuna.create_study(direction='maximize')
+            study = optuna.create_study(direction="maximize")
             study.optimize(objective, n_trials=self.n_trials)
-            
-            return study.best_params['lr']
+
+            return study.best_params["lr"]
 
         except Exception as e:
             logging.error(f"❌ Optuna optimization failed: {str(e)}")
@@ -349,7 +334,7 @@ class AdaptiveLearningRate:
             nn.Linear(64, 32),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(32, 1)
+            nn.Linear(32, 1),
         )
 
     async def dispose(self):
@@ -364,5 +349,7 @@ class AdaptiveLearningRate:
             self.initialized = False
             logging.info("✅ Adaptive learning rate optimizer resources cleaned up")
         except Exception as e:
-            logging.error(f"❌ Failed to clean up adaptive learning rate optimizer: {str(e)}")
-            raise 
+            logging.error(
+                f"❌ Failed to clean up adaptive learning rate optimizer: {str(e)}"
+            )
+            raise

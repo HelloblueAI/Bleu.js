@@ -26,6 +26,7 @@ import torch.nn as nn
 from typing import Tuple
 from dataclasses import dataclass
 
+
 @dataclass
 class LlamaConfig:
     vocab_size: int = 32000
@@ -44,7 +45,9 @@ class LlamaConfig:
 
 
 class LlamaRotaryEmbedding(nn.Module):
-    def __init__(self, dim: int, max_position_embeddings: int = 4096, base: int = 10000):
+    def __init__(
+        self, dim: int, max_position_embeddings: int = 4096, base: int = 10000
+    ):
         super().__init__()
         self.dim = dim
         self.max_position_embeddings = max_position_embeddings
@@ -52,7 +55,9 @@ class LlamaRotaryEmbedding(nn.Module):
         inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float() / dim))
         self.register_buffer("inv_freq", inv_freq)
 
-    def forward(self, seq_len: int, device: torch.device) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, seq_len: int, device: torch.device
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         t = torch.arange(seq_len, device=device).type_as(self.inv_freq)
         freqs = torch.einsum("i,j->ij", t, self.inv_freq)
         emb = torch.cat((freqs, freqs), dim=-1).to(device)
@@ -76,7 +81,9 @@ class LlamaAttention(nn.Module):
         self.v_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=False)
         self.out_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=False)
 
-        self.rotary_embedding = LlamaRotaryEmbedding(self.head_dim, config.max_position_embeddings)
+        self.rotary_embedding = LlamaRotaryEmbedding(
+            self.head_dim, config.max_position_embeddings
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         batch_size, seq_len, _ = x.shape
@@ -89,10 +96,12 @@ class LlamaAttention(nn.Module):
         cos, sin = self.rotary_embedding(seq_len, x.device)
         q, k = self.apply_rotary_embedding(q, k, cos, sin)
 
-        attn_weights = torch.matmul(q, k.transpose(-2, -1)) / (self.head_dim ** 0.5)
+        attn_weights = torch.matmul(q, k.transpose(-2, -1)) / (self.head_dim**0.5)
         attn_weights = torch.nn.functional.softmax(attn_weights, dim=-1)
         attn_output = torch.matmul(attn_weights, v)
-        attn_output = attn_output.transpose(1, 2).reshape(batch_size, seq_len, self.hidden_size)
+        attn_output = attn_output.transpose(1, 2).reshape(
+            batch_size, seq_len, self.hidden_size
+        )
 
         return self.out_proj(attn_output)
 
@@ -101,10 +110,24 @@ class LlamaAttention(nn.Module):
         q_real, q_imag = q.chunk(2, dim=-1)
         k_real, k_imag = k.chunk(2, dim=-1)
 
-        q_rot = torch.cat([q_real * cos[..., :q_real.shape[-1]] - q_imag * sin[..., :q_imag.shape[-1]],
-                           q_imag * cos[..., :q_imag.shape[-1]] + q_real * sin[..., :q_real.shape[-1]]], dim=-1)
-        k_rot = torch.cat([k_real * cos[..., :k_real.shape[-1]] - k_imag * sin[..., :k_imag.shape[-1]],
-                           k_imag * cos[..., :k_imag.shape[-1]] + k_real * sin[..., :k_real.shape[-1]]], dim=-1)
+        q_rot = torch.cat(
+            [
+                q_real * cos[..., : q_real.shape[-1]]
+                - q_imag * sin[..., : q_imag.shape[-1]],
+                q_imag * cos[..., : q_imag.shape[-1]]
+                + q_real * sin[..., : q_real.shape[-1]],
+            ],
+            dim=-1,
+        )
+        k_rot = torch.cat(
+            [
+                k_real * cos[..., : k_real.shape[-1]]
+                - k_imag * sin[..., : k_imag.shape[-1]],
+                k_imag * cos[..., : k_imag.shape[-1]]
+                + k_real * sin[..., : k_real.shape[-1]],
+            ],
+            dim=-1,
+        )
         return q_rot, k_rot
 
 

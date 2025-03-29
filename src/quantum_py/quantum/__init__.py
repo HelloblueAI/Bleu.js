@@ -3,4 +3,4 @@
 from .circuit import QuantumCircuit
 from .processor import QuantumProcessor
 
-__all__ = ['QuantumCircuit', 'QuantumProcessor'] 
+__all__ = ["QuantumCircuit", "QuantumProcessor"]
