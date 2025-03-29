@@ -680,3 +680,4 @@ build/
 .DS_Store
 Thumbs.db
 
+# Test GPG signing
