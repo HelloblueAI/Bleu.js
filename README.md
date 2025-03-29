@@ -730,12 +730,24 @@ Self CPU time total: 257.072ms
 - PennyLane team for quantum computing capabilities
 - Ray team for distributed computing framework
 
+## Contributing
+
+We welcome contributions to Bleu.js! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- Code of Conduct
+- Development Setup
+- Pull Request Process
+- Coding Standards
+- Testing Guidelines
+- Documentation Requirements
+- Performance Considerations
+- Review Process
+
 
 ### Support
 
 For comprehensive support:
 - Email: support@helloblue.ai
-- Documentation: [docs.bleujs.org](https://docs.bleujs.org)
 - Issues: [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
 - Stack Overflow: [bleujs](https://stackoverflow.com/questions/tagged/bleujs)
 
@@ -771,28 +783,6 @@ a company dedicated to advanced innovations in AI solutions.
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
-## About
-
-Bleu.js is developed and maintained by Helloblue, Inc. (support@helloblue.ai)
-
-## Contributing
-
-We welcome contributions to Bleu.js! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on:
-
-- Code of Conduct
-- Development Setup
-- Pull Request Process
-- Coding Standards
-- Testing Guidelines
-- Documentation Requirements
-- Performance Considerations
-- Review Process
-
-## Contact
-
-For support, questions, or contributions, please contact:
-- Email: support@helloblue.ai
-- Company: Helloblue, Inc.
 
 
 
