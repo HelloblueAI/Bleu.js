@@ -54,6 +54,8 @@ class EnsembleManager:
                 await self.initialize()
 
             # Initialize models based on methods
+            if self.models is None:
+                self.models = {}
             for method in self.methods:
                 if method == 'rf':
                     self.models[method] = RandomForestClassifier(
@@ -144,7 +146,7 @@ class EnsembleManager:
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Make predictions using the ensemble."""
         try:
-            if not hasattr(self, 'voting_clf'):
+            if not hasattr(self, 'voting_clf') or self.voting_clf is None:
                 raise ValueError("Ensemble not created. Call createEnsemble first.")
 
             # Get predictions
@@ -160,6 +162,8 @@ class EnsembleManager:
 
     async def getModelWeights(self) -> Dict[str, float]:
         """Get current model weights."""
+        if self.weights is None:
+            return {}
         return self.weights
 
     async def updateWeights(
@@ -178,7 +182,8 @@ class EnsembleManager:
             self.weights = weights
             
             # Update voting classifier
-            self.voting_clf.weights = list(weights.values())
+            if hasattr(self, 'voting_clf') and self.voting_clf is not None:
+                self.voting_clf.weights = list(weights.values())
 
             logging.info("✅ Model weights updated successfully")
             logging.info(f"New weights: {self.weights}")
@@ -196,6 +201,9 @@ class EnsembleManager:
         try:
             performance = {}
             
+            if self.models is None:
+                return performance
+                
             for method, model in self.models.items():
                 # Get predictions
                 y_pred = model.predict(X)
@@ -218,9 +226,11 @@ class EnsembleManager:
     async def dispose(self):
         """Clean up resources."""
         try:
-            self.models.clear()
-            self.weights.clear()
-            if hasattr(self, 'voting_clf'):
+            if self.models is not None:
+                self.models.clear()
+            if self.weights is not None:
+                self.weights.clear()
+            if hasattr(self, 'voting_clf') and self.voting_clf is not None:
                 del self.voting_clf
             self.initialized = False
             logging.info("✅ Ensemble manager resources cleaned up")

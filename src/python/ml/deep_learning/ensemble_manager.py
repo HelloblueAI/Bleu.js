@@ -4,7 +4,7 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Dict, Optional, Union, Tuple, Any
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
@@ -38,7 +38,12 @@ class EnsembleManager:
     capabilities with model diversity and automatic weighting.
     """
     
-    def __init__(self, config: EnsembleConfig = EnsembleConfig()):
+    def __init__(
+        self,
+        model_types: Optional[List[str]] = None,
+        diversity_metrics: Optional[List[str]] = None,
+        config: EnsembleConfig = EnsembleConfig()
+    ):
         self.config = config
         self.logger = structlog.get_logger()
         self.models = []
@@ -46,20 +51,24 @@ class EnsembleManager:
         self.diversity_scores = {}
         self.model_metrics = {}
         
-        if self.config.model_types is None:
+        if model_types is None:
             self.config.model_types = [
                 'random_forest',
                 'gradient_boosting',
                 'neural_network'
             ]
+        else:
+            self.config.model_types = model_types
         
-        if self.config.diversity_metrics is None:
+        if diversity_metrics is None:
             self.config.diversity_metrics = [
                 'q_statistic',
                 'correlation',
                 'entropy',
                 'kappa'
             ]
+        else:
+            self.config.diversity_metrics = diversity_metrics
         
         # Initialize MLflow tracking
         self.mlflow_client = MlflowClient()
@@ -389,7 +398,7 @@ class EnsembleManager:
             'models': self.models,
             'weights': self.weights,
             'diversity_scores': self.diversity_scores,
-            'model_metrics': this.model_metrics
+            'model_metrics': self.model_metrics
         }
         
         joblib.dump(state, path)
@@ -403,7 +412,71 @@ class EnsembleManager:
         self.config = state['config']
         self.models = state['models']
         self.weights = state['weights']
-        this.diversity_scores = state['diversity_scores']
-        this.model_metrics = state['model_metrics']
+        self.diversity_scores = state['diversity_scores']
+        self.model_metrics = state['model_metrics']
         
-        self.logger.info("ensemble_manager_state_loaded", path=path) 
+        self.logger.info("ensemble_manager_state_loaded", path=path)
+
+    def get_ensemble_info(self) -> Dict[str, Any]:
+        """Get ensemble information."""
+        return {
+            'n_models': len(self.models),
+            'weights': self.weights,
+            'metrics': self.model_metrics
+        }
+        
+    def get_metrics(self) -> Dict[str, float]:
+        """Get ensemble metrics."""
+        return self.model_metrics
+        
+    def get_weights(self) -> Dict[str, float]:
+        """Get model weights."""
+        return self.weights
+
+    def train(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, Any]:
+        # ... existing code ...
+        pass
+
+    def predict(self, features: np.ndarray) -> np.ndarray:
+        # ... existing code ...
+        pass
+
+    def _calculate_diversity(self, features: np.ndarray) -> float:
+        # ... existing code ...
+        pass
+
+    def _optimize_weights(self, features: np.ndarray, labels: np.ndarray) -> np.ndarray:
+        # ... existing code ...
+        pass
+
+    def _validate_features(self, features: np.ndarray) -> None:
+        # ... existing code ...
+        pass
+
+    def _validate_labels(self, labels: np.ndarray) -> None:
+        # ... existing code ...
+        pass
+
+    def _check_model_compatibility(self, features: np.ndarray) -> None:
+        # ... existing code ...
+        pass
+
+    def _get_model_predictions(self, features: np.ndarray) -> np.ndarray:
+        # ... existing code ...
+        pass
+
+    def _combine_predictions(self, predictions: np.ndarray, weights: np.ndarray) -> np.ndarray:
+        # ... existing code ...
+        pass
+
+    def _calculate_metrics(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, float]:
+        # ... existing code ...
+        pass
+
+    def _update_model_weights(self, features: np.ndarray, labels: np.ndarray) -> None:
+        # ... existing code ...
+        pass
+
+    def _validate_weights(self, weights: np.ndarray) -> None:
+        # ... existing code ...
+        pass 

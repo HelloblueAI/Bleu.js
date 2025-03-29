@@ -6,6 +6,7 @@ Copyright (c) 2024, Bleu.js
 from dataclasses import dataclass
 from typing import List, Dict, Optional, Union, Tuple
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import export_graphviz
 import tensorflow as tf
 from tensorflow import keras
@@ -26,7 +27,7 @@ from plotly.subplots import make_subplots
 @dataclass
 class ExplainabilityConfig:
     """Configuration for model explainability."""
-    methods: List[str] = None
+    methods: List[str] = None  # Will be initialized in __init__
     enable_shap: bool = True
     enable_lime: bool = True
     enable_tree_visualization: bool = True
@@ -35,6 +36,16 @@ class ExplainabilityConfig:
     enable_individual_explanations: bool = True
     enable_distributed_computing: bool = True
     visualization_format: str = 'interactive'  # 'static', 'interactive', 'both'
+
+    def __post_init__(self):
+        if self.methods is None:
+            self.methods = [
+                'shap',
+                'lime',
+                'tree_visualization',
+                'feature_importance',
+                'partial_dependence'
+            ]
 
 class ExplainabilityEngine:
     """
@@ -50,15 +61,6 @@ class ExplainabilityEngine:
         self.explanations = {}
         self.visualizations = {}
         
-        if self.config.methods is None:
-            self.config.methods = [
-                'shap',
-                'lime',
-                'tree_visualization',
-                'feature_importance',
-                'partial_dependence'
-            ]
-        
         # Initialize Ray for distributed computing if enabled
         if config.enable_distributed_computing:
             if not ray.is_initialized():
@@ -71,15 +73,15 @@ class ExplainabilityEngine:
         try:
             # Initialize explainers based on enabled methods
             if self.config.enable_shap:
-                await this._initialize_shap()
+                await self._initialize_shap()
             
-            if this.config.enable_lime:
-                await this._initialize_lime()
+            if self.config.enable_lime:
+                await self._initialize_lime()
             
-            this.logger.info("explainability_engine_initialized")
+            self.logger.info("explainability_engine_initialized")
             
         except Exception as e:
-            this.logger.error("initialization_failed", error=str(e))
+            self.logger.error("initialization_failed", error=str(e))
             raise
 
     async def _initialize_shap(self) -> None:
@@ -97,69 +99,69 @@ class ExplainabilityEngine:
     async def generate_explanation(
         self,
         model: Union[RandomForestClassifier, keras.Model],
-        X: np.ndarray,
+        x: np.ndarray,
         feature_names: Optional[List[str]] = None
     ) -> Dict:
         """
         Generate comprehensive model explanations.
         """
-        this.logger.info("generating_explanations", data_shape=X.shape)
+        self.logger.info("generating_explanations", data_shape=x.shape)
         
         try:
             # Store feature names
-            this.feature_names = feature_names or [f'feature_{i}' for i in range(X.shape[1])]
+            self.feature_names = feature_names or [f'feature_{i}' for i in range(x.shape[1])]
             
             # Generate explanations using different methods
             explanations = {}
             
-            if 'shap' in this.config.methods and this.config.enable_shap:
-                explanations['shap'] = await this._generate_shap_explanation(model, X)
+            if 'shap' in self.config.methods and self.config.enable_shap:
+                explanations['shap'] = await self._generate_shap_explanation(model, x)
             
-            if 'lime' in this.config.methods and this.config.enable_lime:
-                explanations['lime'] = await this._generate_lime_explanation(model, X)
+            if 'lime' in self.config.methods and self.config.enable_lime:
+                explanations['lime'] = await self._generate_lime_explanation(model, x)
             
-            if 'tree_visualization' in this.config.methods and this.config.enable_tree_visualization:
-                explanations['tree_visualization'] = await this._generate_tree_visualization(model)
+            if 'tree_visualization' in self.config.methods and self.config.enable_tree_visualization:
+                explanations['tree_visualization'] = await self._generate_tree_visualization(model)
             
-            if 'feature_importance' in this.config.methods and this.config.enable_feature_importance:
-                explanations['feature_importance'] = await this._generate_feature_importance(model, X)
+            if 'feature_importance' in self.config.methods and self.config.enable_feature_importance:
+                explanations['feature_importance'] = await self._generate_feature_importance(model, x)
             
-            if 'partial_dependence' in this.config.methods and this.config.enable_partial_dependence:
-                explanations['partial_dependence'] = await this._generate_partial_dependence(model, X)
+            if 'partial_dependence' in self.config.methods and self.config.enable_partial_dependence:
+                explanations['partial_dependence'] = await self._generate_partial_dependence(model, x)
             
             # Generate visualizations
-            if this.config.visualization_format in ['static', 'both']:
-                await this._generate_static_visualizations(explanations)
+            if self.config.visualization_format in ['static', 'both']:
+                await self._generate_static_visualizations(explanations)
             
-            if this.config.visualization_format in ['interactive', 'both']:
-                await this._generate_interactive_visualizations(explanations)
+            if self.config.visualization_format in ['interactive', 'both']:
+                await self._generate_interactive_visualizations(explanations)
             
-            this.explanations = explanations
-            this.logger.info("explanations_generated")
+            self.explanations = explanations
+            self.logger.info("explanations_generated")
             return explanations
             
         except Exception as e:
-            this.logger.error("explanation_generation_failed", error=str(e))
+            self.logger.error("explanation_generation_failed", error=str(e))
             raise
 
     async def _generate_shap_explanation(
         self,
         model: Union[RandomForestClassifier, keras.Model],
-        X: np.ndarray
+        x: np.ndarray
     ) -> Dict:
         """Generate SHAP explanations."""
         # Update explainer with model
         if isinstance(model, RandomForestClassifier):
-            this.explainer = shap.TreeExplainer(model)
+            self.explainer = shap.TreeExplainer(model)
         else:
-            this.explainer = shap.DeepExplainer(model, X)
+            self.explainer = shap.DeepExplainer(model, x)
         
         # Calculate SHAP values
-        shap_values = this.explainer.shap_values(X)
+        shap_values = self.explainer.shap_values(x)
         
         # Generate summary plot
         plt.figure(figsize=(10, 6))
-        shap.summary_plot(shap_values, X, feature_names=this.feature_names)
+        shap.summary_plot(shap_values, x, feature_names=self.feature_names)
         plt.savefig('explanations/shap_summary.png')
         plt.close()
         
@@ -169,23 +171,23 @@ class ExplainabilityEngine:
         }
 
     async def _generate_lime_explanation(
-        this,
+        self,
         model: Union[RandomForestClassifier, keras.Model],
-        X: np.ndarray
+        x: np.ndarray
     ) -> Dict:
         """Generate LIME explanations."""
         # Update explainer with data
-        this.lime_explainer = lime.lime_tabular.LimeTabularExplainer(
-            X,
+        self.lime_explainer = lime.lime_tabular.LimeTabularExplainer(
+            x,
             mode='classification',
-            feature_names=this.feature_names
+            feature_names=self.feature_names
         )
         
         # Generate explanations for a few examples
         explanations = []
-        for i in range(min(5, len(X))):
-            exp = this.lime_explainer.explain_instance(
-                X[i],
+        for i in range(min(5, len(x))):
+            exp = self.lime_explainer.explain_instance(
+                x[i],
                 lambda x: model.predict_proba(x)[:, 1]
             )
             explanations.append(exp)
@@ -198,7 +200,7 @@ class ExplainabilityEngine:
         }
 
     async def _generate_tree_visualization(
-        this,
+        self,
         model: RandomForestClassifier
     ) -> Dict:
         """Generate tree visualization."""
@@ -208,7 +210,7 @@ class ExplainabilityEngine:
         # Generate visualization for the first tree
         dot_data = export_graphviz(
             model.estimators_[0],
-            feature_names=this.feature_names,
+            feature_names=self.feature_names,
             filled=True,
             rounded=True,
             special_characters='!'
@@ -224,9 +226,9 @@ class ExplainabilityEngine:
         }
 
     async def _generate_feature_importance(
-        this,
+        self,
         model: Union[RandomForestClassifier, keras.Model],
-        X: np.ndarray
+        x: np.ndarray
     ) -> Dict:
         """Generate feature importance analysis."""
         if isinstance(model, RandomForestClassifier):
@@ -234,12 +236,13 @@ class ExplainabilityEngine:
         else:
             # For neural networks, use permutation importance
             importance = []
-            baseline_score = model.evaluate(X, verbose=0)[0]
+            baseline_score = model.evaluate(x, verbose=0)[0]
             
-            for i in range(X.shape[1]):
-                X_permuted = X.copy()
-                X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
-                permuted_score = model.evaluate(X_permuted, verbose=0)[0]
+            for i in range(x.shape[1]):
+                x_permuted = x.copy()
+                rng = np.random.default_rng()
+                x_permuted[:, i] = rng.permutation(x_permuted[:, i])
+                permuted_score = model.evaluate(x_permuted, verbose=0)[0]
                 importance.append(baseline_score - permuted_score)
             
             importance = np.array(importance)
@@ -249,13 +252,13 @@ class ExplainabilityEngine:
         
         return {
             'importance': importance,
-            'feature_importance': dict(zip(this.feature_names, importance))
+            'feature_importance': dict(zip(self.feature_names, importance))
         }
 
     async def _generate_partial_dependence(
-        this,
+        self,
         model: Union[RandomForestClassifier, keras.Model],
-        X: np.ndarray
+        x: np.ndarray
     ) -> Dict:
         """Generate partial dependence plots."""
         from sklearn.inspection import partial_dependence
@@ -263,12 +266,12 @@ class ExplainabilityEngine:
         if isinstance(model, RandomForestClassifier):
             pd_results = partial_dependence(
                 model,
-                X,
-                features=range(X.shape[1])
+                x,
+                features=range(x.shape[1])
             )
         else:
             # For neural networks, use custom implementation
-            pd_results = await this._calculate_neural_network_pd(model, X)
+            pd_results = await self._calculate_neural_network_pd(model, x)
         
         return {
             'pd_results': pd_results,
@@ -276,28 +279,28 @@ class ExplainabilityEngine:
         }
 
     async def _calculate_neural_network_pd(
-        this,
+        self,
         model: keras.Model,
-        X: np.ndarray
+        x: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate partial dependence for neural networks."""
         pd_values = []
         pd_positions = []
         
-        for i in range(X.shape[1]):
+        for i in range(x.shape[1]):
             # Create grid of values for feature i
             feature_values = np.linspace(
-                np.min(X[:, i]),
-                np.max(X[:, i]),
+                np.min(x[:, i]),
+                np.max(x[:, i]),
                 50
             )
             
             # Calculate partial dependence
             pd_feature = []
             for value in feature_values:
-                X_pd = X.copy()
-                X_pd[:, i] = value
-                pd_feature.append(model.predict(X_pd, verbose=0))
+                x_pd = x.copy()
+                x_pd[:, i] = value
+                pd_feature.append(model.predict(x_pd, verbose=0))
             
             pd_values.append(np.array(pd_feature))
             pd_positions.append(feature_values)
@@ -305,7 +308,7 @@ class ExplainabilityEngine:
         return np.array(pd_positions), np.array(pd_values)
 
     async def _generate_static_visualizations(
-        this,
+        self,
         explanations: Dict
     ) -> None:
         """Generate static visualizations."""
@@ -317,7 +320,7 @@ class ExplainabilityEngine:
         if 'feature_importance' in explanations:
             plt.figure(figsize=(10, 6))
             importance = explanations['feature_importance']['importance']
-            plt.bar(this.feature_names, importance)
+            plt.bar(self.feature_names, importance)
             plt.xticks(rotation=45)
             plt.title('Feature Importance')
             plt.tight_layout()
@@ -329,28 +332,46 @@ class ExplainabilityEngine:
             pd_results = explanations['partial_dependence']['pd_results']
             n_features = len(pd_results[0])
             
+            if pd_results is None or len(pd_results) < 2:
+                return
+                
+            positions = pd_results[0] if pd_results[0] is not None else []
+            values = pd_results[1] if pd_results[1] is not None else []
+            
+            if not positions or not values:
+                return
+                
+            n_features = len(positions)
+            if n_features == 0:
+                return
+            
             fig, axes = plt.subplots(
                 n_features // 2 + n_features % 2,
                 2,
                 figsize=(15, 5 * (n_features // 2 + n_features % 2))
             )
             
-            for i, (ax, positions, values) in enumerate(zip(
+            if not self.feature_names:
+                self.feature_names = [f'feature_{i}' for i in range(n_features)]
+                
+            for i, (ax, pos, val) in enumerate(zip(
                 axes.ravel(),
-                pd_results[0],
-                pd_results[1]
+                positions,
+                values
             )):
-                ax.plot(positions, values.mean(axis=1))
-                ax.set_title(f'Partial Dependence: {this.feature_names[i]}')
-                ax.set_xlabel('Feature Value')
-                ax.set_ylabel('Prediction')
+                if pos is not None and val is not None:
+                    ax.plot(pos, val.mean(axis=1))
+                    feature_name = self.feature_names[i] if self.feature_names and i < len(self.feature_names) else f'feature_{i}'
+                    ax.set_title(f'Partial Dependence: {feature_name}')
+                    ax.set_xlabel('Feature Value')
+                    ax.set_ylabel('Prediction')
             
             plt.tight_layout()
-            plt.savefig('explanations/partial_dependence.png')
+            _ = plt.savefig('explanations/partial_dependence.png')
             plt.close()
 
     async def _generate_interactive_visualizations(
-        this,
+        self,
         explanations: Dict
     ) -> None:
         """Generate interactive visualizations using Plotly."""
@@ -359,55 +380,73 @@ class ExplainabilityEngine:
         os.makedirs('explanations', exist_ok=True)
         
         # Create interactive feature importance plot
-        if 'feature_importance' in explanations:
-            importance = explanations['feature_importance']['importance']
-            
-            fig = go.Figure(data=[
-                go.Bar(
-                    x=this.feature_names,
-                    y=importance,
-                    text=importance.round(3),
-                    textposition='auto',
+        if 'feature_importance' in explanations and explanations['feature_importance']:
+            importance = explanations['feature_importance'].get('importance')
+            if importance is not None:
+                fig = go.Figure(data=[
+                    go.Bar(
+                        x=self.feature_names,
+                        y=importance,
+                        text=importance.round(3),
+                        textposition='auto',
+                    )
+                ])
+                
+                fig.update_layout(
+                    title='Feature Importance',
+                    xaxis_title='Features',
+                    yaxis_title='Importance Score',
+                    showlegend=False
                 )
-            ])
-            
-            fig.update_layout(
-                title='Feature Importance',
-                xaxis_title='Features',
-                yaxis_title='Importance Score',
-                showlegend=False
-            )
-            
-            fig.write_html('explanations/feature_importance.html')
+                
+                fig.write_html('explanations/feature_importance.html')
         
         # Create interactive partial dependence plots
-        if 'partial_dependence' in explanations:
-            pd_results = explanations['partial_dependence']['pd_results']
-            n_features = len(pd_results[0])
+        if 'partial_dependence' in explanations and explanations['partial_dependence']:
+            pd_results = explanations['partial_dependence'].get('pd_results')
+            if pd_results is None or len(pd_results) < 2:
+                return
+                
+            positions = pd_results[0] if pd_results[0] is not None else []
+            values = pd_results[1] if pd_results[1] is not None else []
+            
+            if not positions or not values:
+                return
+                
+            n_features = len(positions)
+            if n_features == 0:
+                return
+            
+            if not self.feature_names:
+                self.feature_names = [f'feature_{i}' for i in range(n_features)]
             
             fig = make_subplots(
                 rows=n_features // 2 + n_features % 2,
                 cols=2,
-                subplot_titles=[f'PD: {name}' for name in this.feature_names]
+                subplot_titles=[f'PD: {name}' for name in (self.feature_names[:n_features] if self.feature_names else [f'feature_{i}' for i in range(n_features)])]
             )
             
-            for i, (positions, values) in enumerate(zip(
-                pd_results[0],
-                pd_results[1]
-            )):
+            for i, (pos, val) in enumerate(zip(positions, values)):
+                if not pos or not val:
+                    continue
                 row = i // 2 + 1
                 col = i % 2 + 1
                 
-                fig.add_trace(
-                    go.Scatter(
-                        x=positions,
-                        y=values.mean(axis=1),
-                        name=this.feature_names[i],
-                        showlegend=False
-                    ),
-                    row=row,
-                    col=col
-                )
+                try:
+                    mean_val = val.mean(axis=1)
+                    feature_name = self.feature_names[i] if self.feature_names and i < len(self.feature_names) else f'feature_{i}'
+                    fig.add_trace(
+                        go.Scatter(
+                            x=pos,
+                            y=mean_val,
+                            name=feature_name,
+                            showlegend=False
+                        ),
+                        row=row,
+                        col=col
+                    )
+                except (AttributeError, IndexError):
+                    continue
             
             fig.update_layout(
                 height=300 * (n_features // 2 + n_features % 2),
@@ -418,7 +457,7 @@ class ExplainabilityEngine:
             fig.write_html('explanations/partial_dependence.html')
 
     async def explain_instance(
-        this,
+        self,
         model: Union[RandomForestClassifier, keras.Model],
         instance: np.ndarray,
         method: str = 'shap'
@@ -428,27 +467,31 @@ class ExplainabilityEngine:
         """
         if method == 'shap':
             # Generate SHAP explanation
-            shap_values = this.explainer.shap_values(instance.reshape(1, -1))
+            if not self.explainer:
+                raise ValueError("SHAP explainer not initialized")
+            shap_values = self.explainer.shap_values(instance.reshape(1, -1))
             
             # Create force plot
             plt.figure(figsize=(10, 6))
+            if not self.explainer.expected_value:
+                raise ValueError("SHAP explainer expected_value not initialized")
             shap.force_plot(
-                this.explainer.expected_value,
+                self.explainer.expected_value,
                 shap_values[0],
                 instance,
-                feature_names=this.feature_names
+                feature_names=self.feature_names
             )
             plt.savefig('explanations/instance_shap.png')
             plt.close()
             
             return {
                 'shap_values': shap_values[0],
-                'feature_contributions': dict(zip(this.feature_names, shap_values[0]))
+                'feature_contributions': dict(zip(self.feature_names, shap_values[0]))
             }
         
         elif method == 'lime':
             # Generate LIME explanation
-            exp = this.lime_explainer.explain_instance(
+            exp = self.lime_explainer.explain_instance(
                 instance,
                 lambda x: model.predict_proba(x)[:, 1]
             )
@@ -468,30 +511,30 @@ class ExplainabilityEngine:
         else:
             raise ValueError(f"Unsupported explanation method: {method}")
 
-    async def save_state(this, path: str) -> None:
+    async def save_state(self, path: str) -> None:
         """Save the current state of the explainability engine."""
         import joblib
         
         state = {
-            'config': this.config,
-            'explainer': this.explainer,
-            'feature_names': this.feature_names,
-            'explanations': this.explanations,
-            'visualizations': this.visualizations
+            'config': self.config,
+            'explainer': self.explainer,
+            'feature_names': self.feature_names,
+            'explanations': self.explanations,
+            'visualizations': self.visualizations
         }
         
         joblib.dump(state, path)
-        this.logger.info("explainability_engine_state_saved", path=path)
+        self.logger.info("explainability_engine_state_saved", path=path)
 
-    async def load_state(this, path: str) -> None:
+    async def load_state(self, path: str) -> None:
         """Load a saved state of the explainability engine."""
         import joblib
         
         state = joblib.load(path)
-        this.config = state['config']
-        this.explainer = state['explainer']
-        this.feature_names = state['feature_names']
-        this.explanations = state['explanations']
-        this.visualizations = state['visualizations']
+        self.config = state['config']
+        self.explainer = state['explainer']
+        self.feature_names = state['feature_names']
+        self.explanations = state['explanations']
+        self.visualizations = state['visualizations']
         
-        this.logger.info("explainability_engine_state_loaded", path=path) 
+        self.logger.info("explainability_engine_state_loaded", path=path) 

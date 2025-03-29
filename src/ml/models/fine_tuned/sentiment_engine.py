@@ -29,7 +29,11 @@ class SentimentEngine:
 
     def analyze(self, text):
         """Perform sentiment analysis on text."""
+        if self.sentiment_model is None:
+            raise RuntimeError("Sentiment model not initialized")
         result = self.sentiment_model(text)
+        if result is None or len(result) == 0:
+            raise RuntimeError("Sentiment analysis failed to produce results")
         return result[0]  # Return label & confidence score
 
 if __name__ == "__main__":

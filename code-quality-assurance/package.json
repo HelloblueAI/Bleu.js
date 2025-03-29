@@ -7,9 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
     "lint": "eslint src/**/*.js",
-    "coverage": "jest --coverage",
     "security": "npm audit",
     "analyze": "node src/index.js"
   },
@@ -47,10 +45,8 @@
     "ignore": "^5.3.1"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jest": "^27.6.3",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1"

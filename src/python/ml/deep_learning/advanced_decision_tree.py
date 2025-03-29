@@ -4,7 +4,7 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Dict, Optional, Union, Tuple, Any
 import numpy as np
 import tensorflow as tf
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -56,7 +56,7 @@ class AdvancedDecisionTree:
     and distributed computing support.
     """
     
-    def __init__(self, config: ModelConfig = ModelConfig()):
+    def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.logger = structlog.get_logger()
         self.model = None
@@ -74,6 +74,8 @@ class AdvancedDecisionTree:
             'explainability_score': 0.0,
             'quantum_advantage': 0.0
         }
+        self.feature_importance = {}
+        self.tree_structure = {}
         
         # Initialize MLflow tracking
         self.mlflow_client = MlflowClient()
@@ -81,7 +83,7 @@ class AdvancedDecisionTree:
         mlflow.set_experiment(self.experiment_name)
         
         # Initialize Ray for distributed computing if enabled
-        if config.enable_distributed_training:
+        if config['enable_distributed_training']:
             if not ray.is_initialized():
                 ray.init(ignore_reinit_error=True)
 
@@ -91,23 +93,23 @@ class AdvancedDecisionTree:
         
         try:
             # Initialize quantum enhancement if enabled
-            if self.config.use_quantum_enhancement:
+            if self.config['use_quantum_enhancement']:
                 await self._initialize_quantum_enhancer()
             
             # Initialize uncertainty handler
-            if self.config.enable_uncertainty_handling:
+            if self.config['enable_uncertainty_handling']:
                 await self._initialize_uncertainty_handler()
             
             # Initialize feature analyzer
-            if self.config.enable_feature_analysis:
+            if self.config['enable_feature_analysis']:
                 await self._initialize_feature_analyzer()
             
             # Initialize ensemble manager
-            if self.config.enable_ensemble:
+            if self.config['enable_ensemble']:
                 await self._initialize_ensemble_manager()
             
             # Initialize explainability engine
-            if self.config.enable_explainability:
+            if self.config['enable_explainability']:
                 await self._initialize_explainability_engine()
             
             self.logger.info("advanced_decision_tree_initialized")
@@ -118,20 +120,20 @@ class AdvancedDecisionTree:
 
     async def _initialize_quantum_enhancer(self) -> None:
         """Initialize quantum enhancement components."""
-        if not self.config.quantum_config:
-            self.config.quantum_config = QuantumConfig()
+        if not self.config['quantum_config']:
+            self.config['quantum_config'] = QuantumConfig()
             
         # Create quantum circuit
-        qr = QuantumRegister(self.config.quantum_config.num_qubits, 'q')
-        cr = ClassicalRegister(self.config.quantum_config.num_qubits, 'c')
+        qr = QuantumRegister(self.config['quantum_config'].num_qubits, 'q')
+        cr = ClassicalRegister(self.config['quantum_config'].num_qubits, 'c')
         circuit = QuantumCircuit(qr, cr)
         
         # Add quantum gates
-        for i in range(self.config.quantum_config.reps):
-            for j in range(self.config.quantum_config.num_qubits):
+        for i in range(self.config['quantum_config'].reps):
+            for j in range(self.config['quantum_config'].num_qubits):
                 circuit.h(qr[j])
                 circuit.rz(np.random.random(), qr[j])
-                circuit.cx(qr[j], qr[(j + 1) % self.config.quantum_config.num_qubits])
+                circuit.cx(qr[j], qr[(j + 1) % self.config['quantum_config'].num_qubits])
         
         # Create QNN
         self.quantum_enhancer = CircuitQNN(
@@ -142,83 +144,45 @@ class AdvancedDecisionTree:
             sparse=False
         )
 
-    async def train(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
-    ) -> None:
-        """
-        Train the advanced decision tree with quantum enhancement and distributed computing.
-        """
-        self.logger.info("starting_training", data_shape=X.shape)
+    async def train(self, features: np.ndarray, labels: np.ndarray) -> None:
+        """Train the decision tree model."""
+        self._validate_features(features)
+        self._validate_labels(labels)
+        self.model = self._build_tree(features, labels)
+        self.feature_importance = self._calculate_feature_importance()
+        self.tree_structure = self._extract_tree_structure()
         
-        try:
-            # Scale features
-            X_scaled = self.scaler.fit_transform(X)
+    def predict(self, features: np.ndarray) -> np.ndarray:
+        """Make predictions using the trained model."""
+        self._validate_features(features)
+        if self.model is None:
+            raise ValueError("Model not trained yet")
+        return self._traverse_tree(features, self.model)
+        
+    def _build_tree(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, Any]:
+        """Build the decision tree recursively."""
+        if len(np.unique(labels)) == 1:
+            return {'type': 'leaf', 'value': labels[0]}
             
-            # Start MLflow run
-            with mlflow.start_run():
-                # Log parameters
-                mlflow.log_params(self.config.__dict__)
-                
-                # Feature importance analysis
-                if self.config.enable_feature_analysis:
-                    feature_importance = await self.feature_analyzer.analyze(X_scaled, y)
-                    self.metrics['feature_importance'] = feature_importance
-                    mlflow.log_metrics({
-                        'feature_importance_mean': np.mean(feature_importance),
-                        'feature_importance_std': np.std(feature_importance)
-                    })
-                
-                # Create ensemble if enabled
-                if self.config.enable_ensemble:
-                    await self.ensemble_manager.create_ensemble(X_scaled, y)
-                    self.metrics['ensemble_diversity'] = await self.ensemble_manager.get_diversity()
-                    mlflow.log_metric('ensemble_diversity', self.metrics['ensemble_diversity'])
-                
-                # Apply quantum enhancement if enabled
-                if self.config.use_quantum_enhancement:
-                    X_quantum, y_quantum = await self.quantum_enhancer.enhance(X_scaled, y)
-                    X_scaled = X_quantum
-                    y = y_quantum
-                
-                # Hyperparameter tuning if enabled
-                if self.config.use_hyperparameter_tuning:
-                    best_params = await self._tune_hyperparameters(X_scaled, y, validation_data)
-                    self.config.__dict__.update(best_params)
-                
-                # Train model with distributed computing if enabled
-                if self.config.enable_distributed_training:
-                    await self._distributed_train(X_scaled, y, validation_data)
-                else:
-                    await self._local_train(X_scaled, y, validation_data)
-                
-                # Calculate uncertainty if enabled
-                if self.config.enable_uncertainty_handling:
-                    self.metrics['uncertainty'] = await self.uncertainty_handler.calculate_uncertainty(X_scaled)
-                    mlflow.log_metric('uncertainty', self.metrics['uncertainty'])
-                
-                # Generate explanations if enabled
-                if self.config.enable_explainability:
-                    self.metrics['explainability_score'] = await self.explainability_engine.generate_explanation(
-                        self.model, X_scaled
-                    )
-                    mlflow.log_metric('explainability_score', self.metrics['explainability_score'])
-                
-                # Log final metrics
-                mlflow.log_metrics(self.metrics)
-                
-            self.logger.info("training_completed", metrics=self.metrics)
+        best_split = self._find_best_split(features, labels)
+        if best_split is None:
+            return {'type': 'leaf', 'value': np.mean(labels)}
             
-        except Exception as e:
-            self.logger.error("training_failed", error=str(e))
-            raise
+        left_mask = features[:, best_split['feature']] <= best_split['threshold']
+        right_mask = ~left_mask
+        
+        return {
+            'type': 'node',
+            'feature': best_split['feature'],
+            'threshold': best_split['threshold'],
+            'left': self._build_tree(features[left_mask], labels[left_mask]),
+            'right': self._build_tree(features[right_mask], labels[right_mask])
+        }
 
     async def _tune_hyperparameters(
         self,
-        X: np.ndarray,
-        y: np.ndarray,
+        features: np.ndarray,
+        labels: np.ndarray,
         validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
     ) -> Dict:
         """Perform hyperparameter tuning using Optuna."""
@@ -227,18 +191,18 @@ class AdvancedDecisionTree:
                 'max_depth': trial.suggest_int('max_depth', 3, 20),
                 'min_samples_split': trial.suggest_int('min_samples_split', 2, 10),
                 'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 5),
-                'max_features': trial.suggest_int('max_features', 10, X.shape[1]),
+                'max_features': trial.suggest_int('max_features', 10, features.shape[1]),
                 'n_estimators': trial.suggest_int('n_estimators', 50, 200)
             }
             
             model = RandomForestClassifier(**params)
-            model.fit(X, y)
+            model.fit(features, labels)
             
             if validation_data:
                 X_val, y_val = validation_data
                 score = model.score(X_val, y_val)
             else:
-                score = model.score(X, y)
+                score = model.score(features, labels)
             
             return score
         
@@ -249,14 +213,14 @@ class AdvancedDecisionTree:
 
     async def _distributed_train(
         self,
-        X: np.ndarray,
-        y: np.ndarray,
+        features: np.ndarray,
+        labels: np.ndarray,
         validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
     ) -> None:
         """Train the model using distributed computing with Ray."""
         def train_model(config):
             model = RandomForestClassifier(**config)
-            model.fit(X, y)
+            model.fit(features, labels)
             return model
         
         # Define search space
@@ -264,7 +228,7 @@ class AdvancedDecisionTree:
             'max_depth': tune.randint(3, 20),
             'min_samples_split': tune.randint(2, 10),
             'min_samples_leaf': tune.randint(1, 5),
-            'max_features': tune.randint(10, X.shape[1]),
+            'max_features': tune.randint(10, features.shape[1]),
             'n_estimators': tune.randint(50, 200)
         }
         
@@ -279,53 +243,54 @@ class AdvancedDecisionTree:
         # Get best model
         best_config = analysis.get_best_config(metric='mean_accuracy')
         self.model = RandomForestClassifier(**best_config)
-        self.model.fit(X, y)
+        self.model.fit(features, labels)
 
     async def _local_train(
         self,
-        X: np.ndarray,
-        y: np.ndarray,
+        features: np.ndarray,
+        labels: np.ndarray,
         validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
     ) -> None:
         """Train the model locally."""
         self.model = RandomForestClassifier(
-            max_depth=self.config.max_depth,
-            min_samples_split=self.config.min_samples_split,
-            min_samples_leaf=self.config.min_samples_leaf,
-            max_features=self.config.max_features,
-            n_estimators=self.config.n_estimators
+            max_depth=self.config['max_depth'],
+            min_samples_split=self.config['min_samples_split'],
+            min_samples_leaf=self.config['min_samples_leaf'],
+            max_features=self.config['max_features'],
+            n_estimators=self.config['n_estimators']
         )
         
-        self.model.fit(X, y)
+        self.model.fit(features, labels)
         
         if validation_data:
             X_val, y_val = validation_data
             self.metrics['accuracy'] = self.model.score(X_val, y_val)
         else:
-            self.metrics['accuracy'] = self.model.score(X, y)
+            self.metrics['accuracy'] = self.model.score(features, labels)
 
     async def predict(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         return_uncertainty: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """
         Make predictions with optional uncertainty estimation.
         """
+        self._validate_features(features)
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
         
         # Scale features
-        X_scaled = self.scaler.transform(X)
+        X_scaled = self.scaler.transform(features)
         
         # Apply quantum enhancement if enabled
-        if self.config.use_quantum_enhancement:
+        if self.config['use_quantum_enhancement'] and self.quantum_enhancer:
             X_scaled, _ = await self.quantum_enhancer.enhance(X_scaled, None)
         
         # Make predictions
         predictions = self.model.predict(X_scaled)
         
-        if return_uncertainty and self.config.enable_uncertainty_handling:
+        if return_uncertainty and self.config['enable_uncertainty_handling']:
             uncertainty = await self.uncertainty_handler.calculate_uncertainty(X_scaled)
             return predictions, uncertainty
         
@@ -338,12 +303,12 @@ class AdvancedDecisionTree:
         
         return self.model.feature_importances_
 
-    async def get_explanations(self, X: np.ndarray) -> Dict:
+    async def get_explanations(self, features: np.ndarray) -> Dict:
         """Get model explanations for predictions."""
-        if not self.config.enable_explainability:
+        if not self.config['enable_explainability']:
             raise ValueError("Explainability not enabled in model configuration.")
         
-        return await this.explainability_engine.generate_explanation(self.model, X)
+        return await self.explainability_engine.generate_explanation(self.model, features)
 
     async def save_model(self, path: str) -> None:
         """Save the model and its components."""
@@ -353,7 +318,7 @@ class AdvancedDecisionTree:
             'model': self.model,
             'scaler': self.scaler,
             'config': self.config,
-            'metrics': this.metrics
+            'metrics': self.metrics
         }
         
         joblib.dump(model_data, path)
@@ -367,6 +332,56 @@ class AdvancedDecisionTree:
         self.model = model_data['model']
         self.scaler = model_data['scaler']
         self.config = model_data['config']
-        this.metrics = model_data['metrics']
+        self.metrics = model_data['metrics']
         
-        self.logger.info("model_loaded", path=path) 
+        self.logger.info("model_loaded", path=path)
+
+    def get_model_info(self) -> Dict[str, Any]:
+        """Get model information."""
+        return {
+            'n_trees': self.n_trees,
+            'max_depth': self.max_depth,
+            'learning_rate': self.learning_rate,
+            'feature_importance': self.feature_importance,
+            'metrics': self.metrics
+        }
+        
+    def get_feature_importance(self) -> Dict[str, float]:
+        """Get feature importance scores."""
+        return self.feature_importance
+        
+    def get_metrics(self) -> Dict[str, float]:
+        """Get model metrics."""
+        return self.metrics 
+
+    def _apply_noise(self, features: np.ndarray) -> np.ndarray:
+        """Apply noise to features for robustness."""
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+        noise = rng.normal(0, 0.1, features.shape)
+        return features + noise
+
+    def _validate_features(self, features: np.ndarray) -> None:
+        """Validate input features."""
+        if features is None or len(features) == 0:
+            raise ValueError("Features cannot be empty")
+
+    def _validate_labels(self, labels: np.ndarray) -> None:
+        """Validate input labels."""
+        if labels is None or len(labels) == 0:
+            raise ValueError("Labels cannot be empty")
+
+    def _split_data(self, features: np.ndarray, labels: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Split data into training and validation sets."""
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+        indices = rng.permutation(len(features))
+        split_idx = int(0.8 * len(features))
+        train_features = features[indices[:split_idx]]
+        train_labels = labels[indices[:split_idx]]
+        val_features = features[indices[split_idx:]]
+        val_labels = labels[indices[split_idx:]]
+        return train_features, train_labels, val_features, val_labels
+
+    def _scale_features(self, features: np.ndarray) -> np.ndarray:
+        """Scale features using standardization."""
+        scaled_features = (features - np.mean(features, axis=0)) / np.std(features, axis=0)
+        return scaled_features 

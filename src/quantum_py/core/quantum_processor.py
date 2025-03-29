@@ -1,10 +1,11 @@
 import numpy as np
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Dict, Optional, Union, Tuple, Any
 import logging
 from multiprocessing import Pool
 from dataclasses import dataclass
 from .quantum_circuit import QuantumCircuit
 from .quantum_state import QuantumState
+from .quantum_gate import QuantumGate
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,9 @@ class QuantumProcessor:
         self.circuit = QuantumCircuit(config.num_qubits)
         self.error_correction_circuits: Dict[str, QuantumCircuit] = {}
         self.measurement_results: List[Dict[int, int]] = []
+        self.noise_models: Dict[str, callable] = {}
+        
+        # Initialize components
         self._initialize_error_correction()
         self._initialize_noise_models()
         
@@ -96,11 +100,12 @@ class QuantumProcessor:
         if p == 0:
             return state
             
-        noise = np.random.random(len(state))
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+        noise = rng.random(len(state))
         mask = noise < p
         if np.any(mask):
             # Randomly flip affected amplitudes
-            state[mask] = np.exp(2j * np.pi * np.random.random(np.sum(mask)))
+            state[mask] = np.exp(2j * np.pi * rng.random(np.sum(mask)))
             # Renormalize
             state /= np.linalg.norm(state)
         return state
@@ -116,7 +121,7 @@ class QuantumProcessor:
         K1 = np.array([[0, np.sqrt(gamma)], [0, 0]])
         
         # Apply noise to each qubit
-        for i in range(self.config.num_qubits):
+        for _ in range(self.config.num_qubits):
             # Reshape state for single qubit operation
             shape = [2] * self.config.num_qubits
             state = state.reshape(shape)
@@ -140,7 +145,7 @@ class QuantumProcessor:
         K1 = np.array([[0, 0], [0, np.sqrt(lambda_param)]])
         
         # Apply noise to each qubit
-        for i in range(self.config.num_qubits):
+        for _ in range(self.config.num_qubits):
             shape = [2] * self.config.num_qubits
             state = state.reshape(shape)
             

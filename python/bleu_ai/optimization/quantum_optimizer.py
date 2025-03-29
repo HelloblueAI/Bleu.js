@@ -60,7 +60,7 @@ class QuantumOptimizer:
     ) -> Dict:
         """Optimize parameters using quantum-enhanced optimization."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.circuit is None or self.dev is None:
                 await self.initialize()
 
             # Initialize parameters if not provided
@@ -70,6 +70,8 @@ class QuantumOptimizer:
             # Define quantum-enhanced objective
             def quantum_objective(params):
                 # Get quantum circuit outputs
+                if self.circuit is None:
+                    raise ValueError("Quantum circuit not initialized")
                 quantum_outputs = self.circuit(params)
                 
                 # Combine with classical objective
@@ -108,7 +110,7 @@ class QuantumOptimizer:
     ) -> Dict:
         """Optimize a PyTorch model using quantum-enhanced training."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.circuit is None:
                 await self.initialize()
 
             # Initialize optimizer
@@ -140,6 +142,8 @@ class QuantumOptimizer:
 
                     # Quantum enhancement
                     with torch.no_grad():
+                        if self.circuit is None:
+                            raise ValueError("Quantum circuit not initialized")
                         quantum_outputs = self.circuit(
                             model.parameters().__next__().detach().numpy()
                         )
@@ -184,7 +188,7 @@ class QuantumOptimizer:
     ) -> Dict:
         """Optimize hyperparameters using quantum-enhanced search."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.circuit is None:
                 await self.initialize()
 
             best_score = float('-inf')
@@ -205,6 +209,8 @@ class QuantumOptimizer:
                 score = model.score(train_data, train_labels)
 
                 # Quantum enhancement
+                if self.circuit is None:
+                    raise ValueError("Quantum circuit not initialized")
                 quantum_outputs = self.circuit(
                     np.array(list(params.values())).reshape(-1, 3)
                 )

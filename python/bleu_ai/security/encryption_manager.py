@@ -29,7 +29,9 @@ class EncryptionManager:
         self.iterations = iterations
         self.key = key
         self.salt = salt or os.urandom(16)
+        self.cipher_suite: Optional[Fernet] = None
         self.initialized = False
+        self.signing_key: Optional[bytes] = None
 
     async def initialize(self):
         """Initialize the encryption manager."""
@@ -59,7 +61,7 @@ class EncryptionManager:
     ) -> bytes:
         """Encrypt data using Fernet symmetric encryption."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Convert data to bytes
@@ -73,6 +75,8 @@ class EncryptionManager:
                 raise ValueError(f"Unsupported data type: {data_type}")
 
             # Encrypt data
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             encrypted_data = self.cipher_suite.encrypt(data_bytes)
             return encrypted_data
 
@@ -87,10 +91,12 @@ class EncryptionManager:
     ) -> Union[np.ndarray, torch.Tensor, Dict]:
         """Decrypt data using Fernet symmetric encryption."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Decrypt data
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
             # Convert back to original type
@@ -114,7 +120,7 @@ class EncryptionManager:
     ) -> bytes:
         """Encrypt PyTorch model state."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Get model state
@@ -124,15 +130,18 @@ class EncryptionManager:
             model_bytes = pickle.dumps(model_state)
 
             # Encrypt model
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             encrypted_model = self.cipher_suite.encrypt(model_bytes)
 
             # Save if path provided
             if save_path:
-                save_path = Path(save_path)
-                save_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(save_path, 'wb') as f:
+                path = Path(save_path)
+                if path.parent is not None:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, 'wb') as f:
                     f.write(encrypted_model)
-                logging.info(f"✅ Encrypted model saved to {save_path}")
+                logging.info(f"✅ Encrypted model saved to {path}")
 
             return encrypted_model
 
@@ -148,7 +157,7 @@ class EncryptionManager:
     ) -> nn.Module:
         """Decrypt and load PyTorch model state."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Load encrypted model if path provided
@@ -157,6 +166,8 @@ class EncryptionManager:
                     encrypted_model = f.read()
 
             # Decrypt model
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             decrypted_model = self.cipher_suite.decrypt(encrypted_model)
             model_state = pickle.loads(decrypted_model)
 
@@ -175,7 +186,7 @@ class EncryptionManager:
     ) -> bytes:
         """Encrypt file contents."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Read file
@@ -183,15 +194,18 @@ class EncryptionManager:
                 file_data = f.read()
 
             # Encrypt file
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             encrypted_data = self.cipher_suite.encrypt(file_data)
 
             # Save if output path provided
             if output_path:
-                output_path = Path(output_path)
-                output_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(output_path, 'wb') as f:
+                path = Path(output_path)
+                if path.parent is not None:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, 'wb') as f:
                     f.write(encrypted_data)
-                logging.info(f"✅ Encrypted file saved to {output_path}")
+                logging.info(f"✅ Encrypted file saved to {path}")
 
             return encrypted_data
 
@@ -206,7 +220,7 @@ class EncryptionManager:
     ) -> bytes:
         """Decrypt file contents."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
             # Load encrypted data if path provided
@@ -215,15 +229,18 @@ class EncryptionManager:
                     encrypted_data = f.read()
 
             # Decrypt data
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
             # Save if output path provided
             if output_path:
-                output_path = Path(output_path)
-                output_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(output_path, 'wb') as f:
+                path = Path(output_path)
+                if path.parent is not None:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, 'wb') as f:
                     f.write(decrypted_data)
-                logging.info(f"✅ Decrypted file saved to {output_path}")
+                logging.info(f"✅ Decrypted file saved to {path}")
 
             return decrypted_data
 
@@ -239,22 +256,20 @@ class EncryptionManager:
     ) -> Tuple[bytes, bytes]:
         """Securely transfer data to another party."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
-            # Create recipient cipher suite
-            recipient_cipher = Fernet(recipient_key)
-
             # Encrypt data
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
             encrypted_data = await self.encryptData(data, data_type)
 
-            # Create digital signature
-            signature = self.cipher_suite.sign(encrypted_data)
+            # Sign data
+            if self.signing_key is None:
+                raise ValueError("Signing key not initialized")
+            signature = self.signing_key.sign(encrypted_data)
 
-            # Encrypt for recipient
-            transfer_data = recipient_cipher.encrypt(encrypted_data)
-
-            return transfer_data, signature
+            return encrypted_data, signature
 
         except Exception as e:
             logging.error(f"❌ Secure data transfer failed: {str(e)}")
@@ -267,14 +282,21 @@ class EncryptionManager:
     ) -> bool:
         """Verify data integrity using signature."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
+
+            # Create signing object
+            if self.cipher_suite is None:
+                raise ValueError("Cipher suite not initialized")
+            signing_key = self.cipher_suite.signing_key
+            if signing_key is None:
+                raise ValueError("Signing key not initialized")
 
             # Verify signature
             try:
-                self.cipher_suite.verify(data, signature)
+                signing_key.verify(data, signature)
                 return True
-            except:
+            except Exception:
                 return False
 
         except Exception as e:
@@ -288,6 +310,7 @@ class EncryptionManager:
             self.salt = None
             self.cipher_suite = None
             self.initialized = False
+            self.signing_key = None
             logging.info("✅ Encryption manager resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up encryption manager: {str(e)}")

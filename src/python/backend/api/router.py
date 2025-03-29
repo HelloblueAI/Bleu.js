@@ -5,18 +5,42 @@ Main API router for the backend.
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional
+from typing import List, Optional, Dict, Union
 import logging
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from ..config.settings import settings
 from ..core.database import db_manager
 from ..core.models import User, Project, Model, Dataset, Job
 from ..core.job_queue import job_queue_manager
 from ..core.cache import cache_manager
+from ..core.schemas import (
+    UserCreate,
+    UserResponse,
+    ProjectCreate,
+    ProjectResponse,
+    ModelCreate,
+    ModelResponse,
+    DatasetCreate,
+    DatasetResponse,
+    JobCreate,
+    JobResponse,
+    Token,
+    TokenData
+)
+from ..core.security import (
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    verify_password,
+    get_password_hash
+)
+from ..models.user import User
+from ..services.auth import get_current_user
 
 # Create router
 router = APIRouter()
@@ -91,7 +115,7 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 # User endpoints
-@router.post("/users/", response_model=dict)
+@router.post("/users/", response_model=Dict)
 async def create_user(
     username: str,
     email: str,
@@ -124,7 +148,7 @@ async def create_user(
     
     return {"message": "User created successfully", "user_id": user.id}
 
-@router.get("/users/me/", response_model=dict)
+@router.get("/users/me/", response_model=Dict)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     """Get current user information."""
     return {
@@ -137,7 +161,7 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     }
 
 # Project endpoints
-@router.post("/projects/", response_model=dict)
+@router.post("/projects/", response_model=Dict)
 async def create_project(
     name: str,
     description: Optional[str] = None,
@@ -156,7 +180,7 @@ async def create_project(
     
     return {"message": "Project created successfully", "project_id": project.id}
 
-@router.get("/projects/", response_model=List[dict])
+@router.get("/projects/", response_model=List[Dict])
 async def list_projects(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -175,12 +199,12 @@ async def list_projects(
     ]
 
 # Model endpoints
-@router.post("/models/", response_model=dict)
+@router.post("/models/", response_model=Dict)
 async def create_model(
     name: str,
     model_type: str,
-    architecture: dict,
-    hyperparameters: dict,
+    architecture: Dict,
+    hyperparameters: Dict,
     project_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -210,10 +234,10 @@ async def create_model(
     
     return {"message": "Model created successfully", "model_id": model.id}
 
-@router.post("/models/{model_id}/train", response_model=dict)
+@router.post("/models/{model_id}/train", response_model=Dict)
 async def train_model(
     model_id: int,
-    training_params: dict,
+    training_params: Dict,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -242,13 +266,13 @@ async def train_model(
     return {"message": "Training job started", "job_id": job_id}
 
 # Dataset endpoints
-@router.post("/datasets/", response_model=dict)
+@router.post("/datasets/", response_model=Dict)
 async def create_dataset(
     name: str,
     data_type: str,
     data_path: str,
-    metadata: Optional[dict] = None,
     project_id: int,
+    metadata: Optional[Dict] = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -278,7 +302,7 @@ async def create_dataset(
     return {"message": "Dataset created successfully", "dataset_id": dataset.id}
 
 # Job endpoints
-@router.get("/jobs/{job_id}", response_model=dict)
+@router.get("/jobs/{job_id}", response_model=Dict)
 async def get_job_status(
     job_id: int,
     current_user: User = Depends(get_current_user)
@@ -300,7 +324,7 @@ async def get_job_status(
         
     return job_status
 
-@router.post("/jobs/{job_id}/cancel", response_model=dict)
+@router.post("/jobs/{job_id}/cancel", response_model=Dict)
 async def cancel_job(
     job_id: int,
     current_user: User = Depends(get_current_user)
@@ -330,7 +354,7 @@ async def cancel_job(
     return {"message": "Job cancelled successfully"}
 
 # Utility functions
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+def create_access_token(data: Dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create JWT access token."""
     to_encode = data.copy()
     if expires_delta:

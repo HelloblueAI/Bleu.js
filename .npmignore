@@ -11,8 +11,41 @@ src/
 *.ts
 *.tsx
 *.js.map
-*.d.ts
-*.d.ts.map
+!*.d.ts
+!*.d.ts.map
+
+# ----------------------------------------
+# 🐍 Python
+# ----------------------------------------
+*.py
+*.pyc
+*.pyo
+*.pyd
+.Python
+__pycache__/
+*.so
+.Python
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.python-version
+venv/
+env/
+.env/
+.venv/
+ENV/
 
 # ----------------------------------------
 # 🧪 Testing & Coverage
@@ -239,3 +272,130 @@ babel.config.js
 .DS_Store
 .env*
 *.local
+
+# Development files
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+*.log
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.env.*
+!.env.example
+
+# Test files
+tests/
+test/
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Documentation
+docs/
+*.md
+!README.md
+!LICENSE.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+
+# Build files
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# IDE specific files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+bleujs-env/
+node_modules/
+*.node
+*.so
+*.dylib
+*.dll
+*.class
+*.o
+*.obj
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Local development
+local_settings.py
+*.local
+*.local.*
+*.local.yml
+*.local.yaml
+*.local.json
+
+# Debug files
+*.debug
+debug/
+debug.log
+
+# Performance profiling
+*.prof
+*.profile
+*.stats
+*.trace
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Distribution / packaging
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/

@@ -111,10 +111,12 @@ class PerformanceTracker:
     ) -> Dict:
         """Track model training performance."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.metrics is None or self.device is None:
                 await self.initialize()
 
             # Initialize metrics
+            if self.metrics is None:
+                self.metrics = {}
             self.metrics['model_metrics'] = {
                 'train_loss': [],
                 'train_acc': [],
@@ -149,9 +151,10 @@ class PerformanceTracker:
                     train_correct += (predicted == target).sum().item()
 
                     # Record batch time
-                    self.metrics['model_metrics']['batch_times'].append(
-                        time.time() - batch_start
-                    )
+                    if self.metrics is not None and 'model_metrics' in self.metrics:
+                        self.metrics['model_metrics']['batch_times'].append(
+                            time.time() - batch_start
+                        )
 
                 # Validate
                 if val_loader:
@@ -170,36 +173,38 @@ class PerformanceTracker:
                             val_correct += (predicted == target).sum().item()
 
                 # Record metrics
-                self.metrics['model_metrics']['train_loss'].append(
-                    train_loss / len(train_loader)
-                )
-                self.metrics['model_metrics']['train_acc'].append(
-                    100 * train_correct / train_total
-                )
-                if val_loader:
-                    self.metrics['model_metrics']['val_loss'].append(
-                        val_loss / len(val_loader)
+                if self.metrics is not None and 'model_metrics' in self.metrics:
+                    self.metrics['model_metrics']['train_loss'].append(
+                        train_loss / len(train_loader)
                     )
-                    self.metrics['model_metrics']['val_acc'].append(
-                        100 * val_correct / val_total
+                    self.metrics['model_metrics']['train_acc'].append(
+                        100 * train_correct / train_total
                     )
-                self.metrics['model_metrics']['learning_rate'].append(
-                    optimizer.param_groups[0]['lr']
-                )
+                    if val_loader:
+                        self.metrics['model_metrics']['val_loss'].append(
+                            val_loss / len(val_loader)
+                        )
+                        self.metrics['model_metrics']['val_acc'].append(
+                            100 * val_correct / val_total
+                        )
+                    self.metrics['model_metrics']['learning_rate'].append(
+                        optimizer.param_groups[0]['lr']
+                    )
 
                 # Log epoch metrics
-                logging.info(
-                    f"Epoch [{epoch + 1}/{self.n_epochs}], "
-                    f"Train Loss: {self.metrics['model_metrics']['train_loss'][-1]:.4f}, "
-                    f"Train Acc: {self.metrics['model_metrics']['train_acc'][-1]:.2f}%"
-                )
-                if val_loader:
+                if self.metrics is not None and 'model_metrics' in self.metrics:
                     logging.info(
-                        f"Val Loss: {self.metrics['model_metrics']['val_loss'][-1]:.4f}, "
-                        f"Val Acc: {self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
+                        f"Epoch [{epoch + 1}/{self.n_epochs}], "
+                        f"Train Loss: {self.metrics['model_metrics']['train_loss'][-1]:.4f}, "
+                        f"Train Acc: {self.metrics['model_metrics']['train_acc'][-1]:.2f}%"
                     )
+                    if val_loader:
+                        logging.info(
+                            f"Val Loss: {self.metrics['model_metrics']['val_loss'][-1]:.4f}, "
+                            f"Val Acc: {self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
+                        )
 
-            return self.metrics['model_metrics']
+            return self.metrics.get('model_metrics', {})
 
         except Exception as e:
             logging.error(f"❌ Model performance tracking failed: {str(e)}")
@@ -208,33 +213,38 @@ class PerformanceTracker:
     async def analyzePerformance(self) -> Dict:
         """Analyze collected performance metrics."""
         try:
-            if not self.initialized:
+            if not self.initialized or self.metrics is None:
                 await self.initialize()
+
+            if self.metrics is None:
+                return {}
 
             analysis = {
                 'memory': {
-                    'mean': np.mean([m['value'] for m in self.metrics['memory_usage']]),
-                    'max': np.max([m['value'] for m in self.metrics['memory_usage']]),
-                    'min': np.min([m['value'] for m in self.metrics['memory_usage']])
+                    'mean': np.mean([m['value'] for m in self.metrics.get('memory_usage', [])]),
+                    'max': np.max([m['value'] for m in self.metrics.get('memory_usage', [])]),
+                    'min': np.min([m['value'] for m in self.metrics.get('memory_usage', [])])
                 },
                 'gpu': {
-                    'mean': np.mean([m['value'] for m in self.metrics['gpu_usage']]),
-                    'max': np.max([m['value'] for m in self.metrics['gpu_usage']]),
-                    'min': np.min([m['value'] for m in self.metrics['gpu_usage']])
+                    'mean': np.mean([m['value'] for m in self.metrics.get('gpu_usage', [])]),
+                    'max': np.max([m['value'] for m in self.metrics.get('gpu_usage', [])]),
+                    'min': np.min([m['value'] for m in self.metrics.get('gpu_usage', [])])
                 },
                 'cpu': {
-                    'mean': np.mean([m['value'] for m in self.metrics['cpu_usage']]),
-                    'max': np.max([m['value'] for m in self.metrics['cpu_usage']]),
-                    'min': np.min([m['value'] for m in self.metrics['cpu_usage']])
+                    'mean': np.mean([m['value'] for m in self.metrics.get('cpu_usage', [])]),
+                    'max': np.max([m['value'] for m in self.metrics.get('cpu_usage', [])]),
+                    'min': np.min([m['value'] for m in self.metrics.get('cpu_usage', [])])
                 },
                 'network': {
-                    'total_sent': sum(m['bytes_sent'] for m in self.metrics['network_usage']),
-                    'total_recv': sum(m['bytes_recv'] for m in self.metrics['network_usage'])
+                    'total_sent': sum(m['bytes_sent'] for m in self.metrics.get('network_usage', [])),
+                    'total_recv': sum(m['bytes_recv'] for m in self.metrics.get('network_usage', [])),
+                    'mean_sent': np.mean([m['bytes_sent'] for m in self.metrics.get('network_usage', [])]),
+                    'mean_recv': np.mean([m['bytes_recv'] for m in self.metrics.get('network_usage', [])])
                 }
             }
 
             # Add model metrics analysis if available
-            if self.metrics['model_metrics']:
+            if self.metrics.get('model_metrics'):
                 analysis['model'] = {
                     'train_loss': {
                         'mean': np.mean(self.metrics['model_metrics']['train_loss']),
@@ -245,6 +255,21 @@ class PerformanceTracker:
                         'mean': np.mean(self.metrics['model_metrics']['train_acc']),
                         'min': np.min(self.metrics['model_metrics']['train_acc']),
                         'max': np.max(self.metrics['model_metrics']['train_acc'])
+                    },
+                    'val_loss': {
+                        'mean': np.mean(self.metrics['model_metrics']['val_loss']),
+                        'min': np.min(self.metrics['model_metrics']['val_loss']),
+                        'max': np.max(self.metrics['model_metrics']['val_loss'])
+                    },
+                    'val_acc': {
+                        'mean': np.mean(self.metrics['model_metrics']['val_acc']),
+                        'min': np.min(self.metrics['model_metrics']['val_acc']),
+                        'max': np.max(self.metrics['model_metrics']['val_acc'])
+                    },
+                    'learning_rate': {
+                        'mean': np.mean(self.metrics['model_metrics']['learning_rate']),
+                        'min': np.min(self.metrics['model_metrics']['learning_rate']),
+                        'max': np.max(self.metrics['model_metrics']['learning_rate'])
                     },
                     'batch_times': {
                         'mean': np.mean(self.metrics['model_metrics']['batch_times']),

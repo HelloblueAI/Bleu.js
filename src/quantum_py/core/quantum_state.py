@@ -25,31 +25,47 @@ class Complex:
 class QuantumState:
     """Enhanced quantum state implementation using NumPy for better performance."""
     
-    def __init__(self, num_qubits: int):
+    def __init__(self, num_qubits: int, seed: Optional[int] = None):
         """Initialize a quantum state with the specified number of qubits.
         
         Args:
             num_qubits: Number of qubits in the system (must be positive and <= 32)
+            seed: Random seed for reproducibility
         """
         if not isinstance(num_qubits, int) or num_qubits <= 0 or num_qubits > 32:
             raise ValueError('Number of qubits must be a positive integer less than or equal to 32')
             
         self.num_qubits = num_qubits
         self.dimension = 2 ** num_qubits
-        # Initialize state vector to |0⟩ state using complex numpy array
-        self.amplitudes = np.zeros(self.dimension, dtype=np.complex128)
-        self.amplitudes[0] = 1.0 + 0.0j
+        self.rng = np.random.default_rng(seed)
+        self.state = self._initialize_state()
+        self.entanglement = self._initialize_entanglement()
+        self.error_rates = self._initialize_error_rates()
         
         # Enhanced features
         self._entanglement_map = {}
-        self._error_rates = np.zeros(num_qubits)
         self._coherence_times = np.ones(num_qubits)
         self._last_operation_time = np.zeros(num_qubits)
 
     @property
     def state_vector(self) -> np.ndarray:
         """Get the quantum state vector."""
-        return self.amplitudes.copy()
+        return self.state.flatten()
+
+    def _initialize_state(self) -> np.ndarray:
+        """Initialize quantum state vector."""
+        size = 2 ** self.num_qubits
+        state = self.rng.random(size) + 1j * self.rng.random(size)
+        return state / np.linalg.norm(state)
+
+    def _initialize_entanglement(self) -> np.ndarray:
+        """Initialize entanglement matrix."""
+        size = 2 ** self.num_qubits
+        return self.rng.random((size, size)) + 1j * self.rng.random((size, size))
+
+    def _initialize_error_rates(self) -> np.ndarray:
+        """Initialize error rates for each qubit."""
+        return self.rng.random(self.num_qubits) * 0.01
 
     def apply_gate(self, gate_matrix: np.ndarray, target_qubits: List[int]) -> None:
         """Apply a quantum gate to the state.
@@ -65,7 +81,7 @@ class QuantumState:
         operation = self._expand_gate(gate_matrix, target_qubits)
         
         # Apply the operation
-        self.amplitudes = operation @ self.amplitudes
+        self.state = operation @ self.state
         
         # Update coherence and error tracking
         self._update_coherence(target_qubits)
@@ -83,20 +99,20 @@ class QuantumState:
             qubit_indices = list(range(self.num_qubits))
             
         # Calculate probabilities
-        probs = np.abs(self.amplitudes) ** 2
+        probs = np.abs(self.state) ** 2
         
         # Choose outcome based on probabilities
-        outcome = np.random.choice(self.dimension, p=probs)
+        outcome = self.rng.choice(self.dimension, p=probs)
         
         # Collapse state
-        self.amplitudes = np.zeros_like(self.amplitudes)
-        self.amplitudes[outcome] = 1.0
+        self.state = np.zeros_like(self.state)
+        self.state[outcome] = 1.0
         
         return outcome, probs[outcome]
 
     def get_density_matrix(self) -> np.ndarray:
         """Calculate the density matrix representation of the state."""
-        return np.outer(self.amplitudes, np.conj(self.amplitudes))
+        return np.outer(self.state, np.conj(self.state))
 
     def get_reduced_density_matrix(self, traced_out_qubits: List[int]) -> np.ndarray:
         """Calculate the reduced density matrix by tracing out specified qubits."""
@@ -117,7 +133,7 @@ class QuantumState:
     def apply_noise(self, error_rate: float = 0.01) -> None:
         """Apply depolarizing noise to the quantum state."""
         for i in range(self.num_qubits):
-            if np.random.random() < error_rate:
+            if self.rng.random() < error_rate:
                 # Apply random Pauli error
                 error_gate = np.random.choice([
                     np.array([[0, 1], [1, 0]]),  # X gate
@@ -158,11 +174,11 @@ class QuantumState:
 
     def _update_coherence(self, target_qubits: List[int]) -> None:
         """Update coherence times and error rates for target qubits."""
-        current_time = np.random.random()  # Simulate time progression
+        current_time = self.rng.random()  # Simulate time progression
         for qubit in target_qubits:
             time_diff = current_time - self._last_operation_time[qubit]
             self._coherence_times[qubit] *= np.exp(-time_diff / 20.0)  # T2 decay
-            self._error_rates[qubit] = 1.0 - self._coherence_times[qubit]
+            self.error_rates[qubit] = 1.0 - self._coherence_times[qubit]
             self._last_operation_time[qubit] = current_time
 
     def _partial_trace(self, rho: np.ndarray, qubit: int) -> np.ndarray:
@@ -182,6 +198,22 @@ class QuantumState:
 
     def __str__(self) -> str:
         """String representation of the quantum state."""
-        return f"QuantumState(num_qubits={self.num_qubits}, amplitudes=\n{self.amplitudes})"
+        return f"QuantumState(num_qubits={self.num_qubits}, state=\n{self.state})"
+
+    def _apply_noise(self, state: np.ndarray) -> np.ndarray:
+        """Apply noise to quantum state."""
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+        noise = rng.normal(0, 0.1, state.shape)
+        return state + noise
+
+    def _apply_quantum_gate(self, state: np.ndarray, gate: np.ndarray) -> np.ndarray:
+        """Apply a quantum gate to the state."""
+        return np.dot(gate, state)
+
+    def _apply_quantum_circuit(self, state: np.ndarray) -> np.ndarray:
+        """Apply a quantum circuit to the state."""
+        for gate in self.circuit:
+            state = self._apply_quantum_gate(state, gate)
+        return state
 
 from functools import reduce  # For _expand_gate method 

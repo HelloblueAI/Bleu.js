@@ -160,6 +160,8 @@ class ModelOptimizer:
         X_scaled, y, feature_names = self.load_data()
         
         # Train XGBoost model
+        if self.best_params is None:
+            raise ValueError("Hyperparameters not optimized yet")
         xgb_params = {k: v for k, v in self.best_params.items() if k not in ['batch_size', 'epochs', 'neural_network_lr']}
         xgb_model = xgb.XGBClassifier(**xgb_params, random_state=42)
         xgb_model.fit(X_scaled, y)

@@ -30,6 +30,7 @@ class ModelCompressor:
         self.compression_ratio = None
         self.original_size = None
         self.compressed_size = None
+        self.initialized = False
 
     async def initialize(self):
         """Initialize the model compressor."""
@@ -37,6 +38,7 @@ class ModelCompressor:
             logging.info("Initializing model compressor...")
             # Add any initialization logic here
             logging.info("✅ Model compressor initialized successfully")
+            self.initialized = True
         except Exception as e:
             logging.error(f"❌ Failed to initialize model compressor: {str(e)}")
             raise
@@ -48,7 +50,13 @@ class ModelCompressor:
     ) -> Union[xgb.XGBClassifier, nn.Module]:
         """Compress the model using the specified method."""
         try:
+            if not self.initialized:
+                await self.initialize()
+
+            if method is None and self.compression_method is None:
+                raise ValueError("No compression method specified")
             method = method or self.compression_method
+
             self.original_size = self._get_model_size(model)
 
             if isinstance(model, xgb.XGBClassifier):
@@ -57,6 +65,8 @@ class ModelCompressor:
                 compressed = await self._compress_pytorch(model, method)
 
             self.compressed_size = self._get_model_size(compressed)
+            if self.original_size is None or self.compressed_size is None:
+                raise ValueError("Model size calculation failed")
             self.compression_ratio = self.compressed_size / self.original_size
 
             logging.info(f"✅ Model compressed successfully. Compression ratio: {self.compression_ratio:.2f}")
@@ -107,6 +117,9 @@ class ModelCompressor:
     async def _quantize_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Quantize XGBoost model parameters."""
         try:
+            if self.quantization_bits is None:
+                raise ValueError("Quantization bits not initialized")
+
             # Get model parameters
             params = model.get_params()
             
@@ -118,6 +131,8 @@ class ModelCompressor:
                 )
             
             # Quantize tree weights
+            if not hasattr(model, 'get_booster') or model.get_booster() is None:
+                raise ValueError("XGBoost model booster not initialized")
             booster = model.get_booster()
             trees = booster.get_dump()
             
@@ -134,13 +149,20 @@ class ModelCompressor:
     async def _prune_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Prune XGBoost model by removing less important trees."""
         try:
+            if self.pruning_threshold is None:
+                raise ValueError("Pruning threshold not initialized")
+
             # Get feature importances
+            if not hasattr(model, 'feature_importances_') or model.feature_importances_ is None:
+                raise ValueError("XGBoost model feature importances not initialized")
             importances = model.feature_importances_
             
             # Create mask for important features
             mask = importances > self.pruning_threshold
             
             # Apply pruning
+            if not hasattr(model, 'get_booster') or model.get_booster() is None:
+                raise ValueError("XGBoost model booster not initialized")
             booster = model.get_booster()
             trees = booster.get_dump()
             
@@ -157,7 +179,12 @@ class ModelCompressor:
     async def _cluster_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Cluster XGBoost model parameters to reduce redundancy."""
         try:
+            if self.clustering_n_clusters is None:
+                raise ValueError("Clustering number of clusters not initialized")
+
             # Get feature importances
+            if not hasattr(model, 'feature_importances_') or model.feature_importances_ is None:
+                raise ValueError("XGBoost model feature importances not initialized")
             importances = model.feature_importances_
             
             # Perform clustering
@@ -179,6 +206,9 @@ class ModelCompressor:
     async def _quantize_pytorch(self, model: nn.Module) -> nn.Module:
         """Quantize PyTorch model parameters."""
         try:
+            if not hasattr(model, 'eval') or not callable(model.eval):
+                raise ValueError("PyTorch model not properly initialized")
+
             # Prepare model for quantization
             model.eval()
             
@@ -201,6 +231,12 @@ class ModelCompressor:
     async def _prune_pytorch(self, model: nn.Module) -> nn.Module:
         """Prune PyTorch model by removing less important weights."""
         try:
+            if self.pruning_threshold is None:
+                raise ValueError("Pruning threshold not initialized")
+
+            if not hasattr(model, 'named_parameters') or not callable(model.named_parameters):
+                raise ValueError("PyTorch model not properly initialized")
+
             # Get all parameters
             for name, param in model.named_parameters():
                 if 'weight' in name:
@@ -223,6 +259,11 @@ class ModelCompressor:
     ) -> np.ndarray:
         """Quantize numpy array to specified number of bits."""
         try:
+            if array is None:
+                raise ValueError("Input array is None")
+            if bits <= 0:
+                raise ValueError("Number of bits must be positive")
+
             # Calculate scaling factor
             scale = 2 ** bits - 1
             
@@ -267,7 +308,14 @@ class ModelCompressor:
     async def dispose(self):
         """Clean up resources."""
         try:
-            # Add cleanup logic here
+            self.compression_method = None
+            self.quantization_bits = None
+            self.pruning_threshold = None
+            self.clustering_n_clusters = None
+            self.original_size = None
+            self.compressed_size = None
+            self.compression_ratio = None
+            self.initialized = False
             logging.info("✅ Model compressor resources cleaned up")
         except Exception as e:
             logging.error(f"❌ Failed to clean up model compressor: {str(e)}")

@@ -10,6 +10,9 @@ from ..core.performance import (
     PerformanceMetrics,
     ProfilingResult
 )
+from datetime import datetime
+import numpy as np
+from typing import Dict, List, Optional, Union
 
 # Create test optimizer instance
 optimizer = PerformanceOptimizer({

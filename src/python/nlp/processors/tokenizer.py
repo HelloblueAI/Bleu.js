@@ -3,7 +3,7 @@ Enhanced tokenizer with advanced NLP features.
 """
 
 from transformers import AutoTokenizer, PreTrainedTokenizer
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Tuple, Any
 import torch
 from dataclasses import dataclass
 import numpy as np

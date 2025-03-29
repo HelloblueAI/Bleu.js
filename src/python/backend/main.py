@@ -73,11 +73,11 @@ async def startup_event():
     
     try:
         # Initialize database
-        db_manager.initialize()
+        await db_manager.initialize()
         logger.info("Database initialized")
         
         # Initialize cache
-        cache_manager.initialize()
+        await cache_manager.initialize()
         logger.info("Cache initialized")
         
         # Initialize job queue
@@ -100,12 +100,13 @@ async def shutdown_event():
         logger.info("Database connection closed")
         
         # Close cache connection
-        cache_manager.close()
+        await cache_manager.close()
         logger.info("Cache connection closed")
         
         # Shutdown job queue
-        await job_queue_manager.shutdown()
-        logger.info("Job queue shut down")
+        if job_queue_manager:
+            await job_queue_manager.shutdown()
+            logger.info("Job queue shut down")
         
     except Exception as e:
         logger.error(f"Error during shutdown: {e}")

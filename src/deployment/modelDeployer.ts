@@ -3,7 +3,7 @@ import cors from 'cors';
 import { createLogger } from '../utils/logger';
 import { Monitor } from '../monitoring/monitor';
 import { BleuAI } from '../ai/bleuAI';
-import { QuantumEnhancer } from '../ai/multimodal/enhancers/quantumEnhancer';
+import { QuantumEnhancer } from '../quantum/quantumEnhancer';
 import { ModelConfig, DeploymentStatus } from '../types';
 import { DeploymentError } from '../types/errors';
 import { Config } from '../config/config';
