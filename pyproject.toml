@@ -17,7 +17,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.9"
 numpy = ">=1.23.5"
 torch = ">=2.0.0"
 torchvision = ">=0.15.0"
