@@ -1,0 +1,315 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Bleu.js API Subscription Tiers'
+
+Resources:
+  # API Gateway Usage Plans
+  BasicUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      UsagePlanName: !Sub ${AWS::StackName}-basic-plan
+      Description: Basic plan - 100 API calls per month
+      Quota:
+        Limit: 100
+        Period: MONTH
+      Throttle:
+        BurstLimit: 10
+        RateLimit: 5
+
+  EnterpriseUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      UsagePlanName: !Sub ${AWS::StackName}-enterprise-plan
+      Description: Enterprise plan - 5000 API calls per month with 24/7 support
+      Quota:
+        Limit: 5000
+        Period: MONTH
+      Throttle:
+        BurstLimit: 100
+        RateLimit: 50
+
+  # API Gateway Usage Plan Keys
+  BasicUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref BasicApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref BasicUsagePlan
+
+  EnterpriseUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref EnterpriseApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref EnterpriseUsagePlan
+
+  # API Keys
+  BasicApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Name: !Sub ${AWS::StackName}-basic-key
+      Description: API key for basic tier
+      Enabled: true
+      Value: !Sub '${AWS::StackName}-basic-${AWS::AccountId}'
+
+  EnterpriseApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Name: !Sub ${AWS::StackName}-enterprise-key
+      Description: API key for enterprise tier
+      Enabled: true
+      Value: !Sub '${AWS::StackName}-enterprise-${AWS::AccountId}'
+
+  # Lambda Functions for Usage Tracking
+  UsageTrackingFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-usage-tracking
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          const AWS = require('aws-sdk');
+          const dynamodb = new AWS.DynamoDB.DocumentClient();
+          const TABLE_NAME = process.env.USAGE_TABLE;
+
+          exports.handler = async (event) => {
+            const apiKey = event.apiKey;
+            const usage = event.usage;
+            
+            const params = {
+              TableName: TABLE_NAME,
+              Key: { apiKey },
+              UpdateExpression: 'SET usage = :usage, lastUpdated = :timestamp',
+              ExpressionAttributeValues: {
+                ':usage': usage,
+                ':timestamp': new Date().toISOString()
+              }
+            };
+
+            await dynamodb.update(params).promise();
+            return { statusCode: 200 };
+          };
+      Runtime: nodejs18.x
+      Timeout: 30
+      Environment:
+        Variables:
+          USAGE_TABLE: !Ref UsageTable
+      LoggingConfig:
+        LogFormat: JSON
+        LogGroup: !Ref UsageTrackingLogGroup
+        ApplicationLogLevel: INFO
+        SystemLogLevel: INFO
+
+  # DynamoDB Table for Usage Tracking
+  UsageTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-usage
+      AttributeDefinitions:
+        - AttributeName: apiKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: apiKey
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # IAM Role for Lambda
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:UpdateItem
+                Resource: !GetAtt UsageTable.Arn
+
+  # CloudWatch Alarms for Usage Limits
+  BasicUsageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-basic-usage-alarm
+      AlarmDescription: Alert when basic tier usage exceeds 90% of quota
+      MetricName: Count
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 90
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ApiKey
+          Value: !Ref BasicApiKey
+        - Name: UsagePlanId
+          Value: !Ref BasicUsagePlan
+
+  EnterpriseUsageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-enterprise-usage-alarm
+      AlarmDescription: Alert when enterprise tier usage exceeds 90% of quota
+      MetricName: Count
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 4500
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ApiKey
+          Value: !Ref EnterpriseApiKey
+        - Name: UsagePlanId
+          Value: !Ref EnterpriseUsagePlan
+
+  # SNS Topic for Usage Alerts
+  UsageAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub ${AWS::StackName}-usage-alerts
+      TopicName: !Sub ${AWS::StackName}-usage-alerts
+
+  # SNS Topic Policy
+  UsageAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref UsageAlertsTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: SNS:Publish
+            Resource: !Ref UsageAlertsTopic
+
+  SubscriptionService:
+    Type: AWS::ECS::Service
+    Properties:
+      ServiceName: subscription-service
+      Cluster: !Ref ECSCluster
+      TaskDefinition: !Ref SubscriptionTaskDefinition
+      DesiredCount: 1
+      
+  SubscriptionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /ecs/${AWS::StackName}/subscription-service
+      RetentionInDays: 30
+      
+  SubscriptionTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: subscription-service
+      ContainerDefinitions:
+        - Name: subscription-service
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/subscription-service:latest
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref SubscriptionServiceLogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+
+  SubscriptionLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-subscription-handler
+      Handler: index.handler
+      Runtime: python3.13
+      CodeUri: ../../src/lambda/subscription_handler/
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKey
+          STRIPE_WEBHOOK_SECRET: !Ref StripeWebhookSecret
+      LoggingConfig:
+        LogFormat: JSON
+        LogGroup: !Ref SubscriptionLambdaLogGroup
+        ApplicationLogLevel: INFO
+        SystemLogLevel: INFO
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SubscriptionLambdaFunction}:*
+      Events:
+        SubscriptionWebhook:
+          Type: Api
+          Properties:
+            Path: /webhook
+            Method: post
+            Auth:
+              ApiKeyRequired: true
+              UsagePlan:
+                CreateUsagePlan: PER_API
+                Description: Usage plan for subscription webhook
+                Quota:
+                  Limit: 5000
+                  Period: MONTH
+                Throttle:
+                  BurstLimit: 200
+                  RateLimit: 100
+              ApiKey:
+                Description: API Key for subscription webhook
+                Enabled: true
+                Name: !Sub ${AWS::StackName}-webhook-key
+                Value: !Ref WebhookApiKey
+
+  # CloudWatch Log Groups
+  UsageTrackingLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-usage-tracking
+      RetentionInDays: 30
+
+  SubscriptionServiceLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /ecs/${AWS::StackName}/subscription-service
+      RetentionInDays: 30
+
+  SubscriptionLambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-subscription-handler
+      RetentionInDays: 30
+
+  WebhookHandlerLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-webhook-handler
+      RetentionInDays: 30
+
+Outputs:
+  BasicApiKey:
+    Description: API Key for Basic Tier
+    Value: !Ref BasicApiKey
+
+  EnterpriseApiKey:
+    Description: API Key for Enterprise Tier
+    Value: !Ref EnterpriseApiKey
+
+  UsageTableName:
+    Description: DynamoDB Table for Usage Tracking
+    Value: !Ref UsageTable
+
+  UsageAlertsTopicArn:
+    Description: SNS Topic ARN for Usage Alerts
+    Value: !Ref UsageAlertsTopic 

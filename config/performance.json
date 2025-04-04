@@ -1,0 +1,42 @@
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIPath",
+    "Value": "main:app"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "NumProcesses",
+    "Value": "auto"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "NumThreads",
+    "Value": "auto"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIPassAuthorization",
+    "Value": "true"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIScriptReloading",
+    "Value": "false"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIGzipCompression",
+    "Value": "true"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIGzipMinLength",
+    "Value": "1000"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:container:python",
+    "OptionName": "WSGIGzipTypes",
+    "Value": "text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript"
+  }
+] 

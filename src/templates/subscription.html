@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bleu.js - Choose Your Plan</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="h-8 w-auto" src="/static/images/logo.png" alt="Bleu.js">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-blue-500">Home</a>
+                        <a href="/api-services" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-blue-500">API Services</a>
+                        <a href="/documentation" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-blue-500">Documentation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                    Choose Your Plan
+                </h1>
+                <p class="mt-6 text-xl text-blue-100 max-w-3xl mx-auto">
+                    Select the perfect plan for your AI-powered applications. All plans include secure API access, real-time analytics, and automatic scaling.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <!-- Basic Plan -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="px-6 py-8">
+                    <h3 class="text-2xl font-bold text-gray-900">Basic</h3>
+                    <p class="mt-4 text-gray-500">Perfect for startups and small projects</p>
+                    <p class="mt-8">
+                        <span class="text-4xl font-extrabold text-gray-900">$29</span>
+                        <span class="text-base font-medium text-gray-500">/month</span>
+                    </p>
+                    <ul class="mt-6 space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">100 API calls/month</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Core AI model access</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">REST API endpoints</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Basic documentation</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Community support</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">99.9% uptime</p>
+                        </li>
+                    </ul>
+                    <button id="basic-plan-btn" class="mt-8 block w-full bg-blue-600 text-white rounded-md py-3 px-6 text-center font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Start Free Trial
+                    </button>
+                </div>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 border-2 border-blue-500">
+                <div class="px-6 py-8">
+                    <div class="absolute top-0 right-0 -mt-4 mr-4">
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900">Enterprise</h3>
+                    <p class="mt-4 text-gray-500">For large-scale applications and teams</p>
+                    <p class="mt-8">
+                        <span class="text-4xl font-extrabold text-gray-900">$499</span>
+                        <span class="text-base font-medium text-gray-500">/month</span>
+                    </p>
+                    <ul class="mt-6 space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">5000 API calls/month</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Advanced AI models access</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Priority API endpoints</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Advanced documentation</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Dedicated support team</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">24/7 priority support</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">99.99% uptime SLA</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Custom model training</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-500"></i>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">API rate limit increase</p>
+                        </li>
+                    </ul>
+                    <button id="enterprise-plan-btn" class="mt-8 block w-full bg-blue-600 text-white rounded-md py-3 px-6 text-center font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Start Free Trial
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="bg-gray-50 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    All Plans Include
+                </h2>
+                <p class="mt-4 text-lg text-gray-500">
+                    Enterprise-grade features available to all customers
+                </p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-shield-alt text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Secure API Access</h3>
+                    <p class="mt-2 text-gray-500">Bank-grade security with end-to-end encryption</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-chart-line text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Real-time Analytics</h3>
+                    <p class="mt-2 text-gray-500">Monitor usage and performance in real-time</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-expand text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Automatic Scaling</h3>
+                    <p class="mt-2 text-gray-500">Scale your applications automatically</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-blue-600">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+            <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                <span class="block">Ready to get started?</span>
+                <span class="block text-blue-200">Start your free trial today.</span>
+            </h2>
+            <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+                <div class="inline-flex rounded-md shadow">
+                    <a href="#pricing" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
+                        Get started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-base text-gray-400">
+                    © 2025 Helloblue, Inc. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('{{ stripe_public_key }}');
+        
+        // Handle plan selection
+        document.getElementById('basic-plan-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        priceId: '{{ basic_plan_price_id }}',
+                        plan: 'basic'
+                    })
+                });
+                const session = await response.json();
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        document.getElementById('enterprise-plan-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        priceId: '{{ enterprise_plan_price_id }}',
+                        plan: 'enterprise'
+                    })
+                });
+                const session = await response.json();
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 

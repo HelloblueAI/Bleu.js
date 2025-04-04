@@ -21,34 +21,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+import winston from 'winston';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
-const winston = require('winston');
-const path = require('path');
-const fs = require('fs');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const logDirectory = path.join(__dirname, '../logs');
-if (!fs.existsSync(logDirectory)) {
-  fs.mkdirSync(logDirectory, { recursive: true });
+const logDirectory = join(__dirname, '../logs');
+if (!existsSync(logDirectory)) {
+  mkdirSync(logDirectory, { recursive: true });
 }
 
 const logFormat = winston.format.printf(({ timestamp, level, message }) => {
   return `${timestamp} [${level.toUpperCase()}]: ${message}`;
 });
 
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(winston.format.timestamp(), logFormat),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(logDirectory, 'app.log'),
-    }),
-  ],
-});
+export function createLogger(moduleName) {
+  const logger = winston.createLogger({
+    level: process.env.LOG_LEVEL || 'info',
+    format: winston.format.combine(winston.format.timestamp(), logFormat),
+    transports: [
+      new winston.transports.Console(),
+      new winston.transports.File({
+        filename: join(logDirectory, 'app.log'),
+      }),
+    ],
+  });
 
-logger.on('error', (err) => {
-  console.error('❌ Logger encountered an error:', err);
-});
+  logger.on('error', (err) => {
+    console.error('❌ Logger encountered an error:', err);
+  });
 
-module.exports = logger;
+  return logger.child({ module: moduleName });
+}

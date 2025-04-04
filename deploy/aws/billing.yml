@@ -1,0 +1,147 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Bleu.js Billing and Usage Tracking'
+
+Resources:
+  # Cost Explorer API
+  CostExplorerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cost-explorer.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess
+      Path: /
+      RoleName: !Sub ${AWS::StackName}-cost-explorer-role
+
+  # Budget Alerts
+  MonthlyBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub ${AWS::StackName}-monthly-budget
+        BudgetLimit:
+          Amount: !Ref BudgetAmount
+          Unit: USD
+        TimeUnit: MONTHLY
+        BudgetType: COST
+        CostFilters:
+          Service:
+            - Amazon Elastic Compute Cloud - Compute
+            - Amazon Elastic Load Balancing
+            - Amazon Elasticsearch Service
+            - Amazon CloudWatch
+        TimeSpend:
+          Amount: !Ref BudgetAmount
+          Unit: USD
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - Address: !Ref AlertEmail
+              SubscriptionType: EMAIL
+
+  # Usage Reports
+  UsageReportBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-usage-reports
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  UsageReportBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref UsageReportBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: billingreports.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub ${UsageReportBucket.Arn}/*
+          - Effect: Allow
+            Principal:
+              Service: billingreports.amazonaws.com
+            Action: s3:GetBucketAcl
+            Resource: !Ref UsageReportBucket
+
+  # CloudWatch Dashboard
+  BillingDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub ${AWS::StackName}-billing-dashboard
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/Billing", "EstimatedCharges", "Currency", "USD" ]
+                ],
+                "period": 86400,
+                "stat": "Maximum",
+                "region": "us-east-1",
+                "title": "Daily Estimated Charges"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/Usage", "ResourceCount", "Type", "Resource", "Resource", "OnDemand", "Service", "EC2" ]
+                ],
+                "period": 3600,
+                "stat": "Maximum",
+                "region": "us-east-1",
+                "title": "EC2 Instance Count"
+              }
+            }
+          ]
+        }
+
+Parameters:
+  BudgetAmount:
+    Description: Monthly budget amount in USD
+    Type: Number
+    Default: 1000
+
+  AlertEmail:
+    Description: Email address for budget alerts
+    Type: String
+    Default: alerts@helloblue.ai
+
+Outputs:
+  CostExplorerRoleArn:
+    Description: ARN of the Cost Explorer IAM role
+    Value: !GetAtt CostExplorerRole.Arn
+
+  UsageReportBucketName:
+    Description: Name of the S3 bucket for usage reports
+    Value: !Ref UsageReportBucket
+
+  DashboardURL:
+    Description: URL of the CloudWatch dashboard
+    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=${BillingDashboard.DashboardName} 

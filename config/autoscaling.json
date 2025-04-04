@@ -1,0 +1,37 @@
+[
+  {
+    "Namespace": "aws:autoscaling:asg",
+    "OptionName": "MinSize",
+    "Value": "2"
+  },
+  {
+    "Namespace": "aws:autoscaling:asg",
+    "OptionName": "MaxSize",
+    "Value": "10"
+  },
+  {
+    "Namespace": "aws:autoscaling:trigger",
+    "OptionName": "MeasureName",
+    "Value": "CPUUtilization"
+  },
+  {
+    "Namespace": "aws:autoscaling:trigger",
+    "OptionName": "Unit",
+    "Value": "Percent"
+  },
+  {
+    "Namespace": "aws:autoscaling:trigger",
+    "OptionName": "LowerThreshold",
+    "Value": "20"
+  },
+  {
+    "Namespace": "aws:autoscaling:trigger",
+    "OptionName": "UpperThreshold",
+    "Value": "80"
+  },
+  {
+    "Namespace": "aws:autoscaling:trigger",
+    "OptionName": "ScaleIncrement",
+    "Value": "1"
+  }
+] 

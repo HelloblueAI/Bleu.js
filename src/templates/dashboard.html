@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bleu.js Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+        }
+        .feature-card {
+            transition: transform 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <img class="h-8 w-auto" src="/static/images/logo.png" alt="Bleu.js">
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a href="#" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                Dashboard
+                            </a>
+                            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                Analytics
+                            </a>
+                            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                API Keys
+                            </a>
+                            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                Documentation
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="ml-3 relative">
+                            <div class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                                        <i class="fas fa-bell"></i>
+                                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                                        <span id="userEmail" class="text-sm"></span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Welcome Section -->
+            <div class="gradient-bg rounded-lg shadow-xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white" id="planHeader">Welcome to Bleu.js</h1>
+                        <p class="text-white opacity-90">Your AI-powered API platform</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-plus mr-2"></i>New Project
+                        </button>
+                        <button class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-book mr-2"></i>Documentation
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stats-card rounded-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">API Calls Remaining</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="apiCallsRemaining">0</h3>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-code text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card rounded-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Rate Limit</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="rateLimit">0 calls/min</h3>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-tachometer-alt text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card rounded-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Next Reset</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="nextReset">-</h3>
+                        </div>
+                        <div class="p-3 bg-purple-100 rounded-full">
+                            <i class="fas fa-clock text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card rounded-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Success Rate</p>
+                            <h3 class="text-2xl font-bold text-gray-900">99.9%</h3>
+                        </div>
+                        <div class="p-3 bg-yellow-100 rounded-full">
+                            <i class="fas fa-chart-line text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="planFeatures">
+                <!-- Features will be dynamically inserted here -->
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">API Usage Analytics</h3>
+                    <canvas id="usageChart"></canvas>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Response Time Distribution</h3>
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                </div>
+                <div class="p-6" id="recentActivity">
+                    <!-- Activity items will be dynamically inserted here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize charts
+        const usageCtx = document.getElementById('usageChart').getContext('2d');
+        new Chart(usageCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'API Calls',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    fill: false,
+                    borderColor: '#3B82F6',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+        new Chart(responseTimeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['<100ms', '100-200ms', '200-300ms', '300-400ms', '>400ms'],
+                datasets: [{
+                    label: 'Response Time Distribution',
+                    data: [65, 20, 10, 3, 2],
+                    backgroundColor: '#3B82F6'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Get usage data from server-side template
+        const usageData = {{ usage_data | tojson | safe }};
+        
+        // Update usage statistics
+        document.getElementById('apiCallsRemaining').textContent = usageData.api_calls_remaining;
+        document.getElementById('rateLimit').textContent = `${usageData.rate_limit} calls/min`;
+        document.getElementById('nextReset').textContent = new Date(usageData.current_period_end).toLocaleDateString();
+
+        // Determine plan type and update UI accordingly
+        const isEnterprise = usageData.plan_type === "ENTERPRISE";
+        updatePlanHeader(isEnterprise);
+        updatePlanFeatures(isEnterprise);
+        updateRecentActivity(isEnterprise);
+
+        function updatePlanHeader(isEnterprise) {
+            const header = document.getElementById('planHeader');
+            header.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">${isEnterprise ? 'Enterprise' : 'COR-E'} Dashboard</h1>
+                        <p class="text-white opacity-90">Welcome back! Here's your API usage overview.</p>
+                    </div>
+                    ${isEnterprise ? `
+                        <div class="flex items-center space-x-4">
+                            <button class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-gray-100">
+                                <i class="fas fa-headset mr-2"></i>Contact Support
+                            </button>
+                            <button class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-gray-100">
+                                <i class="fas fa-chart-bar mr-2"></i>Advanced Analytics
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function updatePlanFeatures(isEnterprise) {
+            const features = document.getElementById('planFeatures');
+            const enterpriseFeatures = [
+                {
+                    title: 'Quantum Intelligence',
+                    description: 'Access quantum-enhanced AI models and analysis',
+                    icon: 'atom',
+                    color: 'blue'
+                },
+                {
+                    title: 'Market Intelligence',
+                    description: 'Advanced market analysis and predictions',
+                    icon: 'chart-line',
+                    color: 'green'
+                },
+                {
+                    title: 'Strategic Intelligence',
+                    description: 'Strategic decision-making tools and insights',
+                    icon: 'chess',
+                    color: 'purple'
+                },
+                {
+                    title: 'Advanced Feature Analysis',
+                    description: 'Comprehensive feature analysis and selection',
+                    icon: 'microscope',
+                    color: 'yellow'
+                },
+                {
+                    title: 'Performance Tracking',
+                    description: 'Real-time performance monitoring and optimization',
+                    icon: 'tachometer-alt',
+                    color: 'red'
+                },
+                {
+                    title: 'Custom Model Training',
+                    description: 'Train and deploy custom AI models',
+                    icon: 'brain',
+                    color: 'indigo'
+                }
+            ];
+
+            const coreFeatures = [
+                {
+                    title: 'Core AI Models',
+                    description: 'Access to standard AI models and endpoints',
+                    icon: 'robot',
+                    color: 'blue'
+                },
+                {
+                    title: 'Basic Feature Analysis',
+                    description: 'Simple feature importance analysis',
+                    icon: 'chart-bar',
+                    color: 'green'
+                },
+                {
+                    title: 'Performance Metrics',
+                    description: 'Basic performance monitoring',
+                    icon: 'tachometer-alt',
+                    color: 'purple'
+                },
+                {
+                    title: 'Usage Analytics',
+                    description: 'API usage tracking and visualization',
+                    icon: 'chart-pie',
+                    color: 'yellow'
+                },
+                {
+                    title: 'API Documentation',
+                    description: 'Comprehensive API documentation',
+                    icon: 'book',
+                    color: 'red'
+                },
+                {
+                    title: 'Email Support',
+                    description: 'Standard support via email',
+                    icon: 'envelope',
+                    color: 'indigo'
+                }
+            ];
+
+            const planFeatures = isEnterprise ? enterpriseFeatures : coreFeatures;
+            
+            features.innerHTML = planFeatures.map(feature => `
+                <div class="feature-card bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="p-3 rounded-full bg-${feature.color}-100">
+                            <i class="fas fa-${feature.icon} text-${feature.color}-600"></i>
+                        </div>
+                        <h3 class="ml-4 text-lg font-semibold text-gray-900">${feature.title}</h3>
+                    </div>
+                    <p class="text-gray-600">${feature.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateRecentActivity(isEnterprise) {
+            const activity = document.getElementById('recentActivity');
+            const activities = isEnterprise ? [
+                { type: 'quantum', description: 'Quantum analysis completed', time: '2 hours ago' },
+                { type: 'market', description: 'Market intelligence report generated', time: '4 hours ago' },
+                { type: 'strategy', description: 'Strategic recommendations updated', time: '1 day ago' },
+                { type: 'feature', description: 'Advanced feature analysis completed', time: '2 days ago' },
+                { type: 'performance', description: 'Performance optimization applied', time: '3 days ago' },
+                { type: 'model', description: 'Custom model training completed', time: '1 week ago' }
+            ] : [
+                { type: 'api_call', description: 'API endpoint called', time: '1 hour ago' },
+                { type: 'feature', description: 'Basic feature analysis completed', time: '3 hours ago' },
+                { type: 'performance', description: 'Performance metrics updated', time: '1 day ago' },
+                { type: 'analytics', description: 'Usage analytics generated', time: '2 days ago' }
+            ];
+
+            activity.innerHTML = activities.map(item => `
+                <div class="flex items-center space-x-4 py-4 border-b border-gray-100 last:border-0">
+                    <div class="p-2 rounded-full bg-gray-100">
+                        <i class="fas fa-${getActivityIcon(item.type)} text-gray-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-gray-900">${item.description}</p>
+                        <p class="text-sm text-gray-500">${item.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getActivityIcon(type) {
+            const icons = {
+                quantum: 'atom',
+                market: 'chart-line',
+                strategy: 'chess',
+                feature: 'microscope',
+                performance: 'tachometer-alt',
+                model: 'brain',
+                api_call: 'code',
+                analytics: 'chart-pie'
+            };
+            return icons[type] || 'circle';
+        }
+    </script>
+</body>
+</html> 

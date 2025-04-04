@@ -1,5 +1,5 @@
 """
-Core package for the backend.
+Core package for Bleu.js backend.
 """
 
 from .error_handling import error_handler

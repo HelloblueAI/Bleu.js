@@ -10,7 +10,6 @@ import numpy as np
 from sklearn.base import BaseEstimator
 
 
-
 class EnsembleModel:
     def __init__(
         self,

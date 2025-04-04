@@ -9,16 +9,16 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     ]
 
 setup(
-    name="bleujs",
+    name="bleu-js",
     version="1.1.3",
     author="Pejman Haghighatnia",
-    author_email="pejman@helloblue.ai",
+    author_email="support@helloblue.ai",
     description="A state-of-the-art quantum-enhanced vision system with advanced AI capabilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/HelloblueAI/Bleu.js",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    packages=find_packages(where="python"),
+    package_dir={"": "python"},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
@@ -35,15 +35,26 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     python_requires=">=3.8",
-    install_requires=requirements,
+    install_requires=[
+        "fastapi",
+        "uvicorn",
+        "sqlalchemy",
+        "alembic",
+        "psycopg2-binary",
+        "python-jose[cryptography]",
+        "python-multipart",
+        "python-dotenv",
+        "pydantic",
+        "pydantic-settings",
+    ],
     entry_points={
         "console_scripts": [
-            "bleujs=bleujs.cli:main",
+            "bleujs=cli:main",
         ],
     },
     include_package_data=True,
     package_data={
-        "bleujs": ["models/*", "configs/*", "data/*"],
+        "": ["models/*", "configs/*", "data/*", "static/*", "templates/*"],
     },
     extras_require={
         "dev": [
