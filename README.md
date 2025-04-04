@@ -242,13 +242,18 @@ graph TD
 ### Installation
 
 ```bash
+# Using npm
+npm install bleujs@1.1.3
+
+# Using pnpm
+pnpm add bleujs@1.1.3
+
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
 # Create and activate virtual environment
 python -m venv bleujs-env
-source bleujs-env/bin/activate  # On Windows: bleujs-env\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -413,7 +418,6 @@ cd Bleu.js
 
 # Create and activate virtual environment
 python -m venv bleujs-env
-source bleujs-env/bin/activate  # On Windows: bleujs-env\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
