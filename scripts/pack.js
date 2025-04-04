@@ -1,7 +1,7 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const { createTemporaryDirectory } = require('./utils');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { createTemporaryDirectory } from './utils';
 
 async function packAndVerify() {
   console.log('Packing and verifying Bleu.js package...\n');
@@ -11,10 +11,14 @@ async function packAndVerify() {
   console.log(`Created temporary directory: ${tempDir}`);
 
   try {
-    // Pack the package
-    console.log('\n1. Packing package...');
-    execSync(`pnpm pack --pack-destination ${tempDir}`, { stdio: 'inherit' });
+    console.log('Building package...');
+    execSync('pnpm run build', { stdio: 'inherit' });
     
+    console.log('Creating package tarball...');
+    execSync('pnpm pack', { stdio: 'inherit' });
+    
+    console.log('Package created successfully!');
+
     // Get the packed file name
     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     const packedFile = path.join(tempDir, `bleujs-${pkg.version}.tgz`);
