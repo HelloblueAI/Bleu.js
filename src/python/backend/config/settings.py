@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 from dotenv import load_dotenv
 import torch
+from pydantic import BaseSettings, Field
 
 @dataclass
 class DatabaseConfig:
@@ -73,10 +74,90 @@ class BackendConfig:
     retry_attempts: int
     retry_delay: int
 
-class Settings:
-    """Settings manager for the backend."""
-    
-    def __init__(self):
+class DatabaseSettings(BaseSettings):
+    """Database configuration settings."""
+    host: str = Field(default="localhost", env="DB_HOST")
+    port: int = Field(default=5432, env="DB_PORT")
+    user: str = Field(default="postgres", env="DB_USER")
+    password: str = Field(default="postgres", env="DB_PASSWORD")
+    database: str = Field(default="bleujs", env="DB_NAME")
+    pool_size: int = Field(default=5, env="DB_POOL_SIZE")
+    max_overflow: int = Field(default=10, env="DB_MAX_OVERFLOW")
+    pool_timeout: int = Field(default=30, env="DB_POOL_TIMEOUT")
+    pool_recycle: int = Field(default=1800, env="DB_POOL_RECYCLE")
+
+
+class APISettings(BaseSettings):
+    """API configuration settings."""
+    title: str = Field(default="Bleu.js API", env="API_TITLE")
+    description: str = Field(
+        default="API for Bleu.js machine learning platform",
+        env="API_DESCRIPTION",
+    )
+    version: str = Field(default="1.0.0", env="API_VERSION")
+    debug: bool = Field(default=False, env="API_DEBUG")
+    docs_url: str = Field(default="/docs", env="API_DOCS_URL")
+    redoc_url: str = Field(default="/redoc", env="API_REDOC_URL")
+    openapi_url: str = Field(default="/openapi.json", env="API_OPENAPI_URL")
+    jwt_secret: str = Field(default="your-secret-key", env="JWT_SECRET")
+    jwt_algorithm: str = Field(default="HS256", env="JWT_ALGORITHM")
+    access_token_expire_minutes: int = Field(
+        default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES"
+    )
+
+
+class RedisSettings(BaseSettings):
+    """Redis configuration settings."""
+    host: str = Field(default="localhost", env="REDIS_HOST")
+    port: int = Field(default=6379, env="REDIS_PORT")
+    db: int = Field(default=0, env="REDIS_DB")
+    password: Optional[str] = Field(default=None, env="REDIS_PASSWORD")
+    ssl: bool = Field(default=False, env="REDIS_SSL")
+    ssl_cert_reqs: Optional[str] = Field(default=None, env="REDIS_SSL_CERT_REQS")
+
+
+class CelerySettings(BaseSettings):
+    """Celery configuration settings."""
+    broker_url: str = Field(
+        default="redis://localhost:6379/0", env="CELERY_BROKER_URL"
+    )
+    result_backend: str = Field(
+        default="redis://localhost:6379/0", env="CELERY_RESULT_BACKEND"
+    )
+    task_serializer: str = Field(default="json", env="CELERY_TASK_SERIALIZER")
+    result_serializer: str = Field(default="json", env="CELERY_RESULT_SERIALIZER")
+    accept_content: list = Field(default=["json"], env="CELERY_ACCEPT_CONTENT")
+    task_ignore_result: bool = Field(default=False, env="CELERY_TASK_IGNORE_RESULT")
+    task_time_limit: int = Field(default=3600, env="CELERY_TASK_TIME_LIMIT")
+    task_soft_time_limit: int = Field(
+        default=3000, env="CELERY_TASK_SOFT_TIME_LIMIT"
+    )
+    worker_max_tasks_per_child: int = Field(
+        default=1000, env="CELERY_WORKER_MAX_TASKS_PER_CHILD"
+    )
+    worker_prefetch_multiplier: int = Field(
+        default=1, env="CELERY_WORKER_PREFETCH_MULTIPLIER"
+    )
+
+
+class Settings(BaseSettings):
+    """Main application settings."""
+    database: DatabaseSettings = DatabaseSettings()
+    api: APISettings = APISettings()
+    redis: RedisSettings = RedisSettings()
+    celery: CelerySettings = CelerySettings()
+    logging: LoggingConfig
+    model_path: str
+    batch_size: int
+    max_sequence_length: int
+    device: str
+    num_workers: int
+    timeout: int
+    retry_attempts: int
+    retry_delay: int
+
+    def __init__(self, **data):
+        super().__init__(**data)
         self.config: Optional[BackendConfig] = None
         self._load_env()
         self._load_config()

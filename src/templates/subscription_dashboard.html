@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Dashboard - Bleu.js</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <img class="h-8 w-auto" src="/static/images/logo.png" alt="Bleu.js">
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="ml-3 relative">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-gray-700" id="userEmail"></span>
+                                <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Current Plan Section -->
+            <div class="px-4 py-6 sm:px-0">
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Current Plan</h2>
+                    <div id="currentPlan" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Plan details will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Usage Statistics -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Usage Statistics</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-blue-100">
+                                    <i class="fas fa-chart-line text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">API Calls Remaining</p>
+                                    <p class="text-lg font-semibold text-gray-900" id="apiCallsRemaining">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-green-100">
+                                    <i class="fas fa-bolt text-green-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Rate Limit</p>
+                                    <p class="text-lg font-semibold text-gray-900" id="rateLimit">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-purple-100">
+                                    <i class="fas fa-clock text-purple-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Next Reset</p>
+                                    <p class="text-lg font-semibold text-gray-900" id="nextReset">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Plans -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Available Plans</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="availablePlans">
+                        <!-- Plan cards will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- API Token Management -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-4">API Token Management</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium">Your API Tokens</h3>
+                            <button onclick="showCreateTokenModal()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Create New Token
+                            </button>
+                        </div>
+                        <div id="tokensList" class="space-y-4">
+                            <!-- Tokens will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Token Modal -->
+    <div id="createTokenModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-semibold mb-4">Create New API Token</h3>
+            <form id="createTokenForm" class="space-y-4">
+                <div>
+                    <label for="tokenName" class="block text-sm font-medium text-gray-700">Token Name</label>
+                    <input type="text" id="tokenName" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="tokenExpiration" class="block text-sm font-medium text-gray-700">Expiration (Optional)</label>
+                    <input type="datetime-local" id="tokenExpiration" name="expires_at" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideCreateTokenModal()" class="px-4 py-2 text-gray-700 hover:text-gray-900">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        Create Token
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/signin';
+        }
+
+        // Fetch user data
+        async function fetchUserData() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('userEmail').textContent = user.email;
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Fetch subscription data
+        async function fetchSubscriptionData() {
+            try {
+                const response = await fetch('/api/subscription/subscription', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const subscription = await response.json();
+                    updateCurrentPlan(subscription);
+                }
+            } catch (error) {
+                console.error('Error fetching subscription data:', error);
+            }
+        }
+
+        // Fetch usage data
+        async function fetchUsageData() {
+            try {
+                const response = await fetch('/api/subscription/subscription/usage', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const usage = await response.json();
+                    updateUsageStats(usage);
+                }
+            } catch (error) {
+                console.error('Error fetching usage data:', error);
+            }
+        }
+
+        // Fetch available plans
+        async function fetchAvailablePlans() {
+            try {
+                const response = await fetch('/api/subscription/plans');
+                if (response.ok) {
+                    const plans = await response.json();
+                    updateAvailablePlans(plans);
+                }
+            } catch (error) {
+                console.error('Error fetching plans:', error);
+            }
+        }
+
+        // Update current plan display
+        function updateCurrentPlan(subscription) {
+            const currentPlanDiv = document.getElementById('currentPlan');
+            const plan = subscription.plan;
+            
+            currentPlanDiv.innerHTML = `
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+                    <h3 class="text-xl font-bold mb-2">${plan.name}</h3>
+                    <p class="text-blue-100 mb-4">${plan.features.core_ai_model_access ? 'Core AI Model Access' : 'Advanced AI Models'}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold">$${(plan.price / 100).toFixed(2)}</span>
+                        <span class="text-sm">/month</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Plan Features</h3>
+                    <ul class="space-y-2">
+                        ${Object.entries(plan.features)
+                            .filter(([_, value]) => value === true)
+                            .map(([key]) => `
+                                <li class="flex items-center text-gray-600">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    ${key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                </li>
+                            `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Update usage statistics
+        function updateUsageStats(usage) {
+            document.getElementById('apiCallsRemaining').textContent = usage.api_calls_remaining;
+            document.getElementById('rateLimit').textContent = `${usage.rate_limit} calls/min`;
+            document.getElementById('nextReset').textContent = new Date(usage.current_period_end).toLocaleDateString();
+        }
+
+        // Update available plans
+        function updateAvailablePlans(plans) {
+            const availablePlansDiv = document.getElementById('availablePlans');
+            availablePlansDiv.innerHTML = plans.map(plan => `
+                <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow duration-200">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${plan.name}</h3>
+                    <p class="text-gray-600 mb-4">${plan.features.core_ai_model_access ? 'Core AI Model Access' : 'Advanced AI Models'}</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-2xl font-bold">$${(plan.price / 100).toFixed(2)}</span>
+                        <span class="text-sm text-gray-600">/month</span>
+                    </div>
+                    <ul class="space-y-2 mb-6">
+                        ${Object.entries(plan.features)
+                            .filter(([_, value]) => value === true)
+                            .map(([key]) => `
+                                <li class="flex items-center text-gray-600">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    ${key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                </li>
+                            `).join('')}
+                    </ul>
+                    <button onclick="subscribe('${plan.plan_type}')" 
+                            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                        Subscribe Now
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Subscribe to a plan
+        async function subscribe(planType) {
+            try {
+                const response = await fetch(`/api/subscription/subscribe/${planType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    // Refresh subscription data
+                    await fetchSubscriptionData();
+                    await fetchUsageData();
+                    alert('Successfully subscribed to the plan!');
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Failed to subscribe to the plan');
+                }
+            } catch (error) {
+                console.error('Error subscribing to plan:', error);
+                alert('Failed to subscribe to the plan');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/signin';
+        }
+
+        // API Token Management Functions
+        async function loadTokens() {
+            try {
+                const response = await fetch('/api/tokens', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const tokens = await response.json();
+                displayTokens(tokens);
+            } catch (error) {
+                console.error('Error loading tokens:', error);
+            }
+        }
+
+        function displayTokens(tokens) {
+            const tokensList = document.getElementById('tokensList');
+            tokensList.innerHTML = tokens.map(token => `
+                <div class="border rounded-lg p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium">${token.name}</h4>
+                            <p class="text-sm text-gray-500">Created: ${new Date(token.created_at).toLocaleDateString()}</p>
+                            ${token.expires_at ? `<p class="text-sm text-gray-500">Expires: ${new Date(token.expires_at).toLocaleDateString()}</p>` : ''}
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="copyToken('${token.token}')" class="text-blue-600 hover:text-blue-800">
+                                Copy
+                            </button>
+                            <button onclick="rotateToken('${token.id}')" class="text-yellow-600 hover:text-yellow-800">
+                                Rotate
+                            </button>
+                            <button onclick="revokeToken('${token.id}')" class="text-red-600 hover:text-red-800">
+                                Revoke
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showCreateTokenModal() {
+            document.getElementById('createTokenModal').classList.remove('hidden');
+            document.getElementById('createTokenModal').classList.add('flex');
+        }
+
+        function hideCreateTokenModal() {
+            document.getElementById('createTokenModal').classList.add('hidden');
+            document.getElementById('createTokenModal').classList.remove('flex');
+        }
+
+        async function createToken(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const tokenData = {
+                name: formData.get('name'),
+                expires_at: formData.get('expires_at') || null
+            };
+
+            try {
+                const response = await fetch('/api/tokens', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(tokenData)
+                });
+                
+                if (response.ok) {
+                    hideCreateTokenModal();
+                    loadTokens();
+                } else {
+                    throw new Error('Failed to create token');
+                }
+            } catch (error) {
+                console.error('Error creating token:', error);
+            }
+        }
+
+        async function rotateToken(tokenId) {
+            try {
+                const response = await fetch(`/api/tokens/${tokenId}/rotate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadTokens();
+                } else {
+                    throw new Error('Failed to rotate token');
+                }
+            } catch (error) {
+                console.error('Error rotating token:', error);
+            }
+        }
+
+        async function revokeToken(tokenId) {
+            if (!confirm('Are you sure you want to revoke this token?')) return;
+
+            try {
+                const response = await fetch(`/api/tokens/${tokenId}/revoke`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadTokens();
+                } else {
+                    throw new Error('Failed to revoke token');
+                }
+            } catch (error) {
+                console.error('Error revoking token:', error);
+            }
+        }
+
+        function copyToken(token) {
+            navigator.clipboard.writeText(token).then(() => {
+                alert('Token copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy token:', err);
+            });
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchUserData();
+            fetchSubscriptionData();
+            fetchUsageData();
+            fetchAvailablePlans();
+            loadTokens();
+            document.getElementById('createTokenForm').addEventListener('submit', createToken);
+        });
+    </script>
+</body>
+</html> 

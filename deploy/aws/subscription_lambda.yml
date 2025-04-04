@@ -1,0 +1,303 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Bleu.js Subscription Management Lambda'
+
+Resources:
+  SubscriptionManagementFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-subscription-management
+      Description: Manages API subscriptions and usage tracking
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          const AWS = require('aws-sdk');
+          const dynamodb = new AWS.DynamoDB.DocumentClient();
+          const apiGateway = new AWS.APIGateway();
+          
+          const TABLE_NAME = process.env.USAGE_TABLE;
+          
+          exports.handler = async (event) => {
+            const { action, userId, tier, apiKey } = JSON.parse(event.body || '{}');
+            
+            try {
+              switch (action) {
+                case 'create':
+                  return await createSubscription(userId, tier);
+                case 'validate':
+                  return await validateSubscription(apiKey);
+                case 'upgrade':
+                  return await upgradeSubscription(userId, tier);
+                case 'renew':
+                  return await renewSubscription(userId);
+                default:
+                  throw new Error('Invalid action');
+              }
+            } catch (error) {
+              return {
+                statusCode: 400,
+                body: JSON.stringify({ error: error.message })
+              };
+            }
+          };
+          
+          async function createSubscription(userId, tier) {
+            const apiKey = await apiGateway.createApiKey({
+              name: `${userId}-${tier}`,
+              description: `API key for ${tier} tier`,
+              enabled: true
+            }).promise();
+            
+            const subscription = {
+              userId,
+              tier,
+              apiKey: apiKey.value,
+              createdAt: new Date().toISOString(),
+              expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+              monthlyCalls: tier === 'basic' ? 100 : 5000,
+              callsUsed: 0,
+              status: 'active'
+            };
+            
+            await dynamodb.put({
+              TableName: TABLE_NAME,
+              Item: subscription
+            }).promise();
+            
+            return {
+              statusCode: 200,
+              body: JSON.stringify(subscription)
+            };
+          }
+          
+          async function validateSubscription(apiKey) {
+            const result = await dynamodb.scan({
+              TableName: TABLE_NAME,
+              FilterExpression: 'apiKey = :apiKey',
+              ExpressionAttributeValues: {
+                ':apiKey': apiKey
+              }
+            }).promise();
+            
+            if (!result.Items.length) {
+              throw new Error('Invalid API key');
+            }
+            
+            const subscription = result.Items[0];
+            
+            if (subscription.status !== 'active') {
+              throw new Error('Subscription is not active');
+            }
+            
+            if (new Date(subscription.expiresAt) < new Date()) {
+              subscription.status = 'expired';
+              await dynamodb.update({
+                TableName: TABLE_NAME,
+                Key: { userId: subscription.userId },
+                UpdateExpression: 'SET #status = :status',
+                ExpressionAttributeNames: { '#status': 'status' },
+                ExpressionAttributeValues: { ':status': 'expired' }
+              }).promise();
+              throw new Error('Subscription has expired');
+            }
+            
+            return {
+              statusCode: 200,
+              body: JSON.stringify(subscription)
+            };
+          }
+          
+          async function upgradeSubscription(userId, newTier) {
+            const result = await dynamodb.query({
+              TableName: TABLE_NAME,
+              KeyConditionExpression: 'userId = :userId',
+              ExpressionAttributeValues: {
+                ':userId': userId
+              }
+            }).promise();
+            
+            if (!result.Items.length) {
+              throw new Error('No subscription found');
+            }
+            
+            const subscription = result.Items[0];
+            const monthlyCalls = newTier === 'basic' ? 100 : 5000;
+            
+            await dynamodb.update({
+              TableName: TABLE_NAME,
+              Key: { userId },
+              UpdateExpression: 'SET #tier = :tier, monthlyCalls = :calls',
+              ExpressionAttributeNames: { '#tier': 'tier' },
+              ExpressionAttributeValues: {
+                ':tier': newTier,
+                ':calls': monthlyCalls
+              }
+            }).promise();
+            
+            subscription.tier = newTier;
+            subscription.monthlyCalls = monthlyCalls;
+            
+            return {
+              statusCode: 200,
+              body: JSON.stringify(subscription)
+            };
+          }
+          
+          async function renewSubscription(userId) {
+            const result = await dynamodb.query({
+              TableName: TABLE_NAME,
+              KeyConditionExpression: 'userId = :userId',
+              ExpressionAttributeValues: {
+                ':userId': userId
+              }
+            }).promise();
+            
+            if (!result.Items.length) {
+              throw new Error('No subscription found');
+            }
+            
+            const subscription = result.Items[0];
+            
+            if (subscription.status !== 'expired') {
+              throw new Error('Subscription is not expired');
+            }
+            
+            await dynamodb.update({
+              TableName: TABLE_NAME,
+              Key: { userId },
+              UpdateExpression: 'SET #status = :status, expiresAt = :expires, callsUsed = :calls',
+              ExpressionAttributeNames: { '#status': 'status' },
+              ExpressionAttributeValues: {
+                ':status': 'active',
+                ':expires': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                ':calls': 0
+              }
+            }).promise();
+            
+            subscription.status = 'active';
+            subscription.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+            subscription.callsUsed = 0;
+            
+            return {
+              statusCode: 200,
+              body: JSON.stringify(subscription)
+            };
+          }
+      Runtime: nodejs18.x
+      Timeout: 30
+      Environment:
+        Variables:
+          USAGE_TABLE: !Ref UsageTable
+          STRIPE_SECRET_KEY: !Ref StripeSecretKey
+      MemorySize: 256
+      Publish: true
+      Tags:
+        Environment: !Ref EnvironmentName
+
+  SubscriptionManagementLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SubscriptionManagementFunction}
+      RetentionInDays: 30
+
+  # API Gateway Integration
+  SubscriptionApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub ${AWS::StackName}-subscription-api
+      Description: API for subscription management
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  SubscriptionResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref SubscriptionApi
+      ParentId: !GetAtt SubscriptionApi.RootResourceId
+      PathPart: subscriptions
+
+  SubscriptionMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref SubscriptionApi
+      ResourceId: !Ref SubscriptionResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SubscriptionManagementFunction.Arn}/invocations
+
+  SubscriptionDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: SubscriptionMethod
+
+  SubscriptionStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref SubscriptionDeployment
+      RestApiId: !Ref SubscriptionApi
+      StageName: !Ref EnvironmentName
+
+  # IAM Role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt UsageTable.Arn
+              - Effect: Allow
+                Action:
+                  - apigateway:CreateApiKey
+                  - apigateway:GetApiKey
+                  - apigateway:UpdateApiKey
+                  - apigateway:DeleteApiKey
+                Resource: '*'
+        - PolicyName: LambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
+
+  # Lambda Permission
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SubscriptionManagementFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SubscriptionApi}/*
+
+Outputs:
+  SubscriptionApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${SubscriptionApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvironmentName}/subscriptions
+
+  SubscriptionFunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt SubscriptionManagementFunction.Arn 

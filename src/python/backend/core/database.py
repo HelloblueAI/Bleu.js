@@ -1,97 +1,102 @@
 """
-Database connection manager for the backend.
+Database setup and models for the Bleu.js application.
 """
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.pool import QueuePool
-from contextlib import contextmanager
-import logging
-from typing import Generator
-from ..config.settings import settings
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, JSON, Boolean, Text, Float, Enum
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+from datetime import datetime
+import uuid
+from typing import Optional, List
 
-class DatabaseManager:
-    """Database connection manager."""
+from .models import SubscriptionTier
+
+Base = declarative_base()
+
+
+class User(Base):
+    """User model."""
+    __tablename__ = 'users'
     
-    def __init__(self):
-        self.config = settings.get_config().database
-        self.logger = logging.getLogger(__name__)
-        self._engine = None
-        self._SessionLocal = None
-        
-    def _create_engine(self):
-        """Create SQLAlchemy engine with connection pooling."""
-        if self._engine is None:
-            connection_url = (
-                f"postgresql://{self.config.username}:{self.config.password}"
-                f"@{self.config.host}:{self.config.port}/{self.config.database}"
-            )
-            
-            self._engine = create_engine(
-                connection_url,
-                poolclass=QueuePool,
-                pool_size=self.config.pool_size,
-                max_overflow=self.config.max_overflow,
-                pool_timeout=self.config.pool_timeout,
-                pool_recycle=self.config.pool_recycle,
-                echo=settings.get_config().debug
-            )
-            
-    def _create_session_factory(self):
-        """Create session factory."""
-        if self._SessionLocal is None:
-            self._SessionLocal = sessionmaker(
-                autocommit=False,
-                autoflush=False,
-                bind=self._engine
-            )
-            
-    def initialize(self):
-        """Initialize database connection."""
-        try:
-            self._create_engine()
-            self._create_session_factory()
-            self.logger.info("Database connection initialized successfully")
-        except Exception as e:
-            self.logger.error(f"Failed to initialize database connection: {e}")
-            raise
-            
-    @contextmanager
-    def get_session(self) -> Generator[Session, None, None]:
-        """Get database session with automatic cleanup."""
-        if self._SessionLocal is None:
-            self.initialize()
-            if self._SessionLocal is None:
-                raise RuntimeError("Failed to initialize database session")
-            
-        session = self._SessionLocal()
-        try:
-            yield session
-            session.commit()
-        except Exception as e:
-            session.rollback()
-            self.logger.error(f"Database session error: {e}")
-            raise
-        finally:
-            session.close()
-            
-    def check_connection(self) -> bool:
-        """Check if database connection is working."""
-        try:
-            with self.get_session() as session:
-                session.execute("SELECT 1")
-            return True
-        except Exception as e:
-            self.logger.error(f"Database connection check failed: {e}")
-            return False
-            
-    def close(self):
-        """Close database connection."""
-        if self._engine:
-            self._engine.dispose()
-            self._engine = None
-            self._SessionLocal = None
-            self.logger.info("Database connection closed")
+    id = Column(Integer, primary_key=True)
+    uuid = Column(String(36), unique=True, default=lambda: str(uuid.uuid4()))
+    username = Column(String(50), unique=True, nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    password_hash = Column(String(128), nullable=False)
+    is_active = Column(Boolean, default=True)
+    is_admin = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    subscription = relationship("Subscription", back_populates="user", uselist=False)
+    api_calls = relationship("APICallLog", back_populates="user")
+    jobs = relationship("Job", back_populates="user")
 
-# Create global database manager instance
-db_manager = DatabaseManager() 
+
+class Subscription(Base):
+    """Subscription model."""
+    __tablename__ = 'subscriptions'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    tier = Column(Enum(SubscriptionTier), nullable=False, default=SubscriptionTier.FREE)
+    api_calls_remaining = Column(Integer, nullable=False)
+    api_calls_total = Column(Integer, nullable=False)
+    last_reset = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", back_populates="subscription")
+
+
+class APICallLog(Base):
+    """API call log model."""
+    __tablename__ = 'api_call_logs'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    endpoint = Column(String(100), nullable=False)
+    method = Column(String(10), nullable=False)
+    status_code = Column(Integer, nullable=False)
+    response_time = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", back_populates="api_calls")
+
+
+class Job(Base):
+    """Job model."""
+    __tablename__ = 'jobs'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    job_type = Column(String(50), nullable=False)
+    status = Column(String(20), default="pending")
+    result = Column(JSON)
+    error = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", back_populates="jobs")
+
+
+# Database setup
+SQLALCHEMY_DATABASE_URL = "sqlite:///./bleujs.db"
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db():
+    """Get database session."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close() 

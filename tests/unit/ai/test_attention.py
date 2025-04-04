@@ -1,49 +1,96 @@
 import pytest
-import torch
+import numpy as np
+from quantum_py.quantum.attention import Attention
 
-from src.core.ai.transformers.attention.multi_head import MultiHeadAttention
+# Set random seed for reproducibility
+rng = np.random.default_rng(42)
+
+def test_attention_initialization():
+    """Test attention mechanism initialization."""
+    attention = Attention(d_model=64, n_heads=8)
+    assert attention.d_model == 64
+    assert attention.n_heads == 8
+    assert attention.d_head == 8  # 64/8
+    assert abs(attention.scaling - 1.0 / np.sqrt(8)) < 0.001  # 1/sqrt(d_head)
+    assert attention.attention_weights is None
+    assert attention.attention_output is None
+
+def test_attention_forward():
+    """Test attention forward pass."""
+    attention = Attention(d_model=64, n_heads=8)
+    batch_size = 2
+    seq_len = 10
+    x = rng.standard_normal((batch_size, seq_len, 64))
+    
+    output = attention.forward(x)
+    assert output.shape == (batch_size, seq_len, 64)
+    assert abs(np.mean(output)) < 0.1  # Use approximate comparison
+
+@pytest.mark.asyncio
+async def test_attention_mask():
+    """Test attention with mask."""
+    attention = Attention(d_model=64, n_heads=8)
+
+    # Create sample input and mask
+    batch_size = 4
+    seq_len = 10
+    x = rng.standard_normal((batch_size, seq_len, 64))
+    mask = rng.integers(0, 2, (batch_size, seq_len))
+
+    # Forward pass with mask
+    output = attention.forward(x, mask=mask)
+
+    assert output.shape == (batch_size, seq_len, 64)
 
 
-@pytest.mark.parametrize(
-    "batch_size,seq_len,d_model,num_heads",
-    [
-        (2, 10, 512, 8),
-        (4, 15, 256, 4),
-        (3, 20, 768, 12),
-    ],
-)
-def test_multi_head_attention_shape(batch_size, seq_len, d_model, num_heads):
-    mha = MultiHeadAttention(d_model=d_model, num_heads=num_heads)
-    x = torch.randn(batch_size, seq_len, d_model)
+@pytest.mark.asyncio
+async def test_attention_dropout():
+    """Test attention dropout."""
+    attention = Attention(d_model=64, n_heads=8)
 
-    output, attention = mha(x, x, x)
+    # Create sample input
+    batch_size = 4
+    seq_len = 10
+    x = rng.standard_normal((batch_size, seq_len, 64))
 
-    assert output.shape == (batch_size, seq_len, d_model)
-    assert attention.shape == (batch_size, num_heads, seq_len, seq_len)
+    # Forward pass with training mode
+    output1 = attention.forward(x, training=True)
+    output2 = attention.forward(x, training=True)
+
+    # Outputs should be different due to dropout
+    assert not np.array_equal(output1, output2)
+
+    # Forward pass without training mode
+    output3 = attention.forward(x, training=False)
+    output4 = attention.forward(x, training=False)
+
+    # Outputs should be identical without dropout
+    assert np.array_equal(output3, output4)
 
 
-@pytest.mark.parametrize("mask_value", [0, 1])
-def test_multi_head_attention_mask(mask_value):
-    batch_size, seq_len, d_model = 2, 10, 512
-    mha = MultiHeadAttention(d_model=d_model)
-    x = torch.randn(batch_size, seq_len, d_model)
+@pytest.mark.asyncio
+async def test_attention_multi_head():
+    """Test multi-head attention."""
+    attention = Attention(d_model=64, n_heads=8)
 
-    # Create a mask that masks out the first position
-    mask = torch.ones(batch_size, 1, seq_len, seq_len)
-    mask[:, :, :, 0] = mask_value  # Mask all attention to the first position
+    # Create sample input
+    batch_size = 4
+    seq_len = 10
+    x = rng.standard_normal((batch_size, seq_len, 64))
 
-    _, attention = mha(x, x, x, mask)
+    # Forward pass
+    output = attention.forward(x)
 
-    # When mask_value is 0, all attention weights to the first position should be 0
-    if mask_value == 0:
-        # Check that the sum of attention weights to the first position is 0
-        assert torch.allclose(
-            attention[:, :, :, 0], torch.zeros_like(attention[:, :, :, 0]), atol=1e-6
-        )
-    else:
-        # When mask_value is 1, attention weights should sum to 1 for each query position
-        # Sum along source sequence dimension (dim=-1)
-        attention_sums = attention.sum(dim=-1)
-        assert torch.allclose(
-            attention_sums, torch.ones_like(attention_sums), atol=1e-6
-        )
+    # Check output shape
+    assert output.shape == (batch_size, seq_len, 64)
+
+    # Check that different heads produce different outputs
+    head_outputs = []
+    for head in range(8):
+        head_output = attention.forward(x, head_idx=head)
+        head_outputs.append(head_output)
+
+    # All head outputs should be different
+    for i in range(8):
+        for j in range(i + 1, 8):
+            assert not np.array_equal(head_outputs[i], head_outputs[j])

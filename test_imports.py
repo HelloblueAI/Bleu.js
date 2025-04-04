@@ -47,7 +47,6 @@ def test_imports() -> Dict[str, Any]:
 
         results["dependencies"]["qiskit"] = qiskit.__version__
 
-
         results["dependencies"][
             "cirq"
         ] = "1.0.0"  # Use a fixed version instead of private import

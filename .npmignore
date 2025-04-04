@@ -1,0 +1,165 @@
+# ----------------------------------------
+# 📦 BleuJS Frontend NPM Ignores
+# Last updated: 2024-03-29
+# ----------------------------------------
+
+# ----------------------------------------
+# 🔧 Source & Development Files
+# ----------------------------------------
+# Source files
+src/
+**/src/
+*.ts
+!*.d.ts
+*.tsx
+*.jsx
+*.map
+
+# Test files
+*.test.*
+*.spec.*
+**/__tests__/
+**/__mocks__/
+**/__snapshots__/
+**/*.test.ts
+**/*.spec.ts
+**/*.test.tsx
+**/*.spec.tsx
+test/
+tests/
+
+# Development assets
+assets/
+public/
+static/
+
+# ----------------------------------------
+# ⚙️ Configuration Files
+# ----------------------------------------
+# Build configs
+vite.config.*
+tsconfig.*
+jest.config.*
+webpack.config.*
+rollup.config.*
+babel.config.*
+postcss.config.*
+*.config.js
+*.config.ts
+
+# Linting and formatting
+.eslintrc.*
+.prettierrc.*
+.stylelintrc.*
+.lintstagedrc.*
+.commitlintrc.*
+
+# Editor configs
+.editorconfig
+.vscode/
+.idea/
+*.sublime-*
+
+# ----------------------------------------
+# 📚 Documentation & Examples
+# ----------------------------------------
+docs/
+doc/
+documentation/
+examples/
+demo/
+tutorials/
+*.md
+!README.md
+LICENSE*
+CHANGELOG*
+CONTRIBUTING*
+
+# ----------------------------------------
+# 🧪 Testing & Coverage
+# ----------------------------------------
+coverage/
+.nyc_output/
+reports/
+test-results/
+*.lcov
+jest-html-reporters-attach/
+playwright-report/
+cypress/
+
+# ----------------------------------------
+# 🏗️ Build & Development
+# ----------------------------------------
+# Build directories
+.cache/
+.temp/
+.tmp/
+dist/
+build/
+out/
+lib/
+
+# Development tools
+.husky/
+.github/
+.gitlab/
+.circleci/
+.travis.yml
+.appveyor.yml
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Storybook
+.storybook/
+stories/
+**/*.stories.*
+storybook-static/
+
+# ----------------------------------------
+# 🔒 Environment & Configuration
+# ----------------------------------------
+.env*
+!.env.example
+config/
+.npmrc
+.yarnrc
+.pnpmrc
+
+# ----------------------------------------
+# 📦 Dependencies & Package Management
+# ----------------------------------------
+node_modules/
+.pnp/
+.yarn/
+.pnpm-store/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ----------------------------------------
+# 💻 Development Artifacts
+# ----------------------------------------
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS generated
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# TypeScript
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup 

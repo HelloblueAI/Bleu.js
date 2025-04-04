@@ -1,0 +1,47 @@
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:command",
+    "OptionName": "Timeout",
+    "Value": "1800"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:command",
+    "OptionName": "IgnoreHealthCheck",
+    "Value": "false"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "LoadBalancerType",
+    "Value": "application"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "HealthCheckPath",
+    "Value": "/health"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "HealthCheckTimeout",
+    "Value": "5"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "HealthCheckInterval",
+    "Value": "30"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "HealthyThresholdCount",
+    "Value": "3"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "UnhealthyThresholdCount",
+    "Value": "5"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "MatcherHTTPCode",
+    "Value": "200"
+  }
+] 

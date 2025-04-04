@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bleu.js - Shape the Future</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+        }
+        .geometric-pattern {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating {
+            animation: float 8s ease-in-out infinite;
+        }
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section -->
+    <div class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="geometric-pattern">
+            <svg width="100%" height="100%" viewBox="0 0 1440 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Hexagonal Grid -->
+                <path d="M0 150L360 0L720 150L360 300L0 150Z" fill="#1a56db" class="floating" style="animation-delay: 0s"/>
+                <path d="M360 0L720 0L1080 150L720 300L360 300L360 0Z" fill="#3b82f6" class="floating" style="animation-delay: 2s"/>
+                <path d="M720 0L1080 0L1440 150L1080 300L720 300L720 0Z" fill="#60a5fa" class="floating" style="animation-delay: 4s"/>
+                
+                <!-- Floating Circles -->
+                <circle cx="240" cy="150" r="40" fill="#93c5fd" class="floating" style="animation-delay: 1s"/>
+                <circle cx="720" cy="150" r="60" fill="#bfdbfe" class="floating" style="animation-delay: 3s"/>
+                <circle cx="1200" cy="150" r="50" fill="#dbeafe" class="floating" style="animation-delay: 5s"/>
+                
+                <!-- Abstract Lines -->
+                <path d="M0 150L1440 150" stroke="#3b82f6" stroke-width="2" stroke-dasharray="10 10" class="floating" style="animation-delay: 6s"/>
+                <path d="M0 100L1440 200" stroke="#60a5fa" stroke-width="2" stroke-dasharray="10 10" class="floating" style="animation-delay: 7s"/>
+            </svg>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-4xl w-full space-y-8 p-12 glass-effect rounded-2xl shadow-xl relative z-10">
+            <div class="text-center">
+                <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                    Shape the Future with
+                    <span class="text-blue-600">Bleu.js</span>
+                </h1>
+                <p class="text-xl text-gray-600 mb-12">
+                    Your AI-powered API service for building the next generation of technology
+                </p>
+                
+                <div class="space-y-4">
+                    <a href="/signup" class="block w-full py-4 px-6 border border-transparent rounded-xl shadow-lg text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 glow transition-all duration-300">
+                        Get Started
+                    </a>
+                    
+                    <a href="/signin" class="block w-full py-4 px-6 border border-gray-300 rounded-xl shadow-lg text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300">
+                        Sign In
+                    </a>
+                </div>
+
+                <!-- Feature Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="p-6 rounded-xl bg-white/50 backdrop-blur-sm">
+                        <i class="fas fa-robot text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">AI-Powered</h3>
+                        <p class="text-gray-600">Advanced AI models at your fingertips</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-white/50 backdrop-blur-sm">
+                        <i class="fas fa-bolt text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">Lightning Fast</h3>
+                        <p class="text-gray-600">Optimized performance for your needs</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-white/50 backdrop-blur-sm">
+                        <i class="fas fa-shield-alt text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">Enterprise Ready</h3>
+                        <p class="text-gray-600">Secure and scalable for any business</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

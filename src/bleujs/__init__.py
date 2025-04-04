@@ -1,12 +1,5 @@
 """
-Bleu.js - A state-of-the-art quantum-enhanced vision system
+Bleu.js - A machine learning platform.
 """
 
-__version__ = "1.1.3"
-__author__ = "Helloblue, Inc."
-__email__ = "support@helloblue.ai"
-
-from .quantum_detector import AdvancedQuantumDetector
-from .utils import setup_logging, get_metrics
-
-__all__ = ["AdvancedQuantumDetector", "setup_logging", "get_metrics"]
+__version__ = "1.0.0"

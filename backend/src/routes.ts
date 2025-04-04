@@ -23,22 +23,86 @@
 
 import { Router } from 'express';
 import { transports, createLogger } from 'winston';
+import { env } from './config/env.js';
 
 const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-const router: Router = Router();
+const router = Router();
 
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Google OAuth routes
+router.get('/auth/google', (req, res) => {
+  const clientId = '400378871552-fhsndhlrqt9l3k5m3lailtlh6jjg8ocs.apps.googleusercontent.com';
+  const redirectUri = 'http://localhost:3002/api/auth/google/callback';
+
+  console.log('Google OAuth configuration:', {
+    clientId,
+    redirectUri,
+    processEnv: {
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI
+    }
+  });
+
+  const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  googleAuthUrl.searchParams.append('client_id', clientId);
+  googleAuthUrl.searchParams.append('redirect_uri', redirectUri);
+  googleAuthUrl.searchParams.append('response_type', 'code');
+  googleAuthUrl.searchParams.append('scope', 'email profile');
+
+  res.redirect(googleAuthUrl.toString());
+});
+
+router.get('/auth/google/callback', async (req, res) => {
+  try {
+    console.log('Received Google callback:', req.query);
+    const { code } = req.query;
+    // TODO: Exchange code for tokens and handle user authentication
+    res.json({ success: true, code });
+  } catch (error) {
+    console.error('Google OAuth error:', error);
+    res.status(500).json({ error: 'Authentication failed' });
+  }
+});
+
+router.get('/auth/github', (req, res) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const redirectUri = process.env.GITHUB_REDIRECT_URI;
+  const scope = 'user:email';
+  
+  const authUrl = `https://github.com/login/oauth/authorize?` +
+    `client_id=${clientId}&` +
+    `redirect_uri=${redirectUri}&` +
+    `scope=${scope}`;
+  
+  res.redirect(authUrl);
+});
+
+router.get('/auth/github/callback', async (req, res) => {
+  try {
+    const { code } = req.query;
+    // TODO: Exchange code for tokens and handle user authentication
+    res.json({ success: true, code });
+  } catch (error) {
+    console.error('GitHub OAuth error:', error);
+    res.status(500).json({ error: 'Authentication failed' });
+  }
+});
+
+// Existing route
 router.post('/api/route', async (req, res) => {
   try {
     logger.info('Processing request');
-
     return res.json({ success: true });
   } catch (error) {
     let errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Error processing request:', errorMessage);
-
     return res.status(500).json({
       success: false,
       error: errorMessage,

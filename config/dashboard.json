@@ -1,0 +1,83 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/ElasticBeanstalk", "CPUUtilization", "EnvironmentName", "${EnvironmentName}"],
+          [".", "LoadAverage", ".", "."],
+          [".", "RootFilesystemUtilization", ".", "."]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${AWS::Region}",
+        "period": 300,
+        "stat": "Average",
+        "title": "System Metrics"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/ElasticBeanstalk", "ApplicationRequests2xx", "EnvironmentName", "${EnvironmentName}"],
+          [".", "ApplicationRequests3xx", ".", "."],
+          [".", "ApplicationRequests4xx", ".", "."],
+          [".", "ApplicationRequests5xx", ".", "."]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${AWS::Region}",
+        "period": 300,
+        "stat": "Sum",
+        "title": "HTTP Response Codes"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/ElasticBeanstalk", "Latency", "EnvironmentName", "${EnvironmentName}"],
+          [".", "RequestCount", ".", "."]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${AWS::Region}",
+        "period": 300,
+        "stat": "Average",
+        "title": "Latency and Request Count"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/ElasticBeanstalk", "InstanceHealth", "EnvironmentName", "${EnvironmentName}"],
+          [".", "EnvironmentHealth", ".", "."]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${AWS::Region}",
+        "period": 300,
+        "stat": "Average",
+        "title": "Health Status"
+      }
+    }
+  ]
+} 

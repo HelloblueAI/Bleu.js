@@ -5,7 +5,7 @@ Provides advanced quantum computing capabilities for machine learning models.
 
 import logging
 import numpy as np
-from typing import Optional, Callable
+from typing import Optional, Callable, Any, Dict, List, Union, Protocol, TypeVar
 import pennylane as qml
 from sklearn.preprocessing import MinMaxScaler
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -14,34 +14,51 @@ from qiskit_algorithms.optimizers import SPSA
 from qiskit_machine_learning.neural_networks import CircuitQNN
 from qiskit.primitives import Sampler
 from qiskit_aer.noise import NoiseModel, depolarizing_error
+from dataclasses import dataclass
+
+# Constants for error messages
+SCALER_NOT_INITIALIZED = "Scaler not initialized"
+QUANTUM_CIRCUIT_NOT_INITIALIZED = "Quantum circuit not initialized"
+DEFAULT_SEED = 42  # Default seed for reproducibility
+
+# Type definitions
+Device = TypeVar("Device", bound="qml.Device")  # Generic type for quantum devices
 
 
+class QuantumCircuit(Protocol):
+    """Protocol defining the interface for quantum circuits."""
+
+    def apply_gates(self, data: np.ndarray) -> None: ...
+    def process(self, data: np.ndarray) -> np.ndarray: ...
+    def optimize(self, data: np.ndarray) -> None: ...
+    def measure_uncertainty(self, data: np.ndarray) -> np.ndarray: ...
+
+
+@dataclass
 class QuantumProcessor:
-    def __init__(
-        self,
-        n_qubits: int = 4,
-        n_layers: int = 2,
-        device: str = "default.qubit",
-        shots: int = 1000,
-        error_correction: bool = True,
-        use_annealing: bool = True,
-        optimization_level: int = 2,
-    ):
-        self.n_qubits = n_qubits
-        self.n_layers = n_layers
-        self.device = device
-        self.shots = shots
-        self.error_correction = error_correction
-        self.use_annealing = use_annealing
-        self.optimization_level = optimization_level
-        self.dev: Optional[qml.Device] = None
-        self.circuit: Optional[Callable[[np.ndarray, np.ndarray], np.ndarray]] = None
+    """Quantum processor for data enhancement and uncertainty estimation."""
+
+    def __init__(self, seed: Optional[int] = DEFAULT_SEED):
+        """
+        Initialize the quantum processor with required components.
+
+        Args:
+            seed: Random seed for reproducibility
+        """
         self.scaler: Optional[MinMaxScaler] = None
+        self.quantum_circuit: Optional[QuantumCircuit] = None
+        self.rng = np.random.default_rng(seed=seed)  # Using seeded random generator
+        self.n_layers = 2
+        self.n_qubits = 4
+        self.dev: Optional[Device] = None  # Using generic Device type
+        self.shots = 1000
+        self.error_correction = True
+        self.use_annealing = True
+        self.optimization_level = 2
         self.initialized = False
         self.noise_model = self._create_noise_model()
         self.sampler = Sampler()
         self.optimizer = SPSA(maxiter=100)
-        self.rng = np.random.default_rng(seed=42)
 
     def _create_noise_model(self) -> NoiseModel:
         """Create a realistic noise model for quantum simulation."""
@@ -60,14 +77,14 @@ class QuantumProcessor:
             # Initialize PennyLane device with error correction
             if self.error_correction:
                 self.dev = qml.device(
-                    self.device,
+                    "default.qubit",
                     wires=self.n_qubits,
                     shots=self.shots,
                     error_correction=True,
                 )
             else:
                 self.dev = qml.device(
-                    self.device, wires=self.n_qubits, shots=self.shots
+                    "default.qubit", wires=self.n_qubits, shots=self.shots
                 )
 
             # Define enhanced quantum circuit
@@ -90,7 +107,7 @@ class QuantumProcessor:
                 # Measure observables with error mitigation
                 return self._measure_with_error_mitigation()
 
-            self.circuit = circuit
+            self.quantum_circuit = circuit
             self.initialized = True
             logging.info("✅ Enhanced quantum processor initialized successfully")
         except Exception as e:
@@ -171,7 +188,7 @@ class QuantumProcessor:
         if not self.initialized:
             raise RuntimeError("Quantum processor not initialized")
 
-        if self.circuit is None:
+        if self.quantum_circuit is None:
             raise RuntimeError("Quantum circuit not initialized")
 
         try:
@@ -184,7 +201,7 @@ class QuantumProcessor:
             quantum_features = []
             for feature in features_scaled:
                 # Apply quantum processing
-                result = self.circuit(
+                result = self.quantum_circuit(
                     feature, self.rng.standard_normal((self.n_layers, self.n_qubits, 3))
                 )
                 quantum_features.append(result)

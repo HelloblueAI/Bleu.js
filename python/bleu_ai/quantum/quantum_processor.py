@@ -4,217 +4,139 @@ Provides quantum computing capabilities for machine learning models.
 """
 
 import logging
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, Protocol, TypeVar
+from dataclasses import dataclass
 
 import numpy as np
 import pennylane as qml
 import torch
 from sklearn.preprocessing import MinMaxScaler
 
+# Constants for error messages
+SCALER_NOT_INITIALIZED = "Scaler not initialized"
+QUANTUM_CIRCUIT_NOT_INITIALIZED = "Quantum circuit not initialized"
+DEFAULT_SEED = 42  # Default seed for reproducibility
 
+# Type definitions
+Device = TypeVar("Device", bound="qml.Device")  # Generic type for quantum devices
+
+
+class QuantumCircuit(Protocol):
+    """Protocol defining the interface for quantum circuits."""
+
+    def apply_gates(self, data: np.ndarray) -> None: ...
+    def process(self, data: np.ndarray) -> np.ndarray: ...
+    def optimize(self, data: np.ndarray) -> None: ...
+    def measure_uncertainty(self, data: np.ndarray) -> np.ndarray: ...
+
+
+@dataclass
 class QuantumProcessor:
-    def __init__(
-        self,
-        n_qubits: int = 4,
-        n_layers: int = 2,
-        device: str = "default.qubit",
-        shots: int = 1000,
-    ):
-        self.n_qubits = n_qubits
-        self.n_layers = n_layers
-        self.device = device
-        self.shots = shots
-        self.dev: Optional[qml.Device] = None
-        self.circuit: Optional[Callable[[np.ndarray, np.ndarray], np.ndarray]] = None
+    """Quantum processor for data enhancement and uncertainty estimation."""
+
+    def __init__(self, seed: Optional[int] = DEFAULT_SEED):
+        """
+        Initialize the quantum processor with required components.
+
+        Args:
+            seed: Random seed for reproducibility
+        """
         self.scaler: Optional[MinMaxScaler] = None
-        self.initialized = False
+        self.quantum_circuit: Optional[QuantumCircuit] = None
+        self.rng = np.random.default_rng(seed=seed)  # Using seeded random generator
+        self.n_layers = 2
+        self.n_qubits = 4
+        self.dev: Optional[Device] = None  # Using generic Device type
 
-    async def initialize(self) -> None:
-        """Initialize the quantum processor."""
-        try:
-            # Initialize quantum device
-            self.dev = qml.device(self.device, wires=self.n_qubits, shots=self.shots)
-            if self.dev is None:
-                raise ValueError("Failed to initialize quantum device")
+    async def enhance_input(self, input_data: np.ndarray) -> np.ndarray:
+        """
+        Enhance input data using quantum processing techniques.
 
-            # Initialize scaler
-            self.scaler = MinMaxScaler()
+        Args:
+            input_data: Input data array to enhance
 
-            # Define quantum circuit
-            @qml.qnode(self.dev)
-            def circuit(inputs: np.ndarray, weights: np.ndarray) -> List[float]:
-                # Encode input data
-                for i in range(min(len(inputs), self.n_qubits)):
-                    qml.RY(inputs[i], wires=i)
+        Returns:
+            Enhanced data array
+        """
+        if self.scaler is None:
+            raise ValueError(SCALER_NOT_INITIALIZED)
 
-                # Apply variational layers
-                for layer in range(self.n_layers):
-                    # Rotation gates
-                    for i in range(self.n_qubits):
-                        qml.Rot(*weights[layer, i], wires=i)
-                    # Entangling gates
-                    for i in range(self.n_qubits - 1):
-                        qml.CNOT(wires=[i, i + 1])
+        if self.quantum_circuit is None:
+            raise ValueError(QUANTUM_CIRCUIT_NOT_INITIALIZED)
 
-                # Return expectation values
-                return [qml.expval(qml.PauliZ(i)) for i in range(self.n_qubits)]
+        # Scale the input data
+        data_scaled = self.scaler.transform(input_data)
 
-            self.circuit = circuit
-            self.initialized = True
-            logging.info("✅ Quantum processor initialized successfully")
-        except Exception as e:
-            logging.error(f"❌ Failed to initialize quantum processor: {str(e)}")
-            raise
+        # Apply quantum noise for robustness
+        quantum_noise = self.rng.normal(0, 0.1, size=data_scaled.shape)
+        data_scaled += quantum_noise
 
-    async def enhanceInput(
-        self, X: Union[np.ndarray, torch.Tensor]
-    ) -> Union[np.ndarray, torch.Tensor]:
-        """Enhance input data using quantum processing."""
-        try:
-            if not self.initialized:
-                await self.initialize()
+        # Apply quantum circuit transformation
+        self.quantum_circuit.apply_gates(data_scaled)
 
-            if self.scaler is None:
-                raise ValueError("Scaler not initialized")
+        # Process through quantum layers
+        enhanced_data = self._process_quantum_layers(data_scaled)
 
-            if self.circuit is None:
-                raise ValueError("Quantum circuit not initialized")
+        return enhanced_data
 
-            # Get local reference to avoid None checks in loop
-            circuit_fn = self.circuit
+    async def optimize_circuit(self, input_data: np.ndarray) -> None:
+        """
+        Optimize the quantum circuit configuration for given input data.
 
-            # Convert to numpy if tensor
-            is_tensor = isinstance(X, torch.Tensor)
-            if is_tensor:
-                X = X.numpy()
+        Args:
+            input_data: Input data to optimize circuit for
+        """
+        if self.scaler is None:
+            raise ValueError(SCALER_NOT_INITIALIZED)
 
-            # Scale features to [-π, π] for quantum circuit
-            X_scaled = self.scaler.fit_transform(X) * 2 * np.pi - np.pi
+        if self.quantum_circuit is None:
+            raise ValueError(QUANTUM_CIRCUIT_NOT_INITIALIZED)
 
-            # Initialize quantum weights
-            weights = np.random.uniform(
-                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
-            )
+        # Scale the input data
+        data_scaled = self.scaler.transform(input_data)
 
-            # Process each sample through quantum circuit
-            enhanced_data = []
-            for sample in X_scaled:
-                quantum_output = circuit_fn(sample, weights)
-                enhanced_data.append(quantum_output)
+        # Apply quantum optimization
+        quantum_noise = self.rng.normal(0, 0.1, size=data_scaled.shape)
+        self.quantum_circuit.optimize(data_scaled + quantum_noise)
 
-            enhanced_data = np.array(enhanced_data)
+    def _process_quantum_layers(self, data_batch: np.ndarray) -> np.ndarray:
+        """
+        Process data through quantum circuit layers.
 
-            # Combine original and quantum features
-            enhanced_X = np.hstack([X, enhanced_data])
+        Args:
+            data_batch: Batch of data to process
 
-            # Convert back to tensor if input was tensor
-            if is_tensor:
-                enhanced_X = torch.FloatTensor(enhanced_X)
+        Returns:
+            Processed data
+        """
+        if self.quantum_circuit is None:
+            raise ValueError(QUANTUM_CIRCUIT_NOT_INITIALIZED)
+        return self.quantum_circuit.process(data_batch)
 
-            return enhanced_X
+    async def measure_uncertainty(self, input_data: np.ndarray) -> np.ndarray:
+        """
+        Measure uncertainty in quantum predictions.
 
-        except Exception as e:
-            logging.error(f"❌ Quantum enhancement failed: {str(e)}")
-            raise
+        Args:
+            input_data: Input data to measure uncertainty for
 
-    async def optimizeCircuit(
-        self, X: np.ndarray, y: np.ndarray, n_epochs: int = 100
-    ) -> Dict[str, Any]:
-        """Optimize quantum circuit parameters."""
-        try:
-            if not self.initialized:
-                await self.initialize()
+        Returns:
+            Uncertainty measurements
+        """
+        if self.scaler is None:
+            raise ValueError(SCALER_NOT_INITIALIZED)
 
-            if self.scaler is None:
-                raise ValueError("Scaler not initialized")
+        if self.quantum_circuit is None:
+            raise ValueError(QUANTUM_CIRCUIT_NOT_INITIALIZED)
 
-            if self.circuit is None:
-                raise ValueError("Quantum circuit not initialized")
+        # Scale the input data
+        data_scaled = self.scaler.transform(input_data)
 
-            # Get local reference to avoid None checks in loop
-            circuit_fn = self.circuit
+        # Apply quantum noise for uncertainty estimation
+        quantum_noise = self.rng.normal(0, 0.1, size=data_scaled.shape)
 
-            # Scale input data
-            X_scaled = self.scaler.fit_transform(X) * 2 * np.pi - np.pi
-
-            # Initialize weights
-            weights = np.random.uniform(
-                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
-            )
-
-            # Define cost function
-            def cost(
-                weights: np.ndarray, X_batch: np.ndarray, y_batch: np.ndarray
-            ) -> float:
-                predictions = []
-                for x in X_batch:
-                    quantum_output = circuit_fn(x, weights)
-                    predictions.append(np.mean(quantum_output))
-                return np.mean((np.array(predictions) - y_batch) ** 2)
-
-            # Optimization loop
-            opt = qml.GradientDescentOptimizer(stepsize=0.01)
-            loss_history = []
-
-            for epoch in range(n_epochs):
-                weights = opt.step(lambda w: cost(w, X_scaled, y), weights)
-                loss = cost(weights, X_scaled, y)
-                loss_history.append(loss)
-
-                if epoch % 10 == 0:
-                    logging.info(f"Epoch {epoch}: Loss = {loss:.4f}")
-
-            return {
-                "optimized_weights": weights,
-                "loss_history": loss_history,
-                "final_loss": loss_history[-1],
-            }
-
-        except Exception as e:
-            logging.error(f"❌ Circuit optimization failed: {str(e)}")
-            raise
-
-    async def measureUncertainty(
-        self, X: np.ndarray, n_samples: int = 100
-    ) -> np.ndarray:
-        """Measure quantum uncertainty in predictions."""
-        try:
-            if not self.initialized:
-                await self.initialize()
-
-            if self.scaler is None:
-                raise ValueError("Scaler not initialized")
-
-            if self.circuit is None:
-                raise ValueError("Quantum circuit not initialized")
-
-            # Get local reference to avoid None checks in loop
-            circuit_fn = self.circuit
-
-            # Scale input data
-            X_scaled = self.scaler.transform(X) * 2 * np.pi - np.pi
-
-            # Initialize weights
-            weights = np.random.uniform(
-                low=-np.pi, high=np.pi, size=(self.n_layers, self.n_qubits, 3)
-            )
-
-            # Collect predictions
-            predictions = []
-            for _ in range(n_samples):
-                sample_predictions = []
-                for x in X_scaled:
-                    quantum_output = circuit_fn(x, weights)
-                    sample_predictions.append(np.mean(quantum_output))
-                predictions.append(sample_predictions)
-
-            # Calculate uncertainty (standard deviation across samples)
-            uncertainty = np.std(predictions, axis=0)
-            return uncertainty
-
-        except Exception as e:
-            logging.error(f"❌ Uncertainty measurement failed: {str(e)}")
-            raise
+        # Measure quantum state uncertainty
+        return self.quantum_circuit.measure_uncertainty(data_scaled + quantum_noise)
 
     async def dispose(self) -> None:
         """Clean up quantum resources."""
@@ -223,9 +145,8 @@ class QuantumProcessor:
                 # Clean up device resources if needed
                 self.dev = None
 
-            self.circuit = None
+            self.quantum_circuit = None
             self.scaler = None
-            self.initialized = False
             logging.info("✅ Quantum resources cleaned up successfully")
         except Exception as e:
             logging.error(f"❌ Failed to clean up quantum resources: {str(e)}")

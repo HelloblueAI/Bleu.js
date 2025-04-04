@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Bleu.js</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .content {
+            background: #ffffff;
+            padding: 40px 20px;
+        }
+        .feature-list {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .feature-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #3b82f6;
+            margin-right: 10px;
+        }
+        .api-key {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        .button {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to Bleu.js!</h1>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <p>Hi there,</p>
+            
+            <p>Thank you for subscribing to our <strong>{{ plan_type }}</strong> plan. We're excited to have you on board!</p>
+            
+            <p>Your API Key:</p>
+            <div class="api-key">{{ api_key }}</div>
+            
+            <p>Here are your available features:</p>
+            <div class="feature-list">
+                <ul>
+                    {% for feature in features %}
+                    <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <p>Getting Started:</p>
+            <ol>
+                <li>Visit our <a href="https://docs.bleu.js">documentation</a> to learn how to use our API</li>
+                <li>Use your API key to make your first API call</li>
+                <li>Check out our example code and tutorials</li>
+            </ol>
+            
+            <p>Need help? Our support team is here for you.</p>
+            
+            <a href="https://docs.bleu.js" class="button">View Documentation</a>
+        </div>
+        
+        <div class="footer">
+            <p>© {{ current_date }} Bleu.js. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

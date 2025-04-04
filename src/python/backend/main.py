@@ -1,29 +1,27 @@
 """
-Main application file for the backend.
+Main FastAPI application for the Bleu.js backend.
 """
 
-import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import logging
 import logging.handlers
 from pathlib import Path
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from .config.settings import settings
+from .config.settings import get_config
 from .api.router import router
-from .core.database import db_manager
-from .core.cache import cache_manager
-from .core.job_queue import job_queue_manager
+from .core.database import Base, engine, get_db
 
 # Configure logging
 def setup_logging():
     """Setup logging configuration."""
-    log_config = settings.get_config().logging
+    config = get_config()
     logger = logging.getLogger()
-    logger.setLevel(log_config.level)
+    logger.setLevel(config.logging.level)
     
     # Create formatter
-    formatter = logging.Formatter(log_config.format)
+    formatter = logging.Formatter(config.logging.format)
     
     # Console handler
     console_handler = logging.StreamHandler()
@@ -31,35 +29,38 @@ def setup_logging():
     logger.addHandler(console_handler)
     
     # File handler if configured
-    if log_config.file:
-        log_path = Path(log_config.file)
+    if config.logging.file:
+        log_path = Path(config.logging.file)
         log_path.parent.mkdir(parents=True, exist_ok=True)
         
         file_handler = logging.handlers.RotatingFileHandler(
-            log_config.file,
-            maxBytes=log_config.max_size,
-            backupCount=log_config.backup_count
+            config.logging.file,
+            maxBytes=config.logging.max_size,
+            backupCount=config.logging.backup_count
         )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
 # Create FastAPI app
 app = FastAPI(
-    title="Quantum ML Backend",
-    description="Backend API for Quantum Machine Learning Platform",
+    title="Bleu.js API",
+    description="API for the Bleu.js machine learning platform",
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.get_config().api.cors_origins,
+    allow_origins=["*"],  # In production, replace with specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include API router
+# Include routers
 app.include_router(router, prefix="/api/v1")
 
 @app.on_event("startup")
@@ -71,17 +72,10 @@ async def startup_event():
     logger.info("Starting application...")
     
     try:
-        # Initialize database
-        await db_manager.initialize()
-        logger.info("Database initialized")
-        
-        # Initialize cache
-        await cache_manager.initialize()
-        logger.info("Cache initialized")
-        
-        # Initialize job queue
-        await job_queue_manager.initialize()
-        logger.info("Job queue initialized")
+        # Test database connection
+        db = next(get_db())
+        db.execute("SELECT 1")
+        logger.info("Database connection successful")
         
     except Exception as e:
         logger.error(f"Failed to initialize services: {e}")
@@ -92,39 +86,17 @@ async def shutdown_event():
     """Cleanup on shutdown."""
     logger = logging.getLogger(__name__)
     logger.info("Shutting down application...")
-    
-    try:
-        # Close database connection
-        db_manager.close()
-        logger.info("Database connection closed")
-        
-        # Close cache connection
-        await cache_manager.close()
-        logger.info("Cache connection closed")
-        
-        # Shutdown job queue
-        if job_queue_manager:
-            await job_queue_manager.shutdown()
-            logger.info("Job queue shut down")
-        
-    except Exception as e:
-        logger.error(f"Error during shutdown: {e}")
-        raise
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
     try:
         # Check database connection
-        db_healthy = db_manager.check_connection()
-        
-        # Check cache connection
-        cache_healthy = cache_manager.check_connection()
-        
+        db = next(get_db())
+        db.execute("SELECT 1")
         return {
-            "status": "healthy" if db_healthy and cache_healthy else "unhealthy",
-            "database": "healthy" if db_healthy else "unhealthy",
-            "cache": "healthy" if cache_healthy else "unhealthy"
+            "status": "healthy",
+            "database": "healthy"
         }
     except Exception as e:
         return {
@@ -132,15 +104,22 @@ async def health_check():
             "error": str(e)
         }
 
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return {
+        "message": "Welcome to Bleu.js API",
+        "version": "1.0.0",
+        "docs_url": "https://api.bleujs.com/docs",
+    }
+
 def run():
     """Run the application."""
-    config = settings.get_config().api
     uvicorn.run(
-        "backend.main:app",
-        host=config.host,
-        port=config.port,
-        reload=config.debug,
-        workers=config.workers
+        "bleujs.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
     )
 
 if __name__ == "__main__":

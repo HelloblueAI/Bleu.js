@@ -2,7 +2,6 @@
 Main entry point for the Bleu.js application.
 """
 
-
 import structlog
 import uvicorn
 from src.python.config.settings import settings

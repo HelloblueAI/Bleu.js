@@ -10,13 +10,13 @@ global:
   application_name: BleujsAPI
   branch: null
   default_ec2_keyname: BleujsDeploymentKey
-  default_platform: Node.js 20 running on 64bit Amazon Linux 2023
+  default_platform: Python 3.11 running on 64bit Amazon Linux 2023
   default_region: us-west-2
   include_git_submodules: true
   instance_profile: null
   platform_name: null
   platform_version: null
-  profile: null
+  profile: eb-cli
   repository: null
   sc: null
   workspace_type: Application
