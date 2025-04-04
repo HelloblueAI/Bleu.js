@@ -57,10 +57,13 @@ export class ModelOptimizer {
     const originalScore = await this.evaluateConfig(baseConfig, data);
 
     return {
+      bestConfig: this.bestConfig!,
+      bestScore: bestScore,
       originalScore,
       optimizedScore: bestScore,
       improvement: ((originalScore - bestScore) / originalScore) * 100,
       parameters: this.bestConfig!,
+      history: [],
       metadata: {
         trials: history.length,
         optimizationMetric: this.optimizationMetric,
