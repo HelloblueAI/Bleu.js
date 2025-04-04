@@ -43,6 +43,12 @@ export class QuantumOptimizer {
     }
 
     return {
+      bestConfig: {
+        iterations: iteration,
+        learningRate: this.learningRate,
+        convergenceThreshold: this.convergenceThreshold
+      },
+      bestScore: bestScore,
       originalScore,
       optimizedScore: bestScore,
       improvement,
@@ -51,6 +57,7 @@ export class QuantumOptimizer {
         learningRate: this.learningRate,
         convergenceThreshold: this.convergenceThreshold
       },
+      history: [],
       metadata: {
         optimizationMethod: 'quantum-inspired',
         timestamp: new Date().toISOString(),
