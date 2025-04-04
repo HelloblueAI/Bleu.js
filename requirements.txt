@@ -30,10 +30,10 @@ pillow>=10.2.0
 albumentations>=1.4.0
 
 # API and web framework
-fastapi==0.104.1
-uvicorn==0.24.0
-python-multipart==0.0.6
-pydantic[email]==2.5.2
+fastapi==0.109.2
+uvicorn==0.27.1
+python-multipart>=0.0.9
+pydantic[email]==2.6.1
 
 # Database
 sqlalchemy==2.0.23
@@ -45,7 +45,7 @@ pytest==7.4.3
 pytest-cov==4.1.0
 pytest-asyncio==0.21.1
 pylint==3.0.2
-black==24.1.0
+black>=24.2.0
 isort==5.13.0
 flake8==7.0.0
 mypy==1.7.0
@@ -58,10 +58,10 @@ opentelemetry-sdk>=1.22.0
 structlog>=24.1.0
 
 # Security
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]>=3.3.0
 passlib[bcrypt]==1.7.4
-python-dotenv==1.0.0
-jinja2==3.1.2
+python-dotenv==1.0.1
+jinja2>=3.1.3
 httpx>=0.27.0
 
 # Utilities
