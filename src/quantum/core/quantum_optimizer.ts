@@ -46,9 +46,11 @@ export class QuantumOptimizer {
       bestConfig: {
         iterations: iteration,
         learningRate: this.learningRate,
-        convergenceThreshold: this.convergenceThreshold
+        convergenceThreshold: this.convergenceThreshold,
+        maxDepth: 6,  // Default value
+        numRounds: 100  // Default value
       },
-      bestScore: bestScore,
+      bestScore,
       originalScore,
       optimizedScore: bestScore,
       improvement,
