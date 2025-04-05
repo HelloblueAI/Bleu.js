@@ -81,9 +81,7 @@ class AdvancedModelTrainer:
         """Train the model with quantum enhancements and security measures."""
         try:
             # Apply security measures
-            features_secure, labels_secure = self._apply_security_measures(
-                features, labels
-            )
+            features_secure, labels_secure = self._apply_security_measures(features, labels)
 
             # Apply quantum enhancements
             features_enhanced = await self._apply_quantum_enhancements(features_secure)
@@ -153,9 +151,7 @@ class AdvancedModelTrainer:
         if self.security_config.differential_privacy:
             # Add noise for differential privacy
             rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
-            noise = rng.normal(
-                0, 1 / self.security_config.privacy_budget, features.shape
-            )
+            noise = rng.normal(0, 1 / self.security_config.privacy_budget, features.shape)
             features = features + noise
 
         return features, labels

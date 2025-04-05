@@ -70,9 +70,7 @@ class QuantumIntelligence:
 
             # Apply quantum attention
             if self.config.use_quantum_attention:
-                quantum_features = await self._apply_quantum_attention(
-                    quantum_features, context
-                )
+                quantum_features = await self._apply_quantum_attention(quantum_features, context)
 
             # Update quantum memory
             if self.config.use_quantum_memory:
@@ -80,9 +78,7 @@ class QuantumIntelligence:
 
             # Optimize intelligence
             if self.config.use_quantum_optimization:
-                optimization_results = await self._optimize_intelligence(
-                    quantum_features, target
-                )
+                optimization_results = await self._optimize_intelligence(quantum_features, target)
 
             # Calculate new intelligence score
             self.intelligence_score = await self._calculate_intelligence_score()
@@ -111,9 +107,7 @@ class QuantumIntelligence:
 
             # Apply quantum attention to focus on important aspects
             if self.config.use_quantum_attention:
-                quantum_state = await self._apply_quantum_attention(
-                    quantum_state, context
-                )
+                quantum_state = await self._apply_quantum_attention(quantum_state, context)
 
             # Query quantum memory for similar situations
             if self.config.use_quantum_memory:
@@ -121,9 +115,7 @@ class QuantumIntelligence:
                 quantum_state = np.concatenate([quantum_state, memory_state])
 
             # Generate predictions
-            predictions = await self.xgboost_model.predict(
-                quantum_state, return_proba=True
-            )
+            predictions = await self.xgboost_model.predict(quantum_state, return_proba=True)
 
             # Calculate confidence score
             confidence = self._calculate_confidence(predictions)
@@ -153,9 +145,7 @@ class QuantumIntelligence:
 
         # Update weights based on context
         if context:
-            attention_weights = self._update_attention_weights(
-                attention_weights, context
-            )
+            attention_weights = self._update_attention_weights(attention_weights, context)
 
         # Apply attention through quantum circuits
         attended_features = features * attention_weights
@@ -201,9 +191,7 @@ class QuantumIntelligence:
         adaptation_score = self._calculate_adaptation_score()
 
         # Weighted combination
-        intelligence_score = (
-            0.4 * memory_score + 0.4 * optimization_score + 0.2 * adaptation_score
-        )
+        intelligence_score = 0.4 * memory_score + 0.4 * optimization_score + 0.2 * adaptation_score
 
         return intelligence_score
 
@@ -247,9 +235,7 @@ class QuantumIntelligence:
         """Calculate adaptation effectiveness score"""
         if not self.adaptation_history:
             return 0.0
-        scores = [
-            r.get("intelligence_score", 0.0) for r in self.adaptation_history[-10:]
-        ]
+        scores = [r.get("intelligence_score", 0.0) for r in self.adaptation_history[-10:]]
         return np.mean(scores) if scores else 0.0
 
     def _calculate_confidence(self, predictions: np.ndarray) -> float:

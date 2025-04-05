@@ -58,9 +58,7 @@ class QuantumProcessor:
 
     def _create_surface_code(self) -> QuantumCircuit:
         """Create surface code error correction circuit."""
-        circuit = QuantumCircuit(
-            self.config.num_qubits + 4
-        )  # Additional syndrome qubits
+        circuit = QuantumCircuit(self.config.num_qubits + 4)  # Additional syndrome qubits
 
         # Add stabilizer measurements
         for i in range(0, self.config.num_qubits - 1, 2):
