@@ -16,7 +16,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess
       Path: /
-      RoleName: 
+      RoleName:
         Fn::Sub: ${AWS::StackName}-cost-explorer-role
 
   # Budget Alerts
@@ -24,10 +24,10 @@ Resources:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
-        BudgetName: 
+        BudgetName:
           Fn::Sub: ${AWS::StackName}-monthly-budget
         BudgetLimit:
-          Amount: 
+          Amount:
             Ref: BudgetAmount
           Unit: USD
         TimeUnit: MONTHLY
@@ -39,7 +39,7 @@ Resources:
             - Amazon Elasticsearch Service
             - Amazon CloudWatch
         TimeSpend:
-          Amount: 
+          Amount:
             Ref: BudgetAmount
           Unit: USD
       NotificationsWithSubscribers:
@@ -49,7 +49,7 @@ Resources:
             Threshold: 80
             ThresholdType: PERCENTAGE
           Subscribers:
-            - Address: 
+            - Address:
                 Ref: AlertEmail
               SubscriptionType: EMAIL
 
@@ -57,7 +57,7 @@ Resources:
   UsageReportBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: 
+      BucketName:
         Fn::Sub: ${AWS::StackName}-usage-reports
       VersioningConfiguration:
         Status: Enabled
@@ -70,7 +70,7 @@ Resources:
   UsageReportBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: 
+      Bucket:
         Ref: UsageReportBucket
       PolicyDocument:
         Version: '2012-10-17'
@@ -79,20 +79,20 @@ Resources:
             Principal:
               Service: billingreports.amazonaws.com
             Action: s3:PutObject
-            Resource: 
+            Resource:
               Fn::Sub: ${UsageReportBucket.Arn}/*
           - Effect: Allow
             Principal:
               Service: billingreports.amazonaws.com
             Action: s3:GetBucketAcl
-            Resource: 
+            Resource:
               Ref: UsageReportBucket
 
   # CloudWatch Dashboard
   BillingDashboard:
     Type: AWS::CloudWatch::Dashboard
     Properties:
-      DashboardName: 
+      DashboardName:
         Fn::Sub: ${AWS::StackName}-billing-dashboard
       DashboardBody:
         Fn::Sub: |
@@ -212,15 +212,15 @@ Parameters:
 Outputs:
   CostExplorerRoleArn:
     Description: ARN of the Cost Explorer IAM role
-    Value: 
+    Value:
       Fn::GetAtt: [CostExplorerRole, Arn]
 
   UsageReportBucketName:
     Description: Name of the S3 bucket for usage reports
-    Value: 
+    Value:
       Ref: UsageReportBucket
 
   DashboardURL:
     Description: URL of the CloudWatch dashboard
-    Value: 
+    Value:
       Fn::Sub: https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=${BillingDashboard.DashboardName}

@@ -71,36 +71,36 @@ Parameters:
   SubscriptionManagementFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 
+      FunctionName:
         Ref: SubscriptionLambdaName
       Description: Manages API subscriptions and usage tracking
       Handler: index.handler
-      Role: 
+      Role:
         Fn::GetAtt: [LambdaExecutionRole, Arn]
       Code:
-        S3Bucket: 
+        S3Bucket:
           Ref: CodeBucket
-        S3Key: 
+        S3Key:
           Ref: CodeKey
       Runtime: python3.9
       Timeout: 30
       Environment:
         Variables:
-          TABLE_NAME: 
+          TABLE_NAME:
             Ref: SubscriptionTable
-          TOPIC_ARN: 
+          TOPIC_ARN:
             Ref: SubscriptionTopic
       MemorySize: 256
       Publish: true
       Tags:
         - Key: Name
-          Value: 
+          Value:
             Fn::Sub: ${AWS::StackName}-subscription-lambda
 
   SubscriptionManagementLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: 
+      LogGroupName:
         Fn::Sub: /aws/lambda/${SubscriptionManagementFunction}
       RetentionInDays: 30
 
@@ -108,7 +108,7 @@ Parameters:
   SubscriptionApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: 
+      Name:
         Fn::Sub: ${AWS::StackName}-subscription-api
       Description: API for subscription management
       EndpointConfiguration:
@@ -118,25 +118,25 @@ Parameters:
   SubscriptionResource:
     Type: AWS::ApiGateway::Resource
     Properties:
-      RestApiId: 
+      RestApiId:
         Ref: SubscriptionApi
-      ParentId: 
+      ParentId:
         Fn::GetAtt: [SubscriptionApi, RootResourceId]
       PathPart: subscriptions
 
   SubscriptionMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: 
+      RestApiId:
         Ref: SubscriptionApi
-      ResourceId: 
+      ResourceId:
         Ref: SubscriptionResource
       HttpMethod: POST
       AuthorizationType: NONE
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri: 
+        Uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SubscriptionManagementFunction.Arn}/invocations
 
   SubscriptionDeployment:
@@ -146,11 +146,11 @@ Parameters:
   SubscriptionStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      DeploymentId: 
+      DeploymentId:
         Ref: SubscriptionDeployment
-      RestApiId: 
+      RestApiId:
         Ref: SubscriptionApi
-      StageName: 
+      StageName:
         Ref: EnvironmentName
 
   # IAM Role
@@ -178,7 +178,7 @@ Parameters:
                   - dynamodb:UpdateItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: 
+                Resource:
                   Fn::GetAtt: [UsageTable, Arn]
               - Effect: Allow
                 Action:
@@ -196,7 +196,7 @@ Parameters:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: 
+                Resource:
                   Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
 
   # Lambda Permission
@@ -204,19 +204,19 @@ Parameters:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: 
+      FunctionName:
         Ref: SubscriptionManagementFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: 
+      SourceArn:
         Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SubscriptionApi}/*
 
 Outputs:
   SubscriptionApiEndpoint:
     Description: API Gateway endpoint URL
-    Value: 
+    Value:
       Fn::Sub: https://${SubscriptionApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvironmentName}/subscriptions
 
   SubscriptionFunctionArn:
     Description: Lambda function ARN
-    Value: 
+    Value:
       Fn::GetAtt: [SubscriptionManagementFunction, Arn]

@@ -6,7 +6,7 @@ Resources:
   BasicUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
-      UsagePlanName: 
+      UsagePlanName:
         Fn::Sub: ${AWS::StackName}-basic-plan
       Description: Basic plan - 100 API calls per month
       Quota:
@@ -19,7 +19,7 @@ Resources:
   EnterpriseUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
-      UsagePlanName: 
+      UsagePlanName:
         Fn::Sub: ${AWS::StackName}-enterprise-plan
       Description: Enterprise plan - 5000 API calls per month with 24/7 support
       Quota:
@@ -33,50 +33,50 @@ Resources:
   BasicUsagePlanKey:
     Type: AWS::ApiGateway::UsagePlanKey
     Properties:
-      KeyId: 
+      KeyId:
         Ref: BasicApiKey
       KeyType: API_KEY
-      UsagePlanId: 
+      UsagePlanId:
         Ref: BasicUsagePlan
 
   EnterpriseUsagePlanKey:
     Type: AWS::ApiGateway::UsagePlanKey
     Properties:
-      KeyId: 
+      KeyId:
         Ref: EnterpriseApiKey
       KeyType: API_KEY
-      UsagePlanId: 
+      UsagePlanId:
         Ref: EnterpriseUsagePlan
 
   # API Keys
   BasicApiKey:
     Type: AWS::ApiGateway::ApiKey
     Properties:
-      Name: 
+      Name:
         Fn::Sub: ${AWS::StackName}-basic-key
       Description: API key for basic tier
       Enabled: true
-      Value: 
+      Value:
         Fn::Sub: ${AWS::StackName}-basic-${AWS::AccountId}
 
   EnterpriseApiKey:
     Type: AWS::ApiGateway::ApiKey
     Properties:
-      Name: 
+      Name:
         Fn::Sub: ${AWS::StackName}-enterprise-key
       Description: API key for enterprise tier
       Enabled: true
-      Value: 
+      Value:
         Fn::Sub: ${AWS::StackName}-enterprise-${AWS::AccountId}
 
   # Lambda Functions for Usage Tracking
   UsageTrackingFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: 
+      FunctionName:
         Fn::Sub: ${AWS::StackName}-usage-tracking
       Handler: index.handler
-      Role: 
+      Role:
         Fn::GetAtt: [LambdaExecutionRole, Arn]
       Code:
         ZipFile: |
@@ -105,11 +105,11 @@ Resources:
       Timeout: 30
       Environment:
         Variables:
-          USAGE_TABLE: 
+          USAGE_TABLE:
             Ref: UsageTable
       LoggingConfig:
         LogFormat: JSON
-        LogGroup: 
+        LogGroup:
           Ref: UsageTrackingLogGroup
         ApplicationLogLevel: INFO
         SystemLogLevel: INFO
@@ -123,18 +123,14 @@ Resources:
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
-        - AttributeName: timestamp
-          AttributeType: N
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
-        - AttributeName: timestamp
-          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: Name
           Value:
-            Fn::Sub: ${AWS::StackName}-usage
+            Fn::Sub: ${AWS::StackName}-usage-table
 
   # IAM Role for Lambda
   LambdaExecutionRole:
@@ -320,34 +316,51 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${AWS::StackName}-webhook-handler
       RetentionInDays: 30
 
+  SubscriptionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:
+        Fn::Sub: ${AWS::StackName}-subscriptions
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: ${AWS::StackName}-subscription-table
+
 Outputs:
   BasicApiKey:
     Description: API Key for Basic Tier
-    Value: 
+    Value:
       Ref: BasicApiKey
 
   EnterpriseApiKey:
     Description: API Key for Enterprise Tier
-    Value: 
+    Value:
       Ref: EnterpriseApiKey
 
   UsageTableName:
     Description: Name of the usage table
     Value:
-      Ref: UsageTable
+      Fn::GetAtt: UsageTable.TableName
     Export:
       Name:
-        Fn::Sub: ${AWS::StackName}-usage-table
+        Fn::Sub: ${AWS::StackName}-usage-table-name
 
   UsageAlertsTopicArn:
     Description: SNS Topic ARN for Usage Alerts
-    Value: 
+    Value:
       Ref: UsageAlertsTopic
 
   SubscriptionTableName:
     Description: Name of the subscription table
     Value:
-      Ref: SubscriptionTable
+      Fn::GetAtt: SubscriptionTable.TableName
     Export:
       Name:
-        Fn::Sub: ${AWS::StackName}-subscription-table
+        Fn::Sub: ${AWS::StackName}-subscription-table-name
