@@ -90,9 +90,7 @@ class SelfLearningSystem:
         """Initialize quantum optimizer for self-improvement"""
         return {
             "vqe": VQE(
-                ansatz=TwoLocal(
-                    4, rotation_blocks=["ry", "rz"], entanglement_blocks="cz"
-                ),
+                ansatz=TwoLocal(4, rotation_blocks=["ry", "rz"], entanglement_blocks="cz"),
                 optimizer=SPSA(maxiter=100),
             ),
             "qaoa": QAOA(optimizer=SPSA(maxiter=100), reps=2),
@@ -190,9 +188,7 @@ class SelfLearningSystem:
         if len(self.performance_history) < 2:
             return 0.0
 
-        recent_performance = [
-            m.performance_score for m in self.performance_history[-5:]
-        ]
+        recent_performance = [m.performance_score for m in self.performance_history[-5:]]
         return np.polyfit(range(len(recent_performance)), recent_performance, 1)[0]
 
     def _calculate_quantum_efficiency(self, metrics: LearningMetrics) -> float:
@@ -243,9 +239,7 @@ class SelfLearningSystem:
 
         return needs
 
-    async def _apply_quantum_optimization(
-        self, model_state: Dict, quantum_state: Dict
-    ) -> Dict:
+    async def _apply_quantum_optimization(self, model_state: Dict, quantum_state: Dict) -> Dict:
         """Apply quantum optimization to improve model state"""
         if self.quantum_optimizer is None:
             raise RuntimeError("Quantum optimizer not initialized")
@@ -279,9 +273,7 @@ class SelfLearningSystem:
             self.logger.error(f"Error during quantum optimization: {str(e)}")
             return model_state
 
-    async def _apply_meta_learning(
-        self, model_state: Dict, performance_analysis: Dict
-    ) -> Dict:
+    async def _apply_meta_learning(self, model_state: Dict, performance_analysis: Dict) -> Dict:
         """Apply meta-learning to improve learning parameters"""
         if self.meta_learner is None:
             raise RuntimeError("Meta learner not initialized")

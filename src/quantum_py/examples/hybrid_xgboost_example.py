@@ -113,9 +113,7 @@ async def main():
     fpr, tpr, _ = roc_curve(labels_test, y_pred_proba)
     roc_auc = auc(fpr, tpr)
 
-    plt.plot(
-        fpr, tpr, color="darkorange", lw=2, label=f"ROC curve (AUC = {roc_auc:.2f})"
-    )
+    plt.plot(fpr, tpr, color="darkorange", lw=2, label=f"ROC curve (AUC = {roc_auc:.2f})")
     plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
@@ -154,9 +152,7 @@ async def main():
     metrics_to_plot = ["error_rate", "entanglement_quality", "memory_usage"]
     for metric in metrics_to_plot:
         if metric in quantum_metrics:
-            plt.plot(
-                iterations, [quantum_metrics[metric]] * len(iterations), label=metric
-            )
+            plt.plot(iterations, [quantum_metrics[metric]] * len(iterations), label=metric)
 
     plt.xlabel("Iteration")
     plt.ylabel("Value")
