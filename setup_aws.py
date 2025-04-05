@@ -6,6 +6,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def mask_credentials(credential):
+    """Mask sensitive credentials for logging"""
+    if not credential:
+        return "***"
+    return credential[:4] + "*" * (len(credential) - 4)
 
 def create_iam_user():
     """Create IAM user with necessary permissions for Bleu.js"""
@@ -28,8 +33,8 @@ def create_iam_user():
         access_key = access_key_response["AccessKey"]["AccessKeyId"]
         secret_key = access_key_response["AccessKey"]["SecretAccessKey"]
 
-        print("\nAccess Key ID:", access_key)
-        print("Secret Access Key:", secret_key)
+        print("\nAccess Key ID:", mask_credentials(access_key))
+        print("Secret Access Key:", mask_credentials(secret_key))
         print("\nIMPORTANT: Save these credentials securely!")
 
         # Create policy for Bleu.js
@@ -101,8 +106,8 @@ def create_domain_management_user():
         access_key = access_key_response["AccessKey"]["AccessKeyId"]
         secret_key = access_key_response["AccessKey"]["SecretAccessKey"]
 
-        print("\nAccess Key ID:", access_key)
-        print("Secret Access Key:", secret_key)
+        print("\nAccess Key ID:", mask_credentials(access_key))
+        print("Secret Access Key:", mask_credentials(secret_key))
         print("\nIMPORTANT: Save these credentials securely!")
 
         # Create policy for domain management
@@ -162,8 +167,8 @@ def setup_aws():
     if credentials:
         print("\nAWS setup completed successfully!")
         print("\nUpdate your .env file with these credentials:")
-        print(f"AWS_ACCESS_KEY_ID={credentials['access_key']}")
-        print(f"AWS_SECRET_ACCESS_KEY={credentials['secret_key']}")
+        print(f"AWS_ACCESS_KEY_ID={mask_credentials(credentials['access_key'])}")
+        print(f"AWS_SECRET_ACCESS_KEY={mask_credentials(credentials['secret_key'])}")
 
 
 @cli.command()
@@ -173,8 +178,8 @@ def setup_domain_user():
     if credentials:
         print("\nDomain management user setup completed successfully!")
         print("\nUpdate your .env file with these credentials:")
-        print(f"AWS_ACCESS_KEY_ID={credentials['access_key']}")
-        print(f"AWS_SECRET_ACCESS_KEY={credentials['secret_key']}")
+        print(f"AWS_ACCESS_KEY_ID={mask_credentials(credentials['access_key'])}")
+        print(f"AWS_SECRET_ACCESS_KEY={mask_credentials(credentials['secret_key'])}")
 
 
 if __name__ == "__main__":
