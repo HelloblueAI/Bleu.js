@@ -6,6 +6,11 @@
 # GPG Cache Test: 2024-03-29 - Using Helloblue Project Key
 # ----------------------------------------
 
+# GitHub Actions (Never ignore)
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+
 # ----------------------------------------
 # 📊 NEVER Track Any Reports
 # ----------------------------------------
