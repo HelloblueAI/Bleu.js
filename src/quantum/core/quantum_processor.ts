@@ -55,9 +55,9 @@ export class QuantumProcessor {
     }
 
     let state: QuantumState = {
-      amplitudes: Array(2 ** circuit.qubits).fill(0),
-      phases: Array(2 ** circuit.qubits).fill(0),
-      qubits: circuit.qubits
+      amplitudes: Array(2 ** circuit.numQubits).fill(0),
+      phases: Array(2 ** circuit.numQubits).fill(0),
+      qubits: circuit.numQubits
     };
     state.amplitudes[0] = 1;
 
@@ -96,8 +96,8 @@ export class QuantumProcessor {
 
   private validateCircuit(circuit: QuantumCircuit): boolean {
     return (
-      circuit.qubits > 0 &&
-      circuit.qubits <= this.maxQubits &&
+      circuit.numQubits > 0 &&
+      circuit.numQubits <= this.maxQubits &&
       circuit.gates.every(gate => this.validateGate(gate))
     );
   }
