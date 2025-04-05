@@ -91,20 +91,31 @@ export class BleuJS {
     const quantumState = {
       amplitudes: [1, 0],
       phases: [0, 0],
-      numQubits: 1
+      qubits: 1,
+      metadata: {}
     };
     const quantumFeatures = await this.quantumProcessor.process(quantumState);
     return await this.modelTrainer.train(quantumFeatures);
   }
 
-  async predict(input: any) {
+  async predict(input: TrainingData): Promise<PredictionResult> {
     const quantumState = {
       amplitudes: [1, 0],
       phases: [0, 0],
-      numQubits: 1
+      qubits: 1,
+      metadata: {
+        timestamp: new Date().toISOString()
+      }
     };
     const quantumFeatures = await this.quantumProcessor.process(quantumState);
-    return await this.enhancedXGBoost.predict(quantumFeatures);
+    const result = await this.enhancedXGBoost.predict(quantumFeatures);
+    return {
+      prediction: result.predictions[0],
+      confidence: result.probabilities?.[0]?.[0] ?? 0.5,
+      predictions: result.predictions,
+      probabilities: result.probabilities,
+      quantumState: result.quantumState
+    };
   }
 
   async optimize(data: TrainingData, baseConfig?: ModelConfig) {

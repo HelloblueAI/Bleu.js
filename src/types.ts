@@ -11,6 +11,8 @@ export interface TrainingData {
 }
 
 export interface PredictionResult {
+  prediction: number;
+  confidence: number;
   predictions: number[];
   probabilities?: number[][];
   quantumState?: QuantumState;
@@ -33,17 +35,22 @@ export interface OptimizationResult {
 export interface QuantumState {
   amplitudes: number[];
   phases: number[];
-  numQubits: number;
+  qubits: number;
+  metadata?: Record<string, any>;
 }
 
 export interface QuantumGate {
   type: string;
-  qubits: number[];
+  target: number;
+  control?: number;
   parameters?: number[];
+  description?: string;
 }
 
 export interface QuantumCircuit {
   gates: QuantumGate[];
   numQubits: number;
-  execute?: () => any;
+  name?: string;
+  description?: string;
+  execute(): Promise<any>;
 } 

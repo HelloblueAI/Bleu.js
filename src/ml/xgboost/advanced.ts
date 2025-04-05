@@ -105,11 +105,15 @@ export class AdvancedXGBoost {
       }
     }
 
+    const quantumState = this.config.quantumEnabled ? 
+      this.quantumCore.getState() : undefined;
+
     return {
+      prediction: predictions[0],
+      confidence: probabilities?.[0]?.[0] ?? 0.5,
       predictions,
       probabilities,
-      quantumState: this.config.quantumEnabled ? 
-        this.quantumCore.getState() : undefined
+      quantumState
     };
   }
 
