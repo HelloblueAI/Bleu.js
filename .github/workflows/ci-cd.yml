@@ -49,11 +49,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -61,10 +60,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          version: ${{ env.PNPM_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
