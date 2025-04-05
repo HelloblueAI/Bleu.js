@@ -17,6 +17,11 @@ Parameters:
     Type: String
     Default: 10.0.1.0/24
 
+  PublicSubnet2CIDR:
+    Description: CIDR block for the second public subnet
+    Type: String
+    Default: 10.0.2.0/24
+
   AdminIPRanges:
     Type: CommaDelimitedList
     Description: Comma-separated list of IP ranges allowed for administrative access
@@ -32,7 +37,7 @@ Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 
+      CidrBlock:
         Ref: VpcCIDR
       EnableDnsHostnames: true
       EnableDnsSupport: true
@@ -63,17 +68,20 @@ Resources:
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: 
+      VpcId:
         Ref: VPC
-      AvailabilityZone: 
-        Fn::Select: [1, Fn::GetAZs: '']
-      CidrBlock: 
-        Fn::Select: [1, Fn::Cidr: [Ref: VpcCIDR, 6, 8]]
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnet2CIDR
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-public-subnet-2
+          Value:
+            Fn::Sub: ${AWS::StackName}-public-2
 
   # Internet Gateway
   InternetGateway:
@@ -81,52 +89,52 @@ Resources:
     Properties:
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-igw
+          Value:
+            Fn::Sub: ${AWS::StackName}-igw
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: 
+      VpcId:
         Ref: VPC
-      InternetGatewayId: 
+      InternetGatewayId:
         Ref: InternetGateway
 
   # Route Tables
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: 
+      VpcId:
         Ref: VPC
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-public-rt
+          Value:
+            Fn::Sub: ${AWS::StackName}-public-rt
 
   DefaultPublicRoute:
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
     Properties:
-      RouteTableId: 
+      RouteTableId:
         Ref: PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: 
+      GatewayId:
         Ref: InternetGateway
 
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: 
+      SubnetId:
         Ref: PublicSubnet1
-      RouteTableId: 
+      RouteTableId:
         Ref: PublicRouteTable
 
   PublicSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: 
+      SubnetId:
         Ref: PublicSubnet2
-      RouteTableId: 
+      RouteTableId:
         Ref: PublicRouteTable
 
   # Security Groups
@@ -134,80 +142,85 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for API servers
-      VpcId: 
+      VpcId:
         Ref: VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 
+          CidrIp:
             Fn::Join: [',', Ref: PublicIPRanges]
           Description: HTTP access from allowed IPs
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: 
+          CidrIp:
             Fn::Join: [',', Ref: PublicIPRanges]
           Description: HTTPS access from allowed IPs
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-api-sg
+          Value:
+            Fn::Sub: ${AWS::StackName}-api-sg
 
   VMSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for VM instances
-      VpcId: 
+      VpcId:
         Ref: VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 
+          CidrIp:
             Fn::Join: [',', Ref: AdminIPRanges]
           Description: SSH access from allowed IPs
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 
+          CidrIp:
             Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTP access from allowed IPs
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: 
+          CidrIp:
             Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTPS access from allowed IPs
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-vm-sg
+          Value:
+            Fn::Sub: ${AWS::StackName}-vm-sg
 
   AdminSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for administrative access
-      VpcId: !Ref VPC
+      VpcId:
+        Ref: VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp:
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: SSH access from allowed IPs
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp:
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTP access from allowed IPs
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp:
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTPS access from allowed IPs
       Tags:
         - Key: Name
-          Value: !Sub ${AWS::StackName}-admin-sg
+          Value:
+            Fn::Sub: ${AWS::StackName}-admin-sg
 
   # Launch Templates
   ApiLaunchTemplate:
@@ -219,7 +232,7 @@ Resources:
         SecurityGroupIds:
           - Ref: ApiSecurityGroup
         UserData:
-          Fn::Base64: 
+          Fn::Base64:
             Fn::Sub: |
               #!/bin/bash
               apt-get update
@@ -238,7 +251,7 @@ Resources:
         SecurityGroupIds:
           - Ref: VMSecurityGroup
         UserData:
-          Fn::Base64: 
+          Fn::Base64:
             Fn::Sub: |
               #!/bin/bash
               apt-get update
@@ -256,9 +269,9 @@ Resources:
         - Ref: PublicSubnet1
         - Ref: PublicSubnet2
       LaunchTemplate:
-        LaunchTemplateId: 
+        LaunchTemplateId:
           Ref: ApiLaunchTemplate
-        Version: 
+        Version:
           Fn::GetAtt: [ApiLaunchTemplate, LatestVersionNumber]
       MinSize: 2
       MaxSize: 10
@@ -275,9 +288,9 @@ Resources:
         - Ref: PublicSubnet1
         - Ref: PublicSubnet2
       LaunchTemplate:
-        LaunchTemplateId: 
+        LaunchTemplateId:
           Ref: VMLaunchTemplate
-        Version: 
+        Version:
           Fn::GetAtt: [VMLaunchTemplate, LatestVersionNumber]
       MinSize: 1
       MaxSize: 5
@@ -291,8 +304,8 @@ Resources:
   ApiLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: 
-        Fn::Sub: ${EnvironmentName}-api-lb
+      Name:
+        Fn::Sub: ${AWS::StackName}-api-lb
       Subnets:
         - Ref: PublicSubnet1
         - Ref: PublicSubnet2
@@ -302,14 +315,14 @@ Resources:
       Type: application
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-api-lb
+          Value:
+            Fn::Sub: ${AWS::StackName}-api-lb
 
   VMLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: 
-        Fn::Sub: ${EnvironmentName}-vm-lb
+      Name:
+        Fn::Sub: ${AWS::StackName}-vm-lb
       Subnets:
         - Ref: PublicSubnet1
         - Ref: PublicSubnet2
@@ -319,19 +332,19 @@ Resources:
       Type: application
       Tags:
         - Key: Name
-          Value: 
-            Fn::Sub: ${EnvironmentName}-vm-lb
+          Value:
+            Fn::Sub: ${AWS::StackName}-vm-lb
 
   # Target Groups
   ApiTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: 
-        Fn::Sub: ${EnvironmentName}-api-tg
+      Name:
+        Fn::Sub: ${AWS::StackName}-api-tg
       Port: 80
       Protocol: HTTP
       TargetType: instance
-      VpcId: 
+      VpcId:
         Ref: VPC
       HealthCheckPath: /health
       HealthCheckIntervalSeconds: 30
@@ -342,12 +355,12 @@ Resources:
   VMTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: 
-        Fn::Sub: ${EnvironmentName}-vm-tg
+      Name:
+        Fn::Sub: ${AWS::StackName}-vm-tg
       Port: 80
       Protocol: HTTP
       TargetType: instance
-      VpcId: 
+      VpcId:
         Ref: VPC
       HealthCheckPath: /health
       HealthCheckIntervalSeconds: 30
@@ -359,32 +372,33 @@ Resources:
   ApiListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      LoadBalancerArn: 
+      LoadBalancerArn:
         Ref: ApiLoadBalancer
       Port: 80
       Protocol: HTTP
       DefaultActions:
         - Type: forward
-          TargetGroupArn: 
+          TargetGroupArn:
             Ref: ApiTargetGroup
 
   VMListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      LoadBalancerArn: 
+      LoadBalancerArn:
         Ref: VMLoadBalancer
       Port: 80
       Protocol: HTTP
       DefaultActions:
         - Type: forward
-          TargetGroupArn: 
+          TargetGroupArn:
             Ref: VMTargetGroup
 
   # CloudWatch Alarms
   ApiCPUAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub ${EnvironmentName}-api-cpu-alarm
+      AlarmName:
+        Fn::Sub: ${AWS::StackName}-api-cpu-alarm
       AlarmDescription: CPU utilization alarm for API instances
       MetricName: CPUUtilization
       Namespace: AWS/EC2
@@ -395,12 +409,14 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref ApiAutoScalingGroup
+          Value:
+            Ref: ApiAutoScalingGroup
 
   VMMemoryAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub ${EnvironmentName}-vm-memory-alarm
+      AlarmName:
+        Fn::Sub: ${AWS::StackName}-vm-memory-alarm
       AlarmDescription: Memory utilization alarm for VM instances
       MetricName: MemoryUtilization
       Namespace: System/Linux
@@ -411,20 +427,21 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: AutoScalingGroupName
-          Value: !Ref VMAutoScalingGroup
+          Value:
+            Ref: VMAutoScalingGroup
 
 Outputs:
   ApiEndpoint:
     Description: API endpoint URL
-    Value: 
+    Value:
       Fn::GetAtt: [ApiLoadBalancer, DNSName]
 
   VMEndpoint:
     Description: VM endpoint URL
-    Value: 
+    Value:
       Fn::GetAtt: [VMLoadBalancer, DNSName]
 
   VPCId:
     Description: VPC ID
-    Value: 
+    Value:
       Ref: VPC
