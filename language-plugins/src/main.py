@@ -1,4 +1,4 @@
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 hostName = "localhost"
 serverPort = 3002

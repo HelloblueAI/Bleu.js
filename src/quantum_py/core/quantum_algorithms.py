@@ -37,7 +37,9 @@ class QuantumAlgorithms:
             Estimated phase
         """
         # Create phase estimation circuit
-        circuit, control_qubits = create_phase_estimation_circuit(unitary, precision_qubits)
+        circuit, control_qubits = create_phase_estimation_circuit(
+            unitary, precision_qubits
+        )
 
         # Initialize quantum register
         total_qubits = precision_qubits + int(np.log2(len(unitary)))
@@ -192,10 +194,14 @@ class QuantumAlgorithms:
                 circuit.add_gate(
                     "CUSTOM", list(range(num_qubits)), matrix=oracle, control_qubits=[i]
                 )
-                circuit.add_gate("CUSTOM", list(range(num_qubits)), matrix=G, control_qubits=[i])
+                circuit.add_gate(
+                    "CUSTOM", list(range(num_qubits)), matrix=G, control_qubits=[i]
+                )
 
         # Apply inverse QFT to counting qubits
-        qft_circuit = self.quantum_fourier_transform_circuit(precision_qubits, inverse=True)
+        qft_circuit = self.quantum_fourier_transform_circuit(
+            precision_qubits, inverse=True
+        )
         circuit.gates.extend(qft_circuit.gates)
 
         # Run circuit
@@ -253,7 +259,9 @@ class QuantumAlgorithms:
         receiver_state = final_state.reshape(2, 2, 2)[0, 0, :]
         return receiver_state / np.linalg.norm(receiver_state)
 
-    def quantum_error_correction(self, state: np.ndarray, error_rate: float) -> np.ndarray:
+    def quantum_error_correction(
+        self, state: np.ndarray, error_rate: float
+    ) -> np.ndarray:
         """Perform quantum error correction using Shor's 9-qubit code.
 
         Args:

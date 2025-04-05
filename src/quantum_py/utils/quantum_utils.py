@@ -76,7 +76,9 @@ def create_w_state(num_qubits: int) -> np.ndarray:
     return state / np.sqrt(num_qubits)
 
 
-def partial_trace(state: np.ndarray, trace_qubits: List[int], num_qubits: int) -> np.ndarray:
+def partial_trace(
+    state: np.ndarray, trace_qubits: List[int], num_qubits: int
+) -> np.ndarray:
     """Calculate partial trace of quantum state.
 
     Args:
@@ -98,7 +100,9 @@ def partial_trace(state: np.ndarray, trace_qubits: List[int], num_qubits: int) -
     # Trace out specified qubits
     keep_qubits = list(set(range(num_qubits)) - set(trace_qubits))
     axes = keep_qubits + [x + num_qubits for x in keep_qubits]
-    reduced = np.trace(state, axis1=trace_qubits, axis2=[x + num_qubits for x in trace_qubits])
+    reduced = np.trace(
+        state, axis1=trace_qubits, axis2=[x + num_qubits for x in trace_qubits]
+    )
 
     # Reshape back to matrix form
     dim = 2 ** len(keep_qubits)
@@ -172,8 +176,12 @@ def quantum_mutual_information(
         Quantum mutual information
     """
     # Calculate reduced density matrices
-    rho_a = partial_trace(state, list(set(range(num_qubits)) - set(subsys_a)), num_qubits)
-    rho_b = partial_trace(state, list(set(range(num_qubits)) - set(subsys_b)), num_qubits)
+    rho_a = partial_trace(
+        state, list(set(range(num_qubits)) - set(subsys_a)), num_qubits
+    )
+    rho_b = partial_trace(
+        state, list(set(range(num_qubits)) - set(subsys_b)), num_qubits
+    )
     rho_ab = partial_trace(
         state, list(set(range(num_qubits)) - set(subsys_a + subsys_b)), num_qubits
     )

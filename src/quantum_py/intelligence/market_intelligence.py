@@ -58,7 +58,9 @@ class MarketIntelligence:
         self.current_patterns = []
         self.risk_metrics = {}
 
-    async def analyze_market(self, market_data: Dict, context: Optional[Dict] = None) -> Dict:
+    async def analyze_market(
+        self, market_data: Dict, context: Optional[Dict] = None
+    ) -> Dict:
         """Perform comprehensive market analysis"""
         try:
             # Process market data
@@ -68,20 +70,30 @@ class MarketIntelligence:
             analysis = {}
 
             if self.config.use_price_data:
-                analysis["price"] = await self._analyze_price_patterns(processed_data["price"])
+                analysis["price"] = await self._analyze_price_patterns(
+                    processed_data["price"]
+                )
 
             if self.config.use_volume_data:
-                analysis["volume"] = await self._analyze_volume_patterns(processed_data["volume"])
+                analysis["volume"] = await self._analyze_volume_patterns(
+                    processed_data["volume"]
+                )
 
             if self.config.use_sentiment:
-                analysis["sentiment"] = await self._analyze_sentiment(processed_data["news"])
+                analysis["sentiment"] = await self._analyze_sentiment(
+                    processed_data["news"]
+                )
 
             if self.config.use_correlation_analysis:
-                analysis["correlations"] = await self._analyze_correlations(processed_data)
+                analysis["correlations"] = await self._analyze_correlations(
+                    processed_data
+                )
 
             # Apply quantum analysis
             if self.config.use_quantum_analysis:
-                quantum_analysis = await self._apply_quantum_analysis(processed_data, analysis)
+                quantum_analysis = await self._apply_quantum_analysis(
+                    processed_data, analysis
+                )
                 analysis["quantum"] = quantum_analysis
 
             # Update market state
@@ -97,7 +109,9 @@ class MarketIntelligence:
             print(f"Error analyzing market: {str(e)}")
             raise
 
-    async def predict_trends(self, market_data: Dict, time_horizon: Optional[int] = None) -> Dict:
+    async def predict_trends(
+        self, market_data: Dict, time_horizon: Optional[int] = None
+    ) -> Dict:
         """Predict market trends using quantum intelligence"""
         try:
             horizon = time_horizon or self.config.time_window
@@ -111,12 +125,16 @@ class MarketIntelligence:
             )
 
             # Predict trends
-            predictions, confidence = await self.quantum_intelligence.predict_optimal_actions(
-                quantum_features
+            predictions, confidence = (
+                await self.quantum_intelligence.predict_optimal_actions(
+                    quantum_features
+                )
             )
 
             # Analyze prediction confidence
-            confidence_analysis = self._analyze_prediction_confidence(predictions, confidence)
+            confidence_analysis = self._analyze_prediction_confidence(
+                predictions, confidence
+            )
 
             return {
                 "predictions": predictions,
@@ -137,7 +155,9 @@ class MarketIntelligence:
             processed_data = await self._process_market_data(market_data)
 
             # Apply quantum pattern detection
-            patterns = await self._detect_quantum_patterns(processed_data, pattern_types)
+            patterns = await self._detect_quantum_patterns(
+                processed_data, pattern_types
+            )
 
             # Analyze pattern significance
             significance = self._analyze_pattern_significance(patterns)
@@ -214,7 +234,9 @@ class MarketIntelligence:
         }
         return correlations
 
-    async def _apply_quantum_analysis(self, processed_data: Dict, classical_analysis: Dict) -> Dict:
+    async def _apply_quantum_analysis(
+        self, processed_data: Dict, classical_analysis: Dict
+    ) -> Dict:
         """Apply quantum analysis techniques"""
         # Convert data to quantum features
         quantum_features = await self.quantum_intelligence.enhance_intelligence(
@@ -224,8 +246,12 @@ class MarketIntelligence:
         # Perform quantum analysis
         quantum_analysis = {
             "enhanced_patterns": self._analyze_quantum_patterns(quantum_features),
-            "quantum_correlations": self._analyze_quantum_correlations(quantum_features),
-            "entanglement_metrics": self._calculate_entanglement_metrics(quantum_features),
+            "quantum_correlations": self._analyze_quantum_correlations(
+                quantum_features
+            ),
+            "entanglement_metrics": self._calculate_entanglement_metrics(
+                quantum_features
+            ),
         }
 
         return quantum_analysis

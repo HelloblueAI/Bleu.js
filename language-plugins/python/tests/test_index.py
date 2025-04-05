@@ -1,5 +1,6 @@
-from src.index import PythonProcessor
 import ast
+
+from src.index import PythonProcessor
 
 
 def test_parse_code():

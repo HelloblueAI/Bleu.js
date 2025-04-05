@@ -33,7 +33,9 @@ class QuantumState:
             seed: Random seed for reproducibility
         """
         if not isinstance(num_qubits, int) or num_qubits <= 0 or num_qubits > 32:
-            raise ValueError("Number of qubits must be a positive integer less than or equal to 32")
+            raise ValueError(
+                "Number of qubits must be a positive integer less than or equal to 32"
+            )
 
         self.num_qubits = num_qubits
         self.dimension = 2**num_qubits
@@ -153,7 +155,9 @@ class QuantumState:
         identity = np.eye(expected_size)
         return np.allclose(gate_matrix @ gate_matrix.conj().T, identity)
 
-    def _expand_gate(self, gate_matrix: np.ndarray, target_qubits: List[int]) -> np.ndarray:
+    def _expand_gate(
+        self, gate_matrix: np.ndarray, target_qubits: List[int]
+    ) -> np.ndarray:
         """Expand a gate matrix to operate on the full Hilbert space."""
         n = self.num_qubits
         if len(target_qubits) == n:
@@ -194,7 +198,9 @@ class QuantumState:
         traced_dims.pop(n + qubit)
         traced_dims.pop(qubit)
 
-        return np.trace(reshaped, axis1=qubit, axis2=n + qubit).reshape(2 ** (n - 1), 2 ** (n - 1))
+        return np.trace(reshaped, axis1=qubit, axis2=n + qubit).reshape(
+            2 ** (n - 1), 2 ** (n - 1)
+        )
 
     def __str__(self) -> str:
         """String representation of the quantum state."""

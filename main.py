@@ -4,11 +4,11 @@ Main entry point for the Bleu.js application.
 
 import structlog
 import uvicorn
+
 from src.python.config.settings import settings
 from src.python.core.cache import cache_manager
 from src.python.core.database import db_manager
 from src.python.core.job_queue import job_queue_manager
-
 
 # Configure logging
 logger = structlog.get_logger()

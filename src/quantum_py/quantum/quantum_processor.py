@@ -65,7 +65,9 @@ class QuantumProcessor:
         """Create a realistic noise model for quantum simulation."""
         noise_model = NoiseModel()
         # Add depolarizing noise
-        noise_model.add_all_qubit_quantum_error(depolarizing_error(0.01, 1), ["u1", "u2", "u3"])
+        noise_model.add_all_qubit_quantum_error(
+            depolarizing_error(0.01, 1), ["u1", "u2", "u3"]
+        )
         # Add readout error
         noise_model.add_all_qubit_readout_error([[0.9, 0.1], [0.1, 0.9]])
         return noise_model
@@ -82,7 +84,9 @@ class QuantumProcessor:
                     error_correction=True,
                 )
             else:
-                self.dev = qml.device("default.qubit", wires=self.n_qubits, shots=self.shots)
+                self.dev = qml.device(
+                    "default.qubit", wires=self.n_qubits, shots=self.shots
+                )
 
             # Define enhanced quantum circuit
             @qml.qnode(self.dev)
@@ -165,7 +169,9 @@ class QuantumProcessor:
             # Measure with different noise levels
             noisy_measurement = qml.expval(qml.PauliZ(i))
             # Apply error mitigation
-            mitigated_measurement = self._apply_zero_noise_extrapolation(noisy_measurement)
+            mitigated_measurement = self._apply_zero_noise_extrapolation(
+                noisy_measurement
+            )
             measurements.append(mitigated_measurement)
         return measurements
 
@@ -205,7 +211,9 @@ class QuantumProcessor:
 
             # Apply optimization if requested
             if optimize:
-                quantum_features = await self._optimize_quantum_features(quantum_features)
+                quantum_features = await self._optimize_quantum_features(
+                    quantum_features
+                )
 
             return quantum_features
 

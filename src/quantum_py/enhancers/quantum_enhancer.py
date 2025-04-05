@@ -114,7 +114,9 @@ class QuantumEnhancer:
         enhanced = np.zeros_like(flattened)
         for i in range(0, len(flattened), self.config.batch_size):
             batch = flattened[i : i + self.config.batch_size]
-            enhanced[i : i + self.config.batch_size] = self._process_quantum_batch(batch)
+            enhanced[i : i + self.config.batch_size] = self._process_quantum_batch(
+                batch
+            )
 
         return enhanced.reshape(original_shape)
 

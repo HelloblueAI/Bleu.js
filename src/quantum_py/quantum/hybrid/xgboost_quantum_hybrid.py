@@ -142,11 +142,15 @@ class XGBoostQuantumHybrid:
             )
 
             if features_quantum_processed is None:
-                self.logger.warning("Quantum processing failed, using original features")
+                self.logger.warning(
+                    "Quantum processing failed, using original features"
+                )
                 return features_scaled, labels
 
             # Reshape quantum features to match original dimensions
-            features_quantum_processed = features_quantum_processed.reshape(features.shape[0], -1)
+            features_quantum_processed = features_quantum_processed.reshape(
+                features.shape[0], -1
+            )
 
             # Create enhanced features
             features_enhanced = np.hstack(
@@ -202,7 +206,9 @@ class XGBoostQuantumHybrid:
                 evals=[(dtrain, "train"), (dval, "val")],
                 verbose_eval=False,
                 callbacks=[
-                    xgb.callback.TrainingCallback(lambda env: self._on_training_iteration(env))
+                    xgb.callback.TrainingCallback(
+                        lambda env: self._on_training_iteration(env)
+                    )
                 ],
             )
 
@@ -246,7 +252,9 @@ class XGBoostQuantumHybrid:
         if iteration % 10 == 0:
             self.logger.info(f"Iteration {iteration}: {dict(evaluation_result_list)}")
 
-    async def predict(self, features: np.ndarray, return_proba: bool = False) -> np.ndarray:
+    async def predict(
+        self, features: np.ndarray, return_proba: bool = False
+    ) -> np.ndarray:
         """Make predictions using the hybrid model"""
         try:
             if self.model is None:

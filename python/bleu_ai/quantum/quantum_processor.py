@@ -4,8 +4,8 @@ Provides quantum computing capabilities for machine learning models.
 """
 
 import logging
-from typing import Any, Callable, Dict, List, Optional, Union, Protocol, TypeVar
 from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
 
 import numpy as np
 import pennylane as qml
