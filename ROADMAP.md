@@ -97,4 +97,4 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ---
 *Last updated: March 2024*
-*Note: This roadmap is subject to change based on community feedback and technological advancements.* 
+*Note: This roadmap is subject to change based on community feedback and technological advancements.*

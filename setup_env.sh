@@ -74,4 +74,4 @@ echo -e "${YELLOW}Setting up pre-commit hooks...${NC}"
 pre-commit install
 
 echo -e "${GREEN}Setup completed successfully!${NC}"
-echo -e "${YELLOW}To activate the environment, run: source bleujs-env/bin/activate${NC}" 
+echo -e "${YELLOW}To activate the environment, run: source bleujs-env/bin/activate${NC}"

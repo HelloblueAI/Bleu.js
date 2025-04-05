@@ -12,11 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import ray
 import xgboost as xgb
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    roc_auc_score,
-)
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 

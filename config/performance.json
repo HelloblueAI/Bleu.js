@@ -39,4 +39,4 @@
     "OptionName": "WSGIGzipTypes",
     "Value": "text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript"
   }
-] 
+]

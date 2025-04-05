@@ -106,4 +106,4 @@ Bleu.js represents a significant advancement in AI technology, combining quantum
 1. Quantum Computing in AI (2024)
 2. Multimodal Processing Techniques (2024)
 3. Security in AI Systems (2024)
-4. Energy-Efficient Computing (2024) 
+4. Energy-Efficient Computing (2024)

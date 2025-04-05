@@ -147,4 +147,4 @@ impl BleusQuantumCore {
         // Implement Bleus-enhanced Variational Quantum Eigensolver
         Ok(())
     }
-} 
+}

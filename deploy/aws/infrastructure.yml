@@ -6,56 +6,74 @@ Parameters:
     Description: Environment name (e.g., dev, prod)
     Type: String
     Default: dev
-  
+
   VpcCIDR:
     Description: CIDR block for the VPC
     Type: String
     Default: 10.0.0.0/16
 
+  PublicSubnet1CIDR:
+    Description: CIDR block for the first public subnet
+    Type: String
+    Default: 10.0.1.0/24
+
   AdminIPRanges:
     Type: CommaDelimitedList
     Description: Comma-separated list of IP ranges allowed for administrative access
-    Default: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16  # Default to private IP ranges
+    Default: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
 
   PublicIPRanges:
     Type: CommaDelimitedList
     Description: Comma-separated list of IP ranges allowed for public access
-    Default: 0.0.0.0/0  # Allow all public access by default
+    Default: 0.0.0.0/0
 
 Resources:
   # VPC and Network Configuration
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Ref VpcCIDR
+      CidrBlock: 
+        Ref: VpcCIDR
       EnableDnsHostnames: true
       EnableDnsSupport: true
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-vpc
+          Value:
+            Fn::Sub: ${AWS::StackName}-vpc
 
   # Public Subnets
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [0, !GetAZs '']
-      CidrBlock: !Select [0, !Cidr [!Ref VpcCIDR, 6, 8]]
+      VpcId:
+        Ref: VPC
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnet1CIDR
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-public-subnet-1
+          Value:
+            Fn::Sub: ${AWS::StackName}-public-1
 
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [1, !GetAZs '']
-      CidrBlock: !Select [1, !Cidr [!Ref VpcCIDR, 6, 8]]
+      VpcId: 
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: [1, Fn::GetAZs: '']
+      CidrBlock: 
+        Fn::Select: [1, Fn::Cidr: [Ref: VpcCIDR, 6, 8]]
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-public-subnet-2
+          Value: 
+            Fn::Sub: ${EnvironmentName}-public-subnet-2
 
   # Internet Gateway
   InternetGateway:
@@ -63,88 +81,108 @@ Resources:
     Properties:
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-igw
+          Value: 
+            Fn::Sub: ${EnvironmentName}-igw
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref VPC
-      InternetGatewayId: !Ref InternetGateway
+      VpcId: 
+        Ref: VPC
+      InternetGatewayId: 
+        Ref: InternetGateway
 
   # Route Tables
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: 
+        Ref: VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-public-rt
+          Value: 
+            Fn::Sub: ${EnvironmentName}-public-rt
 
   DefaultPublicRoute:
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
     Properties:
-      RouteTableId: !Ref PublicRouteTable
+      RouteTableId: 
+        Ref: PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
+      GatewayId: 
+        Ref: InternetGateway
 
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet1
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: 
+        Ref: PublicSubnet1
+      RouteTableId: 
+        Ref: PublicRouteTable
 
   PublicSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet2
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: 
+        Ref: PublicSubnet2
+      RouteTableId: 
+        Ref: PublicRouteTable
 
   # Security Groups
   ApiSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for API servers
-      VpcId: !Ref VPC
+      VpcId: 
+        Ref: VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: !Join [',', !Ref PublicIPRanges]
+          CidrIp: 
+            Fn::Join: [',', Ref: PublicIPRanges]
           Description: HTTP access from allowed IPs
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: !Join [',', !Ref PublicIPRanges]
+          CidrIp: 
+            Fn::Join: [',', Ref: PublicIPRanges]
           Description: HTTPS access from allowed IPs
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-api-sg
+          Value: 
+            Fn::Sub: ${EnvironmentName}-api-sg
 
   VMSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for VM instances
-      VpcId: !Ref VPC
+      VpcId: 
+        Ref: VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp: 
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: SSH access from allowed IPs
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp: 
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTP access from allowed IPs
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: !Join [',', !Ref AdminIPRanges]
+          CidrIp: 
+            Fn::Join: [',', Ref: AdminIPRanges]
           Description: HTTPS access from allowed IPs
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-vm-sg
+          Value: 
+            Fn::Sub: ${EnvironmentName}-vm-sg
 
   AdminSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -176,113 +214,125 @@ Resources:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        ImageId: ami-0c7217cdde317cfec  # Ubuntu 22.04 LTS
+        ImageId: ami-0c7217cdde317cfec
         InstanceType: t3.medium
-        SecurityGroupIds: 
-          - !Ref ApiSecurityGroup
+        SecurityGroupIds:
+          - Ref: ApiSecurityGroup
         UserData:
-          Fn::Base64: !Sub |
-            #!/bin/bash
-            apt-get update
-            apt-get install -y docker.io docker-compose
-            systemctl start docker
-            systemctl enable docker
-            docker pull helloblueai/bleujs:latest
-            docker run -d -p 80:80 -p 443:443 helloblueai/bleujs:latest
+          Fn::Base64: 
+            Fn::Sub: |
+              #!/bin/bash
+              apt-get update
+              apt-get install -y docker.io docker-compose
+              systemctl start docker
+              systemctl enable docker
+              docker pull helloblueai/bleujs:latest
+              docker run -d -p 80:80 -p 443:443 helloblueai/bleujs:latest
 
   VMLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        ImageId: ami-0c7217cdde317cfec  # Ubuntu 22.04 LTS
+        ImageId: ami-0c7217cdde317cfec
         InstanceType: t3.large
-        SecurityGroupIds: 
-          - !Ref VMSecurityGroup
+        SecurityGroupIds:
+          - Ref: VMSecurityGroup
         UserData:
-          Fn::Base64: !Sub |
-            #!/bin/bash
-            apt-get update
-            apt-get install -y docker.io docker-compose
-            systemctl start docker
-            systemctl enable docker
-            docker pull helloblueai/bleujs-vm:latest
-            docker run -d -p 22:22 -p 80:80 -p 443:443 helloblueai/bleujs-vm:latest
+          Fn::Base64: 
+            Fn::Sub: |
+              #!/bin/bash
+              apt-get update
+              apt-get install -y docker.io docker-compose
+              systemctl start docker
+              systemctl enable docker
+              docker pull helloblueai/bleujs-vm:latest
+              docker run -d -p 22:22 -p 80:80 -p 443:443 helloblueai/bleujs-vm:latest
 
   # Auto Scaling Groups
   ApiAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      VPCZoneIdentifier: 
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
+      VPCZoneIdentifier:
+        - Ref: PublicSubnet1
+        - Ref: PublicSubnet2
       LaunchTemplate:
-        LaunchTemplateId: !Ref ApiLaunchTemplate
-        Version: !GetAtt ApiLaunchTemplate.LatestVersionNumber
+        LaunchTemplateId: 
+          Ref: ApiLaunchTemplate
+        Version: 
+          Fn::GetAtt: [ApiLaunchTemplate, LatestVersionNumber]
       MinSize: 2
       MaxSize: 10
       DesiredCapacity: 2
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
-      TargetGroupARNs: 
-        - !Ref ApiTargetGroup
+      TargetGroupARNs:
+        - Ref: ApiTargetGroup
 
   VMAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      VPCZoneIdentifier: 
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
+      VPCZoneIdentifier:
+        - Ref: PublicSubnet1
+        - Ref: PublicSubnet2
       LaunchTemplate:
-        LaunchTemplateId: !Ref VMLaunchTemplate
-        Version: !GetAtt VMLaunchTemplate.LatestVersionNumber
+        LaunchTemplateId: 
+          Ref: VMLaunchTemplate
+        Version: 
+          Fn::GetAtt: [VMLaunchTemplate, LatestVersionNumber]
       MinSize: 1
       MaxSize: 5
       DesiredCapacity: 1
       HealthCheckType: EC2
       HealthCheckGracePeriod: 300
-      TargetGroupARNs: 
-        - !Ref VMTargetGroup
+      TargetGroupARNs:
+        - Ref: VMTargetGroup
 
   # Load Balancers
   ApiLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Sub ${EnvironmentName}-api-lb
+      Name: 
+        Fn::Sub: ${EnvironmentName}-api-lb
       Subnets:
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
+        - Ref: PublicSubnet1
+        - Ref: PublicSubnet2
       SecurityGroups:
-        - !Ref ApiSecurityGroup
+        - Ref: ApiSecurityGroup
       Scheme: internet-facing
       Type: application
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-api-lb
+          Value: 
+            Fn::Sub: ${EnvironmentName}-api-lb
 
   VMLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Sub ${EnvironmentName}-vm-lb
+      Name: 
+        Fn::Sub: ${EnvironmentName}-vm-lb
       Subnets:
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
+        - Ref: PublicSubnet1
+        - Ref: PublicSubnet2
       SecurityGroups:
-        - !Ref VMSecurityGroup
+        - Ref: VMSecurityGroup
       Scheme: internet-facing
       Type: application
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-vm-lb
+          Value: 
+            Fn::Sub: ${EnvironmentName}-vm-lb
 
   # Target Groups
   ApiTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${EnvironmentName}-api-tg
+      Name: 
+        Fn::Sub: ${EnvironmentName}-api-tg
       Port: 80
       Protocol: HTTP
       TargetType: instance
-      VpcId: !Ref VPC
+      VpcId: 
+        Ref: VPC
       HealthCheckPath: /health
       HealthCheckIntervalSeconds: 30
       HealthCheckTimeoutSeconds: 5
@@ -292,11 +342,13 @@ Resources:
   VMTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${EnvironmentName}-vm-tg
+      Name: 
+        Fn::Sub: ${EnvironmentName}-vm-tg
       Port: 80
       Protocol: HTTP
       TargetType: instance
-      VpcId: !Ref VPC
+      VpcId: 
+        Ref: VPC
       HealthCheckPath: /health
       HealthCheckIntervalSeconds: 30
       HealthCheckTimeoutSeconds: 5
@@ -307,22 +359,26 @@ Resources:
   ApiListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      LoadBalancerArn: !Ref ApiLoadBalancer
+      LoadBalancerArn: 
+        Ref: ApiLoadBalancer
       Port: 80
       Protocol: HTTP
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref ApiTargetGroup
+          TargetGroupArn: 
+            Ref: ApiTargetGroup
 
   VMListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      LoadBalancerArn: !Ref VMLoadBalancer
+      LoadBalancerArn: 
+        Ref: VMLoadBalancer
       Port: 80
       Protocol: HTTP
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref VMTargetGroup
+          TargetGroupArn: 
+            Ref: VMTargetGroup
 
   # CloudWatch Alarms
   ApiCPUAlarm:
@@ -360,12 +416,15 @@ Resources:
 Outputs:
   ApiEndpoint:
     Description: API endpoint URL
-    Value: !GetAtt ApiLoadBalancer.DNSName
+    Value: 
+      Fn::GetAtt: [ApiLoadBalancer, DNSName]
 
   VMEndpoint:
     Description: VM endpoint URL
-    Value: !GetAtt VMLoadBalancer.DNSName
+    Value: 
+      Fn::GetAtt: [VMLoadBalancer, DNSName]
 
   VPCId:
     Description: VPC ID
-    Value: !Ref VPC 
+    Value: 
+      Ref: VPC

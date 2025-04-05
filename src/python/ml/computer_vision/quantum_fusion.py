@@ -4,7 +4,7 @@ Quantum-Enhanced Feature Fusion Module
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 import numpy as np
 import qiskit
@@ -26,6 +26,7 @@ class QuantumFusionConfig:
     use_entanglement: bool = True
     use_superposition: bool = True
     use_adaptive_fusion: bool = True
+    rotation_angle: float = np.pi / 4
 
 
 class QuantumFusion:
@@ -72,7 +73,7 @@ class QuantumFusion:
 
         # Apply rotation gates for feature weights
         for i in range(self.config.num_qubits):
-            self.quantum_circuit.rz(np.pi / 4, self.qr[i])
+            self.quantum_circuit.rz(self.config.rotation_angle, self.qr[i])
 
     def _build_fusion_layers(self) -> None:
         """Build neural network layers for feature fusion."""
@@ -81,7 +82,7 @@ class QuantumFusion:
         # Input projection layers
         if self.config.feature_dims is None:
             raise ValueError("feature_dims must be specified in config")
-        for dim in self.config.feature_dims:
+        for _ in self.config.feature_dims:
             self.fusion_layers.append(tf.keras.layers.Dense(self.config.fusion_dim))
 
         # Quantum fusion layer
@@ -101,57 +102,53 @@ class QuantumFusion:
             def call(self, inputs: List[tf.Tensor]) -> tf.Tensor:
                 # Combine features
                 combined = tf.concat(inputs, axis=-1)
-                
+
                 # Apply quantum enhancement
                 enhanced = self._apply_quantum_enhancement(combined)
-                
+
                 return enhanced
 
             def _apply_quantum_enhancement(self, features: tf.Tensor) -> tf.Tensor:
                 # Convert features to quantum state
                 quantum_state = self._prepare_quantum_state(features)
-                
+
                 # Apply quantum circuit
                 enhanced_state = self._apply_quantum_circuit(quantum_state)
-                
+
                 # Convert back to tensor
                 return self._measure_quantum_state(enhanced_state)
 
             def _prepare_quantum_state(self, features: tf.Tensor) -> np.ndarray:
                 if features is None:
                     raise ValueError("Features cannot be None")
-                    
+
                 # Normalize features
                 features = tf.nn.l2_normalize(features, axis=-1)
 
                 # Convert to quantum state
                 try:
+                    if features is None:
+                        raise ValueError("Features tensor is None")
                     if not isinstance(features, tf.Tensor):
                         raise ValueError("Features must be a TensorFlow tensor")
-                    features = tf.ensure_shape(features, features.shape)  # Type assertion
                     quantum_state = features.numpy()
-                    if quantum_state is None:
-                        raise ValueError("Failed to convert features to numpy array")
-                        
-                    # Ensure quantum state is not None before normalization
-                    if quantum_state.size == 0:
-                        raise ValueError("Quantum state array is empty")
-                        
+                    if quantum_state is None or quantum_state.size == 0:
+                        raise ValueError("Quantum state array is empty or None")
+
                     return quantum_state
                 except Exception as e:
                     raise RuntimeError(f"Failed to prepare quantum state: {str(e)}")
 
             def _apply_quantum_circuit(self, quantum_state: np.ndarray) -> np.ndarray:
+                """Apply quantum circuit to state."""
                 if quantum_state is None:
                     raise ValueError("Quantum state cannot be None")
-                # Create quantum circuit with current state
-                circuit = self._build_quantum_circuit()
-                if circuit is None:
-                    raise ValueError("Quantum circuit cannot be None")
-                # Apply quantum gates
-                self._apply_quantum_gates()
-                # Measure quantum state
-                return self._measure_quantum_state(quantum_state)
+                try:
+                    # Apply quantum gates
+                    quantum_state = self._apply_quantum_gates(quantum_state)
+                    return quantum_state
+                except Exception as e:
+                    raise RuntimeError(f"Failed to apply quantum circuit: {str(e)}")
 
             def _measure_quantum_state(self, quantum_state: np.ndarray) -> tf.Tensor:
                 # Convert quantum state to features
@@ -174,15 +171,11 @@ class QuantumFusion:
             # Apply quantum fusion
             fused = self.fusion_layers[-2](projected_features)
 
-            # Project to final dimension
-            output = self.fusion_layers[-1](fused)
-
+            # Apply quantum circuit if available
             if self.quantum_circuit is not None:
-                fused_features = self.quantum_circuit(features)
-            else:
-                fused_features = features
+                fused = self.quantum_circuit(fused)
 
-            return output
+            return fused
 
         except Exception as e:
             self.logger.error(f"Failed to fuse features: {str(e)}")
@@ -199,9 +192,27 @@ class QuantumFusion:
             "use_entanglement": self.config.use_entanglement,
             "use_superposition": self.config.use_superposition,
             "use_adaptive_fusion": self.config.use_adaptive_fusion,
+            "rotation_angle": self.config.rotation_angle,
         }
 
     @classmethod
     def from_config(cls, config: Dict) -> "QuantumFusion":
         """Create instance from configuration dictionary."""
         return cls(QuantumFusionConfig(**config))
+
+    def _apply_quantum_fusion(self, data1: np.ndarray, data2: np.ndarray) -> np.ndarray:
+        """Apply quantum fusion to the input data."""
+        if not self.initialized:
+            raise RuntimeError("QuantumFusion must be initialized before use")
+
+        # Normalize input data
+        normalized_data1 = self._normalize_data(data1)
+        normalized_data2 = self._normalize_data(data2)
+
+        # Apply quantum operations
+        quantum_state = self._prepare_quantum_state(normalized_data1, normalized_data2)
+        quantum_state = self._apply_fusion_gates(quantum_state)
+
+        # Measure and process results
+        measurements = self._measure_quantum_state(quantum_state)
+        return self._process_measurements(measurements)

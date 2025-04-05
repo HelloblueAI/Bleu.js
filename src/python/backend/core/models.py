@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 class SubscriptionTier(str, Enum):
     """Subscription tiers for API access."""
+
     FREE = "free"
     REGULAR = "regular"
     ENTERPRISE = "enterprise"
@@ -18,6 +19,7 @@ class SubscriptionTier(str, Enum):
 
 class Subscription(BaseModel):
     """Subscription model for API access."""
+
     id: int
     user_id: int
     tier: SubscriptionTier
@@ -29,6 +31,7 @@ class Subscription(BaseModel):
 
 class APICallLog(BaseModel):
     """Log entry for API calls."""
+
     id: int
     user_id: int
     endpoint: str
@@ -40,6 +43,7 @@ class APICallLog(BaseModel):
 
 class UsageStats(BaseModel):
     """Statistics for API usage."""
+
     total_calls: int
     remaining_calls: int
     recent_calls: list[APICallLog]
@@ -49,6 +53,7 @@ class UsageStats(BaseModel):
 
 class Job(BaseModel):
     """Job model for processing tasks."""
+
     id: int
     user_id: int
     job_type: str
@@ -56,4 +61,4 @@ class Job(BaseModel):
     created_at: datetime
     updated_at: datetime
     result: Optional[dict] = None
-    error: Optional[str] = None 
+    error: Optional[str] = None

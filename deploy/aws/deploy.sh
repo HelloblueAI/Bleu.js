@@ -103,4 +103,4 @@ if [ ! -z "$DOMAIN_NAME" ]; then
 fi
 
 echo -e "${GREEN}Infrastructure is ready!${NC}"
-echo -e "You can now start using the API and VM services." 
+echo -e "You can now start using the API and VM services."

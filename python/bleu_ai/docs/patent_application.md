@@ -109,4 +109,4 @@ The invention has applications in:
 2. 35% improvement in accuracy
 3. 50% reduction in energy consumption
 4. 45% faster inference times
-5. Enhanced security through quantum encryption 
+5. Enhanced security through quantum encryption

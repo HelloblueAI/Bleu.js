@@ -38,4 +38,4 @@ if aws sts get-caller-identity &> /dev/null; then
     echo "python tests/infrastructure_health_check.py"
 else
     echo "❌ AWS configuration failed. Please check your credentials and try again."
-fi 
+fi

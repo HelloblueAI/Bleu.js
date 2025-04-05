@@ -1,1 +1,1 @@
-"""Configuration package for Bleu.js backend.""" 
+"""Configuration package for Bleu.js backend."""

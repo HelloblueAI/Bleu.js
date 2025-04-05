@@ -34,7 +34,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def train_model(model_info):
@@ -62,10 +64,18 @@ def train_model(model_info):
             y_train, y_test = y[train_index], y[test_index]
 
         # Create pipeline with caching for optimization
-        pipeline = Pipeline([
-            ("scaler", StandardScaler()),
-            ("classifier", LogisticRegression(max_iter=model_info["max_iter"], random_state=42)),
-        ], memory="cache_dir")  # Enable caching
+        pipeline = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                (
+                    "classifier",
+                    LogisticRegression(
+                        max_iter=model_info["max_iter"], random_state=42
+                    ),
+                ),
+            ],
+            memory="cache_dir",
+        )  # Enable caching
 
         # Perform cross-validation if dataset size is sufficient
         if len(X) > 4:
@@ -94,7 +104,12 @@ def train_model(model_info):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a logistic regression model.")
-    parser.add_argument("--modelInfo", type=str, required=True, help="JSON string containing model configuration.")
+    parser.add_argument(
+        "--modelInfo",
+        type=str,
+        required=True,
+        help="JSON string containing model configuration.",
+    )
 
     args = parser.parse_args()
 
@@ -103,6 +118,8 @@ if __name__ == "__main__":
         model_info = json.loads(args.modelInfo)
         train_model(model_info)
     except json.JSONDecodeError:
-        logging.error("Invalid JSON input. Please provide a properly formatted JSON string.")
+        logging.error(
+            "Invalid JSON input. Please provide a properly formatted JSON string."
+        )
     except ValueError as ve:
         logging.error(f"Configuration error: {ve}")

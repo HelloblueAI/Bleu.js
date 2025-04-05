@@ -4,7 +4,7 @@ Quantum-Enhanced Loss Functions
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, cast
 
 import numpy as np
 import qiskit
@@ -12,7 +12,6 @@ import tensorflow as tf
 from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit as QiskitCircuit
 from qiskit import QuantumRegister
-from typing import cast
 
 
 @dataclass
@@ -183,11 +182,11 @@ class QuantumLoss:
         quantum_state = features.numpy()  # type: ignore
         if quantum_state is None:
             raise ValueError("Failed to convert features to numpy array")
-            
+
         # Ensure quantum state is not None before normalization
         if quantum_state.size == 0:
             raise ValueError("Quantum state array is empty")
-            
+
         quantum_state = quantum_state / np.linalg.norm(quantum_state)
 
         return quantum_state

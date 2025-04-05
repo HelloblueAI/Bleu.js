@@ -12,6 +12,7 @@ from .queue import celery_app
 
 class DatabaseTask(Task):
     """Base task class with database session management."""
+
     _db: Session = None
 
     @property
@@ -148,4 +149,4 @@ def process_evaluate(
         job.error = str(e)
         job.completed_at = datetime.utcnow()
         self.db.commit()
-        raise 
+        raise

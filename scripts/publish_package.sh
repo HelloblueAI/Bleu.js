@@ -32,4 +32,4 @@ git push origin v1.1.3
 
 echo "✨ Publication completed successfully!"
 echo "📦 Package is now available on PyPI"
-echo "🔗 Documentation is available at https://docs.bleujs.org" 
+echo "🔗 Documentation is available at https://docs.bleujs.org"

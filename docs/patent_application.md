@@ -124,4 +124,4 @@ The invention has applications in:
 2. 50% higher accuracy
 3. 40% lower energy consumption
 4. Enhanced security
-5. Improved scalability 
+5. Improved scalability

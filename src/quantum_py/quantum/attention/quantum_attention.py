@@ -5,7 +5,7 @@ Provides advanced quantum-enhanced attention mechanisms for machine learning mod
 
 import logging
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import numpy as np
 import tensorflow as tf
@@ -138,7 +138,9 @@ class QuantumAttention:
 
             # Apply quantum regularization if enabled
             if self.config.use_quantum_regularization:
-                attention_weights = self._apply_quantum_regularization(attention_weights)
+                attention_weights = self._apply_quantum_regularization(
+                    attention_weights
+                )
 
             # Apply attention to values
             output = tf.matmul(attention_weights, value)
@@ -151,21 +153,23 @@ class QuantumAttention:
 
     def _prepare_quantum_state(self, tensor: tf.Tensor) -> np.ndarray:
         """Prepare quantum state from tensor."""
-        # Normalize tensor
-        tensor = tf.nn.l2_normalize(tensor, axis=-1)
+        if tensor is None:
+            raise ValueError("Input tensor cannot be None")
 
-        # Convert to quantum state
-        state = tensor.numpy()
-        if state is None:
-            raise ValueError("Failed to convert tensor to numpy array")
-            
-        # Ensure state is not empty
-        if state.size == 0:
-            raise ValueError("State array is empty")
-            
-        state = state / np.linalg.norm(state)
+        if not isinstance(tensor, tf.Tensor):
+            raise TypeError("Input must be a TensorFlow tensor")
 
-        return state
+        try:
+            array = tensor.numpy()
+        except Exception as e:
+            raise ValueError(f"Failed to convert tensor to numpy array: {str(e)}")
+
+        if array.size == 0:
+            raise ValueError("Input tensor is empty")
+
+        # Normalize the tensor
+        normalized = (array - np.min(array)) / (np.max(array) - np.min(array) + 1e-8)
+        return normalized
 
     def _apply_quantum_circuit(
         self, circuit: QuantumCircuit, query_state: np.ndarray, key_state: np.ndarray

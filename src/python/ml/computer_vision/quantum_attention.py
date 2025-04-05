@@ -4,15 +4,16 @@ Quantum-Enhanced Attention Mechanism
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 
+import cirq
 import numpy as np
-import qiskit
 import tensorflow as tf
-from qiskit import ClassicalRegister
-from qiskit import QuantumCircuit
-from qiskit import QuantumCircuit as QiskitCircuit
-from qiskit import QuantumRegister
+from cirq.circuits.circuit import Circuit
+from cirq.devices.line_qubit import LineQubit
+from cirq.ops.common_gates import CNOT, H, Ry, Rz
+from cirq.sim.sparse_simulator import Simulator
+from cirq.study.result import Result
 
 
 @dataclass
@@ -20,11 +21,9 @@ class QuantumAttentionConfig:
     """Configuration for quantum attention mechanism."""
 
     num_qubits: int = 4
-    feature_dim: int = 2048
-    num_heads: int = 8
-    dropout_rate: float = 0.1
-    use_entanglement: bool = True
-    use_superposition: bool = True
+    num_layers: int = 2
+    rotation_angle: float = np.pi / 4
+    use_attention: bool = True
 
 
 class QuantumAttention:
@@ -40,177 +39,126 @@ class QuantumAttention:
         """Build quantum circuit for attention computation."""
         try:
             # Create quantum registers
-            qr = QuantumRegister(self.config.num_qubits, "q")
-            cr = ClassicalRegister(self.config.num_qubits, "c")
-
-            # Create quantum circuit
-            self.quantum_circuit = QuantumCircuit(qr, cr)
+            qubits = LineQubit.range(self.config.num_qubits)
+            self.quantum_circuit = Circuit()
 
             # Apply quantum gates for attention computation
-            self._apply_quantum_gates()
+            self._apply_quantum_gates(qubits)
 
         except Exception as e:
             self.logger.error(f"Failed to build quantum circuit: {str(e)}")
             raise
 
-    def _apply_quantum_gates(self) -> None:
+    def _apply_quantum_gates(self, qubits: List[LineQubit]) -> None:
         """Apply quantum gates for attention computation."""
         if self.quantum_circuit is None:
             raise RuntimeError("Quantum circuit not initialized")
 
-        # Apply Hadamard gates for superposition
-        for i in range(self.config.num_qubits):
-            self.quantum_circuit.h(self.qr[i])
-
-        # Apply CNOT gates for entanglement
-        for i in range(self.config.num_qubits - 1):
-            self.quantum_circuit.cx(self.qr[i], self.qr[i + 1])
-
-        # Apply rotation gates for attention weights
-        for i in range(self.config.num_qubits):
-            self.quantum_circuit.rz(np.pi / 4, self.qr[i])
-
-    def compute_attention(
-        self,
-        query: tf.Tensor,
-        key: tf.Tensor,
-        value: tf.Tensor,
-        mask: Optional[tf.Tensor] = None,
-    ) -> tf.Tensor:
-        """Compute quantum-enhanced attention."""
         try:
-            # Reshape inputs for multi-head attention
-            batch_size = tf.shape(query)[0]
-            query = tf.reshape(
-                query,
-                [
-                    batch_size,
-                    -1,
-                    self.config.num_heads,
-                    self.config.feature_dim // self.config.num_heads,
-                ],
-            )
-            key = tf.reshape(
-                key,
-                [
-                    batch_size,
-                    -1,
-                    self.config.num_heads,
-                    self.config.feature_dim // self.config.num_heads,
-                ],
-            )
-            value = tf.reshape(
-                value,
-                [
-                    batch_size,
-                    -1,
-                    self.config.num_heads,
-                    self.config.feature_dim // self.config.num_heads,
-                ],
-            )
+            # Apply Hadamard gates for superposition
+            for qubit in qubits:
+                self.quantum_circuit.append(H(qubit))
 
-            # Compute attention scores
-            scores = tf.matmul(query, key, transpose_b=True)
-            scores = scores / tf.math.sqrt(
-                tf.cast(self.config.feature_dim // self.config.num_heads, tf.float32)
-            )
+            # Apply CNOT gates for entanglement
+            for i in range(len(qubits) - 1):
+                self.quantum_circuit.append(CNOT(qubits[i], qubits[i + 1]))
 
-            # Apply quantum enhancement
-            scores = self._apply_quantum_enhancement(scores)
-
-            # Apply mask if provided
-            if mask is not None:
-                scores += mask * -1e9
-
-            # Apply softmax
-            attention_weights = tf.nn.softmax(scores, axis=-1)
-            attention_weights = tf.nn.dropout(
-                attention_weights, rate=self.config.dropout_rate
-            )
-
-            # Compute attention output
-            output = tf.matmul(attention_weights, value)
-            output = tf.reshape(output, [batch_size, -1, self.config.feature_dim])
-
-            if self.quantum_circuit is not None:
-                quantum_features = self.quantum_circuit(attention_weights)
-            else:
-                quantum_features = attention_weights
-
-            return output
+            # Apply rotation gates for attention weights
+            for qubit in qubits:
+                self.quantum_circuit.append(Rz(self.config.rotation_angle)(qubit))
 
         except Exception as e:
-            self.logger.error(f"Failed to compute attention: {str(e)}")
+            self.logger.error(f"Failed to apply quantum gates: {str(e)}")
             raise
 
-    def _apply_quantum_enhancement(self, scores: tf.Tensor) -> tf.Tensor:
-        """Apply quantum enhancement to attention scores."""
-        # Convert scores to quantum state
-        quantum_state = self._prepare_quantum_state(scores)
-        
-        # Apply quantum circuit
-        enhanced_state = self._apply_quantum_circuit(quantum_state)
-        
-        # Convert back to tensor
-        return self._measure_quantum_state(enhanced_state)
+    def compute_attention(self, features: np.ndarray) -> np.ndarray:
+        """Compute quantum attention weights."""
+        if features is None or len(features) == 0:
+            raise ValueError("Features cannot be None or empty")
 
-    def _prepare_quantum_state(self, scores: tf.Tensor) -> np.ndarray:
-        """Prepare quantum state from attention scores."""
-        if scores is None:
-            raise ValueError("Scores cannot be None")
-            
-        # Normalize scores
-        scores = tf.nn.softmax(scores, axis=-1)
+        try:
+            # Build and execute quantum circuit
+            circuit = self._build_quantum_circuit_for_features(features)
 
-        # Convert to quantum state
-        if not isinstance(scores, tf.Tensor):
-            raise ValueError("Scores must be a TensorFlow tensor")
-        scores_tensor: tf.Tensor = scores  # Type hint for linter
-        quantum_state = scores_tensor.numpy()
-        if quantum_state is None:
-            raise ValueError("Failed to convert scores to numpy array")
-            
-        # Ensure quantum state is not None before normalization
-        if quantum_state.size == 0:
-            raise ValueError("Quantum state array is empty")
-            
-        quantum_state = quantum_state / np.linalg.norm(quantum_state)
+            # Simulate circuit
+            simulator = Simulator()
+            result = simulator.simulate(circuit)
 
-        return quantum_state
+            # Process results
+            state_vector = result.final_state_vector
+            attention_weights = np.abs(state_vector) ** 2
+            attention_weights = attention_weights / np.sum(attention_weights)
 
-    def _apply_quantum_circuit(self, quantum_state: np.ndarray) -> np.ndarray:
-        """Apply quantum circuit to quantum state."""
-        if quantum_state is None:
-            raise ValueError("Quantum state cannot be None")
-        # Create quantum circuit with current state
-        circuit = self._build_quantum_circuit()
-        if circuit is None:
-            raise ValueError("Quantum circuit cannot be None")
-        # Apply quantum gates
-        self._apply_quantum_gates()
-        # Measure quantum state
-        return self._measure_quantum_state(quantum_state)
+            return attention_weights
+        except Exception as e:
+            self.logger.error(f"Error computing attention: {str(e)}")
+            raise
 
-    def _measure_quantum_state(self, quantum_state: np.ndarray) -> tf.Tensor:
-        """Measure quantum state and convert back to attention scores."""
-        # Convert quantum state to attention scores
-        scores = np.abs(quantum_state) ** 2
-        scores = scores.reshape(scores.shape[0], -1)
+    def _initialize_quantum_state(
+        self, circuit: Circuit, qubits: List[LineQubit], features: np.ndarray
+    ) -> None:
+        """Initialize quantum state with feature values."""
+        for i, qubit in enumerate(qubits):
+            if i < len(features):
+                circuit.append(Ry(features[i])(qubit))
 
-        return tf.convert_to_tensor(scores, dtype=tf.float32)
+    def _apply_attention_layer(self, circuit: Circuit, qubits: List[LineQubit]) -> None:
+        """Apply a single layer of attention gates."""
+        for j in range(self.config.num_qubits):
+            circuit.append(H(qubits[j]))
+            for k in range(j + 1, self.config.num_qubits):
+                circuit.append(CNOT(qubits[j], qubits[k]))
+                circuit.append(Rz(self.config.rotation_angle)(qubits[k]))
+                circuit.append(CNOT(qubits[j], qubits[k]))
+
+    def _build_quantum_circuit_for_features(self, features: np.ndarray) -> Circuit:
+        """Build a quantum circuit for attention computation."""
+        if features is None or len(features) == 0:
+            raise ValueError("Features cannot be None or empty")
+
+        try:
+            qubits = LineQubit.range(self.config.num_qubits)
+            circuit = Circuit()
+
+            # Initialize quantum state
+            self._initialize_quantum_state(circuit, qubits, features)
+
+            # Apply attention gates
+            if self.config.use_attention:
+                for _ in range(self.config.num_layers):
+                    self._apply_attention_layer(circuit, qubits)
+
+            return circuit
+        except Exception as e:
+            self.logger.error(f"Error building quantum circuit: {str(e)}")
+            raise
 
     def get_config(self) -> Dict:
         """Get configuration dictionary."""
         return {
             "num_qubits": self.config.num_qubits,
-            "feature_dim": self.config.feature_dim,
-            "num_heads": self.config.num_heads,
-            "dropout_rate": self.config.dropout_rate,
-            "use_entanglement": self.config.use_entanglement,
-            "use_superposition": self.config.use_superposition,
+            "num_layers": self.config.num_layers,
+            "rotation_angle": self.config.rotation_angle,
+            "use_attention": self.config.use_attention,
         }
 
     @classmethod
     def from_config(cls, config: Dict) -> "QuantumAttention":
         """Create instance from configuration dictionary."""
         return cls(QuantumAttentionConfig(**config))
+
+    def _apply_quantum_attention(self, data: np.ndarray) -> np.ndarray:
+        """Apply quantum attention to the input data."""
+        if not self.initialized:
+            raise RuntimeError("QuantumAttention must be initialized before use")
+
+        # Normalize input data
+        normalized_data = self._normalize_data(data)
+
+        # Apply quantum operations
+        quantum_state = self._prepare_quantum_state(normalized_data)
+        quantum_state = self._apply_attention_gates(quantum_state)
+
+        # Measure and process results
+        measurements = self._measure_quantum_state(quantum_state)
+        return self._process_measurements(measurements)

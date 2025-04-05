@@ -22,13 +22,13 @@ REVENUE_THRESHOLD=1000  # minimum daily revenue in USD
 # Initialize monitoring
 init_monitoring() {
     echo -e "${YELLOW}Initializing monitoring system...${NC}"
-    
+
     # Create CloudWatch alarms for critical metrics
     create_cloudwatch_alarms
-    
+
     # Set up SNS topic for alerts
     setup_sns_alerts
-    
+
     # Configure auto-scaling based on revenue metrics
     setup_revenue_scaling
 }
@@ -36,7 +36,7 @@ init_monitoring() {
 # Create CloudWatch alarms
 create_cloudwatch_alarms() {
     echo -e "${YELLOW}Setting up CloudWatch alarms...${NC}"
-    
+
     # CPU Utilization Alarm
     aws cloudwatch put-metric-alarm \
         --alarm-name "${APP_NAME}-cpu-utilization" \
@@ -50,7 +50,7 @@ create_cloudwatch_alarms() {
         --evaluation-periods 2 \
         --alarm-actions ${SNS_TOPIC_ARN} \
         --dimensions Name=EnvironmentName,Value=${ENV_NAME}
-    
+
     # Error Rate Alarm
     aws cloudwatch put-metric-alarm \
         --alarm-name "${APP_NAME}-error-rate" \
@@ -64,7 +64,7 @@ create_cloudwatch_alarms() {
         --evaluation-periods 1 \
         --alarm-actions ${SNS_TOPIC_ARN} \
         --dimensions Name=EnvironmentName,Value=${ENV_NAME}
-    
+
     # Response Time Alarm
     aws cloudwatch put-metric-alarm \
         --alarm-name "${APP_NAME}-response-time" \
@@ -83,13 +83,13 @@ create_cloudwatch_alarms() {
 # Set up SNS alerts
 setup_sns_alerts() {
     echo -e "${YELLOW}Setting up SNS alerts...${NC}"
-    
+
     # Create SNS topic
     SNS_TOPIC_ARN=$(aws sns create-topic \
         --name "${APP_NAME}-alerts" \
         --query 'TopicArn' \
         --output text)
-    
+
     # Subscribe to alerts
     aws sns subscribe \
         --topic-arn ${SNS_TOPIC_ARN} \
@@ -100,7 +100,7 @@ setup_sns_alerts() {
 # Set up revenue-based scaling
 setup_revenue_scaling() {
     echo -e "${YELLOW}Setting up revenue-based scaling...${NC}"
-    
+
     # Create custom metric for revenue
     aws cloudwatch put-metric-data \
         --namespace ${APP_NAME} \
@@ -108,7 +108,7 @@ setup_revenue_scaling() {
         --value 0 \
         --unit Dollars \
         --dimensions Name=EnvironmentName,Value=${ENV_NAME}
-    
+
     # Create alarm for revenue threshold
     aws cloudwatch put-metric-alarm \
         --alarm-name "${APP_NAME}-revenue-threshold" \
@@ -127,22 +127,22 @@ setup_revenue_scaling() {
 # Monitor application health
 monitor_health() {
     echo -e "${YELLOW}Monitoring application health...${NC}"
-    
+
     while true; do
         # Check environment status
         local status=$(aws elasticbeanstalk describe-environments \
             --environment-names "${ENV_NAME}" \
             --query 'Environments[0].Status' \
             --output text)
-        
+
         # Check health status
         local health=$(aws elasticbeanstalk describe-environments \
             --environment-names "${ENV_NAME}" \
             --query 'Environments[0].Health' \
             --output text)
-        
+
         echo -e "${YELLOW}Status: $status, Health: $health${NC}"
-        
+
         # Check CPU utilization
         local cpu_util=$(aws cloudwatch get-metric-statistics \
             --namespace AWS/EC2 \
@@ -154,9 +154,9 @@ monitor_health() {
             --statistics Average \
             --query 'Datapoints[0].Average' \
             --output text)
-        
+
         echo -e "${YELLOW}CPU Utilization: $cpu_util%${NC}"
-        
+
         # Check error rate
         local error_rate=$(aws cloudwatch get-metric-statistics \
             --namespace AWS/ApplicationELB \
@@ -168,9 +168,9 @@ monitor_health() {
             --statistics Sum \
             --query 'Datapoints[0].Sum' \
             --output text)
-        
+
         echo -e "${YELLOW}Error Rate: $error_rate${NC}"
-        
+
         # Check response time
         local response_time=$(aws cloudwatch get-metric-statistics \
             --namespace AWS/ApplicationELB \
@@ -182,9 +182,9 @@ monitor_health() {
             --statistics Average \
             --query 'Datapoints[0].Average' \
             --output text)
-        
+
         echo -e "${YELLOW}Response Time: ${response_time}ms${NC}"
-        
+
         # Check daily revenue
         local daily_revenue=$(aws cloudwatch get-metric-statistics \
             --namespace ${APP_NAME} \
@@ -196,26 +196,26 @@ monitor_health() {
             --statistics Average \
             --query 'Datapoints[0].Average' \
             --output text)
-        
+
         echo -e "${YELLOW}Daily Revenue: $${daily_revenue}${NC}"
-        
+
         # Alert if any metrics are concerning
         if (( $(echo "$cpu_util > $CPU_THRESHOLD" | bc -l) )); then
             send_alert "High CPU utilization: ${cpu_util}%"
         fi
-        
+
         if (( $(echo "$error_rate > $ERROR_RATE_THRESHOLD" | bc -l) )); then
             send_alert "High error rate: ${error_rate}"
         fi
-        
+
         if (( $(echo "$response_time > $RESPONSE_TIME_THRESHOLD" | bc -l) )); then
             send_alert "High response time: ${response_time}ms"
         fi
-        
+
         if (( $(echo "$daily_revenue < $REVENUE_THRESHOLD" | bc -l) )); then
             send_alert "Low daily revenue: $${daily_revenue}"
         fi
-        
+
         sleep 300  # Check every 5 minutes
     done
 }
@@ -224,7 +224,7 @@ monitor_health() {
 send_alert() {
     local message=$1
     echo -e "${RED}ALERT: $message${NC}"
-    
+
     aws sns publish \
         --topic-arn ${SNS_TOPIC_ARN} \
         --message "$message" \
@@ -238,4 +238,4 @@ main() {
 }
 
 # Run main function
-main 
+main

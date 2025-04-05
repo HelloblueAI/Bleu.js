@@ -239,12 +239,12 @@ class AuthService:
             subject = "Verify your Bleu.js account"
             body = f"""
             Welcome to Bleu.js!
-            
+
             Please verify your email address by clicking the link below:
             {verification_url}
-            
+
             This link will expire in 24 hours.
-            
+
             If you did not create this account, please ignore this email.
             """
 

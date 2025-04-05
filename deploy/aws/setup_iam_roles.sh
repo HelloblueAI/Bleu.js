@@ -66,7 +66,7 @@ if ! aws ec2 describe-key-pairs --key-names ${KEY_PAIR_NAME} --region ${REGION} 
         --query 'KeyMaterial' \
         --output text \
         --region ${REGION} > ${KEY_PAIR_NAME}.pem
-    
+
     chmod 400 ${KEY_PAIR_NAME}.pem
     echo -e "${GREEN}EC2 key pair created successfully!${NC}"
     echo -e "Key pair file: ${KEY_PAIR_NAME}.pem"
@@ -84,4 +84,4 @@ aws elasticbeanstalk update-environment \
         Namespace=aws:elasticbeanstalk:environment,OptionName=ServiceRole,Value=aws-elasticbeanstalk-service-role \
     --region ${REGION}
 
-echo -e "${GREEN}Environment settings updated successfully!${NC}" 
+echo -e "${GREEN}Environment settings updated successfully!${NC}"

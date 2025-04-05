@@ -1,23 +1,30 @@
+import os
 import uuid
-from datetime import datetime, timedelta, timezone, UTC
+from datetime import UTC, datetime, timedelta, timezone
+from unittest.mock import patch
 
 import pytest
-from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
+from config.test.config import TEST_USER_EMAIL, TEST_USER_PASSWORD
 from src.models.rate_limit import RateLimit
 from src.models.subscription import Subscription, SubscriptionPlan
 from src.models.user import User
-from src.services.rate_limiting_service import RateLimitingService, RateLimiter
+from src.services.rate_limiting_service import RateLimiter, RateLimitingService
+
+# Load test configuration from environment variables
+TEST_PASSWORD = os.getenv("TEST_USER_PASSWORD", "test_password_123")
+TEST_EMAIL = os.getenv("TEST_USER_EMAIL", "test@example.com")
 
 
 @pytest.fixture
-def test_user(db: Session):
+def test_user(db: Session) -> User:
     """Create a test user with an active subscription."""
     user = User(
         id=str(uuid.uuid4()),
-        email="test@example.com",
-        hashed_password="hashed_password",
+        email=TEST_USER_EMAIL,
+        hashed_password=TEST_USER_PASSWORD,
         is_active=True,
         is_verified=True,
     )

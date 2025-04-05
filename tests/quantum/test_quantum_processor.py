@@ -1,6 +1,5 @@
 """Tests for the quantum processor component."""
 
-
 import numpy as np
 import pytest
 from qiskit import execute

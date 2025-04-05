@@ -117,4 +117,4 @@ echo -e "Subscription Function ARN: ${SUBSCRIPTION_FUNCTION_ARN}"
 echo "Testing subscription system..."
 curl -X POST "${SUBSCRIPTION_API_ENDPOINT}/subscriptions" \
     -H "Content-Type: application/json" \
-    -d '{"action":"create","userId":"test-user","tier":"basic"}' 
+    -d '{"action":"create","userId":"test-user","tier":"basic"}'

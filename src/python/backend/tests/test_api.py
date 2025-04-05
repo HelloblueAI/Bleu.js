@@ -33,4 +33,4 @@ def test_post_root():
     """Test root POST endpoint."""
     data = {"input": "Hello Bleu.js!"}
     response = api_client.post_root(data)
-    assert isinstance(response, dict) 
+    assert isinstance(response, dict)

@@ -18,6 +18,7 @@ tracer = trace.get_tracer(__name__)
 
 class QuantumSecurityConfig(BaseModel):
     """Configuration for quantum-resistant security"""
+
     encryption_algorithm: str = "X25519"  # Post-quantum secure
     key_length: int = 256
     privacy_epsilon: float = 0.1  # Differential privacy parameter
@@ -32,28 +33,28 @@ class QuantumSecurityManager:
         self.config = config
         self.private_key = x25519.X25519PrivateKey.generate()
         self.public_key = self.private_key.public_key()
-        
+
     def encrypt_data(self, data: bytes) -> Tuple[bytes, bytes]:
         """Encrypt data using quantum-resistant encryption"""
         with tracer.start_as_current_span("encrypt_data"):
             # Generate ephemeral key pair
             ephemeral_private = x25519.X25519PrivateKey.generate()
             ephemeral_public = ephemeral_private.public_key()
-            
+
             # Perform key exchange
             shared_key = ephemeral_private.exchange(self.public_key)
-            
+
             # Derive encryption key
             derived_key = HKDF(
                 algorithm=hashes.SHA256(),
                 length=self.config.key_length,
                 salt=None,
-                info=b'quantum-encryption',
+                info=b"quantum-encryption",
             ).derive(shared_key)
-            
+
             # Encrypt data (simplified for example)
             encrypted_data = self._xor_with_key(data, derived_key)
-            
+
             return encrypted_data, ephemeral_public.public_bytes_raw()
 
     def add_differential_privacy(self, data: np.ndarray) -> np.ndarray:
@@ -80,5 +81,5 @@ class QuantumSecurityManager:
             "encryption_speed": 0.0,  # Implement actual measurement
             "privacy_guarantee": self.config.privacy_epsilon,
             "key_strength": self.config.key_length,
-            "quantum_resistance": 1.0  # Implement actual measurement
-        } 
+            "quantum_resistance": 1.0,  # Implement actual measurement
+        }

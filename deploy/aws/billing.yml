@@ -16,16 +16,19 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess
       Path: /
-      RoleName: !Sub ${AWS::StackName}-cost-explorer-role
+      RoleName: 
+        Fn::Sub: ${AWS::StackName}-cost-explorer-role
 
   # Budget Alerts
   MonthlyBudget:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
-        BudgetName: !Sub ${AWS::StackName}-monthly-budget
+        BudgetName: 
+          Fn::Sub: ${AWS::StackName}-monthly-budget
         BudgetLimit:
-          Amount: !Ref BudgetAmount
+          Amount: 
+            Ref: BudgetAmount
           Unit: USD
         TimeUnit: MONTHLY
         BudgetType: COST
@@ -36,7 +39,8 @@ Resources:
             - Amazon Elasticsearch Service
             - Amazon CloudWatch
         TimeSpend:
-          Amount: !Ref BudgetAmount
+          Amount: 
+            Ref: BudgetAmount
           Unit: USD
       NotificationsWithSubscribers:
         - Notification:
@@ -45,14 +49,16 @@ Resources:
             Threshold: 80
             ThresholdType: PERCENTAGE
           Subscribers:
-            - Address: !Ref AlertEmail
+            - Address: 
+                Ref: AlertEmail
               SubscriptionType: EMAIL
 
   # Usage Reports
   UsageReportBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-usage-reports
+      BucketName: 
+        Fn::Sub: ${AWS::StackName}-usage-reports
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
@@ -64,7 +70,8 @@ Resources:
   UsageReportBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref UsageReportBucket
+      Bucket: 
+        Ref: UsageReportBucket
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -72,55 +79,111 @@ Resources:
             Principal:
               Service: billingreports.amazonaws.com
             Action: s3:PutObject
-            Resource: !Sub ${UsageReportBucket.Arn}/*
+            Resource: 
+              Fn::Sub: ${UsageReportBucket.Arn}/*
           - Effect: Allow
             Principal:
               Service: billingreports.amazonaws.com
             Action: s3:GetBucketAcl
-            Resource: !Ref UsageReportBucket
+            Resource: 
+              Ref: UsageReportBucket
 
   # CloudWatch Dashboard
   BillingDashboard:
     Type: AWS::CloudWatch::Dashboard
     Properties:
-      DashboardName: !Sub ${AWS::StackName}-billing-dashboard
-      DashboardBody: !Sub |
-        {
-          "widgets": [
-            {
-              "type": "metric",
-              "x": 0,
-              "y": 0,
-              "width": 12,
-              "height": 6,
-              "properties": {
-                "metrics": [
-                  [ "AWS/Billing", "EstimatedCharges", "Currency", "USD" ]
-                ],
-                "period": 86400,
-                "stat": "Maximum",
-                "region": "us-east-1",
-                "title": "Daily Estimated Charges"
+      DashboardName: 
+        Fn::Sub: ${AWS::StackName}-billing-dashboard
+      DashboardBody:
+        Fn::Sub: |
+          {
+            "widgets": [
+              {
+                "type": "metric",
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 6,
+                "properties": {
+                  "metrics": [
+                    [ "AWS/Billing", "EstimatedCharges", "Currency", "USD" ]
+                  ],
+                  "period": 86400,
+                  "stat": "Maximum",
+                  "region": "us-east-1",
+                  "title": "Daily Estimated Charges"
+                }
+              },
+              {
+                "type": "metric",
+                "x": 12,
+                "y": 0,
+                "width": 12,
+                "height": 6,
+                "properties": {
+                  "metrics": [
+                    [ "AWS/Usage", "ResourceCount", "Type", "Resource", "Resource", "OnDemand", "Service", "EC2" ]
+                  ],
+                  "period": 3600,
+                  "stat": "Maximum",
+                  "region": "us-east-1",
+                  "title": "EC2 Instance Count"
+                }
               }
-            },
-            {
-              "type": "metric",
-              "x": 12,
-              "y": 0,
-              "width": 12,
-              "height": 6,
-              "properties": {
-                "metrics": [
-                  [ "AWS/Usage", "ResourceCount", "Type", "Resource", "Resource", "OnDemand", "Service", "EC2" ]
-                ],
-                "period": 3600,
-                "stat": "Maximum",
-                "region": "us-east-1",
-                "title": "EC2 Instance Count"
-              }
-            }
-          ]
-        }
+            ]
+          }
+
+  BillingFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AWS::StackName}-billing
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Code:
+        S3Bucket:
+          Ref: DeploymentBucket
+        S3Key:
+          Fn::Sub: ${Version}/billing.zip
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY:
+            Ref: StripeSecretKey
+          SUBSCRIPTION_TABLE:
+            Fn::ImportValue:
+              Fn::Sub: ${AWS::StackName}-subscription-table
+      Role:
+        Fn::GetAtt: BillingFunctionRole.Arn
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: ${AWS::StackName}-billing
+
+  BillingFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                Resource:
+                  Fn::ImportValue:
+                    Fn::Sub: ${AWS::StackName}-subscription-table
 
 Parameters:
   BudgetAmount:
@@ -133,15 +196,31 @@ Parameters:
     Type: String
     Default: alerts@helloblue.ai
 
+  DeploymentBucket:
+    Type: String
+    Description: S3 bucket containing deployment artifacts
+
+  Version:
+    Type: String
+    Description: Version tag for deployment artifacts
+
+  StripeSecretKey:
+    Type: String
+    Description: Stripe API secret key
+    NoEcho: true
+
 Outputs:
   CostExplorerRoleArn:
     Description: ARN of the Cost Explorer IAM role
-    Value: !GetAtt CostExplorerRole.Arn
+    Value: 
+      Fn::GetAtt: [CostExplorerRole, Arn]
 
   UsageReportBucketName:
     Description: Name of the S3 bucket for usage reports
-    Value: !Ref UsageReportBucket
+    Value: 
+      Ref: UsageReportBucket
 
   DashboardURL:
     Description: URL of the CloudWatch dashboard
-    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=${BillingDashboard.DashboardName} 
+    Value: 
+      Fn::Sub: https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=${BillingDashboard.DashboardName}

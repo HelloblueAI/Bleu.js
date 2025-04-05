@@ -110,4 +110,4 @@ nginx -t
 log "Reloading nginx..."
 systemctl reload nginx
 
-log "Setup completed successfully!" 
+log "Setup completed successfully!"

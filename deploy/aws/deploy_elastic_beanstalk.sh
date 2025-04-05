@@ -97,4 +97,4 @@ echo -e "Environment URL: http://${ENV_URL}"
 
 # Test the deployment
 echo "Testing deployment..."
-curl -s http://${ENV_URL}/health || echo "Health check failed, please check the logs" 
+curl -s http://${ENV_URL}/health || echo "Health check failed, please check the logs"

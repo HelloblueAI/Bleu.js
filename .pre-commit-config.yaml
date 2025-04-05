@@ -1,90 +1,70 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.4.0
     hooks:
     -   id: trailing-whitespace
-        types: [python, markdown, yaml, json, text]
     -   id: end-of-file-fixer
-        types: [python, markdown, yaml, json, text]
     -   id: check-yaml
-        types: [yaml]
-    -   id: check-added-large-files
-        args: ['--maxkb=500']
-    -   id: check-ast
-        types: [python]
     -   id: check-json
-        types: [json]
-    -   id: check-merge-conflict
+    -   id: check-added-large-files
     -   id: detect-private-key
+    -   id: check-case-conflict
+    -   id: check-merge-conflict
+    -   id: check-symlinks
+    -   id: check-ast
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-symlinks
+    -   id: check-yaml
+    -   id: detect-private-key
+    -   id: end-of-file-fixer
     -   id: mixed-line-ending
+    -   id: trailing-whitespace
 
 -   repo: https://github.com/psf/black
-    rev: 24.2.0
+    rev: 22.12.0
     hooks:
     -   id: black
-        language_version: python3.11
-        args: [--line-length=88]
-        types: [python]
+        language_version: python3.9
 
 -   repo: https://github.com/pycqa/isort
-    rev: 5.13.0
+    rev: 5.10.1
     hooks:
     -   id: isort
         args: ["--profile", "black"]
-        types: [python]
 
 -   repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 6.1.0
     hooks:
     -   id: flake8
         additional_dependencies: [flake8-docstrings]
-        args: [
-            "--max-line-length=88",
-            "--extend-ignore=E203",
-            "--docstring-convention=google",
-            "--exclude=.git,__pycache__,build,dist"
-        ]
-        types: [python]
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.0
+    rev: v1.5.1
     hooks:
     -   id: mypy
         additional_dependencies: [types-all]
-        args: [
-            "--ignore-missing-imports",
-            "--disallow-untyped-defs",
-            "--disallow-incomplete-defs",
-            "--check-untyped-defs",
-            "--disallow-untyped-decorators",
-            "--no-implicit-optional",
-            "--warn-redundant-casts",
-            "--warn-unused-ignores",
-            "--warn-no-return",
-            "--warn-unreachable",
-            "--strict-optional",
-        ]
-        types: [python]
 
 -   repo: https://github.com/PyCQA/bandit
-    rev: 1.7.6
+    rev: 1.7.5
     hooks:
     -   id: bandit
         args: ["-c", "pyproject.toml"]
-        additional_dependencies: ["bandit[toml]"]
-        types: [python]
+        additional_dependencies: [bandit[toml]]
 
--   repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
-    hooks:
-    -   id: prettier
-        types: [yaml, json, markdown]
-        additional_dependencies:
-            - prettier@3.1.0
-            - prettier-plugin-tailwindcss@0.5.11
+# -   repo: https://github.com/pre-commit/mirrors-prettier
+#     rev: v4.0.0-alpha.8
+#     hooks:
+#     -   id: prettier
+#         types: [yaml, json, markdown]
+#         additional_dependencies:
+#             - prettier@3.1.0
+#             - prettier-plugin-tailwindcss@0.5.11
 
 -   repo: https://github.com/commitizen-tools/commitizen
     rev: v3.10.1
     hooks:
     -   id: commitizen
-        stages: [commit-msg] 
+        stages: [commit-msg]

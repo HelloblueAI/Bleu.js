@@ -48,4 +48,4 @@ Website: https://helloblue.ai
 
 ---
 
-Special thanks to the entire Helloblue, Inc. team for their dedication, innovation, and hard work in making this achievement possible. 
+Special thanks to the entire Helloblue, Inc. team for their dedication, innovation, and hard work in making this achievement possible.

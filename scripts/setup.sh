@@ -46,7 +46,7 @@ fi
 # Create Elastic Beanstalk environment if it doesn't exist
 if ! aws elasticbeanstalk describe-environments --environment-names "${ENV_NAME}" &> /dev/null; then
     echo -e "${YELLOW}Creating Elastic Beanstalk environment...${NC}"
-    
+
     # Create environment configuration
     cat > .ebextensions/01_environment.config << EOF
 option_settings:
@@ -87,4 +87,4 @@ if [ ! -f Procfile ]; then
 fi
 
 echo -e "${GREEN}AWS environment setup completed successfully!${NC}"
-echo -e "${YELLOW}You can now run ./scripts/deploy.sh to deploy your application.${NC}" 
+echo -e "${YELLOW}You can now run ./scripts/deploy.sh to deploy your application.${NC}"

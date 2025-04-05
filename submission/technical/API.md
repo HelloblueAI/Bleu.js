@@ -135,4 +135,4 @@ async function makeApiCall() {
 ### v1.0.0 (2024-03-30)
 - Initial API release
 - Basic and Enterprise subscription tiers
-- Core API functionality 
+- Core API functionality

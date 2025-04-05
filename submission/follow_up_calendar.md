@@ -54,4 +54,4 @@
 - [ ] Schedule practice sessions
 - [ ] Prepare press materials
 - [ ] Organize team meetings
-- [ ] Set up media contacts 
+- [ ] Set up media contacts

@@ -26,4 +26,4 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
 # Run tests by default
-CMD ["pytest"] 
+CMD ["pytest"]

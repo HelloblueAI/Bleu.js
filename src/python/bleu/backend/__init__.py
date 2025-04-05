@@ -2,4 +2,4 @@
 
 from .server import BleuBackend
 
-__all__ = ["BleuBackend"] 
+__all__ = ["BleuBackend"]

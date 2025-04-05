@@ -44,4 +44,4 @@ docs = [
 ]
 
 [tool.setuptools]
-package-dir = {"" = "bleu_ai"} 
+package-dir = {"" = "bleu_ai"}

@@ -60,4 +60,4 @@
 - Primary Contact: Pejman Haghighatnia
 - Email: info@helloblue.ai
 - Phone: [Your Phone Number]
-- Company: Helloblue, Inc. 
+- Company: Helloblue, Inc.

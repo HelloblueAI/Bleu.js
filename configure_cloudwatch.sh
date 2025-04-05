@@ -154,4 +154,4 @@ sleep 2
 # Check the status
 sudo systemctl status amazon-cloudwatch-agent
 
-echo "Enhanced CloudWatch agent configuration completed!" 
+echo "Enhanced CloudWatch agent configuration completed!"

@@ -25,4 +25,4 @@ Pejman Haghighatnia
 Co-founder and Engineering
 Helloblue, Inc.
 
-Special thanks to the Helloblue, Inc. team for their contributions to this submission. 
+Special thanks to the Helloblue, Inc. team for their contributions to this submission.

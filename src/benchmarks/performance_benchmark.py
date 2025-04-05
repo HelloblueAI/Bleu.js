@@ -20,6 +20,7 @@ tracer = trace.get_tracer(__name__)
 @dataclass
 class BenchmarkResult:
     """Results from a single benchmark run"""
+
     metric_name: str
     value: float
     unit: str
@@ -31,6 +32,7 @@ class BenchmarkResult:
 
 class BenchmarkConfig(BaseModel):
     """Configuration for benchmarking"""
+
     num_runs: int = 1000  # Increased for better statistical significance
     warmup_runs: int = 50  # Increased for better warmup
     confidence_level: float = 0.99  # Increased confidence level
@@ -59,24 +61,28 @@ class PerformanceBenchmark:
             "cpu": {
                 "model": psutil.cpu_freq()._asdict(),
                 "cores": psutil.cpu_count(),
-                "usage": psutil.cpu_percent(interval=1)
+                "usage": psutil.cpu_percent(interval=1),
             },
             "memory": psutil.virtual_memory()._asdict(),
-            "disk": psutil.disk_usage('/')._asdict(),
-            "gpu": self._get_gpu_info() if hasattr(self, '_get_gpu_info') else None
+            "disk": psutil.disk_usage("/")._asdict(),
+            "gpu": self._get_gpu_info() if hasattr(self, "_get_gpu_info") else None,
         }
 
     def _get_energy_usage(self) -> float:
         """Get current energy usage in joules with hardware-specific calibration"""
         cpu_energy = self.process.cpu_percent() * self.hardware_info["cpu"]["cores"]
-        memory_energy = self.process.memory_percent() * self.hardware_info["memory"]["total"]
+        memory_energy = (
+            self.process.memory_percent() * self.hardware_info["memory"]["total"]
+        )
         return (cpu_energy + memory_energy) / 100.0
 
     def _get_memory_usage(self) -> float:
         """Get current memory usage in bytes"""
         return self.process.memory_info().rss
 
-    def _calculate_statistical_significance(self, values: List[float], baseline: List[float]) -> float:
+    def _calculate_statistical_significance(
+        self, values: List[float], baseline: List[float]
+    ) -> float:
         """Calculate statistical significance of improvement"""
         if self.config.statistical_test == "t-test":
             _, p_value = stats.ttest_ind(values, baseline)
@@ -106,7 +112,7 @@ class PerformanceBenchmark:
                 start_energy = self._get_energy_usage()
 
                 predictions = model.predict(test_data)
-                
+
                 end_time = time.perf_counter()
                 end_memory = self._get_memory_usage()
                 end_energy = self._get_energy_usage()
@@ -116,7 +122,9 @@ class PerformanceBenchmark:
                 energy_usage.append(end_energy - start_energy)
 
                 # Calculate accuracy with confidence
-                correct = sum(1 for p, t in zip(predictions, test_data.labels) if p == t)
+                correct = sum(
+                    1 for p, t in zip(predictions, test_data.labels) if p == t
+                )
                 accuracies.append(correct / len(predictions))
 
             # Calculate comprehensive metrics
@@ -124,17 +132,17 @@ class PerformanceBenchmark:
             accuracy_std = np.std(accuracies)
             avg_time = np.mean(times)
             time_std = np.std(times)
-            
+
             # Calculate confidence intervals with higher confidence level
             z_score = stats.norm.ppf((1 + self.config.confidence_level) / 2)
             accuracy_ci = (
                 accuracy - z_score * accuracy_std / np.sqrt(self.config.num_runs),
-                accuracy + z_score * accuracy_std / np.sqrt(self.config.num_runs)
+                accuracy + z_score * accuracy_std / np.sqrt(self.config.num_runs),
             )
-            
+
             # Calculate quantum advantage if applicable
             quantum_advantage = None
-            if self.config.quantum_advantage and hasattr(model, 'quantum_speedup'):
+            if self.config.quantum_advantage and hasattr(model, "quantum_speedup"):
                 quantum_advantage = model.quantum_speedup()
 
             return BenchmarkResult(
@@ -155,9 +163,13 @@ class PerformanceBenchmark:
                     "hardware_utilization": {
                         "cpu": self.process.cpu_percent(),
                         "memory": self.process.memory_percent(),
-                        "gpu": self._get_gpu_usage() if hasattr(self, '_get_gpu_usage') else None
-                    }
-                }
+                        "gpu": (
+                            self._get_gpu_usage()
+                            if hasattr(self, "_get_gpu_usage")
+                            else None
+                        ),
+                    },
+                },
             )
 
     def benchmark_energy_efficiency(self, model, test_data) -> BenchmarkResult:
@@ -167,37 +179,37 @@ class PerformanceBenchmark:
             energy_readings = []
             memory_readings = []
             cpu_readings = []
-            
+
             for _ in range(self.config.num_runs):
                 start_energy = self._get_energy_usage()
                 start_memory = self._get_memory_usage()
                 start_cpu = self.process.cpu_percent()
-                
+
                 model.predict(test_data)
-                
+
                 end_energy = self._get_energy_usage()
                 end_memory = self._get_memory_usage()
                 end_cpu = self.process.cpu_percent()
-                
+
                 energy_readings.append(end_energy - start_energy)
                 memory_readings.append(end_memory - start_memory)
                 cpu_readings.append(end_cpu - start_cpu)
-            
+
             # Calculate comprehensive energy metrics
             energy_used = np.mean(energy_readings)
             memory_used = np.mean(memory_readings)
             cpu_used = np.mean(cpu_readings)
-            
+
             # Calculate baseline with hardware-specific factors
             baseline_energy = energy_used * 2.5  # More realistic baseline
             baseline_memory = memory_used * 2.0
             baseline_cpu = cpu_used * 2.0
-            
+
             # Calculate efficiency improvements
             energy_efficiency = (baseline_energy - energy_used) / baseline_energy * 100
             memory_efficiency = (baseline_memory - memory_used) / baseline_memory * 100
             cpu_efficiency = (baseline_cpu - cpu_used) / baseline_cpu * 100
-            
+
             return BenchmarkResult(
                 metric_name="energy_efficiency",
                 value=energy_efficiency,
@@ -213,9 +225,9 @@ class PerformanceBenchmark:
                     "hardware_specific_metrics": {
                         "cpu_model": self.hardware_info["cpu"]["model"],
                         "memory_total": self.hardware_info["memory"]["total"],
-                        "gpu_info": self.hardware_info["gpu"]
-                    }
-                }
+                        "gpu_info": self.hardware_info["gpu"],
+                    },
+                },
             )
 
     def benchmark_inference_time(self, model, test_data) -> BenchmarkResult:
@@ -223,7 +235,7 @@ class PerformanceBenchmark:
         with tracer.start_as_current_span("benchmark_inference_time"):
             times = []
             batch_sizes = []
-            
+
             # Test different batch sizes
             for batch_size in [1, 4, 8, 16, 32]:
                 batch_times = []
@@ -234,27 +246,27 @@ class PerformanceBenchmark:
                     batch_times.append(end_time - start_time)
                 times.extend(batch_times)
                 batch_sizes.extend([batch_size] * len(batch_times))
-            
+
             # Calculate comprehensive timing metrics
             avg_time = np.mean(times)
             time_std = np.std(times)
             min_time = np.min(times)
             max_time = np.max(times)
-            
+
             # Calculate baseline with batch size consideration
             baseline_time = avg_time * 1.6  # More realistic baseline
-            
+
             # Calculate throughput metrics
             throughput = 1 / avg_time
             max_throughput = 1 / min_time
-            
+
             return BenchmarkResult(
                 metric_name="inference_time",
                 value=(baseline_time - avg_time) / baseline_time * 100,
                 unit="%",
                 confidence_interval=(
                     np.percentile(times, 1),  # 99th percentile
-                    np.percentile(times, 99)
+                    np.percentile(times, 99),
                 ),
                 statistical_significance=self._calculate_statistical_significance(
                     times, [baseline_time] * len(times)
@@ -266,10 +278,12 @@ class PerformanceBenchmark:
                     "throughput_fps": throughput,
                     "max_throughput_fps": max_throughput,
                     "batch_size_analysis": {
-                        str(bs): np.mean([t for t, b in zip(times, batch_sizes) if b == bs])
+                        str(bs): np.mean(
+                            [t for t, b in zip(times, batch_sizes) if b == bs]
+                        )
                         for bs in set(batch_sizes)
-                    }
-                }
+                    },
+                },
             )
 
     def run_all_benchmarks(self, model, test_data) -> Dict[str, BenchmarkResult]:
@@ -277,9 +291,9 @@ class PerformanceBenchmark:
         results = {
             "face_recognition": self.benchmark_face_recognition(model, test_data),
             "energy_efficiency": self.benchmark_energy_efficiency(model, test_data),
-            "inference_time": self.benchmark_inference_time(model, test_data)
+            "inference_time": self.benchmark_inference_time(model, test_data),
         }
-        
+
         # Add cross-metric analysis
         for metric, result in results.items():
             result.comparison_metrics = {
@@ -287,13 +301,15 @@ class PerformanceBenchmark:
                 for other_metric, other_result in results.items()
                 if other_metric != metric
             }
-        
+
         # Validate claims with statistical significance
         self._validate_claims(results)
-        
+
         return results
 
-    def _compare_metrics(self, result1: BenchmarkResult, result2: BenchmarkResult) -> float:
+    def _compare_metrics(
+        self, result1: BenchmarkResult, result2: BenchmarkResult
+    ) -> float:
         """Compare two metrics and calculate correlation"""
         if not result1.metadata or not result2.metadata:
             return 0.0
@@ -305,22 +321,25 @@ class PerformanceBenchmark:
         claims = {
             "face_recognition": (99.9, ">=", 0.01),  # 99% confidence
             "energy_efficiency": (50.0, ">=", 0.01),
-            "inference_time": (40.0, ">=", 0.01)
+            "inference_time": (40.0, ">=", 0.01),
         }
-        
+
         for metric, (target, operator, significance_level) in claims.items():
             result = results[metric]
             value = result.value
-            
+
             # Check if claim is met and statistically significant
-            if (operator == ">=" and value < target) or \
-               (operator == "<=" and value > target):
+            if (operator == ">=" and value < target) or (
+                operator == "<=" and value > target
+            ):
                 logger.warning(
                     f"Claim not met for {metric}: {value}% {operator} {target}%"
                 )
-            elif result.statistical_significance and \
-                 result.statistical_significance > significance_level:
+            elif (
+                result.statistical_significance
+                and result.statistical_significance > significance_level
+            ):
                 logger.warning(
                     f"Claim for {metric} not statistically significant: "
                     f"p-value = {result.statistical_significance}"
-                ) 
+                )

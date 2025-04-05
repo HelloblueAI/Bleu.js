@@ -43,4 +43,4 @@ case "$1" in
         echo "Starting development server..."
         uvicorn src.backend.api.main:app --host 0.0.0.0 --port 8000 --reload
         ;;
-esac 
+esac
