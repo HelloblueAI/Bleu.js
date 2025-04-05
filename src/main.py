@@ -12,6 +12,7 @@ import logging
 
 # Constants
 API_V1_PREFIX = "/api/v1"
+RENDER_ERROR_MSG = "Error rendering page"
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -74,7 +75,7 @@ async def home(request: Request):
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception as e:
         logger.error(f"Error rendering home page: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
@@ -82,7 +83,7 @@ async def signup_page(request: Request):
         return templates.TemplateResponse("signup.html", {"request": request})
     except Exception as e:
         logger.error(f"Error rendering signup page: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/signin", response_class=HTMLResponse)
 async def signin_page(request: Request):
@@ -90,7 +91,7 @@ async def signin_page(request: Request):
         return templates.TemplateResponse("signin.html", {"request": request})
     except Exception as e:
         logger.error(f"Error rendering signin page: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
@@ -98,7 +99,7 @@ async def forgot_password_page(request: Request):
         return templates.TemplateResponse("forgot_password.html", {"request": request})
     except Exception as e:
         logger.error(f"Error rendering forgot password page: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_page(request: Request):
@@ -106,7 +107,7 @@ async def dashboard_page(request: Request):
         return templates.TemplateResponse("dashboard.html", {"request": request})
     except Exception as e:
         logger.error(f"Error rendering dashboard page: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/subscription", response_class=HTMLResponse)
 async def subscription_dashboard(request: Request):
@@ -116,7 +117,7 @@ async def subscription_dashboard(request: Request):
         )
     except Exception as e:
         logger.error(f"Error rendering subscription dashboard: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Error rendering page")
+        raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 @app.get("/")
 async def root():
