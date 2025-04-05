@@ -52,7 +52,7 @@ node_modules/
 !yarn/sdks/
 !yarn/versions/
 
-# Lock Files (Keep pnpm-lock.yaml)
+# Lock Files
 !pnpm-lock.yaml
 package-lock.json
 yarn.lock
