@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+bleu_quantum.egg-info/PKG-INFO
+bleu_quantum.egg-info/SOURCES.txt
+bleu_quantum.egg-info/dependency_links.txt
+bleu_quantum.egg-info/requires.txt
+bleu_quantum.egg-info/top_level.txt
