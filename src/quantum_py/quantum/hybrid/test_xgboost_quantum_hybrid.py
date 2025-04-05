@@ -57,14 +57,18 @@ async def test_preprocess_features(hybrid_model, sample_data):
     features, labels = sample_data
 
     # Test without feature importance
-    features_processed, labels_processed = await hybrid_model.preprocess_features(features, labels)
+    features_processed, labels_processed = await hybrid_model.preprocess_features(
+        features, labels
+    )
     assert features_processed.shape[0] == features.shape[0]
     assert labels_processed is not None
 
     # Test with feature importance
     rng = np.random.default_rng(seed=42)
     hybrid_model.feature_importance = rng.random(features.shape[1])
-    features_processed, labels_processed = await hybrid_model.preprocess_features(features, labels)
+    features_processed, labels_processed = await hybrid_model.preprocess_features(
+        features, labels
+    )
     assert features_processed.shape[0] == features.shape[0]
     assert labels_processed is not None
 
@@ -95,8 +99,12 @@ async def test_predict(hybrid_model, sample_data):
 
     # Mock enhanced XGBoost predict methods
     rng = np.random.default_rng(seed=42)
-    hybrid_model.enhanced_xgb.predict = Mock(return_value=rng.integers(0, 2, features.shape[0]))
-    hybrid_model.enhanced_xgb.predict_proba = Mock(return_value=rng.random((features.shape[0], 2)))
+    hybrid_model.enhanced_xgb.predict = Mock(
+        return_value=rng.integers(0, 2, features.shape[0])
+    )
+    hybrid_model.enhanced_xgb.predict_proba = Mock(
+        return_value=rng.random((features.shape[0], 2))
+    )
 
     # Test regular predictions
     predictions = await hybrid_model.predict(features, return_proba=False)
@@ -121,7 +129,9 @@ async def test_optimize_hyperparameters(hybrid_model, sample_data):
     hybrid_model.enhanced_xgb.optimize_hyperparameters = mock_optimize
 
     # Optimize hyperparameters
-    best_params = await hybrid_model.optimize_hyperparameters(features, labels, n_trials=10)
+    best_params = await hybrid_model.optimize_hyperparameters(
+        features, labels, n_trials=10
+    )
 
     assert isinstance(best_params, dict)
     assert "n_estimators" in best_params
@@ -154,7 +164,9 @@ async def test_error_handling(hybrid_model, sample_data):
         await hybrid_model.train(features, labels)
 
     # Test prediction error
-    hybrid_model.enhanced_xgb.predict = Mock(side_effect=RuntimeError("Prediction error"))
+    hybrid_model.enhanced_xgb.predict = Mock(
+        side_effect=RuntimeError("Prediction error")
+    )
     with pytest.raises(RuntimeError):
         await hybrid_model.predict(features)
 
@@ -166,7 +178,9 @@ async def test_error_handling(hybrid_model, sample_data):
         await hybrid_model.optimize_hyperparameters(features, labels)
 
     # Test invalid input error
-    hybrid_model.enhanced_xgb.predict = Mock(side_effect=ValueError("Invalid input data"))
+    hybrid_model.enhanced_xgb.predict = Mock(
+        side_effect=ValueError("Invalid input data")
+    )
     with pytest.raises(ValueError):
         await hybrid_model.predict(features)
 
@@ -192,7 +206,9 @@ async def test_fusion_weights(hybrid_model, sample_data):
     assert np.isclose(sum(output.fusion_weights.values()), 1.0, rtol=1e-6, atol=1e-6)
 
 
-def generate_data(n_samples: int = 1000, n_features: int = 10) -> Tuple[np.ndarray, np.ndarray]:
+def generate_data(
+    n_samples: int = 1000, n_features: int = 10
+) -> Tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data for testing."""
     rng = np.random.default_rng(seed=42)
     X = rng.normal(0, 1, (n_samples, n_features))

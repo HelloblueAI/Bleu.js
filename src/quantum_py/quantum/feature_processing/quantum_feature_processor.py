@@ -46,7 +46,9 @@ class QuantumFeatureProcessor:
         """Create a realistic noise model for quantum simulation."""
         noise_model = NoiseModel()
         # Add depolarizing noise
-        noise_model.add_all_qubit_quantum_error(depolarizing_error(0.01, 1), ["u1", "u2", "u3"])
+        noise_model.add_all_qubit_quantum_error(
+            depolarizing_error(0.01, 1), ["u1", "u2", "u3"]
+        )
         # Add readout error
         noise_model.add_all_qubit_readout_error([[0.9, 0.1], [0.1, 0.9]])
         return noise_model
@@ -207,7 +209,9 @@ class QuantumFeatureProcessor:
         importance_scores = importance_scores.reshape(importance_scores.shape[0], -1)
 
         # Normalize scores
-        importance_scores = importance_scores / np.sum(importance_scores, axis=1, keepdims=True)
+        importance_scores = importance_scores / np.sum(
+            importance_scores, axis=1, keepdims=True
+        )
 
         return importance_scores
 

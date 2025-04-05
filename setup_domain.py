@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
+import os
+
 import boto3
 import click
-import os
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class DomainManager:
     def __init__(self):
-        self.route53 = boto3.client('route53')
-        self.cloudfront = boto3.client('cloudfront')
-        self.acm = boto3.client('acm')
-        self.domain = 'bleujs.org'
-        self.region = os.getenv('AWS_REGION', 'us-west-2')
+        self.route53 = boto3.client("route53")
+        self.cloudfront = boto3.client("cloudfront")
+        self.acm = boto3.client("acm")
+        self.domain = "bleujs.org"
+        self.region = os.getenv("AWS_REGION", "us-west-2")
 
     def create_hosted_zone(self):
         """Create a Route 53 hosted zone for the domain"""
@@ -22,12 +24,12 @@ class DomainManager:
                 Name=self.domain,
                 CallerReference=str(hash(self.domain + str(os.getpid()))),
                 HostedZoneConfig={
-                    'Comment': f'Hosted zone for {self.domain}',
-                    'PrivateZone': False
-                }
+                    "Comment": f"Hosted zone for {self.domain}",
+                    "PrivateZone": False,
+                },
             )
             print(f"Created hosted zone: {response['HostedZone']['Id']}")
-            return response['HostedZone']['Id']
+            return response["HostedZone"]["Id"]
         except ClientError as e:
             print(f"Error creating hosted zone: {e}")
             return None
@@ -37,15 +39,15 @@ class DomainManager:
         try:
             response = self.acm.request_certificate(
                 DomainName=self.domain,
-                ValidationMethod='DNS',
-                SubjectAlternativeNames=[f'www.{self.domain}'],
+                ValidationMethod="DNS",
+                SubjectAlternativeNames=[f"www.{self.domain}"],
                 Tags=[
-                    {'Key': 'Project', 'Value': 'Bleu.js'},
-                    {'Key': 'Environment', 'Value': 'Production'}
-                ]
+                    {"Key": "Project", "Value": "Bleu.js"},
+                    {"Key": "Environment", "Value": "Production"},
+                ],
             )
             print(f"Requested certificate: {response['CertificateArn']}")
-            return response['CertificateArn']
+            return response["CertificateArn"]
         except ClientError as e:
             print(f"Error requesting certificate: {e}")
             return None
@@ -57,33 +59,33 @@ class DomainManager:
             self.route53.change_resource_record_sets(
                 HostedZoneId=hosted_zone_id,
                 ChangeBatch={
-                    'Changes': [
+                    "Changes": [
                         {
-                            'Action': 'CREATE',
-                            'ResourceRecordSet': {
-                                'Name': self.domain,
-                                'Type': 'A',
-                                'AliasTarget': {
-                                    'HostedZoneId': 'Z2FDTNDATAQYW2ZL',  # CloudFront hosted zone ID
-                                    'DNSName': distribution_domain,
-                                    'EvaluateTargetHealth': False
-                                }
-                            }
+                            "Action": "CREATE",
+                            "ResourceRecordSet": {
+                                "Name": self.domain,
+                                "Type": "A",
+                                "AliasTarget": {
+                                    "HostedZoneId": "Z2FDTNDATAQYW2ZL",  # CloudFront hosted zone ID
+                                    "DNSName": distribution_domain,
+                                    "EvaluateTargetHealth": False,
+                                },
+                            },
                         },
                         {
-                            'Action': 'CREATE',
-                            'ResourceRecordSet': {
-                                'Name': f'www.{self.domain}',
-                                'Type': 'A',
-                                'AliasTarget': {
-                                    'HostedZoneId': 'Z2FDTNDATAQYW2ZL',
-                                    'DNSName': distribution_domain,
-                                    'EvaluateTargetHealth': False
-                                }
-                            }
-                        }
+                            "Action": "CREATE",
+                            "ResourceRecordSet": {
+                                "Name": f"www.{self.domain}",
+                                "Type": "A",
+                                "AliasTarget": {
+                                    "HostedZoneId": "Z2FDTNDATAQYW2ZL",
+                                    "DNSName": distribution_domain,
+                                    "EvaluateTargetHealth": False,
+                                },
+                            },
+                        },
                     ]
-                }
+                },
             )
             print("Created DNS records")
         except ClientError as e:
@@ -94,36 +96,39 @@ class DomainManager:
         try:
             # Get current distribution config
             response = self.cloudfront.get_distribution(Id=distribution_id)
-            config = response['Distribution']['DistributionConfig']
+            config = response["Distribution"]["DistributionConfig"]
 
             # Update the config with the new certificate
-            config['ViewerCertificate'] = {
-                'ACMCertificateArn': certificate_arn,
-                'SSLSupportMethod': 'sni-only',
-                'MinimumProtocolVersion': 'TLSv1.2_2021'
+            config["ViewerCertificate"] = {
+                "ACMCertificateArn": certificate_arn,
+                "SSLSupportMethod": "sni-only",
+                "MinimumProtocolVersion": "TLSv1.2_2021",
             }
 
             # Update the distribution
             self.cloudfront.update_distribution(
-                Id=distribution_id,
-                DistributionConfig=config
+                Id=distribution_id, DistributionConfig=config
             )
-            print(f"Updated CloudFront distribution {distribution_id} with SSL certificate")
+            print(
+                f"Updated CloudFront distribution {distribution_id} with SSL certificate"
+            )
         except ClientError as e:
             print(f"Error updating CloudFront distribution: {e}")
+
 
 @click.group()
 def cli():
     """Domain setup CLI for Bleu.js"""
     pass
 
+
 @cli.command()
 def setup_domain():
     """Set up domain configuration for Bleu.js"""
     manager = DomainManager()
-    
+
     click.echo("Starting domain setup...")
-    
+
     # Create hosted zone
     click.echo("Creating hosted zone...")
     hosted_zone_id = manager.create_hosted_zone()
@@ -139,7 +144,7 @@ def setup_domain():
         return
 
     # Get CloudFront distribution ID from environment
-    distribution_id = os.getenv('CLOUDFRONT_DISTRIBUTION_ID')
+    distribution_id = os.getenv("CLOUDFRONT_DISTRIBUTION_ID")
     if not distribution_id:
         click.echo("CLOUDFRONT_DISTRIBUTION_ID not found in environment")
         return
@@ -147,7 +152,7 @@ def setup_domain():
     # Get CloudFront domain name
     try:
         response = manager.cloudfront.get_distribution(Id=distribution_id)
-        distribution_domain = response['Distribution']['DomainName']
+        distribution_domain = response["Distribution"]["DomainName"]
     except ClientError as e:
         click.echo(f"Error getting CloudFront distribution: {e}")
         return
@@ -162,5 +167,6 @@ def setup_domain():
 
     click.echo("Domain setup completed!")
 
-if __name__ == '__main__':
-    cli() 
+
+if __name__ == "__main__":
+    cli()

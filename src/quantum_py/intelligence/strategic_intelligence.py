@@ -71,13 +71,19 @@ class StrategicIntelligence:
             )
 
             # Generate strategic options
-            strategy_options = await self._generate_strategy_options(quantum_features, constraints)
+            strategy_options = await self._generate_strategy_options(
+                quantum_features, constraints
+            )
 
             # Evaluate strategies through simulation
-            evaluation_results = await self._evaluate_strategies(strategy_options, market_analysis)
+            evaluation_results = await self._evaluate_strategies(
+                strategy_options, market_analysis
+            )
 
             # Select optimal strategy
-            optimal_strategy = await self._select_optimal_strategy(evaluation_results, context)
+            optimal_strategy = await self._select_optimal_strategy(
+                evaluation_results, context
+            )
 
             # Update strategy state
             self.current_strategy = optimal_strategy
@@ -104,12 +110,14 @@ class StrategicIntelligence:
             market_features = await self._process_market_data(market_data)
 
             # Generate predictions using quantum intelligence
-            predictions, confidence = await self.quantum_intelligence.predict_optimal_actions(
-                market_features
+            predictions, confidence = (
+                await self.quantum_intelligence.predict_optimal_actions(market_features)
             )
 
             # Simulate strategy execution
-            simulation_results = await self._simulate_strategy(strategy, predictions, horizon)
+            simulation_results = await self._simulate_strategy(
+                strategy, predictions, horizon
+            )
 
             # Calculate risk metrics
             risk_metrics = self._calculate_risk_metrics(simulation_results)
@@ -125,7 +133,9 @@ class StrategicIntelligence:
             print(f"Error predicting outcomes: {str(e)}")
             raise
 
-    async def adapt_strategy(self, performance_metrics: Dict, market_conditions: Dict) -> Dict:
+    async def adapt_strategy(
+        self, performance_metrics: Dict, market_conditions: Dict
+    ) -> Dict:
         """Adapt strategy based on performance and conditions"""
         try:
             # Analyze adaptation needs
@@ -134,7 +144,9 @@ class StrategicIntelligence:
             )
 
             # Generate adaptation options
-            adaptation_options = await self._generate_adaptation_options(adaptation_needs)
+            adaptation_options = await self._generate_adaptation_options(
+                adaptation_needs
+            )
 
             # Evaluate adaptations
             evaluation_results = await self._evaluate_adaptations(
@@ -142,7 +154,9 @@ class StrategicIntelligence:
             )
 
             # Select optimal adaptation
-            optimal_adaptation = await self._select_optimal_adaptation(evaluation_results)
+            optimal_adaptation = await self._select_optimal_adaptation(
+                evaluation_results
+            )
 
             # Apply adaptation
             await self._apply_adaptation(optimal_adaptation)
@@ -197,7 +211,9 @@ class StrategicIntelligence:
 
         return enhanced_options
 
-    async def _evaluate_strategies(self, strategies: List[Dict], market_analysis: Dict) -> Dict:
+    async def _evaluate_strategies(
+        self, strategies: List[Dict], market_analysis: Dict
+    ) -> Dict:
         """Evaluate strategy options"""
         results = {"performance": [], "metrics": {}, "confidence": 0.0}
 
@@ -229,7 +245,9 @@ class StrategicIntelligence:
         )
 
         # Rank strategies by performance and risk
-        ranked_strategies = self._rank_strategies(valid_strategies, self.config.risk_tolerance)
+        ranked_strategies = self._rank_strategies(
+            valid_strategies, self.config.risk_tolerance
+        )
 
         # Select best strategy
         optimal_strategy = ranked_strategies[0]

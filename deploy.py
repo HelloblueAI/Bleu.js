@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+import os
+
 import boto3
 import click
-import os
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 

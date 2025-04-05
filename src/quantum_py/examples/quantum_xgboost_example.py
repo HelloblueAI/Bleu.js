@@ -160,7 +160,9 @@ async def main():
         )
 
         # Update model configuration
-        config.n_estimators = int(updated_state.get("n_estimators", config.n_estimators))
+        config.n_estimators = int(
+            updated_state.get("n_estimators", config.n_estimators)
+        )
         config.learning_rate = updated_state.get("learning_rate", config.learning_rate)
         config.max_depth = int(updated_state.get("max_depth", config.max_depth))
         config.quantum_feature_ratio = updated_state.get(
@@ -202,7 +204,9 @@ async def main():
     # Get feature importance
     feature_importance = model.get_feature_importance()
     print("\nFeature Importance:")
-    sorted_features = sorted(feature_importance.items(), key=lambda x: x[1], reverse=True)
+    sorted_features = sorted(
+        feature_importance.items(), key=lambda x: x[1], reverse=True
+    )
     for feature, importance in sorted_features[:10]:  # Show top 10
         print(f"- {feature}: {importance:.4f}")
 

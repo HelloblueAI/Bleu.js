@@ -1,16 +1,19 @@
+import os
+
 import boto3
 import click
-import os
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 def mask_credentials(credential):
     """Mask sensitive credentials for logging"""
     if not credential:
         return "***"
     return credential[:4] + "*" * (len(credential) - 4)
+
 
 def create_iam_user():
     """Create IAM user with necessary permissions for Bleu.js"""
@@ -128,17 +131,16 @@ def create_domain_management_user():
                         "acm:ListCertificates",
                         "cloudfront:UpdateDistribution",
                         "cloudfront:GetDistribution",
-                        "cloudfront:ListDistributions"
+                        "cloudfront:ListDistributions",
                     ],
-                    "Resource": "*"
+                    "Resource": "*",
                 }
-            ]
+            ],
         }
 
         policy_name = "bleujs-domain-management-policy"
         policy_response = iam.create_policy(
-            PolicyName=policy_name,
-            PolicyDocument=str(policy_document)
+            PolicyName=policy_name, PolicyDocument=str(policy_document)
         )
         policy_arn = policy_response["Policy"]["Arn"]
         print(f"\nCreated policy: {policy_name}")
