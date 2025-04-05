@@ -2,11 +2,11 @@
 Script to set up AWS credentials for API Gateway integration.
 """
 
+import json
+import os
 import sys
 from pathlib import Path
-import os
-import json
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Add the parent directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent))

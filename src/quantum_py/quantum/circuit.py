@@ -1,16 +1,19 @@
 """Quantum circuit implementation for feature processing."""
 
+import logging
+import time
+from typing import Any, Dict, Optional
+
 import numpy as np
-from qiskit import QuantumCircuit as QiskitCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import TwoLocal, EfficientSU2
+from qiskit import ClassicalRegister
+from qiskit import QuantumCircuit as QiskitCircuit
+from qiskit import QuantumRegister
+from qiskit.circuit.library import EfficientSU2, TwoLocal
+from qiskit.primitives import Sampler
+from qiskit_aer.noise import NoiseModel
 from qiskit_algorithms.optimizers import SPSA
 from qiskit_machine_learning.algorithms import NeuralNetworkClassifier
 from qiskit_machine_learning.neural_networks import SamplerQNN
-from qiskit.primitives import Sampler
-from qiskit_aer.noise import NoiseModel
-from typing import Optional, Dict, Any
-import time
-import logging
 
 # Constants
 CIRCUIT_NOT_INITIALIZED_ERROR = "Circuit not initialized"

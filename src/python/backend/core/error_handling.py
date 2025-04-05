@@ -2,16 +2,17 @@
 Advanced error handling system for the backend.
 """
 
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, Optional, Any, Type, Callable, TypeVar
 import asyncio
 import time
-from functools import wraps
 import traceback
+from dataclasses import dataclass
+from datetime import datetime
+from functools import wraps
+from typing import Any, Callable, Dict, Optional, Type, TypeVar
+
 import sentry_sdk
-from fastapi import Request, HTTPException
 import structlog
+from fastapi import HTTPException, Request
 
 logger = structlog.get_logger()
 

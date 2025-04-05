@@ -1,7 +1,10 @@
-from sqlalchemy.orm import Session
-from src.database import SessionLocal
-from src.models.subscription import SubscriptionPlan, PlanType
 import uuid
+
+from sqlalchemy.orm import Session
+
+from src.database import SessionLocal
+from src.models.subscription import PlanType, SubscriptionPlan
+
 
 def init_subscription_plans():
     """Initialize the subscription plans in the database."""
@@ -28,9 +31,9 @@ def init_subscription_plans():
                 "basic_analytics": True,
                 "email_support": True,
                 "api_documentation": True,
-                "standard_response_time": True
+                "standard_response_time": True,
             },
-            trial_days=14
+            trial_days=14,
         )
         db.add(core_plan)
 
@@ -52,9 +55,9 @@ def init_subscription_plans():
                 "custom_model_training": True,
                 "custom_integrations": True,
                 "sla_guarantees": True,
-                "advanced_documentation": True
+                "advanced_documentation": True,
             },
-            trial_days=30
+            trial_days=30,
         )
         db.add(enterprise_plan)
 
@@ -68,5 +71,6 @@ def init_subscription_plans():
     finally:
         db.close()
 
+
 if __name__ == "__main__":
-    init_subscription_plans() 
+    init_subscription_plans()

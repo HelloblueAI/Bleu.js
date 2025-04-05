@@ -1,14 +1,16 @@
+import logging
 import os
-from fastapi import FastAPI, Request, HTTPException
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from src.routes import auth, subscription, api_tokens
-from src.database import init_db
+
 from src.config import get_settings
+from src.database import init_db
+from src.routes import api_tokens, auth, subscription
 from tests.test_config import get_test_settings
-import logging
 
 # Constants
 API_V1_PREFIX = "/api/v1"
@@ -36,6 +38,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Error handling middleware
 @app.middleware("http")
 async def error_handling_middleware(request: Request, call_next):
@@ -48,6 +51,7 @@ async def error_handling_middleware(request: Request, call_next):
             status_code=500,
             content={"detail": "An internal server error occurred"},
         )
+
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
@@ -68,6 +72,7 @@ app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
 app.include_router(subscription.router, prefix=API_V1_PREFIX, tags=["subscription"])
 app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
 
+
 # Serve HTML pages
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -77,6 +82,7 @@ async def home(request: Request):
         logger.error(f"Error rendering home page: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
+
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
     try:
@@ -84,6 +90,7 @@ async def signup_page(request: Request):
     except Exception as e:
         logger.error(f"Error rendering signup page: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
+
 
 @app.get("/signin", response_class=HTMLResponse)
 async def signin_page(request: Request):
@@ -93,6 +100,7 @@ async def signin_page(request: Request):
         logger.error(f"Error rendering signin page: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
+
 @app.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
     try:
@@ -101,6 +109,7 @@ async def forgot_password_page(request: Request):
         logger.error(f"Error rendering forgot password page: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
+
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_page(request: Request):
     try:
@@ -108,6 +117,7 @@ async def dashboard_page(request: Request):
     except Exception as e:
         logger.error(f"Error rendering dashboard page: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
+
 
 @app.get("/subscription", response_class=HTMLResponse)
 async def subscription_dashboard(request: Request):
@@ -119,6 +129,7 @@ async def subscription_dashboard(request: Request):
         logger.error(f"Error rendering subscription dashboard: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
+
 @app.get("/")
 async def root():
     return {
@@ -126,6 +137,7 @@ async def root():
         "version": "1.1.3",
         "documentation": "/docs",
     }
+
 
 if __name__ == "__main__":
     import uvicorn

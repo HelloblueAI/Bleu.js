@@ -2,11 +2,12 @@
 Pytest configuration file.
 """
 
-import pytest
 import asyncio
 import os
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add the backend directory to the Python path
 backend_dir = Path(__file__).parent.parent

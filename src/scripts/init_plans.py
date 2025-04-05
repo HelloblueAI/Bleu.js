@@ -1,7 +1,9 @@
-from sqlalchemy.orm import Session
-from ..database import SessionLocal
-from ..models.subscription import SubscriptionPlan, PlanType
 import uuid
+
+from sqlalchemy.orm import Session
+
+from ..database import SessionLocal
+from ..models.subscription import PlanType, SubscriptionPlan
 
 
 def init_plans():

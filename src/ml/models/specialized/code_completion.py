@@ -21,8 +21,9 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from transformers import pipeline
 from typing import Optional
+
+from transformers import pipeline
 
 
 class CodeCompletion:

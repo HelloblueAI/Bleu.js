@@ -1,11 +1,12 @@
 """Common test fixtures and configuration."""
 
 import os
-import pytest
+from typing import Any, Dict, Generator
+
 import numpy as np
+import pytest
 import tensorflow as tf
 import torch
-from typing import Generator, Dict, Any
 
 
 @pytest.fixture(scope="session")

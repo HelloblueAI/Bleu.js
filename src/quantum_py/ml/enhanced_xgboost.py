@@ -1,13 +1,15 @@
 """Enhanced XGBoost implementation with quantum capabilities."""
 
-from typing import Dict, List, Optional, Tuple, Any, cast
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple, cast
+
 import numpy as np
 import xgboost as xgb
-from dataclasses import dataclass
 from sklearn.metrics import accuracy_score, roc_auc_score
-from ..quantum.processor import QuantumProcessor
+
 from ..quantum.circuit import QuantumCircuit
-import logging
+from ..quantum.processor import QuantumProcessor
 
 
 @dataclass

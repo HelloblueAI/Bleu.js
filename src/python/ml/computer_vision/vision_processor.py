@@ -2,14 +2,15 @@
 Advanced Computer Vision Processor for Bleu.js
 """
 
-import numpy as np
-import tensorflow as tf
-import cv2
 import asyncio
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import cv2
+import numpy as np
 import structlog
+import tensorflow as tf
 
 # Constants
 VISION_PROCESSOR_NOT_INITIALIZED = "Vision processor not initialized"

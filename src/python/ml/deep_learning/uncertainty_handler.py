@@ -5,23 +5,24 @@ Copyright (c) 2024, Bleu.js
 
 from dataclasses import dataclass
 from typing import (
-    List,
-    Dict,
-    Optional,
-    Tuple,
     Any,
-    Protocol,
-    cast,
-    TypeVar,
+    Dict,
     Generic,
-    runtime_checkable,
+    List,
+    Optional,
+    Protocol,
+    Tuple,
     TypeGuard,
+    TypeVar,
+    cast,
+    runtime_checkable,
 )
+
 import numpy as np
+import ray
+import structlog
 from sklearn.ensemble import RandomForestClassifier
 from tensorflow import keras
-import structlog
-import ray
 
 
 @dataclass

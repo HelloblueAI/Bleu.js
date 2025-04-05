@@ -1,8 +1,9 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Dict
 import logging
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from typing import Dict
+
 from src.config import settings
 
 logger = logging.getLogger(__name__)

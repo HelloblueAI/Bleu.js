@@ -2,12 +2,25 @@
 Database setup and models for the Bleu.js application.
 """
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, JSON, Boolean, Text, Float, Enum
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-from datetime import datetime
 import uuid
-from typing import Optional, List
+from datetime import datetime
+from typing import List, Optional
+
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
 
 from .models import SubscriptionTier
 

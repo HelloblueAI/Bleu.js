@@ -23,14 +23,15 @@
 
 import argparse
 import json
-import joblib
-import os
 import logging
+import os
+
+import joblib
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

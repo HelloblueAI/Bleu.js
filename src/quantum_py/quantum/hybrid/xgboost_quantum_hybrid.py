@@ -1,15 +1,17 @@
 """XGBoost Quantum Hybrid implementation."""
 
+import logging
+import time
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import numpy as np
 import xgboost as xgb
-from typing import Dict, List, Optional, Tuple, Union, Any
-from dataclasses import dataclass
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from ..processor import QuantumProcessor
+from sklearn.preprocessing import StandardScaler
+
 from ..circuit import QuantumCircuit
-import time
-import logging
+from ..processor import QuantumProcessor
 
 logger = logging.getLogger(__name__)
 

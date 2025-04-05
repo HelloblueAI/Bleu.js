@@ -1,13 +1,15 @@
-import numpy as np
 from typing import List, Optional, Tuple
+
+import numpy as np
+
+from ..utils.quantum_utils import (
+    create_controlled_unitary,
+    create_grover_operator,
+    create_phase_estimation_circuit,
+    quantum_fourier_transform,
+)
 from .quantum_circuit import QuantumCircuit
 from .quantum_processor import QuantumProcessor
-from ..utils.quantum_utils import (
-    quantum_fourier_transform,
-    create_phase_estimation_circuit,
-    create_grover_operator,
-    create_controlled_unitary,
-)
 
 
 class QuantumAlgorithms:

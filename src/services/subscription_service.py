@@ -1,42 +1,45 @@
-from datetime import datetime, timezone, timedelta, UTC
-from typing import Dict, List, Optional, Any
-from fastapi import HTTPException, status, Depends
-import stripe
-from src.config import get_settings as get_prod_settings
-from tests.test_config import get_test_settings
+import asyncio
+import json
 import logging
-from .email_service import EmailService
-from .monitoring_service import MonitoringService
+import os
+import uuid
+from datetime import UTC, datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
+
+import stripe
+from fastapi import Depends, HTTPException, status
+from prometheus_client import Counter, Gauge
 from sqlalchemy.orm import Session
+
+from src.config import get_settings as get_prod_settings
+from src.models.customer import Customer
 from src.models.subscription import (
-    SubscriptionPlan,
-    Subscription,
-    SubscriptionPlanCreate,
-    SubscriptionCreate,
     PlanType,
+    Subscription,
+    SubscriptionCreate,
+    SubscriptionPlan,
+    SubscriptionPlanCreate,
 )
 from src.models.user import User
-import uuid
-import os
-from src.models.customer import Customer
-from ..database import get_db
-from ..models import Payment
+from src.services.api_service import APIService
+from tests.test_config import get_test_settings
+
 from ..config import settings
 from ..constants import (
-    NO_ACTIVE_SUBSCRIPTION,
-    SUBSCRIPTION_NOT_FOUND,
-    INVALID_TIER,
-    INVALID_STATUS,
     INVALID_AMOUNT,
     INVALID_DATE,
+    INVALID_STATUS,
+    INVALID_TIER,
+    METRICS,
+    NO_ACTIVE_SUBSCRIPTION,
     QUOTA_EXCEEDED,
     RATE_LIMIT_EXCEEDED,
-    METRICS
+    SUBSCRIPTION_NOT_FOUND,
 )
-import json
-import asyncio
-from prometheus_client import Counter, Gauge
-from src.services.api_service import APIService
+from ..database import get_db
+from ..models import Payment
+from .email_service import EmailService
+from .monitoring_service import MonitoringService
 
 logger = logging.getLogger(__name__)
 
@@ -54,16 +57,25 @@ ERROR_MESSAGES = {
 METRICS = {"CALLS": ":calls", "QUOTA": ":quota", "RESET": ":reset"}
 
 # Initialize Stripe
-settings = get_test_settings() if os.getenv("TESTING") == "true" else get_prod_settings()
+settings = (
+    get_test_settings() if os.getenv("TESTING") == "true" else get_prod_settings()
+)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Error messages
 SUBSCRIPTION_NOT_FOUND = "Subscription not found"
 
 # Prometheus metrics
-subscription_updates = Counter('subscription_updates_total', 'Total number of subscription updates')
-payment_processing = Counter('payment_processing_total', 'Total number of payment processing attempts')
-active_subscriptions = Gauge('active_subscriptions', 'Number of active subscriptions', ['plan_type'])
+subscription_updates = Counter(
+    "subscription_updates_total", "Total number of subscription updates"
+)
+payment_processing = Counter(
+    "payment_processing_total", "Total number of payment processing attempts"
+)
+active_subscriptions = Gauge(
+    "active_subscriptions", "Number of active subscriptions", ["plan_type"]
+)
+
 
 class SubscriptionService:
     """Service for managing API subscriptions and usage tracking."""
@@ -88,7 +100,7 @@ class SubscriptionService:
                     "face_recognition",
                     "scene_recognition",
                     "model_training",
-                    "basic_support"
+                    "basic_support",
                 ],
                 "price": 99,  # $99/month
             },
@@ -105,10 +117,10 @@ class SubscriptionService:
                     "advanced_analytics",
                     "priority_support",
                     "custom_model_training",
-                    "dedicated_support"
+                    "dedicated_support",
                 ],
                 "price": 999,  # $999/month
-            }
+            },
         }
 
         self.subscription_plans = {
@@ -614,8 +626,7 @@ class SubscriptionService:
         )
         if not subscription:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=NO_ACTIVE_SUBSCRIPTION
+                status_code=status.HTTP_404_NOT_FOUND, detail=NO_ACTIVE_SUBSCRIPTION
             )
         return subscription
 
@@ -624,11 +635,12 @@ class SubscriptionService:
         subscription_id: str, status: str, db: Session
     ) -> Optional[Subscription]:
         """Update the status of a subscription."""
-        subscription = db.query(Subscription).filter(Subscription.id == subscription_id).first()
+        subscription = (
+            db.query(Subscription).filter(Subscription.id == subscription_id).first()
+        )
         if not subscription:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=SUBSCRIPTION_NOT_FOUND
+                status_code=status.HTTP_404_NOT_FOUND, detail=SUBSCRIPTION_NOT_FOUND
             )
         subscription.status = status
         db.commit()
@@ -679,45 +691,43 @@ class SubscriptionService:
         return subscription
 
     async def check_api_access(
-        self,
-        user_id: str,
-        service_type: str,
-        db: Session
+        self, user_id: str, service_type: str, db: Session
     ) -> bool:
         """Check if a user has access to a specific API service."""
         user = db.query(User).filter(User.id == user_id).first()
         if not user or not user.subscription:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=ERROR_MESSAGES["NO_SUBSCRIPTION"]
+                detail=ERROR_MESSAGES["NO_SUBSCRIPTION"],
             )
 
         subscription = user.subscription
         if subscription.status not in ["active", "trial"]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=ERROR_MESSAGES["INVALID_STATUS"]
+                detail=ERROR_MESSAGES["INVALID_STATUS"],
             )
 
         # Check if service is available in the plan
-        plan_features = self.plan_features[subscription.plan.plan_type.value]["features"]
+        plan_features = self.plan_features[subscription.plan.plan_type.value][
+            "features"
+        ]
         if service_type not in plan_features:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Service {service_type} not available in current plan"
+                detail=f"Service {service_type} not available in current plan",
             )
 
         # Check rate limit
         await self.monitoring_service.check_rate_limit(
-            user_id,
-            subscription.plan.plan_type.value
+            user_id, subscription.plan.plan_type.value
         )
 
         # Check and update API call quota
         if subscription.api_calls_remaining <= 0:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=ERROR_MESSAGES["QUOTA_EXCEEDED"]
+                detail=ERROR_MESSAGES["QUOTA_EXCEEDED"],
             )
 
         # Track the API call
@@ -725,7 +735,7 @@ class SubscriptionService:
             user_id,
             subscription.plan.plan_type.value,
             subscription.api_calls_remaining,
-            service_type
+            service_type,
         )
 
         # Update remaining calls
@@ -736,24 +746,31 @@ class SubscriptionService:
 
     async def get_user_subscription(self, user_id: str) -> Optional[Subscription]:
         """Get the active subscription for a user."""
-        return self.db.query(Subscription).filter(
-            Subscription.user_id == user_id,
-            Subscription.status == "active"
-        ).first()
+        return (
+            self.db.query(Subscription)
+            .filter(Subscription.user_id == user_id, Subscription.status == "active")
+            .first()
+        )
 
     async def get_plan(self, plan_id: str) -> Optional[SubscriptionPlan]:
         """Get a subscription plan by ID."""
-        return self.db.query(SubscriptionPlan).filter(
-            SubscriptionPlan.id == plan_id
-        ).first()
+        return (
+            self.db.query(SubscriptionPlan)
+            .filter(SubscriptionPlan.id == plan_id)
+            .first()
+        )
 
     async def get_plan_by_type(self, plan_type: str) -> Optional[SubscriptionPlan]:
         """Get a subscription plan by type."""
-        return self.db.query(SubscriptionPlan).filter(
-            SubscriptionPlan.plan_type == plan_type
-        ).first()
+        return (
+            self.db.query(SubscriptionPlan)
+            .filter(SubscriptionPlan.plan_type == plan_type)
+            .first()
+        )
 
-    async def create_subscription(self, user: User, plan_type: str, payment_method_id: str) -> Subscription:
+    async def create_subscription(
+        self, user: User, plan_type: str, payment_method_id: str
+    ) -> Subscription:
         """Create a new subscription for user"""
         try:
             # Create or update Stripe customer
@@ -761,56 +778,52 @@ class SubscriptionService:
                 customer = self.stripe.Customer.create(
                     email=user.email,
                     payment_method=payment_method_id,
-                    invoice_settings={
-                        "default_payment_method": payment_method_id
-                    }
+                    invoice_settings={"default_payment_method": payment_method_id},
                 )
                 user.stripe_customer_id = customer.id
                 self.db.commit()
-            
+
             # Get plan details
             plan_details = self.get_plan_details(plan_type)
-            
+
             # Create Stripe subscription
             subscription = self.stripe.Subscription.create(
                 customer=user.stripe_customer_id,
                 items=[{"price": plan_details["stripe_price_id"]}],
                 trial_period_days=30,
-                metadata={
-                    "user_id": str(user.id),
-                    "plan_type": plan_type
-                }
+                metadata={"user_id": str(user.id), "plan_type": plan_type},
             )
-            
+
             # Create subscription in database
             db_subscription = Subscription(
                 user_id=user.id,
                 plan_type=plan_type,
                 stripe_subscription_id=subscription.id,
-                current_period_start=datetime.fromtimestamp(subscription.current_period_start),
-                current_period_end=datetime.fromtimestamp(subscription.current_period_end),
+                current_period_start=datetime.fromtimestamp(
+                    subscription.current_period_start
+                ),
+                current_period_end=datetime.fromtimestamp(
+                    subscription.current_period_end
+                ),
                 api_calls_limit=plan_details["api_calls_limit"],
                 rate_limit=plan_details["rate_limit"],
                 features=json.dumps(plan_details["features"]),
-                status="active"
+                status="active",
             )
             self.db.add(db_subscription)
             self.db.commit()
-            
+
             # Update metrics
             subscription_updates.inc()
             active_subscriptions.labels(plan_type=plan_type).inc()
-            
+
             # Send welcome email
             await self.email_service.send_welcome_email(
-                user.email,
-                plan_type,
-                user.api_key,
-                plan_details["features"]
+                user.email, plan_type, user.api_key, plan_details["features"]
             )
-            
+
             return db_subscription
-            
+
         except stripe.error.StripeError as e:
             self.logger.error(f"Stripe error: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
@@ -821,45 +834,50 @@ class SubscriptionService:
     async def update_subscription(self, user: User, new_plan_type: str) -> Subscription:
         """Update user's subscription to a new plan"""
         try:
-            subscription = self.db.query(Subscription).filter(
-                Subscription.user_id == user.id,
-                Subscription.status == "active"
-            ).first()
-            
+            subscription = (
+                self.db.query(Subscription)
+                .filter(
+                    Subscription.user_id == user.id, Subscription.status == "active"
+                )
+                .first()
+            )
+
             if not subscription:
-                raise HTTPException(status_code=404, detail="No active subscription found")
-            
+                raise HTTPException(
+                    status_code=404, detail="No active subscription found"
+                )
+
             # Get new plan details
             new_plan_details = self.get_plan_details(new_plan_type)
-            
+
             # Update Stripe subscription
             stripe_subscription = self.stripe.Subscription.modify(
                 subscription.stripe_subscription_id,
                 items=[{"price": new_plan_details["stripe_price_id"]}],
-                proration_behavior="always_invoice"
+                proration_behavior="always_invoice",
             )
-            
+
             # Update subscription in database
             subscription.plan_type = new_plan_type
             subscription.api_calls_limit = new_plan_details["api_calls_limit"]
             subscription.rate_limit = new_plan_details["rate_limit"]
             subscription.features = json.dumps(new_plan_details["features"])
-            subscription.current_period_end = datetime.fromtimestamp(stripe_subscription.current_period_end)
+            subscription.current_period_end = datetime.fromtimestamp(
+                stripe_subscription.current_period_end
+            )
             self.db.commit()
-            
+
             # Update metrics
             subscription_updates.inc()
             active_subscriptions.labels(plan_type=new_plan_type).inc()
-            
+
             # Send plan update email
             await self.email_service.send_plan_update_email(
-                user.email,
-                new_plan_type,
-                new_plan_details["features"]
+                user.email, new_plan_type, new_plan_details["features"]
             )
-            
+
             return subscription
-            
+
         except stripe.error.StripeError as e:
             self.logger.error(f"Stripe error: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
@@ -870,31 +888,34 @@ class SubscriptionService:
     async def cancel_subscription(self, user: User) -> Subscription:
         """Cancel user's subscription"""
         try:
-            subscription = self.db.query(Subscription).filter(
-                Subscription.user_id == user.id,
-                Subscription.status == "active"
-            ).first()
-            
+            subscription = (
+                self.db.query(Subscription)
+                .filter(
+                    Subscription.user_id == user.id, Subscription.status == "active"
+                )
+                .first()
+            )
+
             if not subscription:
                 raise HTTPException(status_code=404, detail=NO_ACTIVE_SUBSCRIPTION)
-            
+
             # Cancel Stripe subscription
             self.stripe.Subscription.delete(subscription.stripe_subscription_id)
-            
+
             # Update subscription in database
             subscription.status = "cancelled"
             subscription.cancelled_at = datetime.now(UTC)
             self.db.commit()
-            
+
             # Update metrics
             subscription_updates.inc()
             active_subscriptions.labels(plan_type=subscription.plan_type).dec()
-            
+
             # Send cancellation email
             await self.email_service.send_cancellation_email(user.email)
-            
+
             return subscription
-            
+
         except stripe.error.StripeError as e:
             self.logger.error(f"Stripe error: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
@@ -906,7 +927,7 @@ class SubscriptionService:
         """Process a payment for subscription"""
         try:
             payment_intent = self.stripe.PaymentIntent.retrieve(payment_intent_id)
-            
+
             # Create payment record
             payment = Payment(
                 user_id=payment_intent.metadata.get("user_id"),
@@ -915,16 +936,16 @@ class SubscriptionService:
                 status=payment_intent.status,
                 payment_method=payment_intent.payment_method_types[0],
                 stripe_payment_id=payment_intent.id,
-                created_at=datetime.fromtimestamp(payment_intent.created)
+                created_at=datetime.fromtimestamp(payment_intent.created),
             )
             self.db.add(payment)
             self.db.commit()
-            
+
             # Update metrics
             payment_processing.inc()
-            
+
             return payment
-            
+
         except stripe.error.StripeError as e:
             self.logger.error(f"Stripe error: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
@@ -945,8 +966,8 @@ class SubscriptionService:
                     "Performance Metrics",
                     "Usage Analytics",
                     "API Documentation",
-                    "Email Support"
-                ]
+                    "Email Support",
+                ],
             },
             "ENTERPRISE": {
                 "stripe_price_id": settings.STRIPE_ENTERPRISE_PRICE_ID,
@@ -960,14 +981,14 @@ class SubscriptionService:
                     "Performance Tracking",
                     "Custom Model Training",
                     "Priority Support",
-                    "Dedicated Account Manager"
-                ]
-            }
+                    "Dedicated Account Manager",
+                ],
+            },
         }
-        
+
         if plan_type not in plans:
             raise HTTPException(status_code=400, detail="Invalid plan type")
-        
+
         return plans[plan_type]
 
     async def get_subscription_analytics(self) -> Dict:
@@ -975,56 +996,65 @@ class SubscriptionService:
         # Get subscription counts by plan
         subscription_counts = {}
         for plan in ["COR-E", "ENTERPRISE"]:
-            count = self.db.query(Subscription).filter(
-                Subscription.plan_type == plan,
-                Subscription.status == "active"
-            ).count()
+            count = (
+                self.db.query(Subscription)
+                .filter(Subscription.plan_type == plan, Subscription.status == "active")
+                .count()
+            )
             subscription_counts[plan] = count
-        
+
         # Get revenue metrics
         total_revenue = 0
         monthly_revenue = 0
         payments = self.db.query(Payment).filter(Payment.status == "succeeded").all()
-        
+
         for payment in payments:
             total_revenue += payment.amount
             if payment.created_at >= datetime.now(UTC) - timedelta(days=30):
                 monthly_revenue += payment.amount
-        
+
         # Get churn rate
-        total_cancelled = self.db.query(Subscription).filter(
-            Subscription.status == "cancelled"
-        ).count()
+        total_cancelled = (
+            self.db.query(Subscription)
+            .filter(Subscription.status == "cancelled")
+            .count()
+        )
         total_subscriptions = sum(subscription_counts.values())
-        churn_rate = (total_cancelled / total_subscriptions) if total_subscriptions > 0 else 0
-        
+        churn_rate = (
+            (total_cancelled / total_subscriptions) if total_subscriptions > 0 else 0
+        )
+
         return {
             "subscription_counts": subscription_counts,
             "total_revenue": total_revenue,
             "monthly_revenue": monthly_revenue,
             "churn_rate": churn_rate,
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
     async def get_user_subscription_data(self, user: User) -> Dict:
         """Get detailed subscription data for user"""
-        subscription = self.db.query(Subscription).filter(
-            Subscription.user_id == user.id,
-            Subscription.status == "active"
-        ).first()
-        
+        subscription = (
+            self.db.query(Subscription)
+            .filter(Subscription.user_id == user.id, Subscription.status == "active")
+            .first()
+        )
+
         if not subscription:
             raise HTTPException(status_code=404, detail="No active subscription found")
-        
+
         # Get usage analytics
         usage_analytics = await self.api_service.get_usage_analytics(user)
-        
+
         # Get payment history
-        payments = self.db.query(Payment).filter(
-            Payment.user_id == user.id,
-            Payment.status == "succeeded"
-        ).order_by(Payment.created_at.desc()).limit(5).all()
-        
+        payments = (
+            self.db.query(Payment)
+            .filter(Payment.user_id == user.id, Payment.status == "succeeded")
+            .order_by(Payment.created_at.desc())
+            .limit(5)
+            .all()
+        )
+
         return {
             "subscription": {
                 "plan_type": subscription.plan_type,
@@ -1032,7 +1062,7 @@ class SubscriptionService:
                 "current_period_end": subscription.current_period_end,
                 "api_calls_limit": subscription.api_calls_limit,
                 "rate_limit": subscription.rate_limit,
-                "features": json.loads(subscription.features)
+                "features": json.loads(subscription.features),
             },
             "usage": usage_analytics,
             "payment_history": [
@@ -1040,8 +1070,8 @@ class SubscriptionService:
                     "amount": payment.amount,
                     "currency": payment.currency,
                     "created_at": payment.created_at,
-                    "status": payment.status
+                    "status": payment.status,
                 }
                 for payment in payments
-            ]
+            ],
         }

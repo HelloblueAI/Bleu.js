@@ -2,15 +2,17 @@
 Tests for the error handling system.
 """
 
+import asyncio
+
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-import asyncio
+
 from ..core.error_handling import (
+    AuthenticationError,
+    ErrorContext,
     ErrorHandler,
     ValidationError,
-    AuthenticationError,
-    ErrorContext
 )
 
 app = FastAPI()

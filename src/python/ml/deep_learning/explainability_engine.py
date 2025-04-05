@@ -4,20 +4,21 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple
-import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import export_graphviz
-from tensorflow import keras
-import structlog
-import ray
-import shap
+from typing import Dict, List, Optional, Tuple, Union
+
+import graphviz
 import lime
 import lime.lime_tabular
 import matplotlib.pyplot as plt
-import graphviz
+import numpy as np
 import plotly.graph_objects as go
+import ray
+import shap
+import structlog
 from plotly.subplots import make_subplots
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import export_graphviz
+from tensorflow import keras
 
 
 @dataclass

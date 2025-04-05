@@ -2,35 +2,51 @@
 Main API router for the backend.
 """
 
-from typing import List, Optional, Dict
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from typing import Dict, List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from ..config.settings import get_config
+from ..core.api_client import api_client
+from ..core.auth import (
+    create_access_token,
+    get_current_active_user,
+    get_current_user,
+    get_password_hash,
+    verify_password,
+)
 from ..core.database import get_db
 from ..core.models import (
-    User, Project, Model, Dataset, Job,
-    JobCreate, JobUpdate, JobResponse, JobList,
-    UserCreate, UserResponse,
-    ProjectCreate, ProjectResponse,
-    ModelCreate, ModelResponse,
-    DatasetCreate, DatasetResponse,
-    Token, TokenData,
-    SubscriptionTier, SubscriptionResponse, APICallLogResponse,
-    Subscription, UsageStats,
-)
-from ..core.auth import (
-    get_current_user,
-    get_current_active_user,
-    create_access_token,
-    verify_password,
-    get_password_hash,
+    APICallLogResponse,
+    Dataset,
+    DatasetCreate,
+    DatasetResponse,
+    Job,
+    JobCreate,
+    JobList,
+    JobResponse,
+    JobUpdate,
+    Model,
+    ModelCreate,
+    ModelResponse,
+    Project,
+    ProjectCreate,
+    ProjectResponse,
+    Subscription,
+    SubscriptionResponse,
+    SubscriptionTier,
+    Token,
+    TokenData,
+    UsageStats,
+    User,
+    UserCreate,
+    UserResponse,
 )
 from ..core.queue import enqueue_job
-from ..core.api_client import api_client
 from ..core.subscription import SubscriptionService
 
 config = get_config()

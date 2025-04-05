@@ -1,7 +1,9 @@
+from typing import Any, Dict, Optional
+
 import boto3
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
-from typing import Optional, Dict, Any
+
 from ..config.aws_elastic_config import get_aws_elastic_config
 
 

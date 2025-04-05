@@ -1,8 +1,10 @@
 """Advanced Market Intelligence System."""
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass
+from typing import Dict, List, Optional
+
 import pandas as pd
+
 from ..quantum.intelligence.quantum_intelligence import QuantumIntelligence
 
 

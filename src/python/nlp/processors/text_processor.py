@@ -2,13 +2,15 @@
 Enhanced text processor with advanced NLP features.
 """
 
-from typing import List, Dict, Optional, Union, Tuple
-import torch
-from dataclasses import dataclass
-from transformers import AutoModel
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sentence_transformers import SentenceTransformer
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple, Union
+
+import torch
+from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from transformers import AutoModel
+
 from .tokenizer import EnhancedTokenizer, TokenizerConfig
 
 

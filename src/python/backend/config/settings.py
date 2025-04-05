@@ -2,14 +2,16 @@
 Backend configuration settings.
 """
 
-from dataclasses import dataclass
-from typing import Optional, Dict, Any, List
 import os
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import torch
 import yaml
 from dotenv import load_dotenv
-import torch
 from pydantic import BaseSettings, Field
+
 
 @dataclass
 class DatabaseConfig:

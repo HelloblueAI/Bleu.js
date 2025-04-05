@@ -1,20 +1,22 @@
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    DateTime,
-    JSON,
-    Boolean,
-    ForeignKey,
-    Enum,
-)
-from sqlalchemy.orm import relationship
-from datetime import datetime, timezone, timedelta
-from typing import Optional, Dict, List
-from pydantic import BaseModel, ConfigDict
-from src.models.declarative_base import Base
 import enum
 import uuid
+from datetime import datetime, timedelta, timezone
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+)
+from sqlalchemy.orm import relationship
+
+from src.models.declarative_base import Base
 
 
 class PlanType(str, enum.Enum):
@@ -39,12 +41,22 @@ class Subscription(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     plan_id = Column(String, ForeignKey("subscription_plans.id"), nullable=False)
     stripe_subscription_id = Column(String, nullable=True)
-    status = Column(Enum(SubscriptionStatus), nullable=False, default=SubscriptionStatus.TRIAL)
+    status = Column(
+        Enum(SubscriptionStatus), nullable=False, default=SubscriptionStatus.TRIAL
+    )
     current_period_start = Column(DateTime(timezone=True), nullable=False)
     current_period_end = Column(DateTime(timezone=True), nullable=False)
     api_calls_remaining = Column(Integer, nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
 
     # Relationships
     user = relationship("User", back_populates="subscription")
@@ -88,8 +100,16 @@ class SubscriptionPlan(Base):
     support_level = Column(String, nullable=False)
     features = Column(JSON, nullable=False)
     trial_days = Column(Integer, nullable=False, default=30)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
 
     # Relationships
     subscriptions = relationship("Subscription", back_populates="plan")
@@ -109,9 +129,9 @@ class SubscriptionPlan(Base):
                 "basic_analytics": True,
                 "email_support": True,
                 "api_documentation": True,
-                "standard_response_time": True
+                "standard_response_time": True,
             },
-            "trial_days": 14
+            "trial_days": 14,
         }
 
     @staticmethod
@@ -132,9 +152,9 @@ class SubscriptionPlan(Base):
                 "custom_model_training": True,
                 "custom_integrations": True,
                 "sla_guarantees": True,
-                "advanced_documentation": True
+                "advanced_documentation": True,
             },
-            "trial_days": 30
+            "trial_days": 30,
         }
 
 

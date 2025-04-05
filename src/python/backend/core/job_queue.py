@@ -2,13 +2,15 @@
 Job queue manager for the backend.
 """
 
-from typing import Any, Dict, Optional, Callable
 import asyncio
-from datetime import datetime
 import logging
+from datetime import datetime
+from typing import Any, Callable, Dict, Optional
+
 from ..config.settings import settings
 from .database import db_manager
 from .models import Job
+
 
 class JobQueueManager:
     """Job queue manager for handling background tasks."""

@@ -1,14 +1,16 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
+from datetime import datetime
 from typing import Dict, Optional
-from ..services.subscription_service import subscription_service
+
+from fastapi import APIRouter, Depends, Header, HTTPException
+from pydantic import BaseModel
+
 from ..models.subscription import (
     SubscriptionCreate,
     SubscriptionResponse,
-    UsageMetrics,
     SubscriptionUpgrade,
+    UsageMetrics,
 )
-from pydantic import BaseModel
-from datetime import datetime
+from ..services.subscription_service import subscription_service
 
 # Constants
 USER_ID_HEADER = "User ID"

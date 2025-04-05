@@ -1,13 +1,15 @@
-from datetime import datetime, timedelta, timezone
 import asyncio
 import logging
-from typing import Dict, Optional
-from src.models.customer import Customer, RateLimitToken
-from src.database import get_db
-from sqlalchemy.orm import Session
-from src.models.subscription import Subscription
-from src.models.rate_limit import RateLimit
 import uuid
+from datetime import datetime, timedelta, timezone
+from typing import Dict, Optional
+
+from sqlalchemy.orm import Session
+
+from src.database import get_db
+from src.models.customer import Customer, RateLimitToken
+from src.models.rate_limit import RateLimit
+from src.models.subscription import Subscription
 
 logger = logging.getLogger(__name__)
 
@@ -26,10 +28,11 @@ class RateLimitingService:
                 return False
 
             # Get existing rate limit record
-            rate_limit = self.db.query(RateLimit).filter(
-                RateLimit.user_id == user_id,
-                RateLimit.endpoint == endpoint
-            ).first()
+            rate_limit = (
+                self.db.query(RateLimit)
+                .filter(RateLimit.user_id == user_id, RateLimit.endpoint == endpoint)
+                .first()
+            )
 
             current_time = datetime.now(timezone.utc)
 
@@ -44,7 +47,7 @@ class RateLimitingService:
                     calls_count=1,
                     last_reset=current_time,
                     current_period_start=current_time,
-                    last_used=current_time
+                    last_used=current_time,
                 )
                 self.db.add(rate_limit)
                 self.db.commit()
@@ -139,7 +142,9 @@ class RateLimitingService:
         """Get the number of remaining tokens for a customer."""
         async with self.lock:
             try:
-                customer = self.db.query(Customer).filter(Customer.id == customer_id).first()
+                customer = (
+                    self.db.query(Customer).filter(Customer.id == customer_id).first()
+                )
                 if not customer:
                     return None
 
@@ -153,7 +158,7 @@ class RateLimitingService:
     @staticmethod
     async def _handle_rate_limit_reset(rate_limit: RateLimit, now: datetime) -> None:
         """Intelligently handle rate limit resets for both monthly and per-second limits.
-        
+
         This method:
         1. Checks if monthly reset is needed
         2. Handles per-second rate limit resets
@@ -161,7 +166,7 @@ class RateLimitingService:
         """
         last_reset_utc = rate_limit.last_reset.replace(tzinfo=timezone.utc)
         last_used_utc = rate_limit.last_used.replace(tzinfo=timezone.utc)
-        
+
         # Check monthly reset
         if now - last_reset_utc > timedelta(days=30):
             rate_limit.calls_count = 1  # Start with 1 for this request
@@ -170,16 +175,18 @@ class RateLimitingService:
             rate_limit.last_used = now
             rate_limit.rate_limit_count = 1  # Reset per-second counter too
             return
-        
+
         # Check per-second reset
         if (now - last_used_utc).total_seconds() >= 1:
             rate_limit.rate_limit_count = 1  # Reset per-second counter
             rate_limit.last_used = now
 
     @staticmethod
-    async def check_rate_limit_user(user_id: str, db: Session, endpoint: str = "default") -> bool:
+    async def check_rate_limit_user(
+        user_id: str, db: Session, endpoint: str = "default"
+    ) -> bool:
         """Check if the user has exceeded their rate limits.
-        
+
         This method checks both:
         1. Monthly API call limits (subscription-based)
         2. Per-second rate limits (burst protection)
@@ -191,10 +198,11 @@ class RateLimitingService:
             return False
 
         # Get or create rate limit record
-        rate_limit = db.query(RateLimit).filter(
-            RateLimit.user_id == user_id,
-            RateLimit.endpoint == endpoint
-        ).first()
+        rate_limit = (
+            db.query(RateLimit)
+            .filter(RateLimit.user_id == user_id, RateLimit.endpoint == endpoint)
+            .first()
+        )
 
         now = datetime.now(timezone.utc)
 
@@ -212,7 +220,7 @@ class RateLimitingService:
                 last_used=now,
                 rate_limit=subscription.plan.rate_limit,  # Per-second rate limit
                 rate_limit_period=1,  # 1 second
-                rate_limit_count=1  # Start with 1 for this request
+                rate_limit_count=1,  # Start with 1 for this request
             )
             db.add(rate_limit)
             db.commit()
@@ -259,7 +267,7 @@ class RateLimitingService:
                 "monthly_total_calls": 0,
                 "monthly_reset_time": datetime.now(timezone.utc) + timedelta(days=30),
                 "rate_limit": subscription.plan.rate_limit if subscription else 0,
-                "rate_limit_period": 1  # 1 second
+                "rate_limit_period": 1,  # 1 second
             }
 
         monthly_calls_remaining = max(
@@ -272,7 +280,7 @@ class RateLimitingService:
             "monthly_total_calls": rate_limit.calls_count,
             "monthly_reset_time": monthly_reset_time,
             "rate_limit": subscription.plan.rate_limit,
-            "rate_limit_period": 1  # 1 second
+            "rate_limit_period": 1,  # 1 second
         }
 
     @staticmethod
@@ -286,7 +294,13 @@ class RateLimitingService:
             db.commit()
 
     @staticmethod
-    async def setup_rate_limit(customer_id: str, rate_limit: int, rate_limit_period: int, db: Session, endpoint: str = None) -> None:
+    async def setup_rate_limit(
+        customer_id: str,
+        rate_limit: int,
+        rate_limit_period: int,
+        db: Session,
+        endpoint: str = None,
+    ) -> None:
         """Set up rate limiting for a customer."""
         customer = db.query(Customer).filter(Customer.id == customer_id).first()
         if not customer:
@@ -299,30 +313,36 @@ class RateLimitingService:
             current_period_start=datetime.now(timezone.utc),
             endpoint=endpoint,
             limit=rate_limit,
-            period=rate_limit_period
+            period=rate_limit_period,
         )
         db.add(rate_limit_record)
         db.commit()
 
     @staticmethod
-    async def increment_rate_limit(customer_id: str, db: Session, endpoint: str = None) -> None:
+    async def increment_rate_limit(
+        customer_id: str, db: Session, endpoint: str = None
+    ) -> None:
         """Increment the rate limit counter for a customer."""
-        rate_limit = db.query(RateLimit).filter(
-            RateLimit.user_id == customer_id,
-            RateLimit.endpoint == endpoint
-        ).first()
+        rate_limit = (
+            db.query(RateLimit)
+            .filter(RateLimit.user_id == customer_id, RateLimit.endpoint == endpoint)
+            .first()
+        )
         if rate_limit:
             rate_limit.calls_count += 1
             rate_limit.last_used = datetime.now(timezone.utc)
             db.commit()
 
     @staticmethod
-    async def get_rate_limit_status(customer_id: str, db: Session, endpoint: str = None) -> Dict:
+    async def get_rate_limit_status(
+        customer_id: str, db: Session, endpoint: str = None
+    ) -> Dict:
         """Get the current rate limit status for a customer."""
-        rate_limit = db.query(RateLimit).filter(
-            RateLimit.user_id == customer_id,
-            RateLimit.endpoint == endpoint
-        ).first()
+        rate_limit = (
+            db.query(RateLimit)
+            .filter(RateLimit.user_id == customer_id, RateLimit.endpoint == endpoint)
+            .first()
+        )
 
         if not rate_limit:
             return {
@@ -341,17 +361,20 @@ class RateLimitingService:
         }
 
     @staticmethod
-    async def get_rate_limit(customer_id: str, db: Session, endpoint: str = None) -> Optional[RateLimit]:
+    async def get_rate_limit(
+        customer_id: str, db: Session, endpoint: str = None
+    ) -> Optional[RateLimit]:
         """Get the rate limit record for a customer."""
-        return db.query(RateLimit).filter(
-            RateLimit.user_id == customer_id,
-            RateLimit.endpoint == endpoint
-        ).first()
+        return (
+            db.query(RateLimit)
+            .filter(RateLimit.user_id == customer_id, RateLimit.endpoint == endpoint)
+            .first()
+        )
 
     @staticmethod
     async def get_detailed_usage_stats(user_id: str, db: Session) -> Dict:
         """Get detailed usage statistics for a user.
-        
+
         Returns:
             Dict containing:
             - Monthly usage stats
@@ -380,17 +403,19 @@ class RateLimitingService:
                 "usage_patterns": {
                     "endpoints": {},
                     "total_endpoints": 0,
-                }
+                },
             }
 
         # Calculate total monthly calls across all endpoints
         total_monthly_calls = sum(rl.calls_count for rl in rate_limits)
-        monthly_calls_remaining = max(0, subscription.plan.api_calls_limit - total_monthly_calls)
+        monthly_calls_remaining = max(
+            0, subscription.plan.api_calls_limit - total_monthly_calls
+        )
 
         # Get the earliest reset time
         earliest_reset = min(
             (rl.last_reset + timedelta(days=30) for rl in rate_limits),
-            default=datetime.now(timezone.utc) + timedelta(days=30)
+            default=datetime.now(timezone.utc) + timedelta(days=30),
         )
 
         # Get endpoint-specific usage patterns
@@ -401,7 +426,7 @@ class RateLimitingService:
                 "rate_limit": rl.rate_limit,
                 "current_rate": rl.rate_limit_count,
                 "last_used": rl.last_used,
-                "next_reset": rl.last_used + timedelta(seconds=1)
+                "next_reset": rl.last_used + timedelta(seconds=1),
             }
 
         return {
@@ -412,7 +437,9 @@ class RateLimitingService:
                 "limit": subscription.plan.api_calls_limit,
             },
             "rate_limit_stats": {
-                "current_rate": max((rl.rate_limit_count for rl in rate_limits), default=0),
+                "current_rate": max(
+                    (rl.rate_limit_count for rl in rate_limits), default=0
+                ),
                 "rate_limit": subscription.plan.rate_limit,
                 "next_reset": datetime.now(timezone.utc) + timedelta(seconds=1),
             },
@@ -423,7 +450,7 @@ class RateLimitingService:
             "subscription": {
                 "plan": subscription.plan.name,
                 "type": subscription.plan.plan_type.value,
-            }
+            },
         }
 
 

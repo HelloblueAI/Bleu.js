@@ -1,10 +1,12 @@
 """Quantum processor implementation for feature processing."""
 
+from typing import Any, Dict, Optional
+
 import numpy as np
-from typing import Optional, Dict, Any
+from qiskit.primitives import Sampler
 from qiskit_aer import QasmSimulator
 from qiskit_aer.noise import NoiseModel
-from qiskit.primitives import Sampler
+
 from .circuit import QuantumCircuit
 
 # Constants

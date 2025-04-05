@@ -4,15 +4,16 @@ Provides advanced quantum-enhanced feature processing capabilities.
 """
 
 import logging
-import numpy as np
+from dataclasses import dataclass
 from typing import Optional
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+
+import numpy as np
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Sampler
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from sklearn.preprocessing import StandardScaler
-from dataclasses import dataclass
 
 
 @dataclass

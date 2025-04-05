@@ -4,17 +4,18 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Union, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import mlflow
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+import optuna
+import ray
+import structlog
+from mlflow.tracking import MlflowClient
+from ray import tune
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
 from tensorflow import keras
-import structlog
-import ray
-from ray import tune
-import optuna
-import mlflow
-from mlflow.tracking import MlflowClient
 
 
 @dataclass

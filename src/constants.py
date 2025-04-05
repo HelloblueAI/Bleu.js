@@ -11,8 +11,4 @@ QUOTA_EXCEEDED = "API call quota exceeded"
 RATE_LIMIT_EXCEEDED = "Rate limit exceeded"
 
 # Metrics
-METRICS = {
-    "CALLS": ":calls",
-    "QUOTA": ":quota",
-    "RESET": ":reset"
-} 
+METRICS = {"CALLS": ":calls", "QUOTA": ":quota", "RESET": ":reset"}

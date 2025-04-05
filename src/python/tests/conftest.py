@@ -1,8 +1,9 @@
-import pytest
 import os
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
+
+import pytest
 
 
 @pytest.fixture(scope="session")

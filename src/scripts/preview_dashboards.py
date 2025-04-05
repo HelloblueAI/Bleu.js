@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+import os
+
+import uvicorn
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
-import uvicorn
-import os
 
 app = FastAPI()
 
@@ -26,8 +26,8 @@ CORE_DATA = {
         "basic_analytics": True,
         "email_support": True,
         "api_documentation": True,
-        "standard_response_time": True
-    }
+        "standard_response_time": True,
+    },
 }
 
 # Example data for Enterprise user
@@ -45,23 +45,24 @@ ENTERPRISE_DATA = {
         "custom_model_training": True,
         "custom_integrations": True,
         "sla_guarantees": True,
-        "advanced_documentation": True
-    }
+        "advanced_documentation": True,
+    },
 }
+
 
 @app.get("/core", response_class=HTMLResponse)
 async def core_dashboard(request: Request):
     return templates.TemplateResponse(
-        "dashboard.html",
-        {"request": request, "usage_data": CORE_DATA}
+        "dashboard.html", {"request": request, "usage_data": CORE_DATA}
     )
+
 
 @app.get("/enterprise", response_class=HTMLResponse)
 async def enterprise_dashboard(request: Request):
     return templates.TemplateResponse(
-        "dashboard.html",
-        {"request": request, "usage_data": ENTERPRISE_DATA}
+        "dashboard.html", {"request": request, "usage_data": ENTERPRISE_DATA}
     )
 
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host="0.0.0.0", port=8000)

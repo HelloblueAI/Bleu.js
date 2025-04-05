@@ -4,18 +4,19 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Union, Tuple, Any
+from typing import Any, Dict, Optional, Tuple, Union
+
+import mlflow
 import numpy as np
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+import optuna
+import ray
+import structlog
+from mlflow.tracking import MlflowClient
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit_machine_learning.neural_networks import CircuitQNN
+from ray import tune
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-import optuna
-import structlog
-import ray
-from ray import tune
-import mlflow
-from mlflow.tracking import MlflowClient
 
 
 @dataclass

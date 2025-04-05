@@ -3,6 +3,7 @@ Tests for the API client.
 """
 
 import pytest
+
 from ..core.api_client import api_client
 
 

@@ -1,12 +1,14 @@
-from fastapi import FastAPI, HTTPException, Header, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
-from pydantic import BaseModel
-from datetime import datetime, timezone
-from services.subscription_service import SubscriptionService
-import os
-import psutil
 import json
+import os
+from datetime import datetime, timezone
+from typing import Optional
+
+import psutil
+from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+from services.subscription_service import SubscriptionService
 
 app = FastAPI(
     title="Bleu.js API",

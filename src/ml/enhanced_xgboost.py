@@ -5,25 +5,26 @@ adaptive learning, and advanced security features to create a state-of-the-art
 machine learning system.
 """
 
-import numpy as np
-import xgboost as xgb
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
-import ray
-import optuna
-from sklearn.model_selection import KFold
-import logging
-import json
-import os
-from datetime import datetime
-import hashlib
 import base64
+import hashlib
+import json
+import logging
+import os
+import warnings
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+import GPUtil
+import numpy as np
+import optuna
+import psutil
+import ray
+import xgboost as xgb
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import psutil
-import GPUtil
-import warnings
+from sklearn.model_selection import KFold
 
 warnings.filterwarnings("ignore")
 
@@ -80,7 +81,7 @@ class QuantumFeatureProcessor:
     def _initialize_quantum_circuit(self):
         """Initialize quantum circuit for feature processing"""
         try:
-            from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+            from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
             qr = QuantumRegister(self.config.n_qubits)
             cr = ClassicalRegister(self.config.n_qubits)

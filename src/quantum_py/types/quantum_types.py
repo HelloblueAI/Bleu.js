@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Protocol
-import numpy as np
 from enum import Enum, auto
+from typing import Dict, List, Optional, Protocol
+
+import numpy as np
+
 from ..core.quantum_circuit import QuantumCircuit
 
 

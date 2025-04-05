@@ -1,6 +1,9 @@
-from sqlalchemy.orm import Session
-from src.models.subscription import SubscriptionPlan, PlanType
 import uuid
+
+from sqlalchemy.orm import Session
+
+from src.models.subscription import PlanType, SubscriptionPlan
+
 
 def setup_subscription_plans(db: Session):
     """Set up the subscription plans in the database."""
@@ -20,11 +23,11 @@ def setup_subscription_plans(db: Session):
             "standard_response_time": True,
             "uptime": "99.9%",
             "basic_analytics": True,
-            "email_support": True
+            "email_support": True,
         },
         rate_limit=100,
         uptime_sla="99.9",
-        support_level="standard"
+        support_level="standard",
     )
 
     # Enterprise Plan
@@ -45,11 +48,11 @@ def setup_subscription_plans(db: Session):
             "custom_model_training": True,
             "api_rate_limit_increase": True,
             "advanced_analytics": True,
-            "custom_integrations": True
+            "custom_integrations": True,
         },
         rate_limit=5000,
         uptime_sla="99.99",
-        support_level="enterprise"
+        support_level="enterprise",
     )
 
     # Add plans to database
@@ -57,4 +60,4 @@ def setup_subscription_plans(db: Session):
     db.add(enterprise_plan)
     db.commit()
 
-    return core_plan, enterprise_plan 
+    return core_plan, enterprise_plan

@@ -5,13 +5,15 @@ Main FastAPI application for the Bleu.js backend.
 import logging
 import logging.handlers
 from pathlib import Path
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config.settings import get_config
 from .api.router import router
+from .config.settings import get_config
 from .core.database import Base, engine, get_db
+
 
 # Configure logging
 def setup_logging():

@@ -2,21 +2,21 @@
 Test script for quantum-enhanced vision model
 """
 
-import tensorflow as tf
-import numpy as np
-from typing import List, Tuple
+import argparse
+import json
 import logging
 import os
-from pathlib import Path
-import argparse
 from datetime import datetime
-import json
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix, classification_report
-import cv2
+from pathlib import Path
+from typing import List, Tuple
 
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+import tensorflow as tf
 from quantum_vision_model import QuantumVisionModel
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 def setup_logging(log_dir: str) -> None:
@@ -86,7 +86,7 @@ def plot_roc_curves(
     y_true: np.ndarray, y_pred_proba: np.ndarray, class_names: List[str], save_path: str
 ) -> None:
     """Plot and save ROC curves."""
-    from sklearn.metrics import roc_curve, auc
+    from sklearn.metrics import auc, roc_curve
 
     plt.figure(figsize=(10, 8))
 

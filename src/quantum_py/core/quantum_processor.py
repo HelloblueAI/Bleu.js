@@ -1,8 +1,10 @@
-import numpy as np
-from typing import List, Dict, Tuple
 import logging
-from multiprocessing import Pool
 from dataclasses import dataclass
+from multiprocessing import Pool
+from typing import Dict, List, Tuple
+
+import numpy as np
+
 from .quantum_circuit import QuantumCircuit
 from .quantum_gate import QuantumGate
 

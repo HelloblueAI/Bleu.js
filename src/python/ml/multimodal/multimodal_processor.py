@@ -3,12 +3,14 @@ Enhanced Multimodal Processor for Bleu.js
 Integrates vision, text, and audio processing with quantum capabilities
 """
 
-import numpy as np
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass
-import logging
 import asyncio
-from ..computer_vision.vision_processor import VisionProcessor, VisionConfig
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
+
+from ..computer_vision.vision_processor import VisionConfig, VisionProcessor
 from ..quantum.quantum_enhancer import QuantumEnhancer
 
 

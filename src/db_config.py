@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,4 +17,4 @@ DB_CONFIG = {
 if os.getenv("TESTING") == "true":
     DATABASE_URL = "sqlite:///./test.db"
 else:
-    DATABASE_URL = f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}" 
+    DATABASE_URL = f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"

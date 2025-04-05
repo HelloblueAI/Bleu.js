@@ -3,11 +3,12 @@ Subscription service for managing API access.
 """
 
 from datetime import datetime, timedelta
-from typing import Tuple, Optional
+from typing import Optional, Tuple
+
 from sqlalchemy.orm import Session
 
-from .models import SubscriptionTier, Subscription, APICallLog, UsageStats
 from .database import User
+from .models import APICallLog, Subscription, SubscriptionTier, UsageStats
 
 
 class SubscriptionService:

@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException, Header
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-from typing import Optional
-from pydantic import BaseModel
 from datetime import datetime, timezone
+from typing import Optional
+
+import uvicorn
+from fastapi import FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 # Create FastAPI application
 application = FastAPI(
