@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: bleu-quantum
+Version: 1.0.0
+Summary: Advanced quantum computing capabilities for Bleu.js
+Home-page: https://github.com/bleu-js/bleu-quantum
+Author: Bleu.js Team
+Author-email: team@bleu.js
+Project-URL: Bug Tracker, https://github.com/bleu-js/bleu-quantum/issues
+Project-URL: Documentation, https://bleu-js.github.io/bleu-quantum
+Project-URL: Source Code, https://github.com/bleu-js/bleu-quantum
+Keywords: quantum-computing,quantum-machine-learning,quantum-ai,bleu.js
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+License-File: LICENSE
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: qiskit>=0.34.0
+Requires-Dist: cirq>=0.12.0
+Requires-Dist: pennylane>=0.19.0
+Requires-Dist: matplotlib>=3.4.3
+Requires-Dist: scipy>=1.7.1
+Provides-Extra: dev
+Requires-Dist: pytest>=6.2.5; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.15.1; extra == "dev"
+Requires-Dist: black>=21.7b0; extra == "dev"
+Requires-Dist: isort>=5.9.3; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: flake8>=3.9.2; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
