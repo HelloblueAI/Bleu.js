@@ -9,8 +9,8 @@ import numpy as np
 from opentelemetry import trace
 from pydantic import BaseModel
 
-from src.quantum.quantum_processor import QuantumProcessor
 from src.ml.enhanced_xgboost import EnhancedXGBoost
+from src.quantum.quantum_processor import QuantumProcessor
 from src.security.quantum_security import QuantumSecurityManager
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,7 @@ tracer = trace.get_tracer(__name__)
 
 class HealthcareConfig(BaseModel):
     """Configuration for healthcare application"""
+
     model_type: str = "enhanced_xgboost"
     quantum_backend: str = "qiskit"
     security_level: str = "high"
@@ -27,6 +28,7 @@ class HealthcareConfig(BaseModel):
 
 class MedicalImage:
     """Medical image data structure"""
+
     def __init__(self, image_data: np.ndarray, metadata: Dict):
         self.image_data = image_data
         self.metadata = metadata
@@ -50,16 +52,16 @@ class HealthcareSystem:
         with tracer.start_as_current_span("process_image"):
             # Apply quantum feature enhancement
             enhanced_features = self.quantum_processor.process(image.image_data)
-            
+
             # Make prediction with privacy preservation
             private_features = self.security_manager.add_differential_privacy(
                 enhanced_features
             )
             prediction = self.ml_model.predict(private_features)
-            
+
             # Add diagnosis
             image.diagnosis = self._interpret_prediction(prediction)
-            
+
             return image
 
     def _interpret_prediction(self, prediction: np.ndarray) -> str:
@@ -73,9 +75,9 @@ class HealthcareSystem:
             "diagnosis_accuracy": 0.999,  # 99.9% accuracy
             "processing_speed": 30.0,  # 30 FPS
             "energy_efficiency": 0.5,  # 50% reduction
-            "privacy_guarantee": self.config.privacy_epsilon
+            "privacy_guarantee": self.config.privacy_epsilon,
         }
 
     def validate_diagnosis(self, image: MedicalImage, ground_truth: str) -> bool:
         """Validate diagnosis against ground truth"""
-        return image.diagnosis == ground_truth 
+        return image.diagnosis == ground_truth

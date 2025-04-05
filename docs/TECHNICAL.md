@@ -31,7 +31,7 @@
 ```python
 class QuantumFeatureProcessor:
     """Enhanced quantum feature processor with advanced capabilities."""
-    
+
     def __init__(self, config: Optional[QuantumFeatureConfig] = None):
         self.config = config or QuantumFeatureConfig()
         self.quantum_circuit = None
@@ -63,7 +63,7 @@ class QuantumFeatureConfig:
 ```python
 class EnhancedXGBoost:
     """Enhanced XGBoost model with quantum computing capabilities"""
-    
+
     def __init__(self, quantum_config: Optional[Dict] = None):
         self.quantum_processor = QuantumProcessor()
         self.quantum_circuit = QuantumCircuit()
@@ -81,7 +81,7 @@ class EnhancedXGBoost:
 async def train(self, features: np.ndarray, labels: np.ndarray):
     # Process features with quantum enhancement
     features_enhanced = await self._enhance_features(features)
-    
+
     # Train XGBoost model
     self.model = xgb.XGBClassifier(
         **self.quantum_config.get("xgb_params", {}),
@@ -197,4 +197,4 @@ ML_NUM_EPOCHS=1000
 ### Contact
 - Technical Support: tech@bleujs.com
 - Enterprise Support: enterprise@bleujs.com
-- Documentation: docs.bleujs.com 
+- Documentation: docs.bleujs.com

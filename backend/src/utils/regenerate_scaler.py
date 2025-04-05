@@ -1,48 +1,64 @@
-import fcntl
+"""Script to regenerate scaler from training data."""
+
 import os
 import pickle
-import shutil
-import time
+from typing import Any, Dict, List
 
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-SCALER_PATH = "scaler.pkl"
-TEMP_SCALER_PATH = "scaler.pkl.tmp"
-LOCK_FILE = "scaler.lock"
 
-rng = np.random.default_rng(seed=42)
-X = rng.random((1000, 10))
+def load_training_data(data_dir: str) -> List[Dict[str, Any]]:
+    """Load training data from directory.
 
-try:
-    with open(LOCK_FILE, "w") as lockfile:
-        fcntl.flock(lockfile, fcntl.LOCK_EX)
+    Args:
+        data_dir: Directory containing training data files
 
-        # Train a new scaler
-        scaler = StandardScaler()
-        scaler.fit(X)
+    Returns:
+        List of training data dictionaries
+    """
+    training_data = []
+    for filename in os.listdir(data_dir):
+        if filename.endswith(".pkl"):
+            with open(os.path.join(data_dir, filename), "rb") as f:
+                training_data.extend(pickle.load(f))
+    return training_data
 
-        # ✅ Save as temp file
-        with open(TEMP_SCALER_PATH, "wb") as f:
-            pickle.dump(scaler, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-        # ✅ Ensure temp file exists before proceeding
-        retries = 3
-        while retries > 0:
-            if os.path.exists(TEMP_SCALER_PATH):
-                break
-            time.sleep(0.5)
-            retries -= 1
+def extract_features(data: List[Dict[str, Any]]) -> np.ndarray:
+    """Extract features from training data.
 
-        # ✅ Move temp file safely
-        shutil.move(TEMP_SCALER_PATH, SCALER_PATH)
-        print(f"✅ Scaler saved successfully as {SCALER_PATH} with protocol {pickle.HIGHEST_PROTOCOL}")
+    Args:
+        data: List of training data dictionaries
 
-except Exception as e:
-    if os.path.exists(TEMP_SCALER_PATH):
-        os.remove(TEMP_SCALER_PATH)
-    print(f"❌ ERROR: Scaler save failed, preventing corruption. {e}")
+    Returns:
+        Numpy array of features
+    """
+    features = []
+    for sample in data:
+        features.append([sample["feature1"], sample["feature2"], sample["feature3"]])
+    return np.array(features)
 
-finally:
-    if os.path.exists(LOCK_FILE):
-        os.remove(LOCK_FILE)
+
+def main() -> None:
+    """Main function."""
+    # Load training data
+    data_dir = "data/training"
+    training_data = load_training_data(data_dir)
+
+    # Extract features
+    features = extract_features(training_data)
+
+    # Fit scaler
+    scaler = StandardScaler()
+    scaler.fit(features)
+
+    # Save scaler
+    with open("models/scaler.pkl", "wb") as f:
+        pickle.dump(scaler, f)
+
+    print("✅ Scaler regenerated successfully!")
+
+
+if __name__ == "__main__":
+    main()

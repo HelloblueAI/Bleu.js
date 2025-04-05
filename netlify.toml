@@ -51,4 +51,4 @@
   targetPort = 3000
 
 [functions]
-  directory = "netlify/functions" 
+  directory = "netlify/functions"

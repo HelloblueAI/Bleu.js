@@ -1,0 +1,33 @@
+\documentclass{article}
+
+% ICML 2025 Template
+\usepackage[accepted]{icml2025}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+
+% Title and Author Information
+\icmltitlerunning{$title$}
+\icmlauthor{$for(author)$$author.name$ \And$endfor$}
+\icmlaffiliation{$for(author)$$author.affiliation$ \And$endfor$}
+\icmlcorrespondingauthor{$for(author)$$if(author.corresponding)$$author.email$$endif$$endfor$}
+
+% Paper Metadata
+\icmlkeywords{$for(keywords)$$keywords$$sep$, $endfor$}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+$abstract$
+\end{abstract}
+
+$body$
+
+\bibliography{references}
+\bibliographystyle{icml2025}
+
+\end{document}

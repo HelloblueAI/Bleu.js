@@ -762,7 +762,7 @@ predictions = await model.predict(X_test)
 - **Accuracy**: 85-90% on test set
 - **ROC AUC**: 0.9+
 - **Training Time**: 2-3x faster than classical XGBoost with GPU acceleration
-- **Feature Selection**: Improved feature importance scoring using quantum methods 
+- **Feature Selection**: Improved feature importance scoring using quantum methods
 
 
 > Install with pip install pytest if missing.
@@ -938,8 +938,3 @@ This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
-
-
-
-
-

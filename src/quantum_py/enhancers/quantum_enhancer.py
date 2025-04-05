@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 import numpy as np
 import tensorflow as tf
@@ -31,10 +31,11 @@ class QuantumEnhancer:
 
     def __init__(self, config: Optional[QuantumEnhancerConfig] = None):
         self.config = config or QuantumEnhancerConfig()
-        self.quantum_state = QuantumState(self.config.num_qubits)
+        self.quantum_state = None
         self.quantum_memory = {} if self.config.use_quantum_memory else None
         self.initialized = False
         self.quantum_gates = self._initialize_quantum_gates()
+        self.quantum_circuit = self._get_quantum_circuit()
 
     def initialize(self) -> None:
         """Initialize the quantum enhancer."""
@@ -42,6 +43,7 @@ class QuantumEnhancer:
             logger.info("Initializing QuantumEnhancer with config: %s", self.config)
             self._validate_config()
             self._initialize_quantum_memory()
+            self.quantum_state = QuantumState(self.config.num_qubits)
             self.initialized = True
             logger.info("QuantumEnhancer initialized successfully")
         except Exception as e:
@@ -49,45 +51,33 @@ class QuantumEnhancer:
             raise
 
     def enhance_tensor(self, tensor: tf.Tensor) -> tf.Tensor:
-        """Enhance a tensor using quantum processing.
-
-        Args:
-            tensor: Input tensor to enhance
-
-        Returns:
-            Enhanced tensor with quantum features
-        """
-        if not self.initialized:
-            raise RuntimeError("QuantumEnhancer not initialized")
-
+        """Apply quantum enhancement to a tensor."""
         if tensor is None:
             raise ValueError("Input tensor cannot be None")
 
+        if not isinstance(tensor, tf.Tensor):
+            raise TypeError("Input must be a TensorFlow tensor")
+
+        if not self.initialized or self.quantum_state is None:
+            self.initialize()
+
+        # Convert to numpy array for quantum processing
         try:
-            # Convert to numpy for quantum processing
-            if not isinstance(tensor, tf.Tensor):
-                raise ValueError("Input must be a TensorFlow tensor")
-            tensor_tensor: tf.Tensor = tensor  # Type hint for linter
-            data = tensor_tensor.numpy()
-            if data is None:
-                raise ValueError("Failed to convert tensor to numpy array")
-                
-            # Ensure data is not empty
-            if data.size == 0:
-                raise ValueError("Input tensor is empty")
-
-            # Apply quantum enhancement
-            enhanced_data = self._apply_quantum_enhancement(data)
-
-            # Apply quantum attention if enabled
-            if self.config.use_quantum_attention:
-                enhanced_data = self._apply_quantum_attention(enhanced_data)
-
-            # Convert back to tensor
-            return tf.convert_to_tensor(enhanced_data, dtype=tensor.dtype)
+            array = tensor.numpy()
         except Exception as e:
-            logger.error("Error enhancing tensor: %s", str(e))
-            raise
+            raise ValueError(f"Failed to convert tensor to numpy array: {str(e)}")
+
+        if array.size == 0:
+            raise ValueError("Input tensor is empty")
+
+        # Apply quantum enhancement
+        try:
+            enhanced_array = self._apply_quantum_enhancement(array)
+        except Exception as e:
+            raise RuntimeError(f"Failed to apply quantum enhancement: {str(e)}")
+
+        # Convert back to tensor
+        return tf.convert_to_tensor(enhanced_array, dtype=tensor.dtype)
 
     def enhance_model(self, model: tf.keras.Model) -> tf.keras.Model:
         """Enhance a TensorFlow model using quantum processing.
@@ -135,29 +125,29 @@ class QuantumEnhancer:
     def _process_quantum_batch(self, batch: np.ndarray) -> np.ndarray:
         """Process a batch of data using quantum operations."""
         # Prepare quantum state
-        self.quantum_state = QuantumState(self.config.num_qubits)
+        quantum_state = QuantumState(self.config.num_qubits)
 
         # Apply quantum gates
-        for gate in self._get_quantum_circuit():
-            self.quantum_state.apply_gate(gate, list(range(self.config.num_qubits)))
+        for gate in self.quantum_circuit:
+            quantum_state.apply_gate(gate, list(range(self.config.num_qubits)))
 
         # Apply noise and error correction
         if self.config.error_correction:
-            self.quantum_state.apply_noise()
+            quantum_state.apply_noise()
 
         # Measure and return results
         results = []
         for value in batch:
-            self.quantum_state.amplitudes[0] = value
-            outcome, prob = self.quantum_state.measure()
+            quantum_state.state[0] = value
+            outcome, prob = quantum_state.measure()
             results.append(outcome * prob)
 
         return np.array(results)
 
     def _apply_quantum_enhancement(self, data: np.ndarray) -> np.ndarray:
         """Apply quantum enhancement to data."""
-        if self.quantum_state is None:
-            raise RuntimeError("Quantum state not initialized")
+        if not self.initialized or self.quantum_state is None:
+            self.initialize()
 
         # Normalize data
         normalized = (data - np.mean(data)) / np.std(data)
@@ -166,10 +156,11 @@ class QuantumEnhancer:
         enhanced = np.zeros_like(normalized)
         for i in range(len(normalized)):
             # Create quantum state
-            self.quantum_state.amplitudes[0] = normalized[i]
+            self.quantum_state = QuantumState(self.config.num_qubits)
+            self.quantum_state.state[0] = normalized[i]
 
             # Apply quantum circuit
-            for gate in self._get_quantum_circuit():
+            for gate in self.quantum_circuit:
                 self.quantum_state.apply_gate(gate, [0])
 
             # Measure and store result
@@ -223,13 +214,16 @@ class QuantumEnhancer:
                 self.quantum_gates["CNOT"],
                 self.quantum_gates["Z"],
             ]
-        else:
+        elif self.config.optimization_level == 3:
             return [
                 self.quantum_gates["H"],
                 self.quantum_gates["CNOT"],
                 self.quantum_gates["Y"],
                 self.quantum_gates["Z"],
             ]
+        else:
+            # Default circuit for other optimization levels
+            return [self.quantum_gates["H"]]
 
     def _initialize_quantum_memory(self) -> None:
         """Initialize quantum memory if enabled."""

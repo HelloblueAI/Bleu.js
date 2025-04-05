@@ -1,6 +1,6 @@
 [run]
 source = quantum
-omit = 
+omit =
     */tests/*
     */__init__.py
     */setup.py
@@ -29,4 +29,4 @@ output = coverage.xml
 [paths]
 source =
     quantum/
-    */quantum/ 
+    */quantum/

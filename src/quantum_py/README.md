@@ -1983,10 +1983,10 @@ BLEU_EGGS_AUTO_OPTIMIZE=true
    ```bash
    # Clear npm cache
    npm cache clean --force
-   
+
    # Remove global installation
    npm uninstall -g bleu
-   
+
    # Reinstall
    npm install -g bleu
    ```
@@ -2001,7 +2001,7 @@ BLEU_EGGS_AUTO_OPTIMIZE=true
    ```bash
    # Reset AI configuration
    bleu config reset --ai
-   
+
    # Update AI models
    bleu update --ai
    ```
@@ -2157,9 +2157,3 @@ This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
-
-
-
-
-
-

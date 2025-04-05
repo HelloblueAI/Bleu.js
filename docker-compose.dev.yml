@@ -55,4 +55,4 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: pass
       ME_CONFIG_MONGODB_URL: mongodb://admin:pass@mongo:27017/
     depends_on:
-      - mongo 
+      - mongo

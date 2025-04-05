@@ -13,7 +13,7 @@ prompt_input() {
     local var_name=$1
     local description=$2
     local is_secret=$3
-    
+
     echo -e "${YELLOW}$description${NC}"
     if [ "$is_secret" = "true" ]; then
         read -s -p "Enter value: " value
@@ -21,14 +21,14 @@ prompt_input() {
     else
         read -p "Enter value: " value
     fi
-    
+
     # Update .env file
     if grep -q "^${var_name}=" .env; then
         sed -i '' "s|^${var_name}=.*|${var_name}=${value}|" .env
     else
         echo "${var_name}=${value}" >> .env
     fi
-    
+
     # Export variable
     export "${var_name}=${value}"
 }
@@ -63,7 +63,7 @@ if [ "$has_stripe" = "n" ]; then
     echo "4. Copy your publishable key (starts with pk_test_)"
     echo "5. Copy your secret key (starts with sk_test_)"
     echo -e "${YELLOW}After setting up your account, run this script again to configure the keys.${NC}"
-    
+
     # Set placeholder values
     set_env_var "STRIPE_PUBLIC_KEY" "pk_test_placeholder"
     set_env_var "STRIPE_SECRET_KEY" "sk_test_placeholder"
@@ -86,7 +86,7 @@ if [ "$has_ses" = "n" ]; then
     echo "2. Create SMTP credentials"
     echo "3. Verify your email domain"
     echo -e "${YELLOW}After setting up SES, run this script again to configure the credentials.${NC}"
-    
+
     # Set placeholder values
     set_env_var "AWS_SES_USER" "placeholder_ses_user"
     set_env_var "AWS_SES_PASSWORD" "placeholder_ses_password"
@@ -131,4 +131,4 @@ if [ "$has_stripe" = "n" ] || [ "$has_ses" = "n" ]; then
     echo -e "${YELLOW}Please set up the required services and run this script again to update the credentials.${NC}"
 else
     echo -e "${YELLOW}You can now run ./scripts/deploy.sh to start the deployment.${NC}"
-fi 
+fi

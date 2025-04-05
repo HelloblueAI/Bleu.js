@@ -40,4 +40,4 @@ markers = [
     "quantum: mark test as quantum computing related",
     "slow: mark test as slow running",
     "integration: mark test as integration test"
-] 
+]

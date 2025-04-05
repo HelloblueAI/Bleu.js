@@ -81,7 +81,7 @@
                         <i class="fab fa-github text-xl mr-3"></i>
                         <span class="font-medium">Continue with GitHub</span>
                     </button>
-                    
+
                     <button onclick="signUpWithGoogle()" class="social-btn w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50">
                         <i class="fab fa-google text-xl mr-3"></i>
                         <span class="font-medium">Continue with Google</span>
@@ -109,16 +109,16 @@
             <path d="M0 0L288 40L576 80L864 120L1152 160L1440 0H0V0Z" fill="#bfdbfe" class="floating" style="animation-delay: 3s"/>
         </svg>
     </div>
-    
+
     <script>
         // Social authentication functions
         async function signUpWithGitHub() {
             window.location.href = '/api/auth/github';
         }
-        
+
         async function signUpWithGoogle() {
             window.location.href = '/api/auth/google';
         }
     </script>
 </body>
-</html> 
+</html>

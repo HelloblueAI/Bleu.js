@@ -33,4 +33,4 @@ pytest tests/ -v --cov=src --cov-report=term-missing
 echo "Generating coverage report..."
 coverage html
 
-echo "Test suite completed successfully!" 
+echo "Test suite completed successfully!"

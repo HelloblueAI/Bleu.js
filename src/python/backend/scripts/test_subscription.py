@@ -17,14 +17,14 @@ from bleujs.core.subscription import SubscriptionService
 def main():
     """Test the subscription system."""
     print("Testing Bleu.js subscription system...")
-    
+
     try:
         # Create database session
         db = SessionLocal()
-        
+
         # Test user ID (replace with actual user ID)
         test_user_id = 1
-        
+
         # Test subscription creation
         print("\nTesting subscription creation...")
         subscription = SubscriptionService.get_or_create_subscription(
@@ -32,7 +32,7 @@ def main():
         )
         print(f"Created subscription: {subscription.tier.value}")
         print(f"API calls remaining: {subscription.api_calls_remaining}")
-        
+
         # Test API access check
         print("\nTesting API access check...")
         has_access, error_message = SubscriptionService.check_api_access(
@@ -41,14 +41,14 @@ def main():
         print(f"Has access: {has_access}")
         if error_message:
             print(f"Error message: {error_message}")
-        
+
         # Test usage stats
         print("\nTesting usage statistics...")
         usage_stats = SubscriptionService.get_usage_stats(db, test_user_id)
         print(f"Usage stats: {usage_stats}")
-        
+
         print("\nAll tests completed successfully!")
-        
+
     except Exception as e:
         print(f"\nError during testing: {e}")
         sys.exit(1)
@@ -57,4 +57,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

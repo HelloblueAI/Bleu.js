@@ -39,7 +39,7 @@ impl QuantumState {
                 let i_target = (i >> target) & 1;
                 let j_control = (j >> control) & 1;
                 let j_target = (j >> target) & 1;
-                
+
                 if i_control == 1 && i_target != j_target {
                     new_data[i * this.size + j] = this.data[i * this.size + j];
                 } else {
@@ -207,17 +207,17 @@ impl QuantumState {
 pub fn apply_quantum_gates(state_ptr: *mut f64, gates_ptr: *mut f64, size: usize) -> *mut f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
     let gates = unsafe { slice::from_raw_parts(gates_ptr, size * size * 4) };
-    
+
     let mut quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     for i in 0..size {
         let gate = &gates[i * 4..(i + 1) * 4];
         quantum_state.apply_gate(gate, i);
     }
-    
+
     let result = quantum_state.data.as_mut_ptr();
     std::mem::forget(quantum_state);
     result
@@ -227,12 +227,12 @@ pub fn apply_quantum_gates(state_ptr: *mut f64, gates_ptr: *mut f64, size: usize
 pub fn measure_quantum_state(state_ptr: *mut f64, basis_ptr: *const u8, size: usize) -> *mut f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
     let basis = unsafe { std::str::from_utf8_unchecked(slice::from_raw_parts(basis_ptr, 1)) };
-    
+
     let quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     let probabilities = quantum_state.measure(basis);
     let result = probabilities.as_mut_ptr();
     std::mem::forget(probabilities);
@@ -242,12 +242,12 @@ pub fn measure_quantum_state(state_ptr: *mut f64, basis_ptr: *const u8, size: us
 #[wasm_bindgen]
 pub fn prepare_quantum_state(data_ptr: *const f64, size: usize) -> *mut f64 {
     let data = unsafe { slice::from_raw_parts(data_ptr, size) };
-    
+
     let mut quantum_state = QuantumState::new(size);
     for i in 0..size {
         quantum_state.data[i * size + i] = data[i];
     }
-    
+
     let result = quantum_state.data.as_mut_ptr();
     std::mem::forget(quantum_state);
     result
@@ -256,12 +256,12 @@ pub fn prepare_quantum_state(data_ptr: *const f64, size: usize) -> *mut f64 {
 #[wasm_bindgen]
 pub fn compute_quantum_entropy(state_ptr: *mut f64, size: usize) -> f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
-    
+
     let quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     quantum_state.get_entropy()
 }
 
@@ -293,14 +293,14 @@ pub fn free_memory(ptr: *mut u8) {
 #[wasm_bindgen]
 pub fn apply_quantum_fourier_transform(state_ptr: *mut f64, start: usize, end: usize, size: usize) -> *mut f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
-    
+
     let mut quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     quantum_state.apply_qft(start, end);
-    
+
     let result = quantum_state.data.as_mut_ptr();
     std::mem::forget(quantum_state);
     result
@@ -310,12 +310,12 @@ pub fn apply_quantum_fourier_transform(state_ptr: *mut f64, start: usize, end: u
 pub fn estimate_phase(state_ptr: *mut f64, unitary_ptr: *const f64, precision: usize, size: usize) -> f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
     let unitary = unsafe { slice::from_raw_parts(unitary_ptr, size * size) };
-    
+
     let mut quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     quantum_state.phase_estimation(unitary, precision)
 }
 
@@ -323,15 +323,15 @@ pub fn estimate_phase(state_ptr: *mut f64, unitary_ptr: *const f64, precision: u
 pub fn correct_quantum_errors(state_ptr: *mut f64, syndrome_ptr: *const bool, size: usize) -> *mut f64 {
     let state = unsafe { slice::from_raw_parts_mut(state_ptr, size * size) };
     let syndrome = unsafe { slice::from_raw_parts(syndrome_ptr, 4) };
-    
+
     let mut quantum_state = QuantumState {
         data: state.to_vec(),
         size,
     };
-    
+
     quantum_state.apply_error_correction(syndrome);
-    
+
     let result = quantum_state.data.as_mut_ptr();
     std::mem::forget(quantum_state);
     result
-} 
+}

@@ -122,4 +122,4 @@ A: "Our approach combines:
 - [ ] Prepare visual aids
 - [ ] Rehearse timing
 - [ ] Prepare backup materials
-- [ ] Set up demo environment 
+- [ ] Set up demo environment

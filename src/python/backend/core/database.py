@@ -29,8 +29,9 @@ Base = declarative_base()
 
 class User(Base):
     """User model."""
-    __tablename__ = 'users'
-    
+
+    __tablename__ = "users"
+
     id = Column(Integer, primary_key=True)
     uuid = Column(String(36), unique=True, default=lambda: str(uuid.uuid4()))
     username = Column(String(50), unique=True, nullable=False)
@@ -40,7 +41,7 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     # Relationships
     subscription = relationship("Subscription", back_populates="user", uselist=False)
     api_calls = relationship("APICallLog", back_populates="user")
@@ -49,50 +50,53 @@ class User(Base):
 
 class Subscription(Base):
     """Subscription model."""
-    __tablename__ = 'subscriptions'
-    
+
+    __tablename__ = "subscriptions"
+
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     tier = Column(Enum(SubscriptionTier), nullable=False, default=SubscriptionTier.FREE)
     api_calls_remaining = Column(Integer, nullable=False)
     api_calls_total = Column(Integer, nullable=False)
     last_reset = Column(DateTime, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     # Relationships
     user = relationship("User", back_populates="subscription")
 
 
 class APICallLog(Base):
     """API call log model."""
-    __tablename__ = 'api_call_logs'
-    
+
+    __tablename__ = "api_call_logs"
+
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     endpoint = Column(String(100), nullable=False)
     method = Column(String(10), nullable=False)
     status_code = Column(Integer, nullable=False)
     response_time = Column(Float, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     # Relationships
     user = relationship("User", back_populates="api_calls")
 
 
 class Job(Base):
     """Job model."""
-    __tablename__ = 'jobs'
-    
+
+    __tablename__ = "jobs"
+
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     job_type = Column(String(50), nullable=False)
     status = Column(String(20), default="pending")
     result = Column(JSON)
     error = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     # Relationships
     user = relationship("User", back_populates="jobs")
 
@@ -112,4 +116,4 @@ def get_db():
     try:
         yield db
     finally:
-        db.close() 
+        db.close()

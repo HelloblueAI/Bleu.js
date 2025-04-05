@@ -64,4 +64,4 @@
 - [ ] Set up mobile alerts
 - [ ] Share calendar with team
 - [ ] Test notification system
-- [ ] Create backup procedures 
+- [ ] Create backup procedures

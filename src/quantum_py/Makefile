@@ -43,4 +43,4 @@ help:
 	@echo "  build    - Build package"
 	@echo "  publish  - Publish to PyPI"
 	@echo "  coverage - Generate coverage report"
-	@echo "  tox      - Run tests across Python versions" 
+	@echo "  tox      - Run tests across Python versions"

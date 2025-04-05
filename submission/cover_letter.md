@@ -45,4 +45,4 @@ info@helloblue.ai
 
 ---
 
-Special thanks to the entire Helloblue, Inc. team for their dedication, innovation, and hard work in making Bleu.js a reality. 
+Special thanks to the entire Helloblue, Inc. team for their dedication, innovation, and hard work in making Bleu.js a reality.

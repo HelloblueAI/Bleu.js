@@ -1,115 +1,82 @@
-#  Copyright (c) 2025, Helloblue Inc.
-#  Open-Source Community Edition
+"""Script to train XGBoost model."""
 
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to use,
-#  copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-#  the Software, subject to the following conditions:
-
-#  1. The above copyright notice and this permission notice shall be included in
-#     all copies or substantial portions of the Software.
-#  2. Contributions to this project are welcome and must adhere to the project's
-#     contribution guidelines.
-#  3. The name "Helloblue Inc." and its contributors may not be used to endorse
-#     or promote products derived from this software without prior written consent.
-
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#  THE SOFTWARE.
-
-import logging
 import os
+import pickle
+from typing import Any, Dict, Tuple
 
-import joblib
 import numpy as np
-import optuna
-import xgboost as xgb
-from sklearn.metrics import (
-    accuracy_score,
-    f1_score,
-    precision_score,
-    recall_score,
-    roc_auc_score,
-)
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+from xgboost import XGBClassifier
 
 
-rng = np.random.default_rng(42)
-X = rng.random((1000, 10))
-y = (X.sum(axis=1) > 5).astype(int)
+def load_data(data_path: str) -> Tuple[np.ndarray, np.ndarray]:
+    """Load training data.
+
+    Args:
+        data_path: Path to training data file
+
+    Returns:
+        Tuple of (features, labels)
+    """
+    with open(data_path, "rb") as f:
+        data = pickle.load(f)
+    return data["features"], data["labels"]
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+def train_xgboost(
+    features: np.ndarray, labels: np.ndarray, params: Dict[str, Any]
+) -> XGBClassifier:
+    """Train XGBoost model.
+
+    Args:
+        features: Training features
+        labels: Training labels
+        params: Model parameters
+
+    Returns:
+        Trained XGBoost model
+    """
+    # Split data
+    X_train, X_val, y_train, y_val = train_test_split(
+        features, labels, test_size=0.2, random_state=42
+    )
+
+    # Train model
+    model = XGBClassifier(**params)
+    model.fit(
+        X_train,
+        y_train,
+        eval_set=[(X_val, y_val)],
+        early_stopping_rounds=10,
+        verbose=False,
+    )
+
+    return model
 
 
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+def main() -> None:
+    """Main function."""
+    # Load data
+    data_path = "data/training.pkl"
+    features, labels = load_data(data_path)
 
-
-def objective(trial):
-    """Optimize XGBoost hyperparameters using Optuna."""
+    # Train model
     params = {
-        "n_estimators": trial.suggest_int("n_estimators", 100, 500),
-        "max_depth": trial.suggest_int("max_depth", 3, 10),
-        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3),
-        "subsample": trial.suggest_float("subsample", 0.5, 1.0),
-        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
-        "reg_alpha": trial.suggest_float("reg_alpha", 0.0, 10.0),
-        "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 10.0),
+        "max_depth": 6,
+        "learning_rate": 0.1,
+        "n_estimators": 100,
         "objective": "binary:logistic",
-        "eval_metric": "logloss",
-        "use_label_encoder": False,
+        "random_state": 42,
     }
+    model = train_xgboost(features, labels, params)
 
-    model = xgb.XGBClassifier(**params)
-    model.fit(X_train, y_train)
+    # Save model
+    os.makedirs("models", exist_ok=True)
+    with open("models/xgboost.pkl", "wb") as f:
+        pickle.dump(model, f)
 
-    y_pred = model.predict(X_test)
-    return accuracy_score(y_test, y_pred)
-
-logging.info("🚀 Optimizing hyperparameters using Optuna...")
-study = optuna.create_study(direction="maximize")
-study.optimize(objective, n_trials=20)
-best_params = study.best_params
-logging.info(f"✅ Best Hyperparameters: {best_params}")
+    print("✅ XGBoost model trained and saved successfully!")
 
 
-model = xgb.XGBClassifier(**best_params)
-model.fit(X_train, y_train)
-
-
-y_pred = model.predict(X_test)
-y_proba = model.predict_proba(X_test)[:, 1]
-
-accuracy = accuracy_score(y_test, y_pred)
-roc_auc = roc_auc_score(y_test, y_proba)
-f1 = f1_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-
-logging.info("🔥 Model Performance:")
-logging.info(f"✅ Accuracy: {accuracy:.4f}")
-logging.info(f"✅ ROC-AUC: {roc_auc:.4f}")
-logging.info(f"✅ F1 Score: {f1:.4f}")
-logging.info(f"✅ Precision: {precision:.4f}")
-logging.info(f"✅ Recall: {recall:.4f}")
-
-
-feature_importances = model.feature_importances_
-logging.info(f"🔍 Feature Importances: {feature_importances}")
-
-
-model_path = os.path.join(os.path.dirname(__file__), "xgboost_model.pkl")
-scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
-joblib.dump(model, model_path)
-joblib.dump(scaler, scaler_path)
-logging.info(f"✅ Model saved as {model_path}")
-logging.info(f"✅ Scaler saved as {scaler_path}")
+if __name__ == "__main__":
+    main()

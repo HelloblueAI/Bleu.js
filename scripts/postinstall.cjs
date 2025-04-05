@@ -51,4 +51,4 @@ try {
 }
 
 console.log('Bleu.js setup completed successfully!');
-console.log('You can now use Bleu.js in your project.'); 
+console.log('You can now use Bleu.js in your project.');

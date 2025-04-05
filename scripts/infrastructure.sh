@@ -194,4 +194,4 @@ EOF
 
 echo -e "${GREEN}AWS infrastructure setup completed successfully!${NC}"
 echo -e "${YELLOW}Infrastructure details have been saved to infrastructure-details.txt${NC}"
-echo -e "${YELLOW}Please keep these details secure and do not commit them to version control.${NC}" 
+echo -e "${YELLOW}Please keep these details secure and do not commit them to version control.${NC}"

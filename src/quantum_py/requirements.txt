@@ -50,4 +50,4 @@ requests>=2.27.0
 # Data Processing
 dask>=2022.1.0
 pyarrow>=7.0.0
-h5py>=3.6.0 
+h5py>=3.6.0

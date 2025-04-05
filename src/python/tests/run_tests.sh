@@ -18,4 +18,4 @@ pip install -r requirements-test.txt
 pytest --cov=.. --cov-report=term-missing -v
 
 # Deactivate virtual environment
-deactivate 
+deactivate

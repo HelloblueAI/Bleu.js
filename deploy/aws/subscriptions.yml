@@ -6,7 +6,8 @@ Resources:
   BasicUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
-      UsagePlanName: !Sub ${AWS::StackName}-basic-plan
+      UsagePlanName: 
+        Fn::Sub: ${AWS::StackName}-basic-plan
       Description: Basic plan - 100 API calls per month
       Quota:
         Limit: 100
@@ -18,7 +19,8 @@ Resources:
   EnterpriseUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
-      UsagePlanName: !Sub ${AWS::StackName}-enterprise-plan
+      UsagePlanName: 
+        Fn::Sub: ${AWS::StackName}-enterprise-plan
       Description: Enterprise plan - 5000 API calls per month with 24/7 support
       Quota:
         Limit: 5000
@@ -31,41 +33,51 @@ Resources:
   BasicUsagePlanKey:
     Type: AWS::ApiGateway::UsagePlanKey
     Properties:
-      KeyId: !Ref BasicApiKey
+      KeyId: 
+        Ref: BasicApiKey
       KeyType: API_KEY
-      UsagePlanId: !Ref BasicUsagePlan
+      UsagePlanId: 
+        Ref: BasicUsagePlan
 
   EnterpriseUsagePlanKey:
     Type: AWS::ApiGateway::UsagePlanKey
     Properties:
-      KeyId: !Ref EnterpriseApiKey
+      KeyId: 
+        Ref: EnterpriseApiKey
       KeyType: API_KEY
-      UsagePlanId: !Ref EnterpriseUsagePlan
+      UsagePlanId: 
+        Ref: EnterpriseUsagePlan
 
   # API Keys
   BasicApiKey:
     Type: AWS::ApiGateway::ApiKey
     Properties:
-      Name: !Sub ${AWS::StackName}-basic-key
+      Name: 
+        Fn::Sub: ${AWS::StackName}-basic-key
       Description: API key for basic tier
       Enabled: true
-      Value: !Sub '${AWS::StackName}-basic-${AWS::AccountId}'
+      Value: 
+        Fn::Sub: ${AWS::StackName}-basic-${AWS::AccountId}
 
   EnterpriseApiKey:
     Type: AWS::ApiGateway::ApiKey
     Properties:
-      Name: !Sub ${AWS::StackName}-enterprise-key
+      Name: 
+        Fn::Sub: ${AWS::StackName}-enterprise-key
       Description: API key for enterprise tier
       Enabled: true
-      Value: !Sub '${AWS::StackName}-enterprise-${AWS::AccountId}'
+      Value: 
+        Fn::Sub: ${AWS::StackName}-enterprise-${AWS::AccountId}
 
   # Lambda Functions for Usage Tracking
   UsageTrackingFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Sub ${AWS::StackName}-usage-tracking
+      FunctionName: 
+        Fn::Sub: ${AWS::StackName}-usage-tracking
       Handler: index.handler
-      Role: !GetAtt LambdaExecutionRole.Arn
+      Role: 
+        Fn::GetAtt: [LambdaExecutionRole, Arn]
       Code:
         ZipFile: |
           const AWS = require('aws-sdk');
@@ -75,7 +87,7 @@ Resources:
           exports.handler = async (event) => {
             const apiKey = event.apiKey;
             const usage = event.usage;
-            
+
             const params = {
               TableName: TABLE_NAME,
               Key: { apiKey },
@@ -93,10 +105,12 @@ Resources:
       Timeout: 30
       Environment:
         Variables:
-          USAGE_TABLE: !Ref UsageTable
+          USAGE_TABLE: 
+            Ref: UsageTable
       LoggingConfig:
         LogFormat: JSON
-        LogGroup: !Ref UsageTrackingLogGroup
+        LogGroup: 
+          Ref: UsageTrackingLogGroup
         ApplicationLogLevel: INFO
         SystemLogLevel: INFO
 
@@ -104,14 +118,23 @@ Resources:
   UsageTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ${AWS::StackName}-usage
+      TableName:
+        Fn::Sub: ${AWS::StackName}-usage
       AttributeDefinitions:
-        - AttributeName: apiKey
+        - AttributeName: userId
           AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
       KeySchema:
-        - AttributeName: apiKey
+        - AttributeName: userId
           KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: ${AWS::StackName}-usage
 
   # IAM Role for Lambda
   LambdaExecutionRole:
@@ -202,13 +225,13 @@ Resources:
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref SubscriptionTaskDefinition
       DesiredCount: 1
-      
+
   SubscriptionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /ecs/${AWS::StackName}/subscription-service
       RetentionInDays: 30
-      
+
   SubscriptionTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -300,16 +323,31 @@ Resources:
 Outputs:
   BasicApiKey:
     Description: API Key for Basic Tier
-    Value: !Ref BasicApiKey
+    Value: 
+      Ref: BasicApiKey
 
   EnterpriseApiKey:
     Description: API Key for Enterprise Tier
-    Value: !Ref EnterpriseApiKey
+    Value: 
+      Ref: EnterpriseApiKey
 
   UsageTableName:
-    Description: DynamoDB Table for Usage Tracking
-    Value: !Ref UsageTable
+    Description: Name of the usage table
+    Value:
+      Ref: UsageTable
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-usage-table
 
   UsageAlertsTopicArn:
     Description: SNS Topic ARN for Usage Alerts
-    Value: !Ref UsageAlertsTopic 
+    Value: 
+      Ref: UsageAlertsTopic
+
+  SubscriptionTableName:
+    Description: Name of the subscription table
+    Value:
+      Ref: SubscriptionTable
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-subscription-table

@@ -75,4 +75,4 @@ Our quantum-enhanced vision system demonstrates significant improvements in perf
 
 1. [Quantum Computing for Computer Vision](https://arxiv.org/abs/XXXX.XXXXX)
 2. [Advanced Neural Architectures](https://arxiv.org/abs/XXXX.XXXXX)
-3. [Quantum-Inspired Algorithms](https://arxiv.org/abs/XXXX.XXXXX) 
+3. [Quantum-Inspired Algorithms](https://arxiv.org/abs/XXXX.XXXXX)

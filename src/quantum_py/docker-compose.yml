@@ -37,4 +37,4 @@ services:
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
-    command: pytest --cov=quantum --cov-report=html 
+    command: pytest --cov=quantum --cov-report=html

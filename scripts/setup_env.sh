@@ -35,4 +35,4 @@ set_env_var "AWS_SES_PASSWORD" "your_aws_ses_password"
 set_env_var "ALERT_EMAIL" "alerts@bleujs.com"
 
 echo -e "${GREEN}Environment variables have been set up.${NC}"
-echo -e "${YELLOW}Please update the values in .env with your actual credentials.${NC}" 
+echo -e "${YELLOW}Please update the values in .env with your actual credentials.${NC}"
