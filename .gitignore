@@ -12,7 +12,7 @@
 !.github/workflows/*.yml
 
 # ----------------------------------------
-# 📊 NEVER Track Any Reports
+# 📊 Reports & Coverage
 # ----------------------------------------
 report/
 reports/
@@ -36,6 +36,14 @@ htmlcov/
 *.snap
 __snapshots__/
 *.lcov
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage.*
+*.coverage
+.jest/
+.jest-cache/
+.nyc_cache/
 
 # ----------------------------------------
 # 📦 Dependencies & Package Management
@@ -51,11 +59,10 @@ node_modules/
 !yarn/releases/
 !yarn/sdks/
 !yarn/versions/
-
-# Lock Files
-!pnpm-lock.yaml
+.yarnrc
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 **/package-lock.json
 **/yarn.lock
 
@@ -158,17 +165,37 @@ out/
 storybook-static/
 __sapper__/
 .cdk.out/
+.svelte-kit/
+.vercel/
+.netlify/
+lib/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # ----------------------------------------
 # 🐍 Python & Virtual Environments
 # ----------------------------------------
 venv/
 **/venv/
+env/
+ENV/
+.venv
+bleujs-env-*/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-mypy_cache/
+*.py[cod]
+*$py.class
+*.so
+.Python
 pip-log.txt
 pip-delete-this-directory.txt
 bleujs-env/
@@ -176,6 +203,13 @@ bleujs-env/
 .python-version
 *.egg-info/
 .eggs/
+.mypy_cache/
+.ruff_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 
 # ----------------------------------------
 # 🤖 Machine Learning & Model Files
@@ -269,6 +303,7 @@ xgboost_training.log
 mlflow.log
 *.training.log
 *.training.*.log
+lerna-debug.log*
 
 # ----------------------------------------
 # 🛠️ IDE & Editor
@@ -281,6 +316,14 @@ mlflow.log
 .vs/
 *.sublime-workspace
 *.sublime-project
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.project
+.classpath
+.settings/
 
 # ----------------------------------------
 # 🐳 Docker & Containers
@@ -311,6 +354,12 @@ docker-compose*.yml
 .trash-*/
 .temp/
 .tmp/
+*~
+*.temp
+*.backup
+*.old
+*.orig
+*.rej
 
 # ----------------------------------------
 # 🔧 Project Specific
@@ -348,146 +397,14 @@ $RECYCLE.BIN/
 stats.html
 bundle-analysis/
 webpack-bundle-analyzer/
+.cpuprofile
+.heapprofile
+.flamegraph
+*.prof
 
 # ----------------------------------------
-# ⭐ Keep These Files
+# 🎨 Media Files
 # ----------------------------------------
-!.gitignore
-!.gitattributes
-!requirements.txt
-!pyproject.toml
-!jest.config.js
-!jest.config.ts
-!jest.config.cjs
-!jest.setup.js
-!jest.setup.ts
-# Dependencies
-node_modules/
-.pnp/
-.pnp.js
-.pnpm-store/
-.yarn/
-.yarnrc
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Build outputs
-dist/
-build/
-out/
-.next/
-.nuxt/
-.output/
-.cache/
-.temp/
-
-# Testing
-coverage/
-.nyc_output/
-.nyc_cache/
-__snapshots__/
-*.lcov
-.jest/
-.jest-cache/
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Environment variables
-.env
-.env.*
-!.env.example
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDE and Editor files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.settings/
-*.sublime-workspace
-*.sublime-project
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# TypeScript
-*.tsbuildinfo
-tsconfig.tsbuildinfo
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.swp
-*.swo
-*~
-
-# Cache directories
-.cache/
-.temp/
-.tmp/
-.eslintcache
-.stylelintcache
-
-# Documentation
-docs/_build/
-site/
-.docusaurus/
-
-# Quantum computing specific
-.quantum-cache/
-.quantum-temp/
-.quantum-debug/
-
-# Security specific
-.security-cache/
-.security-temp/
-.security-debug/
-
-# Multimodal specific
-.multimodal-cache/
-.multimodal-temp/
-.multimodal-debug/
-
-# TensorFlow.js specific
-.tfjs-cache/
-.tfjs-temp/
-.tfjs-debug/
-
-# Model files
-*.h5
-*.pkl
-*.onnx
-*.tflite
-*.pb
-*.pt
-*.pth
-*.bin
-*.weights
-*.model
-
-# Large media files
 *.mp4
 *.tiff
 *.avi
@@ -509,250 +426,50 @@ site/
 *.svg
 *.ico
 
-# Database files
-*.sqlite
-*.sqlite3
-*.db
-
-# Backup files
-*.bak
-*.backup
-*.old
-*.orig
-*.rej
-*.swo
-*.swp
-*~
-
-# System Files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# Project specific
-frontend/
-backend/
-venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-build/
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# CI/CD
-.github/workflows/
-.gitlab-ci.yml
-.circleci/
-.travis.yml
-.azure-pipelines/
-.jenkins/
-.husky/
-.lint-staged/
-
-# Performance profiling
-.cpuprofile
-.heapprofile
-.flamegraph
-*.prof
-
-# Bundle analysis
-stats.html
-bundle-analysis/
-webpack-bundle-analyzer/
-
-# Local development
-.local/
-*.local
-
-# Production
-dist/
-build/
-lib/
-
-# Misc
-.DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Editor directories and files
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# TypeScript
-*.tsbuildinfo
-
-# Package manager
-.pnpm-store/
-.yarn/
-.yarnrc
+# ----------------------------------------
+# ⚛️ Quantum Computing
+# ----------------------------------------
+.quantum-cache/
+.quantum-temp/
+.quantum-debug/
 
 # ----------------------------------------
-# 🐍 Python
+# 🔐 Security
 # ----------------------------------------
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-venv/
-env/
-ENV/
-.env
-.venv
-bleujs-env-*/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
-
-# Testing
-.coverage
-htmlcov/
-.tox/
-.pytest_cache/
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# Logs
-*.log
-logs/
-log/
-
-# Local development
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Build output
-dist/
-build/
-*.tsbuildinfo
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.swp
-*~
-
-# System Files
-.DS_Store
-Thumbs.db
-
-# Test GPG signing
-# Testing GPG with different key
-
-# Local Netlify folder
-.netlify
+.security-cache/
+.security-temp/
+.security-debug/
 
 # ----------------------------------------
-# 🐳 Frontend Specific
+# 🎭 Multimodal
 # ----------------------------------------
-# Build outputs
-dist/
-build/
-out/
-.next/
-.nuxt/
-.output/
-.cache/
-.temp/
-.tmp/
-
-# Development tools
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
-# Logs and debug files
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Editor directories and files
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
-# Misc
-*.log
-*.bak
-*.tmp
-*.temp
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
+.multimodal-cache/
+.multimodal-temp/
+.multimodal-debug/
 
 # ----------------------------------------
-# 🚀 GitHub Actions
+# 🤖 TensorFlow.js
 # ----------------------------------------
-.github/
-!.github/workflows/
+.tfjs-cache/
+.tfjs-temp/
+.tfjs-debug/
+
+# ----------------------------------------
+# 📚 Documentation
+# ----------------------------------------
+docs/_build/
+site/
+.docusaurus/
+
+# ----------------------------------------
+# ⭐ Keep These Files
+# ----------------------------------------
+!.gitignore
+!.gitattributes
+!requirements.txt
+!pyproject.toml
+!jest.config.js
+!jest.config.ts
+!jest.config.cjs
+!jest.setup.js
+!jest.setup.ts
