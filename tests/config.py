@@ -1,17 +1,19 @@
+from datetime import UTC, datetime, timedelta
+from functools import lru_cache
+from typing import List, Optional
+
 import pytest
+from pydantic_settings import BaseSettings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime, UTC, timedelta
-from src.models.declarative_base import Base
-from src.models.user import User
-from src.models.subscription import Subscription, SubscriptionPlan, APIToken, PlanType
-from src.models.customer import RateLimitToken
-from src.models.rate_limit import RateLimit
-from typing import List, Optional
-from pydantic_settings import BaseSettings
-from functools import lru_cache
 from sqlalchemy.pool import StaticPool
+
 from src.config import settings
+from src.models.customer import RateLimitToken
+from src.models.declarative_base import Base
+from src.models.rate_limit import RateLimit
+from src.models.subscription import APIToken, PlanType, Subscription, SubscriptionPlan
+from src.models.user import User
 
 # Test configuration constants
 TEST_EMAIL = "test@example.com"
@@ -109,7 +111,7 @@ def engine():
         "sqlite:///:memory:",
         connect_args={"timeout": 30, "check_same_thread": False},
         poolclass=StaticPool,
-        isolation_level="SERIALIZABLE"
+        isolation_level="SERIALIZABLE",
     )
     Base.metadata.create_all(engine)
     return engine
@@ -155,7 +157,7 @@ def test_subscription_plan(db_session):
         features={"core_ai_model_access": True},
         rate_limit=100,
         uptime_sla="99.9%",
-        support_level="standard"
+        support_level="standard",
     )
     db_session.add(plan)
     db_session.commit()
@@ -205,7 +207,7 @@ def test_rate_limit(db_session, test_user):
         calls_count=0,
         last_reset=datetime.now(UTC),
         current_period_start=datetime.now(UTC),
-        last_used=datetime.now(UTC)
+        last_used=datetime.now(UTC),
     )
     db_session.add(rate_limit)
     db_session.commit()

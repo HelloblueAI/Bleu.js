@@ -1,9 +1,11 @@
-import pytest
 import numpy as np
+import pytest
+
 from quantum_py.quantum.attention import Attention
 
 # Set random seed for reproducibility
 rng = np.random.default_rng(42)
+
 
 def test_attention_initialization():
     """Test attention mechanism initialization."""
@@ -15,16 +17,18 @@ def test_attention_initialization():
     assert attention.attention_weights is None
     assert attention.attention_output is None
 
+
 def test_attention_forward():
     """Test attention forward pass."""
     attention = Attention(d_model=64, n_heads=8)
     batch_size = 2
     seq_len = 10
     x = rng.standard_normal((batch_size, seq_len, 64))
-    
+
     output = attention.forward(x)
     assert output.shape == (batch_size, seq_len, 64)
     assert abs(np.mean(output)) < 0.1  # Use approximate comparison
+
 
 @pytest.mark.asyncio
 async def test_attention_mask():

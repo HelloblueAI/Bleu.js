@@ -1,8 +1,10 @@
+from datetime import UTC, datetime, timedelta
+
 import pytest
-from datetime import datetime, UTC, timedelta
-from services.monitoring_service import MonitoringService
+
 from models.customer import Customer
 from models.subscription import PlanType
+from services.monitoring_service import MonitoringService
 
 
 @pytest.mark.asyncio
@@ -146,6 +148,7 @@ async def test_cleanup_old_metrics(db_session, test_customer):
 def monitoring_service():
     return MonitoringService()
 
+
 def test_track_api_call(monitoring_service):
     """Test tracking API calls."""
     user_id = "test_user"
@@ -160,7 +163,10 @@ def test_track_api_call(monitoring_service):
     stats = monitoring_service.get_usage_stats(user_id)
     assert stats["total_calls"] == 1
     assert stats["service_calls"]["test_service"] == 1
-    assert abs(stats["average_response_time"] - 0.0) < 0.001  # Use approximate comparison
+    assert (
+        abs(stats["average_response_time"] - 0.0) < 0.001
+    )  # Use approximate comparison
+
 
 def test_check_rate_limit(monitoring_service):
     """Test rate limiting."""
@@ -181,6 +187,7 @@ def test_check_rate_limit(monitoring_service):
     # Check rate limit again
     assert monitoring_service.check_rate_limit(user_id, plan_type) is False
 
+
 def test_get_usage_stats(monitoring_service):
     """Test getting usage statistics."""
     user_id = "test_user"
@@ -190,13 +197,18 @@ def test_get_usage_stats(monitoring_service):
 
     # Track multiple calls
     for _ in range(5):
-        monitoring_service.track_api_call(user_id, plan_type, remaining_calls, service_type)
+        monitoring_service.track_api_call(
+            user_id, plan_type, remaining_calls, service_type
+        )
 
     # Get stats
     stats = monitoring_service.get_usage_stats(user_id)
     assert stats["total_calls"] == 5
     assert stats["service_calls"]["test_service"] == 5
-    assert abs(stats["average_response_time"] - 0.0) < 0.001  # Use approximate comparison
+    assert (
+        abs(stats["average_response_time"] - 0.0) < 0.001
+    )  # Use approximate comparison
+
 
 def test_reset_usage_stats(monitoring_service):
     """Test resetting usage statistics."""
@@ -207,7 +219,9 @@ def test_reset_usage_stats(monitoring_service):
 
     # Track some calls
     for _ in range(3):
-        monitoring_service.track_api_call(user_id, plan_type, remaining_calls, service_type)
+        monitoring_service.track_api_call(
+            user_id, plan_type, remaining_calls, service_type
+        )
 
     # Reset stats
     monitoring_service.reset_usage_stats(user_id)
@@ -216,4 +230,6 @@ def test_reset_usage_stats(monitoring_service):
     stats = monitoring_service.get_usage_stats(user_id)
     assert stats["total_calls"] == 0
     assert stats["service_calls"] == {}
-    assert abs(stats["average_response_time"] - 0.0) < 0.001  # Use approximate comparison
+    assert (
+        abs(stats["average_response_time"] - 0.0) < 0.001
+    )  # Use approximate comparison

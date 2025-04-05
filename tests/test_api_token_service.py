@@ -1,8 +1,10 @@
+from datetime import UTC, datetime, timedelta
+
 import pytest
-from datetime import datetime, UTC, timedelta
 from fastapi import HTTPException
+
+from models.subscription import APIToken, APITokenCreate
 from services.api_token_service import APITokenService
-from models.subscription import APITokenCreate, APIToken
 
 
 @pytest.mark.asyncio
