@@ -58,7 +58,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -91,7 +91,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
           poetry install --no-interaction --no-root
 
       - name: Verify installations
@@ -126,6 +126,7 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
+          run_install: false
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -315,7 +316,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
           poetry install --no-interaction --no-root
 
       - name: Build Python Package
