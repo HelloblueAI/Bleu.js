@@ -1,4 +1,4 @@
-import { QuantumState, QuantumGate } from './types';
+import { QuantumState, QuantumGate } from '../../types/index';
 
 export class QuantumCore {
   private state: QuantumState;
@@ -10,7 +10,7 @@ export class QuantumCore {
       amplitudes: [],
       phases: [],
       qubits: 0,
-      numQubits: 0
+      metadata: {}
     };
     this.errorCorrection = errorCorrection;
     this.parallelism = parallelism;
@@ -21,7 +21,10 @@ export class QuantumCore {
       amplitudes: new Array(Math.pow(2, numQubits)).fill(0),
       phases: new Array(Math.pow(2, numQubits)).fill(0),
       qubits: numQubits,
-      numQubits: numQubits
+      metadata: {
+        initialized: true,
+        timestamp: new Date().toISOString()
+      }
     };
     this.state.amplitudes[0] = 1; // Initialize to |0⟩ state
   }

@@ -56,6 +56,8 @@ export interface TrainingData {
 export interface PredictionResult {
   prediction: number;
   confidence: number;
+  predictions: number[];
+  probabilities?: number[][];
   quantumAdvantage?: number;
   quantumState?: QuantumState;
   metadata?: Record<string, any>;

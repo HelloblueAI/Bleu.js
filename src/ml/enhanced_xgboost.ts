@@ -88,8 +88,10 @@ export class EnhancedXGBoost {
       
       // Make predictions using the trained model
       return {
-        predictions: [0.5], // Placeholder
-        probabilities: [[0.3, 0.7]] // Placeholder
+        prediction: 0.5,
+        confidence: 0.7,
+        predictions: [0.5],
+        probabilities: [[0.3, 0.7]]
       };
     } catch (error: unknown) {
       throw new XGBoostError('Prediction', error);
