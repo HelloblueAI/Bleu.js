@@ -158,10 +158,11 @@ jobs:
         uses: pre-commit/action@v3.0.0
         continue-on-error: true
 
-      - name: Check Python Code Formatting
+      - name: Format and Check Python Code
         run: |
-          poetry run black --check src/ tests/
-          poetry run isort --check-only src/ tests/
+          poetry run black src/ tests/
+          poetry run isort src/ tests/
+          git diff --exit-code || (echo "Files were reformatted. Please commit the changes." && exit 1)
 
       - name: Lint Python with flake8
         run: |
