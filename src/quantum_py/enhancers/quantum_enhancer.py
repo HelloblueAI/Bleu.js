@@ -60,9 +60,21 @@ class QuantumEnhancer:
         if not self.initialized:
             raise RuntimeError("QuantumEnhancer not initialized")
 
+        if tensor is None:
+            raise ValueError("Input tensor cannot be None")
+
         try:
             # Convert to numpy for quantum processing
-            data = tensor.numpy()
+            if not isinstance(tensor, tf.Tensor):
+                raise ValueError("Input must be a TensorFlow tensor")
+            tensor_tensor: tf.Tensor = tensor  # Type hint for linter
+            data = tensor_tensor.numpy()
+            if data is None:
+                raise ValueError("Failed to convert tensor to numpy array")
+                
+            # Ensure data is not empty
+            if data.size == 0:
+                raise ValueError("Input tensor is empty")
 
             # Apply quantum enhancement
             enhanced_data = self._apply_quantum_enhancement(data)

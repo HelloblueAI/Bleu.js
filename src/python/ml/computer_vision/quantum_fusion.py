@@ -101,45 +101,57 @@ class QuantumFusion:
             def call(self, inputs: List[tf.Tensor]) -> tf.Tensor:
                 # Combine features
                 combined = tf.concat(inputs, axis=-1)
-
+                
                 # Apply quantum enhancement
                 enhanced = self._apply_quantum_enhancement(combined)
-
+                
                 return enhanced
 
             def _apply_quantum_enhancement(self, features: tf.Tensor) -> tf.Tensor:
                 # Convert features to quantum state
                 quantum_state = self._prepare_quantum_state(features)
-
+                
                 # Apply quantum circuit
                 enhanced_state = self._apply_quantum_circuit(quantum_state)
-
-                # Convert back to classical state
-                enhanced_features = self._measure_quantum_state(enhanced_state)
-
-                return enhanced_features
+                
+                # Convert back to tensor
+                return self._measure_quantum_state(enhanced_state)
 
             def _prepare_quantum_state(self, features: tf.Tensor) -> np.ndarray:
+                if features is None:
+                    raise ValueError("Features cannot be None")
+                    
                 # Normalize features
                 features = tf.nn.l2_normalize(features, axis=-1)
 
                 # Convert to quantum state
-                quantum_state = features.numpy()
-                quantum_state = quantum_state / np.linalg.norm(quantum_state)
-
-                return quantum_state
+                try:
+                    if not isinstance(features, tf.Tensor):
+                        raise ValueError("Features must be a TensorFlow tensor")
+                    features = tf.ensure_shape(features, features.shape)  # Type assertion
+                    quantum_state = features.numpy()
+                    if quantum_state is None:
+                        raise ValueError("Failed to convert features to numpy array")
+                        
+                    # Ensure quantum state is not None before normalization
+                    if quantum_state.size == 0:
+                        raise ValueError("Quantum state array is empty")
+                        
+                    return quantum_state
+                except Exception as e:
+                    raise RuntimeError(f"Failed to prepare quantum state: {str(e)}")
 
             def _apply_quantum_circuit(self, quantum_state: np.ndarray) -> np.ndarray:
+                if quantum_state is None:
+                    raise ValueError("Quantum state cannot be None")
                 # Create quantum circuit with current state
-                circuit = self.config.quantum_circuit.copy()
-                circuit.initialize(quantum_state, range(self.config.num_qubits))
-
-                # Execute circuit
-                backend = qiskit.Aer.get_backend("statevector_simulator")
-                job = qiskit.execute(circuit, backend)
-                result = job.result()
-
-                return result.get_statevector()
+                circuit = self._build_quantum_circuit()
+                if circuit is None:
+                    raise ValueError("Quantum circuit cannot be None")
+                # Apply quantum gates
+                self._apply_quantum_gates()
+                # Measure quantum state
+                return self._measure_quantum_state(quantum_state)
 
             def _measure_quantum_state(self, quantum_state: np.ndarray) -> tf.Tensor:
                 # Convert quantum state to features
@@ -164,6 +176,11 @@ class QuantumFusion:
 
             # Project to final dimension
             output = self.fusion_layers[-1](fused)
+
+            if self.quantum_circuit is not None:
+                fused_features = self.quantum_circuit(features)
+            else:
+                fused_features = features
 
             return output
 

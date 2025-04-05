@@ -136,12 +136,12 @@ class QuantumAttention:
                 attention_scores / self.config.temperature, axis=-1
             )
 
-            # Apply attention to values
-            output = tf.matmul(attention_weights, value)
-
             # Apply quantum regularization if enabled
             if self.config.use_quantum_regularization:
-                output = self._apply_quantum_regularization(output)
+                attention_weights = self._apply_quantum_regularization(attention_weights)
+
+            # Apply attention to values
+            output = tf.matmul(attention_weights, value)
 
             return output
 
@@ -156,6 +156,13 @@ class QuantumAttention:
 
         # Convert to quantum state
         state = tensor.numpy()
+        if state is None:
+            raise ValueError("Failed to convert tensor to numpy array")
+            
+        # Ensure state is not empty
+        if state.size == 0:
+            raise ValueError("State array is empty")
+            
         state = state / np.linalg.norm(state)
 
         return state

@@ -12,6 +12,7 @@ import tensorflow as tf
 from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit as QiskitCircuit
 from qiskit import QuantumRegister
+from typing import cast
 
 
 @dataclass
@@ -82,7 +83,12 @@ class QuantumLoss:
             if self.config.use_quantum_regularization:
                 loss = loss + self._compute_quantum_regularization(y_pred)
 
-            return loss
+            if self.quantum_circuit is not None:
+                quantum_loss = self.quantum_circuit(loss)
+            else:
+                quantum_loss = loss
+
+            return quantum_loss
 
         except Exception as e:
             self.logger.error(f"Failed to compute quantum cross-entropy loss: {str(e)}")
@@ -104,7 +110,12 @@ class QuantumLoss:
             if self.config.use_quantum_regularization:
                 loss = loss + self._compute_quantum_regularization(y_pred)
 
-            return loss
+            if self.quantum_circuit is not None:
+                quantum_loss = self.quantum_circuit(loss)
+            else:
+                quantum_loss = loss
+
+            return quantum_loss
 
         except Exception as e:
             self.logger.error(f"Failed to compute quantum focal loss: {str(e)}")
@@ -137,7 +148,12 @@ class QuantumLoss:
                     [anchor, positive, negative]
                 )
 
-            return loss
+            if self.quantum_circuit is not None:
+                quantum_loss = self.quantum_circuit(loss)
+            else:
+                quantum_loss = loss
+
+            return quantum_loss
 
         except Exception as e:
             self.logger.error(f"Failed to compute quantum triplet loss: {str(e)}")
@@ -162,7 +178,16 @@ class QuantumLoss:
         features = tf.nn.l2_normalize(features, axis=-1)
 
         # Convert to quantum state
-        quantum_state = features.numpy()
+        if features is None:
+            raise ValueError("Features cannot be None")
+        quantum_state = features.numpy()  # type: ignore
+        if quantum_state is None:
+            raise ValueError("Failed to convert features to numpy array")
+            
+        # Ensure quantum state is not None before normalization
+        if quantum_state.size == 0:
+            raise ValueError("Quantum state array is empty")
+            
         quantum_state = quantum_state / np.linalg.norm(quantum_state)
 
         return quantum_state

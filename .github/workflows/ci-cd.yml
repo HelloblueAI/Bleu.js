@@ -1,4 +1,4 @@
-name: Bleu.js CI/CD Pipeline
+name: Bleu.js Quantum-Enhanced Vision System CI/CD
 
 on:
   push:
@@ -30,11 +30,11 @@ permissions:
 env:
   PYTHON_VERSION: '3.11'
   POETRY_VERSION: '1.7.1'
-  NODE_VERSION: '20.x'
-  PNPM_VERSION: '8'
   CACHE_KEY_PREFIX: v1
   PYPI_URL: 'https://upload.pypi.org/legacy/'
   TEST_PYPI_URL: 'https://test.pypi.org/legacy/'
+  QUANTUM_BACKENDS: 'qiskit,cirq,pennylane'
+  ML_FRAMEWORKS: 'tensorflow,pytorch'
 
 jobs:
   setup:
@@ -49,17 +49,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -77,28 +66,25 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            node_modules
             .venv
-            ~/.cache/pnpm
             ~/.cache/pip
             ~/.cache/poetry
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
             ${{ runner.os }}-
 
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: |
-          pnpm install --frozen-lockfile
-          poetry install --no-interaction --no-root
+        run: poetry install --no-interaction --no-root
 
       - name: Verify installations
         run: |
-          pnpm --version
-          node --version
           python --version
           poetry --version
+          poetry run python -c "import qiskit; print(f'Qiskit version: {qiskit.__version__}')"
+          poetry run python -c "import cirq; print(f'Cirq version: {cirq.__version__}')"
+          poetry run python -c "import pennylane; print(f'PennyLane version: {pennylane.__version__}')"
 
   lint:
     name: Lint and Quality Checks
@@ -110,18 +96,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          run_install: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -140,19 +114,13 @@ jobs:
         with:
           path: |
             .venv
-            node_modules
-            ~/.cache/pnpm
             ~/.cache/pip
-            ~/.npm
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/package-lock.json') }}
+            ~/.cache/poetry
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Python dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
-
-      - name: Install Node.js dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: pnpm install
 
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
@@ -175,12 +143,6 @@ jobs:
       - name: Security Check Python with Bandit
         run: poetry run bandit -r src/ -c pyproject.toml
 
-      - name: Lint TypeScript
-        run: pnpm run lint
-
-      - name: Type Check TypeScript
-        run: pnpm run typecheck
-
   test:
     name: Test Package
     needs: [lint]
@@ -190,8 +152,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10']
-        node-version: ['18.x', '20.x']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        quantum-backend: ['qiskit', 'cirq', 'pennylane']
+        ml-framework: ['tensorflow', 'pytorch']
 
     steps:
       - name: Checkout Repository
@@ -203,17 +166,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
@@ -227,50 +179,60 @@ jobs:
         with:
           path: |
             .venv
-            node_modules
-            ~/.cache/pnpm
             ~/.cache/pip
-            ~/.npm
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ matrix.python-version }}-${{ matrix.node-version }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/package-lock.json') }}
+            ~/.cache/poetry
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ matrix.python-version }}-${{ matrix.quantum-backend }}-${{ matrix.ml-framework }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Python dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
-      - name: Install Node.js dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: pnpm install
-
-      - name: Run Python Tests
+      - name: Run Quantum Tests
+        env:
+          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
+          ML_FRAMEWORK: ${{ matrix.ml-framework }}
         run: |
-          poetry run pytest tests/ \
+          poetry run pytest tests/quantum/ \
+            --cov=src/quantum/ \
+            --cov-report=xml \
+            --cov-report=html \
+            -n auto \
+            --verbose
+
+      - name: Run ML Tests
+        env:
+          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
+          ML_FRAMEWORK: ${{ matrix.ml-framework }}
+        run: |
+          poetry run pytest tests/ml/ \
+            --cov=src/ml/ \
+            --cov-report=xml \
+            --cov-report=html \
+            -n auto \
+            --verbose
+
+      - name: Run Integration Tests
+        env:
+          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
+          ML_FRAMEWORK: ${{ matrix.ml-framework }}
+        run: |
+          poetry run pytest tests/integration/ \
             --cov=src/ \
             --cov-report=xml \
             --cov-report=html \
             -n auto \
-            --junitxml=junit/python-test-results-${{ matrix.python-version }}.xml
+            --verbose
 
-      - name: Run Node.js Tests
-        run: |
-          pnpm test
-          pnpm run benchmark
-
-      - name: Upload Coverage Reports
-        uses: actions/upload-artifact@v4
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
         with:
-          name: coverage-reports-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.node-version }}
-          path: |
-            htmlcov/
-            coverage.xml
-            junit/
-          retention-days: 14
+          file: ./coverage.xml
+          fail_ci_if_error: true
 
-  build:
-    name: Build Package
+  benchmark:
+    name: Performance Benchmarking
     needs: [test]
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -279,18 +241,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -299,121 +249,32 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Load cached dependencies
-        id: cache-deps
-        uses: actions/cache@v3
-        with:
-          path: |
-            .venv
-            node_modules
-            ~/.cache/pnpm
-            ~/.cache/pip
-            ~/.npm
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - name: Run Quantum Benchmarks
         run: |
-          pnpm install --frozen-lockfile
-          poetry install --no-interaction --no-root
+          poetry run python tests/benchmarks/quantum_benchmark.py
+          poetry run python tests/benchmarks/ml_benchmark.py
+          poetry run python tests/benchmarks/integration_benchmark.py
 
-      - name: Build Python Package
-        run: poetry build
-
-      - name: Build Node.js Package
-        run: |
-          pnpm run build
-          pnpm pack
-
-      - name: Check Python Package
-        run: |
-          poetry run twine check dist/*
-          poetry run pip install dist/*.whl
-          poetry run python -c "import bleujs; print(bleujs.__version__)"
-
-      - name: Check Node.js Package
-        run: |
-          pnpm run verify
-          pnpm run pack
-
-      - name: Upload Package Artifacts
+      - name: Upload Benchmark Results
         uses: actions/upload-artifact@v4
         with:
-          name: packages
-          path: |
-            dist/
-            bleujs-*.tgz
-          retention-days: 14
+          name: benchmark-results
+          path: benchmark_results/
+          retention-days: 7
 
-  security-scan:
-    name: Security Scan
-    needs: [build]
+  build:
+    name: Build and Deploy
+    needs: [benchmark]
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment)
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Download Package Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: packages
-          path: dist/
-
-      - name: Run Safety Check
-        uses: pypa/gh-action-pip-audit@v1.0.8
-        with:
-          inputs: dist/*.whl
-
-      - name: Run Dependency Review
-        uses: actions/dependency-review-action@v3
-        if: github.event_name == 'pull_request'
-
-      - name: Run npm Audit
-        run: pnpm audit
-
-  deploy:
-    name: Deploy to ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
-    needs: [build, security-scan]
-    if: |
-      github.event_name == 'push' && 
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging') &&
-      !contains(github.event.head_commit.message, '[skip deploy]')
-    runs-on: ubuntu-latest
-    environment: 
-      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
-      url: ${{ github.ref == 'refs/heads/main' && env.PYPI_URL || env.TEST_PYPI_URL }}
-    concurrency: 
-      group: deploy-${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
-      cancel-in-progress: false
-
-    steps:
-      - name: Download Package Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: packages
-          path: dist/
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -422,43 +283,23 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Configure Poetry
+      - name: Build Python package
+        run: poetry build
+
+      - name: Deploy to PyPI
+        if: github.ref == 'refs/heads/main'
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
-          poetry config pypi-token.testpypi ${{ secrets.PYPI_API_TOKEN }}
+          if [ -z "${{ secrets.PYPI_USERNAME }}" ] || [ -z "${{ secrets.PYPI_PASSWORD }}" ]; then
+            echo "Error: PyPI credentials not set"
+            exit 1
+          fi
+          poetry publish --build --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }} --repository ${{ env.PYPI_URL }}
 
-      - name: Verify Packages
+      - name: Deploy to TestPyPI
+        if: github.ref == 'refs/heads/staging'
         run: |
-          poetry run twine check dist/*.whl
-          pnpm run verify
-
-      - name: Publish Python Package
-        if: github.ref == 'refs/heads/main'
-        run: poetry publish --repository pypi
-
-      - name: Publish Node.js Package
-        if: github.ref == 'refs/heads/main'
-        run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create GitHub Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          fail_on_unmatched_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Send Slack Notification
-        if: always()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          channel-id: 'ci-cd-notifications'
-          slack-message: 'Job ${{ github.job }} ${{ job.status }} in ${{ github.workflow }} workflow'
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          if [ -z "${{ secrets.TEST_PYPI_USERNAME }}" ] || [ -z "${{ secrets.TEST_PYPI_PASSWORD }}" ]; then
+            echo "Error: TestPyPI credentials not set"
+            exit 1
+          fi
+          poetry publish --build --username ${{ secrets.TEST_PYPI_USERNAME }} --password ${{ secrets.TEST_PYPI_PASSWORD }} --repository ${{ env.TEST_PYPI_URL }}
