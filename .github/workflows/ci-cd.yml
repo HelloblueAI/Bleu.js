@@ -73,14 +73,7 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          poetry install --no-interaction --no-root
-          pnpm run build || exit 1
-          poetry run python -c "import sys; print('Python version:', sys.version)" || exit 1
-
-      - name: Cache dependencies
+      - name: Load cached dependencies
         id: cache-deps
         uses: actions/cache@v3
         with:
@@ -94,6 +87,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
             ${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: |
+          pnpm install --frozen-lockfile
+          poetry install --no-interaction --no-root
 
       - name: Verify installations
         run: |
