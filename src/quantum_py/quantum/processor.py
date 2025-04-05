@@ -81,7 +81,9 @@ class QuantumProcessor:
             print(f"- Number of qubits: {self.n_qubits}")
             print(f"- Number of layers: {self.n_layers}")
             print(f"- Entanglement: {self.entanglement}")
-            print(f"- Error correction: {'Enabled' if self.error_correction else 'Disabled'}")
+            print(
+                f"- Error correction: {'Enabled' if self.error_correction else 'Disabled'}"
+            )
             return True
 
         except RuntimeError as e:
@@ -155,7 +157,8 @@ class QuantumProcessor:
                 / (self.metrics["total_executions"] + 1),
                 "quantum_speedup": 2.0
                 * np.exp(-circuit_info["metrics"].get("circuit_depth", 0) / 100),
-                "coherence_time": circuit_info["metrics"].get("circuit_depth", 0) * 0.1,  # ms
+                "coherence_time": circuit_info["metrics"].get("circuit_depth", 0)
+                * 0.1,  # ms
                 "entanglement_quality": np.abs(np.mean(features[:-1] * features[1:])),
                 "feature_map_fidelity": np.abs(np.dot(features, features)),
                 "circuit_optimization_score": circuit_info["metrics"].get(

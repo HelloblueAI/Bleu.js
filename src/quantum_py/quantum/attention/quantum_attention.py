@@ -45,7 +45,9 @@ class QuantumAttention:
         """Create a realistic noise model for quantum simulation."""
         noise_model = NoiseModel()
         # Add depolarizing noise
-        noise_model.add_all_qubit_quantum_error(depolarizing_error(0.01, 1), ["u1", "u2", "u3"])
+        noise_model.add_all_qubit_quantum_error(
+            depolarizing_error(0.01, 1), ["u1", "u2", "u3"]
+        )
         # Add readout error
         noise_model.add_all_qubit_readout_error([[0.9, 0.1], [0.1, 0.9]])
         return noise_model
@@ -130,7 +132,9 @@ class QuantumAttention:
                 )
 
             # Apply softmax with temperature
-            attention_weights = tf.nn.softmax(attention_scores / self.config.temperature, axis=-1)
+            attention_weights = tf.nn.softmax(
+                attention_scores / self.config.temperature, axis=-1
+            )
 
             # Apply attention to values
             output = tf.matmul(attention_weights, value)

@@ -183,7 +183,9 @@ class QuantumCircuitData:
 
         # Check unitarity of gates
         for gate in self.gates:
-            if not np.allclose(gate.matrix @ gate.matrix.conj().T, np.eye(len(gate.matrix))):
+            if not np.allclose(
+                gate.matrix @ gate.matrix.conj().T, np.eye(len(gate.matrix))
+            ):
                 return False
 
         return True

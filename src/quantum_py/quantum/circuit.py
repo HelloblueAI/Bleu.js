@@ -54,7 +54,9 @@ class QuantumCircuit:
         self.classifier: Optional[NeuralNetworkClassifier] = None
 
         # Initialize quantum memory
-        self.quantum_memory: Optional[Dict[str, Any]] = {} if use_quantum_memory else None
+        self.quantum_memory: Optional[Dict[str, Any]] = (
+            {} if use_quantum_memory else None
+        )
 
         # Initialize error mitigation
         self.noise_model: Optional[NoiseModel] = (
@@ -235,7 +237,9 @@ class QuantumCircuit:
 
             # Process with error mitigation if enabled
             if self.use_error_mitigation:
-                processed_features = self._process_with_error_mitigation(selected_features)
+                processed_features = self._process_with_error_mitigation(
+                    selected_features
+                )
             else:
                 processed_features = self._process_basic(selected_features)
 
@@ -297,7 +301,9 @@ class QuantumCircuit:
             self.circuit.ry(features[i], self.qr[i])
         return processed
 
-    def _update_quantum_memory(self, features: np.ndarray, processed: np.ndarray) -> None:
+    def _update_quantum_memory(
+        self, features: np.ndarray, processed: np.ndarray
+    ) -> None:
         """Update quantum memory with processed features"""
         if self.quantum_memory is None:
             return
