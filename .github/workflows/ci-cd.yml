@@ -60,27 +60,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Create cache directories
-        run: |
-          mkdir -p ~/.pnpm-store
-          mkdir -p ~/.cache/pnpm
-          mkdir -p ~/.cache/pip
-          mkdir -p ~/.npm
-
-      - name: Cache dependencies
-        id: cache-deps
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.pnpm-store
-            ~/.cache/pnpm
-            ~/.cache/pip
-            ~/.npm
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
-            ${{ runner.os }}-
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -93,6 +72,25 @@ jobs:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
           virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+          poetry install --no-interaction --no-root
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            .venv
+            ~/.cache/pnpm
+            ~/.cache/pip
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
+            ${{ runner.os }}-
 
   lint:
     name: Lint and Quality Checks
