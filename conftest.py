@@ -1,5 +1,6 @@
 import os
 import sys
+
 import pytest
 
 # Add src directory to Python path
@@ -8,15 +9,15 @@ sys.path.insert(0, src_path)
 
 # Import test fixtures
 from tests.config import (
-    settings,
-    engine,
     db_session,
-    test_user,
-    test_subscription_plan,
-    test_subscription,
+    engine,
+    settings,
     test_api_token,
     test_rate_limit,
+    test_subscription,
+    test_subscription_plan,
+    test_user,
 )
 
 # Override settings for testing
-os.environ["TESTING"] = "True" 
+os.environ["TESTING"] = "True"
