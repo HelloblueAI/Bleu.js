@@ -35,7 +35,7 @@ export interface OptimizationResult {
 export interface QuantumState {
   amplitudes: number[];
   phases: number[];
-  numQubits: number;
+  qubits: number;
   metadata?: Record<string, any>;
 }
 
