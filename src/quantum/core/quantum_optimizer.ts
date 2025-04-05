@@ -16,7 +16,7 @@ export class QuantumOptimizer {
   }
 
   async optimize(circuit: QuantumCircuit): Promise<OptimizationResult> {
-    const originalState = this.evaluateCircuit(circuit);
+    const originalState = await this.evaluateCircuit(circuit);
     const originalScore = this.calculateFidelity(originalState);
 
     let currentCircuit = this.cloneCircuit(circuit);
@@ -26,7 +26,7 @@ export class QuantumOptimizer {
 
     while (iteration < this.maxIterations) {
       const modifiedCircuit = this.perturbCircuit(currentCircuit);
-      const newState = this.evaluateCircuit(modifiedCircuit);
+      const newState = await this.evaluateCircuit(modifiedCircuit);
       const newScore = this.calculateFidelity(newState);
 
       if (newScore > bestScore) {
@@ -68,7 +68,7 @@ export class QuantumOptimizer {
     };
   }
 
-  private evaluateCircuit(circuit: QuantumCircuit): QuantumState {
+  private evaluateCircuit(circuit: QuantumCircuit): Promise<QuantumState> {
     if (circuit.execute) {
       return circuit.execute();
     } else {
