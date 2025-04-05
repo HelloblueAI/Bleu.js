@@ -1,21 +1,23 @@
 import os
+from datetime import datetime, timezone
+
 import pytest
+from dotenv import load_dotenv
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from fastapi.testclient import TestClient
-from datetime import datetime, timezone
-from dotenv import load_dotenv
 
 # Set testing environment and load test environment variables
 os.environ["TESTING"] = "true"
 load_dotenv(".env.test")
 
+from src.main import app
+from src.models.customer import Customer
+from src.models.declarative_base import Base
+
 # Import test settings and models after setting TESTING=true
 from tests.test_config import get_test_settings
-from src.models.declarative_base import Base
-from src.models.customer import Customer
-from src.main import app
 
 # Get test settings
 settings = get_test_settings()
@@ -24,11 +26,12 @@ settings = get_test_settings()
 engine = create_engine(
     "sqlite:///:memory:",
     connect_args={"check_same_thread": False},
-    poolclass=StaticPool
+    poolclass=StaticPool,
 )
 
 # Create test session factory
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 @pytest.fixture(scope="function")
 def db_engine():
@@ -36,6 +39,7 @@ def db_engine():
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
+
 
 @pytest.fixture(scope="function")
 def db(db_engine):
@@ -49,6 +53,7 @@ def db(db_engine):
     session.close()
     transaction.rollback()
     connection.close()
+
 
 @pytest.fixture(scope="function")
 def client(db):
@@ -66,12 +71,14 @@ def client(db):
         yield test_client
     app.dependency_overrides.clear()
 
+
 @pytest.fixture(scope="function")
 def clean_db(db):
     # Clean up all tables
     for table in reversed(Base.metadata.sorted_tables):
         db.execute(table.delete())
     db.commit()
+
 
 @pytest.fixture
 def test_customer(db):
@@ -84,8 +91,10 @@ def test_customer(db):
         features=["api_access"],
         rate_limit=100,
         subscription_start=datetime.now(timezone.utc),
-        subscription_end=datetime.now(timezone.utc).replace(year=datetime.now(timezone.utc).year + 1),
-        is_active=True
+        subscription_end=datetime.now(timezone.utc).replace(
+            year=datetime.now(timezone.utc).year + 1
+        ),
+        is_active=True,
     )
     db.add(customer)
     db.commit()

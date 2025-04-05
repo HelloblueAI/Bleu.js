@@ -1,9 +1,10 @@
-import requests
-import boto3
 import json
 import os
 from datetime import datetime
-from typing import Dict, List, Optional, Literal
+from typing import Dict, List, Literal, Optional
+
+import boto3
+import requests
 
 HealthStatus = Literal["healthy", "unhealthy"]
 

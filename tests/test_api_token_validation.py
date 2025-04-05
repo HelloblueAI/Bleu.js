@@ -1,12 +1,14 @@
+from datetime import UTC, datetime, timedelta
+
 import pytest
-from datetime import datetime, timedelta, UTC
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from services.api_token_service import APITokenService
-from services.rate_limiting_service import RateLimitingService
+
+from models.rate_limit import RateLimit
 from models.subscription import APIToken, APITokenCreate
 from models.user import User
-from models.rate_limit import RateLimit
-from fastapi import HTTPException
+from services.api_token_service import APITokenService
+from services.rate_limiting_service import RateLimitingService
 
 
 @pytest.fixture
@@ -110,7 +112,9 @@ async def test_validate_token_rate_limit(db_session, test_api_token):
 
 
 @pytest.mark.asyncio
-async def test_validate_token_with_subscription(db_session, test_user, test_subscription):
+async def test_validate_token_with_subscription(
+    db_session, test_user, test_subscription
+):
     """Test token validation with subscription."""
     token_data = APITokenCreate(
         name="Test Token", expires_at=datetime.now(UTC) + timedelta(days=30)

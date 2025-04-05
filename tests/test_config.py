@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from functools import lru_cache
 from typing import List
+
 from pydantic_settings import BaseSettings
 
 
@@ -50,4 +51,4 @@ class TestSettings(BaseSettings):
 
 @lru_cache()
 def get_test_settings() -> TestSettings:
-    return TestSettings() 
+    return TestSettings()

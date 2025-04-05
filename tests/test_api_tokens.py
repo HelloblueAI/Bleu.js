@@ -1,18 +1,25 @@
-import pytest
 import asyncio
-from fastapi.testclient import TestClient
-from datetime import datetime, timedelta, UTC
-from sqlalchemy.orm import Session
-from src.main import app
-from src.models.user import User
-from src.models.subscription import Subscription, SubscriptionPlan, APIToken, APITokenCreate
-from src.database import get_db
-from src.services import init_services
-from fastapi import HTTPException
-import uuid
 import secrets
-from src.services.auth_service import AuthService
+import uuid
+from datetime import UTC, datetime, timedelta
+
+import pytest
+from fastapi import HTTPException
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
+from src.database import get_db
+from src.main import app
+from src.models.subscription import (
+    APIToken,
+    APITokenCreate,
+    Subscription,
+    SubscriptionPlan,
+)
+from src.models.user import User
+from src.services import init_services
 from src.services.api_token_service import APITokenService
+from src.services.auth_service import AuthService
 
 client = TestClient(app)
 
@@ -283,9 +290,7 @@ async def test_validate_expired_token(db: Session):
 async def test_create_api_token(services: dict, test_user: User):
     """Test creating an API token using the service directly."""
     token_data = APITokenCreate(name="Service Token")
-    token = await services["api_token_service"].create_token(
-        test_user, token_data
-    )
+    token = await services["api_token_service"].create_token(test_user, token_data)
     assert token.name == "Service Token"
     assert token.user_id == test_user.id
     assert token.is_active is True
@@ -306,9 +311,7 @@ async def test_create_api_token_without_subscription(services: dict, db: Session
 
     token_data = APITokenCreate(name="No Sub Token")
     with pytest.raises(HTTPException) as exc_info:
-        await services["api_token_service"].create_token(
-            user, token_data
-        )
+        await services["api_token_service"].create_token(user, token_data)
     assert exc_info.value.status_code == 403
 
 
@@ -323,9 +326,7 @@ async def test_get_user_tokens(services: dict, test_user: User, test_token: APIT
 @pytest.mark.asyncio
 async def test_revoke_api_token(services: dict, test_user: User, test_token: APIToken):
     """Test revoking a token using the service directly."""
-    result = await services["api_token_service"].revoke_token(
-        test_token.id, test_user
-    )
+    result = await services["api_token_service"].revoke_token(test_token.id, test_user)
     assert result.id == test_token.id
     assert result.is_active is False
 
@@ -334,9 +335,7 @@ async def test_revoke_api_token(services: dict, test_user: User, test_token: API
 async def test_revoke_nonexistent_token(services: dict, test_user: User):
     """Test revoking a non-existent token using the service directly."""
     with pytest.raises(HTTPException) as exc_info:
-        await services["api_token_service"].revoke_token(
-            "nonexistent", test_user
-        )
+        await services["api_token_service"].revoke_token("nonexistent", test_user)
     assert exc_info.value.status_code == 404
 
 
@@ -357,12 +356,8 @@ async def test_create_multiple_tokens(services: dict, test_user: User):
     token_data1 = APITokenCreate(name="Token 1")
     token_data2 = APITokenCreate(name="Token 2")
 
-    token1 = await services["api_token_service"].create_token(
-        test_user, token_data1
-    )
-    token2 = await services["api_token_service"].create_token(
-        test_user, token_data2
-    )
+    token1 = await services["api_token_service"].create_token(test_user, token_data1)
+    token2 = await services["api_token_service"].create_token(test_user, token_data2)
 
     assert token1.name == "Token 1"
     assert token2.name == "Token 2"
@@ -377,8 +372,6 @@ async def test_token_expiration(services: dict, test_user: User):
         expires_at=datetime.now(UTC) + timedelta(days=7),
     )
 
-    token = await services["api_token_service"].create_token(
-        test_user, token_data
-    )
+    token = await services["api_token_service"].create_token(test_user, token_data)
     assert token.name == "Expiring Token"
     assert token.expires_at is not None
