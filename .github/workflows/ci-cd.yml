@@ -60,6 +60,19 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
+      - name: Create pnpm store directory
+        run: |
+          mkdir -p ~/.pnpm-store
+          pnpm config set store-dir ~/.pnpm-store
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -81,17 +94,6 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Cache Node.js dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-            .pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
 
   lint:
     name: Lint and Quality Checks
