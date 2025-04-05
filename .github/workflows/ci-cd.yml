@@ -91,7 +91,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
           poetry install --no-interaction --no-root
 
       - name: Verify installations
@@ -315,8 +315,8 @@ jobs:
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
+          pnpm install --no-frozen-lockfile
           poetry install --no-interaction --no-root
-          pnpm install
 
       - name: Build Python Package
         run: poetry build
