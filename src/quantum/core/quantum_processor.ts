@@ -55,9 +55,9 @@ export class QuantumProcessor {
     }
 
     let state: QuantumState = {
-      amplitudes: Array(2 ** circuit.numQubits).fill(0),
-      phases: Array(2 ** circuit.numQubits).fill(0),
-      numQubits: circuit.numQubits
+      amplitudes: Array(2 ** circuit.qubits).fill(0),
+      phases: Array(2 ** circuit.qubits).fill(0),
+      qubits: circuit.qubits
     };
     state.amplitudes[0] = 1;
 
@@ -87,17 +87,17 @@ export class QuantumProcessor {
 
   private validateState(state: QuantumState): boolean {
     return (
-      state.numQubits > 0 &&
-      state.numQubits <= this.maxQubits &&
-      state.amplitudes.length === 2 ** state.numQubits &&
-      state.phases.length === 2 ** state.numQubits
+      state.qubits > 0 &&
+      state.qubits <= this.maxQubits &&
+      state.amplitudes.length === 2 ** state.qubits &&
+      state.phases.length === 2 ** state.qubits
     );
   }
 
   private validateCircuit(circuit: QuantumCircuit): boolean {
     return (
-      circuit.numQubits > 0 &&
-      circuit.numQubits <= this.maxQubits &&
+      circuit.qubits > 0 &&
+      circuit.qubits <= this.maxQubits &&
       circuit.gates.every(gate => this.validateGate(gate))
     );
   }
@@ -105,7 +105,8 @@ export class QuantumProcessor {
   private validateGate(gate: QuantumGate): boolean {
     return (
       this.supportedGates.has(gate.type) &&
-      gate.qubits.every(qubit => qubit >= 0 && qubit < this.maxQubits)
+      gate.target >= 0 && gate.target < this.maxQubits &&
+      (!gate.control || (gate.control >= 0 && gate.control < this.maxQubits))
     );
   }
 
@@ -117,7 +118,7 @@ export class QuantumProcessor {
       phases: state.phases.map((phase: number) =>
         phase + (Math.random() - 0.5) * this.errorRate
       ),
-      numQubits: state.numQubits
+      qubits: state.qubits
     };
   }
 
@@ -129,7 +130,7 @@ export class QuantumProcessor {
     return {
       amplitudes: state.amplitudes.map((amp: number) => amp / norm),
       phases: state.phases,
-      numQubits: state.numQubits
+      qubits: state.qubits
     };
   }
 
