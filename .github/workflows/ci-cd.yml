@@ -75,8 +75,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           poetry install --no-interaction --no-root
+          pnpm run build || exit 1
+          poetry run python -c "import sys; print('Python version:', sys.version)" || exit 1
 
       - name: Cache dependencies
         id: cache-deps
@@ -87,10 +89,18 @@ jobs:
             .venv
             ~/.cache/pnpm
             ~/.cache/pip
+            ~/.cache/poetry
           key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
             ${{ runner.os }}-
+
+      - name: Verify installations
+        run: |
+          pnpm --version
+          node --version
+          python --version
+          poetry --version
 
   lint:
     name: Lint and Quality Checks
