@@ -745,3 +745,9 @@ Thumbs.db
 *.swo
 .DS_Store
 Thumbs.db
+
+# ----------------------------------------
+# 🚀 GitHub Actions
+# ----------------------------------------
+.github/
+!.github/workflows/
