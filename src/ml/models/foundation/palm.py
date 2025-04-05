@@ -21,8 +21,9 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-import google.generativeai as palm
 import os
+
+import google.generativeai as palm
 
 
 class PalmAI:

@@ -4,8 +4,10 @@ API client for making requests to the Bleu.js API.
 
 import time
 from typing import Any, Dict, Optional
+
 import requests
 from requests.exceptions import RequestException
+
 from ..config.api_config import api_config
 
 

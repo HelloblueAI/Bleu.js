@@ -2,15 +2,16 @@
 Tests for the MultimodalProcessor class
 """
 
-import pytest
 import numpy as np
+import pytest
+
+from ..computer_vision.vision_processor import VisionConfig
 from .multimodal_processor import (
-    MultimodalProcessor,
     MultimodalConfig,
     MultimodalInput,
     MultimodalOutput,
+    MultimodalProcessor,
 )
-from ..computer_vision.vision_processor import VisionConfig
 
 
 @pytest.fixture

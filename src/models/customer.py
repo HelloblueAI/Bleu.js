@@ -1,10 +1,12 @@
-from datetime import datetime, timezone
-from typing import Optional, List, Dict
-from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from sqlalchemy import Column, String, Integer, DateTime, JSON, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
-from src.models.declarative_base import Base
 import uuid
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from src.models.declarative_base import Base
 
 
 class Customer(Base):
@@ -24,7 +26,11 @@ class Customer(Base):
     subscription_end = Column(DateTime, nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
     subscription_id = Column(String, ForeignKey("subscriptions.id"), nullable=True)
     api_calls_reset_at = Column(DateTime, nullable=True)
     settings = Column(JSON, default={})
@@ -47,12 +53,12 @@ class Customer(Base):
         """Check if the customer can make an API call."""
         if not self.api_calls_reset_at:
             return False
-        
+
         # Reset if the period has elapsed
         now = datetime.now(timezone.utc)
         if (now - self.api_calls_reset_at).days >= 30:  # Monthly reset
             self.reset_api_calls()
-        
+
         return self.api_calls_remaining > 0
 
     def decrement_api_calls(self):

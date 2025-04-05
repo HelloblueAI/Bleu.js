@@ -1,12 +1,14 @@
-from sqlalchemy import Column, String, Boolean, DateTime
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+import uuid
 from datetime import datetime, timezone
 from typing import Optional
-from pydantic import BaseModel, EmailStr, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, EmailStr
+from sqlalchemy import Boolean, Column, DateTime, String
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
 from src.models.declarative_base import Base
 from src.models.subscription import PlanType
-import uuid
 
 
 class User(Base):
@@ -23,12 +25,20 @@ class User(Base):
     trial_end_date = Column(DateTime)
     is_superuser = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
     # Relationships
     subscriptions = relationship("Subscription", back_populates="user")
     api_tokens = relationship("APIToken", back_populates="user")
-    subscription = relationship("Subscription", primaryjoin="and_(User.id==Subscription.user_id, Subscription.status=='active')", uselist=False)
+    subscription = relationship(
+        "Subscription",
+        primaryjoin="and_(User.id==Subscription.user_id, Subscription.status=='active')",
+        uselist=False,
+    )
 
 
 class UserBase(BaseModel):

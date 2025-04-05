@@ -2,15 +2,15 @@
 Training script for quantum-enhanced vision model
 """
 
-import tensorflow as tf
-from typing import Tuple
+import argparse
 import logging
 import os
-from pathlib import Path
-import argparse
 from datetime import datetime
+from pathlib import Path
+from typing import Tuple
 
-from quantum_vision_model import QuantumVisionModel, QuantumVisionConfig
+import tensorflow as tf
+from quantum_vision_model import QuantumVisionConfig, QuantumVisionModel
 
 
 def setup_logging(log_dir: str) -> None:

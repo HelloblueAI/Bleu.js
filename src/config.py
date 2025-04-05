@@ -1,8 +1,10 @@
-from pydantic_settings import BaseSettings
-from functools import lru_cache
-from typing import Optional, List
 import os
+from functools import lru_cache
+from typing import List, Optional
+
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
+
 from db_config import DATABASE_URL
 
 load_dotenv()
@@ -62,7 +64,9 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
     # Security
-    CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:3000,https://bleujs.com")
+    CORS_ORIGINS: str = os.getenv(
+        "CORS_ORIGINS", "http://localhost:3000,https://bleujs.com"
+    )
     ALLOWED_HOSTS: str = os.getenv("ALLOWED_HOSTS", "*")
 
     class Config:

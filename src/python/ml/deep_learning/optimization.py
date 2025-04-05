@@ -2,16 +2,17 @@
 Enhanced optimization module with advanced features for deep learning models.
 """
 
+import logging
+from dataclasses import dataclass
+from typing import Dict, Tuple
+
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-from typing import Dict, Tuple
-from dataclasses import dataclass
-from torch.cuda.amp import autocast
 from ray import tune
-import logging
-from torch.quantization import quantize_dynamic, prepare, convert, QConfig
+from torch.cuda.amp import autocast
 from torch.nn.utils import prune
+from torch.quantization import QConfig, convert, prepare, quantize_dynamic
 
 
 @dataclass

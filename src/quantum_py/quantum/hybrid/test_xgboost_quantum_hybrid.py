@@ -1,9 +1,11 @@
-import pytest
-import numpy as np
-from unittest.mock import Mock
-from .xgboost_quantum_hybrid import XGBoostQuantumHybrid, HybridConfig
-from ..processor import QuantumProcessor
 from typing import Tuple
+from unittest.mock import Mock
+
+import numpy as np
+import pytest
+
+from ..processor import QuantumProcessor
+from .xgboost_quantum_hybrid import HybridConfig, XGBoostQuantumHybrid
 
 
 @pytest.fixture

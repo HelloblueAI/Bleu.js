@@ -1,13 +1,15 @@
+import logging
+from datetime import timedelta
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import timedelta
-from typing import Optional
-from src.services.auth_service import auth_service
-from src.models.user import UserCreate, UserResponse, Token
-from src.models.subscription import PlanType
+
 from src.database import get_db
-import logging
+from src.models.subscription import PlanType
+from src.models.user import Token, UserCreate, UserResponse
+from src.services.auth_service import auth_service
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

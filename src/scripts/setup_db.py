@@ -1,8 +1,10 @@
 import os
 import subprocess
+
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 def setup_database():
     """Set up the PostgreSQL database."""
@@ -33,13 +35,20 @@ def setup_database():
     if db_password:
         try:
             subprocess.run(
-                ["psql", "-d", db_name, "-c", f"ALTER USER {db_user} WITH PASSWORD '{db_password}';"],
-                check=True
+                [
+                    "psql",
+                    "-d",
+                    db_name,
+                    "-c",
+                    f"ALTER USER {db_user} WITH PASSWORD '{db_password}';",
+                ],
+                check=True,
             )
             print(f"Set password for user: {db_user}")
         except subprocess.CalledProcessError as e:
             print(f"Error setting password: {str(e)}")
             raise
 
+
 if __name__ == "__main__":
-    setup_database() 
+    setup_database()

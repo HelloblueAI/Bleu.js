@@ -1,8 +1,10 @@
-from datetime import datetime, timedelta, UTC
+import secrets
+from datetime import UTC, datetime, timedelta
 from typing import List, Optional
+
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-import secrets
+
 from src.models.subscription import APIToken, APITokenCreate, APITokenResponse
 from src.models.user import User, UserResponse
 
@@ -11,7 +13,9 @@ class APITokenService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_token(self, user: UserResponse, token_data: APITokenCreate) -> APITokenResponse:
+    async def create_token(
+        self, user: UserResponse, token_data: APITokenCreate
+    ) -> APITokenResponse:
         """Create a new API token for a user."""
         # Get the user's active subscription
         db_user = self.db.query(User).filter(User.id == user.id).first()
@@ -20,7 +24,7 @@ class APITokenService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found",
             )
-        
+
         subscription = db_user.subscription
         if not subscription:
             raise HTTPException(
@@ -99,7 +103,9 @@ class APITokenService:
         if not db_token.is_active:
             return False
 
-        if db_token.expires_at and db_token.expires_at.replace(tzinfo=UTC) < datetime.now(UTC):
+        if db_token.expires_at and db_token.expires_at.replace(
+            tzinfo=UTC
+        ) < datetime.now(UTC):
             return False
 
         return True

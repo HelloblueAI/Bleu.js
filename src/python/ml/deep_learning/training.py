@@ -2,19 +2,20 @@
 Enhanced training module with advanced features for deep learning models.
 """
 
-import torch
-import torch.nn as nn
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel
-from torch.cuda.amp import autocast, GradScaler
-from typing import Dict, Optional, Callable
-import wandb
-import mlflow
-from tqdm import tqdm
-from dataclasses import dataclass
 import logging
-from torch.optim.lr_scheduler import OneCycleLR
+from dataclasses import dataclass
+from typing import Callable, Dict, Optional
+
 import horovod.torch as hvd
+import mlflow
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+import wandb
+from torch.cuda.amp import GradScaler, autocast
+from torch.nn.parallel import DistributedDataParallel
+from torch.optim.lr_scheduler import OneCycleLR
+from tqdm import tqdm
 
 
 @dataclass

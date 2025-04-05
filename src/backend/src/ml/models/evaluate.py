@@ -1,8 +1,9 @@
 import argparse
 import json
-import joblib # type: ignore
 import logging
-import numpy as np # type: ignore
+
+import joblib  # type: ignore
+import numpy as np  # type: ignore
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

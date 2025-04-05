@@ -1,17 +1,19 @@
 """Advanced quantum-enhanced scene and object detection system."""
 
-import numpy as np
-import cv2
-import torch
-import torch.nn as nn
-from typing import Dict, List, Optional, Tuple
 import logging
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
+
+import cv2
+import numpy as np
+import torch
+import torch.nn as nn
+
 from ..quantum.processor import QuantumProcessor
 from .quantum import QuantumProcessor
+from .quantum.self_learning import QuantumSelfLearning
 from .scene import SceneAnalyzer
 from .temporal import TemporalAnalyzer
-from .quantum.self_learning import QuantumSelfLearning
 
 logger = logging.getLogger(__name__)
 

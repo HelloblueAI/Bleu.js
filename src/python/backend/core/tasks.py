@@ -1,8 +1,10 @@
-from datetime import datetime
 import time
-from typing import Dict, Any
+from datetime import datetime
+from typing import Any, Dict
+
 from celery import Task
 from sqlalchemy.orm import Session
+
 from .database import SessionLocal
 from .models import Job
 from .queue import celery_app

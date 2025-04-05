@@ -2,9 +2,10 @@
 
 import os
 import sys
-import structlog
+from datetime import UTC, datetime
 from typing import Any, Optional
-from datetime import datetime, UTC
+
+import structlog
 
 
 def configure_logger(

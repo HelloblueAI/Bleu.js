@@ -1,18 +1,20 @@
-from fastapi import HTTPException, Depends, status
+import logging
+import smtplib
+from datetime import UTC, datetime, timedelta, timezone
+from email.mime.text import MIMEText
+from typing import Optional
+
+import httpx
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from datetime import datetime, timedelta, UTC, timezone
-from typing import Optional
-import httpx
-from src.models.user import User, UserCreate, UserResponse
-from src.database import get_db
 from sqlalchemy.orm import Session
-import logging
+
 from src.config import settings
-import smtplib
-from email.mime.text import MIMEText
-from src.models.subscription import SubscriptionPlan, Subscription
+from src.database import get_db
+from src.models.subscription import Subscription, SubscriptionPlan
+from src.models.user import User, UserCreate, UserResponse
 
 logger = logging.getLogger(__name__)
 
@@ -96,28 +98,29 @@ class AuthService:
         if db_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
+                detail="Email already registered",
             )
 
         # Get the selected plan
-        plan = db.query(SubscriptionPlan).filter(
-            SubscriptionPlan.plan_type == user.plan_type
-        ).first()
+        plan = (
+            db.query(SubscriptionPlan)
+            .filter(SubscriptionPlan.plan_type == user.plan_type)
+            .first()
+        )
         if not plan:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid plan type"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid plan type"
             )
 
         # Create user
         hashed_password = self.get_password_hash(user.password)
         trial_end_date = datetime.now(timezone.utc) + timedelta(days=plan.trial_days)
-        
+
         db_user = User(
             email=user.email,
             hashed_password=hashed_password,
             full_name=user.full_name,
-            trial_end_date=trial_end_date
+            trial_end_date=trial_end_date,
         )
         db.add(db_user)
         db.commit()
@@ -130,7 +133,7 @@ class AuthService:
             plan_type=user.plan_type,
             status="active",
             current_period_start=datetime.now(timezone.utc),
-            current_period_end=trial_end_date
+            current_period_end=trial_end_date,
         )
         db.add(subscription)
         db.commit()
@@ -226,13 +229,12 @@ class AuthService:
         try:
             # Create verification token
             token = self.create_access_token(
-                data={"sub": email},
-                expires_delta=timedelta(hours=24)
+                data={"sub": email}, expires_delta=timedelta(hours=24)
             )
-            
+
             # Create verification URL
             verification_url = f"{settings.BASE_URL}/verify-email?token={token}"
-            
+
             # Email content
             subject = "Verify your Bleu.js account"
             body = f"""
@@ -245,19 +247,19 @@ class AuthService:
             
             If you did not create this account, please ignore this email.
             """
-            
+
             # Send email using configured SMTP settings
             with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
                 server.starttls()
                 server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                
+
                 msg = MIMEText(body)
-                msg['Subject'] = subject
-                msg['From'] = settings.SMTP_USER
-                msg['To'] = email
-                
+                msg["Subject"] = subject
+                msg["From"] = settings.SMTP_USER
+                msg["To"] = email
+
                 server.send_message(msg)
-                
+
             logger.info(f"Verification email sent to {email}")
             return True
         except Exception as e:

@@ -1,10 +1,11 @@
 """Advanced XGBoost training with quantum enhancements."""
 
+import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 import xgboost as xgb
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
-import logging
 
 logger = logging.getLogger(__name__)
 

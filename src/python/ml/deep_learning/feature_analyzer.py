@@ -4,17 +4,18 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple
-import numpy as np
-from sklearn.feature_selection import mutual_info_classif, f_classif
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from tensorflow import keras
-import structlog
-import ray
-from scipy import stats
-import seaborn as sns
+from typing import Dict, List, Optional, Tuple
+
 import matplotlib.pyplot as plt
+import numpy as np
+import ray
+import seaborn as sns
+import structlog
+from scipy import stats
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import f_classif, mutual_info_classif
+from sklearn.preprocessing import StandardScaler
+from tensorflow import keras
 
 
 @dataclass

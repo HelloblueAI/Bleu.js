@@ -1,16 +1,17 @@
-import numpy as np
-from typing import Dict, List, Optional, Union, Any
+import logging
 from dataclasses import dataclass
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit.algorithms.optimizers import COBYLA
 from qiskit.circuit.library import TwoLocal
-from qiskit_machine_learning.neural_networks import CircuitQNN
+from qiskit.primitives import Sampler
 from qiskit_machine_learning.algorithms.classifiers import NeuralNetworkClassifier
 from qiskit_machine_learning.algorithms.regressors import NeuralNetworkRegressor
-from qiskit.primitives import Sampler
-from qiskit.algorithms.optimizers import COBYLA
+from qiskit_machine_learning.neural_networks import CircuitQNN
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import StandardScaler
-import logging
 
 
 @dataclass

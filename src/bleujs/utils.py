@@ -4,9 +4,10 @@ Utility functions for Bleu.js
 
 import json
 import logging
+from datetime import UTC, datetime
+from typing import Any, Dict
+
 import structlog
-from datetime import datetime, UTC
-from typing import Dict, Any
 
 
 def setup_logging(level: int = logging.INFO) -> None:

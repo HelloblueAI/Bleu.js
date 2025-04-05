@@ -4,20 +4,21 @@ This script implements advanced training features including quantum computing,
 distributed training, and advanced optimization techniques.
 """
 
-import numpy as np
-import xgboost as xgb
-from typing import Dict, List, Optional, Tuple, Union, Any
-from dataclasses import dataclass
-import ray
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import KFold
-from sklearn.metrics import (
-    accuracy_score,
-    roc_auc_score,
-    f1_score,
-)
 import logging
 import pickle
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
+import ray
+import xgboost as xgb
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    roc_auc_score,
+)
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler
 
 from .features.feature_processor import FeatureProcessor
 from .quantum.quantum_processor import QuantumProcessor
@@ -109,7 +110,7 @@ class AdvancedDataProcessor:
     def _apply_quantum_processing(self, features: np.ndarray) -> np.ndarray:
         """Apply quantum feature processing"""
         try:
-            from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+            from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
             qr = QuantumRegister(self.quantum_config.n_qubits)
             cr = ClassicalRegister(self.quantum_config.n_qubits)

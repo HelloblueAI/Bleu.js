@@ -1,7 +1,8 @@
-import numpy as np
-from typing import List, Tuple
-from scipy import linalg
 import logging
+from typing import List, Tuple
+
+import numpy as np
+from scipy import linalg
 
 logger = logging.getLogger(__name__)
 

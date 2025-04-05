@@ -2,14 +2,17 @@
 Quantum-Enhanced Attention Mechanism
 """
 
-import tensorflow as tf
-import numpy as np
-from typing import Dict, Optional
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Dict, Optional
+
+import numpy as np
 import qiskit
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+import tensorflow as tf
+from qiskit import ClassicalRegister
+from qiskit import QuantumCircuit
 from qiskit import QuantumCircuit as QiskitCircuit
+from qiskit import QuantumRegister
 
 
 @dataclass

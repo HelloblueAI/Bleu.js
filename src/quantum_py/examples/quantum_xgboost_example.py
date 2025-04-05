@@ -1,19 +1,21 @@
 """Example of using quantum-enhanced XGBoost with self-learning capabilities."""
 
+import asyncio
+import time
+
 from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     accuracy_score,
-    roc_auc_score,
     f1_score,
     precision_score,
     recall_score,
+    roc_auc_score,
 )
-import asyncio
-from ..quantum.hybrid.xgboost_quantum_hybrid import XGBoostQuantumHybrid, HybridConfig
+from sklearn.model_selection import train_test_split
+
+from ..quantum.hybrid.xgboost_quantum_hybrid import HybridConfig, XGBoostQuantumHybrid
 from ..quantum.processor import QuantumProcessor
 from ..quantum.self_learning import SelfLearningSystem
-import time
 
 
 async def main():

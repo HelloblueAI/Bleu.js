@@ -2,15 +2,16 @@
 Advanced monitoring and analytics system for the backend.
 """
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Any
-import logging
-import psutil
+from typing import Any, Dict, List
+
 import prometheus_client as prom
+import psutil
 from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.sdk.trace import TracerProvider
 
 logger = logging.getLogger(__name__)
 

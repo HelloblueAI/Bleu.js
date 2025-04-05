@@ -2,13 +2,14 @@
 Tests for the quantum enhancer module.
 """
 
-import unittest
-import numpy as np
-import tensorflow as tf
-import tempfile
 import shutil
+import tempfile
 import time
+import unittest
+
+import numpy as np
 import pytest
+import tensorflow as tf
 
 from ..ml.deep_learning.quantum_enhancer import QuantumEnhancer
 

@@ -2,12 +2,12 @@
 Quantum-Enhanced Vision Model Architecture with Advanced Features
 """
 
-import tensorflow as tf
-import numpy as np
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
 
+import numpy as np
+import tensorflow as tf
 from quantum_attention import QuantumAttention, QuantumAttentionConfig
 from quantum_fusion import QuantumFusion, QuantumFusionConfig
 from quantum_loss import QuantumLoss, QuantumLossConfig

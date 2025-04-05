@@ -21,10 +21,11 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+from dataclasses import dataclass
+from typing import Tuple
+
 import torch
 import torch.nn as nn
-from typing import Tuple
-from dataclasses import dataclass
 
 
 @dataclass

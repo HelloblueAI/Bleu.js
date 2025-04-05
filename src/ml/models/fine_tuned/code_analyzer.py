@@ -22,10 +22,11 @@
 #  THE SOFTWARE.
 
 import ast
+import os
 import re
 from collections import defaultdict
+
 import joblib
-import os
 
 
 class CodeAnalyzer:

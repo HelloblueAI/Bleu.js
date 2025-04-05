@@ -1,5 +1,7 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 from celery import Celery
+
 from ..config.settings import get_config
 
 config = get_config()

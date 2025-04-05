@@ -1,14 +1,17 @@
-import logging
-from typing import Dict, Optional
-from datetime import datetime, timedelta, UTC
-import aiohttp
 import asyncio
-from prometheus_client import Counter, Gauge, Histogram, REGISTRY, CollectorRegistry
-from src.config import settings
+import logging
+from datetime import UTC, datetime, timedelta
+from typing import Dict, Optional
+
+import aiohttp
 import boto3
 from fastapi import HTTPException, status
+from prometheus_client import REGISTRY, CollectorRegistry, Counter, Gauge, Histogram
+
+from src.config import settings
 
 logger = logging.getLogger(__name__)
+
 
 class MonitoringService:
     _instance = None
@@ -25,11 +28,13 @@ class MonitoringService:
             collectors_to_remove = []
             for collector in REGISTRY._collector_to_names.keys():
                 try:
-                    if hasattr(collector, 'name') and collector.name.startswith('bleujs_'):
+                    if hasattr(collector, "name") and collector.name.startswith(
+                        "bleujs_"
+                    ):
                         collectors_to_remove.append(collector)
                 except (AttributeError, TypeError):
                     continue
-            
+
             for collector in collectors_to_remove:
                 try:
                     REGISTRY.unregister(collector)
@@ -44,7 +49,9 @@ class MonitoringService:
             self.api_calls_counter = Counter(
                 "bleujs_api_calls_total", "Total number of API calls"
             )
-            self.error_rate_gauge = Gauge("bleujs_error_rate", "API error rate percentage")
+            self.error_rate_gauge = Gauge(
+                "bleujs_error_rate", "API error rate percentage"
+            )
             self.rate_limit_counter = Counter(
                 "bleujs_rate_limit_hits", "Number of rate limit hits"
             )
@@ -340,28 +347,29 @@ class MonitoringService:
     async def check_rate_limit(self, customer_id: str, plan_type: str) -> bool:
         """Check if the customer has exceeded their rate limit."""
         current_time = datetime.now(UTC)
-        
+
         # Initialize rate limit data if not exists
         if customer_id not in self.rate_limit_data:
-            self.rate_limit_data[customer_id] = {
-                "requests": [],
-                "plan_type": plan_type
-            }
-        
+            self.rate_limit_data[customer_id] = {"requests": [], "plan_type": plan_type}
+
         # Clean up old requests
         self.rate_limit_data[customer_id]["requests"] = [
-            req_time for req_time in self.rate_limit_data[customer_id]["requests"]
+            req_time
+            for req_time in self.rate_limit_data[customer_id]["requests"]
             if (current_time - req_time).total_seconds() < 1.0
         ]
-        
+
         # Check if rate limit exceeded
-        if len(self.rate_limit_data[customer_id]["requests"]) >= self.rate_limits[plan_type]:
+        if (
+            len(self.rate_limit_data[customer_id]["requests"])
+            >= self.rate_limits[plan_type]
+        ):
             self.rate_limit_counter.inc()
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=f"Rate limit exceeded for {plan_type} plan"
+                detail=f"Rate limit exceeded for {plan_type} plan",
             )
-        
+
         # Add current request
         self.rate_limit_data[customer_id]["requests"].append(current_time)
         return True
@@ -371,24 +379,23 @@ class MonitoringService:
         customer_id: str,
         plan_type: str,
         api_calls_remaining: int,
-        service_type: str
+        service_type: str,
     ) -> bool:
         """Track an API call and check if the customer has exceeded their quota."""
         if api_calls_remaining <= 0:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="API call quota exceeded"
+                status_code=status.HTTP_403_FORBIDDEN, detail="API call quota exceeded"
             )
-        
+
         # Track the API call
         self.api_calls_counter.inc()
-        
+
         # Log the API call with service type
         logger.info(
             f"API call tracked - Customer: {customer_id}, Plan: {plan_type}, "
             f"Service: {service_type}, Remaining calls: {api_calls_remaining - 1}"
         )
-        
+
         return True
 
 

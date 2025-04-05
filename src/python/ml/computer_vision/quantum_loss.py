@@ -2,13 +2,16 @@
 Quantum-Enhanced Loss Functions
 """
 
-import tensorflow as tf
-import numpy as np
-from typing import Dict, List, Optional, Union
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Union
+
+import numpy as np
 import qiskit
-from qiskit import QuantumCircuit as QiskitCircuit, QuantumRegister, ClassicalRegister
+import tensorflow as tf
+from qiskit import ClassicalRegister
+from qiskit import QuantumCircuit as QiskitCircuit
+from qiskit import QuantumRegister
 
 
 @dataclass

@@ -4,17 +4,18 @@ Provides advanced quantum computing capabilities for machine learning models.
 """
 
 import logging
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
+
 import numpy as np
-from typing import Optional, Callable, Any, Dict, List, Union, Protocol, TypeVar
 import pennylane as qml
-from sklearn.preprocessing import MinMaxScaler
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import TwoLocal
-from qiskit_algorithms.optimizers import SPSA
-from qiskit_machine_learning.neural_networks import CircuitQNN
 from qiskit.primitives import Sampler
 from qiskit_aer.noise import NoiseModel, depolarizing_error
-from dataclasses import dataclass
+from qiskit_algorithms.optimizers import SPSA
+from qiskit_machine_learning.neural_networks import CircuitQNN
+from sklearn.preprocessing import MinMaxScaler
 
 # Constants for error messages
 SCALER_NOT_INITIALIZED = "Scaler not initialized"

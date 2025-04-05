@@ -1,10 +1,12 @@
 """Advanced Quantum Intelligence System."""
 
-from typing import Dict, List, Optional, Tuple
-import numpy as np
 from dataclasses import dataclass
-from ..processor import QuantumProcessor
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+
 from ...ml.enhanced_xgboost import EnhancedXGBoost
+from ..processor import QuantumProcessor
 
 
 @dataclass

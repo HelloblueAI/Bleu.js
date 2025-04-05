@@ -2,13 +2,12 @@
 Tests for the performance optimization system.
 """
 
-import pytest
 import asyncio
-from ..core.performance import (
-    PerformanceOptimizer,
-    PerformanceMetrics
-)
 from datetime import datetime
+
+import pytest
+
+from ..core.performance import PerformanceMetrics, PerformanceOptimizer
 
 # Create test optimizer instance
 optimizer = PerformanceOptimizer({
