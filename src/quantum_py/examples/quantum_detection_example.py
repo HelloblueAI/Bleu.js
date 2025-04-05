@@ -152,12 +152,16 @@ class AdvancedQuantumDetector:
         transformed = np.zeros_like(quantum_state.amplitude)
         for i in range(self.n_layers):
             # Phase rotation with enhanced coupling
-            phase_rotation = np.exp(1j * (quantum_state.phase + i * np.pi / self.n_layers))
+            phase_rotation = np.exp(
+                1j * (quantum_state.phase + i * np.pi / self.n_layers)
+            )
             phase_rotation *= np.exp(-0.1 * i)  # Add decay factor
 
             # Enhanced entanglement simulation
             entangled = np.dot(quantum_state.entanglement_map, quantum_state.amplitude)
-            entangled += 0.2 * np.roll(entangled, 1)  # Add nearest-neighbor interactions
+            entangled += 0.2 * np.roll(
+                entangled, 1
+            )  # Add nearest-neighbor interactions
 
             # Non-linear activation with quantum inspiration
             transformed += np.abs(entangled * phase_rotation)
@@ -252,15 +256,23 @@ class AdvancedQuantumDetector:
 
         # Update detection metrics
         n_detections = len(results)
-        n_confident = sum(1 for r in results if r.confidence >= self.confidence_threshold)
+        n_confident = sum(
+            1 for r in results if r.confidence >= self.confidence_threshold
+        )
 
         self.metrics["detection_metrics"].update(
             {
-                "total_detections": self.metrics["detection_metrics"]["total_detections"]
+                "total_detections": self.metrics["detection_metrics"][
+                    "total_detections"
+                ]
                 + n_detections,
-                "successful_detections": self.metrics["detection_metrics"]["successful_detections"]
+                "successful_detections": self.metrics["detection_metrics"][
+                    "successful_detections"
+                ]
                 + n_confident,
-                "failed_detections": self.metrics["detection_metrics"]["failed_detections"]
+                "failed_detections": self.metrics["detection_metrics"][
+                    "failed_detections"
+                ]
                 + (n_detections - n_confident),
                 "average_confidence": (
                     np.mean([r.confidence for r in results]) if results else 0.0
@@ -306,7 +318,9 @@ class AdvancedQuantumDetector:
         # ... existing code ...
 
 
-def generate_data(n_samples: int = 1000, n_features: int = 10) -> Tuple[np.ndarray, np.ndarray]:
+def generate_data(
+    n_samples: int = 1000, n_features: int = 10
+) -> Tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data for testing."""
     rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
     features = rng.normal(0, 1, (n_samples, n_features))

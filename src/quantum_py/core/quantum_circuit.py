@@ -30,7 +30,9 @@ class QuantumGate:
             raise ValueError("Gate matrix must be a numpy array")
         if self.matrix.shape[0] != self.matrix.shape[1]:
             raise ValueError("Gate matrix must be square")
-        if not np.allclose(self.matrix @ self.matrix.conj().T, np.eye(len(self.matrix))):
+        if not np.allclose(
+            self.matrix @ self.matrix.conj().T, np.eye(len(self.matrix))
+        ):
             raise ValueError("Gate matrix must be unitary")
 
 
@@ -66,7 +68,9 @@ class QuantumCircuit:
                     [0, 0, 1, 0],
                 ]
             ),
-            "SWAP": np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]),  # SWAP
+            "SWAP": np.array(
+                [[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]
+            ),  # SWAP
         }
 
     def add_gate(
@@ -151,7 +155,9 @@ class QuantumCircuit:
 
         return reduce(np.kron, ops)
 
-    def measure(self, qubit_indices: Optional[List[int]] = None) -> Dict[int, Tuple[int, float]]:
+    def measure(
+        self, qubit_indices: Optional[List[int]] = None
+    ) -> Dict[int, Tuple[int, float]]:
         """Measure specified qubits.
 
         Args:

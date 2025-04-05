@@ -42,7 +42,9 @@ class QuantumWASM:
             raise RuntimeError("WASM instance not initialized")
         return self.instance
 
-    def apply_quantum_gates(self, state: np.ndarray, gates: List[Dict[str, Any]]) -> np.ndarray:
+    def apply_quantum_gates(
+        self, state: np.ndarray, gates: List[Dict[str, Any]]
+    ) -> np.ndarray:
         """Apply quantum gates using WASM implementation."""
         try:
             instance = self._ensure_instance()
@@ -54,7 +56,9 @@ class QuantumWASM:
             gates_ptr = self._allocate_memory(gates)
 
             # Call WASM function
-            result_ptr = instance.exports.apply_quantum_gates(self.store, state_ptr, gates_ptr)
+            result_ptr = instance.exports.apply_quantum_gates(
+                self.store, state_ptr, gates_ptr
+            )
 
             # Convert result back to numpy array
             result = self._read_memory(result_ptr)
@@ -82,7 +86,9 @@ class QuantumWASM:
             basis_ptr = self._allocate_memory(basis.encode())
 
             # Call WASM function
-            result_ptr = instance.exports.measure_quantum_state(self.store, state_ptr, basis_ptr)
+            result_ptr = instance.exports.measure_quantum_state(
+                self.store, state_ptr, basis_ptr
+            )
 
             # Convert result back to numpy array
             result = self._read_memory(result_ptr)
@@ -170,7 +176,9 @@ class QuantumWASM:
             self.logger.error(f"Error applying QFT: {str(e)}")
             raise
 
-    def estimate_phase(self, state: np.ndarray, unitary: np.ndarray, precision: int) -> float:
+    def estimate_phase(
+        self, state: np.ndarray, unitary: np.ndarray, precision: int
+    ) -> float:
         """Estimate phase of unitary operator using WASM implementation."""
         try:
             instance = self._ensure_instance()
@@ -194,7 +202,9 @@ class QuantumWASM:
             self.logger.error(f"Error estimating phase: {str(e)}")
             raise
 
-    def correct_quantum_errors(self, state: np.ndarray, syndrome: np.ndarray) -> np.ndarray:
+    def correct_quantum_errors(
+        self, state: np.ndarray, syndrome: np.ndarray
+    ) -> np.ndarray:
         """Apply quantum error correction using WASM implementation."""
         try:
             instance = self._ensure_instance()

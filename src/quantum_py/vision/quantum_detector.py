@@ -68,7 +68,9 @@ class QuantumDetector:
             self.model = self._initialize_detection_model()
 
             # Initialize quantum processor
-            self.quantum_processor = QuantumProcessor(n_qubits=8, n_layers=3, error_correction=True)
+            self.quantum_processor = QuantumProcessor(
+                n_qubits=8, n_layers=3, error_correction=True
+            )
 
             # Initialize scene analyzer
             self.scene_analyzer = SceneAnalyzer()
@@ -133,7 +135,9 @@ class QuantumDetector:
                     bbox=(float(x1), float(y1), float(x2 - x1), float(y2 - y1)),
                     quantum_features=quantum_features,
                     scene_context=scene_context,
-                    temporal_context=(temporal_context if self.use_temporal_context else None),
+                    temporal_context=(
+                        temporal_context if self.use_temporal_context else None
+                    ),
                 )
                 detections.append(detection)
 
@@ -186,7 +190,9 @@ class QuantumDetector:
                     bbox = detection.bbox
                     # Extract region features from the processed image
                     x1, y1, w, h = bbox
-                    region = processed_image[:, :, int(y1) : int(y1 + h), int(x1) : int(x1 + w)]
+                    region = processed_image[
+                        :, :, int(y1) : int(y1 + h), int(x1) : int(x1 + w)
+                    ]
                     try:
                         with torch.no_grad():
                             results = self.model(region)
@@ -201,16 +207,23 @@ class QuantumDetector:
                     detection_features = np.array(detection_features)
 
                     # Apply quantum enhancement
-                    quantum_features = await self._apply_quantum_enhancement(detection_features)
+                    quantum_features = await self._apply_quantum_enhancement(
+                        detection_features
+                    )
 
                     # Analyze scene context
                     scene_context = {}
                     if self.scene_analyzer is not None:
-                        scene_context = await self._analyze_scene_context(processed_image)
+                        scene_context = await self._analyze_scene_context(
+                            processed_image
+                        )
 
                     # Analyze temporal context
                     temporal_context_data = {}
-                    if self.temporal_analyzer is not None and temporal_context is not None:
+                    if (
+                        self.temporal_analyzer is not None
+                        and temporal_context is not None
+                    ):
                         temporal_context_data = await self._analyze_temporal_context(
                             temporal_context
                         )
@@ -334,7 +347,9 @@ class QuantumDetector:
         # Update basic metrics
         self.performance_metrics["total_detections"] += len(detections)
         self.performance_metrics["successful_detections"] += len(detections)
-        self.performance_metrics["average_confidence"] = np.mean([d.confidence for d in detections])
+        self.performance_metrics["average_confidence"] = np.mean(
+            [d.confidence for d in detections]
+        )
 
         # Update quantum metrics if quantum processor is available
         if self.quantum_processor is not None:
@@ -358,4 +373,6 @@ class QuantumDetector:
                 if d.temporal_context
             ]
             if temporal_confidences:
-                self.performance_metrics["temporal_accuracy"] = np.mean(temporal_confidences)
+                self.performance_metrics["temporal_accuracy"] = np.mean(
+                    temporal_confidences
+                )

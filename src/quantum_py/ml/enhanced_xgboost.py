@@ -56,10 +56,14 @@ class EnhancedXGBoost:
         if self.model is None:
             raise ValueError("Model has not been trained yet")
 
-    def _safe_predict(self, features: np.ndarray, return_proba: bool = False) -> np.ndarray:
+    def _safe_predict(
+        self, features: np.ndarray, return_proba: bool = False
+    ) -> np.ndarray:
         """Safely make predictions with proper error handling"""
         self._ensure_model_exists()
-        model = cast(xgb.XGBClassifier, self.model)  # Cast to correct type after None check
+        model = cast(
+            xgb.XGBClassifier, self.model
+        )  # Cast to correct type after None check
 
         if return_proba:
             if not hasattr(model, "predict_proba"):
@@ -70,7 +74,9 @@ class EnhancedXGBoost:
     def _safe_save(self, path: str) -> None:
         """Safely save model with proper error handling"""
         self._ensure_model_exists()
-        model = cast(xgb.XGBClassifier, self.model)  # Cast to correct type after None check
+        model = cast(
+            xgb.XGBClassifier, self.model
+        )  # Cast to correct type after None check
 
         if not hasattr(model, "save_raw"):
             raise ValueError("Model does not support raw saving")
@@ -119,10 +125,14 @@ class EnhancedXGBoost:
             if self.model is None:
                 raise ValueError("Failed to initialize XGBoost model")
 
-            self.model.fit(features_enhanced, labels, eval_set=eval_set_enhanced, verbose=False)
+            self.model.fit(
+                features_enhanced, labels, eval_set=eval_set_enhanced, verbose=False
+            )
 
             # Calculate metrics
-            metrics = self._calculate_metrics(features_enhanced, labels, eval_set_enhanced)
+            metrics = self._calculate_metrics(
+                features_enhanced, labels, eval_set_enhanced
+            )
             self.metrics = metrics
 
             # Store feature importance
@@ -140,7 +150,9 @@ class EnhancedXGBoost:
             logging.error(f"Error during training: {str(e)}")
             raise
 
-    async def predict(self, features: np.ndarray, return_proba: bool = False) -> np.ndarray:
+    async def predict(
+        self, features: np.ndarray, return_proba: bool = False
+    ) -> np.ndarray:
         """Make predictions using the enhanced model"""
         try:
             self._ensure_model_exists()
@@ -166,7 +178,9 @@ class EnhancedXGBoost:
         """Enhance features using quantum processing"""
         try:
             if not hasattr(self.quantum_processor, "process_features"):
-                raise ValueError("Quantum processor does not support feature processing")
+                raise ValueError(
+                    "Quantum processor does not support feature processing"
+                )
 
             # Process features with quantum circuit
             features_quantum = await self.quantum_processor.process_features(features)
@@ -210,7 +224,9 @@ class EnhancedXGBoost:
             if len(np.unique(val_labels)) == 2:  # Binary classification
                 if hasattr(self.model, "predict_proba"):
                     val_labels_pred_proba = self.model.predict_proba(val_features)[:, 1]
-                    metrics["val_auc"] = roc_auc_score(val_labels, val_labels_pred_proba)
+                    metrics["val_auc"] = roc_auc_score(
+                        val_labels, val_labels_pred_proba
+                    )
 
         return metrics
 
@@ -251,7 +267,8 @@ class EnhancedXGBoost:
             for _ in range(n_trials):
                 # Sample parameters
                 params = {
-                    name: np.random.uniform(low, high) for name, (low, high) in param_space.items()
+                    name: np.random.uniform(low, high)
+                    for name, (low, high) in param_space.items()
                 }
 
                 # Train model with sampled parameters
