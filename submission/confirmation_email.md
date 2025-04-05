@@ -1,4 +1,4 @@
-Subject: Confirmation: Bleu.js Award Submission - April 4, 2024
+Subject: Confirmation: Bleu.js Award Submission - April 4, 2025
 
 Dear Award Committee,
 
@@ -12,7 +12,7 @@ Submission Package Contents:
 5. Team acknowledgments and contributions
 
 Submission Details:
-- Date: April 4, 2024
+- Date: April 4, 2025
 - Package Name: bleujs_award_submission.zip
 - Version: 1.0.0
 - Contact Email: info@helloblue.ai
