@@ -1,16 +1,21 @@
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes import auth, subscription, api_tokens
 from src.database import init_db
 from src.config import get_settings
 from tests.test_config import get_test_settings
+import logging
 
 # Constants
 API_V1_PREFIX = "/api/v1"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Bleu.js API",
@@ -30,6 +35,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Error handling middleware
+@app.middleware("http")
+async def error_handling_middleware(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        logger.error(f"Error processing request: {str(e)}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "An internal server error occurred"},
+        )
+
 # Mount static files
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
@@ -38,7 +56,11 @@ templates = Jinja2Templates(directory="src/templates")
 
 # Initialize database
 if not os.getenv("TESTING"):
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        logger.error(f"Database initialization failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Database initialization failed")
 
 # Include routers
 app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
@@ -48,29 +70,53 @@ app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
 # Serve HTML pages
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    try:
+        return templates.TemplateResponse("index.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering home page: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
+    try:
+        return templates.TemplateResponse("signup.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering signup page: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/signin", response_class=HTMLResponse)
 async def signin_page(request: Request):
-    return templates.TemplateResponse("signin.html", {"request": request})
+    try:
+        return templates.TemplateResponse("signin.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering signin page: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/forgot-password", response_class=HTMLResponse)
 async def forgot_password_page(request: Request):
-    return templates.TemplateResponse("forgot_password.html", {"request": request})
+    try:
+        return templates.TemplateResponse("forgot_password.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering forgot password page: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_page(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    try:
+        return templates.TemplateResponse("dashboard.html", {"request": request})
+    except Exception as e:
+        logger.error(f"Error rendering dashboard page: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/subscription", response_class=HTMLResponse)
 async def subscription_dashboard(request: Request):
-    return templates.TemplateResponse(
-        "subscription_dashboard.html", {"request": request}
-    )
+    try:
+        return templates.TemplateResponse(
+            "subscription_dashboard.html", {"request": request}
+        )
+    except Exception as e:
+        logger.error(f"Error rendering subscription dashboard: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error rendering page")
 
 @app.get("/")
 async def root():
