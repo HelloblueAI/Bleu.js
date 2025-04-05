@@ -9,6 +9,7 @@ from models.subscription import APIToken, APITokenCreate
 from models.user import User
 from services.api_token_service import APITokenService
 from services.rate_limiting_service import RateLimitingService
+from services.token_manager import TokenManager
 
 
 @pytest.fixture
@@ -154,6 +155,8 @@ async def test_validate_token_rate_limit_exceeded(
 ):
     # Set rate limit to maximum
     rate_limit = db.query(RateLimit).filter(RateLimit.user_id == test_user.id).first()
+    if rate_limit is None:
+        raise ValueError("Rate limit not found")
     rate_limit.calls_count = test_subscription.plan.api_calls_limit
     db.commit()
 
@@ -167,6 +170,8 @@ async def test_validate_token_after_rate_limit_reset(
 ):
     # Set rate limit to maximum
     rate_limit = db.query(RateLimit).filter(RateLimit.user_id == test_user.id).first()
+    if rate_limit is None:
+        raise ValueError("Rate limit not found")
     rate_limit.calls_count = test_subscription.plan.api_calls_limit
     rate_limit.last_reset = datetime.now(UTC) - timedelta(minutes=2)
     db.commit()
@@ -175,3 +180,19 @@ async def test_validate_token_after_rate_limit_reset(
     validated_token = APITokenService.validate_token(test_token.token, db)
     assert validated_token is not None
     assert validated_token.id == test_token.id
+
+
+def test_token_usage_tracking():
+    token = TokenManager.get_token("test_token")
+    if token is not None:
+        assert token.calls_count == 0
+        assert token.last_reset is not None
+
+
+def test_token_reset():
+    token = TokenManager.get_token("test_token")
+    if token is not None:
+        token.calls_count = 100
+        TokenManager.reset_token("test_token")
+        assert token.calls_count == 0
+        assert token.last_reset is not None

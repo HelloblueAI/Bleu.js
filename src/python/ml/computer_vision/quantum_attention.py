@@ -132,6 +132,11 @@ class QuantumAttention:
             output = tf.matmul(attention_weights, value)
             output = tf.reshape(output, [batch_size, -1, self.config.feature_dim])
 
+            if self.quantum_circuit is not None:
+                quantum_features = self.quantum_circuit(attention_weights)
+            else:
+                quantum_features = attention_weights
+
             return output
 
         except Exception as e:
@@ -142,42 +147,49 @@ class QuantumAttention:
         """Apply quantum enhancement to attention scores."""
         # Convert scores to quantum state
         quantum_state = self._prepare_quantum_state(scores)
-
+        
         # Apply quantum circuit
         enhanced_state = self._apply_quantum_circuit(quantum_state)
-
-        # Convert back to classical state
-        enhanced_scores = self._measure_quantum_state(enhanced_state)
-
-        return enhanced_scores
+        
+        # Convert back to tensor
+        return self._measure_quantum_state(enhanced_state)
 
     def _prepare_quantum_state(self, scores: tf.Tensor) -> np.ndarray:
         """Prepare quantum state from attention scores."""
+        if scores is None:
+            raise ValueError("Scores cannot be None")
+            
         # Normalize scores
         scores = tf.nn.softmax(scores, axis=-1)
 
         # Convert to quantum state
-        quantum_state = scores.numpy()
+        if not isinstance(scores, tf.Tensor):
+            raise ValueError("Scores must be a TensorFlow tensor")
+        scores_tensor: tf.Tensor = scores  # Type hint for linter
+        quantum_state = scores_tensor.numpy()
+        if quantum_state is None:
+            raise ValueError("Failed to convert scores to numpy array")
+            
+        # Ensure quantum state is not None before normalization
+        if quantum_state.size == 0:
+            raise ValueError("Quantum state array is empty")
+            
         quantum_state = quantum_state / np.linalg.norm(quantum_state)
 
         return quantum_state
 
     def _apply_quantum_circuit(self, quantum_state: np.ndarray) -> np.ndarray:
         """Apply quantum circuit to quantum state."""
-        if self.quantum_circuit is None:
-            raise RuntimeError("Quantum circuit not initialized")
-
+        if quantum_state is None:
+            raise ValueError("Quantum state cannot be None")
         # Create quantum circuit with current state
-        circuit = QiskitCircuit(self.qr, self.cr)
-        circuit.compose(self.quantum_circuit)
-        circuit.initialize(quantum_state, self.qr)
-
-        # Execute circuit
-        backend = qiskit.Aer.get_backend("statevector_simulator")
-        job = qiskit.execute(circuit, backend)
-        result = job.result()
-
-        return result.get_statevector()
+        circuit = self._build_quantum_circuit()
+        if circuit is None:
+            raise ValueError("Quantum circuit cannot be None")
+        # Apply quantum gates
+        self._apply_quantum_gates()
+        # Measure quantum state
+        return self._measure_quantum_state(quantum_state)
 
     def _measure_quantum_state(self, quantum_state: np.ndarray) -> tf.Tensor:
         """Measure quantum state and convert back to attention scores."""

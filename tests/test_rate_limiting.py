@@ -1,13 +1,14 @@
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, UTC
 
 import pytest
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from src.models.rate_limit import RateLimit
 from src.models.subscription import Subscription, SubscriptionPlan
 from src.models.user import User
-from src.services.rate_limiting_service import RateLimitingService
+from src.services.rate_limiting_service import RateLimitingService, RateLimiter
 
 
 @pytest.fixture
@@ -124,6 +125,7 @@ async def test_rate_limit_reset(db: Session, test_user, rate_limit_service):
         )
         .first()
     )
+    assert updated_rate_limit is not None, "Rate limit record not found"
     assert updated_rate_limit.calls_count == 1  # Should be 1 after reset and use
     assert updated_rate_limit.last_reset.replace(tzinfo=timezone.utc) > old_time
 
@@ -144,3 +146,13 @@ async def test_different_endpoints(db: Session, test_user, rate_limit_service):
     # Verify separate rate limit records
     rate_limits = db.query(RateLimit).filter(RateLimit.user_id == test_user.id).all()
     assert len(rate_limits) == 2
+
+
+def test_rate_limit_tracking():
+    rate_limit = RateLimiter.get_rate_limit("test_client")
+    # Create a new rate limit if none exists
+    if rate_limit is None:
+        rate_limit = RateLimiter.create_rate_limit("test_client")
+    # Now we can safely access members
+    assert rate_limit.calls_count == 0
+    assert rate_limit.last_reset is not None
