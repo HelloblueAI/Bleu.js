@@ -119,13 +119,7 @@ class QuantumFusion:
                 return self._measure_quantum_state(enhanced_state)
 
             def _prepare_quantum_state(self, features: tf.Tensor) -> np.ndarray:
-                if features is None:
-                    raise ValueError("Features cannot be None")
-
-                # Normalize features
-                features = tf.nn.l2_normalize(features, axis=-1)
-
-                # Convert to quantum state
+                """Prepare quantum state from features."""
                 try:
                     if features is None:
                         raise ValueError("Features tensor is None")
@@ -137,7 +131,7 @@ class QuantumFusion:
 
                     return quantum_state
                 except Exception as e:
-                    raise RuntimeError(f"Failed to prepare quantum state: {str(e)}")
+                    raise ValueError(f"Failed to prepare quantum state: {str(e)}")
 
             def _apply_quantum_circuit(self, quantum_state: np.ndarray) -> np.ndarray:
                 """Apply quantum circuit to state."""
