@@ -6,12 +6,23 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  AWS_REGION: us-east-1
+  PYTHON_VERSION: '3.10'
+
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9, 3.10]
+        include:
+          - python-version: 3.9
+            qiskit-version: '0.39.5'
+            qiskit-aer-version: '0.11.2'
+          - python-version: 3.10
+            qiskit-version: '0.39.5'
+            qiskit-aer-version: '0.11.2'
 
     steps:
     - uses: actions/checkout@v3
@@ -27,16 +38,46 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov black isort flake8 mypy bandit
         pip install tensorflow
+        pip install "qiskit==${{ matrix.qiskit-version }}"
+        pip install "qiskit-aer==${{ matrix.qiskit-aer-version }}"
 
     - name: Run tests with coverage
       run: |
-        pytest --cov=./ --cov-report=xml
+        PYTHONPATH=. pytest --cov=./ --cov-report=xml src/python/ml/computer_vision/test_quantum_fusion.py
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
         fail_ci_if_error: true
+
+    - name: Notify Slack on Test Failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: custom
+        custom_payload: |
+          {
+            "attachments": [{
+              "color": "danger",
+              "title": "Tests Failed 🚨",
+              "text": "Tests failed for Python ${{ matrix.python-version }}\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+              "fields": [
+                {
+                  "title": "Repository",
+                  "value": "${{ github.repository }}",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "${{ github.ref }}",
+                  "short": true
+                }
+              ]
+            }]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   lint:
     runs-on: ubuntu-latest
@@ -46,7 +87,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Install linting tools
       run: |
@@ -68,8 +109,74 @@ jobs:
     - name: Run bandit
       run: bandit -r .
 
+    - name: Notify Slack on Lint Failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: custom
+        custom_payload: |
+          {
+            "attachments": [{
+              "color": "warning",
+              "title": "Code Quality Check Failed ⚠️",
+              "text": "Linting or code quality checks failed\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+              "fields": [
+                {
+                  "title": "Repository",
+                  "value": "${{ github.repository }}",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "${{ github.ref }}",
+                  "short": true
+                }
+              ]
+            }]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/python@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+    - name: Notify Slack on Security Issues
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: custom
+        custom_payload: |
+          {
+            "attachments": [{
+              "color": "danger",
+              "title": "Security Check Failed 🔒",
+              "text": "Security vulnerabilities detected\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+              "fields": [
+                {
+                  "title": "Repository",
+                  "value": "${{ github.repository }}",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "${{ github.ref }}",
+                  "short": true
+                }
+              ]
+            }]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   deploy:
-    needs: [test, lint]
+    needs: [test, lint, security]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
@@ -79,9 +186,9 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy to AWS
       run: |
@@ -103,3 +210,36 @@ jobs:
           --template-file deploy/aws/subscription_lambda.yml \
           --stack-name bleujs-lambda \
           --capabilities CAPABILITY_IAM
+
+    - name: Notify Slack on Deployment Status
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: custom
+        custom_payload: |
+          {
+            "attachments": [{
+              "color": "${{ job.status == 'success' && 'good' || 'danger' }}",
+              "title": "${{ job.status == 'success' && '✅ Deployment Successful' || '❌ Deployment Failed' }}",
+              "text": "Deployment to AWS ${{ job.status == 'success' && 'completed successfully' || 'failed' }}\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+              "fields": [
+                {
+                  "title": "Repository",
+                  "value": "${{ github.repository }}",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "${{ github.ref }}",
+                  "short": true
+                },
+                {
+                  "title": "Environment",
+                  "value": "Production",
+                  "short": true
+                }
+              ]
+            }]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

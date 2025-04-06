@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import List, Optional
 
@@ -172,8 +172,8 @@ def test_subscription(db_session, test_user, test_subscription_plan):
         plan_id=test_subscription_plan.id,
         plan_type=PlanType.CORE,
         status="active",
-        current_period_start=datetime.now(UTC),
-        current_period_end=datetime.now(UTC) + timedelta(days=30),
+        current_period_start=datetime.now(timezone.utc),
+        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db_session.add(subscription)
     db_session.commit()
@@ -189,7 +189,7 @@ def test_api_token(db_session, test_user, test_subscription):
         name="Test Token",
         token="test-token-value",
         is_active=True,
-        created_at=datetime.now(UTC),
+        created_at=datetime.now(timezone.utc),
     )
     db_session.add(token)
     db_session.commit()
@@ -205,9 +205,9 @@ def test_rate_limit(db_session, test_user):
         limit=100,
         period=3600,
         calls_count=0,
-        last_reset=datetime.now(UTC),
-        current_period_start=datetime.now(UTC),
-        last_used=datetime.now(UTC),
+        last_reset=datetime.now(timezone.utc),
+        current_period_start=datetime.now(timezone.utc),
+        last_used=datetime.now(timezone.utc),
     )
     db_session.add(rate_limit)
     db_session.commit()

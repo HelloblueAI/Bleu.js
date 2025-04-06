@@ -62,4 +62,3 @@ EOF
 # Start and enable the CloudWatch agent
 sudo systemctl enable amazon-cloudwatch-agent
 sudo systemctl start amazon-cloudwatch-agent
- 

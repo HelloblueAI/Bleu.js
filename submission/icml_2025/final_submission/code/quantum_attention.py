@@ -4,10 +4,11 @@ This module implements a quantum-enhanced attention mechanism for computer visio
 tasks, combining classical attention with quantum computing capabilities.
 """
 
+from dataclasses import dataclass
+from typing import Dict, List
+
 import numpy as np
 import pennylane as qml
-from dataclasses import dataclass
-from typing import List, Dict
 
 
 @dataclass
@@ -35,7 +36,7 @@ class QuantumAttention:
             self._prepare_quantum_state(features)
             self._apply_quantum_gates()
             self.initialized = True
-        
+
         return [qml.expval(qml.PauliZ(i)) for i in range(self.config.num_qubits)]
 
     def _prepare_quantum_state(self, features: np.ndarray) -> None:
@@ -61,14 +62,16 @@ class QuantumAttention:
             self._prepare_quantum_state(x)
             self._apply_quantum_gates()
             self.initialized = True
-        
+
         measurements = self.circuit(x)
         probabilities = np.array(measurements)
-        
+
         if self.config.dropout_rate > 0:
-            mask = np.random.binomial(1, 1 - self.config.dropout_rate, size=probabilities.shape)
+            mask = np.random.binomial(
+                1, 1 - self.config.dropout_rate, size=probabilities.shape
+            )
             probabilities *= mask
-        
+
         return probabilities
 
     def get_config(self) -> Dict:

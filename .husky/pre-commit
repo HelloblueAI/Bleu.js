@@ -67,13 +67,13 @@ check_precommit() {
 check_dependencies() {
     local missing_deps=()
     local required_deps=("flake8" "black" "isort" "mypy" "ruff" "bandit")
-    
+
     for dep in "${required_deps[@]}"; do
         if ! command_exists "$dep"; then
             missing_deps+=("$dep")
         fi
     done
-    
+
     if [ ${#missing_deps[@]} -ne 0 ]; then
         echo "⚠️ Missing dependencies: ${missing_deps[*]}"
         echo "Installing missing dependencies..."
@@ -85,7 +85,7 @@ check_dependencies() {
 run_tests() {
     local cache_dir=".pytest_cache"
     local test_files=$(git diff --cached --name-only --diff-filter=d | grep "\.py$")
-    
+
     if [ -n "$test_files" ]; then
         echo "🔍 Running tests for changed files..."
         if [ -d "$cache_dir" ]; then

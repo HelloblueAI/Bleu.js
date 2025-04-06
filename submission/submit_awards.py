@@ -11,7 +11,7 @@ import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import requests
 
