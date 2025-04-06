@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-import tensorflow as tf
+import torch
 from qiskit_aer import Aer
 
 from src.python.ml.computer_vision.quantum_fusion import (
@@ -38,8 +38,8 @@ def quantum_fusion(config):
 def sample_features():
     """Create sample feature tensors."""
     return [
-        tf.random.uniform((10, 4), dtype=tf.float32),
-        tf.random.uniform((10, 4), dtype=tf.float32),
+        torch.rand((10, 4), dtype=torch.float32),
+        torch.rand((10, 4), dtype=torch.float32),
     ]
 
 
@@ -65,7 +65,7 @@ def test_quantum_circuit_building(config):
 def test_feature_fusion(quantum_fusion, sample_features):
     """Test feature fusion."""
     fused = quantum_fusion.fuse_features(sample_features)
-    assert isinstance(fused, tf.Tensor)
+    assert isinstance(fused, torch.Tensor)
     assert fused.shape == (10, 8)  # batch_size x fusion_dim
 
 
@@ -83,7 +83,10 @@ def test_quantum_state_preparation(quantum_fusion, sample_features):
     quantum_state = quantum_fusion._prepare_quantum_state(features)
     assert isinstance(quantum_state, np.ndarray)
     assert quantum_state.dtype == np.complex128
-    assert quantum_state.shape == (10, 2**quantum_fusion.config.num_qubits)  # batch_size x state_size
+    assert quantum_state.shape == (
+        10,
+        2**quantum_fusion.config.num_qubits,
+    )  # batch_size x state_size
 
 
 def test_quantum_gate_application(quantum_fusion, sample_features):
@@ -104,7 +107,7 @@ def test_error_handling(quantum_fusion):
 
     # Test empty features
     with pytest.raises(ValueError):
-        quantum_fusion._prepare_quantum_state(tf.zeros((0, 0)))
+        quantum_fusion._prepare_quantum_state(torch.zeros((0, 0)))
 
     # Test invalid quantum state
     with pytest.raises(ValueError):
@@ -119,7 +122,7 @@ def test_backend_execution(quantum_fusion, sample_features):
 
     # Test feature fusion with backend
     fused = quantum_fusion.fuse_features(sample_features)
-    assert isinstance(fused, tf.Tensor)
+    assert isinstance(fused, torch.Tensor)
     assert fused.shape == (10, 8)
 
 
@@ -142,7 +145,7 @@ def test_quantum_fusion_layer(config):
     assert layer.config == config
 
     # Test layer call
-    features = [tf.random.uniform((10, 4)) for _ in range(2)]
+    features = [torch.rand((10, 4)) for _ in range(2)]
     output = layer(features)
-    assert isinstance(output, tf.Tensor)
+    assert isinstance(output, torch.Tensor)
     assert output.shape == (10, 8)  # batch_size x fusion_dim
