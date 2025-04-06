@@ -1,223 +1,103 @@
-"""
-Enhanced Quantum Attention Implementation
-Provides advanced quantum-enhanced attention mechanisms for machine learning models.
-"""
+"""Quantum attention mechanism implementation."""
 
-import logging
-from dataclasses import dataclass
-from typing import List, Optional, cast
+from typing import List, Optional, Tuple
 
 import numpy as np
-import tensorflow as tf
+import qiskit
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
-from qiskit.primitives import Sampler
-from qiskit_aer import AerSimulator
-from qiskit_aer.noise import NoiseModel, depolarizing_error
-
-
-@dataclass
-class QuantumAttentionConfig:
-    """Configuration for quantum attention mechanism."""
-
-    num_qubits: int = 4
-    num_heads: int = 2
-    feature_dim: int = 2048
-    temperature: float = 0.1
-    use_entanglement: bool = True
-    use_superposition: bool = True
-    use_quantum_regularization: bool = True
-    error_correction: bool = True
-    optimization_level: int = 2
 
 
 class QuantumAttention:
-    """Enhanced quantum attention mechanism with advanced features."""
+    """Implements quantum attention mechanism for enhanced feature processing."""
 
-    def __init__(self, config: Optional[QuantumAttentionConfig] = None):
-        self.config = config or QuantumAttentionConfig()
-        self.logger = logging.getLogger(__name__)
-        self.quantum_circuits: List[QuantumCircuit] = []
-        self.sampler = Sampler()
-        self.noise_model = self._create_noise_model()
-        self._build_quantum_circuits()
+    def __init__(self, n_qubits: int = 4):
+        """Initialize quantum attention with specified number of qubits.
 
-    def _create_noise_model(self) -> NoiseModel:
-        """Create a realistic noise model for quantum simulation."""
-        noise_model = NoiseModel()
-        # Add depolarizing noise
-        noise_model.add_all_qubit_quantum_error(
-            depolarizing_error(0.01, 1), ["u1", "u2", "u3"]
-        )
-        # Add readout error
-        noise_model.add_all_qubit_readout_error([[0.9, 0.1], [0.1, 0.9]])
-        return noise_model
+        Args:
+            n_qubits: Number of qubits to use in the quantum circuit
+        """
+        self.n_qubits = n_qubits
+        self.qr = QuantumRegister(n_qubits)
+        self.cr = ClassicalRegister(n_qubits)
+        self.circuit = QuantumCircuit(self.qr, self.cr)
 
-    def _build_quantum_circuits(self) -> None:
-        """Build quantum circuits for multi-head attention."""
-        try:
-            for _ in range(self.config.num_heads):
-                # Create quantum registers
-                qr = QuantumRegister(self.config.num_qubits, "q")
-                cr = ClassicalRegister(self.config.num_qubits, "c")
+    def apply_attention(self, features: np.ndarray) -> np.ndarray:
+        """Apply quantum attention mechanism to input features.
 
-                # Create quantum circuit
-                circuit = QuantumCircuit(qr, cr)
+        Args:
+            features: Input feature array to process
 
-                # Apply quantum gates for attention computation
-                self._apply_quantum_gates(circuit)
+        Returns:
+            Processed features with quantum attention applied
+        """
+        # Normalize features
+        features = self._normalize_features(features)
 
-                # Add error correction if enabled
-                if self.config.error_correction:
-                    self._apply_error_correction(circuit)
+        # Encode features into quantum states
+        self._encode_features(features)
 
-                self.quantum_circuits.append(circuit)
+        # Apply quantum attention operations
+        self._apply_attention_ops()
 
-        except Exception as e:
-            self.logger.error(f"Failed to build quantum circuits: {str(e)}")
-            raise
+        # Measure and return results
+        return self._measure_results()
 
-    def _apply_quantum_gates(self, circuit: QuantumCircuit) -> None:
-        """Apply quantum gates for attention computation."""
-        # Apply Hadamard gates for superposition
-        for i in range(self.config.num_qubits):
-            circuit.h(i)
+    def _normalize_features(self, features: np.ndarray) -> np.ndarray:
+        """Normalize input features to prepare for quantum encoding.
 
-        # Apply rotation gates for attention weights
-        for i in range(self.config.num_qubits):
-            circuit.rz(np.pi / 4, i)
+        Args:
+            features: Raw input features
 
-        # Apply CNOT gates for entanglement
-        if self.config.use_entanglement:
-            for i in range(self.config.num_qubits - 1):
-                circuit.cx(i, i + 1)
+        Returns:
+            Normalized features
+        """
+        return features / np.linalg.norm(features)
 
-    def _apply_error_correction(self, circuit: QuantumCircuit) -> None:
-        """Apply quantum error correction."""
-        # Implement surface code error correction
-        for i in range(0, self.config.num_qubits - 1, 3):
-            circuit.cx(i, i + 1)
-            circuit.cx(i + 1, i + 2)
-            circuit.cx(i, i + 1)
-            circuit.cx(i + 1, i + 2)
+    def _encode_features(self, features: np.ndarray) -> None:
+        """Encode normalized features into quantum states.
 
-    def compute_attention(
-        self,
-        query: tf.Tensor,
-        key: tf.Tensor,
-        value: tf.Tensor,
-        mask: Optional[tf.Tensor] = None,
-    ) -> tf.Tensor:
-        """Compute quantum-enhanced attention scores."""
-        try:
-            # Prepare quantum states
-            query_state = self._prepare_quantum_state(query)
-            key_state = self._prepare_quantum_state(key)
+        Args:
+            features: Normalized features to encode
+        """
+        for i, feature in enumerate(features):
+            if i < self.n_qubits:
+                angle = np.arccos(feature)
+                self.circuit.ry(angle, self.qr[i])
 
-            # Compute attention scores for each head
-            attention_scores = []
-            for circuit in self.quantum_circuits:
-                # Apply quantum circuit
-                scores = self._apply_quantum_circuit(circuit, query_state, key_state)
-                attention_scores.append(scores)
+    def _apply_attention_ops(self) -> None:
+        """Apply quantum operations implementing the attention mechanism."""
+        # Apply Hadamard gates to create superposition
+        self.circuit.h(self.qr)
 
-            # Combine attention scores from all heads
-            attention_scores = tf.stack(attention_scores, axis=1)
+        # Apply controlled operations between qubits
+        for i in range(self.n_qubits - 1):
+            self.circuit.cx(self.qr[i], self.qr[i + 1])
 
-            # Apply mask if provided
-            if mask is not None:
-                attention_scores = tf.where(
-                    mask == 0,
-                    tf.constant(-float("inf"), dtype=attention_scores.dtype),
-                    attention_scores,
-                )
+        # Apply phase rotations
+        for i in range(self.n_qubits):
+            self.circuit.rz(np.pi / 4, self.qr[i])
 
-            # Apply softmax with temperature
-            attention_weights = tf.nn.softmax(
-                attention_scores / self.config.temperature, axis=-1
-            )
+    def _measure_results(self) -> np.ndarray:
+        """Measure quantum circuit and process results.
 
-            # Apply quantum regularization if enabled
-            if self.config.use_quantum_regularization:
-                attention_weights = self._apply_quantum_regularization(
-                    attention_weights
-                )
+        Returns:
+            Processed measurement results
+        """
+        self.circuit.measure(self.qr, self.cr)
 
-            # Apply attention to values
-            output = tf.matmul(attention_weights, value)
-
-            return output
-
-        except Exception as e:
-            self.logger.error(f"Error computing attention: {str(e)}")
-            raise
-
-    def _prepare_quantum_state(self, tensor: tf.Tensor) -> np.ndarray:
-        """Prepare quantum state from tensor."""
-        if tensor is None:
-            raise ValueError("Input tensor cannot be None")
-
-        if not isinstance(tensor, tf.Tensor):
-            raise TypeError("Input must be a TensorFlow tensor")
-
-        try:
-            array = tensor.numpy()
-        except Exception as e:
-            raise ValueError(f"Failed to convert tensor to numpy array: {str(e)}")
-
-        if array.size == 0:
-            raise ValueError("Input tensor is empty")
-
-        # Normalize the tensor
-        normalized = (array - np.min(array)) / (np.max(array) - np.min(array) + 1e-8)
-        return normalized
-
-    def _apply_quantum_circuit(
-        self, circuit: QuantumCircuit, query_state: np.ndarray, key_state: np.ndarray
-    ) -> np.ndarray:
-        """Apply quantum circuit to compute attention scores."""
-        # Create new circuit with current states
-        qr = QuantumRegister(self.config.num_qubits, "q")
-        cr = ClassicalRegister(self.config.num_qubits, "c")
-        current_circuit = QuantumCircuit(qr, cr)
-
-        # Compose with base circuit
-        current_circuit.compose(circuit)
-
-        # Initialize with query and key states
-        current_circuit.initialize(query_state, qr[: self.config.num_qubits // 2])
-        current_circuit.initialize(key_state, qr[self.config.num_qubits // 2 :])
-
-        # Execute circuit
-        backend = AerSimulator(noise_model=self.noise_model)
-        job = backend.run(current_circuit)
+        # Execute circuit and get counts
+        backend = qiskit.Aer.get_backend("qasm_simulator")
+        job = qiskit.execute(self.circuit, backend, shots=1000)
         result = job.result()
+        counts = result.get_counts(self.circuit)
 
-        # Get statevector
-        statevector = result.get_statevector()
+        # Process and return measurement results
+        processed_results = np.zeros(self.n_qubits)
+        total_shots = sum(counts.values())
 
-        # Convert to attention scores
-        scores = np.abs(statevector) ** 2
-        scores = scores.reshape(scores.shape[0], -1)
+        for bitstring, count in counts.items():
+            for i, bit in enumerate(reversed(bitstring)):
+                if bit == "1":
+                    processed_results[i] += count / total_shots
 
-        return scores
-
-    def _apply_quantum_regularization(self, tensor: tf.Tensor) -> tf.Tensor:
-        """Apply quantum regularization to tensor."""
-        # Compute quantum entropy
-        entropy = self._compute_quantum_entropy(tensor)
-
-        # Apply regularization term
-        regularization = 0.01 * entropy
-        tensor = tensor + regularization
-
-        return tensor
-
-    def _compute_quantum_entropy(self, tensor: tf.Tensor) -> tf.Tensor:
-        """Compute quantum entropy of tensor."""
-        # Convert to probability distribution
-        probs = tf.nn.softmax(tensor, axis=-1)
-
-        # Compute Shannon entropy
-        entropy = -tf.reduce_sum(probs * tf.math.log(probs + 1e-10), axis=-1)
-
-        return entropy
+        return processed_results
