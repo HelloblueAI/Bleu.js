@@ -1,0 +1,41 @@
+# Auto-assign configuration
+# Add reviewers to pull requests automatically
+
+# Add reviewers to pull requests
+addReviewers: true
+
+# Number of reviewers added to the pull request
+numberOfReviewers: 1
+
+# Add assignees to pull requests
+addAssignees: true
+
+# Add assignees from reviewers
+addAssigneesToReviewers: true
+
+# Filter reviewers by available reviewers
+filterReviewers: true
+
+# List of reviewers to be added to pull requests
+reviewers:
+  - HelloblueAI/maintainers
+
+# List of assignees, fallback to reviewers if not set
+assignees:
+  - HelloblueAI/maintainers
+
+# Skip draft pull requests
+skipDraft: true
+
+# Pull request labels to skip (optional)
+# skipLabels:
+#   - wip
+#   - draft
+
+# Pull request titles to skip (optional)
+# skipTitleRegex: '^WIP:'
+
+# Pull request files to skip (optional)
+# skipFiles:
+#   - '*.md'
+#   - 'docs/*'
