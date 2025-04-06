@@ -1,13 +1,15 @@
 import logging
+import multiprocessing
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from multiprocessing import Pool
 from typing import Dict, List, Tuple
-import multiprocessing
-import time
 
+import cirq
 import numpy as np
 import sparse
-from concurrent.futures import ThreadPoolExecutor
+from cirq import Circuit, LineQubit
 
 from .quantum_circuit import QuantumCircuit
 from .quantum_gate import QuantumGate
@@ -40,7 +42,8 @@ class QuantumProcessor:
             config: ProcessorConfig object with processor parameters
         """
         self.config = config
-        self.circuit = QuantumCircuit(config.num_qubits)
+        self.circuit = Circuit()
+        self.qubits = LineQubit.range(config.num_qubits)
         self.error_correction_circuits: Dict[str, QuantumCircuit] = {}
         self.measurement_results: List[Dict[int, int]] = []
         self.noise_models: Dict[str, callable] = {}
@@ -207,13 +210,13 @@ class QuantumProcessor:
 
         # 1. Adaptive Error Correction Selection
         correction_type = self._select_error_correction_type()
-        
+
         # 2. Enhanced Syndrome Measurement
         syndrome = self._measure_syndrome(correction_type)
-        
+
         # 3. Error Analysis and Correction
         self._analyze_and_correct_errors(syndrome, correction_type)
-        
+
         # 4. Error Rate Monitoring
         self._update_error_rates()
 
@@ -222,7 +225,7 @@ class QuantumProcessor:
         # Analyze current error rates and qubit stability
         error_rates = self._get_current_error_rates()
         qubit_stability = self._get_qubit_stability()
-        
+
         # Select code based on conditions
         if max(error_rates) > 0.1 or min(qubit_stability) < 0.8:
             return "surface"  # More robust code
@@ -232,7 +235,7 @@ class QuantumProcessor:
     def _measure_syndrome(self, correction_type: str) -> Dict[int, Tuple[int, float]]:
         """Perform enhanced syndrome measurement."""
         syndrome = {}
-        
+
         if correction_type == "surface":
             # Surface code syndrome measurement
             for i in range(0, self.config.num_qubits - 1, 2):
@@ -245,10 +248,12 @@ class QuantumProcessor:
             for i, stabilizer in enumerate(stabilizers):
                 measurements = self.circuit.measure(stabilizer)
                 syndrome[i] = (sum(measurements.values()) % 2, 0.9)  # Good confidence
-        
+
         return syndrome
 
-    def _analyze_and_correct_errors(self, syndrome: Dict[int, Tuple[int, float]], correction_type: str) -> None:
+    def _analyze_and_correct_errors(
+        self, syndrome: Dict[int, Tuple[int, float]], correction_type: str
+    ) -> None:
         """Analyze syndrome and apply appropriate corrections."""
         for qubit, (outcome, confidence) in syndrome.items():
             if outcome == 1 and confidence > 0.8:  # High confidence error
@@ -265,7 +270,7 @@ class QuantumProcessor:
         """Update error rates based on correction performance."""
         # Monitor error correction success
         success_rate = self._calculate_correction_success()
-        
+
         # Adjust error rates based on performance
         for i in range(self.config.num_qubits):
             if success_rate < 0.9:  # Poor correction performance
@@ -308,7 +313,8 @@ class QuantumProcessor:
 
     def reset(self) -> None:
         """Reset processor to initial state."""
-        self.circuit = QuantumCircuit(self.config.num_qubits)
+        self.circuit = Circuit()
+        self.qubits = LineQubit.range(self.config.num_qubits)
         self.measurement_results.clear()
         self._initialize_error_correction()
 
@@ -324,28 +330,28 @@ class QuantumProcessor:
         """Optimize resource utilization with advanced techniques."""
         # 1. Memory Management
         self._optimize_memory_usage()
-        
+
         # 2. Parallel Processing
         self._optimize_parallel_processing()
-        
+
         # 3. Resource Allocation
         self._optimize_resource_allocation()
-        
+
         # 4. Performance Monitoring
         self._monitor_performance()
 
     def _optimize_memory_usage(self) -> None:
         """Optimize memory usage for quantum state and operations."""
         # Implement memory optimization techniques
-        if hasattr(self, 'state') and self.state is not None:
+        if hasattr(self, "state") and self.state is not None:
             # Compress state vector if possible
             if np.allclose(self.state, np.zeros_like(self.state)):
                 self.state = np.zeros(1, dtype=np.complex128)
-            
+
             # Use sparse representation for large states
             if len(self.state) > 2**20:  # Threshold for sparse representation
                 self.state = sparse.csr_matrix(self.state)
-        
+
         # Clear unused resources
         self._clear_unused_resources()
 
@@ -354,10 +360,10 @@ class QuantumProcessor:
         # Configure parallel processing based on available resources
         num_cores = multiprocessing.cpu_count()
         self.config.num_workers = min(num_cores, self.config.max_workers)
-        
+
         # Initialize thread pool for parallel operations
         self.thread_pool = ThreadPoolExecutor(max_workers=self.config.num_workers)
-        
+
         # Configure parallel circuit execution
         self._configure_parallel_circuit_execution()
 
@@ -365,10 +371,10 @@ class QuantumProcessor:
         """Optimize allocation of quantum and classical resources."""
         # Allocate qubits based on circuit requirements
         self._allocate_qubits()
-        
+
         # Allocate classical resources
         self._allocate_classical_resources()
-        
+
         # Balance resource usage
         self._balance_resources()
 
@@ -376,10 +382,10 @@ class QuantumProcessor:
         """Monitor and optimize performance metrics."""
         # Track resource usage
         self._track_resource_usage()
-        
+
         # Update performance metrics
         self._update_performance_metrics()
-        
+
         # Optimize based on metrics
         self._optimize_based_on_metrics()
 
@@ -387,28 +393,30 @@ class QuantumProcessor:
         """Track resource usage and efficiency."""
         # Track memory usage
         memory_usage = self._get_memory_usage()
-        
+
         # Track CPU usage
         cpu_usage = self._get_cpu_usage()
-        
+
         # Track qubit utilization
         qubit_utilization = self._get_qubit_utilization()
-        
+
         # Update resource tracking
         self.resource_metrics = {
             "memory_usage": memory_usage,
             "cpu_usage": cpu_usage,
             "qubit_utilization": qubit_utilization,
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 
     def _update_performance_metrics(self) -> None:
         """Update performance metrics based on resource usage."""
         # Calculate performance scores
-        memory_score = 1.0 - (self.resource_metrics["memory_usage"] / self.config.max_memory)
+        memory_score = 1.0 - (
+            self.resource_metrics["memory_usage"] / self.config.max_memory
+        )
         cpu_score = 1.0 - (self.resource_metrics["cpu_usage"] / 100.0)
         qubit_score = self.resource_metrics["qubit_utilization"]
-        
+
         # Update overall performance metric
         self.performance_metric = (memory_score + cpu_score + qubit_score) / 3.0
 

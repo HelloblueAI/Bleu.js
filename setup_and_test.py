@@ -1,14 +1,17 @@
 import os
 import subprocess
-import sys
+
 
 def run_command(command):
+    """Run a shell command and return its output."""
     print(f"Running: {command}")
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    result = subprocess.run(command.split(), capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error: {result.stderr}")
-        sys.exit(1)
+        return False
     print(result.stdout)
+    return True
+
 
 # Remove old virtual environment
 run_command("rm -rf .venv")
@@ -21,4 +24,4 @@ venv_python = os.path.join(".venv", "bin", "python")
 run_command(f"{venv_python} -m pip install tensorflow-macos tensorflow-metal")
 
 # Run test script
-run_command(f"{venv_python} test_tensorflow.py") 
+run_command(f"{venv_python} test_tensorflow.py")
