@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10]
+        python-version: [3.10, 3.11]
         include:
-          - python-version: 3.9
+          - python-version: 3.10
             qiskit-version: '0.39.5'
             qiskit-aer-version: '0.11.2'
-          - python-version: 3.10
+          - python-version: 3.11
             qiskit-version: '0.39.5'
             qiskit-aer-version: '0.11.2'
 
@@ -32,12 +32,18 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: Install Poetry
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install poetry==1.7.1
+
+    - name: Configure Poetry
+      run: |
         poetry config virtualenvs.create true
         poetry config virtualenvs.in-project true
+
+    - name: Install dependencies
+      run: |
         poetry install --no-interaction --no-root
         poetry run pip install tensorflow
         poetry run pip install "qiskit==${{ matrix.qiskit-version }}"
