@@ -35,15 +35,17 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-cov black isort flake8 mypy bandit
-        pip install tensorflow
-        pip install "qiskit==${{ matrix.qiskit-version }}"
-        pip install "qiskit-aer==${{ matrix.qiskit-aer-version }}"
+        pip install poetry
+        poetry config virtualenvs.create true
+        poetry config virtualenvs.in-project true
+        poetry install --no-interaction --no-root
+        poetry run pip install tensorflow
+        poetry run pip install "qiskit==${{ matrix.qiskit-version }}"
+        poetry run pip install "qiskit-aer==${{ matrix.qiskit-aer-version }}"
 
     - name: Run tests with coverage
       run: |
-        PYTHONPATH=. pytest --cov=./ --cov-report=xml src/python/ml/computer_vision/test_quantum_fusion.py
+        poetry run pytest --cov=./ --cov-report=xml src/python/ml/computer_vision/test_quantum_fusion.py
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
