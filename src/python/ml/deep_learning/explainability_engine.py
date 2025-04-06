@@ -3,6 +3,7 @@ Explainability Engine for Advanced Decision Tree
 Copyright (c) 2024, Bleu.js
 """
 
+import json
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -10,6 +11,7 @@ import graphviz
 import lime
 import lime.lime_tabular
 import matplotlib.pyplot as plt
+import msgpack
 import numpy as np
 import plotly.graph_objects as go
 import ray
@@ -19,13 +21,17 @@ from plotly.subplots import make_subplots
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import export_graphviz
 from tensorflow import keras
+import logging
+import os
+import torch
+from torch.utils.data import DataLoader
 
 
 @dataclass
 class ExplainabilityConfig:
     """Configuration for model explainability."""
 
-    methods: List[str] = None  # Will be initialized in __init__
+    methods: Optional[List[str]] = None
     enable_shap: bool = True
     enable_lime: bool = True
     enable_tree_visualization: bool = True
@@ -208,7 +214,7 @@ class ExplainabilityEngine:
             ),
         }
 
-    async def _generate_tree_visualization(self, model: RandomForestClassifier) -> Dict:
+    async def _generate_tree_visualization(self, model: RandomForestClassifier) -> Optional[Dict]:
         """Generate tree visualization."""
         if not isinstance(model, RandomForestClassifier):
             return None
@@ -239,9 +245,9 @@ class ExplainabilityEngine:
             importance = []
             baseline_score = model.evaluate(x, verbose=0)[0]
 
+            rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
             for i in range(x.shape[1]):
                 x_permuted = x.copy()
-                rng = np.random.default_rng()
                 x_permuted[:, i] = rng.permutation(x_permuted[:, i])
                 permuted_score = model.evaluate(x_permuted, verbose=0)[0]
                 importance.append(baseline_score - permuted_score)
@@ -299,8 +305,6 @@ class ExplainabilityEngine:
     async def _generate_static_visualizations(self, explanations: Dict) -> None:
         """Generate static visualizations."""
         # Create output directory
-        import os
-
         os.makedirs("explanations", exist_ok=True)
 
         # Plot feature importance
@@ -317,8 +321,6 @@ class ExplainabilityEngine:
         # Plot partial dependence
         if "partial_dependence" in explanations:
             pd_results = explanations["partial_dependence"]["pd_results"]
-            n_features = len(pd_results[0])
-
             if pd_results is None or len(pd_results) < 2:
                 return
 
@@ -328,18 +330,18 @@ class ExplainabilityEngine:
             if not positions or not values:
                 return
 
-            n_features = len(positions)
-            if n_features == 0:
+            total_features = len(positions)
+            if total_features == 0:
                 return
 
             fig, axes = plt.subplots(
-                n_features // 2 + n_features % 2,
+                total_features // 2 + total_features % 2,
                 2,
-                figsize=(15, 5 * (n_features // 2 + n_features % 2)),
+                figsize=(15, 5 * (total_features // 2 + total_features % 2)),
             )
 
             if not self.feature_names:
-                self.feature_names = [f"feature_{i}" for i in range(n_features)]
+                self.feature_names = [f"feature_{i}" for i in range(total_features)]
 
             for i, (ax, pos, val) in enumerate(zip(axes.ravel(), positions, values)):
                 if pos is not None and val is not None:
@@ -354,14 +356,12 @@ class ExplainabilityEngine:
                     ax.set_ylabel("Prediction")
 
             plt.tight_layout()
-            _ = plt.savefig("explanations/partial_dependence.png")
+            plt.savefig("explanations/partial_dependence.png")
             plt.close()
 
     async def _generate_interactive_visualizations(self, explanations: Dict) -> None:
         """Generate interactive visualizations using Plotly."""
         # Create output directory
-        import os
-
         os.makedirs("explanations", exist_ok=True)
 
         # Create interactive feature importance plot
@@ -400,22 +400,22 @@ class ExplainabilityEngine:
             if not positions or not values:
                 return
 
-            n_features = len(positions)
-            if n_features == 0:
+            total_features = len(positions)
+            if total_features == 0:
                 return
 
             if not self.feature_names:
-                self.feature_names = [f"feature_{i}" for i in range(n_features)]
+                self.feature_names = [f"feature_{i}" for i in range(total_features)]
 
             fig = make_subplots(
-                rows=n_features // 2 + n_features % 2,
+                rows=total_features // 2 + total_features % 2,
                 cols=2,
                 subplot_titles=[
                     f"PD: {name}"
                     for name in (
-                        self.feature_names[:n_features]
+                        self.feature_names[:total_features]
                         if self.feature_names
-                        else [f"feature_{i}" for i in range(n_features)]
+                        else [f"feature_{i}" for i in range(total_features)]
                     )
                 ],
             )
@@ -444,7 +444,7 @@ class ExplainabilityEngine:
                     continue
 
             fig.update_layout(
-                height=300 * (n_features // 2 + n_features % 2),
+                height=300 * (total_features // 2 + total_features % 2),
                 title_text="Partial Dependence Plots",
                 showlegend=False,
             )
@@ -507,28 +507,131 @@ class ExplainabilityEngine:
 
     async def save_state(self, path: str) -> None:
         """Save the current state of the explainability engine."""
-        import joblib
-
         state = {
-            "config": self.config,
-            "explainer": self.explainer,
+            "config": (
+                self.config.dict() if hasattr(self.config, "dict") else self.config
+            ),
+            "explainer": (
+                {
+                    "feature_names": self.explainer.feature_names,
+                    "class_names": self.explainer.class_names,
+                    "training_data": (
+                        self.explainer.training_data.tobytes()
+                        if hasattr(self.explainer.training_data, "tobytes")
+                        else None
+                    ),
+                    "kernel_width": self.explainer.kernel_width,
+                    "random_state": self.explainer.random_state,
+                }
+                if self.explainer
+                else None
+            ),
             "feature_names": self.feature_names,
-            "explanations": self.explanations,
+            "explanations": (
+                {
+                    key: {
+                        "local_importance": (
+                            exp.local_importance.tobytes()
+                            if hasattr(exp.local_importance, "tobytes")
+                            else None
+                        ),
+                        "global_importance": (
+                            exp.global_importance.tobytes()
+                            if hasattr(exp.global_importance, "tobytes")
+                            else None
+                        ),
+                        "feature_interactions": (
+                            exp.feature_interactions.tobytes()
+                            if hasattr(exp.feature_interactions, "tobytes")
+                            else None
+                        ),
+                    }
+                    for key, exp in self.explanations.items()
+                }
+                if self.explanations
+                else {}
+            ),
             "visualizations": self.visualizations,
         }
 
-        joblib.dump(state, path)
+        # Save as msgpack for efficient binary serialization
+        with open(path, "wb") as f:
+            f.write(msgpack.packb(state))
         self.logger.info("explainability_engine_state_saved", path=path)
 
     async def load_state(self, path: str) -> None:
         """Load a saved state of the explainability engine."""
-        import joblib
+        with open(path, "rb") as f:
+            state = msgpack.unpackb(f.read())
 
-        state = joblib.load(path)
         self.config = state["config"]
-        self.explainer = state["explainer"]
+
+        if state["explainer"]:
+            from lime import lime_tabular
+
+            self.explainer = lime_tabular.LimeTabularExplainer(
+                training_data=(
+                    np.frombuffer(state["explainer"]["training_data"])
+                    if state["explainer"]["training_data"]
+                    else None
+                ),
+                feature_names=state["explainer"]["feature_names"],
+                class_names=state["explainer"]["class_names"],
+                kernel_width=state["explainer"]["kernel_width"],
+                random_state=state["explainer"]["random_state"],
+            )
+        else:
+            self.explainer = None
+
         self.feature_names = state["feature_names"]
-        self.explanations = state["explanations"]
+
+        if state["explanations"]:
+            from dataclasses import dataclass
+
+            @dataclass
+            class Explanation:
+                local_importance: np.ndarray
+                global_importance: np.ndarray
+                feature_interactions: np.ndarray
+
+            self.explanations = {
+                key: Explanation(
+                    local_importance=(
+                        np.frombuffer(exp["local_importance"])
+                        if exp["local_importance"]
+                        else None
+                    ),
+                    global_importance=(
+                        np.frombuffer(exp["global_importance"])
+                        if exp["global_importance"]
+                        else None
+                    ),
+                    feature_interactions=(
+                        np.frombuffer(exp["feature_interactions"])
+                        if exp["feature_interactions"]
+                        else None
+                    ),
+                )
+                for key, exp in state["explanations"].items()
+            }
+        else:
+            self.explanations = {}
+
         self.visualizations = state["visualizations"]
 
         self.logger.info("explainability_engine_state_loaded", path=path)
+
+    def _create_visualization_components(self, data: Dict) -> Dict:
+        """Create individual visualization components."""
+        components = {}
+        
+        if "feature_importance" in data:
+            components["feature_importance"] = self._create_feature_importance_plot(data)
+        
+        if "attention_weights" in data:
+            components["attention"] = self._create_attention_visualization(data)
+        
+        if "layer_activations" in data:
+            components["activations"] = self._create_activation_maps(data)
+        
+        return components

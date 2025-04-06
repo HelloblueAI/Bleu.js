@@ -48,7 +48,7 @@ pytest-xvfb==3.0.0
 pytest-yapf3==0.5.0
 
 # Quantum computing dependencies
-qiskit==1.0.0
+qiskit>=1.1.0
 qiskit-aer-gpu==0.13.0; platform_system != "Darwin"
 qiskit-aer==0.13.0; platform_system == "Darwin"
 qiskit-ibm-runtime==0.22.0

@@ -1,5 +1,6 @@
+import os
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Dict, List
 
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException
@@ -112,4 +113,6 @@ async def upgrade_subscription(
 
 # For local development
 if __name__ == "__main__":
-    uvicorn.run(application, host="0.0.0.0", port=8000)
+    host = os.getenv("API_HOST", "127.0.0.1")  # Default to localhost
+    port = int(os.getenv("API_PORT", "8000"))
+    uvicorn.run(application, host=host, port=port)
