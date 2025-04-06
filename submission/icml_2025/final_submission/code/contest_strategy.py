@@ -111,7 +111,7 @@ class QuantumContestStrategy:
             "feature_dim": self.config.feature_dim,
             "num_layers": self.config.num_layers,
             "learning_rate": self.config.learning_rate,
-            "use_adaptive_strategy": self.config.use_adaptive_strategy
+            "use_adaptive_strategy": self.config.use_adaptive_strategy,
         }
 
     @classmethod

@@ -4,10 +4,11 @@ This module implements quantum-enhanced feature fusion for combining multiple
 feature representations in computer vision tasks.
 """
 
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
 import pennylane as qml
-from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple, Any
 
 
 @dataclass
@@ -50,7 +51,9 @@ class QuantumFusion:
 
     def _measure_quantum_state(self, state: np.ndarray) -> List[float]:
         """Measure quantum state."""
-        measurements = [qml.expval(qml.PauliZ(i)) for i in range(self.config.num_qubits)]
+        measurements = [
+            qml.expval(qml.PauliZ(i)) for i in range(self.config.num_qubits)
+        ]
         return measurements
 
     def forward(self, x1: np.ndarray, x2: np.ndarray) -> np.ndarray:
@@ -72,7 +75,9 @@ class QuantumFusion:
 
         # Apply dropout during training
         if self.training and self.config.dropout_rate > 0:
-            mask = np.random.binomial(1, 1 - self.config.dropout_rate, size=fused_state.shape)
+            mask = np.random.binomial(
+                1, 1 - self.config.dropout_rate, size=fused_state.shape
+            )
             fused_state = fused_state * mask
 
         # Measure quantum state

@@ -88,4 +88,3 @@ Special thanks to the Helloblue, Inc. team for their contributions to this relea
 
 ### Fixed
 - None (initial release)
-

@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 
 import numpy as np
 
@@ -61,9 +61,18 @@ class QuantumState:
         return state / np.linalg.norm(state)
 
     def _initialize_entanglement(self) -> np.ndarray:
-        """Initialize entanglement matrix."""
+        """Initialize enhanced entanglement tracking."""
         size = 2**self.num_qubits
-        return self.rng.random((size, size)) + 1j * self.rng.random((size, size))
+        entanglement = np.zeros((size, size), dtype=np.complex128)
+        
+        # Initialize with controlled entanglement
+        for i in range(self.num_qubits):
+            for j in range(i + 1, self.num_qubits):
+                # Create controlled entanglement between qubits
+                entanglement[i, j] = 0.5 * (1 + 1j)  # Complex phase
+                entanglement[j, i] = np.conj(entanglement[i, j])
+        
+        return entanglement
 
     def _initialize_error_rates(self) -> np.ndarray:
         """Initialize error rates for each qubit."""
@@ -179,12 +188,20 @@ class QuantumState:
         return reduce(np.kron, ops)
 
     def _update_coherence(self, target_qubits: List[int]) -> None:
-        """Update coherence times and error rates for target qubits."""
+        """Enhanced coherence time tracking."""
         current_time = self.rng.random()  # Simulate time progression
+        
         for qubit in target_qubits:
+            # Calculate time since last operation
             time_diff = current_time - self._last_operation_time[qubit]
-            self._coherence_times[qubit] *= np.exp(-time_diff / 20.0)  # T2 decay
-            self.error_rates[qubit] = 1.0 - self._coherence_times[qubit]
+            
+            # Update coherence time with improved model
+            t2 = self._coherence_times[qubit]
+            t2_new = t2 * np.exp(-time_diff / (20.0 * (1 + self.error_rates[qubit])))
+            
+            # Update error rates based on coherence
+            self.error_rates[qubit] = 1.0 - (t2_new / t2)
+            self._coherence_times[qubit] = t2_new
             self._last_operation_time[qubit] = current_time
 
     def _partial_trace(self, rho: np.ndarray, qubit: int) -> np.ndarray:
@@ -221,6 +238,47 @@ class QuantumState:
         for gate in self.circuit:
             state = self._apply_quantum_gate(state, gate)
         return state
+
+    def _update_entanglement(self, target_qubits: List[int]) -> None:
+        """Update entanglement map after gate application."""
+        # Update entanglement between target qubits
+        for i in target_qubits:
+            for j in range(self.num_qubits):
+                if j not in target_qubits:
+                    # Calculate new entanglement
+                    new_entanglement = self._calculate_entanglement(i, j)
+                    self.entanglement[i, j] = new_entanglement
+                    self.entanglement[j, i] = np.conj(new_entanglement)
+
+    def _calculate_entanglement(self, qubit1: int, qubit2: int) -> complex:
+        """Calculate entanglement between two qubits."""
+        # Get reduced density matrix for the two qubits
+        rho = self.get_reduced_density_matrix([i for i in range(self.num_qubits) 
+                                             if i not in [qubit1, qubit2]])
+        
+        # Calculate concurrence as measure of entanglement
+        rho_tilde = np.kron(np.array([[0, 1], [-1, 0]]), 
+                           np.array([[0, 1], [-1, 0]])) @ rho.conj() @ \
+                    np.kron(np.array([[0, 1], [-1, 0]]), 
+                           np.array([[0, 1], [-1, 0]]))
+        
+        eigenvalues = np.linalg.eigvals(rho @ rho_tilde)
+        eigenvalues = np.sqrt(np.maximum(eigenvalues, 0))
+        
+        # Calculate concurrence
+        concurrence = max(0, eigenvalues[0] - eigenvalues[1] - eigenvalues[2] - eigenvalues[3])
+        
+        return concurrence * np.exp(1j * np.angle(self.entanglement[qubit1, qubit2]))
+
+    def get_entanglement_map(self) -> Dict[Tuple[int, int], float]:
+        """Get current entanglement map with normalized values."""
+        entanglement_map = {}
+        for i in range(self.num_qubits):
+            for j in range(i + 1, self.num_qubits):
+                # Normalize entanglement value
+                norm = np.abs(self.entanglement[i, j])
+                entanglement_map[(i, j)] = norm
+        return entanglement_map
 
 
 from functools import reduce  # For _expand_gate method

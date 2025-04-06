@@ -158,29 +158,31 @@ def prepare_paper(input_file: Path, output_file: Path, template_file: Path) -> N
     except subprocess.CalledProcessError as e:
         print(f"Error converting paper: {e}")
 
+
 def prepare_code(code_dir: Path, output_dir: Path) -> None:
     """Prepare code for submission."""
     try:
         if not output_dir.exists():
             output_dir.mkdir(parents=True)
-        
+
         # Copy code files
         for file in code_dir.glob("**/*.py"):
             relative_path = file.relative_to(code_dir)
             dest_file = output_dir / relative_path
             dest_file.parent.mkdir(parents=True, exist_ok=True)
             dest_file.write_text(file.read_text())
-        
+
         print("✓ Code prepared for submission")
     except Exception as e:
         print(f"Error preparing code: {e}")
+
 
 def prepare_supplementary(supp_dir: Path, output_dir: Path) -> None:
     """Prepare supplementary materials."""
     try:
         if not output_dir.exists():
             output_dir.mkdir(parents=True)
-            
+
         # Copy supplementary files
         for file in supp_dir.glob("**/*"):
             if file.is_file():
@@ -188,10 +190,11 @@ def prepare_supplementary(supp_dir: Path, output_dir: Path) -> None:
                 dest_file = output_dir / relative_path
                 dest_file.parent.mkdir(parents=True, exist_ok=True)
                 dest_file.write_bytes(file.read_bytes())
-                
+
         print("✓ Supplementary materials prepared")
     except Exception as e:
         print(f"Error preparing supplementary materials: {e}")
+
 
 def main() -> None:
     """Prepare ICML submission."""
@@ -199,17 +202,18 @@ def main() -> None:
     paper_path = Path("paper/main.md")
     template_path = Path("paper/template.tex")
     output_paper_path = Path("submission/paper.tex")
-    
+
     code_dir = Path("src/quantum")
     output_code_dir = Path("submission/code")
-    
+
     supp_dir = Path("supplementary")
     output_supp_dir = Path("submission/supplementary")
-    
+
     # Prepare each component
     prepare_paper(paper_path, output_paper_path, template_path)
     prepare_code(code_dir, output_code_dir)
     prepare_supplementary(supp_dir, output_supp_dir)
+
 
 if __name__ == "__main__":
     main()
