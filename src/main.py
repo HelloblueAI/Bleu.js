@@ -1,6 +1,8 @@
 import logging
 import os
+from dataclasses import dataclass
 
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -11,6 +13,7 @@ from src.config import get_settings
 from src.database import init_db
 from src.routes import api_tokens, auth, subscription
 from tests.test_config import get_test_settings
+from src.quantum_py.core.quantum_processor import QuantumProcessor, ProcessorConfig
 
 # Constants
 API_V1_PREFIX = "/api/v1"
@@ -19,6 +22,19 @@ RENDER_ERROR_MSG = "Error rendering page"
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Quantum configuration
+QUANTUM_CONFIG = ProcessorConfig(
+    num_qubits=5,
+    error_rate=0.001,
+    decoherence_time=1000.0,
+    gate_time=0.1,
+    num_workers=4,
+    max_depth=1000,
+    optimization_level=1,
+    use_error_correction=True,
+    noise_model="depolarizing"
+)
 
 app = FastAPI(
     title="Bleu.js API",
@@ -139,7 +155,13 @@ async def root():
     }
 
 
-if __name__ == "__main__":
-    import uvicorn
+def initialize_quantum_system():
+    """Initialize the quantum computing system with necessary configurations and validations."""
+    quantum_processor = QuantumProcessor(config=QUANTUM_CONFIG)
+    return quantum_processor
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    host = os.getenv("API_HOST", "127.0.0.1")  # Default to localhost
+    port = int(os.getenv("API_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port)

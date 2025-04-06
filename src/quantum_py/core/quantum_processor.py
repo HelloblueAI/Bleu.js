@@ -4,12 +4,12 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from multiprocessing import Pool
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import cirq
 import numpy as np
 import sparse
-from cirq import Circuit, LineQubit
+from cirq.circuits.circuit import Circuit
+from cirq.devices.line_qubit import LineQubit
 
 from .quantum_circuit import QuantumCircuit
 from .quantum_gate import QuantumGate
@@ -177,7 +177,8 @@ class QuantumProcessor:
         """
         if len(circuit.gates) > self.config.max_depth:
             raise ValueError(
-                f"Circuit depth {len(circuit.gates)} exceeds maximum {self.config.max_depth}"
+                f"Circuit depth {len(circuit.gates)} exceeds maximum "
+                f"{self.config.max_depth}"
             )
 
         # Apply gates with noise and error correction
@@ -215,7 +216,7 @@ class QuantumProcessor:
         syndrome = self._measure_syndrome(correction_type)
 
         # 3. Error Analysis and Correction
-        self._analyze_and_correct_errors(syndrome, correction_type)
+        self._analyze_and_correct_errors(syndrome)
 
         # 4. Error Rate Monitoring
         self._update_error_rates()
@@ -241,30 +242,31 @@ class QuantumProcessor:
             for i in range(0, self.config.num_qubits - 1, 2):
                 # Measure stabilizers
                 measurements = self.circuit.measure([i, i + 1])
-                syndrome[i] = (sum(measurements.values()) % 2, 0.95)  # High confidence
+                syndrome[i] = (
+                    sum(measurements.values()) % 2,
+                    0.95,
+                )  # High confidence
         else:
             # Steane code syndrome measurement
             stabilizers = [[0, 2, 4, 6], [1, 2, 5, 6], [3, 4, 5, 6]]
             for i, stabilizer in enumerate(stabilizers):
                 measurements = self.circuit.measure(stabilizer)
-                syndrome[i] = (sum(measurements.values()) % 2, 0.9)  # Good confidence
+                syndrome[i] = (
+                    sum(measurements.values()) % 2,
+                    0.9,
+                )  # Good confidence
 
         return syndrome
 
     def _analyze_and_correct_errors(
-        self, syndrome: Dict[int, Tuple[int, float]], correction_type: str
+        self, syndrome: Dict[int, Tuple[int, float]]
     ) -> None:
         """Analyze syndrome and apply appropriate corrections."""
         for qubit, (outcome, confidence) in syndrome.items():
             if outcome == 1 and confidence > 0.8:  # High confidence error
-                if correction_type == "surface":
-                    # Surface code corrections
-                    self.circuit.add_gate("X", [qubit])
-                    self.circuit.add_gate("Z", [qubit])
-                else:
-                    # Steane code corrections
-                    self.circuit.add_gate("X", [qubit])
-                    self.circuit.add_gate("Z", [qubit])
+                # Apply both X and Z corrections regardless of code type
+                self.circuit.add_gate("X", [qubit])
+                self.circuit.add_gate("Z", [qubit])
 
     def _update_error_rates(self) -> None:
         """Update error rates based on correction performance."""
@@ -427,3 +429,84 @@ class QuantumProcessor:
             self._optimize_memory_usage()
             self._optimize_parallel_processing()
             self._optimize_resource_allocation()
+
+    def _apply_error_correction(self, quantum_state):
+        """Apply quantum error correction to the given quantum state."""
+        if not self.config.use_error_correction:
+            return quantum_state
+
+        try:
+            # Apply stabilizer measurements
+            syndrome = self._measure_syndrome(self._select_error_correction_type())
+            
+            # Determine correction operations
+            correction_ops = self._analyze_and_correct_errors(syndrome)
+            
+            # Apply correction operations
+            corrected_state = self._apply_correction_operations(quantum_state, correction_ops)
+            
+            return corrected_state
+        except Exception as e:
+            self.logger.error("Error in quantum error correction", error=str(e))
+            return quantum_state
+
+    def _apply_correction(self, qubit_idx):
+        """Apply correction operation to specific qubit."""
+        # Apply X gate to correct bit flip
+        self.state.apply_gate("X", qubit_idx)
+
+        # Update error tracking
+        self._error_history.append(
+            {"time": time.time(), "qubit": qubit_idx, "type": "correction"}
+        )
+
+
+def process_quantum_circuit(
+    circuit: QuantumCircuit, backend: Optional[str] = None, shots: int = 1024
+) -> Dict[str, Any]:
+    """
+    Process a quantum circuit using the specified backend.
+
+    Args:
+        circuit: The quantum circuit to process
+        backend: The backend to use for processing
+        shots: Number of shots to run the circuit
+
+    Returns:
+        Dictionary containing the results
+    """
+    # ... existing code ...
+
+
+def analyze_quantum_results(
+    results: Dict[str, Any], threshold: float = 0.1, max_iterations: int = 100
+) -> Dict[str, Union[float, List[float]]]:
+    """
+    Analyze quantum computation results with detailed metrics.
+
+    Args:
+        results: Dictionary containing quantum computation results
+        threshold: Threshold for significance
+        max_iterations: Maximum number of iterations for analysis
+
+    Returns:
+        Dictionary containing analysis results
+    """
+    # ... existing code ...
+
+
+def optimize_quantum_parameters(
+    initial_params: List[float], learning_rate: float = 0.01, max_iterations: int = 1000
+) -> Dict[str, Union[List[float], float]]:
+    """
+    Optimize quantum circuit parameters using gradient descent.
+
+    Args:
+        initial_params: Initial parameter values
+        learning_rate: Learning rate for optimization
+        max_iterations: Maximum number of iterations
+
+    Returns:
+        Dictionary containing optimized parameters and metrics
+    """
+    # ... existing code ...

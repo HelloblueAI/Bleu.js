@@ -7,10 +7,10 @@ import base64
 import json
 import logging
 import os
-import pickle
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
+import msgpack
 import numpy as np
 import torch
 import torch.nn as nn
@@ -63,11 +63,24 @@ class EncryptionManager:
             if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
-            # Convert data to bytes
+            # Convert data to bytes using msgpack for binary data
             if data_type == "numpy":
-                data_bytes = pickle.dumps(data)
+                data_bytes = msgpack.packb(
+                    {
+                        "data": data.tobytes(),
+                        "shape": data.shape,
+                        "dtype": str(data.dtype),
+                    }
+                )
             elif data_type == "torch":
-                data_bytes = pickle.dumps(data)
+                data_bytes = msgpack.packb(
+                    {
+                        "data": data.cpu().numpy().tobytes(),
+                        "shape": data.shape,
+                        "dtype": str(data.dtype),
+                        "requires_grad": data.requires_grad,
+                    }
+                )
             elif data_type == "dict":
                 data_bytes = json.dumps(data).encode()
             else:
@@ -98,9 +111,19 @@ class EncryptionManager:
 
             # Convert back to original type
             if data_type == "numpy":
-                return pickle.loads(decrypted_data)
+                data_dict = msgpack.unpackb(decrypted_data)
+                return np.frombuffer(
+                    data_dict["data"], dtype=np.dtype(data_dict["dtype"])
+                ).reshape(data_dict["shape"])
             elif data_type == "torch":
-                return pickle.loads(decrypted_data)
+                data_dict = msgpack.unpackb(decrypted_data)
+                tensor = torch.from_numpy(
+                    np.frombuffer(
+                        data_dict["data"], dtype=np.dtype(data_dict["dtype"])
+                    ).reshape(data_dict["shape"])
+                )
+                tensor.requires_grad = data_dict["requires_grad"]
+                return tensor
             elif data_type == "dict":
                 return json.loads(decrypted_data.decode())
             else:
@@ -118,11 +141,20 @@ class EncryptionManager:
             if not self.initialized or self.cipher_suite is None:
                 await self.initialize()
 
-            # Get model state
-            model_state = model.state_dict()
-
-            # Convert to bytes
-            model_bytes = pickle.dumps(model_state)
+            # Get model state and convert to bytes using msgpack
+            model_state = {
+                name: param.cpu().numpy() for name, param in model.state_dict().items()
+            }
+            model_bytes = msgpack.packb(
+                {
+                    name: {
+                        "data": tensor.tobytes(),
+                        "shape": tensor.shape,
+                        "dtype": str(tensor.dtype),
+                    }
+                    for name, tensor in model_state.items()
+                }
+            )
 
             # Encrypt model
             if self.cipher_suite is None:
@@ -164,7 +196,17 @@ class EncryptionManager:
             if self.cipher_suite is None:
                 raise ValueError("Cipher suite not initialized")
             decrypted_model = self.cipher_suite.decrypt(encrypted_model)
-            model_state = pickle.loads(decrypted_model)
+
+            # Unpack model state using msgpack
+            model_state_dict = msgpack.unpackb(decrypted_model)
+            model_state = {
+                name: torch.from_numpy(
+                    np.frombuffer(
+                        state["data"], dtype=np.dtype(state["dtype"])
+                    ).reshape(state["shape"])
+                )
+                for name, state in model_state_dict.items()
+            }
 
             # Load state dict
             model.load_state_dict(model_state)

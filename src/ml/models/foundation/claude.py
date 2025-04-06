@@ -21,28 +21,48 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
+import logging
 import os
 
 import requests
 
+logger = logging.getLogger(__name__)
 
-class ClaudeAPI:
-    def __init__(self, api_key=None):
-        self.api_key = api_key or os.getenv("CLAUDE_API_KEY")
-        self.endpoint = "https://api.anthropic.com/v1/complete"
+
+class ClaudeModel:
+    def __init__(self, api_key, endpoint):
+        self.endpoint = endpoint
+        self.headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
 
     def query(self, prompt):
         """Send query to Claude AI API."""
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
         data = {"prompt": prompt, "max_tokens": 150}
 
-        response = requests.post(self.endpoint, json=data, headers=headers)
-        return response.json()
+        return self._make_request(data)
+
+    def _make_request(self, data):
+        """Make a request to the Claude API with timeout."""
+        try:
+            response = requests.post(
+                self.endpoint,
+                json=data,
+                headers=self.headers,  # Use instance headers
+                timeout=30,  # 30 second timeout
+            )
+            return response.json()
+        except requests.Timeout:
+            logger.error("Request to Claude API timed out")
+            raise TimeoutError("Request to Claude API timed out")
+        except requests.RequestException as e:
+            logger.error(f"Error making request to Claude API: {str(e)}")
+            raise
 
 
 if __name__ == "__main__":
-    claude = ClaudeAPI()
+    claude = ClaudeModel(
+        os.getenv("CLAUDE_API_KEY"), "https://api.anthropic.com/v1/complete"
+    )
     print(claude.query("Explain the importance of AI ethics."))

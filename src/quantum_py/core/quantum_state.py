@@ -1,9 +1,11 @@
 import logging
+import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-import torch
+from scipy.linalg import expm
+from scipy.sparse import csr_matrix
 
 logger = logging.getLogger(__name__)
 
@@ -98,18 +100,12 @@ class QuantumState:
         # Update coherence and error tracking
         self._update_coherence(target_qubits)
 
-    def measure(self, qubit_indices: Optional[List[int]] = None) -> Tuple[int, float]:
+    def measure(self) -> Tuple[int, float]:
         """Measure specified qubits and collapse the state.
-
-        Args:
-            qubit_indices: List of qubit indices to measure. If None, measure all qubits.
 
         Returns:
             Tuple of (measured state, probability)
         """
-        if qubit_indices is None:
-            qubit_indices = list(range(self.num_qubits))
-
         # Calculate probabilities
         probs = np.abs(self.state) ** 2
 
@@ -135,26 +131,42 @@ class QuantumState:
 
     def get_entanglement_entropy(self, subsystem_qubits: List[int]) -> float:
         """Calculate the von Neumann entropy of the reduced density matrix."""
-        rho_reduced = self.get_reduced_density_matrix(
-            [q for q in range(self.num_qubits) if q not in subsystem_qubits]
-        )
-        eigenvalues = np.linalg.eigvalsh(rho_reduced)
-        eigenvalues = eigenvalues[eigenvalues > 1e-15]  # Remove numerical noise
-        return float(-np.sum(eigenvalues * np.log2(eigenvalues)))
+        rho = self.get_reduced_density_matrix(subsystem_qubits)
+        eigenvalues = np.linalg.eigvalsh(rho)
+        return -np.sum(eigenvalues * np.log2(eigenvalues + 1e-10))
 
     def apply_noise(self, error_rate: float = 0.01) -> None:
-        """Apply depolarizing noise to the quantum state."""
+        """Apply random noise to the quantum state."""
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+
+        # Apply random phase errors
         for i in range(self.num_qubits):
-            if self.rng.random() < error_rate:
-                # Apply random Pauli error
-                error_gate = np.random.choice(
-                    [
-                        np.array([[0, 1], [1, 0]]),  # X gate
-                        np.array([[0, -1j], [1j, 0]]),  # Y gate
-                        np.array([[1, 0], [0, -1]]),  # Z gate
-                    ]
-                )
-                self.apply_gate(error_gate, [i])
+            if rng.random() < error_rate:
+                phase = rng.random() * 2 * np.pi
+                self._apply_phase_error(i, phase)
+
+    def measure_all(self):
+        """Measure all qubits in the computational basis."""
+        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
+        results = {}
+
+        # Calculate measurement probabilities
+        probabilities = np.abs(self.state) ** 2
+
+        # Perform measurements
+        for i in range(self.num_qubits):
+            outcome = 1 if rng.random() < probabilities[i] else 0
+            results[i] = outcome
+            self._collapse_state(i, outcome)
+
+        return results
+
+    def _collapse_state(self, qubit_idx, outcome):
+        """Collapse the state after measurement."""
+        # Project and normalize the state
+        projection = self._get_projection_operator(qubit_idx, outcome)
+        self.state = projection @ self.state
+        self.state /= np.linalg.norm(self.state)
 
     def _validate_gate(self, gate_matrix: np.ndarray, num_target_qubits: int) -> bool:
         """Validate that a gate matrix is unitary and has correct dimensions."""
@@ -175,16 +187,13 @@ class QuantumState:
 
         # Create the full operation matrix using tensor products
         ops = []
-        current_qubit = 0
         for i in range(n):
             if i in target_qubits:
                 idx = target_qubits.index(i)
-                dim = 2 ** (len(target_qubits) - idx - 1)
                 op = gate_matrix.reshape([2] * (2 * len(target_qubits)))[..., idx]
             else:
                 op = np.eye(2)
             ops.append(op)
-            current_qubit += 1
 
         return reduce(np.kron, ops)
 
