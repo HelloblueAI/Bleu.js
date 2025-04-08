@@ -1,11 +1,10 @@
 # Core dependencies
 tensorflow>=2.16.2
-tensorflow-macos>=2.12.0
 tensorflow-metal>=0.7.0
 numpy>=1.23.5
 h5py>=3.10.0
 protobuf>=3.20.3
-tensorboard>=2.16.2
+tensorboard>=2.16.0,<2.17.0
 opencv-python>=4.9.0
 scikit-learn>=1.4.0
 matplotlib>=3.8.0

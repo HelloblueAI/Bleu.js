@@ -5,9 +5,12 @@ Copyright (c) 2024, Bleu.js
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
+from numpy.typing import NDArray
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import DensityMatrix, Statevector
 from scipy.linalg import expm
 from scipy.sparse import csr_matrix
 
@@ -32,134 +35,176 @@ class Complex:
 class QuantumState:
     """Enhanced quantum state implementation using NumPy for better performance."""
 
-    def __init__(self, num_qubits: int, seed: Optional[int] = None):
+    _CIRCUIT_NOT_INITIALIZED_ERROR = "Circuit not initialized"
+
+    def __init__(self, n_qubits: int, seed: Optional[int] = None) -> None:
         """Initialize a quantum state with the specified number of qubits.
 
         Args:
-            num_qubits: Number of qubits in the system (must be positive and <= 32)
+            n_qubits: Number of qubits in the system (must be positive and <= 32)
             seed: Random seed for reproducibility
         """
-        if not isinstance(num_qubits, int) or num_qubits <= 0 or num_qubits > 32:
+        if not isinstance(n_qubits, int) or n_qubits <= 0 or n_qubits > 32:
             raise ValueError(
                 "Number of qubits must be a positive integer less than or equal to 32"
             )
 
-        self.num_qubits = num_qubits
-        self.dimension = 2**num_qubits
+        self.n_qubits = n_qubits
+        self.amplitudes: NDArray[np.complex128] = np.zeros(
+            2**n_qubits, dtype=np.complex128
+        )
+        self.amplitudes[0] = 1.0  # Initialize to |0...0⟩ state
+        self._entanglement_map: Dict[int, List[int]] = {}
+        self.circuit: Optional[QuantumCircuit] = None
+        self._initialize_state()
+
         self.rng = np.random.default_rng(seed)
-        self.state = self._initialize_state()
-        self.entanglement = self._initialize_entanglement()
-        self.error_rates = self._initialize_error_rates()
 
         # Enhanced features
-        self._entanglement_map = {}
-        self._coherence_times = np.ones(num_qubits)
-        self._last_operation_time = np.zeros(num_qubits)
+        self._coherence_times = np.ones(n_qubits)
+        self._last_operation_time = np.zeros(n_qubits)
+        self.error_rates = self._initialize_error_rates()
 
     @property
     def state_vector(self) -> np.ndarray:
         """Get the quantum state vector."""
-        return self.state.flatten()
+        return self.amplitudes
 
-    def _initialize_state(self) -> np.ndarray:
-        """Initialize quantum state vector."""
-        size = 2**self.num_qubits
-        state = self.rng.random(size) + 1j * self.rng.random(size)
-        return state / np.linalg.norm(state)
+    def _initialize_state(self) -> None:
+        self.circuit = QuantumCircuit(self.n_qubits)
+        self._update_entanglement_map()
 
-    def _initialize_entanglement(self) -> np.ndarray:
-        """Initialize enhanced entanglement tracking."""
-        size = 2**self.num_qubits
-        entanglement = np.zeros((size, size), dtype=np.complex128)
+    def _update_entanglement_map(self) -> None:
+        for i in range(self.n_qubits):
+            self._entanglement_map[i] = []
 
-        # Initialize with controlled entanglement
-        for i in range(self.num_qubits):
-            for j in range(i + 1, self.num_qubits):
-                # Create controlled entanglement between qubits
-                entanglement[i, j] = 0.5 * (1 + 1j)  # Complex phase
-                entanglement[j, i] = np.conj(entanglement[i, j])
+    def get_state_vector(self) -> NDArray[np.complex128]:
+        if self.circuit is None:
+            raise RuntimeError(self._CIRCUIT_NOT_INITIALIZED_ERROR)
+        return Statevector.from_instruction(self.circuit).data
 
-        return entanglement
+    def get_probabilities(self) -> NDArray[np.float64]:
+        state_vector = self.get_state_vector()
+        return np.abs(state_vector) ** 2
 
-    def _initialize_error_rates(self) -> np.ndarray:
-        """Initialize error rates for each qubit."""
-        return self.rng.random(self.num_qubits) * 0.01
+    def get_fidelity(self, target_state: "QuantumState") -> float:
+        state1 = self.get_state_vector()
+        state2 = target_state.get_state_vector()
+        return float(np.abs(np.vdot(state1, state2)) ** 2)
 
-    def apply_gate(self, gate_matrix: np.ndarray, target_qubits: List[int]) -> None:
+    def measure(self, qubits: List[int]) -> int:
+        if self.circuit is None:
+            raise RuntimeError(self._CIRCUIT_NOT_INITIALIZED_ERROR)
+        probs = self.get_probabilities()
+        outcome = self.rng.choice(2**self.n_qubits, p=probs)
+        result = 0
+        for i, qubit in enumerate(qubits):
+            result |= ((outcome >> qubit) & 1) << i
+        return result
+
+    def get_density_matrix(self) -> NDArray[np.complex128]:
+        state = self.get_state_vector()
+        return np.outer(state, np.conj(state))
+
+    def get_reduced_density_matrix(self, qubits: List[int]) -> NDArray[np.complex128]:
+        rho = self.get_density_matrix()
+        n_qubits = len(qubits)
+        dim = 2**n_qubits
+        reduced_rho = np.zeros((dim, dim), dtype=np.complex128)
+
+        # Perform partial trace
+        for i in range(dim):
+            for j in range(dim):
+                reduced_rho[i, j] = self._partial_trace_element(rho, qubits, i, j)
+
+        return reduced_rho
+
+    def _partial_trace_element(
+        self, rho: NDArray[np.complex128], qubits: List[int], i: int, j: int
+    ) -> complex:
+        trace = 0.0
+        n_total = self.n_qubits
+        for k in range(2 ** (n_total - len(qubits))):
+            idx1 = self._combine_indices(i, k, qubits)
+            idx2 = self._combine_indices(j, k, qubits)
+            trace += rho[idx1, idx2]
+        return complex(trace)
+
+    def _combine_indices(
+        self, kept_idx: int, traced_idx: int, kept_qubits: List[int]
+    ) -> int:
+        result = 0
+        traced_bit_pos = 0
+        kept_bit_pos = 0
+
+        for i in range(self.n_qubits):
+            if i in kept_qubits:
+                bit = (kept_idx >> kept_bit_pos) & 1
+                kept_bit_pos += 1
+            else:
+                bit = (traced_idx >> traced_bit_pos) & 1
+                traced_bit_pos += 1
+            result |= bit << i
+
+        return result
+
+    def get_entanglement_entropy(self, qubits: List[int]) -> float:
+        rho = self.get_reduced_density_matrix(qubits)
+        eigenvalues = np.linalg.eigvalsh(rho)
+        # Remove near-zero eigenvalues to avoid log(0)
+        eigenvalues = eigenvalues[eigenvalues > 1e-10]
+        return float(-np.sum(eigenvalues * np.log2(eigenvalues)))
+
+    def get_purity(self) -> float:
+        rho = self.get_density_matrix()
+        return float(np.trace(rho @ rho).real)
+
+    def get_concurrence(self, qubit1: int, qubit2: int) -> float:
+        if self.n_qubits < 2:
+            raise ValueError("Concurrence requires at least 2 qubits")
+
+        rho = self.get_reduced_density_matrix([qubit1, qubit2])
+        sigma_y = np.array([[0, -1j], [1j, 0]], dtype=np.complex128)
+        rho_tilde = (sigma_y @ np.conj(rho) @ sigma_y).reshape(2, 2)
+        R = rho @ rho_tilde
+        eigenvalues = np.sqrt(np.linalg.eigvals(R))
+        eigenvalues = np.sort(np.abs(eigenvalues))[::-1]
+        return float(
+            max(0.0, eigenvalues[0] - eigenvalues[1] - eigenvalues[2] - eigenvalues[3])
+        )
+
+    def apply_gate(
+        self, gate_matrix: NDArray[np.complex128], target_qubits: List[int]
+    ) -> None:
         """Apply a quantum gate to the state.
 
         Args:
             gate_matrix: Unitary matrix representing the quantum gate
             target_qubits: List of target qubit indices
         """
-        if not self._validate_gate(gate_matrix, len(target_qubits)):
-            raise ValueError("Invalid gate matrix or target qubits")
+        if self.circuit is None:
+            raise RuntimeError(self._CIRCUIT_NOT_INITIALIZED_ERROR)
 
-        # Calculate the full operation matrix
-        operation = self._expand_gate(gate_matrix, target_qubits)
+        # Validate gate matrix dimensions
+        n_qubits = len(target_qubits)
+        expected_size = 2**n_qubits
+        if gate_matrix.shape != (expected_size, expected_size):
+            raise ValueError(f"Invalid gate matrix dimensions for {n_qubits} qubits")
 
-        # Apply the operation
-        self.state = operation @ self.state
-
-        # Update coherence and error tracking
-        self._update_coherence(target_qubits)
-
-    def measure(self) -> Tuple[int, float]:
-        """Measure specified qubits and collapse the state.
-
-        Returns:
-            Tuple of (measured state, probability)
-        """
-        # Calculate probabilities
-        probs = np.abs(self.state) ** 2
-
-        # Choose outcome based on probabilities
-        outcome = self.rng.choice(self.dimension, p=probs)
-
-        # Collapse state
-        self.state = np.zeros_like(self.state)
-        self.state[outcome] = 1.0
-
-        return outcome, probs[outcome]
-
-    def get_density_matrix(self) -> np.ndarray:
-        """Calculate the density matrix representation of the state."""
-        return np.outer(self.state, np.conj(self.state))
-
-    def get_reduced_density_matrix(self, traced_out_qubits: List[int]) -> np.ndarray:
-        """Calculate the reduced density matrix by tracing out specified qubits."""
-        rho = self.get_density_matrix()
-        for qubit in sorted(traced_out_qubits, reverse=True):
-            rho = self._partial_trace(rho, qubit)
-        return rho
-
-    def get_entanglement_entropy(self, subsystem_qubits: List[int]) -> float:
-        """Calculate the von Neumann entropy of the reduced density matrix."""
-        rho = self.get_reduced_density_matrix(subsystem_qubits)
-        eigenvalues = np.linalg.eigvalsh(rho)
-        return -np.sum(eigenvalues * np.log2(eigenvalues + 1e-10))
-
-    def apply_noise(self, error_rate: float = 0.01) -> None:
-        """Apply random noise to the quantum state."""
-        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
-
-        # Apply random phase errors
-        for i in range(self.num_qubits):
-            if rng.random() < error_rate:
-                phase = rng.random() * 2 * np.pi
-                self._apply_phase_error(i, phase)
+        # Apply gate to circuit
+        self.circuit.unitary(gate_matrix, target_qubits)
+        self._update_entanglement(target_qubits)
 
     def measure_all(self):
         """Measure all qubits in the computational basis."""
-        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
         results = {}
 
         # Calculate measurement probabilities
-        probabilities = np.abs(self.state) ** 2
+        probabilities = np.abs(self.amplitudes) ** 2
 
         # Perform measurements
-        for i in range(self.num_qubits):
-            outcome = 1 if rng.random() < probabilities[i] else 0
+        for i in range(self.n_qubits):
+            outcome = 1 if self.rng.random() < probabilities[i] else 0
             results[i] = outcome
             self._collapse_state(i, outcome)
 
@@ -169,8 +214,8 @@ class QuantumState:
         """Collapse the state after measurement."""
         # Project and normalize the state
         projection = self._get_projection_operator(qubit_idx, outcome)
-        self.state = projection @ self.state
-        self.state /= np.linalg.norm(self.state)
+        self.amplitudes = projection @ self.amplitudes
+        self.amplitudes /= np.linalg.norm(self.amplitudes)
 
     def _validate_gate(self, gate_matrix: np.ndarray, num_target_qubits: int) -> bool:
         """Validate that a gate matrix is unitary and has correct dimensions."""
@@ -185,7 +230,7 @@ class QuantumState:
         self, gate_matrix: np.ndarray, target_qubits: List[int]
     ) -> np.ndarray:
         """Expand a gate matrix to operate on the full Hilbert space."""
-        n = self.num_qubits
+        n = self.n_qubits
         if len(target_qubits) == n:
             return gate_matrix
 
@@ -218,57 +263,57 @@ class QuantumState:
             self._coherence_times[qubit] = t2_new
             self._last_operation_time[qubit] = current_time
 
-    def _partial_trace(self, rho: np.ndarray, qubit: int) -> np.ndarray:
-        """Calculate partial trace over a single qubit."""
-        n = self.num_qubits
-        dims = [2] * (2 * n)
-        reshaped = rho.reshape(dims)
+    def _apply_noise(self, error_rate: float = 0.01) -> None:
+        """Apply random noise to the quantum state."""
+        # Apply random phase errors
+        for i in range(self.n_qubits):
+            if self.rng.random() < error_rate:
+                phase = self.rng.random() * 2 * np.pi
+                self._apply_phase_error(i, phase)
 
-        # Contract the indices corresponding to the traced out qubit
-        traced_dims = list(range(2 * n))
-        traced_dims.pop(n + qubit)
-        traced_dims.pop(qubit)
+    def _apply_phase_error(self, qubit: int, angle: float) -> None:
+        if self.circuit is None:
+            raise RuntimeError(self._CIRCUIT_NOT_INITIALIZED_ERROR)
+        self.circuit.rz(angle, qubit)
 
-        return np.trace(reshaped, axis1=qubit, axis2=n + qubit).reshape(
-            2 ** (n - 1), 2 ** (n - 1)
-        )
+    def get_entanglement_map(self) -> Dict[Tuple[int, int], float]:
+        """Get current entanglement map with normalized values."""
+        entanglement_map = {}
+        for i in range(self.n_qubits):
+            for j in range(i + 1, self.n_qubits):
+                # Normalize entanglement value
+                norm = np.abs(self.amplitudes[i] * self.amplitudes[j])
+                entanglement_map[(i, j)] = norm
+        return entanglement_map
 
-    def __str__(self) -> str:
-        """String representation of the quantum state."""
-        return f"QuantumState(num_qubits={self.num_qubits}, state=\n{self.state})"
-
-    def _apply_noise(self, state: np.ndarray) -> np.ndarray:
-        """Apply noise to quantum state."""
-        rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
-        noise = rng.normal(0, 0.1, state.shape)
-        return state + noise
-
-    def _apply_quantum_gate(self, state: np.ndarray, gate: np.ndarray) -> np.ndarray:
-        """Apply a quantum gate to the state."""
-        return np.dot(gate, state)
-
-    def _apply_quantum_circuit(self, state: np.ndarray) -> np.ndarray:
-        """Apply a quantum circuit to the state."""
-        for gate in self.circuit:
-            state = self._apply_quantum_gate(state, gate)
-        return state
+    def _get_projection_operator(
+        self, qubit_idx: int, outcome: int
+    ) -> NDArray[np.complex128]:
+        """Create projection operator for measurement on specified qubit."""
+        dim = 2**self.n_qubits
+        projector = np.zeros((dim, dim), dtype=np.complex128)
+        mask = 1 << qubit_idx
+        for i in range(dim):
+            if (i & mask) >> qubit_idx == outcome:
+                projector[i, i] = 1.0
+        return projector
 
     def _update_entanglement(self, target_qubits: List[int]) -> None:
         """Update entanglement map after gate application."""
         # Update entanglement between target qubits
         for i in target_qubits:
-            for j in range(self.num_qubits):
+            for j in range(self.n_qubits):
                 if j not in target_qubits:
                     # Calculate new entanglement
                     new_entanglement = self._calculate_entanglement(i, j)
-                    self.entanglement[i, j] = new_entanglement
-                    self.entanglement[j, i] = np.conj(new_entanglement)
+                    self.amplitudes[i] *= new_entanglement
+                    self.amplitudes[j] *= np.conj(new_entanglement)
 
     def _calculate_entanglement(self, qubit1: int, qubit2: int) -> complex:
         """Calculate entanglement between two qubits."""
         # Get reduced density matrix for the two qubits
         rho = self.get_reduced_density_matrix(
-            [i for i in range(self.num_qubits) if i not in [qubit1, qubit2]]
+            [i for i in range(self.n_qubits) if i not in [qubit1, qubit2]]
         )
 
         # Calculate concurrence as measure of entanglement
@@ -286,17 +331,34 @@ class QuantumState:
             0, eigenvalues[0] - eigenvalues[1] - eigenvalues[2] - eigenvalues[3]
         )
 
-        return concurrence * np.exp(1j * np.angle(self.entanglement[qubit1, qubit2]))
+        return concurrence * np.exp(
+            1j * np.angle(self.amplitudes[qubit1] * self.amplitudes[qubit2])
+        )
 
-    def get_entanglement_map(self) -> Dict[Tuple[int, int], float]:
-        """Get current entanglement map with normalized values."""
-        entanglement_map = {}
-        for i in range(self.num_qubits):
-            for j in range(i + 1, self.num_qubits):
-                # Normalize entanglement value
-                norm = np.abs(self.entanglement[i, j])
-                entanglement_map[(i, j)] = norm
-        return entanglement_map
+    def _initialize_error_rates(self) -> NDArray[np.float64]:
+        """Initialize error rates for each qubit."""
+        return self.rng.random(self.n_qubits) * 0.01
+
+    def __str__(self) -> str:
+        """String representation of the quantum state."""
+        return f"QuantumState(num_qubits={self.n_qubits}, state=\n{self.amplitudes})"
+
+    def _apply_noise(self, state: np.ndarray) -> np.ndarray:
+        """Apply noise to quantum state."""
+        noise = self.rng.normal(0, 0.1, state.shape)
+        return state + noise
+
+    def _apply_quantum_gate(self, state: np.ndarray, gate: np.ndarray) -> np.ndarray:
+        """Apply a quantum gate to the state."""
+        return np.dot(gate, state)
+
+    def _apply_quantum_circuit(self, state: np.ndarray) -> np.ndarray:
+        """Apply a quantum circuit to the state."""
+        if self.circuit is None:
+            return state
+        for gate in self.circuit:
+            state = self._apply_quantum_gate(state, gate)
+        return state
 
 
 from functools import reduce  # For _expand_gate method

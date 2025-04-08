@@ -312,8 +312,11 @@ class PerformanceOptimizer:
         self.profiler.clear()
 
         # Optimize thread pool
+        cpu_count = psutil.cpu_count()
+        if cpu_count is None:
+            cpu_count = 1  # Default to 1 if cpu_count returns None
         self.thread_pool._max_workers = min(
-            self.config.get("max_workers", 4), psutil.cpu_count() * 2
+            self.config.get("max_workers", 4), cpu_count * 2
         )
 
         # Clear metrics history

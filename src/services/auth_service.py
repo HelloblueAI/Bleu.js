@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from src.config import settings
+from src.config.settings import settings
 from src.database import get_db
 from src.models.subscription import Subscription, SubscriptionPlan
 from src.models.user import User, UserCreate, UserResponse
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Security configuration from settings
 SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = settings.JWT_ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
 REFRESH_SECRET_KEY = settings.JWT_SECRET_KEY  # Using same secret key for refresh tokens
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

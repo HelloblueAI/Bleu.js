@@ -23,7 +23,7 @@
 
 from typing import Optional
 
-from transformers import pipeline
+from transformers.pipelines import pipeline
 
 
 class CodeCompletion:

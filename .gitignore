@@ -1,7 +1,7 @@
 # ----------------------------------------
 # 🌟 BleuJS Core Ignores
 # Copyright (c) 2025, Helloblue Inc.
-# Last updated: 2024-03-29
+# Last updated: 2024-04-08
 # GPG Passphrase Test: 2024-03-29
 # GPG Cache Test: 2024-03-29 - Using Helloblue Project Key
 # ----------------------------------------
@@ -945,3 +945,23 @@ ENV/
 *.socket
 *.port
 *.port.lock
+
+# ----------------------------------------
+# 📦 System Installers & Archives
+# ----------------------------------------
+*.pkg
+*.api.zip
+*.installer
+*.dmg
+*.exe
+*.msi
+
+# ----------------------------------------
+# 📝 Log Files
+# ----------------------------------------
+*.log
+logs/
+**/logs/
+**/*.log
+**/log/
+**/log/*.log

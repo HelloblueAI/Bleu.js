@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import torch
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from transformers import AutoModel
+from transformers.models.auto.modeling_auto import AutoModel
 
 from .tokenizer import EnhancedTokenizer, TokenizerConfig
 

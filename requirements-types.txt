@@ -1,0 +1,11 @@
+types-setuptools
+types-requests
+types-psutil
+types-python-jose
+types-passlib
+types-hvac
+types-tensorflow
+types-cryptography
+types-boto3
+types-stripe
+types-jwt 
