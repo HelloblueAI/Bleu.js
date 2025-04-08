@@ -1,1 +1,1 @@
-"""Test package for Bleu.js.""" 
+"""Test package for Bleu.js."""

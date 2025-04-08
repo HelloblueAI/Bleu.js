@@ -1,1 +1,1 @@
-"""Quantum computing test package for Bleu.js.""" 
+"""Quantum computing test package for Bleu.js."""
