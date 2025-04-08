@@ -119,6 +119,7 @@ yarn.lock
 .ssh/
 config/secrets.yml
 config/local_settings.py
+src/config/settings.py
 .aws/
 .aws/*
 .aws/credentials
