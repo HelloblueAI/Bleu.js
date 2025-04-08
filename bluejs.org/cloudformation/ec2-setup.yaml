@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: EC2 setup for Bleu.js application
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    Description: EC2 instance type
+  KeyName:
+    Type: String
+    Description: Name of an existing EC2 KeyPair
+
+Resources:
+  BleujsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Bleu.js
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  BleujsInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: ami-0c55b159cbfafe1f0
+      KeyName: !Ref KeyName
+      SecurityGroupIds: [!Ref BleujsSecurityGroup]
+      UserData: !Base64 |
+        #!/bin/bash
+        yum update -y
+        yum install -y git nodejs npm
+        git clone https://github.com/pejmanhaghighatnia/Bleu.js.git
+        cd Bleu.js
+        npm install
+        npm start
+
+Outputs:
+  PublicIP:
+    Description: Public IP of the instance
+    Value: !GetAtt BleujsInstance.PublicIp

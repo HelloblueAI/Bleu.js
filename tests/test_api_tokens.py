@@ -1,7 +1,7 @@
 import asyncio
 import secrets
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi import HTTPException
@@ -39,7 +39,7 @@ def test_user(db: Session) -> User:
         full_name="Test User",
         is_active=True,
         is_verified=True,
-        trial_end_date=datetime.now(UTC) + timedelta(days=30),
+        trial_end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(user)
     db.commit()
@@ -67,8 +67,8 @@ def test_user(db: Session) -> User:
         plan_id=plan.id,
         plan_type="CORE",
         status="active",
-        current_period_start=datetime.now(UTC),
-        current_period_end=datetime.now(UTC) + timedelta(days=30),
+        current_period_start=datetime.now(timezone.utc),
+        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(subscription)
     db.commit()
@@ -98,8 +98,8 @@ def test_subscription(db: Session, test_user: User):
         plan_id=plan.id,
         plan_type="CORE",
         status="active",
-        current_period_start=datetime.now(UTC),
-        current_period_end=datetime.now(UTC) + timedelta(days=30),
+        current_period_start=datetime.now(timezone.utc),
+        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(subscription)
     db.commit()
@@ -116,7 +116,7 @@ def test_token(db: Session, test_user: User) -> APIToken:
         name="Test Token",
         token=secrets.token_urlsafe(32),
         is_active=True,
-        expires_at=datetime.now(UTC) + timedelta(days=30),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(token)
     db.commit()
@@ -157,7 +157,7 @@ async def test_create_token_without_subscription(
         full_name="No Subscription User",
         is_active=True,
         is_verified=True,
-        trial_end_date=datetime.now(UTC) + timedelta(days=30),
+        trial_end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(user)
     db.commit()
@@ -261,8 +261,8 @@ async def test_validate_expired_token(db: Session):
         plan_id=plan.id,
         plan_type="CORE",
         status="active",
-        current_period_start=datetime.now(UTC),
-        current_period_end=datetime.now(UTC) + timedelta(days=30),
+        current_period_start=datetime.now(timezone.utc),
+        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(subscription)
     db.commit()
@@ -275,7 +275,7 @@ async def test_validate_expired_token(db: Session):
         name="Expired Token",
         token=secrets.token_urlsafe(32),
         is_active=True,
-        expires_at=datetime.now(UTC) - timedelta(days=1),
+        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
     )
     db.add(token)
     db.commit()
@@ -369,7 +369,7 @@ async def test_token_expiration(services: dict, test_user: User):
     """Test token expiration."""
     token_data = APITokenCreate(
         name="Expiring Token",
-        expires_at=datetime.now(UTC) + timedelta(days=7),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
     )
 
     token = await services["api_token_service"].create_token(test_user, token_data)

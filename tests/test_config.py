@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from functools import lru_cache
 from typing import List
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -45,8 +46,29 @@ class TestSettings(BaseSettings):
     # Testing
     TESTING: bool = True
 
-    class Config:
-        env_file = ".env.test"
+    # API Settings
+    API_VERSION: str = "v1"
+    API_PREFIX: str = "/api"
+
+    # Test User Settings
+    TEST_USER_EMAIL: str = "test@example.com"
+    TEST_USER_PASSWORD: str = "test_password_123"
+    TEST_API_KEY: str = "test_api_key_123"
+
+    # Test Database Settings
+    TEST_DB_HOST: str = "localhost"
+    TEST_DB_PORT: str = "5432"
+    TEST_DB_NAME: str = "test_db"
+    TEST_DB_USER: str = "test_user"
+    TEST_DB_PASSWORD: str = "test_db_password_123"
+
+    # Test API Settings
+    TEST_API_HOST: str = "localhost"
+    TEST_API_PORT: str = "8000"
+    TEST_RATE_LIMIT: str = "100"
+    TEST_RATE_LIMIT_WINDOW: str = "3600"
+
+    model_config = ConfigDict(env_file=".env.test", extra="allow")
 
 
 @lru_cache()

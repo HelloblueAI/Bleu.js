@@ -3,24 +3,57 @@ from functools import lru_cache
 from typing import List, Optional
 
 import pytest
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from src.config import settings
+from src.config import get_settings
 from src.models.customer import RateLimitToken
 from src.models.declarative_base import Base
 from src.models.rate_limit import RateLimit
 from src.models.subscription import APIToken, PlanType, Subscription, SubscriptionPlan
 from src.models.user import User
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv('.env.test')
+
+# EC2 Configuration
+EC2_HOST = '44.245.223.189'
+EC2_USER = 'ec2-user'
+EC2_KEY_PATH = 'bleu-js-key.pem'
+
+# API Gateway Configuration
+API_GATEWAY_URL = os.getenv('AWS_API_CONFIG_BASE_URL')
+TEST_API_KEY = os.getenv('TEST_API_KEY')
+ENTERPRISE_API_KEY = os.getenv('ENTERPRISE_TEST_API_KEY')
+AWS_REGION = os.getenv('AWS_REGION')
+
+# SSH Commands
+SSH_BASE = f'ssh -i {EC2_KEY_PATH} {EC2_USER}@{EC2_HOST}'
+SCP_BASE = f'scp -i {EC2_KEY_PATH}'
+
+# Service check commands
+SERVICE_COMMANDS = {
+    'cloudwatch': 'sudo systemctl status amazon-cloudwatch-agent',
+    'nginx': 'sudo systemctl status nginx'
+}
+
+# Log paths
+LOG_PATHS = {
+    'cloudwatch': '/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log',
+    'cloud_init': '/var/log/cloud-init-output.log'
+}
+
 # Test configuration constants
 TEST_EMAIL = "test@example.com"
 TEST_NOREPLY_EMAIL = "noreply@example.com"
 
 # Test database URL
-TEST_DATABASE_URL = settings.DATABASE_URL
+TEST_DATABASE_URL = get_settings().DATABASE_URL
 
 
 class TestSettings(BaseSettings):
@@ -51,8 +84,8 @@ class TestSettings(BaseSettings):
     RATE_LIMIT_ENTERPRISE: int = 5000
 
     # Security
-    CORS_ORIGINS: List[str] = ["http://localhost:3000"]
-    ALLOWED_HOSTS: List[str] = ["*"]
+    CORS_ORIGINS: str = "http://localhost:3000"
+    ALLOWED_HOSTS: str = "*"
 
     # Email Settings
     SMTP_HOST: str = "smtp.test.com"
@@ -61,9 +94,22 @@ class TestSettings(BaseSettings):
     SMTP_PASSWORD: str = "test_password"
     FROM_EMAIL: str = TEST_NOREPLY_EMAIL
 
-    class Config:
-        env_file = ".env.test"
-        case_sensitive = True
+    model_config = SettingsConfigDict(
+        env_file=".env.test",
+        case_sensitive=True,
+        arbitrary_types_allowed=True,
+        extra="allow",
+    )
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        """Get CORS origins as a list."""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
+
+    @property
+    def allowed_hosts_list(self) -> List[str]:
+        """Get allowed hosts as a list."""
+        return [host.strip() for host in self.ALLOWED_HOSTS.split(",")]
 
 
 @lru_cache()
@@ -71,37 +117,8 @@ def get_test_settings() -> TestSettings:
     return TestSettings()
 
 
-class Settings:
-    # Application Settings
-    APP_NAME = "Bleu.js Test"
-    VERSION = "1.0.0"
-    DEBUG = True
-
-    # Database Settings
-    DATABASE_URL = "sqlite:///./test.db"
-
-    # JWT Settings
-    JWT_SECRET_KEY = "test-secret-key"
-    JWT_ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-    # Security
-    CORS_ORIGINS = ["http://localhost:3000"]
-    ALLOWED_HOSTS = ["*"]
-
-    # Rate Limiting
-    RATE_LIMIT_CORE = 100
-    RATE_LIMIT_ENTERPRISE = 5000
-
-    # Email Settings
-    SMTP_HOST = "smtp.test.com"
-    SMTP_PORT = 587
-    SMTP_USER = TEST_EMAIL
-    SMTP_PASSWORD = "test_password"
-    FROM_EMAIL = TEST_NOREPLY_EMAIL
-
-
-settings = Settings()
+# Use the test settings instance
+test_settings = get_test_settings()
 
 
 @pytest.fixture(scope="session")

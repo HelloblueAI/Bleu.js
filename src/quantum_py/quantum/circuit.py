@@ -62,9 +62,6 @@ class QuantumCircuit:
         self.noise_model: Optional[NoiseModel] = (
             self._get_noise_model() if use_error_mitigation else None
         )
-        self.sampler: Optional[Sampler] = (
-            Sampler(noise_model=self.noise_model) if use_error_mitigation else None
-        )
 
         # Initialize optimizer
         self.optimizer = SPSA(maxiter=100)
@@ -219,7 +216,7 @@ class QuantumCircuit:
     def _update_circuit_metrics(self):
         """Update circuit metrics"""
         if self.circuit is None:
-            raise RuntimeError("Circuit not initialized")
+            raise RuntimeError(CIRCUIT_NOT_INITIALIZED_ERROR)
 
         self.metrics["circuit_depth"] = self.circuit.depth()
         self.metrics["circuit_size"] = self.circuit.size()
@@ -262,7 +259,7 @@ class QuantumCircuit:
             raise RuntimeError("Noise model not initialized")
 
         if self.circuit is None:
-            raise RuntimeError("Circuit not initialized")
+            raise RuntimeError(CIRCUIT_NOT_INITIALIZED_ERROR)
 
         if self.classifier is None:
             raise RuntimeError("Classifier not initialized")
@@ -327,7 +324,7 @@ class QuantumCircuit:
     def get_circuit_info(self) -> Dict[str, Any]:
         """Get circuit information and metrics"""
         if self.circuit is None:
-            raise RuntimeError("Circuit not initialized")
+            raise RuntimeError(CIRCUIT_NOT_INITIALIZED_ERROR)
 
         return {
             "n_qubits": self.n_qubits,
@@ -343,7 +340,7 @@ class QuantumCircuit:
     def apply_random_gate(self, qubit: int) -> None:
         """Apply a random quantum gate to a qubit."""
         if self.circuit is None:
-            raise RuntimeError("Circuit not initialized")
+            raise RuntimeError(CIRCUIT_NOT_INITIALIZED_ERROR)
 
         if qubit < 0 or qubit >= self.n_qubits:
             raise ValueError(f"Invalid qubit index: {qubit}")
@@ -367,7 +364,7 @@ class QuantumCircuit:
     def apply_random_rotation(self, qubit: int) -> None:
         """Apply a random rotation gate to a qubit."""
         if self.circuit is None:
-            raise RuntimeError("Circuit not initialized")
+            raise RuntimeError(CIRCUIT_NOT_INITIALIZED_ERROR)
 
         if qubit < 0 or qubit >= self.n_qubits:
             raise ValueError(f"Invalid qubit index: {qubit}")

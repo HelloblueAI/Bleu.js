@@ -1,76 +1,214 @@
-import uuid
-from datetime import datetime, timezone
+"""User model module."""
+
+from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr
-from sqlalchemy import Boolean, Column, DateTime, String
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 
 from src.models.declarative_base import Base
 from src.models.subscription import PlanType
 
 
 class User(Base):
-    """Database model for storing user information."""
+    """User model."""
 
     __tablename__ = "users"
+    __table_args__ = {"extend_existing": True}
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    email = Column(String, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     full_name = Column(String)
     is_active = Column(Boolean, default=True)
-    is_verified = Column(Boolean, default=False)
-    trial_end_date = Column(DateTime)
     is_superuser = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(
-        DateTime,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-    )
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_login = Column(DateTime)
 
     # Relationships
-    subscriptions = relationship("Subscription", back_populates="user")
-    api_tokens = relationship("APIToken", back_populates="user")
-    subscription = relationship(
-        "Subscription",
-        primaryjoin="and_(User.id==Subscription.user_id, Subscription.status=='active')",
-        uselist=False,
-    )
+    api_tokens = relationship("APIToken", back_populates="user", cascade="all, delete-orphan")
+    subscription = relationship("Subscription", back_populates="user", cascade="all, delete-orphan")
+    api_calls = relationship("APICall", back_populates="user", cascade="all, delete-orphan")
+    api_usage = relationship("APIUsage", back_populates="user", cascade="all, delete-orphan")
+    rate_limits = relationship("RateLimit", back_populates="user", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        """Get string representation of user.
+
+        Returns:
+            str: String representation
+        """
+        return f"<User {self.username}>"
+
+    def to_dict(self) -> dict:
+        """Convert user to dictionary.
+
+        Returns:
+            dict: User data
+        """
+        return {
+            "id": self.id,
+            "email": self.email,
+            "username": self.username,
+            "full_name": self.full_name,
+            "is_active": self.is_active,
+            "is_superuser": self.is_superuser,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "last_login": self.last_login.isoformat() if self.last_login else None,
+        }
+
+    @property
+    def is_authenticated(self) -> bool:
+        """Check if user is authenticated.
+
+        Returns:
+            bool: True if user is authenticated
+        """
+        return True
+
+    @property
+    def is_anonymous(self) -> bool:
+        """Check if user is anonymous.
+
+        Returns:
+            bool: True if user is anonymous
+        """
+        return False
+
+    def get_id(self) -> str:
+        """Get user ID.
+
+        Returns:
+            str: User ID
+        """
+        return str(self.id)
+
+    def update_last_login(self) -> None:
+        """Update last login timestamp."""
+        self.last_login = datetime.utcnow()
+
+    def check_password(self, password: str) -> bool:
+        """Check if password is correct.
+
+        Args:
+            password: Password to check
+
+        Returns:
+            bool: True if password is correct
+        """
+        from src.security.password import verify_password
+
+        return verify_password(password, self.hashed_password)
+
+    def set_password(self, password: str) -> None:
+        """Set user password.
+
+        Args:
+            password: Password to set
+        """
+        from src.security.password import get_password_hash
+
+        self.hashed_password = get_password_hash(password)
+
+    def has_permission(self, permission: str) -> bool:
+        """Check if user has permission.
+
+        Args:
+            permission: Permission to check
+
+        Returns:
+            bool: True if user has permission
+        """
+        # Superusers have all permissions
+        if self.is_superuser:
+            return True
+
+        # TODO: Implement permission checking
+        return False
+
+    def has_subscription(self, subscription_type: str) -> bool:
+        """Check if user has subscription.
+
+        Args:
+            subscription_type: Subscription type to check
+
+        Returns:
+            bool: True if user has subscription
+        """
+        return any(
+            subscription.type == subscription_type
+            and subscription.is_active
+            for subscription in self.subscriptions
+        )
+
+    def get_active_api_token(self) -> Optional[str]:
+        """Get active API token.
+
+        Returns:
+            Optional[str]: Active API token
+        """
+        active_token = next(
+            (token for token in self.api_tokens if token.is_active),
+            None,
+        )
+        return active_token.token if active_token else None
 
 
 class UserBase(BaseModel):
+    """Base user model."""
+
     email: EmailStr
-    full_name: str
+    username: str = Field(..., min_length=3, max_length=50)
+    full_name: Optional[str] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class UserCreate(UserBase):
-    password: str
+    """User creation model."""
+
+    password: str = Field(..., min_length=8)
     plan_type: PlanType
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-class UserUpdate(BaseModel):
+
+class UserResponse(BaseModel):
+    """User response model."""
+
+    id: int
+    email: EmailStr
+    username: str
     full_name: Optional[str] = None
-    password: Optional[str] = None
-
-
-class UserResponse(UserBase):
-    id: str
     is_active: bool
-    is_verified: bool
-    trial_end_date: datetime
+    is_superuser: bool
     created_at: datetime
     updated_at: datetime
+    last_login: Optional[datetime] = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
 
 
 class Token(BaseModel):
+    """Token model."""
+
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
+    expires_in: int
+    refresh_token: Optional[str] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    """Token data model."""
+
+    sub: str
+    exp: datetime
+    refresh: bool = False
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)

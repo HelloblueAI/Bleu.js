@@ -1,5 +1,9 @@
+"""
+Quantum State Management Module
+Copyright (c) 2024, Bleu.js
+"""
+
 import logging
-import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 

@@ -36,6 +36,7 @@ class Subscription(Base):
     """Database model for user subscriptions."""
 
     __tablename__ = "subscriptions"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
@@ -61,12 +62,15 @@ class Subscription(Base):
     # Relationships
     user = relationship("User", back_populates="subscription")
     plan = relationship("SubscriptionPlan", back_populates="subscriptions")
+    api_tokens = relationship("APIToken", back_populates="subscription", cascade="all, delete-orphan")
+    customer = relationship("Customer", back_populates="subscription", uselist=False)
 
 
 class APIToken(Base):
     """Database model for storing API tokens."""
 
     __tablename__ = "api_tokens"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
@@ -89,6 +93,7 @@ class SubscriptionPlan(Base):
     """Database model for subscription plans."""
 
     __tablename__ = "subscription_plans"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String, nullable=False)
@@ -163,6 +168,8 @@ class APITokenBase(BaseModel):
     name: str
     expires_at: Optional[datetime] = None
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
 
 class APITokenCreate(APITokenBase):
     pass
@@ -190,6 +197,8 @@ class SubscriptionPlanBase(BaseModel):
     uptime_sla: str
     support_level: str
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
 
 class SubscriptionPlanCreate(SubscriptionPlanBase):
     pass
@@ -212,6 +221,8 @@ class SubscriptionBase(BaseModel):
     current_period_end: datetime
     trial_end_date: Optional[datetime]
     api_calls_remaining: int
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class SubscriptionCreate(SubscriptionBase):

@@ -1,5 +1,5 @@
 import secrets
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from fastapi import HTTPException, status
@@ -38,7 +38,7 @@ class APITokenService:
             subscription_id=subscription.id,
             name=token_data.name,
             token=secrets.token_urlsafe(32),
-            expires_at=token_data.expires_at or datetime.now(UTC) + timedelta(days=30),
+            expires_at=token_data.expires_at or datetime.now(timezone.utc) + timedelta(days=30),
             is_active=True,
         )
 
@@ -104,8 +104,8 @@ class APITokenService:
             return False
 
         if db_token.expires_at and db_token.expires_at.replace(
-            tzinfo=UTC
-        ) < datetime.now(UTC):
+            tzinfo=timezone.utc
+        ) < datetime.now(timezone.utc):
             return False
 
         return True

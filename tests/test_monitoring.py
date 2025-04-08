@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -119,7 +119,7 @@ async def test_cleanup_old_metrics(db_session, test_customer):
     )
 
     # Record some old metrics
-    old_time = datetime.now(UTC) - timedelta(days=31)
+    old_time = datetime.now(timezone.utc) - timedelta(days=31)
     await MonitoringService.record_metrics(
         customer_id=test_customer.id,
         metrics={"response_time": 0.5},

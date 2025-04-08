@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 
 import aiohttp
@@ -82,7 +82,7 @@ class MonitoringService:
         try:
             self.monitoring_data[customer_id] = {
                 "uptime": {
-                    "start_time": datetime.now(UTC),
+                    "start_time": datetime.now(timezone.utc),
                     "downtime": timedelta(0),
                     "total_time": timedelta(0),
                     "sla": uptime_sla,
@@ -130,7 +130,7 @@ class MonitoringService:
             self.monitoring_data[customer_id]["usage"] = {
                 "limit": api_calls_limit,
                 "current": 0,
-                "reset_date": datetime.now(UTC) + timedelta(days=30),
+                "reset_date": datetime.now(timezone.utc) + timedelta(days=30),
             }
 
             logger.info(f"Usage monitoring set up for customer {customer_id}")
@@ -150,7 +150,7 @@ class MonitoringService:
                 if customer_id in self.monitoring_data:
                     monitoring = self.monitoring_data[customer_id]["uptime"]
                     monitoring["total_time"] = (
-                        datetime.now(UTC) - monitoring["start_time"]
+                        datetime.now(timezone.utc) - monitoring["start_time"]
                     )
 
                     if not is_healthy:
@@ -218,9 +218,9 @@ class MonitoringService:
                     await self._handle_usage_alert(customer_id, usage_percentage)
 
                 # Reset usage counter if needed
-                if datetime.now(UTC) >= usage_data["reset_date"]:
+                if datetime.now(timezone.utc) >= usage_data["reset_date"]:
                     usage_data["current"] = 0
-                    usage_data["reset_date"] = datetime.now(UTC) + timedelta(days=30)
+                    usage_data["reset_date"] = datetime.now(timezone.utc) + timedelta(days=30)
 
         except Exception as e:
             logger.error(f"Error recording API call: {str(e)}")
@@ -346,7 +346,7 @@ class MonitoringService:
 
     async def check_rate_limit(self, customer_id: str, plan_type: str) -> bool:
         """Check if the customer has exceeded their rate limit."""
-        current_time = datetime.now(UTC)
+        current_time = datetime.now(timezone.utc)
 
         # Initialize rate limit data if not exists
         if customer_id not in self.rate_limit_data:
@@ -442,9 +442,9 @@ def get_metrics(
 ):
     try:
         if not start_time:
-            start_time = datetime.now(UTC) - timedelta(hours=24)
+            start_time = datetime.now(timezone.utc) - timedelta(hours=24)
         if not end_time:
-            end_time = datetime.now(UTC)
+            end_time = datetime.now(timezone.utc)
         # ... existing code ...
     except Exception as e:
         logger.error(f"Error getting metrics: {str(e)}")
@@ -456,9 +456,9 @@ def get_events(
 ):
     try:
         if not start_time:
-            start_time = datetime.now(UTC) - timedelta(hours=24)
+            start_time = datetime.now(timezone.utc) - timedelta(hours=24)
         if not end_time:
-            end_time = datetime.now(UTC)
+            end_time = datetime.now(timezone.utc)
         # ... existing code ...
     except Exception as e:
         logger.error(f"Error getting events: {str(e)}")

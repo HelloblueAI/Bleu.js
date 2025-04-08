@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM Roles Anywhere configuration for Bleu.js'
+
+Resources:
+  BleujsDeploymentRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: bleujs-deployment-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: rolesanywhere.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
+
+  BleujsTrustAnchor:
+    Type: 'AWS::RolesAnywhere::TrustAnchor'
+    Properties:
+      Name: bleujs-trust-anchor
+      Source:
+        SourceType: CERTIFICATE_BUNDLE
+        SourceData: !Ref CertificateBundle
+      Enabled: true
+
+  BleujsProfile:
+    Type: 'AWS::RolesAnywhere::Profile'
+    Properties:
+      Name: bleujs-deployment-profile
+      RoleArns: 
+        - !GetAtt BleujsDeploymentRole.Arn
+      DurationSeconds: 3600
+      Enabled: true
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
+
+Parameters:
+  CertificateBundle:
+    Type: String
+    Description: The certificate bundle for the trust anchor
+
+Outputs:
+  TrustAnchorArn:
+    Description: The ARN of the trust anchor
+    Value: !Ref BleujsTrustAnchor
+  
+  ProfileArn:
+    Description: The ARN of the profile
+    Value: !Ref BleujsProfile
+  
+  RoleArn:
+    Description: The ARN of the deployment role
+    Value: !GetAtt BleujsDeploymentRole.Arn 

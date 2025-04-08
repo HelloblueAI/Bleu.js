@@ -1,6 +1,6 @@
 import logging
 import smtplib
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from typing import Optional
 
@@ -45,16 +45,16 @@ class AuthService:
     ) -> str:
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.now(UTC) + expires_delta
+            expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(UTC) + timedelta(minutes=15)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=15)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
 
     def create_refresh_token(self, data: dict):
         to_encode = data.copy()
-        expire = datetime.now(UTC) + timedelta(days=7)
+        expire = datetime.now(timezone.utc) + timedelta(days=7)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
@@ -62,7 +62,7 @@ class AuthService:
     async def verify_refresh_token(self, token: str):
         try:
             payload = jwt.decode(token, REFRESH_SECRET_KEY, algorithms=[ALGORITHM])
-            if datetime.now(UTC) > datetime.fromtimestamp(payload["exp"], UTC):
+            if datetime.now(timezone.utc) > datetime.fromtimestamp(payload["exp"], timezone.utc):
                 raise HTTPException(status_code=401, detail="Refresh token has expired")
             return payload
         except JWTError:
@@ -189,7 +189,7 @@ class AuthService:
             plan="cor-e",  # Default to COR-E plan
             is_active=True,
             is_verified=True,  # Social auth users are pre-verified
-            trial_end_date=datetime.now(UTC) + timedelta(days=30),
+            trial_end_date=datetime.now(timezone.utc) + timedelta(days=30),
         )
         db.add(db_user)
         db.commit()

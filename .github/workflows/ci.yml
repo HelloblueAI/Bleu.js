@@ -13,6 +13,8 @@ env:
   PYTHON_VERSION: '3.10'
   POETRY_VERSION: '1.7.1'
   CACHE_VERSION: 'v1'
+  DOCKER_BUILDKIT: 1
+  ECR_REPOSITORY: bleujs
 
 jobs:
   auto-assign:
@@ -92,6 +94,7 @@ jobs:
         poetry install --no-interaction --no-root --with dev
         poetry run pip install "qiskit==${{ matrix.qiskit-version }}"
         poetry run pip install "qiskit-aer==${{ matrix.qiskit-aer-version }}"
+        poetry run pip install "cirq==1.3.0"
 
     - name: Verify dependency versions
       run: |
@@ -100,10 +103,15 @@ jobs:
         poetry run pip show black qiskit fastapi starlette
 
     - name: Run tests with coverage
+      id: coverage
       run: |
-        poetry run pytest --cov=./ --cov-report=xml src/python/ml/computer_vision/test_quantum_fusion.py
-        poetry run pytest --cov=./ --cov-report=xml src/python/ml/quantum_ml/test_quantum_ml.py
-        poetry run pytest --cov=./ --cov-report=xml src/python/ml/quantum_ml/test_quantum_ml_utils.py
+        coverage=$(poetry run pytest --cov=./ --cov-report=term-missing \
+          src/python/ml/computer_vision/test_quantum_fusion.py \
+          src/python/ml/computer_vision/test_quantum_vision.py \
+          src/python/tests/test_quantum_enhancer.py \
+          src/quantum_py/tests/test_quantum.py \
+          tests/quantum/test_quantum_processor.py | grep 'TOTAL' | awk '{print $4}' | sed 's/%//')
+        echo "coverage=$coverage" >> $GITHUB_OUTPUT
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -117,7 +125,10 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: ./coverage.xml
+        path: |
+          coverage.xml
+          test-results/
+          junit/
 
     - name: Upload test results
       uses: actions/upload-artifact@v3
@@ -262,11 +273,15 @@ jobs:
       run: poetry install --no-interaction --no-root --with dev
 
     - name: Run Snyk to check for vulnerabilities
+      id: security
       run: |
         npm install -g snyk
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test --severity-threshold=high --json-file-output=snyk-results.json || true
-      continue-on-error: true
+        critical=$(jq -r '.vulnerabilities | map(select(.severity == "critical")) | length' snyk-results.json)
+        high=$(jq -r '.vulnerabilities | map(select(.severity == "high")) | length' snyk-results.json)
+        echo "critical_issues=$critical" >> $GITHUB_OUTPUT
+        echo "high_issues=$high" >> $GITHUB_OUTPUT
 
     - name: Run dependency check
       run: |
@@ -375,135 +390,240 @@ jobs:
         committer: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
         labels: dependencies
 
-  deploy:
-    needs: [test, lint, security]
+  docker-build-test:
+    needs: [auto-assign, version-bump]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment: production
-
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Deploy to AWS
-      id: deploy
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        set -e
-        # Create deployment backup
-        aws cloudformation get-template --stack-name bleujs-infrastructure --output text > infrastructure-backup.yml
-        aws cloudformation get-template --stack-name bleujs-subscriptions --output text > subscriptions-backup.yml
-        aws cloudformation get-template --stack-name bleujs-lambda --output text > lambda-backup.yml
+      - name: Build and test Docker images
+        run: |
+          docker build -t bleujs:test .
+          docker-compose -f docker-compose.test.yml up -d
+          docker-compose -f docker-compose.test.yml ps
+          docker-compose -f docker-compose.test.yml logs
 
-        # Deploy infrastructure
-        aws cloudformation deploy \
-          --template-file deploy/aws/infrastructure.yml \
-          --stack-name bleujs-infrastructure \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || { echo "Infrastructure deployment failed"; exit 1; }
+      - name: Run Docker tests
+        run: |
+          docker-compose -f docker-compose.test.yml run test pytest
 
-        # Deploy API
-        aws cloudformation deploy \
-          --template-file deploy/aws/subscriptions.yml \
-          --stack-name bleujs-subscriptions \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || { echo "API deployment failed"; exit 1; }
+      - name: Cleanup Docker resources
+        if: always()
+        run: |
+          docker-compose -f docker-compose.test.yml down -v
 
-        # Deploy Lambda
-        aws cloudformation deploy \
-          --template-file deploy/aws/subscription_lambda.yml \
-          --stack-name bleujs-lambda \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || { echo "Lambda deployment failed"; exit 1; }
+  db-migrations:
+    needs: docker-build-test
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: pass
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Verify deployments
-      run: |
-        set -e
-        # Check infrastructure stack
-        aws cloudformation describe-stacks --stack-name bleujs-infrastructure --query 'Stacks[0].StackStatus' | grep -q "CREATE_COMPLETE\|UPDATE_COMPLETE" || { echo "Infrastructure stack not in expected state"; exit 1; }
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-        # Check subscriptions stack
-        aws cloudformation describe-stacks --stack-name bleujs-subscriptions --query 'Stacks[0].StackStatus' | grep -q "CREATE_COMPLETE\|UPDATE_COMPLETE" || { echo "Subscriptions stack not in expected state"; exit 1; }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install --no-interaction
 
-        # Check lambda stack
-        aws cloudformation describe-stacks --stack-name bleujs-lambda --query 'Stacks[0].StackStatus' | grep -q "CREATE_COMPLETE\|UPDATE_COMPLETE" || { echo "Lambda stack not in expected state"; exit 1; }
+      - name: Check database migrations
+        run: |
+          poetry run python -m alembic current
+          poetry run python -m alembic history
+          poetry run python -m alembic check
 
-    - name: Rollback on failure
-      if: failure()
-      run: |
-        set -e
-        echo "Rolling back deployments..."
+  api-docs:
+    needs: db-migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-        # Rollback infrastructure
-        aws cloudformation deploy \
-          --template-file infrastructure-backup.yml \
-          --stack-name bleujs-infrastructure \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || echo "Infrastructure rollback failed"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-        # Rollback API
-        aws cloudformation deploy \
-          --template-file subscriptions-backup.yml \
-          --stack-name bleujs-subscriptions \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || echo "API rollback failed"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install --no-interaction
 
-        # Rollback Lambda
-        aws cloudformation deploy \
-          --template-file lambda-backup.yml \
-          --stack-name bleujs-lambda \
-          --capabilities CAPABILITY_IAM \
-          --no-fail-on-empty-changeset || echo "Lambda rollback failed"
+      - name: Generate API documentation
+        run: |
+          poetry run python -m pdoc --html --force --output-dir docs/api src/python
+          poetry run python -m mkdocs build
 
-    - name: Notify Slack on Deployment Status
-      uses: 8398a7/action-slack@v3
-      if: always()
-      with:
-        status: custom
-        custom_payload: |
-          {
-            "attachments": [{
-              "color": "${{ job.status == 'success' && 'good' || 'danger' }}",
-              "title": "${{ job.status == 'success' && '✅ Deployment Successful' || '❌ Deployment Failed' }}",
-              "text": "Deployment to AWS ${{ job.status == 'success' && 'completed successfully' || 'failed' }}\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}",
-              "fields": [
-                {
-                  "title": "Repository",
-                  "value": "${{ github.repository }}",
-                  "short": true
-                },
-                {
-                  "title": "Branch",
-                  "value": "${{ github.ref }}",
-                  "short": true
-                },
-                {
-                  "title": "Environment",
-                  "value": "Production",
-                  "short": true
-                },
-                {
-                  "title": "Deployment Time",
-                  "value": "${{ steps.deploy.outputs.deployment_time }}",
-                  "short": true
-                }
-              ]
-            }]
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Upload API documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-docs
+          path: docs/api/
 
-    - name: Security scan
-      uses: github/codeql-action/init@v2
-      with:
-        languages: python
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  performance-test:
+    needs: api-docs
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: pass
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install --no-interaction
+          pip install locust
+
+      - name: Run performance tests
+        run: |
+          poetry run locust -f tests/performance/locustfile.py --headless -u 100 -r 10 --run-time 1m --host http://localhost:8000
+
+      - name: Upload performance test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: locust-results/
+
+  browser-test:
+    needs: performance-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Run browser compatibility tests
+        run: |
+          pnpm run test:browser
+
+      - name: Upload browser test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: browser-test-results
+          path: test-results/
+
+  package-publish:
+    needs: [docker-build-test, db-migrations, api-docs, performance-test, browser-test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install --no-interaction
+
+      - name: Build Python package
+        run: poetry build
+
+      - name: Publish to PyPI
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
+          poetry publish --build
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Build and publish npm package
+        run: |
+          pnpm run build
+          pnpm publish --access public
+
+  deploy:
+    needs: package-publish
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to ECS
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ github.sha }} .
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          aws ecs update-service --cluster bleujs-cluster --service bleujs-service --force-new-deployment
+
+      - name: Notify Slack on Deployment Status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: |
+            Deployment Status: ${{ job.status }}
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Container Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Code Security Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python, javascript

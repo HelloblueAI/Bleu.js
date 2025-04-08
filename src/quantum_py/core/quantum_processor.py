@@ -185,7 +185,7 @@ class QuantumProcessor:
         for gate in circuit.gates:
             # Apply error correction if enabled
             if self.config.use_error_correction:
-                self._apply_error_correction()
+                self._apply_error_correction(circuit.state)
 
             # Apply gate
             circuit.apply_gate(gate)
@@ -204,22 +204,43 @@ class QuantumProcessor:
 
         return circuit.get_state()
 
-    def _apply_error_correction(self) -> None:
-        """Apply advanced error correction with adaptive techniques."""
+    def _apply_error_correction(self, quantum_state):
+        """Apply quantum error correction to the given quantum state."""
         if not self.config.use_error_correction:
-            return
+            return quantum_state
 
-        # 1. Adaptive Error Correction Selection
-        correction_type = self._select_error_correction_type()
+        try:
+            # Apply stabilizer measurements
+            syndrome = self._measure_syndrome(self._select_error_correction_type())
 
-        # 2. Enhanced Syndrome Measurement
-        syndrome = self._measure_syndrome(correction_type)
+            # Determine correction operations
+            correction_ops = self._analyze_and_correct_errors(syndrome)
 
-        # 3. Error Analysis and Correction
-        self._analyze_and_correct_errors(syndrome)
+            # Apply correction operations
+            corrected_state = self._apply_correction_operations(
+                quantum_state, correction_ops
+            )
 
-        # 4. Error Rate Monitoring
-        self._update_error_rates()
+            return corrected_state
+        except Exception as e:
+            self.logger.error("Error in quantum error correction", error=str(e))
+            return quantum_state
+
+    def _analyze_and_correct_errors(self, syndrome):
+        """Analyze syndrome measurements and determine correction operations."""
+        correction_ops = []
+
+        for qubit_idx, (error_detected, confidence) in syndrome.items():
+            if error_detected and confidence > self.config.error_threshold:
+                correction_ops.append(self._determine_correction_operation(qubit_idx))
+                self.logger.info(f"Error detected on qubit {qubit_idx}")
+
+        return correction_ops
+
+    def _determine_correction_operation(self, qubit_idx):
+        """Determine the appropriate correction operation for a given qubit."""
+        # Implementation depends on the error correction code being used
+        pass
 
     def _select_error_correction_type(self) -> str:
         """Select appropriate error correction code based on current conditions."""
@@ -257,16 +278,6 @@ class QuantumProcessor:
                 )  # Good confidence
 
         return syndrome
-
-    def _analyze_and_correct_errors(
-        self, syndrome: Dict[int, Tuple[int, float]]
-    ) -> None:
-        """Analyze syndrome and apply appropriate corrections."""
-        for qubit, (outcome, confidence) in syndrome.items():
-            if outcome == 1 and confidence > 0.8:  # High confidence error
-                # Apply both X and Z corrections regardless of code type
-                self.circuit.add_gate("X", [qubit])
-                self.circuit.add_gate("Z", [qubit])
 
     def _update_error_rates(self) -> None:
         """Update error rates based on correction performance."""
@@ -429,26 +440,6 @@ class QuantumProcessor:
             self._optimize_memory_usage()
             self._optimize_parallel_processing()
             self._optimize_resource_allocation()
-
-    def _apply_error_correction(self, quantum_state):
-        """Apply quantum error correction to the given quantum state."""
-        if not self.config.use_error_correction:
-            return quantum_state
-
-        try:
-            # Apply stabilizer measurements
-            syndrome = self._measure_syndrome(self._select_error_correction_type())
-            
-            # Determine correction operations
-            correction_ops = self._analyze_and_correct_errors(syndrome)
-            
-            # Apply correction operations
-            corrected_state = self._apply_correction_operations(quantum_state, correction_ops)
-            
-            return corrected_state
-        except Exception as e:
-            self.logger.error("Error in quantum error correction", error=str(e))
-            return quantum_state
 
     def _apply_correction(self, qubit_idx):
         """Apply correction operation to specific qubit."""

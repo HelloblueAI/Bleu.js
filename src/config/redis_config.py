@@ -1,26 +1,42 @@
-import os
-from typing import Optional
+"""Redis configuration."""
+
+from typing import Optional, Dict
+
+from pydantic import BaseModel, ConfigDict
 
 
-class RedisConfig:
-    """Redis configuration settings."""
+class RedisConfig(BaseModel):
+    """Redis configuration."""
 
-    HOST: str = os.getenv("REDIS_HOST", "localhost")
-    PORT: int = int(os.getenv("REDIS_PORT", "6379"))
-    DB: int = int(os.getenv("REDIS_DB", "0"))
-    PASSWORD: Optional[str] = os.getenv("REDIS_PASSWORD")
-    SSL: bool = os.getenv("REDIS_SSL", "false").lower() == "true"
+    host: str = "localhost"
+    port: int = 6379
+    db: int = 0
+    password: Optional[str] = None
+    ssl: bool = False
+    encoding: str = "utf-8"
+    decode_responses: bool = True
+    socket_timeout: int = 5
+    socket_connect_timeout: int = 5
+    socket_keepalive: bool = True
+    socket_keepalive_options: Optional[Dict] = None
+    connection_pool: Optional[Dict] = None
+    unix_socket_path: Optional[str] = None
+    retry_on_timeout: bool = True
+    max_connections: int = 10
+    health_check_interval: int = 30
 
     # Rate limiting settings
-    RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))  # seconds
-    RATE_LIMIT_MAX_REQUESTS: int = int(os.getenv("RATE_LIMIT_MAX_REQUESTS", "100"))
+    rate_limit_window: int = 60  # seconds
+    rate_limit_max_requests: int = 100  # requests per window
+    rate_limit_key_prefix: str = "rate_limit:"
 
     # Cache settings
-    CACHE_TTL: int = int(os.getenv("CACHE_TTL", "300"))  # seconds
+    cache_ttl: int = 300  # seconds
 
-    @classmethod
-    def get_connection_url(cls) -> str:
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def get_connection_url(self) -> str:
         """Get Redis connection URL."""
-        auth = f":{cls.PASSWORD}@" if cls.PASSWORD else ""
-        protocol = "rediss" if cls.SSL else "redis"
-        return f"{protocol}://{auth}{cls.HOST}:{cls.PORT}/{cls.DB}"
+        auth = f":{self.password}@" if self.password else ""
+        protocol = "rediss" if self.ssl else "redis"
+        return f"{protocol}://{auth}{self.host}:{self.port}/{self.db}"
