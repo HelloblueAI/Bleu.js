@@ -1,0 +1,78 @@
+name: Cache Cleanup
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly at midnight on Sunday
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup old caches
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          REPO=${{ github.repository }}
+          BRANCH="main"
+          
+          echo "Fetching list of cache keys..."
+          
+          # Get all cache keys
+          caches=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1)
+          
+          # Define critical cache patterns to preserve
+          declare -A retention_rules=(
+            ["pip"]="14"           # Keep pip caches for 14 days
+            ["pnpm"]="14"          # Keep pnpm caches for 14 days
+            ["build"]="3"          # Keep build caches for 3 days
+            ["poetry"]="14"        # Keep poetry caches for 14 days
+            ["quantum"]="7"        # Keep quantum test caches for 7 days
+            ["ml"]="7"            # Keep ML test caches for 7 days
+          )
+          
+          echo "Applying intelligent cache cleanup rules..."
+          for cacheKey in $caches
+          do
+            # Get cache details
+            cache_info=$(gh actions-cache list -R $REPO -B $BRANCH | grep $cacheKey)
+            createdAt=$(echo $cache_info | cut -f 3)
+            size=$(echo $cache_info | cut -f 2)
+            age=$(( ( $(date +%s) - $(date -d "$createdAt" +%s) ) / 86400 ))
+            
+            # Convert size to MB for easier comparison
+            size_mb=$(echo $size | sed 's/MB//' | sed 's/GB/*1024/' | bc)
+            
+            # Initialize delete_cache flag
+            delete_cache=false
+            retention_days=7  # Default retention period
+            
+            # Check for specific cache types and apply retention rules
+            for pattern in "${!retention_rules[@]}"; do
+              if [[ $cacheKey == *"$pattern"* ]]; then
+                retention_days=${retention_rules[$pattern]}
+                break
+              fi
+            done
+            
+            # Special rules for large caches
+            if [ $(echo "$size_mb > 1024" | bc -l) -eq 1 ]; then  # Larger than 1GB
+              retention_days=3  # Keep large caches for shorter time
+            fi
+            
+            # Exclude critical recent caches
+            if [[ $cacheKey == *"${{ env.CACHE_KEY_PREFIX }}"* ]] && [ $age -lt 2 ]; then
+              continue  # Skip current cache prefix and very recent caches
+            fi
+            
+            # Apply retention rules
+            if [ $age -gt $retention_days ]; then
+              echo "Deleting cache key: $cacheKey (Age: $age days, Size: $size, Retention: $retention_days days)"
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+            else
+              echo "Keeping cache key: $cacheKey (Age: $age days, Size: $size, Retention: $retention_days days)"
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CACHE_KEY_PREFIX: ${{ env.CACHE_KEY_PREFIX }} 
