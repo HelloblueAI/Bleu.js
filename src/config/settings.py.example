@@ -1,7 +1,17 @@
 """Application settings template."""
+
 import os
 from typing import List, Optional, Union
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, PostgresDsn, RedisDsn, SecretStr, field_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    EmailStr,
+    Field,
+    PostgresDsn,
+    RedisDsn,
+    SecretStr,
+    field_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
 from src.config.rate_limiting_config import RateLimitingConfig
@@ -9,12 +19,16 @@ from src.config.redis_config import RedisConfig
 from src.config.secrets_manager_config import SecretsManagerConfig
 from src.config.security_headers_config import SecurityHeadersConfig
 
+
 class SQLiteURL(AnyUrl):
     """SQLite URL schema."""
+
     allowed_schemes = {"sqlite"}
+
 
 class Settings(BaseSettings):
     """Application settings."""
+
     # Application settings
     APP_NAME: str = "Bleu.js"
     APP_VERSION: str = "0.1.0"
@@ -186,4 +200,5 @@ class Settings(BaseSettings):
         db = values.get("DB_NAME")
         return f"postgresql://{user}:{password}@{host}:{port}/{db}"
 
-settings = Settings() 
+
+settings = Settings()
