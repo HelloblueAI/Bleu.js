@@ -13,6 +13,7 @@ class Customer(Base):
     """Database model for storing customer information."""
 
     __tablename__ = "customers"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     stripe_customer_id = Column(String, unique=True, nullable=False)
@@ -43,6 +44,7 @@ class Customer(Base):
     subscription = relationship("Subscription", back_populates="customer")
     api_tokens = relationship("APIToken", back_populates="customer")
     rate_limits = relationship("RateLimit", back_populates="customer")
+    payments = relationship("Payment", back_populates="customer")
 
     def reset_api_calls(self):
         """Reset the API calls counter."""
@@ -70,27 +72,11 @@ class Customer(Base):
         return False
 
 
-class APICall(Base):
-    """Database model for tracking API calls."""
-
-    __tablename__ = "api_calls"
-
-    id = Column(String, primary_key=True)
-    customer_id = Column(String, ForeignKey("customers.id"), nullable=False)
-    endpoint = Column(String, nullable=False)
-    method = Column(String, nullable=False)
-    response_time = Column(Integer, nullable=False)  # in milliseconds
-    status_code = Column(Integer, nullable=False)
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-
-    # Relationships
-    customer = relationship("Customer", back_populates="api_calls")
-
-
 class RateLimitToken(Base):
     """Database model for managing rate limiting tokens."""
 
     __tablename__ = "rate_limit_tokens"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(String, primary_key=True)
     customer_id = Column(
@@ -111,11 +97,15 @@ class CustomerBase(BaseModel):
     api_calls_remaining: int
     rate_limit: int
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
 
 class CustomerCreate(CustomerBase):
     stripe_customer_id: str
     api_key: str
     subscription_start: datetime
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class CustomerUpdate(BaseModel):
@@ -125,6 +115,8 @@ class CustomerUpdate(BaseModel):
     rate_limit: Optional[int] = None
     is_active: Optional[bool] = None
     subscription_end: Optional[datetime] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class CustomerResponse(CustomerBase):
@@ -136,24 +128,5 @@ class CustomerResponse(CustomerBase):
     is_active: bool
     created_at: datetime
     updated_at: datetime
-
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
-
-
-class APICallBase(BaseModel):
-    endpoint: str
-    method: str
-    response_time: int
-    status_code: int
-
-
-class APICallCreate(APICallBase):
-    customer_id: str
-
-
-class APICallResponse(APICallBase):
-    id: str
-    customer_id: str
-    timestamp: datetime
 
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)

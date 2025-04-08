@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import uuid
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import stripe
@@ -40,6 +40,7 @@ from ..database import get_db
 from ..models import Payment
 from .email_service import EmailService
 from .monitoring_service import MonitoringService
+from .stripe_service import StripeService
 
 logger = logging.getLogger(__name__)
 
@@ -80,13 +81,14 @@ active_subscriptions = Gauge(
 class SubscriptionService:
     """Service for managing API subscriptions and usage tracking."""
 
-    def __init__(self, db: Session = Depends(get_db)):
+    def __init__(self, db: Session = Depends(get_db), stripe_service: Optional[StripeService] = None):
         self.db = db
         self.settings = settings
         self.stripe = stripe
         self.email_service = EmailService()
         self.monitoring_service = MonitoringService()
         self.api_service = APIService(db)
+        self.stripe_service = stripe_service or StripeService()
 
         # Plan features and pricing
         self.plan_features = {
@@ -386,7 +388,7 @@ class SubscriptionService:
                     "plan": plan,
                     "features": features,
                     "api_calls_remaining": features["api_calls_limit"],
-                    "subscription_start": datetime.now(UTC),
+                    "subscription_start": datetime.now(timezone.utc),
                     "rate_limit": features["rate_limit"],
                 },
             )
@@ -598,7 +600,7 @@ class SubscriptionService:
             )
 
         # Create new subscription
-        current_time = datetime.now(UTC)
+        current_time = datetime.now(timezone.utc)
         db_subscription = Subscription(
             id=str(uuid.uuid4()),
             user_id=user.id,
@@ -904,7 +906,7 @@ class SubscriptionService:
 
             # Update subscription in database
             subscription.status = "cancelled"
-            subscription.cancelled_at = datetime.now(UTC)
+            subscription.cancelled_at = datetime.now(timezone.utc)
             self.db.commit()
 
             # Update metrics
@@ -1010,7 +1012,7 @@ class SubscriptionService:
 
         for payment in payments:
             total_revenue += payment.amount
-            if payment.created_at >= datetime.now(UTC) - timedelta(days=30):
+            if payment.created_at >= datetime.now(timezone.utc) - timedelta(days=30):
                 monthly_revenue += payment.amount
 
         # Get churn rate
@@ -1029,7 +1031,7 @@ class SubscriptionService:
             "total_revenue": total_revenue,
             "monthly_revenue": monthly_revenue,
             "churn_rate": churn_rate,
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
     async def get_user_subscription_data(self, user: User) -> Dict:

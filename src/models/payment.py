@@ -1,11 +1,13 @@
 """Payment model implementation."""
 
 from datetime import datetime
+from typing import Optional
 
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from .base import Base
+from .declarative_base import Base
 
 
 class Payment(Base):
@@ -71,3 +73,27 @@ class Payment(Base):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
+
+
+# Pydantic models for API
+class PaymentBase(BaseModel):
+    customer_id: int
+    amount: float
+    currency: str = "USD"
+    status: str = "pending"
+    payment_method: str = "credit_card"
+    transaction_id: str
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class PaymentCreate(PaymentBase):
+    pass
+
+
+class PaymentResponse(PaymentBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)

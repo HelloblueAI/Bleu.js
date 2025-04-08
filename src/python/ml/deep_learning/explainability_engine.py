@@ -4,6 +4,8 @@ Copyright (c) 2024, Bleu.js
 """
 
 import json
+import logging
+import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -17,13 +19,11 @@ import plotly.graph_objects as go
 import ray
 import shap
 import structlog
+import torch
 from plotly.subplots import make_subplots
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import export_graphviz
 from tensorflow import keras
-import logging
-import os
-import torch
 from torch.utils.data import DataLoader
 
 
@@ -214,7 +214,9 @@ class ExplainabilityEngine:
             ),
         }
 
-    async def _generate_tree_visualization(self, model: RandomForestClassifier) -> Optional[Dict]:
+    async def _generate_tree_visualization(
+        self, model: RandomForestClassifier
+    ) -> Optional[Dict]:
         """Generate tree visualization."""
         if not isinstance(model, RandomForestClassifier):
             return None
@@ -304,152 +306,208 @@ class ExplainabilityEngine:
 
     async def _generate_static_visualizations(self, explanations: Dict) -> None:
         """Generate static visualizations."""
-        # Create output directory
         os.makedirs("explanations", exist_ok=True)
-
-        # Plot feature importance
+        
         if "feature_importance" in explanations:
-            plt.figure(figsize=(10, 6))
-            importance = explanations["feature_importance"]["importance"]
-            plt.bar(self.feature_names, importance)
-            plt.xticks(rotation=45)
-            plt.title("Feature Importance")
-            plt.tight_layout()
-            plt.savefig("explanations/feature_importance.png")
-            plt.close()
-
-        # Plot partial dependence
+            await self._generate_feature_importance_plot(explanations)
+            
         if "partial_dependence" in explanations:
-            pd_results = explanations["partial_dependence"]["pd_results"]
-            if pd_results is None or len(pd_results) < 2:
-                return
+            await self._generate_partial_dependence_plot(explanations)
 
-            positions = pd_results[0] if pd_results[0] is not None else []
-            values = pd_results[1] if pd_results[1] is not None else []
+    async def _generate_feature_importance_plot(self, explanations: Dict) -> None:
+        """Generate feature importance plot."""
+        importance = explanations["feature_importance"]["importance"]
+        plt.figure(figsize=(10, 6))
+        plt.bar(self.feature_names, importance)
+        plt.xticks(rotation=45)
+        plt.title("Feature Importance")
+        plt.tight_layout()
+        plt.savefig("explanations/feature_importance.png")
+        plt.close()
 
-            if not positions or not values:
-                return
+    async def _generate_partial_dependence_plot(self, explanations: Dict) -> None:
+        """Generate partial dependence plot."""
+        pd_results = explanations["partial_dependence"]["pd_results"]
+        if not self._is_valid_pd_data(pd_results):
+            return
 
-            total_features = len(positions)
-            if total_features == 0:
-                return
+        positions, values = pd_results[0], pd_results[1]
+        total_features = len(positions)
 
-            fig, axes = plt.subplots(
-                total_features // 2 + total_features % 2,
-                2,
-                figsize=(15, 5 * (total_features // 2 + total_features % 2)),
-            )
+        fig, axes = plt.subplots(
+            total_features // 2 + total_features % 2,
+            2,
+            figsize=(15, 5 * (total_features // 2 + total_features % 2)),
+        )
 
-            if not self.feature_names:
-                self.feature_names = [f"feature_{i}" for i in range(total_features)]
+        self._plot_pd_subplots(axes, positions, values, total_features)
+        plt.tight_layout()
+        plt.savefig("explanations/partial_dependence.png")
+        plt.close()
 
-            for i, (ax, pos, val) in enumerate(zip(axes.ravel(), positions, values)):
-                if pos is not None and val is not None:
-                    ax.plot(pos, val.mean(axis=1))
-                    feature_name = (
-                        self.feature_names[i]
-                        if self.feature_names and i < len(self.feature_names)
-                        else f"feature_{i}"
-                    )
-                    ax.set_title(f"Partial Dependence: {feature_name}")
-                    ax.set_xlabel("Feature Value")
-                    ax.set_ylabel("Prediction")
+    def _is_valid_pd_data(self, pd_results: Tuple) -> bool:
+        """Check if partial dependence data is valid."""
+        return (
+            pd_results is not None
+            and len(pd_results) >= 2
+            and pd_results[0] is not None
+            and pd_results[1] is not None
+        )
 
-            plt.tight_layout()
-            plt.savefig("explanations/partial_dependence.png")
-            plt.close()
+    def _plot_pd_subplots(self, axes: np.ndarray, positions: List, values: List, total_features: int) -> None:
+        """Plot partial dependence subplots."""
+        for i, (ax, pos, val) in enumerate(zip(axes.ravel(), positions, values)):
+            if pos is None or val is None:
+                continue
+
+            ax.plot(pos, val.mean(axis=1))
+            feature_name = self._get_feature_name(i)
+            ax.set_title(f"Partial Dependence: {feature_name}")
+            ax.set_xlabel("Feature Value")
+            ax.set_ylabel("Prediction")
+
+    def _get_feature_name(self, index: int) -> str:
+        """Get feature name for given index."""
+        return (
+            self.feature_names[index]
+            if self.feature_names and index < len(self.feature_names)
+            else f"feature_{index}"
+        )
 
     async def _generate_interactive_visualizations(self, explanations: Dict) -> None:
         """Generate interactive visualizations using Plotly."""
-        # Create output directory
-        os.makedirs("explanations", exist_ok=True)
+        await self._create_output_directory()
 
-        # Create interactive feature importance plot
-        if "feature_importance" in explanations and explanations["feature_importance"]:
-            importance = explanations["feature_importance"].get("importance")
-            if importance is not None:
-                fig = go.Figure(
-                    data=[
-                        go.Bar(
-                            x=self.feature_names,
-                            y=importance,
-                            text=importance.round(3),
-                            textposition="auto",
-                        )
-                    ]
+        if self._has_valid_feature_importance(explanations):
+            await self._generate_interactive_feature_importance(explanations)
+
+        if self._has_valid_partial_dependence(explanations):
+            await self._generate_interactive_partial_dependence(explanations)
+
+    async def _generate_interactive_feature_importance(
+        self, explanations: Dict
+    ) -> None:
+        """Generate interactive feature importance visualization."""
+        importance = explanations["feature_importance"].get("importance")
+        fig = self._create_importance_figure(importance)
+        fig.write_html("explanations/feature_importance.html")
+
+    async def _generate_interactive_partial_dependence(
+        self, explanations: Dict
+    ) -> None:
+        """Generate interactive partial dependence visualization."""
+        pd_results = self._get_pd_results(explanations)
+        if not pd_results:
+            return
+
+        positions, values = pd_results[0], pd_results[1]
+        total_features = len(positions)
+
+        if not self._has_valid_feature_count(total_features):
+            return
+
+        fig = self._create_pd_subplots(total_features)
+        self._add_pd_traces(fig, positions, values)
+        self._update_pd_layout(fig, total_features)
+        fig.write_html("explanations/partial_dependence.html")
+
+    def _has_valid_feature_importance(self, explanations: Dict) -> bool:
+        """Check if feature importance data is valid."""
+        return (
+            "feature_importance" in explanations
+            and explanations["feature_importance"]
+            and "importance" in explanations["feature_importance"]
+        )
+
+    def _create_importance_figure(self, importance: np.ndarray) -> go.Figure:
+        """Create feature importance figure."""
+        return go.Figure(
+            data=[
+                go.Bar(
+                    x=self.feature_names,
+                    y=importance,
+                    text=importance.round(3),
+                    textposition="auto",
                 )
+            ]
+        ).update_layout(
+            title="Feature Importance",
+            xaxis_title="Features",
+            yaxis_title="Importance Score",
+            showlegend=False,
+        )
 
-                fig.update_layout(
-                    title="Feature Importance",
-                    xaxis_title="Features",
-                    yaxis_title="Importance Score",
-                    showlegend=False,
+    def _get_pd_results(self, explanations: Dict) -> Optional[Tuple]:
+        """Get partial dependence results from explanations."""
+        if not (
+            "partial_dependence" in explanations
+            and explanations["partial_dependence"]
+            and "pd_results" in explanations["partial_dependence"]
+        ):
+            return None
+        return explanations["partial_dependence"]["pd_results"]
+
+    def _has_valid_pd_data(self, pd_results: Tuple) -> bool:
+        """Check if partial dependence data is valid."""
+        return (
+            len(pd_results) >= 2
+            and pd_results[0] is not None
+            and pd_results[1] is not None
+            and pd_results[0]
+            and pd_results[1]
+        )
+
+    def _has_valid_feature_count(self, total_features: int) -> bool:
+        """Check if feature count is valid."""
+        return total_features > 0
+
+    def _create_pd_subplots(self, total_features: int) -> go.Figure:
+        """Create partial dependence subplots."""
+        if not self.feature_names:
+            self.feature_names = [f"feature_{i}" for i in range(total_features)]
+
+        subplot_titles = self._get_pd_subplot_titles(total_features)
+        return make_subplots(
+            rows=total_features // 2 + total_features % 2,
+            cols=2,
+            subplot_titles=subplot_titles,
+        )
+
+    def _get_pd_subplot_titles(self, total_features: int) -> List[str]:
+        """Get titles for partial dependence subplots."""
+        feature_names = (
+            self.feature_names[:total_features]
+            if self.feature_names
+            else [f"feature_{i}" for i in range(total_features)]
+        )
+        return [f"PD: {name}" for name in feature_names]
+
+    def _add_pd_traces(self, fig: go.Figure, positions: List, values: List) -> None:
+        """Add traces to partial dependence plots."""
+        for i, (pos, val) in enumerate(zip(positions, values)):
+            if not pos or not val:
+                continue
+            row = i // 2 + 1
+            col = i % 2 + 1
+
+            try:
+                mean_val = val.mean(axis=1)
+                feature_name = self._get_feature_name(i)
+                fig.add_trace(
+                    go.Scatter(x=pos, y=mean_val, name=feature_name, showlegend=False),
+                    row=row,
+                    col=col,
                 )
+            except (AttributeError, IndexError):
+                continue
 
-                fig.write_html("explanations/feature_importance.html")
-
-        # Create interactive partial dependence plots
-        if "partial_dependence" in explanations and explanations["partial_dependence"]:
-            pd_results = explanations["partial_dependence"].get("pd_results")
-            if pd_results is None or len(pd_results) < 2:
-                return
-
-            positions = pd_results[0] if pd_results[0] is not None else []
-            values = pd_results[1] if pd_results[1] is not None else []
-
-            if not positions or not values:
-                return
-
-            total_features = len(positions)
-            if total_features == 0:
-                return
-
-            if not self.feature_names:
-                self.feature_names = [f"feature_{i}" for i in range(total_features)]
-
-            fig = make_subplots(
-                rows=total_features // 2 + total_features % 2,
-                cols=2,
-                subplot_titles=[
-                    f"PD: {name}"
-                    for name in (
-                        self.feature_names[:total_features]
-                        if self.feature_names
-                        else [f"feature_{i}" for i in range(total_features)]
-                    )
-                ],
-            )
-
-            for i, (pos, val) in enumerate(zip(positions, values)):
-                if not pos or not val:
-                    continue
-                row = i // 2 + 1
-                col = i % 2 + 1
-
-                try:
-                    mean_val = val.mean(axis=1)
-                    feature_name = (
-                        self.feature_names[i]
-                        if self.feature_names and i < len(self.feature_names)
-                        else f"feature_{i}"
-                    )
-                    fig.add_trace(
-                        go.Scatter(
-                            x=pos, y=mean_val, name=feature_name, showlegend=False
-                        ),
-                        row=row,
-                        col=col,
-                    )
-                except (AttributeError, IndexError):
-                    continue
-
-            fig.update_layout(
-                height=300 * (total_features // 2 + total_features % 2),
-                title_text="Partial Dependence Plots",
-                showlegend=False,
-            )
-
-            fig.write_html("explanations/partial_dependence.html")
+    def _update_pd_layout(self, fig: go.Figure, total_features: int) -> None:
+        """Update layout of partial dependence plots."""
+        fig.update_layout(
+            height=300 * (total_features // 2 + total_features % 2),
+            title_text="Partial Dependence Plots",
+            showlegend=False,
+        )
 
     async def explain_instance(
         self,
@@ -509,48 +567,13 @@ class ExplainabilityEngine:
         """Save the current state of the explainability engine."""
         state = {
             "config": (
-                self.config.dict() if hasattr(self.config, "dict") else self.config
+                self.config.dict()
+                if hasattr(self.config, "dict")
+                else vars(self.config)
             ),
-            "explainer": (
-                {
-                    "feature_names": self.explainer.feature_names,
-                    "class_names": self.explainer.class_names,
-                    "training_data": (
-                        self.explainer.training_data.tobytes()
-                        if hasattr(self.explainer.training_data, "tobytes")
-                        else None
-                    ),
-                    "kernel_width": self.explainer.kernel_width,
-                    "random_state": self.explainer.random_state,
-                }
-                if self.explainer
-                else None
-            ),
+            "explainer": self._serialize_explainer(),
             "feature_names": self.feature_names,
-            "explanations": (
-                {
-                    key: {
-                        "local_importance": (
-                            exp.local_importance.tobytes()
-                            if hasattr(exp.local_importance, "tobytes")
-                            else None
-                        ),
-                        "global_importance": (
-                            exp.global_importance.tobytes()
-                            if hasattr(exp.global_importance, "tobytes")
-                            else None
-                        ),
-                        "feature_interactions": (
-                            exp.feature_interactions.tobytes()
-                            if hasattr(exp.feature_interactions, "tobytes")
-                            else None
-                        ),
-                    }
-                    for key, exp in self.explanations.items()
-                }
-                if self.explanations
-                else {}
-            ),
+            "explanations": self._serialize_explanations(),
             "visualizations": self.visualizations,
         }
 
@@ -558,6 +581,49 @@ class ExplainabilityEngine:
         with open(path, "wb") as f:
             f.write(msgpack.packb(state))
         self.logger.info("explainability_engine_state_saved", path=path)
+
+    def _serialize_explainer(self) -> Optional[Dict]:
+        """Serialize the explainer object."""
+        if not self.explainer:
+            return None
+
+        return {
+            "feature_names": self.explainer.feature_names,
+            "class_names": self.explainer.class_names,
+            "training_data": (
+                self.explainer.training_data.tobytes()
+                if hasattr(self.explainer.training_data, "tobytes")
+                else None
+            ),
+            "kernel_width": self.explainer.kernel_width,
+            "random_state": self.explainer.random_state,
+        }
+
+    def _serialize_explanations(self) -> Dict:
+        """Serialize the explanations dictionary."""
+        if not self.explanations:
+            return {}
+
+        return {
+            key: {
+                "local_importance": (
+                    exp.local_importance.tobytes()
+                    if hasattr(exp.local_importance, "tobytes")
+                    else None
+                ),
+                "global_importance": (
+                    exp.global_importance.tobytes()
+                    if hasattr(exp.global_importance, "tobytes")
+                    else None
+                ),
+                "feature_interactions": (
+                    exp.feature_interactions.tobytes()
+                    if hasattr(exp.feature_interactions, "tobytes")
+                    else None
+                ),
+            }
+            for key, exp in self.explanations.items()
+        }
 
     async def load_state(self, path: str) -> None:
         """Load a saved state of the explainability engine."""
@@ -624,14 +690,16 @@ class ExplainabilityEngine:
     def _create_visualization_components(self, data: Dict) -> Dict:
         """Create individual visualization components."""
         components = {}
-        
+
         if "feature_importance" in data:
-            components["feature_importance"] = self._create_feature_importance_plot(data)
-        
+            components["feature_importance"] = self._create_feature_importance_plot(
+                data
+            )
+
         if "attention_weights" in data:
             components["attention"] = self._create_attention_visualization(data)
-        
+
         if "layer_activations" in data:
             components["activations"] = self._create_activation_maps(data)
-        
+
         return components

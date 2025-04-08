@@ -1,0 +1,111 @@
+site_name: BleuJS Documentation
+site_description: Documentation for BleuJS - Quantum-Enhanced Computer Vision System
+site_author: BleuJS Team
+repo_url: https://github.com/yourusername/bleujs
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: blue
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+  - Machine Learning:
+    - Overview: machine-learning/overview.md
+    - Classical ML: machine-learning/classical.md
+    - Quantum ML: machine-learning/quantum.md
+    - Hybrid Approaches: machine-learning/hybrid.md
+    - Performance Optimization: machine-learning/optimization.md
+  - Operations:
+    - Overview: operations/overview.md
+    - Process Analysis: operations/process-analysis.md
+    - Automation: operations/automation.md
+    - Resource Optimization: operations/resource-optimization.md
+    - Case Studies: operations/case-studies.md
+  - Computer Vision:
+    - Overview: computer-vision/overview.md
+    - Image Processing: computer-vision/processing.md
+    - Object Detection: computer-vision/detection.md
+    - Segmentation: computer-vision/segmentation.md
+  - User Guide:
+    - Basic Usage: user-guide/basic-usage.md
+    - Advanced Features: user-guide/advanced-features.md
+    - Machine Learning: user-guide/machine-learning.md
+    - API Reference: user-guide/api-reference.md
+    - Getting Started: user-guide/getting-started.md
+    - Installation: user-guide/installation.md
+    - Configuration: user-guide/configuration.md
+    - Best Practices: user-guide/best-practices.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Architecture: development/architecture.md
+    - Testing: development/testing.md
+    - Performance: development/performance.md
+  - API Documentation:
+    - Backend API: api/backend.md
+    - Python API: api/python.md
+    - JavaScript API: api/javascript.md
+    - ML Models: api/ml-models.md
+    - Vision Models: api/vision-models.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+            show_if_no_docstring: true
+  - git-revision-date-localized:
+      type: timeago
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername/bleujs
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/bleujs/
+    - icon: fontawesome/brands/npm
+      link: https://www.npmjs.com/package/bleujs 

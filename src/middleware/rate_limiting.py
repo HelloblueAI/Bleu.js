@@ -1,63 +1,107 @@
-from typing import Callable
+"""Rate limiting middleware module."""
 
-from fastapi import Request, Response
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.types import ASGIApp
+from typing import Optional
 
-from src.services.rate_limiting_service import rate_limiter
+from fastapi import FastAPI, HTTPException, Request
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.responses import Response
+
+from src.services.rate_limiting import RateLimitingService
 
 
 class RateLimitingMiddleware(BaseHTTPMiddleware):
-    """Middleware to apply rate limiting to routes."""
+    """Middleware for rate limiting requests."""
 
     def __init__(
         self,
-        app: ASGIApp,
-        exempt_paths: list[str] = None,
-        exempt_methods: list[str] = None,
-    ):
-        super().__init__(app)
-        self.exempt_paths = exempt_paths or []
-        self.exempt_methods = exempt_methods or ["OPTIONS"]
+        app: FastAPI,
+        rate_limiting_service: RateLimitingService,
+        max_requests: int = 100,
+        window_seconds: int = 60,
+        exclude_paths: Optional[list[str]] = None,
+    ) -> None:
+        """Initialize rate limiting middleware.
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        # Skip rate limiting for exempt paths and methods
-        if (
-            request.url.path in self.exempt_paths
-            or request.method in self.exempt_methods
-        ):
+        Args:
+            app: FastAPI application
+            rate_limiting_service: Rate limiting service
+            max_requests: Maximum number of requests per window (default: 100)
+            window_seconds: Window size in seconds (default: 60)
+            exclude_paths: List of paths to exclude from rate limiting (optional)
+        """
+        super().__init__(app)
+        self.rate_limiting_service = rate_limiting_service
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self.exclude_paths = exclude_paths or []
+
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
+        """Process request through rate limiting middleware.
+
+        Args:
+            request: Request object
+            call_next: Next middleware/endpoint in chain
+
+        Returns:
+            Response: Response object
+
+        Raises:
+            HTTPException: If rate limit is exceeded
+        """
+        # Skip rate limiting for excluded paths
+        if any(request.url.path.startswith(path) for path in self.exclude_paths):
             return await call_next(request)
 
-        # Get user ID from request (you may need to adjust this based on your auth setup)
-        user_id = request.headers.get("X-User-ID", "anonymous")
+        # Get client identifier (IP address or API key)
+        client_id = self._get_client_id(request)
 
-        # Get subscription plan from request (you may need to adjust this based on your auth setup)
-        plan = request.headers.get("X-Subscription-Plan", "free")
+        # Check rate limit
+        if not await self.rate_limiting_service.check_rate_limit(
+            client_id=client_id,
+            max_requests=self.max_requests,
+            window_seconds=self.window_seconds,
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail="Rate limit exceeded. Please try again later.",
+            )
 
-        try:
-            # Check rate limit
-            await rate_limiter.check_rate_limit(user_id, plan)
+        # Process request
+        response = await call_next(request)
 
-            # Process request
-            response = await call_next(request)
+        # Add rate limit headers
+        remaining = await self.rate_limiting_service.get_remaining_requests(
+            client_id=client_id,
+            max_requests=self.max_requests,
+            window_seconds=self.window_seconds,
+        )
+        reset_time = await self.rate_limiting_service.get_window_reset_time(
+            client_id=client_id,
+            window_seconds=self.window_seconds,
+        )
 
-            # Add rate limit headers to response
-            status = await rate_limiter.get_rate_limit_status(user_id)
-            response.headers["X-RateLimit-Limit"] = str(status["remaining"])
-            response.headers["X-RateLimit-Reset"] = str(int(status["reset"]))
+        response.headers["X-RateLimit-Limit"] = str(self.max_requests)
+        response.headers["X-RateLimit-Remaining"] = str(remaining)
+        response.headers["X-RateLimit-Reset"] = str(reset_time)
 
-            return response
+        return response
 
-        except Exception as e:
-            # If rate limit is exceeded, return 429
-            if hasattr(e, "status_code") and e.status_code == 429:
-                return Response(
-                    content="Rate limit exceeded",
-                    status_code=429,
-                    headers={
-                        "Retry-After": "60",
-                        "X-RateLimit-Limit": "0",
-                        "X-RateLimit-Reset": "60",
-                    },
-                )
-            raise
+    def _get_client_id(self, request: Request) -> str:
+        """Get client identifier from request.
+
+        Args:
+            request: Request object
+
+        Returns:
+            str: Client identifier
+        """
+        # Try to get API key from header
+        api_key = request.headers.get("X-API-Key")
+        if api_key:
+            return f"api_key:{api_key}"
+
+        # Fall back to client IP
+        client_ip = request.client.host if request.client else "unknown"
+        return f"ip:{client_ip}"

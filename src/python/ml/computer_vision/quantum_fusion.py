@@ -189,6 +189,10 @@ class QuantumFusion:
                 projected = self.fusion_layers[i](feature)
                 projected_features.append(projected)
 
+            if not projected_features:
+                # If no projection layers, use original features
+                projected_features = features
+
             # Apply quantum fusion
             quantum_layer = self.fusion_layers[-2]  # Second to last layer
             fused = quantum_layer(projected_features)
@@ -402,14 +406,19 @@ class QuantumFusionLayer(torch.nn.Module):
             quantum_state = self.quantum_fusion._prepare_quantum_state(feature)
             # Apply quantum circuit
             enhanced_state = torch.tensor(quantum_state, dtype=torch.float32)
+            # Ensure enhanced_state is 2D [batch_size, state_size]
+            if enhanced_state.dim() == 1:
+                enhanced_state = enhanced_state.unsqueeze(0)
             # Project to fusion dimension
             projected_state = self.projection(enhanced_state)
             # Weight the enhanced state
-            weighted_state = projected_state * self.fusion_weights[
-                i : i + 1, :
-            ].expand_as(projected_state)
+            weighted_state = projected_state * self.fusion_weights[i : i + 1, :]
             quantum_features.append(weighted_state)
 
         # Combine quantum features
-        fused = sum(quantum_features)
+        if not quantum_features:
+            raise ValueError("No quantum features were generated")
+
+        # Stack and sum the features
+        fused = torch.stack(quantum_features, dim=0).sum(dim=0)
         return fused

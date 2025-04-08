@@ -11,7 +11,7 @@ sys.path.insert(0, src_path)
 from tests.config import (
     db_session,
     engine,
-    settings,
+    test_settings as settings,
     test_api_token,
     test_rate_limit,
     test_subscription,

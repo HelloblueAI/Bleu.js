@@ -1,22 +1,33 @@
+"""Authentication middleware tests."""
+
 from datetime import datetime, timedelta, timezone
 
 import jwt
 import pytest
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.testclient import TestClient
+from fastapi.security import HTTPAuthorizationCredentials
 
-from src.python.backend.middleware.auth import AuthMiddleware, get_current_user
-from src.python.backend.models.user import User
+from src.config import settings
+from src.middleware.auth import AuthMiddleware, get_current_user
+from src.models.user import User
+from src.services.user_service import UserService
 
-# Test secret key and test user
-TEST_SECRET_KEY = "test-secret-key"
-TEST_USER = User(id=1, email="test@example.com", is_active=True, is_superuser=False)
+# Test user
+TEST_USER = User(
+    id=1,
+    email="test@example.com",
+    username="testuser",
+    hashed_password="hashed_password",
+    is_active=True,
+    is_superuser=False,
+)
 
 
 @pytest.fixture
 def app():
+    """Create test FastAPI application."""
     app = FastAPI()
-    app.add_middleware(AuthMiddleware, secret_key=TEST_SECRET_KEY)
 
     @app.get("/protected")
     async def protected_route(current_user: User = Depends(get_current_user)):
@@ -27,7 +38,34 @@ def app():
 
 @pytest.fixture
 def client(app):
+    """Create test client."""
     return TestClient(app)
+
+
+@pytest.fixture
+def user_service(db_session):
+    """Create test user service."""
+    return UserService(db_session)
+
+
+@pytest.fixture
+def auth_middleware(user_service):
+    """Create test auth middleware."""
+    return AuthMiddleware(user_service)
+
+
+@pytest.fixture
+def test_user(db_session):
+    """Create test user."""
+    user = User(
+        email="test@example.com",
+        username="testuser",
+        hashed_password="hashed_password",
+        is_active=True,
+    )
+    db_session.add(user)
+    db_session.commit()
+    return user
 
 
 def create_test_token(user: User, expires_delta: timedelta = None):
@@ -37,8 +75,8 @@ def create_test_token(user: User, expires_delta: timedelta = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
 
-    to_encode = {"sub": str(user.id), "email": user.email, "exp": expire}
-    return jwt.encode(to_encode, TEST_SECRET_KEY, algorithm="HS256")
+    to_encode = {"sub": str(user.id), "exp": expire}
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
 def test_protected_route_with_valid_token(client):
@@ -54,7 +92,7 @@ def test_protected_route_without_token(client):
     """Test access to protected route without token."""
     response = client.get("/protected")
     assert response.status_code == 401
-    assert "Not authenticated" in response.text
+    assert "Could not validate credentials" in response.text
 
 
 def test_protected_route_with_invalid_token(client):
@@ -63,7 +101,7 @@ def test_protected_route_with_invalid_token(client):
         "/protected", headers={"Authorization": "Bearer invalid-token"}
     )
     assert response.status_code == 401
-    assert "Invalid token" in response.text
+    assert "Could not validate credentials" in response.text
 
 
 def test_protected_route_with_expired_token(client):
@@ -72,15 +110,79 @@ def test_protected_route_with_expired_token(client):
     token = create_test_token(TEST_USER, expires_delta=timedelta(seconds=-1))
     response = client.get("/protected", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 401
-    assert "Token has expired" in response.text
+    assert "Could not validate credentials" in response.text
 
 
 def test_protected_route_with_inactive_user(client):
     """Test access to protected route with inactive user."""
     inactive_user = User(
-        id=2, email="inactive@example.com", is_active=False, is_superuser=False
+        id=2,
+        email="inactive@example.com",
+        username="inactive",
+        hashed_password="hashed_password",
+        is_active=False,
+        is_superuser=False,
     )
     token = create_test_token(inactive_user)
     response = client.get("/protected", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 401
-    assert "Inactive user" in response.text
+    assert "Could not validate credentials" in response.text
+
+
+@pytest.mark.asyncio
+async def test_auth_middleware_valid_token(auth_middleware, test_user):
+    """Test auth middleware with valid token."""
+    # Create valid token
+    token = create_test_token(test_user)
+    credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+
+    # Call middleware
+    user = await auth_middleware(None, credentials)
+
+    assert user.id == test_user.id
+    assert user.email == test_user.email
+
+
+@pytest.mark.asyncio
+async def test_auth_middleware_invalid_token(auth_middleware):
+    """Test auth middleware with invalid token."""
+    # Create invalid token
+    token = "invalid_token"
+    credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+
+    # Call middleware
+    with pytest.raises(HTTPException) as exc_info:
+        await auth_middleware(None, credentials)
+
+    assert exc_info.value.status_code == 401
+    assert "Could not validate credentials" in str(exc_info.value.detail)
+
+
+@pytest.mark.asyncio
+async def test_auth_middleware_missing_token(auth_middleware):
+    """Test auth middleware with missing token."""
+    # Call middleware without token
+    with pytest.raises(HTTPException) as exc_info:
+        await auth_middleware(None, None)
+
+    assert exc_info.value.status_code == 401
+    assert "Could not validate credentials" in str(exc_info.value.detail)
+
+
+@pytest.mark.asyncio
+async def test_auth_middleware_inactive_user(auth_middleware, test_user, db_session):
+    """Test auth middleware with inactive user."""
+    # Deactivate user
+    test_user.is_active = False
+    db_session.commit()
+
+    # Create token
+    token = create_test_token(test_user)
+    credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+
+    # Call middleware
+    with pytest.raises(HTTPException) as exc_info:
+        await auth_middleware(None, credentials)
+
+    assert exc_info.value.status_code == 401
+    assert "Inactive user" in str(exc_info.value.detail)

@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi import HTTPException
@@ -58,8 +58,8 @@ async def test_validate_token_expired(db_session, test_user):
         name="Expired Token",
         token="expired-token-value",
         is_active=True,
-        created_at=datetime.now(UTC) - timedelta(days=31),
-        expires_at=datetime.now(UTC) - timedelta(days=1),
+        created_at=datetime.now(timezone.utc) - timedelta(days=31),
+        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
     )
     db_session.add(expired_token)
     db_session.commit()
@@ -118,7 +118,7 @@ async def test_validate_token_with_subscription(
 ):
     """Test token validation with subscription."""
     token_data = APITokenCreate(
-        name="Test Token", expires_at=datetime.now(UTC) + timedelta(days=30)
+        name="Test Token", expires_at=datetime.now(timezone.utc) + timedelta(days=30)
     )
 
     token = await APITokenService.create_token(
@@ -173,7 +173,7 @@ async def test_validate_token_after_rate_limit_reset(
     if rate_limit is None:
         raise ValueError("Rate limit not found")
     rate_limit.calls_count = test_subscription.plan.api_calls_limit
-    rate_limit.last_reset = datetime.now(UTC) - timedelta(minutes=2)
+    rate_limit.last_reset = datetime.now(timezone.utc) - timedelta(minutes=2)
     db.commit()
 
     # Try to validate token (should work after reset)

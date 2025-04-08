@@ -1,183 +1,111 @@
-from datetime import datetime, timezone
-from typing import Dict, List
+"""Subscription routes module."""
+
+from datetime import datetime, timedelta, timezone
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from src.config import settings
 from src.database import get_db
-from src.models.subscription import (
-    PlanType,
-    Subscription,
+from src.middleware.auth import get_current_user
+from src.models.subscription import Subscription
+from src.models.user import User
+from src.schemas.subscription import (
     SubscriptionCreate,
-    SubscriptionPlan,
-    SubscriptionPlanCreate,
-    SubscriptionPlanResponse,
     SubscriptionResponse,
+    SubscriptionUpdate,
 )
-from src.models.user import User, UserResponse
-from src.services import init_services
-from src.services.auth_service import auth_service
 from src.services.subscription_service import SubscriptionService
+from src.services.stripe_service import StripeService
 
-# Error messages
-PLAN_NOT_FOUND = "Plan not found"
-NO_ACTIVE_SUBSCRIPTION = "No active subscription found"
-
-router = APIRouter()
+router = APIRouter(prefix="/subscriptions", tags=["subscriptions"])
 
 
-@router.get("/plans", response_model=List[Dict])
-async def get_subscription_plans(db: Session = Depends(get_db)):
-    """Get available subscription plans."""
-    services = init_services(db)
-    return await services["subscription_service"].get_subscription_plans()
-
-
-@router.post("/plans", response_model=SubscriptionPlanResponse)
-async def create_plan(
-    plan: SubscriptionPlanCreate,
+@router.post("/", response_model=SubscriptionResponse)
+def create_subscription(
+    subscription_data: SubscriptionCreate,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Create a new subscription plan."""
-    services = init_services(db)
-    return await services["subscription_service"].create_plan(plan, db)
-
-
-@router.post("/subscribe", response_model=SubscriptionResponse)
-async def create_subscription(
-    subscription: SubscriptionCreate,
-    db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
+) -> Subscription:
     """Create a new subscription."""
-    services = init_services(db)
-    return await services["subscription_service"].create_subscription(
-        current_user, subscription.plan_id, db
-    )
+    subscription_service = SubscriptionService(db, StripeService())
+    return subscription_service.create_subscription(current_user.id, subscription_data)
 
 
-@router.get("/current", response_model=SubscriptionResponse)
-async def get_current_subscription(
+@router.get("/", response_model=List[SubscriptionResponse])
+def get_subscriptions(
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Get current user's subscription."""
-    services = init_services(db)
-    return await services["subscription_service"].get_user_subscription(
-        current_user.id, db
-    )
+) -> List[Subscription]:
+    """Get all subscriptions for the current user."""
+    subscription_service = SubscriptionService(db, StripeService())
+    return subscription_service.get_user_subscriptions(current_user.id)
 
 
-@router.post("/cancel", response_model=SubscriptionResponse)
-async def cancel_subscription(
+@router.get("/active", response_model=SubscriptionResponse)
+def get_active_subscription(
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Cancel current subscription."""
-    services = init_services(db)
-    subscription = await services["subscription_service"].get_user_subscription(
-        current_user.id, db
-    )
+) -> Subscription:
+    """Get the active subscription for the current user."""
+    subscription_service = SubscriptionService(db, StripeService())
+    subscription = subscription_service.get_active_subscription(current_user.id)
     if not subscription:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No active subscription found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No active subscription found",
         )
-    return await services["subscription_service"].update_subscription_status(
-        subscription.id, "cancelled", db
-    )
+    return subscription
 
 
-@router.post("/checkout")
-async def create_checkout_session(
-    plan: str,
+@router.get("/{subscription_id}", response_model=SubscriptionResponse)
+def get_subscription(
+    subscription_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Create a Stripe checkout session for subscription."""
-    services = init_services(db)
-    return await services["subscription_service"].create_checkout_session(plan)
+) -> Subscription:
+    """Get a subscription by ID."""
+    subscription_service = SubscriptionService(db, StripeService())
+    subscription = subscription_service.get_subscription(subscription_id)
+    if not subscription or subscription.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Subscription not found",
+        )
+    return subscription
 
 
-@router.post("/payment-link")
-async def create_payment_link(
-    plan: str,
+@router.put("/{subscription_id}", response_model=SubscriptionResponse)
+def update_subscription(
+    subscription_id: int,
+    subscription_data: SubscriptionUpdate,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Create a Stripe payment link for subscription."""
-    services = init_services(db)
-    return await services["subscription_service"].create_payment_link(plan)
-
-
-@router.get("/plans/{plan_type}", response_model=SubscriptionPlanResponse)
-async def get_plan_by_type(plan_type: PlanType, db: Session = Depends(get_db)):
-    """Get a subscription plan by type."""
-    services = init_services(db)
-    plan = await services["subscription_service"].get_plan_by_type(plan_type, db)
-    if not plan:
+) -> Subscription:
+    """Update a subscription."""
+    subscription_service = SubscriptionService(db, StripeService())
+    subscription = subscription_service.get_subscription(subscription_id)
+    if not subscription or subscription.user_id != current_user.id:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Subscription not found",
         )
-    return plan
+    return subscription_service.update_subscription(subscription_id, subscription_data)
 
 
-@router.get("/subscription/usage", response_model=dict)
-async def get_subscription_usage(
+@router.delete("/{subscription_id}", response_model=SubscriptionResponse)
+def cancel_subscription(
+    subscription_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(auth_service.get_current_user),
-):
-    """Get the current user's subscription usage."""
-    services = init_services(db)
-    subscription = await services["subscription_service"].get_user_subscription(
-        current_user.id, db
-    )
-    if not subscription:
+) -> Subscription:
+    """Cancel a subscription."""
+    subscription_service = SubscriptionService(db, StripeService())
+    subscription = subscription_service.get_subscription(subscription_id)
+    if not subscription or subscription.user_id != current_user.id:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=NO_ACTIVE_SUBSCRIPTION
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Subscription not found",
         )
-
-    plan = await services["subscription_service"].get_plan(subscription.plan_id, db)
-    if not plan:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=PLAN_NOT_FOUND
-        )
-
-    return {
-        "api_calls_remaining": subscription.api_calls_remaining,
-        "api_calls_limit": plan.api_calls_limit,
-        "rate_limit": plan.rate_limit,
-        "current_period_end": subscription.current_period_end,
-    }
-
-
-@router.get("/api/subscription/usage")
-async def get_subscription_usage(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(auth_service.get_current_user),
-):
-    """Get the current user's subscription usage data for the dashboard."""
-    subscription_service = SubscriptionService(db)
-
-    # Get user's subscription
-    subscription = await subscription_service.get_user_subscription(current_user.id)
-    if not subscription:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No active subscription found"
-        )
-
-    # Get plan details
-    plan = await subscription_service.get_plan(subscription.plan_id)
-    if not plan:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Subscription plan not found"
-        )
-
-    return {
-        "api_calls_remaining": subscription.api_calls_remaining,
-        "api_calls_limit": plan.api_calls_limit,
-        "rate_limit": plan.rate_limit,
-        "current_period_end": subscription.current_period_end.isoformat(),
-        "plan_type": plan.plan_type,
-        "features": plan.features,
-    }
+    return subscription_service.cancel_subscription(subscription_id)

@@ -1,6 +1,5 @@
 import logging
 import os
-from dataclasses import dataclass
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
@@ -11,9 +10,9 @@ from fastapi.templating import Jinja2Templates
 
 from src.config import get_settings
 from src.database import init_db
+from src.quantum_py.core.quantum_processor import ProcessorConfig, QuantumProcessor
 from src.routes import api_tokens, auth, subscription
 from tests.test_config import get_test_settings
-from src.quantum_py.core.quantum_processor import QuantumProcessor, ProcessorConfig
 
 # Constants
 API_V1_PREFIX = "/api/v1"
@@ -33,12 +32,15 @@ QUANTUM_CONFIG = ProcessorConfig(
     max_depth=1000,
     optimization_level=1,
     use_error_correction=True,
-    noise_model="depolarizing"
+    noise_model="depolarizing",
 )
 
 app = FastAPI(
     title="Bleu.js API",
-    description="A state-of-the-art quantum-enhanced vision system with advanced AI capabilities",
+    description=(
+        "A state-of-the-art quantum-enhanced vision system "
+        "with advanced AI capabilities"
+    ),
     version="1.1.3",
 )
 

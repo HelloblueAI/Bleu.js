@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi import HTTPException
@@ -19,7 +19,7 @@ async def test_generate_token():
 async def test_create_token(db_session, test_user, test_subscription):
     """Test creating a new API token."""
     token_data = APITokenCreate(
-        name="Test Token", expires_at=datetime.now(UTC) + timedelta(days=30)
+        name="Test Token", expires_at=datetime.now(timezone.utc) + timedelta(days=30)
     )
 
     token = await APITokenService.create_token(
@@ -36,7 +36,7 @@ async def test_create_token(db_session, test_user, test_subscription):
 async def test_create_token_without_subscription(db_session, test_user):
     """Test creating a token without an active subscription."""
     token_data = APITokenCreate(
-        name="Test Token", expires_at=datetime.now(UTC) + timedelta(days=30)
+        name="Test Token", expires_at=datetime.now(timezone.utc) + timedelta(days=30)
     )
 
     with pytest.raises(HTTPException) as exc_info:
@@ -104,8 +104,8 @@ async def test_validate_expired_token(db_session, test_user):
         name="Expired Token",
         token="expired-token-value",
         is_active=True,
-        created_at=datetime.now(UTC) - timedelta(days=31),
-        expires_at=datetime.now(UTC) - timedelta(days=1),
+        created_at=datetime.now(timezone.utc) - timedelta(days=31),
+        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
     )
     db_session.add(expired_token)
     db_session.commit()

@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import time
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
 import aiohttp
@@ -61,7 +61,7 @@ class APIService:
 
     async def check_rate_limit(self, user: User) -> bool:
         """Check if user has exceeded rate limit"""
-        current_time = datetime.utcnow()
+        current_time = datetime.now(timezone.utc)
         recent_calls = (
             self.db.query(APICall)
             .filter(
@@ -109,7 +109,7 @@ class APIService:
             endpoint=endpoint,
             response_time=response_time,
             status=status,
-            timestamp=datetime.now(UTC),
+            timestamp=datetime.now(timezone.utc),
         )
         self.db.add(api_call)
 
@@ -126,7 +126,7 @@ class APIService:
 
         if not monthly_usage:
             monthly_usage = APIUsage(
-                user_id=user.id, calls_count=0, timestamp=datetime.now(UTC)
+                user_id=user.id, calls_count=0, timestamp=datetime.now(timezone.utc)
             )
             self.db.add(monthly_usage)
 
@@ -281,7 +281,7 @@ class APIService:
             "system_metrics": system_metrics,
             "database_health": db_health,
             "quantum_service_health": quantum_health,
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
     async def optimize_api_performance(self) -> Dict:
@@ -289,7 +289,7 @@ class APIService:
         # Get recent API calls
         recent_calls = (
             self.db.query(APICall)
-            .filter(APICall.timestamp >= datetime.now(UTC) - timedelta(hours=24))
+            .filter(APICall.timestamp >= datetime.now(timezone.utc) - timedelta(hours=24))
             .all()
         )
 
@@ -336,5 +336,5 @@ class APIService:
             "average_response_time": avg_response_time,
             "slow_endpoints": slow_endpoints,
             "recommendations": recommendations,
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }

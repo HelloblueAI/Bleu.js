@@ -28,11 +28,11 @@ class QuantumVisionConfig:
     use_fusion: bool = True
     use_quantum_loss: bool = True
     num_heads: int = 8
-    fusion_dims: List[int] = None
+    fusion_dims: Optional[List[int]] = None
     temperature: float = 0.1
     # Advanced features
     use_multi_scale: bool = True
-    scale_factors: List[float] = None
+    scale_factors: Optional[List[float]] = None
     use_adaptive_circuits: bool = True
     use_quantum_regularization: bool = True
     use_entanglement: bool = True
@@ -45,6 +45,8 @@ class QuantumVisionConfig:
 
 class QuantumVisionModel:
     """Advanced quantum-enhanced vision model with state-of-the-art features."""
+
+    MODEL_NOT_BUILT_ERROR = "Model not built"
 
     def __init__(self, config: Optional[QuantumVisionConfig] = None):
         self.config = config or QuantumVisionConfig()
@@ -153,7 +155,8 @@ class QuantumVisionModel:
     def _multi_scale_processing(self, inputs: tf.Tensor) -> tf.Tensor:
         """Process input at multiple scales for better feature extraction."""
         features = []
-        for scale in self.config.scale_factors:
+        scale_factors = self.config.scale_factors or [1.0]  # Default to single scale if None
+        for scale in scale_factors:
             # Resize input
             scaled_input = tf.image.resize(
                 inputs,
@@ -268,7 +271,7 @@ class QuantumVisionModel:
     ) -> tf.keras.callbacks.History:
         """Train the quantum-enhanced vision model."""
         if self.model is None:
-            raise RuntimeError("Model not built")
+            raise RuntimeError(self.MODEL_NOT_BUILT_ERROR)
 
         try:
             # Default callbacks
@@ -308,7 +311,7 @@ class QuantumVisionModel:
     def predict(self, inputs: np.ndarray) -> Dict[str, np.ndarray]:
         """Make predictions with the quantum-enhanced vision model."""
         if self.model is None:
-            raise RuntimeError("Model not built")
+            raise RuntimeError(self.MODEL_NOT_BUILT_ERROR)
 
         try:
             return self.model.predict(inputs)
@@ -320,7 +323,7 @@ class QuantumVisionModel:
     def save(self, filepath: str) -> None:
         """Save the quantum-enhanced vision model."""
         if self.model is None:
-            raise RuntimeError("Model not built")
+            raise RuntimeError(self.MODEL_NOT_BUILT_ERROR)
 
         try:
             self.model.save(filepath)
