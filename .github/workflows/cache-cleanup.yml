@@ -18,33 +18,45 @@ jobs:
           
           echo "Fetching list of cache keys..."
           
-          # Get all cache keys
-          caches=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1)
-          
-          # Define critical cache patterns to preserve
-          declare -A retention_rules=(
-            ["pip"]="14"           # Keep pip caches for 14 days
-            ["pnpm"]="14"          # Keep pnpm caches for 14 days
-            ["build"]="3"          # Keep build caches for 3 days
-            ["poetry"]="14"        # Keep poetry caches for 14 days
-            ["quantum"]="7"        # Keep quantum test caches for 7 days
-            ["ml"]="7"            # Keep ML test caches for 7 days
-          )
-          
-          echo "Applying intelligent cache cleanup rules..."
-          for cacheKey in $caches
-          do
-            # Get cache details
-            cache_info=$(gh actions-cache list -R $REPO -B $BRANCH | grep $cacheKey)
-            createdAt=$(echo $cache_info | cut -f 3)
-            size=$(echo $cache_info | cut -f 2)
-            age=$(( ( $(date +%s) - $(date -d "$createdAt" +%s) ) / 86400 ))
+          # Get all cache keys and their details
+          gh actions-cache list -R $REPO -B $BRANCH | while read -r line; do
+            # Parse cache details
+            cacheKey=$(echo "$line" | awk '{print $1}')
+            size=$(echo "$line" | awk '{print $2, $3}')
+            created_time=$(echo "$line" | grep -oP '\d+ \w+ ago')
             
-            # Convert size to MB for easier comparison
-            size_mb=$(echo $size | sed 's/MB//' | sed 's/GB/*1024/' | bc)
+            # Convert time to days
+            days_old=0
+            if [[ $created_time =~ ([0-9]+)[[:space:]]+(hour|hours|day|days|week|weeks|month|months)[[:space:]]+ago ]]; then
+              number=${BASH_REMATCH[1]}
+              unit=${BASH_REMATCH[2]}
+              case $unit in
+                hour|hours)
+                  days_old=$(echo "scale=2; $number/24" | bc)
+                  ;;
+                day|days)
+                  days_old=$number
+                  ;;
+                week|weeks)
+                  days_old=$(echo "$number * 7" | bc)
+                  ;;
+                month|months)
+                  days_old=$(echo "$number * 30" | bc)
+                  ;;
+              esac
+            fi
             
-            # Initialize delete_cache flag
-            delete_cache=false
+            # Define critical cache patterns to preserve
+            declare -A retention_rules=(
+              ["pip"]="14"           # Keep pip caches for 14 days
+              ["pnpm"]="14"          # Keep pnpm caches for 14 days
+              ["build"]="3"          # Keep build caches for 3 days
+              ["poetry"]="14"        # Keep poetry caches for 14 days
+              ["quantum"]="7"        # Keep quantum test caches for 7 days
+              ["ml"]="7"            # Keep ML test caches for 7 days
+            )
+            
+            # Initialize retention period
             retention_days=7  # Default retention period
             
             # Check for specific cache types and apply retention rules
@@ -55,24 +67,27 @@ jobs:
               fi
             done
             
+            # Convert size to MB for comparison
+            size_mb=$(echo "$size" | sed -E 's/([0-9.]+) *([GM])B/\1 \2/' | awk '{if($2=="G") print $1*1024; else print $1}')
+            
             # Special rules for large caches
             if [ $(echo "$size_mb > 1024" | bc -l) -eq 1 ]; then  # Larger than 1GB
               retention_days=3  # Keep large caches for shorter time
             fi
             
             # Exclude critical recent caches
-            if [[ $cacheKey == *"${{ env.CACHE_KEY_PREFIX }}"* ]] && [ $age -lt 2 ]; then
-              continue  # Skip current cache prefix and very recent caches
+            if [[ $cacheKey == *"Linux-v1"* ]] && [ $(echo "$days_old < 2" | bc -l) -eq 1 ]; then
+              echo "Keeping recent cache: $cacheKey (Age: $days_old days, Size: $size)"
+              continue
             fi
             
             # Apply retention rules
-            if [ $age -gt $retention_days ]; then
-              echo "Deleting cache key: $cacheKey (Age: $age days, Size: $size, Retention: $retention_days days)"
+            if [ $(echo "$days_old > $retention_days" | bc -l) -eq 1 ]; then
+              echo "Deleting cache key: $cacheKey (Age: $days_old days, Size: $size, Retention: $retention_days days)"
               gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
             else
-              echo "Keeping cache key: $cacheKey (Age: $age days, Size: $size, Retention: $retention_days days)"
+              echo "Keeping cache key: $cacheKey (Age: $days_old days, Size: $size, Retention: $retention_days days)"
             fi
           done
         env:
-          GH_TOKEN: ${{ github.token }}
-          CACHE_KEY_PREFIX: ${{ env.CACHE_KEY_PREFIX }} 
+          GH_TOKEN: ${{ github.token }} 
