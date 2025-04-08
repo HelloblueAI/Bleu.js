@@ -136,4 +136,4 @@ class RateLimitingService:
         """
         # Calculate window start time
         window_start = int(time.time() / window_seconds) * window_seconds
-        return f"rate_limit:{client_id}:{window_start}" 
+        return f"rate_limit:{client_id}:{window_start}"

@@ -232,4 +232,4 @@ class MLPipeline:
             pipeline.scaler = joblib.load(scaler_path)
 
         pipeline.is_trained = True
-        return pipeline 
+        return pipeline

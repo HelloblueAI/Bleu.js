@@ -155,7 +155,9 @@ class QuantumVisionModel:
     def _multi_scale_processing(self, inputs: tf.Tensor) -> tf.Tensor:
         """Process input at multiple scales for better feature extraction."""
         features = []
-        scale_factors = self.config.scale_factors or [1.0]  # Default to single scale if None
+        scale_factors = self.config.scale_factors or [
+            1.0
+        ]  # Default to single scale if None
         for scale in scale_factors:
             # Resize input
             scaled_input = tf.image.resize(

@@ -220,7 +220,9 @@ class MonitoringService:
                 # Reset usage counter if needed
                 if datetime.now(timezone.utc) >= usage_data["reset_date"]:
                     usage_data["current"] = 0
-                    usage_data["reset_date"] = datetime.now(timezone.utc) + timedelta(days=30)
+                    usage_data["reset_date"] = datetime.now(timezone.utc) + timedelta(
+                        days=30
+                    )
 
         except Exception as e:
             logger.error(f"Error recording API call: {str(e)}")

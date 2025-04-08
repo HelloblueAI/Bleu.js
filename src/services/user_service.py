@@ -42,9 +42,13 @@ class UserService:
     def create_user(self, user_data: UserCreate) -> User:
         """Create a new user."""
         # Check if user already exists
-        existing_user = self.db.query(User).filter(
-            or_(User.email == user_data.email, User.username == user_data.username)
-        ).first()
+        existing_user = (
+            self.db.query(User)
+            .filter(
+                or_(User.email == user_data.email, User.username == user_data.username)
+            )
+            .first()
+        )
         if existing_user:
             raise HTTPException(status_code=400, detail="User already exists")
 
@@ -139,4 +143,4 @@ class UserService:
 
         expiry_days = 90  # Password expires after 90 days
         expiry_date = user.password_changed_at + timedelta(days=expiry_days)
-        return datetime.now(timezone.utc) > expiry_date 
+        return datetime.now(timezone.utc) > expiry_date

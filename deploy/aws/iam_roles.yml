@@ -34,8 +34,8 @@ Outputs:
     Description: ARN of the Bleu.js service role
     Value:
       Fn::GetAtt: [BleuJSServiceRole, Arn]
-  
+
   InstanceProfileArn:
     Description: ARN of the Bleu.js instance profile
     Value:
-      Fn::GetAtt: [BleuJSInstanceProfile, Arn] 
+      Fn::GetAtt: [BleuJSInstanceProfile, Arn]

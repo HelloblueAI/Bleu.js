@@ -19,4 +19,4 @@ aws cloudformation wait stack-create-complete \
     --stack-name ${STACK_NAME} \
     --region ${REGION}
 
-echo "IAM roles created successfully!" 
+echo "IAM roles created successfully!"

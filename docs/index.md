@@ -5,7 +5,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
 ## Core Features
 
 ### Machine Learning Integration
-- **Ensemble Learning**: 
+- **Ensemble Learning**:
   - XGBoost for high-performance gradient boosting
   - LightGBM for efficient large-scale prediction
   - CatBoost for advanced categorical feature handling
@@ -22,7 +22,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
 - **Quantum Feature Engineering**: Enhanced feature extraction using quantum algorithms
 
 ### Computer Vision Capabilities
-- **Advanced Image Processing**: 
+- **Advanced Image Processing**:
   - State-of-the-art preprocessing and enhancement
   - Multi-scale feature extraction
   - Real-time object tracking
@@ -40,19 +40,19 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
   - Time series pattern analysis
 
 ### System Architecture
-- **High Performance**: 
+- **High Performance**:
   - Optimized for classical, quantum, and hybrid hardware
   - GPU acceleration (CUDA, ROCm)
   - Quantum Processing Unit (QPU) support
-- **Distributed Processing**: 
+- **Distributed Processing**:
   - Cloud-ready architecture for scalable deployments
   - Distributed training support
   - Multi-GPU and multi-node capabilities
-- **Hardware Acceleration**: 
+- **Hardware Acceleration**:
   - CUDA optimization for NVIDIA GPUs
   - ROCm support for AMD GPUs
   - QPU optimization for quantum hardware
-- **Real-time Processing**: 
+- **Real-time Processing**:
   - Low-latency inference pipeline
   - Stream processing capabilities
   - Edge device optimization
@@ -182,7 +182,7 @@ async function processImage() {
     enhancementLevel: 'high',
     useQuantumAttention: true
   });
-  
+
   console.log(`Detection confidence: ${result.confidence}`);
   console.log(`Quantum advantage: ${result.quantumSpeedup}x`);
 }
@@ -208,17 +208,17 @@ async function processImage() {
   - Installation and setup
   - Basic configuration
   - Environment preparation
-  
+
 - **[User Guide](user-guide/basic-usage.md)**
   - Basic usage tutorials
   - Advanced configurations
   - Best practices
-  
+
 - **[API Reference](api/python.md)**
   - Python API documentation
   - JavaScript API documentation
   - Configuration options
-  
+
 - **[Development](development/contributing.md)**
   - Contributing guidelines
   - Architecture overview
@@ -242,4 +242,4 @@ Current version: 1.1.3
 
 ## License
 
-BleuJS is released under the MIT License. See the [LICENSE](https://github.com/yourusername/bleujs/blob/main/LICENSE) file for more details. 
+BleuJS is released under the MIT License. See the [LICENSE](https://github.com/yourusername/bleujs/blob/main/LICENSE) file for more details.

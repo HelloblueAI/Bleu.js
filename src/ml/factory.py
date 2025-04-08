@@ -4,17 +4,12 @@ from typing import Any, Dict, Optional, Type, Union
 
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import (
-    RandomForestClassifier,
-    RandomForestRegressor,
     GradientBoostingClassifier,
     GradientBoostingRegressor,
+    RandomForestClassifier,
+    RandomForestRegressor,
 )
-from sklearn.linear_model import (
-    LogisticRegression,
-    LinearRegression,
-    Ridge,
-    Lasso,
-)
+from sklearn.linear_model import Lasso, LinearRegression, LogisticRegression, Ridge
 from sklearn.svm import SVC, SVR
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
@@ -186,4 +181,4 @@ class ModelFactory:
                 "config": cls.DEFAULT_CONFIGS.get(model_type, {}),
             }
             for model_type, model_class in cls.MODEL_CLASSES.items()
-        } 
+        }

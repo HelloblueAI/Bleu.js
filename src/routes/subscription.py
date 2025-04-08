@@ -16,8 +16,8 @@ from src.schemas.subscription import (
     SubscriptionResponse,
     SubscriptionUpdate,
 )
-from src.services.subscription_service import SubscriptionService
 from src.services.stripe_service import StripeService
+from src.services.subscription_service import SubscriptionService
 
 router = APIRouter(prefix="/subscriptions", tags=["subscriptions"])
 

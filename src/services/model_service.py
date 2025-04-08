@@ -63,7 +63,9 @@ class ModelService:
             if optimization_method == "grid":
                 best_model, results = self.optimizer.grid_search(**optimization_params)
             elif optimization_method == "random":
-                best_model, results = self.optimizer.random_search(**optimization_params)
+                best_model, results = self.optimizer.random_search(
+                    **optimization_params
+                )
             else:
                 raise ValueError(
                     f"Invalid optimization method: {optimization_method}. "
@@ -206,4 +208,4 @@ class ModelService:
         model = joblib.load(filepath)
         service = cls(model)
         service.is_trained = True
-        return service 
+        return service

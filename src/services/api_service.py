@@ -289,7 +289,9 @@ class APIService:
         # Get recent API calls
         recent_calls = (
             self.db.query(APICall)
-            .filter(APICall.timestamp >= datetime.now(timezone.utc) - timedelta(hours=24))
+            .filter(
+                APICall.timestamp >= datetime.now(timezone.utc) - timedelta(hours=24)
+            )
             .all()
         )
 

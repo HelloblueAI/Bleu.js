@@ -44,4 +44,4 @@ Resources:
 Outputs:
   PublicIP:
     Description: Public IP of the instance
-    Value: !GetAtt BleujsInstance.PublicIp 
+    Value: !GetAtt BleujsInstance.PublicIp

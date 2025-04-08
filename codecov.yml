@@ -17,4 +17,4 @@ comment:
   require_head: yes
 
 github_checks:
-  annotations: true 
+  annotations: true

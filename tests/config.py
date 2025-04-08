@@ -1,8 +1,10 @@
+import os
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import List, Optional
 
 import pytest
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -15,37 +17,34 @@ from src.models.rate_limit import RateLimit
 from src.models.subscription import APIToken, PlanType, Subscription, SubscriptionPlan
 from src.models.user import User
 
-import os
-from dotenv import load_dotenv
-
 # Load environment variables
-load_dotenv('.env.test')
+load_dotenv(".env.test")
 
 # EC2 Configuration
-EC2_HOST = '44.245.223.189'
-EC2_USER = 'ec2-user'
-EC2_KEY_PATH = 'bleu-js-key.pem'
+EC2_HOST = "44.245.223.189"
+EC2_USER = "ec2-user"
+EC2_KEY_PATH = "bleu-js-key.pem"
 
 # API Gateway Configuration
-API_GATEWAY_URL = os.getenv('AWS_API_CONFIG_BASE_URL')
-TEST_API_KEY = os.getenv('TEST_API_KEY')
-ENTERPRISE_API_KEY = os.getenv('ENTERPRISE_TEST_API_KEY')
-AWS_REGION = os.getenv('AWS_REGION')
+API_GATEWAY_URL = os.getenv("AWS_API_CONFIG_BASE_URL")
+TEST_API_KEY = os.getenv("TEST_API_KEY")
+ENTERPRISE_API_KEY = os.getenv("ENTERPRISE_TEST_API_KEY")
+AWS_REGION = os.getenv("AWS_REGION")
 
 # SSH Commands
-SSH_BASE = f'ssh -i {EC2_KEY_PATH} {EC2_USER}@{EC2_HOST}'
-SCP_BASE = f'scp -i {EC2_KEY_PATH}'
+SSH_BASE = f"ssh -i {EC2_KEY_PATH} {EC2_USER}@{EC2_HOST}"
+SCP_BASE = f"scp -i {EC2_KEY_PATH}"
 
 # Service check commands
 SERVICE_COMMANDS = {
-    'cloudwatch': 'sudo systemctl status amazon-cloudwatch-agent',
-    'nginx': 'sudo systemctl status nginx'
+    "cloudwatch": "sudo systemctl status amazon-cloudwatch-agent",
+    "nginx": "sudo systemctl status nginx",
 }
 
 # Log paths
 LOG_PATHS = {
-    'cloudwatch': '/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log',
-    'cloud_init': '/var/log/cloud-init-output.log'
+    "cloudwatch": "/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log",
+    "cloud_init": "/var/log/cloud-init-output.log",
 }
 
 # Test configuration constants

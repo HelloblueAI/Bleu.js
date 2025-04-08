@@ -3,7 +3,16 @@
 import os
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, PostgresDsn, RedisDsn, SecretStr, field_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    EmailStr,
+    Field,
+    PostgresDsn,
+    RedisDsn,
+    SecretStr,
+    field_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
 
@@ -194,4 +203,4 @@ class Settings(BaseSettings):
         return f"postgresql://{user}:{password}@{host}:{port}/{db}"
 
 
-settings = Settings() 
+settings = Settings()

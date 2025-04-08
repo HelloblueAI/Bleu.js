@@ -307,10 +307,10 @@ class ExplainabilityEngine:
     async def _generate_static_visualizations(self, explanations: Dict) -> None:
         """Generate static visualizations."""
         os.makedirs("explanations", exist_ok=True)
-        
+
         if "feature_importance" in explanations:
             await self._generate_feature_importance_plot(explanations)
-            
+
         if "partial_dependence" in explanations:
             await self._generate_partial_dependence_plot(explanations)
 
@@ -354,7 +354,9 @@ class ExplainabilityEngine:
             and pd_results[1] is not None
         )
 
-    def _plot_pd_subplots(self, axes: np.ndarray, positions: List, values: List, total_features: int) -> None:
+    def _plot_pd_subplots(
+        self, axes: np.ndarray, positions: List, values: List, total_features: int
+    ) -> None:
         """Plot partial dependence subplots."""
         for i, (ax, pos, val) in enumerate(zip(axes.ravel(), positions, values)):
             if pos is None or val is None:

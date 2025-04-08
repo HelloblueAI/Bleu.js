@@ -81,7 +81,11 @@ active_subscriptions = Gauge(
 class SubscriptionService:
     """Service for managing API subscriptions and usage tracking."""
 
-    def __init__(self, db: Session = Depends(get_db), stripe_service: Optional[StripeService] = None):
+    def __init__(
+        self,
+        db: Session = Depends(get_db),
+        stripe_service: Optional[StripeService] = None,
+    ):
         self.db = db
         self.settings = settings
         self.stripe = stripe

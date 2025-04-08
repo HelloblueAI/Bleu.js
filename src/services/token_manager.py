@@ -203,4 +203,4 @@ class TokenManager:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        return user 
+        return user

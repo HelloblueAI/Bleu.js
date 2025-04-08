@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
 import joblib
 import numpy as np
@@ -9,18 +10,17 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import xgboost as xgb
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
-from sklearn.model_selection import KFold
-from sklearn.preprocessing import StandardScaler
-from torch.utils.data import DataLoader, TensorDataset
 from sklearn.base import BaseEstimator
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import (
     GridSearchCV,
+    KFold,
     RandomizedSearchCV,
     cross_val_score,
     train_test_split,
 )
-from typing import Any, Dict, List, Optional, Tuple
+from sklearn.preprocessing import StandardScaler
+from torch.utils.data import DataLoader, TensorDataset
 
 from src.ml.metrics import PerformanceMetrics
 
@@ -395,14 +395,17 @@ class HyperparameterOptimizer:
         """
         # Default scoring metrics
         if scoring is None:
-            scoring = ["accuracy", "precision_weighted", "recall_weighted", "f1_weighted"]
+            scoring = [
+                "accuracy",
+                "precision_weighted",
+                "recall_weighted",
+                "f1_weighted",
+            ]
 
         # Perform cross-validation
         cv_scores = {}
         for metric in scoring:
-            scores = cross_val_score(
-                model, self.X, self.y, cv=cv, scoring=metric
-            )
+            scores = cross_val_score(model, self.X, self.y, cv=cv, scoring=metric)
             cv_scores[metric] = scores.tolist()
 
         return cv_scores

@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 import jwt
 import pytest
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.testclient import TestClient
 from fastapi.security import HTTPAuthorizationCredentials
+from fastapi.testclient import TestClient
 
 from src.config import settings
 from src.middleware.auth import AuthMiddleware, get_current_user

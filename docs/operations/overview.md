@@ -169,14 +169,14 @@ config = OperationsConfig(
 2. **Initial Setup**
    ```python
    from bleujs.operations import OperationsManager
-   
+
    # Initialize operations manager
    manager = OperationsManager(
        business_type='manufacturing',
        scale='small',
        optimization_goals=['efficiency', 'quality']
    )
-   
+
    # Start optimization
    manager.start_optimization()
    ```
@@ -193,4 +193,4 @@ config = OperationsConfig(
 - Explore [Detailed Process Analysis](process-analysis.md)
 - Learn about [Automation Capabilities](automation.md)
 - Understand [Resource Optimization](resource-optimization.md)
-- Review [Case Studies](case-studies.md) 
+- Review [Case Studies](case-studies.md)

@@ -10,8 +10,8 @@ from qiskit.circuit import Gate
 from qiskit.circuit.library import UnitaryGate
 
 if TYPE_CHECKING:
-    from cirq.ops.matrix_gates import MatrixGate
     from cirq.ops.gate_features import SingleQubitGate, TwoQubitGate
+    from cirq.ops.matrix_gates import MatrixGate
 
 
 class QuantumGate:
@@ -36,6 +36,7 @@ class QuantumGate:
     def to_cirq(self) -> Union["SingleQubitGate", "TwoQubitGate"]:
         """Convert to Cirq gate."""
         from cirq.ops.matrix_gates import MatrixGate
+
         return MatrixGate(self.matrix, qid_shape=(2,) * self.num_qubits)
 
     @staticmethod
