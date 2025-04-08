@@ -21,7 +21,7 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-from transformers import pipeline
+from transformers.pipelines import pipeline
 
 
 class SentimentEngine:

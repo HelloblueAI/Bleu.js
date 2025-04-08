@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import spacy
 import torch
 from torch.nn.utils.rnn import pad_sequence
-from transformers import AutoTokenizer
+from transformers.models.auto.tokenization_auto import AutoTokenizer
 
 
 @dataclass

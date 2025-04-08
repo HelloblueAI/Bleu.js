@@ -1,10 +1,16 @@
+"""Email service implementation."""
+
 import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict
+from typing import Any, Dict, List, Optional
 
-from src.config import settings
+from fastapi import BackgroundTasks
+from pydantic import EmailStr
+
+from ..config import settings
+from ..models.email import EmailMessage
 
 logger = logging.getLogger(__name__)
 
@@ -200,3 +206,51 @@ class EmailService:
         Best regards,
         The Bleu.js Team
         """
+
+    def send_email(
+        self,
+        recipient: str,
+        subject: str,
+        body: str,
+        html_body: Optional[str] = None,
+        attachments: Optional[List[Dict[str, Any]]] = None,
+    ) -> bool:
+        """
+        Send an email to the specified recipient.
+
+        Args:
+            recipient: Email address of the recipient
+            subject: Email subject
+            body: Plain text email body
+            html_body: Optional HTML email body
+            attachments: Optional list of attachment dictionaries
+
+        Returns:
+            bool: True if email was sent successfully, False otherwise
+        """
+        try:
+            # Create message
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = self.from_email
+            msg["To"] = recipient
+
+            # Attach plain text content
+            msg.attach(MIMEText(body, "plain"))
+
+            # Attach HTML content if provided
+            if html_body:
+                msg.attach(MIMEText(html_body, "html"))
+
+            # Send email
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.smtp_username, self.smtp_password)
+                server.send_message(msg)
+
+            logger.info(f"Email sent to {recipient}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error sending email: {str(e)}")
+            return False

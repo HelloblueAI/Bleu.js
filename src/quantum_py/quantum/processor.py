@@ -1,11 +1,14 @@
 """Quantum processor implementation for feature processing."""
 
+import logging
+import secrets
 from typing import Any, Dict, Optional
 
 import numpy as np
+from numpy.typing import NDArray
 from qiskit.primitives import Sampler
 from qiskit_aer import QasmSimulator
-from qiskit_aer.noise import NoiseModel
+from qiskit_aer.noise import NoiseModel, depolarizing_error
 
 from .circuit import QuantumCircuit
 
@@ -26,6 +29,7 @@ class QuantumProcessor:
         error_correction: bool = True,
         use_advanced_circuits: bool = True,
     ):
+        self._validate_init_params(n_qubits, n_layers, shots, optimization_level)
         self.n_qubits = n_qubits
         self.n_layers = n_layers
         self.entanglement = entanglement
@@ -34,26 +38,102 @@ class QuantumProcessor:
         self.error_correction = error_correction
         self.use_advanced_circuits = use_advanced_circuits
 
-        # Initialize quantum circuit
-        self.circuit: Optional[QuantumCircuit] = None
-        self.backend: Optional[QasmSimulator] = None
-        self.noise_model: Optional[NoiseModel] = None
+        # Use cryptographically secure RNG
+        self.rng = lambda: int.from_bytes(secrets.token_bytes(4), byteorder="big") / (
+            2**32 - 1
+        )
 
-        # Initialize metrics
-        self.metrics = {
-            "total_executions": 0,
-            "successful_executions": 0,
-            "failed_executions": 0,
-            "error_rate": 0.0,
-            "quantum_speedup": 1.0,
-            "coherence_time": 0.0,
-            "entanglement_quality": 0.0,
-            "feature_map_fidelity": 0.0,
-            "circuit_optimization_score": 0.0,
-        }
-
-        # Initialize the processor
+        # Initialize processor components
+        self.circuit = None
+        self.backend = None
+        self.noise_model = None
         self.initialize()
+
+    def _validate_init_params(
+        self, n_qubits: int, n_layers: int, shots: int, optimization_level: int
+    ) -> None:
+        """Validate initialization parameters."""
+        if not isinstance(n_qubits, int) or n_qubits <= 0:
+            raise ValueError("n_qubits must be a positive integer")
+        if not isinstance(n_layers, int) or n_layers <= 0:
+            raise ValueError("n_layers must be a positive integer")
+        if not isinstance(shots, int) or shots <= 0:
+            raise ValueError("shots must be a positive integer")
+        if not isinstance(optimization_level, int) or optimization_level < 0:
+            raise ValueError("optimization_level must be a non-negative integer")
+
+    def _validate_features(self, features: NDArray[np.float64]) -> None:
+        """Validate input features."""
+        if not isinstance(features, np.ndarray):
+            raise TypeError("Features must be a numpy array")
+        if features.dtype != np.float64:
+            raise TypeError("Features must be float64 type")
+        if np.any(np.isnan(features)) or np.any(np.isinf(features)):
+            raise ValueError("Features contain NaN or Inf values")
+        if features.shape[1] != self.n_qubits:
+            raise ValueError(
+                f"Feature dimension {features.shape[1]} does not match n_qubits {self.n_qubits}"
+            )
+
+    def _create_noise_model(self) -> NoiseModel:
+        """Create a dynamic noise model with randomized parameters."""
+        noise_model = NoiseModel()
+        # Generate random noise parameters within acceptable ranges
+        depol_error = self.rng() * 0.01  # Max 1% error
+        readout_error = self.rng() * 0.05  # Max 5% error
+
+        noise_model.add_all_qubit_quantum_error(
+            depolarizing_error(depol_error, 1), ["u1", "u2", "u3"]
+        )
+        noise_model.add_all_qubit_readout_error(
+            [[1 - readout_error, readout_error], [readout_error, 1 - readout_error]]
+        )
+        return noise_model
+
+    async def process_features(
+        self, features: NDArray[np.float64]
+    ) -> Optional[NDArray[np.float64]]:
+        """Process features using quantum circuit with enhanced security."""
+        try:
+            self._validate_features(features)
+
+            # Normalize features securely
+            features_norm = np.linalg.norm(features, axis=1, keepdims=True)
+            features_norm = np.where(
+                features_norm == 0, 1e-10, features_norm
+            )  # Prevent division by zero
+            features_normalized = features / features_norm
+
+            # Process features through quantum circuit
+            result = await self._secure_quantum_processing(features_normalized)
+
+            # Clear sensitive data from memory
+            del features_normalized
+            return result
+
+        except Exception as e:
+            # Log sanitized error message
+            logging.error("Error in quantum feature processing")
+            return None
+
+    async def _secure_quantum_processing(
+        self, features: NDArray[np.float64]
+    ) -> NDArray[np.float64]:
+        """Perform secure quantum processing of features."""
+        if self.circuit is None:
+            raise RuntimeError("Quantum circuit not initialized")
+
+        # Add random phase shifts for additional security
+        phase_shifts = np.array([self.rng() * 2 * np.pi for _ in range(self.n_qubits)])
+
+        # Apply quantum processing with phase shifts
+        processed_features = []
+        for feature in features:
+            feature_with_phase = feature * np.exp(1j * phase_shifts)
+            result = self.circuit.process(feature_with_phase)
+            processed_features.append(result)
+
+        return np.array(processed_features)
 
     def initialize(self) -> bool:
         """Initialize the quantum processor"""
@@ -75,7 +155,7 @@ class QuantumProcessor:
 
             # Initialize noise model if error correction is enabled
             if self.error_correction:
-                self.noise_model = self._get_noise_model()
+                self.noise_model = self._create_noise_model()
 
             print("\nInitialized quantum processor:")
             print(f"- Number of qubits: {self.n_qubits}")
@@ -95,47 +175,6 @@ class QuantumProcessor:
         except ImportError as e:
             print(f"Failed to import required dependencies: {str(e)}")
             return False
-
-    async def process_features(self, features: np.ndarray) -> Optional[np.ndarray]:
-        """Process features using quantum processor"""
-        if self.circuit is None:
-            raise RuntimeError(QUANTUM_CIRCUIT_NOT_INITIALIZED_ERROR)
-
-        try:
-            # Check if feature dimension is a power of 2
-            n_features = features.shape[1]
-            if (n_features & (n_features - 1)) != 0:
-                raise ValueError("feature_dimension must be a power of 2!")
-
-            # Get circuit info
-            circuit_info = self.circuit.get_circuit_info()
-
-            # Process features using quantum circuit
-            processed_features = await self.circuit.process_features(features)
-            if processed_features is None:
-                raise RuntimeError("Feature processing failed")
-
-            # Execute circuit using Sampler primitive
-            sampler = Sampler()
-            if self.noise_model is not None:
-                sampler = Sampler(noise_model=self.noise_model)
-
-            job = sampler.run(self.circuit.circuit, shots=self.shots)
-            _ = job.result()  # Use _ for unused variable
-
-            # Update metrics
-            self._update_metrics(processed_features, circuit_info)
-
-            return processed_features
-
-        except RuntimeError as e:
-            print(f"Error processing features: {str(e)}")
-            self.metrics["failed_executions"] += 1
-            return None
-        except ValueError as e:
-            print(f"Invalid input features: {str(e)}")
-            self.metrics["failed_executions"] += 1
-            return None
 
     def _get_noise_model(self) -> Optional[NoiseModel]:
         """Get noise model for error correction"""

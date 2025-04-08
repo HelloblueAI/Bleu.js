@@ -1,9 +1,11 @@
-from typing import Tuple
+from typing import Any, Dict, Tuple, cast
 from unittest.mock import Mock
 
 import numpy as np
 import pytest
+from numpy.typing import NDArray
 
+from ...models.hybrid_model import HybridModel
 from ..processor import QuantumProcessor
 from .xgboost_quantum_hybrid import HybridConfig, XGBoostQuantumHybrid
 
@@ -118,15 +120,18 @@ async def test_predict(hybrid_model, sample_data):
 
 
 @pytest.mark.asyncio
-async def test_optimize_hyperparameters(hybrid_model, sample_data):
+async def test_optimize_hyperparameters(
+    hybrid_model: HybridModel,
+    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+) -> None:
     """Test hyperparameter optimization"""
     features, labels = sample_data
 
     # Mock enhanced XGBoost optimize_hyperparameters method
-    async def mock_optimize(*args, **kwargs):
+    async def mock_optimize(*args: Any, **kwargs: Any) -> Dict[str, Any]:
         return {"n_estimators": 100, "learning_rate": 0.1, "max_depth": 3}
 
-    hybrid_model.enhanced_xgb.optimize_hyperparameters = mock_optimize
+    hybrid_model.enhanced_xgb.optimize_hyperparameters = mock_optimize  # type: ignore
 
     # Optimize hyperparameters
     best_params = await hybrid_model.optimize_hyperparameters(
@@ -139,7 +144,7 @@ async def test_optimize_hyperparameters(hybrid_model, sample_data):
     assert "max_depth" in best_params
 
 
-def test_get_feature_importance(hybrid_model):
+def test_get_feature_importance(hybrid_model: HybridModel) -> None:
     """Test feature importance retrieval"""
     # Test without feature importance
     with pytest.raises(ValueError):
@@ -150,42 +155,45 @@ def test_get_feature_importance(hybrid_model):
     importance = hybrid_model.get_feature_importance()
     assert isinstance(importance, dict)
     assert len(importance) == 2
-    assert importance["feature_1"] == 0.5
+    assert np.isclose(importance["feature_1"], 0.5, rtol=1e-7, atol=1e-7)
 
 
 @pytest.mark.asyncio
-async def test_error_handling(hybrid_model, sample_data):
+async def test_error_handling(
+    hybrid_model: HybridModel,
+    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+) -> None:
     """Test error handling in various methods"""
     features, labels = sample_data
 
     # Test training error
-    hybrid_model.enhanced_xgb.fit = Mock(side_effect=RuntimeError("Training error"))
+    hybrid_model.enhanced_xgb.fit = Mock(side_effect=RuntimeError("Training error"))  # type: ignore
     with pytest.raises(RuntimeError):
         await hybrid_model.train(features, labels)
 
     # Test prediction error
-    hybrid_model.enhanced_xgb.predict = Mock(
+    hybrid_model.enhanced_xgb.predict = Mock(  # type: ignore
         side_effect=RuntimeError("Prediction error")
     )
     with pytest.raises(RuntimeError):
         await hybrid_model.predict(features)
 
     # Test optimization error
-    hybrid_model.enhanced_xgb.optimize_hyperparameters = Mock(
+    hybrid_model.enhanced_xgb.optimize_hyperparameters = Mock(  # type: ignore
         side_effect=RuntimeError("Optimization error")
     )
     with pytest.raises(RuntimeError):
         await hybrid_model.optimize_hyperparameters(features, labels)
 
     # Test invalid input error
-    hybrid_model.enhanced_xgb.predict = Mock(
+    hybrid_model.enhanced_xgb.predict = Mock(  # type: ignore
         side_effect=ValueError("Invalid input data")
     )
     with pytest.raises(ValueError):
         await hybrid_model.predict(features)
 
     # Test dependency error
-    hybrid_model.enhanced_xgb.fit = Mock(
+    hybrid_model.enhanced_xgb.fit = Mock(  # type: ignore
         side_effect=ImportError("Failed to import required dependencies")
     )
     with pytest.raises(ImportError):
@@ -193,7 +201,10 @@ async def test_error_handling(hybrid_model, sample_data):
 
 
 @pytest.mark.asyncio
-async def test_fusion_weights(hybrid_model, sample_data):
+async def test_fusion_weights(
+    hybrid_model: HybridModel,
+    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+) -> None:
     """Test fusion weights"""
     _, _ = sample_data  # Use _ for unused variables
 
@@ -208,15 +219,15 @@ async def test_fusion_weights(hybrid_model, sample_data):
 
 def generate_data(
     n_samples: int = 1000, n_features: int = 10
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Generate synthetic data for testing."""
     rng = np.random.default_rng(seed=42)
     X = rng.normal(0, 1, (n_samples, n_features))
     y = (X[:, 0] + X[:, 1] > 0).astype(int)
-    return X, y
+    return cast(NDArray[np.float64], X), cast(NDArray[np.float64], y)
 
 
-def test_model_performance():
+def test_model_performance() -> None:
     """Test model performance metrics."""
     # Generate test data
     _, _ = generate_data()  # Use _ for unused variables
@@ -228,7 +239,7 @@ def test_model_performance():
     assert np.isclose(metrics["accuracy"], 0.85, rtol=1e-5, atol=1e-5)
 
 
-def test_feature_importance():
+def test_feature_importance() -> None:
     """Test feature importance calculation."""
     # Generate test data
     _, _ = generate_data()  # Use _ for unused variables

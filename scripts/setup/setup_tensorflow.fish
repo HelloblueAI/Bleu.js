@@ -5,7 +5,7 @@ python3 -m venv venv
 source venv/bin/activate.fish
 
 # Install TensorFlow and dependencies
-pip install tensorflow-macos tensorflow-metal numpy
+pip install tensorflow numpy
 
 # Run test script
 python test_tensorflow.py

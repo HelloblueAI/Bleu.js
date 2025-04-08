@@ -5,6 +5,7 @@ from typing import List, Optional
 
 import pytest
 from dotenv import load_dotenv
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -57,41 +58,41 @@ TEST_DATABASE_URL = get_settings().DATABASE_URL
 
 class TestSettings(BaseSettings):
     # Application Settings
-    APP_NAME: str = "Bleu.js Test"
-    VERSION: str = "1.0.0"
-    DEBUG: bool = True
+    APP_NAME: str = Field(default="Bleu.js Test")
+    VERSION: str = Field(default="1.0.0")
+    DEBUG: bool = Field(default=True)
 
     # Database Settings
-    DATABASE_URL: str = "sqlite:///./test.db"
+    DATABASE_URL: str = Field(default="sqlite:///./test.db")
 
     # JWT Settings
-    JWT_SECRET_KEY: str = "test-secret-key"
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    JWT_SECRET_KEY: str = Field(default="test-secret-key")
+    JWT_ALGORITHM: str = Field(default="HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30)
 
     # Stripe Settings
-    STRIPE_SECRET_KEY: str = "test_stripe_secret_key"
-    STRIPE_PUBLISHABLE_KEY: str = "test_stripe_publishable_key"
-    STRIPE_WEBHOOK_SECRET: str = "test_stripe_webhook_secret"
+    STRIPE_SECRET_KEY: str = Field(default="test_stripe_secret_key")
+    STRIPE_PUBLISHABLE_KEY: str = Field(default="test_stripe_publishable_key")
+    STRIPE_WEBHOOK_SECRET: str = Field(default="test_stripe_webhook_secret")
 
     # Product IDs
-    CORE_PLAN_ID: str = "test_core_plan_id"
-    ENTERPRISE_PLAN_ID: str = "test_enterprise_plan_id"
+    CORE_PLAN_ID: str = Field(default="test_core_plan_id")
+    ENTERPRISE_PLAN_ID: str = Field(default="test_enterprise_plan_id")
 
     # Rate Limiting
-    RATE_LIMIT_CORE: int = 100
-    RATE_LIMIT_ENTERPRISE: int = 5000
+    RATE_LIMIT_CORE: int = Field(default=100)
+    RATE_LIMIT_ENTERPRISE: int = Field(default=5000)
 
     # Security
-    CORS_ORIGINS: str = "http://localhost:3000"
-    ALLOWED_HOSTS: str = "*"
+    CORS_ORIGINS: str = Field(default="http://localhost:3000")
+    ALLOWED_HOSTS: str = Field(default="*")
 
     # Email Settings
-    SMTP_HOST: str = "smtp.test.com"
-    SMTP_PORT: int = 587
-    SMTP_USER: str = TEST_EMAIL
-    SMTP_PASSWORD: str = "test_password"
-    FROM_EMAIL: str = TEST_NOREPLY_EMAIL
+    SMTP_HOST: str = Field(default="smtp.test.com")
+    SMTP_PORT: int = Field(default=587)
+    SMTP_USER: str = Field(default=TEST_EMAIL)
+    SMTP_PASSWORD: str = Field(default="test_password")
+    FROM_EMAIL: str = Field(default=TEST_NOREPLY_EMAIL)
 
     model_config = SettingsConfigDict(
         env_file=".env.test",

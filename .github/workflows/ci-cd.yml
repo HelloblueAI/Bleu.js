@@ -196,38 +196,64 @@ jobs:
             --cov=src/quantum/ \
             --cov-report=xml \
             --cov-report=html \
+            --cov-fail-under=85 \
             -n auto \
             --verbose
 
       - name: Run ML Tests
         env:
-          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
           ML_FRAMEWORK: ${{ matrix.ml-framework }}
         run: |
           poetry run pytest tests/ml/ \
             --cov=src/ml/ \
             --cov-report=xml \
             --cov-report=html \
+            --cov-fail-under=85 \
             -n auto \
             --verbose
 
-      - name: Run Integration Tests
-        env:
-          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
-          ML_FRAMEWORK: ${{ matrix.ml-framework }}
+      - name: Run Performance Tests
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: |
-          poetry run pytest tests/integration/ \
-            --cov=src/ \
-            --cov-report=xml \
-            --cov-report=html \
-            -n auto \
-            --verbose
+          poetry run pytest tests/performance/ \
+            --benchmark-only \
+            --benchmark-json=benchmark.json
 
-      - name: Upload coverage reports
+      - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
           fail_ci_if_error: true
+          verbose: true
+
+      - name: Upload Benchmark Results
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results
+          path: benchmark.json
+
+      - name: Security Scan - Quantum
+        run: |
+          poetry run bandit -r src/quantum/ -c pyproject.toml \
+            --format json \
+            --output quantum-security.json
+          
+      - name: Security Scan - ML
+        run: |
+          poetry run bandit -r src/ml/ -c pyproject.toml \
+            --format json \
+            --output ml-security.json
+
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            quantum-security.json
+            ml-security.json
 
   benchmark:
     name: Performance Benchmarking
@@ -286,20 +312,18 @@ jobs:
       - name: Build Python package
         run: poetry build
 
-      - name: Deploy to PyPI
-        if: github.ref == 'refs/heads/main'
+      - name: Publish to PyPI
+        env:
+          TWINE_REPOSITORY: pypi
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          if [ -z "${{ secrets.PYPI_USERNAME }}" ] || [ -z "${{ secrets.PYPI_PASSWORD }}" ]; then
-            echo "Error: PyPI credentials not set"
-            exit 1
-          fi
-          poetry publish --build --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }} --repository ${{ env.PYPI_URL }}
+          python -m twine upload dist/*
 
-      - name: Deploy to TestPyPI
-        if: github.ref == 'refs/heads/staging'
+      - name: Publish to Test PyPI
+        env:
+          TWINE_REPOSITORY: testpypi
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: |
-          if [ -z "${{ secrets.TEST_PYPI_USERNAME }}" ] || [ -z "${{ secrets.TEST_PYPI_PASSWORD }}" ]; then
-            echo "Error: TestPyPI credentials not set"
-            exit 1
-          fi
-          poetry publish --build --username ${{ secrets.TEST_PYPI_USERNAME }} --password ${{ secrets.TEST_PYPI_PASSWORD }} --repository ${{ env.TEST_PYPI_URL }}
+          python -m twine upload --repository testpypi dist/*

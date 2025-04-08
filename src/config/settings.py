@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     PORT: int = 8000
     HOST: str = "localhost"
+    APP_ENV: str = "development"
+    APP_DEBUG: bool = True
+    APP_URL: str = "http://localhost:3000"
+    APP_PORT: int = 3000
+    VERSION: str = "0.1.0"
+    API_VERSION: str = "v1"
+    API_PREFIX: str = "/api"
 
     # Database settings
     DB_HOST: str = "localhost"
@@ -53,6 +60,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str = Field(default="sqlite:///./test.db")
     DATABASE_POOL_SIZE: int = 5
     DATABASE_MAX_OVERFLOW: int = 10
+
+    # Test Database settings
+    TEST_DB_HOST: str = "localhost"
+    TEST_DB_PORT: int = 5432
+    TEST_DB_NAME: str = "test_db"
+    TEST_DB_USER: str = "test_user"
+    TEST_DB_PASSWORD: str = "test_db_password_123"
 
     # Redis settings
     REDIS_HOST: str = "localhost"
@@ -65,11 +79,13 @@ class Settings(BaseSettings):
     # Security settings
     CORS_ORIGINS: str = "http://localhost:3000"
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
-    JWT_SECRET_KEY: SecretStr = Field(default="your-secret-key-here")
+    JWT_SECRET_KEY: str = Field(default="test_jwt_secret_key")
     JWT_ALGORITHM: str = "HS256"
-    JWT_SECRET: SecretStr = Field(default="dev_jwt_secret_key_123")
+    JWT_SECRET: str = Field(default="dev_jwt_secret_key_123")
     JWT_EXPIRES_IN: str = "24h"
-    ENCRYPTION_KEY: SecretStr = Field(default="dev_encryption_key_123")
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    ENCRYPTION_KEY: str = Field(default="dev_encryption_key_123")
     ENABLE_SECURITY: bool = True
 
     @property
@@ -81,6 +97,11 @@ class Settings(BaseSettings):
     RATE_LIMITING: RateLimitingConfig = RateLimitingConfig()
     RATE_LIMIT_WINDOW: int = 15
     RATE_LIMIT_MAX_REQUESTS: int = 100
+    RATE_LIMIT_CORE: int = 100
+    RATE_LIMIT_ENTERPRISE: int = 1000
+    RATE_LIMIT_PERIOD: int = 3600
+    TEST_RATE_LIMIT: int = 100
+    TEST_RATE_LIMIT_WINDOW: int = 3600
 
     # AWS settings
     AWS_REGION: str = "us-east-1"
@@ -97,6 +118,9 @@ class Settings(BaseSettings):
     AWS_SSO_REGION: str = "us-east-1"
     AWS_SSO_ACCOUNT_ID: str = "123456789012"
     AWS_SSO_ROLE_NAME: str = "Developer"
+    AWS_API_CONFIG_BASE_URL: str = (
+        "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod"
+    )
     SECRETS_MANAGER: SecretsManagerConfig = SecretsManagerConfig()
 
     # Email settings
@@ -146,6 +170,10 @@ class Settings(BaseSettings):
     API_KEY: SecretStr = Field(default="dev_api_key")
     API_SECRET: SecretStr = Field(default="dev_api_secret")
     ALLOWED_HOSTS: str = "bleujs.com,www.bleujs.com"
+    TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
+    ENTERPRISE_TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
+    TEST_API_HOST: str = "localhost"
+    TEST_API_PORT: int = 8000
 
     # Elasticsearch settings
     ELASTICSEARCH_HOST: str = "localhost"
@@ -167,6 +195,9 @@ class Settings(BaseSettings):
     # Cache settings
     CACHE_TTL: int = 3600
     CACHE_ENABLED: bool = True
+    CACHE_DRIVER: str = "redis"
+    CACHE_PREFIX: str = "bleujs_test_"
+    ENABLE_CACHE: bool = True
 
     # Quantum settings
     QUANTUM_ENABLED: bool = True
@@ -175,12 +206,21 @@ class Settings(BaseSettings):
 
     # AI settings
     ENABLE_AI: bool = True
+    ENABLE_ML: bool = True
+
+    # Logging settings
+    ENABLE_LOGGING: bool = True
+    LOG_CHANNEL: str = "stack"
+
+    # Test user settings
+    TEST_USER_EMAIL: str = "test@example.com"
+    TEST_USER_PASSWORD: str = "test_password_123"
 
     # Node environment
     NODE_ENV: str = "development"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=".env.test" if os.getenv("TESTING") == "true" else ".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
         arbitrary_types_allowed=True,
