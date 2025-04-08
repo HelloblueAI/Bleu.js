@@ -15,4 +15,4 @@ class RateLimitingConfig(BaseModel):
     error_code: int = 429  # HTTP status code for rate limit exceeded
     error_message: str = "Rate limit exceeded. Please try again later."
 
-    model_config = ConfigDict(arbitrary_types_allowed=True) 
+    model_config = ConfigDict(arbitrary_types_allowed=True)

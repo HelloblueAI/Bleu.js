@@ -29,11 +29,21 @@ class User(Base):
     last_login = Column(DateTime)
 
     # Relationships
-    api_tokens = relationship("APIToken", back_populates="user", cascade="all, delete-orphan")
-    subscription = relationship("Subscription", back_populates="user", cascade="all, delete-orphan")
-    api_calls = relationship("APICall", back_populates="user", cascade="all, delete-orphan")
-    api_usage = relationship("APIUsage", back_populates="user", cascade="all, delete-orphan")
-    rate_limits = relationship("RateLimit", back_populates="user", cascade="all, delete-orphan")
+    api_tokens = relationship(
+        "APIToken", back_populates="user", cascade="all, delete-orphan"
+    )
+    subscription = relationship(
+        "Subscription", back_populates="user", cascade="all, delete-orphan"
+    )
+    api_calls = relationship(
+        "APICall", back_populates="user", cascade="all, delete-orphan"
+    )
+    api_usage = relationship(
+        "APIUsage", back_populates="user", cascade="all, delete-orphan"
+    )
+    rate_limits = relationship(
+        "RateLimit", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         """Get string representation of user.
@@ -140,8 +150,7 @@ class User(Base):
             bool: True if user has subscription
         """
         return any(
-            subscription.type == subscription_type
-            and subscription.is_active
+            subscription.type == subscription_type and subscription.is_active
             for subscription in self.subscriptions
         )
 

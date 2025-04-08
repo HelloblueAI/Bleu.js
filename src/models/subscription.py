@@ -62,7 +62,9 @@ class Subscription(Base):
     # Relationships
     user = relationship("User", back_populates="subscription")
     plan = relationship("SubscriptionPlan", back_populates="subscriptions")
-    api_tokens = relationship("APIToken", back_populates="subscription", cascade="all, delete-orphan")
+    api_tokens = relationship(
+        "APIToken", back_populates="subscription", cascade="all, delete-orphan"
+    )
     customer = relationship("Customer", back_populates="subscription", uselist=False)
 
 

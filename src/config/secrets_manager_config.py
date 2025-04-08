@@ -23,4 +23,4 @@ class SecretsManagerConfig(BaseModel):
     enable_encryption: bool = True
     encryption_key: Optional[str] = None
 
-    model_config = ConfigDict(arbitrary_types_allowed=True) 
+    model_config = ConfigDict(arbitrary_types_allowed=True)

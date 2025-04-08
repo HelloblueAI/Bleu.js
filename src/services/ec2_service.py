@@ -213,4 +213,4 @@ class EC2Service:
             return True
 
         except ClientError:
-            return False 
+            return False

@@ -5,11 +5,11 @@ from typing import Dict, List, Optional
 import numpy as np
 from sklearn.metrics import (
     accuracy_score,
+    confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
     roc_auc_score,
-    confusion_matrix,
 )
 
 
@@ -40,9 +40,7 @@ class PerformanceMetrics:
         """Calculate performance metrics."""
         # Basic metrics
         self.accuracy = accuracy_score(self.y_true, self.y_pred)
-        self.precision = precision_score(
-            self.y_true, self.y_pred, average="weighted"
-        )
+        self.precision = precision_score(self.y_true, self.y_pred, average="weighted")
         self.recall = recall_score(self.y_true, self.y_pred, average="weighted")
         self.f1 = f1_score(self.y_true, self.y_pred, average="weighted")
 
@@ -131,4 +129,4 @@ class PerformanceMetrics:
         Returns:
             PerformanceMetrics: New instance
         """
-        return cls(y_true=y_true, y_pred=y_pred, y_prob=y_prob) 
+        return cls(y_true=y_true, y_pred=y_pred, y_prob=y_prob)

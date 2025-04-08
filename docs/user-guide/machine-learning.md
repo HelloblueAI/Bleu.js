@@ -143,7 +143,7 @@ best_params = optimizer.optimize(X_train, y_train)
 ## Performance Considerations
 
 ### Hardware Acceleration
-- **GPU Support**: 
+- **GPU Support**:
   - NVIDIA GPUs with CUDA 11.x
   - AMD GPUs with ROCm 5.x
   - Multi-GPU training support
@@ -220,4 +220,4 @@ monitor = MLMonitor(
 # Monitor training
 with monitor:
     model.fit(X_train, y_train)
-``` 
+```

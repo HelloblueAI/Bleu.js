@@ -38,7 +38,8 @@ class APITokenService:
             subscription_id=subscription.id,
             name=token_data.name,
             token=secrets.token_urlsafe(32),
-            expires_at=token_data.expires_at or datetime.now(timezone.utc) + timedelta(days=30),
+            expires_at=token_data.expires_at
+            or datetime.now(timezone.utc) + timedelta(days=30),
             is_active=True,
         )
 

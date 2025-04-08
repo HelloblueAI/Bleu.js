@@ -175,10 +175,10 @@ config = QuantumVisionConfig(
 2. **Basic Usage**
    ```python
    from bleujs.vision import QuantumVisionModel
-   
+
    # Initialize model
    model = QuantumVisionModel()
-   
+
    # Process images
    results = model.process_images(images)
    ```
@@ -186,7 +186,7 @@ config = QuantumVisionConfig(
 3. **Advanced Configuration**
    ```python
    from bleujs.config import QuantumConfig
-   
+
    config = QuantumConfig(
        backend='aer_simulator',
        num_qubits=8,
@@ -199,4 +199,4 @@ config = QuantumVisionConfig(
 - Explore [Classical ML](classical.md) for traditional algorithms
 - Learn about [Quantum ML](quantum.md) capabilities
 - Understand [Hybrid Approaches](hybrid.md)
-- Optimize [Performance](optimization.md) 
+- Optimize [Performance](optimization.md)

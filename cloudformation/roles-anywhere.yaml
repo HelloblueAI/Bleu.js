@@ -29,7 +29,7 @@ Resources:
     Type: 'AWS::RolesAnywhere::Profile'
     Properties:
       Name: bleujs-deployment-profile
-      RoleArns: 
+      RoleArns:
         - !GetAtt BleujsDeploymentRole.Arn
       DurationSeconds: 3600
       Enabled: true
@@ -45,11 +45,11 @@ Outputs:
   TrustAnchorArn:
     Description: The ARN of the trust anchor
     Value: !Ref BleujsTrustAnchor
-  
+
   ProfileArn:
     Description: The ARN of the profile
     Value: !Ref BleujsProfile
-  
+
   RoleArn:
     Description: The ARN of the deployment role
-    Value: !GetAtt BleujsDeploymentRole.Arn 
+    Value: !GetAtt BleujsDeploymentRole.Arn

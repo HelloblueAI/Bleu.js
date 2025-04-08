@@ -137,4 +137,4 @@ class Attention:
         Returns:
             np.ndarray: Attention weights
         """
-        return self.forward(x) 
+        return self.forward(x)

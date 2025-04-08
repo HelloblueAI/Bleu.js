@@ -19,19 +19,24 @@ class EC2Instance(BaseModel):
     subnet_id: Optional[str] = Field(None, description="Subnet ID")
     availability_zone: str = Field(..., description="Availability zone")
     tags: Dict[str, str] = Field(default_factory=dict, description="Instance tags")
-    security_groups: List[str] = Field(default_factory=list, description="Security group IDs")
+    security_groups: List[str] = Field(
+        default_factory=list, description="Security group IDs"
+    )
     key_name: Optional[str] = Field(None, description="SSH key pair name")
-    monitoring_enabled: bool = Field(False, description="Whether detailed monitoring is enabled")
-    ebs_optimized: bool = Field(False, description="Whether EBS optimization is enabled")
+    monitoring_enabled: bool = Field(
+        False, description="Whether detailed monitoring is enabled"
+    )
+    ebs_optimized: bool = Field(
+        False, description="Whether EBS optimization is enabled"
+    )
     root_device_type: str = Field(..., description="Root device type")
     root_device_name: str = Field(..., description="Root device name")
     volumes: List[str] = Field(default_factory=list, description="Attached volume IDs")
 
     class Config:
         """Pydantic config."""
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
     def to_dict(self) -> Dict:
         """Convert instance to dictionary.
@@ -52,15 +57,11 @@ class EC2Instance(BaseModel):
             EC2Instance: New instance
         """
         # Extract tags
-        tags = {
-            tag["Key"]: tag["Value"]
-            for tag in instance_data.get("Tags", [])
-        }
+        tags = {tag["Key"]: tag["Value"] for tag in instance_data.get("Tags", [])}
 
         # Extract security groups
         security_groups = [
-            sg["GroupId"]
-            for sg in instance_data.get("SecurityGroups", [])
+            sg["GroupId"] for sg in instance_data.get("SecurityGroups", [])
         ]
 
         # Extract volumes
@@ -88,4 +89,4 @@ class EC2Instance(BaseModel):
             root_device_type=instance_data["RootDeviceType"],
             root_device_name=instance_data["RootDeviceName"],
             volumes=volumes,
-        ) 
+        )

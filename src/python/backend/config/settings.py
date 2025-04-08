@@ -10,8 +10,8 @@ from typing import Any, Dict, List, Optional
 import torch
 import yaml
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 @dataclass
@@ -174,19 +174,19 @@ class Settings(BaseSettings):
     # API Settings
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "BleuJS"
-    
+
     # Security
     SECRET_KEY: str = Field(..., env="SECRET_KEY")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
+
     # Database
     MONGODB_URI: str = Field(..., env="MONGODB_URI")
     REDIS_HOST: str = Field(..., env="REDIS_HOST")
     REDIS_PORT: int = Field(6379, env="REDIS_PORT")
-    
+
     # Sentry
     SENTRY_DSN: Optional[str] = Field(None, env="SENTRY_DSN")
-    
+
     # Logging
     LOG_LEVEL: str = Field("INFO", env="LOG_LEVEL")
 

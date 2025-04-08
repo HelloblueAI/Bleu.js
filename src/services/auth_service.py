@@ -62,7 +62,9 @@ class AuthService:
     async def verify_refresh_token(self, token: str):
         try:
             payload = jwt.decode(token, REFRESH_SECRET_KEY, algorithms=[ALGORITHM])
-            if datetime.now(timezone.utc) > datetime.fromtimestamp(payload["exp"], timezone.utc):
+            if datetime.now(timezone.utc) > datetime.fromtimestamp(
+                payload["exp"], timezone.utc
+            ):
                 raise HTTPException(status_code=401, detail="Refresh token has expired")
             return payload
         except JWTError:

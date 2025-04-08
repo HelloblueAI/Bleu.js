@@ -140,4 +140,4 @@ class ModelTrainer:
         """
         import joblib
 
-        return joblib.load(filepath) 
+        return joblib.load(filepath)

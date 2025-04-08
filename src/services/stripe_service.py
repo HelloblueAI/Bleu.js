@@ -68,10 +68,12 @@ class StripeService:
             subscription = stripe.Subscription.retrieve(subscription_id)
             updated = stripe.Subscription.modify(
                 subscription_id,
-                items=[{
-                    "id": subscription["items"]["data"][0].id,
-                    "price": price_id,
-                }],
+                items=[
+                    {
+                        "id": subscription["items"]["data"][0].id,
+                        "price": price_id,
+                    }
+                ],
             )
             return updated
         except stripe.error.StripeError as e:
@@ -104,4 +106,4 @@ class StripeService:
             raise HTTPException(status_code=400, detail="Invalid signature")
         except Exception as e:
             logger.error(f"Error handling webhook: {e}")
-            raise HTTPException(status_code=400, detail="Webhook error") 
+            raise HTTPException(status_code=400, detail="Webhook error")

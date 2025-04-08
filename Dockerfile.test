@@ -37,4 +37,4 @@ RUN mkdir -p /app/tests/performance
 RUN pip install pytest pytest-cov locust
 
 # Set entrypoint
-ENTRYPOINT ["poetry", "run", "pytest"] 
+ENTRYPOINT ["poetry", "run", "pytest"]

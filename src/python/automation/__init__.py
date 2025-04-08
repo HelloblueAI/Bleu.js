@@ -3,10 +3,6 @@ BleuJS Automation Module
 Provides workflow automation and pipeline orchestration capabilities.
 """
 
-from .pipeline import AutomationPipeline, PipelineStep, PipelineMetrics
+from .pipeline import AutomationPipeline, PipelineMetrics, PipelineStep
 
-__all__ = [
-    'AutomationPipeline',
-    'PipelineStep',
-    'PipelineMetrics'
-] 
+__all__ = ["AutomationPipeline", "PipelineStep", "PipelineMetrics"]

@@ -88,9 +88,7 @@ class ModelEvaluator:
             Dict[str, List[float]]: Cross-validation scores
         """
         # Perform cross-validation with single metric
-        scores = cross_val_score(
-            self.model, self.X, self.y, cv=cv, scoring=scoring
-        )
+        scores = cross_val_score(self.model, self.X, self.y, cv=cv, scoring=scoring)
         metric_name = scoring if scoring else "score"
         return {metric_name: scores.tolist()}
 
@@ -113,8 +111,7 @@ class ModelEvaluator:
 
         # Create feature importance dictionary
         feature_importance = {
-            f"feature_{i}": float(score)
-            for i, score in enumerate(importance)
+            f"feature_{i}": float(score) for i, score in enumerate(importance)
         }
 
         return feature_importance
@@ -134,8 +131,8 @@ class ModelEvaluator:
             n_jobs: Number of jobs to run in parallel (default: -1)
             train_sizes: Array of training set sizes to evaluate
         """
-        from sklearn.model_selection import learning_curve
         import matplotlib.pyplot as plt
+        from sklearn.model_selection import learning_curve
 
         # Calculate learning curve
         train_sizes, train_scores, test_scores = learning_curve(
@@ -188,4 +185,4 @@ class ModelEvaluator:
         """
         import joblib
 
-        joblib.dump(self.model, filepath) 
+        joblib.dump(self.model, filepath)

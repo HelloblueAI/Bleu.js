@@ -33,4 +33,4 @@ class SecurityHeadersConfig(BaseModel):
     cross_origin_embedder_policy: str = "require-corp"
     cross_origin_resource_policy: str = "same-origin"
 
-    model_config = ConfigDict(arbitrary_types_allowed=True) 
+    model_config = ConfigDict(arbitrary_types_allowed=True)

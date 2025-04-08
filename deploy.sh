@@ -26,4 +26,4 @@ aws cloudformation describe-stacks \
 
 echo "✅ Deployment completed successfully!"
 echo "To connect to your EC2 instance:"
-echo "ssh -i bleujs-key.pem ec2-user@<PublicIP>" 
+echo "ssh -i bleujs-key.pem ec2-user@<PublicIP>"
