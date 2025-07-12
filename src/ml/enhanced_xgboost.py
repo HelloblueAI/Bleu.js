@@ -107,22 +107,22 @@ class QuantumFeatureProcessor:
             logger.warning("Qiskit not available, falling back to classical processing")
             self.quantum_circuit = None
 
-    def process_features(self, X: np.ndarray) -> np.ndarray:
+    def process_features(self, features: np.ndarray) -> np.ndarray:
         """Process features using quantum circuit"""
         if self.quantum_circuit is None:
-            return X
+            return features
 
         try:
             # Convert classical data to quantum state
-            quantum_features = np.zeros((X.shape[0], 2**self.config.n_qubits))
-            for i in range(X.shape[0]):
+            quantum_features = np.zeros((features.shape[0], 2**self.config.n_qubits))
+            for i in range(features.shape[0]):
                 # Apply quantum transformation
-                state = self._classical_to_quantum(X[i])
+                state = self._classical_to_quantum(features[i])
                 quantum_features[i] = state
             return quantum_features
         except (ValueError, ImportError) as e:
             logger.error(f"Quantum feature processing error: {str(e)}")
-            return X
+            return features
         except Exception as e:
             logger.error(f"Unexpected error in quantum feature processing: {str(e)}")
             raise
@@ -193,7 +193,7 @@ class PerformanceOptimizer:
         self.optimization_history = []
 
     def optimize_batch_size(
-        self, model: xgb.XGBClassifier, X: np.ndarray, y: np.ndarray
+        self, model: xgb.XGBClassifier, features: np.ndarray, y: np.ndarray
     ) -> int:
         """Dynamically optimize batch size based on system resources"""
         available_memory = psutil.virtual_memory().available
@@ -202,9 +202,9 @@ class PerformanceOptimizer:
         # Calculate optimal batch size based on available resources
         optimal_batch_size = min(
             self.config.batch_size,
-            int(available_memory / (X.shape[1] * 8)),  # 8 bytes per float64
+            int(available_memory / (features.shape[1] * 8)),  # 8 bytes per float64
             (
-                int(gpu_memory / (X.shape[1] * 8))
+                int(gpu_memory / (features.shape[1] * 8))
                 if gpu_memory > 0
                 else self.config.batch_size
             ),
@@ -223,7 +223,7 @@ class PerformanceOptimizer:
         return 0
 
     def optimize_learning_rate(
-        self, model: xgb.XGBClassifier, X: np.ndarray, y: np.ndarray
+        self, model: xgb.XGBClassifier, features: np.ndarray, y: np.ndarray
     ) -> float:
         """Dynamically optimize learning rate"""
         # Implement learning rate optimization logic
@@ -298,7 +298,7 @@ class EnhancedXGBoost:
 
     def fit(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         y: np.ndarray,
         eval_set: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None,
         **kwargs,
@@ -306,10 +306,12 @@ class EnhancedXGBoost:
         """Enhanced training with quantum features and distributed processing"""
         try:
             # Process features with quantum enhancement
-            X_processed = self.quantum_processor.process_features(X)
+            features_processed = self.quantum_processor.process_features(features)
 
             # Optimize batch size and workers
-            self.performance_optimizer.optimize_batch_size(self.model, X_processed, y)
+            self.performance_optimizer.optimize_batch_size(
+                self.model, features_processed, y
+            )
             self.performance_optimizer.optimize_num_workers()
 
             # Initialize XGBoost model with optimized parameters
@@ -328,7 +330,7 @@ class EnhancedXGBoost:
 
             # Train model with distributed processing
             self.model.fit(
-                X_processed,
+                features_processed,
                 y,
                 eval_set=eval_set,
                 eval_metric=["logloss", "auc"],
@@ -336,7 +338,7 @@ class EnhancedXGBoost:
                 verbose=True,
                 callbacks=[
                     xgb.callback.TrainingCallback(
-                        lambda env: self._on_training_iteration(env)
+                        lambda env, model=self: model._on_training_iteration(env)
                     )
                 ],
             )
@@ -353,28 +355,28 @@ class EnhancedXGBoost:
             logger.error(f"Error during model training: {str(e)}")
             raise
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, features: np.ndarray) -> np.ndarray:
         """Make predictions using the model."""
         try:
             if self.model is None:
                 raise ValueError("Model not initialized. Call fit() first.")
 
             # Process input features
-            X_processed = self.quantum_processor.process_features(X)
+            features_processed = self.quantum_processor.process_features(features)
 
             # Verify model integrity
             if self.security_config and self.security_config.tamper_detection:
                 self._verify_model_integrity()
 
             # Make predictions
-            predictions = self.model.predict(X_processed)
+            predictions = self.model.predict(features_processed)
 
             # Log prediction access
             if self.security_config and self.security_config.audit_logging:
                 self.security_manager.log_access(
                     "prediction",
                     "system",
-                    {"input_shape": X.shape, "output_shape": predictions.shape},
+                    {"input_shape": features.shape, "output_shape": predictions.shape},
                 )
 
             return predictions
@@ -382,17 +384,17 @@ class EnhancedXGBoost:
             logger.error(f"Prediction error: {e}")
             raise
 
-    def predict_proba(self, X: np.ndarray) -> np.ndarray:
+    def predict_proba(self, features: np.ndarray) -> np.ndarray:
         """Get probability predictions using the model."""
         try:
             if self.model is None:
                 raise ValueError("Model not initialized. Call fit() first.")
 
             # Process input features
-            X_processed = self.quantum_processor.process_features(X)
+            features_processed = self.quantum_processor.process_features(features)
 
             # Get probability predictions
-            return self.model.predict_proba(X_processed)
+            return self.model.predict_proba(features_processed)
         except Exception as e:
             logger.error(f"Probability prediction error: {e}")
             raise
@@ -488,7 +490,7 @@ class EnhancedXGBoost:
         }
 
     def optimize_hyperparameters(
-        self, X: np.ndarray, y: np.ndarray, n_trials: int = 100
+        self, features: np.ndarray, y: np.ndarray, n_trials: int = 100
     ) -> Dict:
         """Optimize hyperparameters using quantum-enhanced search"""
 
@@ -504,19 +506,22 @@ class EnhancedXGBoost:
             }
 
             # Use quantum-enhanced feature processing
-            X_processed = self.quantum_processor.process_features(X)
+            features_processed = self.quantum_processor.process_features(features)
 
             # Perform cross-validation
             kf = KFold(n_splits=5, shuffle=True, random_state=42)
             scores = []
 
-            for train_idx, val_idx in kf.split(X_processed):
-                X_train, X_val = X_processed[train_idx], X_processed[val_idx]
+            for train_idx, val_idx in kf.split(features_processed):
+                features_train, features_val = (
+                    features_processed[train_idx],
+                    features_processed[val_idx],
+                )
                 y_train, y_val = y[train_idx], y[val_idx]
 
                 model = xgb.XGBClassifier(**param)
-                model.fit(X_train, y_train)
-                score = model.score(X_val, y_val)
+                model.fit(features_train, y_train)
+                score = model.score(features_val, y_val)
                 scores.append(score)
 
             return np.mean(scores)

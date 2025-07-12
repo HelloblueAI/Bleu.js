@@ -37,13 +37,13 @@ class MLPipeline:
 
     def preprocess(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         fit: bool = False,
     ) -> np.ndarray:
         """Preprocess feature matrix.
 
         Args:
-            X: Feature matrix
+            features: Feature matrix
             fit: Whether to fit scaler (default: False)
 
         Returns:
@@ -51,13 +51,13 @@ class MLPipeline:
         """
         if self.scale_features and self.scaler is not None:
             if fit:
-                return self.scaler.fit_transform(X)
-            return self.scaler.transform(X)
-        return X
+                return self.scaler.fit_transform(features)
+            return self.scaler.transform(features)
+        return features
 
     def train(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         y: np.ndarray,
         param_grid: Optional[Dict[str, Any]] = None,
         test_size: float = 0.2,
@@ -69,7 +69,7 @@ class MLPipeline:
         """Train pipeline.
 
         Args:
-            X: Feature matrix
+            features: Feature matrix
             y: Target vector
             param_grid: Parameter grid for optimization (optional)
             test_size: Test set size (default: 0.2)
@@ -82,11 +82,11 @@ class MLPipeline:
             Dict[str, Any]: Training results
         """
         # Preprocess features
-        X_processed = self.preprocess(X, fit=True)
+        features_processed = self.preprocess(features, fit=True)
 
         # Train model
         training_info = self.model_service.train(
-            X=X_processed,
+            X=features_processed,
             y=y,
             param_grid=param_grid,
             test_size=test_size,
@@ -100,12 +100,12 @@ class MLPipeline:
         return training_info
 
     def predict(
-        self, X: np.ndarray, return_proba: bool = False
+        self, features: np.ndarray, return_proba: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Make predictions.
 
         Args:
-            X: Feature matrix
+            features: Feature matrix
             return_proba: Whether to return probability scores
 
         Returns:
@@ -116,21 +116,21 @@ class MLPipeline:
             raise RuntimeError("Pipeline must be trained before making predictions")
 
         # Preprocess features
-        X_processed = self.preprocess(X)
+        features_processed = self.preprocess(features)
 
         # Make predictions
-        return self.model_service.predict(X_processed, return_proba=return_proba)
+        return self.model_service.predict(features_processed, return_proba=return_proba)
 
     def evaluate(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         y: np.ndarray,
         return_proba: bool = True,
     ) -> Tuple[PerformanceMetrics, Dict[str, Any]]:
         """Evaluate pipeline performance.
 
         Args:
-            X: Feature matrix
+            features: Feature matrix
             y: Target vector
             return_proba: Whether to include probability scores in evaluation
 
@@ -142,18 +142,18 @@ class MLPipeline:
             raise RuntimeError("Pipeline must be trained before evaluation")
 
         # Preprocess features
-        X_processed = self.preprocess(X)
+        features_processed = self.preprocess(features)
 
         # Evaluate model
         return self.model_service.evaluate(
-            X=X_processed,
+            X=features_processed,
             y=y,
             return_proba=return_proba,
         )
 
     def cross_validate(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         y: np.ndarray,
         cv: int = 5,
         scoring: Optional[List[str]] = None,
@@ -161,7 +161,7 @@ class MLPipeline:
         """Perform cross-validation.
 
         Args:
-            X: Feature matrix
+            features: Feature matrix
             y: Target vector
             cv: Number of folds (default: 5)
             scoring: List of scoring metrics (default: None)
@@ -170,11 +170,11 @@ class MLPipeline:
             Dict[str, List[float]]: Cross-validation scores
         """
         # Preprocess features
-        X_processed = self.preprocess(X, fit=True)
+        features_processed = self.preprocess(features, fit=True)
 
         # Perform cross-validation
         return self.model_service.cross_validate(
-            X=X_processed,
+            X=features_processed,
             y=y,
             cv=cv,
             scoring=scoring,
