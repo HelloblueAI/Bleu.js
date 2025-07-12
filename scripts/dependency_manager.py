@@ -48,7 +48,7 @@ class DependencyManager:
 
     def check_dependency_conflicts(self) -> List[Dict]:
         """Check for dependency conflicts"""
-        code, stdout, _ = self.run_command("pip check")
+        code, stdout, stderr = self.run_command("pip check")
         conflicts = []
 
         if code != 0:
@@ -142,7 +142,7 @@ class DependencyManager:
             print(f"💡 Activate it with: source {venv_path}/bin/activate")
             return True
         else:
-            print(f"❌ Failed to create virtual environment: {stderr}")
+            print("❌ Failed to create virtual environment")
             return False
 
     def install_requirements(self, requirements_file: str) -> bool:
@@ -159,7 +159,7 @@ class DependencyManager:
             print(f"✅ Successfully installed requirements from {requirements_file}")
             return True
         else:
-            print(f"❌ Failed to install requirements: {stderr}")
+            print("❌ Failed to install requirements")
             return False
 
     def generate_requirements_lock(self) -> bool:
@@ -174,7 +174,7 @@ class DependencyManager:
             print("✅ requirements.lock generated successfully")
             return True
         else:
-            print(f"❌ Failed to generate lock file: {stderr}")
+            print("❌ Failed to generate lock file")
             return False
 
     def analyze_dependencies(self) -> Dict:
@@ -255,7 +255,8 @@ class DependencyManager:
             for issue in analysis["security_issues"]:
                 status_icon = "✅" if issue["status"] == "secure" else "❌"
                 print(
-                    f"  {status_icon} {issue['package']}: {issue['version']} ({issue['status']})"
+                    f"  {status_icon} {issue['package']}: "
+                    f"{issue['version']} ({issue['status']})"
                 )
 
         print("\n" + "=" * 60)
