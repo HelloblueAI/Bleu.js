@@ -122,7 +122,7 @@ async def get_current_user(
     return user
 
 
-async def get_optional_current_user(
+def get_optional_current_user(
     request: Request,
     db: Session = Depends(get_db),
 ) -> Optional[User]:
