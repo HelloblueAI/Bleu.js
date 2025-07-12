@@ -35,7 +35,7 @@ class DependencyManager:
 
     def get_package_info(self, package: str) -> Dict:
         """Get detailed information about a package"""
-        code, stdout, stderr = self.run_command(f"pip show {package}")
+        code, stdout, _ = self.run_command(f"pip show {package}")
         if code != 0:
             return {}
 
@@ -48,7 +48,7 @@ class DependencyManager:
 
     def check_dependency_conflicts(self) -> List[Dict]:
         """Check for dependency conflicts"""
-        code, stdout, stderr = self.run_command("pip check")
+        code, stdout, _ = self.run_command("pip check")
         conflicts = []
 
         if code != 0:
@@ -65,7 +65,7 @@ class DependencyManager:
 
     def get_outdated_packages(self) -> List[Dict]:
         """Get list of outdated packages"""
-        code, stdout, stderr = self.run_command("pip list --outdated --format=json")
+        code, stdout, _ = self.run_command("pip list --outdated --format=json")
         if code != 0:
             return []
 
@@ -80,7 +80,7 @@ class DependencyManager:
         if version:
             cmd = f"pip install {package}=={version}"
 
-        code, stdout, stderr = self.run_command(cmd)
+        code, _, _ = self.run_command(cmd)
         return code == 0
 
     def fix_streamlit_conflicts(self) -> bool:
@@ -135,7 +135,7 @@ class DependencyManager:
             shutil.rmtree(venv_path)
 
         print("🔧 Creating new virtual environment...")
-        code, stdout, stderr = self.run_command(f"python -m venv {venv_path}")
+        code, _, _ = self.run_command(f"python -m venv {venv_path}")
 
         if code == 0:
             print("✅ Virtual environment created successfully")
@@ -153,7 +153,7 @@ class DependencyManager:
             return False
 
         print(f"📦 Installing requirements from {requirements_file}...")
-        code, stdout, stderr = self.run_command(f"pip install -r {file_path}")
+        code, _, _ = self.run_command(f"pip install -r {file_path}")
 
         if code == 0:
             print(f"✅ Successfully installed requirements from {requirements_file}")
@@ -166,7 +166,7 @@ class DependencyManager:
         """Generate a requirements.lock file with exact versions"""
         print("🔒 Generating requirements.lock file...")
 
-        code, stdout, stderr = self.run_command("pip freeze")
+        code, stdout, _ = self.run_command("pip freeze")
         if code == 0:
             lock_file = self.project_root / "requirements.lock"
             with open(lock_file, "w") as f:
