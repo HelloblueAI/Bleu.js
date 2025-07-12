@@ -3,9 +3,9 @@ Quantum State Management Module
 Copyright (c) 2024, Bleu.js
 """
 
-from functools import reduce  # For _expand_gate method
 import logging
 from dataclasses import dataclass
+from functools import reduce  # For _expand_gate method
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np

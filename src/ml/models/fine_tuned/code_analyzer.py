@@ -49,8 +49,7 @@ class CodeAnalyzer:
         """Detect common bad practices using regex + AST."""
         issues = []
         if re.search(r"eval\s*\(", code):  # Detect dangerous eval usage
-            issues.append(
-                "⚠️ `eval()` detected! Avoid using eval for security reasons.")
+            issues.append("⚠️ `eval()` detected! Avoid using eval for security reasons.")
 
         return issues
 

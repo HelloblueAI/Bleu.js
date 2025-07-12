@@ -53,12 +53,7 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "": [
-            "models/*",
-            "configs/*",
-            "data/*",
-            "static/*",
-            "templates/*"],
+        "": ["models/*", "configs/*", "data/*", "static/*", "templates/*"],
     },
     extras_require={
         "dev": [

@@ -2,9 +2,10 @@
 Script to test the Bleu.js API client.
 """
 
-from bleujs.core.api_client import api_client
 import sys
 from pathlib import Path
+
+from bleujs.core.api_client import api_client
 
 # Add the parent directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent.parent))

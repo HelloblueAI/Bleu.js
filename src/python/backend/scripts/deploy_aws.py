@@ -2,6 +2,13 @@
 Script to deploy the Bleu.js API to AWS API Gateway.
 """
 
+import os
+import sys
+from pathlib import Path
+from typing import Any, Dict
+
+from bleujs.config.aws import AWSConfig
+from bleujs.core.aws import AWSService
 from bleujs.core.models import (
     APICallLog,
     Job,
@@ -9,12 +16,6 @@ from bleujs.core.models import (
     SubscriptionTier,
     UsageStats,
 )
-from bleujs.core.aws import AWSService
-from bleujs.config.aws import AWSConfig
-import os
-import sys
-from pathlib import Path
-from typing import Any, Dict
 
 # Add the parent directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent.parent))

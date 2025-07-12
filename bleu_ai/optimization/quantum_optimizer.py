@@ -131,8 +131,8 @@ class QuantumOptimizer:
 
                 # Batch training
                 for i in range(0, len(train_data), batch_size):
-                    batch_data = train_data[i: i + batch_size]
-                    batch_labels = train_labels[i: i + batch_size]
+                    batch_data = train_data[i : i + batch_size]
+                    batch_labels = train_labels[i : i + batch_size]
 
                     # Forward pass
                     outputs = model(batch_data)

@@ -2,11 +2,12 @@
 Script to test the subscription system.
 """
 
-from bleujs.core.subscription import SubscriptionService
-from bleujs.core.models import SubscriptionTier
-from bleujs.core.database import SessionLocal
 import sys
 from pathlib import Path
+
+from bleujs.core.database import SessionLocal
+from bleujs.core.models import SubscriptionTier
+from bleujs.core.subscription import SubscriptionService
 
 # Add the parent directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent.parent))

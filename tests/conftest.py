@@ -1,7 +1,3 @@
-from tests.test_config import get_test_settings
-from src.models.declarative_base import Base
-from src.models.customer import Customer
-from src.main import app
 import os
 from datetime import datetime, timezone
 
@@ -11,6 +7,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+
+from src.main import app
+from src.models.customer import Customer
+from src.models.declarative_base import Base
+from tests.test_config import get_test_settings
 
 # Set testing environment and load test environment variables
 os.environ["TESTING"] = "true"
