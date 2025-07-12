@@ -55,55 +55,78 @@ class QuantumAwareScheduler:
             metrics = {}
 
         current_lr = self.optimizer.param_groups[0]["lr"]
-
-        # Warmup phase
-        if self.epoch < self.config.warmup_epochs:
-            lr = self.config.initial_lr * ((self.epoch + 1) / self.config.warmup_epochs)
-        else:
-            # Regular phase with quantum adjustment
-            if "loss" in metrics:
-                loss = metrics["loss"]
-                if loss < self.best_loss:
-                    self.best_loss = loss
-                    self.patience_counter = 0
-                else:
-                    self.patience_counter += 1
-
-                if self.patience_counter >= self.config.patience:
-                    lr = max(
-                        current_lr * self.config.reduction_factor, self.config.min_lr
-                    )
-                    self.patience_counter = 0
-                else:
-                    lr = current_lr
-            else:
-                lr = current_lr
-
-            # Apply quantum adjustment if processor available
-            if (
-                self.quantum_processor
-                and self.epoch % self.config.measurement_frequency == 0
-            ):
-                quantum_state = self.quantum_processor.get_state()
-                self.quantum_measurements.append(quantum_state)
-
-                if len(self.quantum_measurements) > 1:
-                    prev_state = self.quantum_measurements[-2]
-                    distance = self.quantum_state_distance(quantum_state, prev_state)
-                    if distance > self.config.noise_tolerance:
-                        lr = lr * (
-                            1 - self.config.quantum_sensitivity * distance
-                        )  # Reduce LR when quantum state changes significantly
-
-        # Apply bounds
-        lr = min(max(lr, self.config.min_lr), self.config.max_lr)
-
-        # Update optimizer
-        for group in self.optimizer.param_groups:
-            group["lr"] = lr
-
+        lr = self._calculate_learning_rate(current_lr, metrics)
+        lr = self._apply_bounds(lr)
+        self._update_optimizer(lr)
         self.last_lr = lr
         self.epoch += 1
+
+    def _calculate_learning_rate(self, current_lr: float, metrics: Dict) -> float:
+        """Calculate the new learning rate based on current state and metrics."""
+        if self.epoch < self.config.warmup_epochs:
+            return self._calculate_warmup_lr()
+
+        lr = self._calculate_regular_lr(current_lr, metrics)
+        lr = self._apply_quantum_adjustment(lr)
+        return lr
+
+    def _calculate_warmup_lr(self) -> float:
+        """Calculate learning rate during warmup phase."""
+        return self.config.initial_lr * ((self.epoch + 1) / self.config.warmup_epochs)
+
+    def _calculate_regular_lr(self, current_lr: float, metrics: Dict) -> float:
+        """Calculate learning rate during regular training phase."""
+        if "loss" not in metrics:
+            return current_lr
+
+        loss = metrics["loss"]
+        if loss < self.best_loss:
+            self.best_loss = loss
+            self.patience_counter = 0
+            return current_lr
+        else:
+            self.patience_counter += 1
+            if self.patience_counter >= self.config.patience:
+                self.patience_counter = 0
+                return max(
+                    current_lr * self.config.reduction_factor, self.config.min_lr
+                )
+            return current_lr
+
+    def _apply_quantum_adjustment(self, lr: float) -> float:
+        """Apply quantum state-based adjustment to learning rate."""
+        if not self._should_apply_quantum_adjustment():
+            return lr
+
+        quantum_state = self.quantum_processor.get_state()
+        self.quantum_measurements.append(quantum_state)
+
+        if len(self.quantum_measurements) <= 1:
+            return lr
+
+        prev_state = self.quantum_measurements[-2]
+        distance = self.quantum_state_distance(quantum_state, prev_state)
+
+        if distance > self.config.noise_tolerance:
+            return lr * (1 - self.config.quantum_sensitivity * distance)
+
+        return lr
+
+    def _should_apply_quantum_adjustment(self) -> bool:
+        """Check if quantum adjustment should be applied."""
+        return (
+            self.quantum_processor is not None
+            and self.epoch % self.config.measurement_frequency == 0
+        )
+
+    def _apply_bounds(self, lr: float) -> float:
+        """Apply min/max bounds to learning rate."""
+        return min(max(lr, self.config.min_lr), self.config.max_lr)
+
+    def _update_optimizer(self, lr: float) -> None:
+        """Update optimizer with new learning rate."""
+        for group in self.optimizer.param_groups:
+            group["lr"] = lr
 
     def state_dict(self) -> Dict:
         """Return scheduler state for checkpointing"""

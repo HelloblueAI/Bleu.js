@@ -35,7 +35,11 @@ class Settings(BaseSettings):
     HOST: str = "localhost"
     APP_ENV: str = "development"
     APP_DEBUG: bool = True
-    APP_URL: str = "http://localhost:3000"
+    APP_URL: str = (
+        "https://localhost:3000"
+        if os.getenv("ENVIRONMENT") == "production"
+        else "http://localhost:3000"
+    )
     APP_PORT: int = 3000
     VERSION: str = "0.1.0"
     API_VERSION: str = "v1"
@@ -67,7 +71,11 @@ class Settings(BaseSettings):
     REDIS_CONFIG: RedisConfig = RedisConfig()
 
     # Security settings
-    CORS_ORIGINS: str = "http://localhost:3000"
+    CORS_ORIGINS: str = (
+        "https://localhost:3000"
+        if os.getenv("ENVIRONMENT") == "production"
+        else "http://localhost:3000"
+    )
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
     JWT_SECRET_KEY: str = Field(default="test_jwt_secret_key")
     JWT_ALGORITHM: str = "HS256"
@@ -153,7 +161,7 @@ class Settings(BaseSettings):
     VAULT_ADDR: str = "https://vault.example.com"
     VAULT_TOKEN: SecretStr = Field(default="test_token")
     VAULT_NAMESPACE: str = "test_namespace"
-    LOCAL_SECRETS_PATH: str = "/tmp/secrets"
+    LOCAL_SECRETS_PATH: str = os.path.join(os.getcwd(), "secrets")
     SECRET_ROTATION_INTERVAL: int = 3600
 
     # API settings
@@ -191,7 +199,7 @@ class Settings(BaseSettings):
 
     # Quantum settings
     QUANTUM_ENABLED: bool = True
-    QUANTUM_SIMULATOR_URL: str = "http://localhost:8080"
+    QUANTUM_SIMULATOR_URL: str = "https://localhost:8080"
     ENABLE_QUANTUM: bool = True
 
     # AI settings

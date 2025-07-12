@@ -65,7 +65,12 @@ class Settings(BaseSettings):
 
     # Security
     CORS_ORIGINS: str = os.getenv(
-        "CORS_ORIGINS", "http://localhost:3000,https://bleujs.com"
+        "CORS_ORIGINS",
+        (
+            "https://localhost:3000,https://bleujs.com"
+            if os.getenv("ENVIRONMENT") == "production"
+            else "http://localhost:3000,https://bleujs.com"
+        ),
     )
     ALLOWED_HOSTS: str = os.getenv("ALLOWED_HOSTS", "*")
 

@@ -1,10 +1,13 @@
 # Use Python 3.8 slim image
 FROM python:3.8-slim
 
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies (explicitly specify packages)
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -12,14 +15,22 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies (explicitly specify, no auto-install)
+RUN pip install --no-cache-dir --no-deps -r requirements.txt
 
-# Copy the rest of the application
-COPY . .
+# Copy only necessary application files (not recursive)
+COPY src/ ./src/
+COPY setup.py .
+COPY README.md .
 
-# Install the package in development mode
-RUN pip install -e ".[dev]"
+# Install the package in development mode (explicitly specify dependencies)
+RUN pip install --no-cache-dir --no-deps -e ".[dev]"
+
+# Change ownership to non-root user
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
 
 # Set environment variables
 ENV PYTHONPATH=/app

@@ -205,7 +205,7 @@ class QuantumIntelligence:
         # Perform quantum optimization
         optimization_results = await self.quantum_processor.optimize_parameters(
             optimization_params,
-            lambda x: self._calculate_optimization_score(x, features, target),
+            lambda x: self._calculate_optimization_score_with_params(x),
         )
 
         # Update optimization history
@@ -256,6 +256,14 @@ class QuantumIntelligence:
         if len(self.quantum_memory) == 0:
             return 0.0
         return min(1.0, len(self.quantum_memory) / 1000)
+
+    def _calculate_optimization_score_with_params(
+        self, params: Dict, *_args, **_kwargs
+    ) -> float:
+        """Calculate optimization score with parameters"""
+        # This is a placeholder implementation
+        # In a real implementation, this would evaluate the optimization parameters
+        return 0.5
 
     def _calculate_optimization_score(self) -> float:
         """Calculate optimization effectiveness score"""

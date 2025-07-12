@@ -341,7 +341,8 @@ class MessageQueueTrigger:
         """Stop consuming messages."""
         self._running = False
         if self.connection:
-            asyncio.create_task(self.connection.close())
+            # Store the task to prevent garbage collection
+            self._close_task = asyncio.create_task(self.connection.close())
 
     async def _handle_message(self, message: bytes) -> None:
         """Handle queue message."""

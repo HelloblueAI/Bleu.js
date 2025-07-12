@@ -47,10 +47,15 @@ def test_model() -> tf.keras.Model:
 @pytest.fixture(scope="session")
 def test_env() -> Generator[Dict[str, str], None, None]:
     """Set up test environment variables."""
+    # Use a more secure temporary directory
+    import tempfile
+
+    temp_dir = tempfile.mkdtemp(prefix="bleu_test_")
+
     env_vars = {
         "BLEU_TEST_MODE": "true",
         "BLEU_LOG_LEVEL": "DEBUG",
-        "BLEU_CACHE_DIR": "/tmp/bleu_test_cache",
+        "BLEU_CACHE_DIR": temp_dir,
     }
     original_env = {k: os.environ.get(k) for k in env_vars}
     for k, v in env_vars.items():

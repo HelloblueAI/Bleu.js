@@ -3,6 +3,7 @@ Enhanced text processor with advanced NLP features.
 """
 
 import logging
+import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -211,9 +212,10 @@ class EnhancedTextProcessor:
 
         # Save attention pooling if used
         if self.config.use_attention_pooling:
-            torch.save(
-                self.attention_pooling.state_dict(), f"{path}/attention_pooling.pt"
-            )
+            attention_pooling_path = f"{path}/attention_pooling.pt"
+            # Ensure the directory exists and is writable
+            os.makedirs(os.path.dirname(attention_pooling_path), exist_ok=True)
+            torch.save(self.attention_pooling.state_dict(), attention_pooling_path)
 
     def load_processor(self, path: str):
         """Load processor from disk."""
@@ -229,6 +231,8 @@ class EnhancedTextProcessor:
 
         # Load attention pooling if used
         if self.config.use_attention_pooling:
-            self.attention_pooling.load_state_dict(
-                torch.load(f"{path}/attention_pooling.pt")
-            )
+            attention_pooling_path = f"{path}/attention_pooling.pt"
+            if os.path.exists(attention_pooling_path):
+                self.attention_pooling.load_state_dict(
+                    torch.load(attention_pooling_path, map_location=self.config.device)
+                )
