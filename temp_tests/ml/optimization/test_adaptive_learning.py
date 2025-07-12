@@ -31,7 +31,7 @@ def model():
 @pytest.fixture
 def optimizer(model):
     """Create an optimizer."""
-    return Adam(model.parameters(), lr=0.1)
+    return Adam(model.parameters(), lr=0.1, weight_decay=1e-4)
 
 
 @pytest.fixture

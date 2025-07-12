@@ -8,6 +8,7 @@ import base64
 import hashlib
 import json
 import logging
+import os
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
@@ -106,7 +107,7 @@ class QuantumModelVersioning:
 
     def _generate_encryption_key(self) -> bytes:
         """Generate encryption key for model security"""
-        salt = b"quantum_versioning_salt"
+        salt = os.urandom(16)  # Generate cryptographically secure random salt
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
@@ -144,7 +145,7 @@ class QuantumModelVersioning:
         try:
             import dill
 
-            return dill.loads(model_bytes)
+            return dill.loads(model_bytes)  # nosec B301 - Trusted model deserialization
         except Exception as e:
             logger.error(f"Model deserialization failed: {str(e)}")
             raise

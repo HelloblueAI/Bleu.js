@@ -54,11 +54,11 @@ class QuantumAlgorithms:
             power = 2**i
             U_power = np.linalg.matrix_power(unitary, power)
             controlled_U = create_controlled_unitary(U_power)
-            qpe_circuit.add_gate("CUSTOM", [control], matrix=controlled_U)
+            qpe_circuit.add_custom_gate("CUSTOM", controlled_U, [control])
 
         # Apply inverse QFT to control qubits
         qft_inv = np.conj(quantum_fourier_transform(precision_qubits)).T
-        qpe_circuit.add_gate("CUSTOM", control_qubits, matrix=qft_inv)
+        qpe_circuit.add_custom_gate("CUSTOM", qft_inv, control_qubits)
 
         # Run circuit multiple times and collect statistics
         phases = []
@@ -111,9 +111,9 @@ class QuantumAlgorithms:
         # Apply Grover iterations
         for _ in range(num_iterations):
             # Apply oracle
-            circuit.add_gate("CUSTOM", list(range(num_qubits)), matrix=oracle)
+            circuit.add_custom_gate("CUSTOM", oracle, list(range(num_qubits)))
             # Apply diffusion operator
-            circuit.add_gate("CUSTOM", list(range(num_qubits)), matrix=G)
+            circuit.add_custom_gate("CUSTOM", G, list(range(num_qubits)))
 
         # Run circuit and measure
         final_state = self.processor.apply_circuit(circuit)
@@ -191,12 +191,8 @@ class QuantumAlgorithms:
         for i in range(precision_qubits):
             power = 2**i
             for _ in range(power):
-                circuit.add_gate(
-                    "CUSTOM", list(range(num_qubits)), matrix=oracle, control_qubits=[i]
-                )
-                circuit.add_gate(
-                    "CUSTOM", list(range(num_qubits)), matrix=G, control_qubits=[i]
-                )
+                circuit.add_custom_gate("CUSTOM", oracle, list(range(num_qubits)), [i])
+                circuit.add_custom_gate("CUSTOM", G, list(range(num_qubits)), [i])
 
         # Apply inverse QFT to counting qubits
         qft_circuit = self.quantum_fourier_transform_circuit(
@@ -259,6 +255,58 @@ class QuantumAlgorithms:
         receiver_state = final_state.reshape(2, 2, 2)[0, 0, :]
         return receiver_state / np.linalg.norm(receiver_state)
 
+    def _encode_logical_state(self, circuit: QuantumCircuit, state: np.ndarray) -> None:
+        """Encode logical state using Shor's 9-qubit code."""
+        circuit.state.amplitudes[:2] = state
+        for i in range(0, 9, 3):
+            # Create GHZ-like state for each block
+            circuit.add_gate("H", [i])
+            circuit.add_gate("CNOT", [i + 1], [i])
+            circuit.add_gate("CNOT", [i + 2], [i])
+
+    def _simulate_errors(self, circuit: QuantumCircuit, error_rate: float) -> None:
+        """Simulate random errors on the circuit."""
+        for i in range(9):
+            if np.random.random() < error_rate:
+                # Apply random Pauli error
+                error = np.random.choice(["X", "Y", "Z"])
+                circuit.add_gate(error, [i])
+
+    def _measure_stabilizer(
+        self, circuit: QuantumCircuit, qubits: List[int], basis: str
+    ) -> None:
+        """Measure a stabilizer and apply corrections."""
+        if basis == "Z":
+            measurements = circuit.measure(qubits)
+            # Apply corrections
+            if sum(measurements.values()) % 2 == 1:
+                circuit.add_gate("X", [qubits[0]])
+        else:  # X basis
+            # Transform to Z basis
+            for q in qubits:
+                circuit.add_gate("H", [q])
+            measurements = circuit.measure(qubits)
+            # Apply corrections
+            if sum(measurements.values()) % 2 == 1:
+                circuit.add_gate("Z", [qubits[0]])
+            # Transform back
+            for q in qubits:
+                circuit.add_gate("H", [q])
+
+    def _perform_error_correction(self, circuit: QuantumCircuit) -> None:
+        """Perform error correction using stabilizer measurements."""
+        stabilizers = [
+            ([0, 1, 2], "Z"),  # Phase errors
+            ([3, 4, 5], "Z"),
+            ([6, 7, 8], "Z"),
+            ([0, 3, 6], "X"),  # Bit-flip errors
+            ([1, 4, 7], "X"),
+            ([2, 5, 8], "X"),
+        ]
+
+        for qubits, basis in stabilizers:
+            self._measure_stabilizer(circuit, qubits, basis)
+
     def quantum_error_correction(
         self, state: np.ndarray, error_rate: float
     ) -> np.ndarray:
@@ -278,51 +326,13 @@ class QuantumAlgorithms:
         circuit = QuantumCircuit(9)
 
         # Encode logical state
-        # |ψ⟩ → |ψ⟩⊗(|000⟩ + |111⟩)⊗3/√8
-        circuit.state.amplitudes[:2] = state
-
-        for i in range(0, 9, 3):
-            # Create GHZ-like state for each block
-            circuit.add_gate("H", [i])
-            circuit.add_gate("CNOT", [i + 1], [i])
-            circuit.add_gate("CNOT", [i + 2], [i])
+        self._encode_logical_state(circuit, state)
 
         # Simulate errors
-        for i in range(9):
-            if np.random.random() < error_rate:
-                # Apply random Pauli error
-                error = np.random.choice(["X", "Y", "Z"])
-                circuit.add_gate(error, [i])
+        self._simulate_errors(circuit, error_rate)
 
         # Perform error correction
-        # Measure stabilizers
-        stabilizers = [
-            ([0, 1, 2], "Z"),  # Phase errors
-            ([3, 4, 5], "Z"),
-            ([6, 7, 8], "Z"),
-            ([0, 3, 6], "X"),  # Bit-flip errors
-            ([1, 4, 7], "X"),
-            ([2, 5, 8], "X"),
-        ]
-
-        for qubits, basis in stabilizers:
-            # Measure stabilizer
-            if basis == "Z":
-                measurements = circuit.measure(qubits)
-                # Apply corrections
-                if sum(measurements.values()) % 2 == 1:
-                    circuit.add_gate("X", [qubits[0]])
-            else:  # X basis
-                # Transform to Z basis
-                for q in qubits:
-                    circuit.add_gate("H", [q])
-                measurements = circuit.measure(qubits)
-                # Apply corrections
-                if sum(measurements.values()) % 2 == 1:
-                    circuit.add_gate("Z", [qubits[0]])
-                # Transform back
-                for q in qubits:
-                    circuit.add_gate("H", [q])
+        self._perform_error_correction(circuit)
 
         # Run circuit
         final_state = self.processor.apply_circuit(circuit)

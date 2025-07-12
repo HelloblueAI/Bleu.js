@@ -67,7 +67,8 @@ class QuantumAttention:
         probabilities = np.array(measurements)
 
         if self.config.dropout_rate > 0:
-            mask = np.random.binomial(
+            rng = np.random.default_rng()
+            mask = rng.binomial(
                 1, 1 - self.config.dropout_rate, size=probabilities.shape
             )
             probabilities *= mask

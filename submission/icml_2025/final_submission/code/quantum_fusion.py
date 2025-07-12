@@ -49,7 +49,7 @@ class QuantumFusion:
             qml.RY(params[i], wires=i)
         return qml.state()
 
-    def _measure_quantum_state(self, state: np.ndarray) -> List[float]:
+    def _measure_quantum_state(self) -> List[float]:
         """Measure quantum state."""
         measurements = [
             qml.expval(qml.PauliZ(i)) for i in range(self.config.num_qubits)
@@ -70,18 +70,17 @@ class QuantumFusion:
         self._prepare_quantum_state(x2_norm)
 
         # Apply quantum gates
-        params = np.random.randn(self.config.num_qubits - 1)
+        rng = np.random.default_rng()
+        params = rng.standard_normal(self.config.num_qubits - 1)
         fused_state = self._apply_quantum_gates(params)
 
         # Apply dropout during training
         if self.training and self.config.dropout_rate > 0:
-            mask = np.random.binomial(
-                1, 1 - self.config.dropout_rate, size=fused_state.shape
-            )
+            mask = rng.binomial(1, 1 - self.config.dropout_rate, size=fused_state.shape)
             fused_state = fused_state * mask
 
         # Measure quantum state
-        measurements = self._measure_quantum_state(fused_state)
+        measurements = self._measure_quantum_state()
 
         return np.array(measurements)
 

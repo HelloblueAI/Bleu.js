@@ -9,6 +9,10 @@ Parameters:
   KeyName:
     Type: String
     Description: Name of an existing EC2 KeyPair
+  AdminCIDR:
+    Type: String
+    Default: 10.0.0.0/8
+    Description: CIDR block for administrative access
 
 Resources:
   BleujsSecurityGroup:
@@ -19,7 +23,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref AdminCIDR
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80

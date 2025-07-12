@@ -121,43 +121,10 @@ async def main():
         # Measure training time
         start_time = time.time()
         metrics = await model.train(train_features, train_labels)
-        training_time = time.time() - start_time
-
-        # Get current model state
-        model_state = {
-            "n_estimators": config.n_estimators,
-            "learning_rate": config.learning_rate,
-            "max_depth": config.max_depth,
-            "quantum_feature_ratio": config.quantum_feature_ratio,
-            "n_qubits": config.n_qubits,
-            "n_layers": config.n_layers,
-        }
-
-        # Get quantum state
-        quantum_state = {
-            "coherence_time": circuit_info["coherence_time"],
-            "entanglement_quality": circuit_info["entanglement_quality"],
-            "error_rate": quantum_processor.get_metrics()["error_rate"],
-        }
-
-        # Combine metrics for self-learning
-        current_metrics = {
-            "performance_score": metrics.get("auc", 0.0),
-            "quantum_speedup": circuit_info["quantum_speedup"],
-            "coherence_time": circuit_info["coherence_time"],
-            "entanglement_quality": circuit_info["entanglement_quality"],
-            "error_rate": quantum_processor.get_metrics()["error_rate"],
-            "model_complexity": config.max_depth / 10.0,  # Normalized complexity
-            "adaptation_speed": 1.0 / training_time,
-        }
 
         # Apply self-learning
         print("\nApplying self-learning...")
-        updated_state = await self_learning.learn(
-            current_metrics=current_metrics,
-            model_state=model_state,
-            quantum_state=quantum_state,
-        )
+        updated_state = await self_learning.learn(train_features, train_labels)
 
         # Update model configuration
         config.n_estimators = int(
