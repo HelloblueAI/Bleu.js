@@ -1,27 +1,20 @@
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Dict
 
 import stripe
-from fastapi import HTTPException
 
 
 # Custom exceptions
 class PaymentError(Exception):
     """Base exception for payment-related errors."""
 
-    pass
-
 
 class PaymentValidationError(PaymentError):
     """Raised when payment validation fails."""
 
-    pass
-
 
 class PaymentProcessingError(PaymentError):
     """Raised when payment processing fails."""
-
-    pass
 
 
 class PaymentService:

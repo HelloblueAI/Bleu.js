@@ -3,8 +3,6 @@ Explainability Engine for Advanced Decision Tree
 Copyright (c) 2024, Bleu.js
 """
 
-import json
-import logging
 import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Union
@@ -19,12 +17,10 @@ import plotly.graph_objects as go
 import ray
 import shap
 import structlog
-import torch
 from plotly.subplots import make_subplots
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import export_graphviz
 from tensorflow import keras
-from torch.utils.data import DataLoader
 
 
 @dataclass

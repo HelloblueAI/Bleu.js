@@ -3,15 +3,12 @@ Analytics visualization utilities for the automation pipeline.
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
-import seaborn as sns
 from plotly.subplots import make_subplots
 
 

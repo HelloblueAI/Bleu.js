@@ -1,16 +1,9 @@
 """Case studies demonstrating quantum advantage in real-world scenarios."""
 
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-import numpy as np
-import pandas as pd
-from sklearn.datasets import (
-    load_breast_cancer,
-    load_diabetes,
-    load_iris,
-    make_classification,
-)
+from sklearn.datasets import load_breast_cancer, load_diabetes, make_classification
 
 from .quantum_benchmarks import QuantumBenchmark
 
@@ -132,16 +125,23 @@ class QuantumCaseStudy:
         }
 
         logger.info(f"\n{study_name} Case Study Results:")
-        logger.info(
-            f"Classical {classical_result.metric_name}: {classical_result.metric_value:.4f}"
+        msg = (
+            f"Classical {classical_result.metric_name}: "
+            f"{classical_result.metric_value:.4f}"
         )
-        logger.info(
-            f"Quantum {quantum_result.metric_name}: {quantum_result.metric_value:.4f}"
+        logger.info(msg)
+        msg2 = (
+            f"Quantum {quantum_result.metric_name}: "
+            f"{quantum_result.metric_value:.4f}"
         )
-        logger.info(f"Quantum Advantage: {quantum_result.quantum_advantage:.2%}")
-        logger.info(
-            f"Training Time Improvement: {analysis['improvement']['speed_improvement']:.2f}%"
+        logger.info(msg2)
+        msg3 = f"Quantum Advantage: {quantum_result.quantum_advantage:.2%}"
+        logger.info(msg3)
+        msg4 = (
+            f"Training Time Improvement: "
+            f"{analysis['improvement']['speed_improvement']:.2f}%"
         )
+        logger.info(msg4)
 
         return analysis
 
@@ -166,22 +166,63 @@ class QuantumCaseStudy:
                 results, study_name.replace("_", " ").title()
             )
 
+            # F541: Convert f-strings without placeholders to regular strings
+            msg3 = "\\nClassical Performance:"
+            msg4 = (
+                f"  {analysis['classical_performance']['metric']}: "
+                f"{analysis['classical_performance']['value']:.4f}"
+            )
+            msg5 = (
+                f"  Training Time: "
+                f"{analysis['classical_performance']['training_time']:.2f}s"
+            )
+            msg6 = (
+                f"  Inference Time: "
+                f"{analysis['classical_performance']['inference_time']:.2f}s"
+            )
+            msg7 = "\\nQuantum Performance:"
+            msg8 = (
+                f"  {analysis['quantum_performance']['metric']}: "
+                f"{analysis['quantum_performance']['value']:.4f}"
+            )
+            msg9 = (
+                f"  Training Time: "
+                f"{analysis['quantum_performance']['training_time']:.2f}s"
+            )
+            msg10 = (
+                f"  Inference Time: "
+                f"{analysis['quantum_performance']['inference_time']:.2f}s"
+            )
+            msg11 = "\\nImprovements:"
+            msg12 = (
+                f"  Performance: "
+                f"{analysis['improvement']['performance_improvement']:.2f}%"
+            )
+            msg13 = (
+                f"  Speed: "
+                f"{analysis['improvement']['speed_improvement']:.2f}%"
+            )
+            msg14 = (
+                f"  Efficiency: "
+                f"{analysis['improvement']['efficiency_improvement']:.2f}%"
+            )
+
             report.extend(
                 [
                     f"\n{analysis['study_name']}",
                     "-" * len(analysis["study_name"]),
-                    f"\nClassical Performance:",
-                    f"  {analysis['classical_performance']['metric']}: {analysis['classical_performance']['value']:.4f}",
-                    f"  Training Time: {analysis['classical_performance']['training_time']:.2f}s",
-                    f"  Inference Time: {analysis['classical_performance']['inference_time']:.2f}s",
-                    f"\nQuantum Performance:",
-                    f"  {analysis['quantum_performance']['metric']}: {analysis['quantum_performance']['value']:.4f}",
-                    f"  Training Time: {analysis['quantum_performance']['training_time']:.2f}s",
-                    f"  Inference Time: {analysis['quantum_performance']['inference_time']:.2f}s",
-                    f"  Quantum Advantage: {analysis['quantum_performance']['quantum_advantage']:.2%}",
-                    f"\nImprovements:",
-                    f"  Metric Improvement: {analysis['improvement']['metric_improvement']:.2f}%",
-                    f"  Speed Improvement: {analysis['improvement']['speed_improvement']:.2f}%",
+                    msg3,
+                    msg4,
+                    msg5,
+                    msg6,
+                    msg7,
+                    msg8,
+                    msg9,
+                    msg10,
+                    msg11,
+                    msg12,
+                    msg13,
+                    msg14,
                 ]
             )
 

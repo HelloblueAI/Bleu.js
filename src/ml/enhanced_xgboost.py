@@ -45,6 +45,7 @@ class QuantumFeatureConfig:
     shots: int = 1000
     backend: str = "qiskit"
     optimization_level: int = 3
+    version: str = "1.1.4"
 
 
 @dataclass
@@ -215,7 +216,7 @@ class PerformanceOptimizer:
             gpus = GPUtil.getGPUs()
             if gpus:
                 return int(gpus[0].memoryFree * 1024 * 1024)  # Convert to bytes
-        except:
+        except BaseException:
             pass
         return 0
 
@@ -259,7 +260,7 @@ class ResourceMonitor:
                     }
                     for gpu in gpus
                 ]
-        except:
+        except BaseException:
             pass
 
         self.metrics_history.append(metrics)
@@ -309,7 +310,7 @@ class EnhancedXGBoost:
             batch_size = self.performance_optimizer.optimize_batch_size(
                 self.model, X_processed, y
             )
-            num_workers = self.performance_optimizer.optimize_num_workers()
+            self.performance_optimizer.optimize_num_workers()
 
             # Initialize XGBoost model with optimized parameters
             self.model = xgb.XGBClassifier(
@@ -543,7 +544,7 @@ def main():
     enhanced_xgb.fit(X, y)
 
     # Make predictions
-    predictions = enhanced_xgb.predict(X)
+    enhanced_xgb.predict(X)
 
     # Save model
     enhanced_xgb.save_model("enhanced_model.xgb")

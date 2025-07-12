@@ -1,3 +1,16 @@
+from src.python.ml.computer_vision.quantum_vision_model import (
+    QuantumVisionConfig,
+    QuantumVisionModel,
+)
+from src.python.ml.computer_vision.quantum_loss import QuantumLoss, QuantumLossConfig
+from src.python.ml.computer_vision.quantum_fusion import (
+    QuantumFusion,
+    QuantumFusionConfig,
+)
+from src.python.ml.computer_vision.quantum_attention import (
+    QuantumAttention,
+    QuantumAttentionConfig,
+)
 import os
 import sys
 import unittest
@@ -7,20 +20,6 @@ import tensorflow as tf
 
 # Add the project root to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
-from src.python.ml.computer_vision.quantum_attention import (
-    QuantumAttention,
-    QuantumAttentionConfig,
-)
-from src.python.ml.computer_vision.quantum_fusion import (
-    QuantumFusion,
-    QuantumFusionConfig,
-)
-from src.python.ml.computer_vision.quantum_loss import QuantumLoss, QuantumLossConfig
-from src.python.ml.computer_vision.quantum_vision_model import (
-    QuantumVisionConfig,
-    QuantumVisionModel,
-)
 
 
 class TestQuantumVision(unittest.TestCase):

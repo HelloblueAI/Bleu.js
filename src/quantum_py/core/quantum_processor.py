@@ -35,6 +35,7 @@ class ProcessorConfig:
     optimization_level: int = 1
     use_error_correction: bool = True
     noise_model: str = "depolarizing"
+    version: str = "1.1.4"
 
 
 class QuantumProcessor:
@@ -174,29 +175,29 @@ class QuantumProcessor:
         """Prepare quantum state from classical data."""
         # Normalize the data
         normalized = data / np.linalg.norm(data)
-        
+
         # Create quantum circuit
         num_qubits = int(np.ceil(np.log2(len(normalized))))
         circuit = QiskitCircuit(num_qubits)
-        
+
         # Initialize the state
         circuit.initialize(normalized, range(num_qubits))
-        
+
         # Get the state vector
         state = Statevector.from_instruction(circuit)
         return state.data
-        
+
     def measure_correlation(self, quantum_state: np.ndarray) -> float:
         """Measure quantum correlation in the state."""
         # Convert state vector to density matrix
         density_matrix = np.outer(quantum_state, np.conj(quantum_state))
-        
+
         # Calculate quantum mutual information
         # This is a simplified version - in practice you'd want to use
         # more sophisticated measures of quantum correlation
         entropy = -np.trace(density_matrix @ np.log2(density_matrix + 1e-10))
         return float(entropy)
-        
+
     def apply_circuit(self, circuit: QiskitCircuit) -> np.ndarray:
         """Apply quantum circuit and return final state."""
         # If the circuit has measurements, use the sampler
@@ -210,69 +211,68 @@ class QuantumProcessor:
                 index = int(bitstring, 2)
                 state[index] = np.sqrt(prob)
             return state
-            
+
         # If no measurements, get the state vector directly
         state = Statevector.from_instruction(circuit)
         return state.data
-        
-    def get_expectation_value(self, circuit: QiskitCircuit, observable: Operator) -> float:
+
+    def get_expectation_value(
+        self, circuit: QiskitCircuit, observable: Operator
+    ) -> float:
         """Calculate expectation value of an observable."""
         job = self.estimator.run(circuits=[circuit], observables=[observable])
         result = job.result()
         return float(result.values[0])
-        
+
     def optimize_circuit(self, circuit: QiskitCircuit) -> QiskitCircuit:
         """Optimize quantum circuit."""
         from qiskit.transpiler import PassManager
-        from qiskit.transpiler.passes import Optimize1qGates, CXCancellation
-        
-        pm = PassManager([
-            Optimize1qGates(),
-            CXCancellation()
-        ])
-        
+        from qiskit.transpiler.passes import CXCancellation, Optimize1qGates
+
+        pm = PassManager([Optimize1qGates(), CXCancellation()])
+
         return pm.run(circuit)
-        
+
     def add_error_correction(self, circuit: QiskitCircuit) -> QiskitCircuit:
         """Add quantum error correction to circuit."""
         if not self.config.use_error_correction:
             return circuit
-            
+
         # This is a simplified version - in practice you'd want to use
         # proper quantum error correction codes
-        
+
         # Add redundancy
         new_circuit = QiskitCircuit(3 * circuit.num_qubits)
-        
+
         # Replicate each qubit's state
         for i in range(circuit.num_qubits):
             new_circuit.cx(i, i + circuit.num_qubits)
             new_circuit.cx(i, i + 2 * circuit.num_qubits)
-            
+
         # Add error detection
         for i in range(circuit.num_qubits):
             new_circuit.measure_all()
-            
+
         return new_circuit
-        
+
     def correct_errors(self, circuit: QiskitCircuit) -> QiskitCircuit:
         """Apply error correction to circuit results."""
         if not self.config.use_error_correction:
             return circuit
-            
+
         # This is a simplified version - in practice you'd want to use
         # proper error correction techniques
-        
+
         corrected = QiskitCircuit(circuit.num_qubits)
-        
+
         # Add majority voting
         for i in range(circuit.num_qubits // 3):
             base = 3 * i
             corrected.ccx(base, base + 1, base + 2)
-            
+
         return corrected
 
-    def apply_circuit(self, circuit: QuantumCircuit) -> np.ndarray:
+    def apply_circuit_processor(self, circuit: QuantumCircuit) -> np.ndarray:
         """Apply quantum circuit with error correction and noise simulation.
 
         Args:
@@ -346,7 +346,6 @@ class QuantumProcessor:
     def _determine_correction_operation(self, qubit_idx):
         """Determine the appropriate correction operation for a given qubit."""
         # Implementation depends on the error correction code being used
-        pass
 
     def _select_error_correction_type(self) -> str:
         """Select appropriate error correction code based on current conditions."""

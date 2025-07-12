@@ -152,7 +152,7 @@ class FeatureAnalyzer:
                 return importance
 
             # Get indices of top features
-            top_indices = np.argsort(importance)[-self.n_features :]
+            top_indices = np.argsort(importance)[-self.n_features:]
 
             # Create mask for top features
             mask = np.zeros_like(importance)

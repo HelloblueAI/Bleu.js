@@ -114,7 +114,7 @@ class MarketIntelligence:
     ) -> Dict:
         """Predict market trends using quantum intelligence"""
         try:
-            horizon = time_horizon or self.config.time_window
+            time_horizon or self.config.time_window
 
             # Process data for prediction
             processed_data = await self._process_market_data(market_data)

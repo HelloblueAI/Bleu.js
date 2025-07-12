@@ -1,12 +1,10 @@
 """Subscription routes module."""
 
-from datetime import datetime, timedelta, timezone
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from src.config import settings
 from src.database import get_db
 from src.middleware.auth import get_current_user
 from src.models.subscription import Subscription

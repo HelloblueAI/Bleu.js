@@ -117,7 +117,7 @@ class ModelCompressor:
                 raise ValueError("Quantization bits not initialized")
 
             # Get model parameters
-            params = model.get_params()
+            model.get_params()
 
             # Quantize feature importances
             if hasattr(model, "feature_importances_"):
@@ -129,7 +129,7 @@ class ModelCompressor:
             if not hasattr(model, "get_booster") or model.get_booster() is None:
                 raise ValueError("XGBoost model booster not initialized")
             booster = model.get_booster()
-            trees = booster.get_dump()
+            booster.get_dump()
 
             # Create new booster with quantized trees
             new_booster = xgb.Booster()
@@ -156,13 +156,13 @@ class ModelCompressor:
             importances = model.feature_importances_
 
             # Create mask for important features
-            mask = importances > self.pruning_threshold
+            importances > self.pruning_threshold
 
             # Apply pruning
             if not hasattr(model, "get_booster") or model.get_booster() is None:
                 raise ValueError("XGBoost model booster not initialized")
             booster = model.get_booster()
-            trees = booster.get_dump()
+            booster.get_dump()
 
             # Create new booster with pruned trees
             new_booster = xgb.Booster()

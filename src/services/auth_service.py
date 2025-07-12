@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from typing import Optional
 
 import httpx
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext

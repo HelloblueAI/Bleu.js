@@ -4,16 +4,13 @@ Quantum-Enhanced Attention Mechanism
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-import cirq
 import numpy as np
-import tensorflow as tf
 from cirq.circuits.circuit import Circuit
 from cirq.devices.line_qubit import LineQubit
 from cirq.ops.common_gates import CNOT, H, Ry, Rz
 from cirq.sim.sparse_simulator import Simulator
-from cirq.study.result import Result
 
 
 @dataclass

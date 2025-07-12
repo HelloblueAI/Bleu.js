@@ -96,8 +96,8 @@ class EnhancedTextProcessor:
         # Process in batches
         embeddings = []
         for i in range(0, len(input_ids), self.config.batch_size):
-            batch_input_ids = input_ids[i : i + self.config.batch_size]
-            batch_attention_mask = attention_mask[i : i + self.config.batch_size]
+            batch_input_ids = input_ids[i: i + self.config.batch_size]
+            batch_attention_mask = attention_mask[i: i + self.config.batch_size]
 
             with torch.no_grad():
                 outputs = self.model(
@@ -184,10 +184,10 @@ class EnhancedTextProcessor:
     ) -> Tuple[List[str], torch.Tensor]:
         """Classify texts using zero-shot classification."""
         # Get text embeddings
-        text_embeddings = self.process_text(texts)["embeddings"]
+        self.process_text(texts)["embeddings"]
 
         # Get label embeddings
-        label_embeddings = self.process_text(labels)["embeddings"]
+        self.process_text(labels)["embeddings"]
 
         # Calculate similarities
         similarities = self.get_similarity(texts, labels)

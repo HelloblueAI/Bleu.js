@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 
 
 def run_command(command):
@@ -18,29 +17,35 @@ def setup_environment():
     """Set up the Python environment and install dependencies."""
     # Remove old virtual environment
     run_command("rm -rf .venv")
-    
+
     # Create new virtual environment
     python_version = "3.10"  # Using Python 3.10 as specified in CI
     run_command(f"python{python_version} -m venv .venv")
-    
+
     # Activate virtual environment and install dependencies
     venv_python = os.path.join(".venv", "bin", "python")
     run_command(f"{venv_python} -m pip install --upgrade pip")
     run_command(f"{venv_python} -m pip install poetry==1.7.1")
-    run_command(f"{venv_python} -m poetry install --no-interaction --no-root --with dev")
-    
+    run_command(
+        f"{venv_python} -m poetry install --no-interaction --no-root --with dev"
+    )
+
     # Install quantum-specific dependencies
-    run_command(f"{venv_python} -m pip install qiskit==1.1.0 qiskit-aer==0.13.0 cirq==1.3.0")
+    run_command(
+        f"{venv_python} -m pip install qiskit==1.1.0 qiskit-aer==0.13.0 cirq==1.3.0"
+    )
 
 
 def run_tests():
     """Run all tests and checks."""
     venv_python = os.path.join(".venv", "bin", "python")
-    
+
     # Run tests with coverage
     print("\nRunning tests with coverage...")
-    run_command(f"{venv_python} -m pytest --cov=./ --cov-report=term-missing src/python/ml/computer_vision/test_quantum_fusion.py src/python/ml/computer_vision/test_quantum_vision.py")
-    
+    run_command(
+        f"{venv_python} -m pytest --cov=./ --cov-report=term-missing src/python/ml/computer_vision/test_quantum_fusion.py src/python/ml/computer_vision/test_quantum_vision.py"
+    )
+
     # Run linting checks
     print("\nRunning linting checks...")
     run_command(f"{venv_python} -m black . --check")
@@ -53,8 +58,8 @@ def run_tests():
 if __name__ == "__main__":
     print("Setting up environment...")
     setup_environment()
-    
+
     print("\nRunning tests and checks...")
     run_tests()
-    
+
     print("\nAll checks completed!")

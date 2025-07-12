@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from typing import Dict, List, Literal, Optional
+from typing import Dict, Literal
 
 import boto3
 import requests

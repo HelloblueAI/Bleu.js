@@ -6,7 +6,7 @@ from typing import Dict, Optional
 import aiohttp
 import boto3
 from fastapi import HTTPException, status
-from prometheus_client import REGISTRY, CollectorRegistry, Counter, Gauge, Histogram
+from prometheus_client import REGISTRY, Counter, Gauge, Histogram
 
 from src.config import settings
 
@@ -278,12 +278,10 @@ class MonitoringService:
     async def _get_customer_email(self, customer_id: str) -> Optional[str]:
         """Get customer email from database."""
         # Implement database lookup
-        pass
 
     async def _send_alert_email(self, email: str, subject: str, message: str) -> None:
         """Send alert email to customer."""
         # Implement email sending
-        pass
 
     def get_monitoring_data(self, customer_id: str) -> Optional[Dict]:
         """Get monitoring data for a customer."""

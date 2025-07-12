@@ -4,16 +4,11 @@ Bleujs Award Submission Automation Script
 Automates the submission process for various awards
 """
 
-import json
 import logging
-import os
 import shutil
-import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import requests
+from typing import List
 
 logger = logging.getLogger(__name__)
 

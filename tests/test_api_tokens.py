@@ -1,4 +1,3 @@
-import asyncio
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -8,7 +7,6 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from src.database import get_db
 from src.main import app
 from src.models.subscription import (
     APIToken,

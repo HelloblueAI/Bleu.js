@@ -4,7 +4,6 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pennylane as qml
-from pennylane import numpy as pnp
 
 
 class Attention:

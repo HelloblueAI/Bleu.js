@@ -1,7 +1,6 @@
 """Rate limiting service module."""
 
 import time
-from typing import Optional
 
 from redis.asyncio import Redis
 

@@ -1,20 +1,10 @@
 """Application settings."""
 
 import os
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from pydantic import (
-    AnyUrl,
-    BaseModel,
-    EmailStr,
-    Field,
-    PostgresDsn,
-    RedisDsn,
-    SecretStr,
-    field_validator,
-)
+from pydantic import AnyUrl, EmailStr, Field, RedisDsn, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import URL
 
 from src.config.rate_limiting_config import RateLimitingConfig
 from src.config.redis_config import RedisConfig

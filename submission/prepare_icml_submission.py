@@ -4,12 +4,10 @@ ICML 2025 Submission Preparation Script
 Automates the process of preparing materials for ICML 2025 submission.
 """
 
-import os
 import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
 
 
 class ICMLSubmissionPreparator:

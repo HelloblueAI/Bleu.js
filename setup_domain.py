@@ -119,7 +119,6 @@ class DomainManager:
 @click.group()
 def cli():
     """Domain setup CLI for Bleu.js"""
-    pass
 
 
 @cli.command()

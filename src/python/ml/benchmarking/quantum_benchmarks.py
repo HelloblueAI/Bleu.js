@@ -3,13 +3,12 @@
 import logging
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from qiskit import QuantumCircuit
-from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.model_selection import train_test_split
 
 from src.python.ml.xgboost.bleu_xgboost import BleuXGBoost
@@ -194,4 +193,3 @@ class QuantumBenchmark:
     def plot_results(self):
         """Plot benchmark results."""
         # Implementation for visualization would go here
-        pass

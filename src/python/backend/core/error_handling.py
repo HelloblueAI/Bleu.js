@@ -119,7 +119,7 @@ class ErrorHandler:
         if request.method in ["POST", "PUT", "PATCH"]:
             try:
                 body = await request.json()
-            except:
+            except BaseException:
                 pass
 
         # Create error context

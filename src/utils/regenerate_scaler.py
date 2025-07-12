@@ -5,9 +5,6 @@ import os
 import tempfile
 from typing import Any, Dict, List
 
-import numpy as np
-from sklearn.preprocessing import StandardScaler
-
 
 def load_training_data(data_dir: str) -> List[Dict[str, Any]]:
     """

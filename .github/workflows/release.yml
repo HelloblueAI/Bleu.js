@@ -1,0 +1,43 @@
+name: GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract changelog for this tag
+        id: changelog
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          # Extract changelog section for this tag
+          awk "/^## \[$TAG_NAME\]/ {flag=1; next} /^## \[/ {flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
+          echo 'RELEASE_NOTES<<EOF' >> $GITHUB_ENV
+          cat RELEASE_NOTES.md >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: Release ${{ env.TAG_NAME }}
+          body: ${{ env.RELEASE_NOTES }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Optionally upload build artifacts (wheel, sdist)
+      - name: Upload Python package artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-artifacts
+          path: |
+            dist/*.whl
+            dist/*.tar.gz

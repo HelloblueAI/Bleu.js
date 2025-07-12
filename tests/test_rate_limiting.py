@@ -1,10 +1,8 @@
 import os
 import uuid
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
 
 import pytest
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from config.test.config import TEST_USER_EMAIL, TEST_USER_PASSWORD

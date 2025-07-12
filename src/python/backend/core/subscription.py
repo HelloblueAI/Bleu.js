@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 
 from sqlalchemy.orm import Session
 
-from .database import User
 from .models import APICallLog, Subscription, SubscriptionTier, UsageStats
 
 

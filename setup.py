@@ -3,22 +3,32 @@ from setuptools import find_packages, setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [
-        line.strip() for line in fh if line.strip() and not line.startswith("#")
-    ]
+requirements = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "alembic",
+    "psycopg2-binary",
+    "python-jose[cryptography]",
+    "python-multipart",
+    "python-dotenv",
+    "pydantic",
+    "pydantic-settings",
+    "requests>=2.31.0",
+    "h11>=0.16.0",
+]
 
 setup(
     name="bleu-js",
-    version="1.1.3",
+    version="1.1.7",
     author="Pejman Haghighatnia",
     author_email="support@helloblue.ai",
     description="A state-of-the-art quantum-enhanced vision system with advanced AI capabilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/HelloblueAI/Bleu.js",
-    packages=find_packages(where="python"),
-    package_dir={"": "python"},
+    packages=find_packages(),
+    package_dir={},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
@@ -35,18 +45,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     python_requires=">=3.8",
-    install_requires=[
-        "fastapi",
-        "uvicorn",
-        "sqlalchemy",
-        "alembic",
-        "psycopg2-binary",
-        "python-jose[cryptography]",
-        "python-multipart",
-        "python-dotenv",
-        "pydantic",
-        "pydantic-settings",
-    ],
+    install_requires=requirements,
     entry_points={
         "console_scripts": [
             "bleujs=cli:main",
@@ -54,7 +53,12 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "": ["models/*", "configs/*", "data/*", "static/*", "templates/*"],
+        "": [
+            "models/*",
+            "configs/*",
+            "data/*",
+            "static/*",
+            "templates/*"],
     },
     extras_require={
         "dev": [

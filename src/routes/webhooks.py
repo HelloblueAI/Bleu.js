@@ -4,7 +4,6 @@ from typing import Dict
 
 import stripe
 from fastapi import APIRouter, HTTPException, Request
-from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..models.customer import Customer, CustomerCreate

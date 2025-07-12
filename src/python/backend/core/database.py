@@ -4,7 +4,6 @@ Database setup and models for the Bleu.js application.
 
 import uuid
 from datetime import datetime
-from typing import List, Optional
 
 from sqlalchemy import (
     JSON,

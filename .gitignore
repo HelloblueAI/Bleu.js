@@ -965,3 +965,36 @@ logs/
 **/*.log
 **/log/
 **/log/*.log
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# PyPI credentials and config
+.pypirc
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.swp
+*~
+
+# IDE/editor files
+.vscode/
+.idea/
+.DS_Store

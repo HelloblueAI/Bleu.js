@@ -1,7 +1,7 @@
 import enum
 import uuid
-from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from datetime import datetime, timezone
+from typing import Dict, Optional
 
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import (

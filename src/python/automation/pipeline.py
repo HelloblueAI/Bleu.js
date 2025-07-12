@@ -6,13 +6,11 @@ Provides workflow automation and orchestration capabilities.
 import asyncio
 import json
 import logging
-import uuid
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from datetime import datetime
+from typing import Any, Callable, Dict, List, Optional, Set
 
-import aiohttp
 import numpy as np
 import pandas as pd
 from prometheus_client import Counter, Gauge, Histogram
@@ -389,12 +387,10 @@ class AutomationPipeline:
     def _register_trigger(self, trigger: str) -> None:
         """Register a pipeline trigger."""
         # Implementation depends on trigger type
-        pass
 
     def _initialize_monitoring(self) -> None:
         """Initialize pipeline monitoring."""
         # Setup monitoring infrastructure
-        pass
 
     def _record_step_metrics(self, execution_time: float) -> None:
         """Record step execution metrics."""
@@ -531,7 +527,7 @@ class EnhancedAutomationPipeline(AutomationPipeline):
 
             return result
 
-        except Exception as e:
+        except Exception:
             if self.analytics_enabled and self.analytics:
                 self.analytics.step_failure_counter.labels(
                     pipeline_name=self.name, step_name=step.name
