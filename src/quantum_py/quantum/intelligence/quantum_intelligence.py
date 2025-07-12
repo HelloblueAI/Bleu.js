@@ -164,7 +164,7 @@ class QuantumIntelligence:
 
         return quantum_features
 
-    async def _apply_quantum_attention(
+    def _apply_quantum_attention(
         self, features: np.ndarray, context: Optional[Dict]
     ) -> np.ndarray:
         """Apply quantum attention mechanism"""
@@ -182,7 +182,7 @@ class QuantumIntelligence:
 
         return attended_features
 
-    async def _update_quantum_memory(self, features: np.ndarray) -> None:
+    def _update_quantum_memory(self, features: np.ndarray) -> None:
         """Update quantum memory with new information"""
         # Update quantum memory state
         self.quantum_memory = np.vstack([self.quantum_memory, features])
@@ -192,7 +192,7 @@ class QuantumIntelligence:
             self.quantum_memory = self.quantum_memory[-1000:]
 
     async def _optimize_intelligence(
-        self, features: np.ndarray, target: Optional[np.ndarray]
+        self, _features: np.ndarray, _target: Optional[np.ndarray]
     ) -> Dict:
         """Optimize intelligence using quantum algorithms"""
         # Define optimization parameters
@@ -213,7 +213,7 @@ class QuantumIntelligence:
 
         return optimization_results
 
-    async def _calculate_intelligence_score(self) -> float:
+    def _calculate_intelligence_score(self) -> float:
         """Calculate current intelligence score"""
         # Combine multiple metrics
         memory_score = self._calculate_memory_score()
@@ -227,7 +227,7 @@ class QuantumIntelligence:
 
         return intelligence_score
 
-    async def _adapt_intelligence(self) -> None:
+    def _adapt_intelligence(self) -> None:
         """Adapt intelligence based on performance"""
         # Update adaptation parameters
         self.config.learning_rate *= 1 + self.config.adaptation_rate
