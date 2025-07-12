@@ -998,3 +998,7 @@ ENV/
 .vscode/
 .idea/
 .DS_Store
+
+# Security scan artifacts
+bandit-report.json
+safety-report.json

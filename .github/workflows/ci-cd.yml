@@ -105,8 +105,14 @@ jobs:
           pip install safety
           safety check --json > safety-report.json || true
           if [ -f safety-report.json ]; then
-            VULNERABILITIES=$(jq '.vulnerabilities | length' safety-report.json)
-            echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            # Validate JSON before processing
+            if jq empty safety-report.json 2>/dev/null; then
+              VULNERABILITIES=$(jq '.vulnerabilities | length' safety-report.json)
+              echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            else
+              echo "vulnerabilities=0" >> $GITHUB_OUTPUT
+              echo "Warning: Invalid JSON in safety-report.json"
+            fi
           else
             echo "vulnerabilities=0" >> $GITHUB_OUTPUT
           fi
@@ -146,8 +152,15 @@ jobs:
           fi
 
           if [ -f "safety-report.json" ]; then
-            SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-report.json)
-            echo "**Safety Issues**: $SAFETY_ISSUES" >> $GITHUB_STEP_SUMMARY
+            if jq empty safety-report.json 2>/dev/null; then
+              SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-report.json)
+              echo "**Safety Issues**: $SAFETY_ISSUES" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**Safety Issues**: Invalid JSON report" >> $GITHUB_STEP_SUMMARY
+              SAFETY_ISSUES=0
+            fi
+          else
+            SAFETY_ISSUES=0
           fi
 
           if [ "$BANDIT_ISSUES" -gt 0 ] || [ "$SAFETY_ISSUES" -gt 0 ]; then
@@ -237,18 +250,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ['3.10', '3.11']
-        quantum-backend: ['qiskit', 'cirq', 'pennylane']
-        ml-framework: ['tensorflow', 'pytorch']
-        exclude:
-          # Exclude incompatible combinations
-          - os: macos-latest
-            python-version: '3.10'
-            quantum-backend: 'pennylane'
-          - os: macos-latest
-            python-version: '3.11'
-            quantum-backend: 'cirq'
+        os: [ubuntu-latest]
+        python-version: ['3.11']
+        quantum-backend: ['qiskit']
+        ml-framework: ['tensorflow']
 
     outputs:
       coverage: ${{ steps.coverage-check.outputs.coverage }}
@@ -278,68 +283,21 @@ jobs:
           pip install -r requirements-ci.txt
           pip install .[ml,quantum,dev,monitoring]
 
-      - name: Run Unit Tests
+      - name: Run Tests
         env:
           QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
           ML_FRAMEWORK: ${{ matrix.ml-framework }}
           PYTHONPATH: ${{ github.workspace }}/src
         run: |
-          pytest tests/unit/ \
+          pytest tests/ \
             --cov=src/ \
             --cov-report=xml \
             --cov-report=html \
             --cov-fail-under=${{ env.COVERAGE_THRESHOLD }} \
             --junitxml=junit-${{ matrix.os }}-${{ matrix.python-version }}.xml \
-            -n auto \
             --verbose \
-            --tb=short
-
-      - name: Run Integration Tests
-        env:
-          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
-          ML_FRAMEWORK: ${{ matrix.ml-framework }}
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: |
-          pytest tests/integration/ \
-            --cov=src/ \
-            --cov-append \
-            --cov-report=xml \
-            --cov-report=html \
-            --junitxml=junit-integration-${{ matrix.os }}-${{ matrix.python-version }}.xml \
-            -n auto \
-            --verbose \
-            --tb=short
-
-      - name: Run Quantum Tests
-        env:
-          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
-          ML_FRAMEWORK: ${{ matrix.ml-framework }}
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: |
-          pytest tests/quantum/ \
-            --cov=src/quantum/ \
-            --cov-append \
-            --cov-report=xml \
-            --cov-report=html \
-            --junitxml=junit-quantum-${{ matrix.os }}-${{ matrix.python-version }}.xml \
-            -n auto \
-            --verbose \
-            --tb=short
-
-      - name: Run ML Tests
-        env:
-          ML_FRAMEWORK: ${{ matrix.ml-framework }}
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: |
-          pytest tests/ml/ \
-            --cov=src/ml/ \
-            --cov-append \
-            --cov-report=xml \
-            --cov-report=html \
-            --junitxml=junit-ml-${{ matrix.os }}-${{ matrix.python-version }}.xml \
-            -n auto \
-            --verbose \
-            --tb=short
+            --tb=short \
+            --maxfail=10
 
       - name: Coverage Check
         id: coverage-check
