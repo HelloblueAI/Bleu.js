@@ -56,7 +56,122 @@ class TrainingManager:
             logging.error(f"❌ Failed to initialize training manager: {str(e)}")
             raise
 
-    async def trainDistributed(
+    def _setup_model_and_loaders(self, model, train_dataset, val_dataset):
+        """Setup model and data loaders for distributed training."""
+        # Move model to device and wrap with DDP
+        model = model.to(self.device)
+        if self.world_size > 1:
+            model = DDP(model, device_ids=[self.rank])
+
+        # Create data samplers
+        train_sampler = (
+            DistributedSampler(train_dataset) if self.world_size > 1 else None
+        )
+        val_sampler = (
+            DistributedSampler(val_dataset)
+            if val_dataset and self.world_size > 1
+            else None
+        )
+
+        # Create data loaders
+        train_loader = DataLoader(
+            train_dataset,
+            batch_size=self.batch_size,
+            sampler=train_sampler,
+            num_workers=self.n_workers,
+            pin_memory=self.use_gpu,
+        )
+
+        val_loader = (
+            DataLoader(
+                val_dataset,
+                batch_size=self.batch_size,
+                sampler=val_sampler,
+                num_workers=self.n_workers,
+                pin_memory=self.use_gpu,
+            )
+            if val_dataset
+            else None
+        )
+
+        return model, train_loader, val_loader, train_sampler
+
+    def _train_epoch(self, model, train_loader, optimizer, criterion, epoch):
+        """Train for one epoch."""
+        model.train()
+        train_loss = 0
+        train_correct = 0
+        train_total = 0
+
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+
+            optimizer.zero_grad()
+            output = model(data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+
+            train_loss += loss.item()
+            _, predicted = torch.max(output.data, 1)
+            train_total += target.size(0)
+            train_correct += (predicted == target).sum().item()
+
+            if batch_idx % 10 == 0 and self.rank == 0:
+                logging.info(
+                    f"Epoch [{epoch + 1}/{self.n_epochs}], "
+                    f"Batch [{batch_idx}/{len(train_loader)}], "
+                    f"Loss: {loss.item():.4f}"
+                )
+
+        return train_loss, train_correct, train_total
+
+    def _validate_epoch(self, model, val_loader, criterion):
+        """Validate for one epoch."""
+        if not val_loader:
+            return 0, 0, 0
+
+        model.eval()
+        val_loss = 0
+        val_correct = 0
+        val_total = 0
+
+        with torch.no_grad():
+            for data, target in val_loader:
+                data, target = data.to(self.device), target.to(self.device)
+                output = model(data)
+                loss = criterion(output, target)
+
+                val_loss += loss.item()
+                _, predicted = torch.max(output.data, 1)
+                val_total += target.size(0)
+                val_correct += (predicted == target).sum().item()
+
+        return val_loss, val_correct, val_total
+
+    def _gather_metrics(
+        self,
+        train_loss,
+        train_correct,
+        train_total,
+        val_loss,
+        val_correct,
+        val_total,
+        val_loader,
+    ):
+        """Gather metrics across processes."""
+        if self.world_size > 1:
+            train_loss = self._gather_metric(train_loss)
+            train_correct = self._gather_metric(train_correct)
+            train_total = self._gather_metric(train_total)
+            if val_loader:
+                val_loss = self._gather_metric(val_loss)
+                val_correct = self._gather_metric(val_correct)
+                val_total = self._gather_metric(val_total)
+
+        return train_loss, train_correct, train_total, val_loss, val_correct, val_total
+
+    def train_distributed(
         self,
         model: nn.Module,
         train_dataset: torch.utils.data.Dataset,
@@ -69,44 +184,15 @@ class TrainingManager:
             if not self.initialized:
                 await self.initialize()
 
-            # Move model to device and wrap with DDP
-            model = model.to(self.device)
-            if self.world_size > 1:
-                model = DDP(model, device_ids=[self.rank])
-
-            # Create data samplers
-            train_sampler = (
-                DistributedSampler(train_dataset) if self.world_size > 1 else None
-            )
-            val_sampler = (
-                DistributedSampler(val_dataset)
-                if val_dataset and self.world_size > 1
-                else None
-            )
-
-            # Create data loaders
-            train_loader = DataLoader(
-                train_dataset,
-                batch_size=self.batch_size,
-                sampler=train_sampler,
-                num_workers=self.n_workers,
-                pin_memory=self.use_gpu,
-            )
-
-            val_loader = (
-                DataLoader(
-                    val_dataset,
-                    batch_size=self.batch_size,
-                    sampler=val_sampler,
-                    num_workers=self.n_workers,
-                    pin_memory=self.use_gpu,
-                )
-                if val_dataset
-                else None
+            # Setup model and loaders
+            model, train_loader, val_loader, train_sampler = (
+                self._setup_model_and_loaders(model, train_dataset, val_dataset)
             )
 
             # Initialize optimizer and criterion
-            optimizer = optimizer_class(model.parameters(), lr=self.learning_rate)
+            optimizer = optimizer_class(
+                model.parameters(), lr=self.learning_rate, weight_decay=1e-4
+            )
             criterion = criterion_class()
 
             # Training history
@@ -118,59 +204,32 @@ class TrainingManager:
                     train_sampler.set_epoch(epoch)
 
                 # Train
-                model.train()
-                train_loss = 0
-                train_correct = 0
-                train_total = 0
-
-                for batch_idx, (data, target) in enumerate(train_loader):
-                    data, target = data.to(self.device), target.to(self.device)
-
-                    optimizer.zero_grad()
-                    output = model(data)
-                    loss = criterion(output, target)
-                    loss.backward()
-                    optimizer.step()
-
-                    train_loss += loss.item()
-                    _, predicted = torch.max(output.data, 1)
-                    train_total += target.size(0)
-                    train_correct += (predicted == target).sum().item()
-
-                    if batch_idx % 10 == 0 and self.rank == 0:
-                        logging.info(
-                            f"Epoch [{epoch + 1}/{self.n_epochs}], "
-                            f"Batch [{batch_idx}/{len(train_loader)}], "
-                            f"Loss: {loss.item():.4f}"
-                        )
+                train_loss, train_correct, train_total = self._train_epoch(
+                    model, train_loader, optimizer, criterion, epoch
+                )
 
                 # Validate
-                if val_loader:
-                    model.eval()
-                    val_loss = 0
-                    val_correct = 0
-                    val_total = 0
-
-                    with torch.no_grad():
-                        for data, target in val_loader:
-                            data, target = data.to(self.device), target.to(self.device)
-                            output = model(data)
-                            loss = criterion(output, target)
-
-                            val_loss += loss.item()
-                            _, predicted = torch.max(output.data, 1)
-                            val_total += target.size(0)
-                            val_correct += (predicted == target).sum().item()
+                val_loss, val_correct, val_total = self._validate_epoch(
+                    model, val_loader, criterion
+                )
 
                 # Gather metrics across processes
-                if self.world_size > 1:
-                    train_loss = self._gather_metric(train_loss)
-                    train_correct = self._gather_metric(train_correct)
-                    train_total = self._gather_metric(train_total)
-                    if val_loader:
-                        val_loss = self._gather_metric(val_loss)
-                        val_correct = self._gather_metric(val_correct)
-                        val_total = self._gather_metric(val_total)
+                (
+                    train_loss,
+                    train_correct,
+                    train_total,
+                    val_loss,
+                    val_correct,
+                    val_total,
+                ) = self._gather_metrics(
+                    train_loss,
+                    train_correct,
+                    train_total,
+                    val_loss,
+                    val_correct,
+                    val_total,
+                    val_loader,
+                )
 
                 # Record metrics
                 history["train_loss"].append(train_loss / len(train_loader))
@@ -197,7 +256,7 @@ class TrainingManager:
             logging.error(f"❌ Distributed training failed: {str(e)}")
             raise
 
-    async def hyperparameterTuning(
+    def hyperparameter_tuning(
         self,
         model_class: type,
         train_dataset: torch.utils.data.Dataset,
@@ -248,15 +307,15 @@ class TrainingManager:
                 )
 
                 optimizer = torch.optim.Adam(
-                    model.parameters(), lr=config["learning_rate"]
+                    model.parameters(), lr=config["learning_rate"], weight_decay=1e-4
                 )
                 criterion = nn.CrossEntropyLoss()
 
+                # Training loop
                 for epoch in range(config["n_epochs"]):
                     # Train
                     model.train()
-                    for batch_idx, (data, target) in enumerate(train_loader):
-                        data, target = data.to(self.device), target.to(self.device)
+                    for data, target in train_loader:
                         optimizer.zero_grad()
                         output = model(data)
                         loss = criterion(output, target)
@@ -268,12 +327,11 @@ class TrainingManager:
                     val_loss = 0
                     with torch.no_grad():
                         for data, target in val_loader:
-                            data, target = data.to(self.device), target.to(self.device)
                             output = model(data)
                             val_loss += criterion(output, target).item()
 
                     # Report metrics
-                    tune.report(val_loss=val_loss / len(val_loader), epoch=epoch + 1)
+                    tune.report(val_loss=val_loss / len(val_loader))
 
             # Run hyperparameter tuning
             analysis = tune.run(
@@ -282,15 +340,12 @@ class TrainingManager:
                 num_samples=n_trials,
                 scheduler=scheduler,
                 search_alg=search_alg,
-                resources_per_trial={
-                    "cpu": self.n_workers,
-                    "gpu": 1 if self.use_gpu else 0,
-                },
+                resources_per_trial={"cpu": 1, "gpu": 0.5 if self.use_gpu else 0},
             )
 
             return {
                 "best_config": analysis.best_config,
-                "best_trial": analysis.best_trial,
+                "best_result": analysis.best_result,
                 "results": analysis.results,
             }
 
