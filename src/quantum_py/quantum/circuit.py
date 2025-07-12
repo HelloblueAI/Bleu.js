@@ -297,7 +297,7 @@ class QuantumCircuit:
         return result.quasi_dists[0]
 
     def _update_quantum_memory(
-        self, features: np.ndarray, processed: np.ndarray
+        self, features: NDArray[np.float64], processed: NDArray[np.float64]
     ) -> None:
         """Update quantum memory with processed features"""
         if self.quantum_memory is None:
@@ -456,7 +456,10 @@ class QuantumCircuit:
                 current_layer = next_layer
 
     def _are_gates_cancellable(
-        self, layer: List[Any], gate: Any, qubits: List[int]
+        self,
+        layer: List[Any],
+        gate: Any,
+        qubits: List[int],
     ) -> bool:
         """Check if gates cancel each other based on quantum circuit properties."""
         if not layer:  # Empty layer
@@ -505,58 +508,3 @@ class QuantumCircuit:
         # Placeholder for the actual implementation of _run_circuit_with_mitigation
         # This method should return the processed result with error mitigation
         raise NotImplementedError("Method _run_circuit_with_mitigation not implemented")
-
-    def _process_quantum_features(
-        self, features: NDArray[np.float64]
-    ) -> NDArray[np.float64]:
-        """Process quantum features through the circuit.
-
-        Args:
-            features: Input features array
-
-        Returns:
-            NDArray[np.float64]: Processed quantum features
-        """
-        try:
-            result = self._quantum_processor.process_features(features)
-            return np.array(result, dtype=np.float64)  # Explicit cast to float64 array
-        except Exception as e:
-            logger.error(f"Error processing quantum features: {e}")
-            raise CircuitError("Failed to process quantum features") from e
-
-    def _get_circuit_output(self) -> NDArray[np.float64]:
-        """Get the circuit output as a float64 array.
-
-        Returns:
-            NDArray[np.float64]: Circuit output array
-        """
-        try:
-            result = self._quantum_processor.get_output()
-            return np.array(result, dtype=np.float64)
-        except Exception as e:
-            logger.error(f"Error getting circuit output: {e}")
-            raise CircuitError("Failed to get circuit output") from e
-
-    def _update_metrics(self, key: str, value: float) -> None:
-        """Update metrics dictionary with float values.
-
-        Args:
-            key: Metric name
-            value: Metric value
-        """
-        if not isinstance(key, str):
-            raise TypeError("Metric key must be a string")
-        self._metrics[key] = float(value)  # Ensure value is float
-
-    def _get_complex_amplitudes(self) -> NDArray[np.complex128]:
-        """Get complex amplitudes from the circuit.
-
-        Returns:
-            NDArray[np.complex128]: Complex amplitudes array
-        """
-        try:
-            result = self._quantum_processor.get_amplitudes()
-            return np.array(result, dtype=np.complex128)
-        except Exception as e:
-            logger.error(f"Error getting complex amplitudes: {e}")
-            raise CircuitError("Failed to get complex amplitudes") from e
