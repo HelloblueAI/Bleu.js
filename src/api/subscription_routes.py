@@ -35,11 +35,11 @@ async def create_subscription(
         user = user_service.get_user(x_user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
+
         return await subscription_service.create_subscription(
-            user=user, 
+            user=user,
             plan_type=subscription.tier,
-            payment_method_id=subscription.payment_method_id
+            payment_method_id=subscription.payment_method_id,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -91,43 +91,4 @@ class SubscriptionUpgrade(BaseModel):
     payment_token: str
 
 
-@router.get("/subscriptions/me")
-async def get_subscription(user_id: str = Header(..., alias=USER_ID_HEADER)):
-    """Get current subscription details."""
-    try:
-        # Implementation here
-        pass
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.get("/subscriptions/me/usage")
-async def get_usage(user_id: str = Header(..., alias=USER_ID_HEADER)):
-    """Get current subscription usage."""
-    try:
-        # Implementation here
-        pass
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/subscriptions/me/renew")
-async def renew_subscription(user_id: str = Header(..., alias=USER_ID_HEADER)):
-    """Renew an expired subscription."""
-    try:
-        # Implementation here
-        pass
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/subscriptions/me/upgrade")
-async def upgrade_subscription(
-    upgrade: SubscriptionUpgrade, user_id: str = Header(..., alias=USER_ID_HEADER)
-):
-    """Upgrade subscription to a higher tier."""
-    try:
-        # Implementation here
-        pass
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+# Removed duplicate route definitions to fix F811 redefinition errors
