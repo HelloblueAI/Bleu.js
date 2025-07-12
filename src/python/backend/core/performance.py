@@ -247,7 +247,7 @@ class PerformanceOptimizer:
                 # Split input into batches
                 input_data = args[0] if args else kwargs.get("data", [])
                 batches = [
-                    input_data[i: i + batch_size]
+                    input_data[i : i + batch_size]
                     for i in range(0, len(input_data), batch_size)
                 ]
 

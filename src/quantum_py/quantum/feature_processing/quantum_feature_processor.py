@@ -140,7 +140,7 @@ class QuantumFeatureProcessor:
             importance_scores = self._measure_feature_importance(processed_state)
 
             # Select top features
-            selected_indices = np.argsort(importance_scores)[-self.config.reduced_dim:]
+            selected_indices = np.argsort(importance_scores)[-self.config.reduced_dim :]
             selected_features = features[:, selected_indices]
 
             return selected_features

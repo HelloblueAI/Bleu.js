@@ -168,7 +168,8 @@ async def test_error_handling(
 
     # Test training error
     hybrid_model.enhanced_xgb.fit = Mock(
-        side_effect=RuntimeError("Training error"))  # type: ignore
+        side_effect=RuntimeError("Training error")
+    )  # type: ignore
     with pytest.raises(RuntimeError):
         await hybrid_model.train(features, labels)
 

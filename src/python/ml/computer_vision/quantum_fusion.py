@@ -413,7 +413,7 @@ class QuantumFusionLayer(torch.nn.Module):
             # Project to fusion dimension
             projected_state = self.projection(enhanced_state)
             # Weight the enhanced state
-            weighted_state = projected_state * self.fusion_weights[i: i + 1, :]
+            weighted_state = projected_state * self.fusion_weights[i : i + 1, :]
             quantum_features.append(weighted_state)
 
         # Combine quantum features

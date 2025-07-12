@@ -2,7 +2,11 @@
 Script to initialize the database with test data.
 """
 
-from bleujs.core.models import SubscriptionTier
+import os
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+
 from bleujs.core.database import (
     APICallLog,
     Base,
@@ -12,10 +16,7 @@ from bleujs.core.database import (
     User,
     engine,
 )
-import os
-import sys
-from datetime import datetime, timedelta
-from pathlib import Path
+from bleujs.core.models import SubscriptionTier
 
 # Add the parent directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent.parent))

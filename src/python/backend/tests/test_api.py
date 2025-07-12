@@ -2,7 +2,6 @@
 Tests for the API client.
 """
 
-
 from ..core.api_client import api_client
 
 

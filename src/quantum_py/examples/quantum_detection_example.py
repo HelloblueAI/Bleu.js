@@ -27,9 +27,7 @@ from PIL import Image
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("quantum_detection.log")],
+    handlers=[logging.StreamHandler(), logging.FileHandler("quantum_detection.log")],
 )
 logger = logging.getLogger(__name__)
 

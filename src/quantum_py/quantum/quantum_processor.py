@@ -269,7 +269,7 @@ class QuantumProcessor(Generic[Device]):
             qnn = CircuitQNN(
                 circuit=circuit,
                 input_params=var_form.parameters[: self.n_qubits],
-                weight_params=var_form.parameters[self.n_qubits:],
+                weight_params=var_form.parameters[self.n_qubits :],
                 sampling=True,
                 sampler=self.sampler,
             )

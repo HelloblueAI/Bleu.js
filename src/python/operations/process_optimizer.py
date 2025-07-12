@@ -307,7 +307,8 @@ class ProcessOptimizer:
                     "from_resources": underutilized,
                     "to_resources": overutilized,
                     "impact_score": 0.8,
-                })
+                }
+            )
 
         return recommendations
 
@@ -324,7 +325,8 @@ class ProcessOptimizer:
                     "description": "Implement parallel processing for independent paths",
                     "paths": independent_paths,
                     "impact_score": 0.7,
-                })
+                }
+            )
 
         return recommendations
 
@@ -620,17 +622,17 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
 
         # Decode resource allocation
         config["resource_allocation"] = solution[
-            idx: idx + len(self.process_graph.nodes)
+            idx : idx + len(self.process_graph.nodes)
         ]
         idx += len(self.process_graph.nodes)
 
         # Decode processing times
-        config["processing_times"] = solution[idx: idx + len(self.process_graph.nodes)]
+        config["processing_times"] = solution[idx : idx + len(self.process_graph.nodes)]
         idx += len(self.process_graph.nodes)
 
         # Decode quality thresholds
         config["quality_thresholds"] = solution[
-            idx: idx + len(self.process_graph.nodes)
+            idx : idx + len(self.process_graph.nodes)
         ]
 
         return config

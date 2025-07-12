@@ -96,8 +96,8 @@ class EnhancedTextProcessor:
         # Process in batches
         embeddings = []
         for i in range(0, len(input_ids), self.config.batch_size):
-            batch_input_ids = input_ids[i: i + self.config.batch_size]
-            batch_attention_mask = attention_mask[i: i + self.config.batch_size]
+            batch_input_ids = input_ids[i : i + self.config.batch_size]
+            batch_attention_mask = attention_mask[i : i + self.config.batch_size]
 
             with torch.no_grad():
                 outputs = self.model(

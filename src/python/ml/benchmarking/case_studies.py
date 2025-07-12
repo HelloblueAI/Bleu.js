@@ -198,10 +198,7 @@ class QuantumCaseStudy:
                 f"  Performance: "
                 f"{analysis['improvement']['performance_improvement']:.2f}%"
             )
-            msg13 = (
-                f"  Speed: "
-                f"{analysis['improvement']['speed_improvement']:.2f}%"
-            )
+            msg13 = f"  Speed: " f"{analysis['improvement']['speed_improvement']:.2f}%"
             msg14 = (
                 f"  Efficiency: "
                 f"{analysis['improvement']['efficiency_improvement']:.2f}%"
