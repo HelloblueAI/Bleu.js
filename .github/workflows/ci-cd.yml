@@ -103,7 +103,7 @@ jobs:
         id: safety-check
         run: |
           pip install safety
-          safety check --json --output safety-report.json || true
+          safety check --json > safety-report.json || true
           if [ -f safety-report.json ]; then
             VULNERABILITIES=$(jq '.vulnerabilities | length' safety-report.json)
             echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
@@ -502,7 +502,7 @@ jobs:
       - name: Get Package Version
         id: get-version
         run: |
-          VERSION=$(poetry version -s)
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
