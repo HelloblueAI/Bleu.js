@@ -99,7 +99,6 @@ def partial_trace(
 
     # Trace out specified qubits
     keep_qubits = list(set(range(num_qubits)) - set(trace_qubits))
-    keep_qubits + [x + num_qubits for x in keep_qubits]
     reduced = np.trace(
         state, axis1=trace_qubits, axis2=[x + num_qubits for x in trace_qubits]
     )

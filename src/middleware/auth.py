@@ -13,6 +13,9 @@ from src.database import get_db
 from src.models.user import User
 from src.services.user_service import UserService
 
+# Constants
+CREDENTIALS_ERROR_MESSAGE = "Could not validate credentials"
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
@@ -32,7 +35,7 @@ class AuthMiddleware:
         if not credentials:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
+                detail=CREDENTIALS_ERROR_MESSAGE,
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
@@ -46,13 +49,13 @@ class AuthMiddleware:
             if user_id is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Could not validate credentials",
+                    detail=CREDENTIALS_ERROR_MESSAGE,
                     headers={"WWW-Authenticate": "Bearer"},
                 )
         except JWTError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
+                detail=CREDENTIALS_ERROR_MESSAGE,
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
@@ -97,7 +100,7 @@ async def get_current_user(
     """Get the current user from the token."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail=CREDENTIALS_ERROR_MESSAGE,
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:

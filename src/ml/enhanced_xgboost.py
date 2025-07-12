@@ -218,8 +218,8 @@ class PerformanceOptimizer:
             gpus = GPUtil.getGPUs()
             if gpus:
                 return int(gpus[0].memoryFree * 1024 * 1024)  # Convert to bytes
-        except BaseException:
-            pass
+        except (ImportError, AttributeError, OSError) as e:
+            logger.warning(f"Could not get GPU memory: {e}")
         return 0
 
     def optimize_learning_rate(
@@ -262,8 +262,8 @@ class ResourceMonitor:
                     }
                     for gpu in gpus
                 ]
-        except BaseException:
-            pass
+        except (ImportError, AttributeError, OSError) as e:
+            logger.warning(f"Could not get GPU metrics: {e}")
 
         self.metrics_history.append(metrics)
         return metrics

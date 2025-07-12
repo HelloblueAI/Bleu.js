@@ -17,6 +17,9 @@ from src.schemas.subscription import (
 from src.services.stripe_service import StripeService
 from src.services.subscription_service import SubscriptionService
 
+# Constants
+SUBSCRIPTION_NOT_FOUND_MESSAGE = "Subscription not found"
+
 router = APIRouter(prefix="/subscriptions", tags=["subscriptions"])
 
 
@@ -71,7 +74,7 @@ def get_subscription(
     if not subscription or subscription.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Subscription not found",
+            detail=SUBSCRIPTION_NOT_FOUND_MESSAGE,
         )
     return subscription
 
@@ -89,7 +92,7 @@ def update_subscription(
     if not subscription or subscription.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Subscription not found",
+            detail=SUBSCRIPTION_NOT_FOUND_MESSAGE,
         )
     return subscription_service.update_subscription(subscription_id, subscription_data)
 
@@ -106,6 +109,6 @@ def cancel_subscription(
     if not subscription or subscription.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Subscription not found",
+            detail=SUBSCRIPTION_NOT_FOUND_MESSAGE,
         )
     return subscription_service.cancel_subscription(subscription_id)

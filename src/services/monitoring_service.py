@@ -90,7 +90,7 @@ class MonitoringService:
             }
 
             # Start uptime monitoring task
-            asyncio.create_task(self._monitor_uptime(customer_id))
+            self._uptime_task = asyncio.create_task(self._monitor_uptime(customer_id))
 
             logger.info(f"Uptime monitoring set up for customer {customer_id}")
 

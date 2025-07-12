@@ -387,22 +387,44 @@ class QuantumCircuit:
         if params is None:
             params = []
 
-        if gate_name == "h":
-            self.circuit.h(qubits[0])
-        elif gate_name == "x":
-            self.circuit.x(qubits[0])
-        elif gate_name == "y":
-            self.circuit.y(qubits[0])
-        elif gate_name == "z":
-            self.circuit.z(qubits[0])
-        elif gate_name == "cx":
-            self.circuit.cx(qubits[0], qubits[1])
-        elif gate_name == "rz":
-            self.circuit.rz(params[0], qubits[0])
-        else:
+        self._validate_gate_parameters(gate_name, qubits, params)
+        self._apply_gate(gate_name, qubits, params)
+        self._update_metrics()
+
+    def _validate_gate_parameters(
+        self, gate_name: str, qubits: List[int], params: List[float]
+    ) -> None:
+        """Validate gate parameters before application."""
+        if not qubits:
+            raise ValueError("No qubits provided")
+
+        single_qubit_gates = ["h", "x", "y", "z"]
+        if gate_name in single_qubit_gates and len(qubits) < 1:
+            raise ValueError(f"Gate {gate_name} requires at least 1 qubit")
+
+        if gate_name == "cx" and len(qubits) < 2:
+            raise ValueError("CX gate requires at least 2 qubits")
+
+        if gate_name == "rz" and (len(qubits) < 1 or len(params) < 1):
+            raise ValueError("RZ gate requires at least 1 qubit and 1 parameter")
+
+    def _apply_gate(
+        self, gate_name: str, qubits: List[int], params: List[float]
+    ) -> None:
+        """Apply the specified gate to the circuit."""
+        gate_operations = {
+            "h": lambda: self.circuit.h(qubits[0]),
+            "x": lambda: self.circuit.x(qubits[0]),
+            "y": lambda: self.circuit.y(qubits[0]),
+            "z": lambda: self.circuit.z(qubits[0]),
+            "cx": lambda: self.circuit.cx(qubits[0], qubits[1]),
+            "rz": lambda: self.circuit.rz(params[0], qubits[0]),
+        }
+
+        if gate_name not in gate_operations:
             raise ValueError(f"Unsupported gate: {gate_name}")
 
-        self._update_metrics()
+        gate_operations[gate_name]()
 
     def measure(self, qubit: int) -> int:
         # Create a new classical register for measurement

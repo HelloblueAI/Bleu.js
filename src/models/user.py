@@ -24,25 +24,28 @@ class User(Base):
     full_name = Column(String)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     last_login = Column(DateTime)
+
+    # Constants
+    CASCADE_DELETE_ORPHAN = "all, delete-orphan"
 
     # Relationships
     api_tokens = relationship(
-        "APIToken", back_populates="user", cascade="all, delete-orphan"
+        "APIToken", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
     )
     subscription = relationship(
-        "Subscription", back_populates="user", cascade="all, delete-orphan"
+        "Subscription", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
     )
     api_calls = relationship(
-        "APICall", back_populates="user", cascade="all, delete-orphan"
+        "APICall", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
     )
     api_usage = relationship(
-        "APIUsage", back_populates="user", cascade="all, delete-orphan"
+        "APIUsage", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
     )
     rate_limits = relationship(
-        "RateLimit", back_populates="user", cascade="all, delete-orphan"
+        "RateLimit", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
     )
 
     def __repr__(self) -> str:
@@ -99,7 +102,7 @@ class User(Base):
 
     def update_last_login(self) -> None:
         """Update last login timestamp."""
-        self.last_login = datetime.utcnow()
+        self.last_login = datetime.now()
 
     def check_password(self, password: str) -> bool:
         """Check if password is correct.
