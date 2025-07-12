@@ -109,7 +109,8 @@ class EnhancedXGBoost:
                 for val_features, val_labels in eval_set:
                     if val_features.shape[1] != self.n_features:
                         raise ValueError(
-                            f"Validation set feature shape mismatch, expected: {self.n_features}, got {val_features.shape[1]}"
+                            f"Validation set feature shape mismatch, expected: "
+                            f"{self.n_features}, got {val_features.shape[1]}"
                         )
                     val_features_enhanced = await self._enhance_features(val_features)
                     eval_set_enhanced.append((val_features_enhanced, val_labels))
@@ -160,7 +161,8 @@ class EnhancedXGBoost:
 
             if features.shape[1] != self.n_features:
                 raise ValueError(
-                    f"Feature shape mismatch, expected: {self.n_features}, got {features.shape[1]}"
+                    f"Feature shape mismatch, expected: {self.n_features}, "
+                    f"got {features.shape[1]}"
                 )
 
             # Process features with quantum enhancement

@@ -229,13 +229,16 @@ async def main():
         initial_metrics = learning_history[0]
         final_metrics = learning_history[-1]
         print(
-            f"- Performance improvement: {final_metrics.performance_score - initial_metrics.performance_score:.4f}"
+            f"- Performance improvement: "
+            f"{final_metrics.performance_score - initial_metrics.performance_score:.4f}"
         )
         print(
-            f"- Quantum speedup improvement: {final_metrics.quantum_speedup - initial_metrics.quantum_speedup:.2f}x"
+            f"- Quantum speedup improvement: "
+            f"{final_metrics.quantum_speedup - initial_metrics.quantum_speedup:.2f}x"
         )
         print(
-            f"- Error rate reduction: {initial_metrics.error_rate - final_metrics.error_rate:.4f}"
+            f"- Error rate reduction: "
+            f"{initial_metrics.error_rate - final_metrics.error_rate:.4f}"
         )
 
     # Clean up

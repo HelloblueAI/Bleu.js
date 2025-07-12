@@ -71,7 +71,8 @@ class QuantumProcessor:
             raise ValueError("Features contain NaN or Inf values")
         if features.shape[1] != self.n_qubits:
             raise ValueError(
-                f"Feature dimension {features.shape[1]} does not match n_qubits {self.n_qubits}"
+                f"Feature dimension {features.shape[1]} does not match "
+                f"n_qubits {self.n_qubits}"
             )
 
     def _create_noise_model(self) -> NoiseModel:
@@ -161,7 +162,8 @@ class QuantumProcessor:
             print(f"- Number of layers: {self.n_layers}")
             print(f"- Entanglement: {self.entanglement}")
             print(
-                f"- Error correction: {'Enabled' if self.error_correction else 'Disabled'}"
+                f"- Error correction: "
+                f"{'Enabled' if self.error_correction else 'Disabled'}"
             )
             return True
 

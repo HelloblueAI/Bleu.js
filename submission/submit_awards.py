@@ -136,7 +136,8 @@ class AwardSubmitter:
             f.write("## Bleujs: Quantum-Enhanced Computer Vision\n\n")
             f.write("### Abstract\n")
             f.write(
-                "Bleujs represents a groundbreaking advancement in quantum-enhanced computer vision...\n"
+                "Bleujs represents a groundbreaking advancement in "
+                "quantum-enhanced computer vision...\n"
             )
 
     def _update_tracker(self):

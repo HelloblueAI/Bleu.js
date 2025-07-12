@@ -1,5 +1,6 @@
 """
-Quantum-resistant security implementation with post-quantum cryptography and differential privacy.
+Quantum-resistant security implementation with post-quantum cryptography
+and differential privacy.
 """
 
 import logging

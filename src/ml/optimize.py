@@ -349,7 +349,8 @@ class HyperparameterOptimizer:
             model: Model to evaluate
 
         Returns:
-            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics and evaluation info
+            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics
+            and evaluation info
         """
         # Get predictions
         y_pred = model.predict(self.X_test)

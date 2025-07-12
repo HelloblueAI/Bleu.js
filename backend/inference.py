@@ -150,10 +150,7 @@ def _extract_model_info(model: Any) -> None:
     # Try to get feature names
     try:
         MODEL_CACHE["feature_names"] = model.feature_names_in_.tolist()
-        logger.info(
-            f"✅ Found {len(MODEL_CACHE['feature_names'])} "
-            f"feature names"
-        )
+        logger.info(f"✅ Found {len(MODEL_CACHE['feature_names'])} " f"feature names")
     except AttributeError:
         MODEL_CACHE["feature_names"] = None
         logger.info("ℹ️ No feature names found in model")
@@ -234,7 +231,8 @@ def preprocess_features(
         if features_array.ndim > 1:
             return (
                 None,
-                f"Input must be a one-dimensional list of numbers, got shape {features_array.shape}",
+                f"Input must be a one-dimensional list of numbers, "
+                f"got shape {features_array.shape}",
             )
 
         # Handle feature count mismatch
@@ -249,12 +247,14 @@ def preprocess_features(
                     constant_values=0,
                 )
                 logger.warning(
-                    f"⚠️ Input features were padded from {len(features)} to {expected_features} dimensions"
+                    f"⚠️ Input features were padded from {len(features)} "
+                    f"to {expected_features} dimensions"
                 )
             elif features_array.shape[0] > expected_features:
                 return (
                     None,
-                    f"Too many features: expected {expected_features}, got {features_array.shape[0]}",
+                    f"Too many features: expected {expected_features}, "
+                    f"got {features_array.shape[0]}",
                 )
 
         # Apply scaling if available
@@ -267,7 +267,8 @@ def preprocess_features(
                 logger.debug("✅ Features scaled successfully")
             except Exception as e:
                 logger.warning(
-                    f"⚠️ Failed to apply scaling: {str(e)}, proceeding with unscaled features"
+                    f"⚠️ Failed to apply scaling: {str(e)}, "
+                    f"proceeding with unscaled features"
                 )
                 # Continue with unscaled features rather than failing
                 scaled_features = features_array.reshape(1, -1)
@@ -300,7 +301,10 @@ def validate_inputs(features: List[float]) -> Optional[str]:
     # Check if elements are numeric
     for i, value in enumerate(features):
         if not isinstance(value, (int, float, np.number)):
-            return f"All elements must be numeric, element at index {i} is {type(value).__name__}"
+            return (
+                f"All elements must be numeric, element at index {i} "
+                f"is {type(value).__name__}"
+            )
 
     # Check if any elements are NaN or infinite
     features_array = np.asarray(features)
@@ -324,12 +328,14 @@ def _create_diagnostics(features: List[float]) -> Dict[str, Any]:
     }
 
 
-def _get_prediction_with_probabilities(processed_features: np.ndarray) -> Dict[str, Any]:
+def _get_prediction_with_probabilities(
+    processed_features: np.ndarray,
+) -> Dict[str, Any]:
     """Get prediction with probabilities if available."""
     try:
         prediction = MODEL_CACHE["model"].predict(processed_features)
         prediction_prob = MODEL_CACHE["model"].predict_proba(processed_features)
-        
+
         class_probs = prediction_prob[0].tolist()
         confidence = float(max(prediction_prob[0]))
         predicted_class_idx = int(prediction[0])
@@ -350,7 +356,9 @@ def _get_prediction_with_probabilities(processed_features: np.ndarray) -> Dict[s
         return {"prediction": int(prediction[0])}
 
 
-def _run_prediction_with_timeout(processed_features: np.ndarray, timeout: float) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+def _run_prediction_with_timeout(
+    processed_features: np.ndarray, timeout: float
+) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
     """Run prediction in a separate thread with timeout."""
     prediction_result = {}
     prediction_error = None
@@ -517,7 +525,7 @@ def _handle_command_flags() -> bool:
         return False
 
     command = sys.argv[1]
-    
+
     if command == "--health":
         health_info = get_model_health()
         print(json.dumps(health_info, indent=2))
@@ -536,7 +544,7 @@ def _handle_command_flags() -> bool:
     elif command == "--help":
         _show_help()
         sys.exit(0)
-    
+
     return False
 
 
@@ -549,7 +557,7 @@ def _show_help() -> None:
     print("  python inference.py --health                      - Check model health")
     print("  python inference.py --info                        - Get model metadata")
     print("  python inference.py --reload                      - Reload the model")
-    print("  python inference.py --help                        - Show this help message")
+    print("  python inference.py --help " "- Show this help message")
 
 
 def _handle_prediction_request() -> None:

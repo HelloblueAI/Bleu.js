@@ -1,7 +1,8 @@
 """Bleujs quantum contest optimization module.
 
-This module implements advanced techniques for optimizing Bleujs quantum computing performance
-in computer vision contests, focusing on attention and feature fusion optimization.
+This module implements advanced techniques for optimizing Bleujs quantum
+computing performance in computer vision contests, focusing on attention
+and feature fusion optimization.
 """
 
 from typing import Callable, Dict, List, Optional, Tuple, Union
@@ -22,7 +23,8 @@ from src.python.ml.computer_vision.quantum_fusion import QuantumFusion
 
 
 class BleuQuantumContestOptimizer:
-    """Optimizer for Bleujs quantum computing contests, specializing in computer vision tasks."""
+    """Optimizer for Bleujs quantum computing contests, specializing in
+    computer vision tasks."""
 
     def __init__(
         self,

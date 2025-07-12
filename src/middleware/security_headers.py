@@ -33,12 +33,17 @@ class SecurityHeaders:
             hsts_include_subdomains: Include subdomains in HSTS (default: True)
             hsts_preload: Enable HSTS preload (default: True)
             xframe_options: X-Frame-Options header value (default: "DENY")
-            xss_protection: X-XSS-Protection header value (default: "1; mode=block")
-            content_security_policy: Content-Security-Policy header value (optional)
-            content_type_options: X-Content-Type-Options header value (default: "nosniff")
-            referrer_policy: Referrer-Policy header value (default: "strict-origin-when-cross-origin")
+            xss_protection: X-XSS-Protection header value
+                (default: "1; mode=block")
+            content_security_policy: Content-Security-Policy header value
+                (optional)
+            content_type_options: X-Content-Type-Options header value
+                (default: "nosniff")
+            referrer_policy: Referrer-Policy header value
+                (default: "strict-origin-when-cross-origin")
             permissions_policy: Permissions-Policy header value (optional)
-            cache_control: Cache-Control header value (default: "no-store, no-cache, must-revalidate, proxy-revalidate")
+            cache_control: Cache-Control header value
+                (default: "no-store, no-cache, must-revalidate, proxy-revalidate")
         """
         self.hsts = hsts
         self.hsts_max_age = hsts_max_age

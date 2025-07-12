@@ -158,7 +158,8 @@ async def root():
 
 
 def initialize_quantum_system():
-    """Initialize the quantum computing system with necessary configurations and validations."""
+    """Initialize the quantum computing system with necessary
+    configurations and validations."""
     quantum_processor = QuantumProcessor(config=QUANTUM_CONFIG)
     return quantum_processor
 

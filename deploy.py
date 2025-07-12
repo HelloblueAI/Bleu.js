@@ -59,7 +59,8 @@ class Deployer:
                 Tags=[{"Key": "Project", "Value": "Bleu.js"}],
             )
             print(
-                f"Created RDS instance: {response['DBInstance']['DBInstanceIdentifier']}"
+                f"Created RDS instance: "
+                f"{response['DBInstance']['DBInstanceIdentifier']}"
             )
             return response["DBInstance"]["DBInstanceIdentifier"]
         except ClientError as e:

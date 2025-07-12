@@ -59,7 +59,8 @@ class AWSElasticClient:
             s3_client.upload_file(file_path, self.config.aws_s3_bucket, s3_key)
             return {
                 "status": "success",
-                "message": f"File uploaded to s3://{self.config.aws_s3_bucket}/{s3_key}",
+                "message": f"File uploaded to s3://{self.config.aws_s3_bucket}/"
+                f"{s3_key}",
             }
         except Exception as e:
             return {"status": "error", "message": str(e)}

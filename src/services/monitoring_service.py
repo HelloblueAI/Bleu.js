@@ -241,7 +241,8 @@ class MonitoringService:
             await self._send_alert_email(
                 email=customer_email,
                 subject=f"Bleu.js SLA Violation Alert - {metric}",
-                message=f"Your {metric} SLA has been violated. Current value: {value:.2f}%",
+                message=f"Your {metric} SLA has been violated. "
+                f"Current value: {value:.2f}%",
             )
 
             logger.warning(
@@ -265,7 +266,8 @@ class MonitoringService:
             await self._send_alert_email(
                 email=customer_email,
                 subject="Bleu.js API Usage Alert",
-                message=f"Your API usage has reached {usage_percentage:.1f}% of your monthly limit.",
+                message=f"Your API usage has reached {usage_percentage:.1f}% "
+                f"of your monthly limit.",
             )
 
             logger.info(

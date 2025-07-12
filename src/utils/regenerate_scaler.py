@@ -30,7 +30,8 @@ def save_training_data(data: List[Dict[str, Any]], output_dir: str = None) -> st
 
     Args:
         data: Training data to save
-        output_dir: Optional output directory. If None, a secure temporary directory is used.
+        output_dir: Optional output directory. If None, a secure temporary
+            directory is used.
 
     Returns:
         Path to the directory containing saved data

@@ -44,7 +44,8 @@ class ModelTrainer:
         """Train model and evaluate performance.
 
         Returns:
-            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics and training info
+            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics
+            and training info
         """
         # Train model
         self.model.fit(self.X_train, self.y_train)

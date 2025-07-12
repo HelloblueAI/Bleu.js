@@ -92,7 +92,8 @@ def preprocess_features(
         elif features_array.shape[0] > expected_features:
             return (
                 None,
-                f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}",
+                f"❌ Too many features: expected {expected_features}, "
+                f"got {features_array.shape[0]}",
             )
 
         return features_array.reshape(1, -1), None

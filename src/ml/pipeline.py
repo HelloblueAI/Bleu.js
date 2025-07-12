@@ -109,7 +109,8 @@ class MLPipeline:
             return_proba: Whether to return probability scores
 
         Returns:
-            Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]: Predictions and probabilities
+            Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]: Predictions
+            and probabilities
         """
         if not self.is_trained:
             raise RuntimeError("Pipeline must be trained before making predictions")
@@ -134,7 +135,8 @@ class MLPipeline:
             return_proba: Whether to include probability scores in evaluation
 
         Returns:
-            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics and evaluation info
+            Tuple[PerformanceMetrics, Dict[str, Any]]: Performance metrics
+            and evaluation info
         """
         if not self.is_trained:
             raise RuntimeError("Pipeline must be trained before evaluation")

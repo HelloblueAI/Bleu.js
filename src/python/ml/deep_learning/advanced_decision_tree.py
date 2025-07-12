@@ -276,7 +276,7 @@ class AdvancedDecisionTree:
         else:
             self.metrics["accuracy"] = self.model.score(features, labels)
 
-    async def predict(
+    async def predict_async(
         self, features: np.ndarray, return_uncertainty: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """
@@ -302,8 +302,8 @@ class AdvancedDecisionTree:
 
         return predictions
 
-    async def get_feature_importance(self) -> np.ndarray:
-        """Get feature importance scores."""
+    async def get_model_feature_importances(self) -> np.ndarray:
+        """Get feature importance scores from the trained model."""
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
 
@@ -355,7 +355,7 @@ class AdvancedDecisionTree:
         }
 
     def get_feature_importance(self) -> Dict[str, float]:
-        """Get feature importance scores."""
+        """Get feature importance scores from the class attribute."""
         return self.feature_importance
 
     def get_metrics(self) -> Dict[str, float]:

@@ -23,7 +23,10 @@ setup(
     version="1.1.7",
     author="Pejman Haghighatnia",
     author_email="support@helloblue.ai",
-    description="A state-of-the-art quantum-enhanced vision system with advanced AI capabilities",
+    description=(
+        "A state-of-the-art quantum-enhanced vision system with "
+        "advanced AI capabilities"
+    ),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/HelloblueAI/Bleu.js",
