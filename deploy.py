@@ -52,7 +52,7 @@ class Deployer:
                 Engine="postgres",
                 MasterUsername="postgres",
                 MasterUserPassword=os.getenv("DB_PASSWORD"),
-                VpcSecurityGroupIds=["sg-xxxxx"],
+                VpcSecurityGroupIds=[os.getenv("VPC_SECURITY_GROUP_ID", "sg-default")],
                 BackupRetentionPeriod=7,
                 MultiAZ=False,
                 PubliclyAccessible=True,

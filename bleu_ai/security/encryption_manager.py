@@ -26,7 +26,6 @@ class EncryptionManager:
     """Advanced encryption and security management system."""
 
     # Constants for duplicated strings
-    CIPHER_SUITE_ERROR = "Cipher suite not initialized"
 
     def __init__(
         self,
@@ -95,7 +94,7 @@ class EncryptionManager:
 
             # Encrypt data
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             encrypted_data = self.cipher_suite.encrypt(data_bytes)
             return encrypted_data
 
@@ -113,7 +112,7 @@ class EncryptionManager:
 
             # Decrypt data
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
             # Convert back to original type
@@ -163,7 +162,7 @@ class EncryptionManager:
 
             # Encrypt model
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             encrypted_model = self.cipher_suite.encrypt(model_bytes)
 
             # Save if path provided
@@ -199,7 +198,7 @@ class EncryptionManager:
 
             # Decrypt model
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             decrypted_model = self.cipher_suite.decrypt(encrypted_model)
 
             # Unpack model state using msgpack
@@ -233,7 +232,7 @@ class EncryptionManager:
 
             # Encrypt file data
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             encrypted_data = self.cipher_suite.encrypt(file_data)
 
             # Save encrypted file if output path provided
@@ -266,7 +265,7 @@ class EncryptionManager:
 
             # Decrypt file data
             if self.cipher_suite is None:
-                raise ValueError(self.CIPHER_SUITE_ERROR)
+                raise ValueError("Cipher suite not initialized")
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
             # Save decrypted file if output path provided

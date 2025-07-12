@@ -3,6 +3,8 @@ from typing import Dict
 
 import stripe
 
+from src.utils.base_classes import BaseService
+
 
 # Custom exceptions
 class PaymentError(Exception):
@@ -17,7 +19,7 @@ class PaymentProcessingError(PaymentError):
     """Raised when payment processing fails."""
 
 
-class PaymentService:
+class PaymentService(BaseService):
     def __init__(self, api_key: str):
         """Initialize the payment service with Stripe API key."""
         stripe.api_key = api_key

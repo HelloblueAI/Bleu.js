@@ -7,16 +7,14 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (explicitly specify packages)
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
-# Install Python dependencies (explicitly specify, no auto-install)
-RUN pip install --no-cache-dir --no-deps -r requirements.txt
+# Install system dependencies and Python dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --no-deps -r requirements.txt
 
 # Copy only necessary application files (not recursive)
 COPY src/ ./src/

@@ -5,7 +5,7 @@ Enhanced text processor with advanced NLP features.
 import logging
 import os
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import torch
 from sentence_transformers import SentenceTransformer
@@ -63,7 +63,7 @@ class EnhancedTextProcessor:
 
     def process_text(
         self,
-        texts: Union[str, List[str]],
+        texts: str | List[str],
         return_embeddings: bool = True,
         return_features: bool = True,
     ) -> Dict[str, torch.Tensor]:
@@ -159,8 +159,8 @@ class EnhancedTextProcessor:
 
     def get_similarity(
         self,
-        texts1: Union[str, List[str]],
-        texts2: Union[str, List[str]],
+        texts1: str | List[str],
+        texts2: str | List[str],
         metric: str = "cosine",
     ) -> torch.Tensor:
         """Calculate similarity between texts."""
@@ -181,7 +181,7 @@ class EnhancedTextProcessor:
         return similarity
 
     def classify_texts(
-        self, texts: Union[str, List[str]], labels: List[str]
+        self, texts: str | List[str], labels: List[str]
     ) -> Tuple[List[str], torch.Tensor]:
         """Classify texts using zero-shot classification."""
         # Get text embeddings
@@ -233,6 +233,10 @@ class EnhancedTextProcessor:
         if self.config.use_attention_pooling:
             attention_pooling_path = f"{path}/attention_pooling.pt"
             if os.path.exists(attention_pooling_path):
-                self.attention_pooling.load_state_dict(
-                    torch.load(attention_pooling_path, map_location=self.config.device)
-                )
+                # SECURITY: Only load trusted model files to avoid code execution
+                # risks
+                # See: https://pytorch.org/docs/stable/generated/torch.load.html
+                # #security
+                with open(attention_pooling_path, "rb") as f:
+                    state_dict = torch.load(f, map_location=self.config.device)
+                self.attention_pooling.load_state_dict(state_dict)

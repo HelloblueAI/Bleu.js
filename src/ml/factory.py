@@ -1,6 +1,6 @@
 """Model factory module."""
 
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Type
 
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import (
@@ -99,7 +99,7 @@ class ModelFactory:
         model_type: str,
         model_config: Optional[Dict[str, Any]] = None,
         return_service: bool = True,
-    ) -> Union[BaseEstimator, ModelService]:
+    ) -> BaseEstimator | ModelService:
         """Create a new model instance.
 
         Args:
@@ -108,7 +108,7 @@ class ModelFactory:
             return_service: Whether to return a ModelService instance
 
         Returns:
-            Union[BaseEstimator, ModelService]: Model instance or service
+            BaseEstimator | ModelService: Model instance or service
         """
         # Validate model type
         if model_type not in cls.MODEL_CLASSES:

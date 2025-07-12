@@ -72,13 +72,13 @@ class QuantumIntelligence:
         return quantum_features
 
     async def _perform_intelligence_optimization(
-        self, quantum_features: np.ndarray, target: Optional[np.ndarray] = None
+        self, quantum_features: np.ndarray, _target: Optional[np.ndarray] = None
     ) -> Optional[Dict]:
         """Perform intelligence optimization if enabled."""
         if not self.config.use_quantum_optimization:
             return None
 
-        return await self._optimize_intelligence(quantum_features, target)
+        return await self._optimize_intelligence(quantum_features, _target)
 
     async def _update_intelligence_score(self) -> None:
         """Update intelligence score and adapt if necessary."""
@@ -165,16 +165,16 @@ class QuantumIntelligence:
         return quantum_features
 
     def _apply_quantum_attention(
-        self, features: np.ndarray, context: Optional[Dict]
+        self, features: np.ndarray, _context: Optional[Dict]
     ) -> np.ndarray:
         """Apply quantum attention mechanism"""
         # Initialize attention weights
         attention_weights = np.ones(features.shape[1])
 
         # Update weights based on context
-        if context:
+        if _context:
             attention_weights = self._update_attention_weights(
-                attention_weights, context
+                attention_weights, _context
             )
 
         # Apply attention through quantum circuits

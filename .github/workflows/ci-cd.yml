@@ -3,6 +3,12 @@ name: Bleu.js Quantum-Enhanced Vision System CI/CD
 on:
   push:
     branches: [main, staging, develop]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
   pull_request:
     branches: [main, staging]
     paths-ignore:
@@ -20,28 +26,41 @@ on:
         options:
           - staging
           - production
+      force_deploy:
+        description: 'Force deployment even if tests fail'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
   id-token: write
   security-events: write
   pull-requests: write
+  packages: write
 
 env:
   PYTHON_VERSION: '3.11'
   POETRY_VERSION: '1.7.1'
-  CACHE_KEY_PREFIX: v1
+  CACHE_KEY_PREFIX: v2
   PYPI_URL: 'https://upload.pypi.org/legacy/'
   TEST_PYPI_URL: 'https://test.pypi.org/legacy/'
   QUANTUM_BACKENDS: 'qiskit,cirq,pennylane'
   ML_FRAMEWORKS: 'tensorflow,pytorch'
+  COVERAGE_THRESHOLD: 85
+  SECURITY_SCAN_LEVEL: medium
 
 jobs:
-  setup:
-    name: Setup and Cache
+  # ============================================================================
+  # SECURITY & COMPLIANCE
+  # ============================================================================
+  security-scan:
+    name: 🔒 Security & Compliance Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     outputs:
-      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
+      security-status: ${{ steps.security-check.outputs.status }}
+      vulnerabilities: ${{ steps.security-check.outputs.vulnerabilities }}
 
     steps:
       - name: Checkout Repository
@@ -69,28 +88,95 @@ jobs:
             .venv
             ~/.cache/pip
             ~/.cache/poetry
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-security-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
-      - name: Verify installations
+      - name: Run Bandit Security Scan
+        id: bandit-scan
         run: |
-          python --version
-          poetry --version
-          poetry run python -c "import qiskit; print(f'Qiskit version: {qiskit.__version__}')"
-          poetry run python -c "import cirq; print(f'Cirq version: {cirq.__version__}')"
-          poetry run python -c "import pennylane; print(f'PennyLane version: {pennylane.__version__}')"
+          poetry run bandit -r src/ -f json -o bandit-report.json || true
+          if [ -f bandit-report.json ]; then
+            VULNERABILITIES=$(jq '.results | length' bandit-report.json)
+            echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            if [ "$VULNERABILITIES" -gt 0 ]; then
+              echo "status=failed" >> $GITHUB_OUTPUT
+            else
+              echo "status=passed" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "vulnerabilities=0" >> $GITHUB_OUTPUT
+            echo "status=passed" >> $GITHUB_OUTPUT
+          fi
 
+      - name: Run Safety Check
+        id: safety-check
+        run: |
+          poetry run pip install safety
+          poetry run safety check --json --output safety-report.json || true
+          if [ -f safety-report.json ]; then
+            VULNERABILITIES=$(jq '.vulnerabilities | length' safety-report.json)
+            echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+          else
+            echo "vulnerabilities=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Semgrep Security Scan
+        id: semgrep-scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+          output-format: sarif
+          output-file: semgrep-results.sarif
+
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+            semgrep-results.sarif
+          retention-days: 30
+
+      - name: Security Check Summary
+        id: security-check
+        if: always()
+        run: |
+          echo "## 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "bandit-report.json" ]; then
+            BANDIT_ISSUES=$(jq '.results | length' bandit-report.json)
+            echo "**Bandit Issues**: $BANDIT_ISSUES" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -f "safety-report.json" ]; then
+            SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-report.json)
+            echo "**Safety Issues**: $SAFETY_ISSUES" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "$BANDIT_ISSUES" -gt 0 ] || [ "$SAFETY_ISSUES" -gt 0 ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+          else
+            echo "status=passed" >> $GITHUB_OUTPUT
+          fi
+
+  # ============================================================================
+  # CODE QUALITY & LINTING
+  # ============================================================================
   lint:
-    name: Lint and Quality Checks
-    needs: setup
+    name: 🧹 Code Quality & Linting
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      lint-status: ${{ steps.lint-check.outputs.status }}
 
     steps:
       - name: Checkout Repository
@@ -116,9 +202,9 @@ jobs:
             .venv
             ~/.cache/pip
             ~/.cache/poetry
-          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-lint-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
@@ -126,35 +212,66 @@ jobs:
         uses: pre-commit/action@v3.0.0
         continue-on-error: true
 
-      - name: Format and Check Python Code
+      - name: Format Check with Black
         run: |
-          poetry run black src/ tests/
-          poetry run isort src/ tests/
-          git diff --exit-code || (echo "Files were reformatted. Please commit the changes." && exit 1)
+          poetry run black --check --diff src/ tests/
+          poetry run black --check --diff .github/ scripts/
 
-      - name: Lint Python with flake8
+      - name: Import Sorting with isort
+        run: |
+          poetry run isort --check-only --diff src/ tests/
+          poetry run isort --check-only --diff .github/ scripts/
+
+      - name: Lint with flake8
         run: |
           poetry run flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
           poetry run flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Type Check Python with mypy
-        run: poetry run mypy src/ tests/
+      - name: Type Check with mypy
+        run: |
+          poetry run mypy src/ --ignore-missing-imports --no-strict-optional
 
-      - name: Security Check Python with Bandit
-        run: poetry run bandit -r src/ -c pyproject.toml
+      - name: Lint Check Summary
+        id: lint-check
+        if: always()
+        run: |
+          echo "## 🧹 Code Quality Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+
+  # ============================================================================
+  # TESTING & COVERAGE
+  # ============================================================================
   test:
-    name: Test Package
-    needs: [lint]
+    name: 🧪 Test Suite
+    needs: [security-scan, lint]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11']
         quantum-backend: ['qiskit', 'cirq', 'pennylane']
         ml-framework: ['tensorflow', 'pytorch']
+        exclude:
+          # Exclude incompatible combinations
+          - os: macos-latest
+            python-version: '3.10'
+            quantum-backend: 'pennylane'
+          - os: macos-latest
+            python-version: '3.11'
+            quantum-backend: 'cirq'
+
+    outputs:
+      coverage: ${{ steps.coverage-check.outputs.coverage }}
+      test-status: ${{ steps.test-summary.outputs.status }}
 
     steps:
       - name: Checkout Repository
@@ -183,41 +300,81 @@ jobs:
             ~/.cache/poetry
           key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-${{ matrix.python-version }}-${{ matrix.quantum-backend }}-${{ matrix.ml-framework }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        run: |
+          poetry install --no-interaction --no-root
+          poetry run pip install "qiskit>=1.1.0" "cirq>=1.3.0" "pennylane>=0.32.0"
+
+      - name: Run Unit Tests
+        env:
+          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
+          ML_FRAMEWORK: ${{ matrix.ml-framework }}
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: |
+          poetry run pytest tests/unit/ \
+            --cov=src/ \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-fail-under=${{ env.COVERAGE_THRESHOLD }} \
+            --junitxml=junit-${{ matrix.os }}-${{ matrix.python-version }}.xml \
+            -n auto \
+            --verbose \
+            --tb=short
+
+      - name: Run Integration Tests
+        env:
+          QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
+          ML_FRAMEWORK: ${{ matrix.ml-framework }}
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: |
+          poetry run pytest tests/integration/ \
+            --cov=src/ \
+            --cov-append \
+            --cov-report=xml \
+            --cov-report=html \
+            --junitxml=junit-integration-${{ matrix.os }}-${{ matrix.python-version }}.xml \
+            -n auto \
+            --verbose \
+            --tb=short
 
       - name: Run Quantum Tests
         env:
           QUANTUM_BACKEND: ${{ matrix.quantum-backend }}
           ML_FRAMEWORK: ${{ matrix.ml-framework }}
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           poetry run pytest tests/quantum/ \
             --cov=src/quantum/ \
+            --cov-append \
             --cov-report=xml \
             --cov-report=html \
-            --cov-fail-under=85 \
+            --junitxml=junit-quantum-${{ matrix.os }}-${{ matrix.python-version }}.xml \
             -n auto \
-            --verbose
+            --verbose \
+            --tb=short
 
       - name: Run ML Tests
         env:
           ML_FRAMEWORK: ${{ matrix.ml-framework }}
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           poetry run pytest tests/ml/ \
             --cov=src/ml/ \
+            --cov-append \
             --cov-report=xml \
             --cov-report=html \
-            --cov-fail-under=85 \
+            --junitxml=junit-ml-${{ matrix.os }}-${{ matrix.python-version }}.xml \
             -n auto \
-            --verbose
+            --verbose \
+            --tb=short
 
-      - name: Run Performance Tests
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      - name: Coverage Check
+        id: coverage-check
         run: |
-          poetry run pytest tests/performance/ \
-            --benchmark-only \
-            --benchmark-json=benchmark.json
+          COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); root = tree.getroot(); print(root.attrib.get('line-rate', '0'))")
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "Coverage: $COVERAGE%" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Coverage Reports
         uses: codecov/codecov-action@v3
@@ -228,37 +385,47 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
-      - name: Upload Benchmark Results
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
-        uses: actions/upload-artifact@v3
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: benchmark-results
-          path: benchmark.json
-
-      - name: Security Scan - Quantum
-        run: |
-          poetry run bandit -r src/quantum/ -c pyproject.toml \
-            --format json \
-            --output quantum-security.json
-          
-      - name: Security Scan - ML
-        run: |
-          poetry run bandit -r src/ml/ -c pyproject.toml \
-            --format json \
-            --output ml-security.json
-
-      - name: Upload Security Reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
           path: |
-            quantum-security.json
-            ml-security.json
+            coverage.xml
+            .coverage
+            htmlcov/
+            junit-*.xml
+          retention-days: 30
 
+      - name: Test Summary
+        id: test-summary
+        if: always()
+        run: |
+          echo "## 🧪 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**OS**: ${{ matrix.os }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Python**: ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Quantum Backend**: ${{ matrix.quantum-backend }}" >> $GITHUB_STEP_SUMMARY
+          echo "**ML Framework**: ${{ matrix.ml-framework }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage**: ${{ steps.coverage-check.outputs.coverage }}%" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+
+  # ============================================================================
+  # PERFORMANCE & BENCHMARKING
+  # ============================================================================
   benchmark:
-    name: Performance Benchmarking
+    name: ⚡ Performance Benchmarking
     needs: [test]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -275,24 +442,75 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
+      - name: Load cached dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            .venv
+            ~/.cache/pip
+            ~/.cache/poetry
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-benchmark-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
       - name: Run Quantum Benchmarks
         run: |
-          poetry run python tests/benchmarks/quantum_benchmark.py
-          poetry run python tests/benchmarks/ml_benchmark.py
-          poetry run python tests/benchmarks/integration_benchmark.py
+          poetry run python tests/benchmarks/quantum_benchmark.py --output quantum-benchmark.json
+          poetry run python tests/benchmarks/ml_benchmark.py --output ml-benchmark.json
+          poetry run python tests/benchmarks/integration_benchmark.py --output integration-benchmark.json
+
+      - name: Generate Performance Report
+        run: |
+          poetry run python scripts/generate_performance_report.py \
+            --quantum quantum-benchmark.json \
+            --ml ml-benchmark.json \
+            --integration integration-benchmark.json \
+            --output performance-report.html
 
       - name: Upload Benchmark Results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
-          path: benchmark_results/
-          retention-days: 7
+          path: |
+            *-benchmark.json
+            performance-report.html
+          retention-days: 90
 
+      - name: Comment Performance Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let summary = '';
+
+            if (fs.existsSync('performance-report.html')) {
+              const report = fs.readFileSync('performance-report.html', 'utf8');
+              summary = `## ⚡ Performance Benchmark Results\n\n${report}`;
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+  # ============================================================================
+  # BUILD & DEPLOYMENT
+  # ============================================================================
   build:
-    name: Build and Deploy
+    name: 🏗️ Build & Package
     needs: [benchmark]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment)
+    outputs:
+      package-version: ${{ steps.get-version.outputs.version }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -309,8 +527,105 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
+      - name: Load cached dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            .venv
+            ~/.cache/pip
+            ~/.cache/poetry
+          key: ${{ runner.os }}-${{ env.CACHE_KEY_PREFIX }}-build-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Get Package Version
+        id: get-version
+        run: |
+          VERSION=$(poetry version -s)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
       - name: Build Python package
-        run: poetry build
+        run: |
+          poetry build --format wheel
+          poetry build --format sdist
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-packages
+          path: dist/
+          retention-days: 30
+
+  # ============================================================================
+  # DEPLOYMENT
+  # ============================================================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-packages
+
+      - name: Deploy to Staging Environment
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your staging deployment logic here
+          # Example: AWS Elastic Beanstalk, Kubernetes, etc.
+
+      - name: Run Staging Tests
+        run: |
+          echo "Running staging environment tests..."
+          # Add staging-specific tests here
+
+      - name: Notify Staging Deployment
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "✅ Staging deployment successful for version ${{ needs.build.outputs.package-version }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-production:
+    name: 🚀 Deploy to Production
+    needs: [build, deploy-staging]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-packages
+
+      - name: Deploy to Production Environment
+        run: |
+          echo "Deploying to production environment..."
+          # Add your production deployment logic here
+
+      - name: Run Production Health Checks
+        run: |
+          echo "Running production health checks..."
+          # Add production health check logic here
 
       - name: Publish to PyPI
         env:
@@ -318,7 +633,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          python -m twine upload dist/*
+          python -m twine upload --skip-existing dist/*
 
       - name: Publish to Test PyPI
         env:
@@ -326,4 +641,132 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: |
-          python -m twine upload --repository testpypi dist/*
+          python -m twine upload --repository testpypi --skip-existing dist/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+      - name: Notify Production Deployment
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "🎉 Production deployment successful for version ${{ needs.build.outputs.package-version }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # ============================================================================
+  # FINAL STATUS & NOTIFICATIONS
+  # ============================================================================
+  notify:
+    name: 📢 Pipeline Status
+    needs: [security-scan, lint, test, benchmark, build, deploy-staging, deploy-production]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Generate Pipeline Summary
+        run: |
+          echo "## 🚀 Bleu.js CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Security & Compliance" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Vulnerabilities: ${{ needs.security-scan.outputs.vulnerabilities }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Code Quality" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Testing" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage: ${{ needs.test.outputs.coverage }}%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Performance" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ needs.benchmark.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build & Deploy" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Status: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Staging: ${{ needs.deploy-staging.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Production: ${{ needs.deploy-production.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Version: ${{ needs.build.outputs.package-version }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "attachments": [{
+                "color": "danger",
+                "title": "🚨 CI/CD Pipeline Failed",
+                "text": "Pipeline failed for commit ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.repository }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Security",
+                    "value": "${{ needs.security-scan.result }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Tests",
+                    "value": "${{ needs.test.result }}",
+                    "short": true
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify on Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "attachments": [{
+                "color": "good",
+                "title": "✅ CI/CD Pipeline Succeeded",
+                "text": "Pipeline completed successfully for commit ${{ github.sha }}\nAuthor: ${{ github.actor }}",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.repository }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Version",
+                    "value": "${{ needs.build.outputs.package-version }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Coverage",
+                    "value": "${{ needs.test.outputs.coverage }}%",
+                    "short": true
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -21,10 +21,6 @@ logger = logging.getLogger(__name__)
 class PerformanceTracker:
     """Advanced performance tracking and monitoring system."""
 
-    # Constants for duplicated strings
-    TIME_LABEL = "Time (s)"
-    CIPHER_SUITE_ERROR = "Cipher suite not initialized"
-
     def __init__(
         self,
         save_dir: Optional[str] = None,

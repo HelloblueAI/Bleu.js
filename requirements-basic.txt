@@ -1,0 +1,31 @@
+# Basic Requirements for Bleu.js
+# Minimal dependencies for core functionality
+
+# Core dependencies
+numpy>=1.24.3,<2.0.0
+pandas>=2.0.0
+scikit-learn>=1.2.2
+
+# Web framework
+fastapi==0.109.2
+uvicorn==0.27.1
+pydantic[email]==2.6.1
+
+# Security
+urllib3>=2.5.0
+requests>=2.32.4
+cryptography>=42.0.5
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# AWS
+boto3>=1.24.0
+aws-lambda-powertools>=2.30.0
+
+# Utilities
+python-dotenv>=0.20.0
+httpx>=0.27.0
+aiohttp>=3.9.3

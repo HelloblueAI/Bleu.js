@@ -12,12 +12,13 @@ import torch
 import torch.nn as nn
 from scipy.optimize import minimize
 
+from src.utils.constants import QUANTUM_CIRCUIT_ERROR
+
 
 class QuantumOptimizer:
     """Quantum-enhanced optimization for machine learning models."""
 
     # Constants for duplicated strings
-    QUANTUM_CIRCUIT_ERROR = "Quantum circuit not initialized"
 
     def __init__(
         self,
@@ -81,7 +82,7 @@ class QuantumOptimizer:
             def quantum_objective(params):
                 # Get quantum circuit outputs
                 if self.circuit is None:
-                    raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
+                    raise ValueError(QUANTUM_CIRCUIT_ERROR)
                 quantum_outputs = self.circuit(params)
 
                 # Combine with classical objective
@@ -151,7 +152,7 @@ class QuantumOptimizer:
                     # Quantum enhancement
                     with torch.no_grad():
                         if self.circuit is None:
-                            raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
+                            raise ValueError(QUANTUM_CIRCUIT_ERROR)
                         quantum_outputs = self.circuit(
                             model.parameters().__next__().detach().numpy()
                         )
@@ -219,7 +220,7 @@ class QuantumOptimizer:
 
                 # Quantum enhancement
                 if self.circuit is None:
-                    raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
+                    raise ValueError(QUANTUM_CIRCUIT_ERROR)
                 quantum_outputs = self.circuit(
                     np.array(list(params.values())).reshape(-1, 3)
                 )

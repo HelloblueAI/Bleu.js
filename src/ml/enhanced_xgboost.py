@@ -26,6 +26,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from sklearn.model_selection import KFold
 
+from src.utils.base_classes import BaseProcessor, BaseService
+
 warnings.filterwarnings("ignore")
 
 # Configure logging
@@ -71,7 +73,7 @@ class PerformanceConfig:
     memory_fraction: float = 0.8
 
 
-class QuantumFeatureProcessor:
+class QuantumFeatureProcessor(BaseProcessor):
     """Quantum-enhanced feature processing"""
 
     def __init__(self, config: QuantumFeatureConfig):
@@ -133,7 +135,7 @@ class QuantumFeatureProcessor:
         return x
 
 
-class SecurityManager:
+class SecurityManager(BaseService):
     """Advanced security management for model protection"""
 
     def __init__(self, config: SecurityConfig):

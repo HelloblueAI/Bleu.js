@@ -1,43 +1,438 @@
-name: GitHub Release
+name: 🚀 Release Management
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.2.3)'
+        required: true
+        type: string
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - prerelease
+      dry_run:
+        description: 'Dry run (no actual release)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  PYTHON_VERSION: '3.11'
+  POETRY_VERSION: '1.7.1'
 
 jobs:
-  release:
+  # ============================================================================
+  # PRE-RELEASE VALIDATION
+  # ============================================================================
+  validate:
+    name: ✅ Pre-Release Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      is-prerelease: ${{ steps.get-version.outputs.is-prerelease }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Get version information
+        id: get-version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "is-prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is-prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "Releasing version: $VERSION"
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          if [[ ! "$VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo "❌ Invalid version format: $VERSION"
+            echo "Expected format: v1.2.3 or v1.2.3-alpha.1"
+            exit 1
+          fi
+          echo "✅ Version format is valid"
+
+      - name: Check for uncommitted changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "❌ Uncommitted changes found"
+            git status
+            exit 1
+          fi
+          echo "✅ No uncommitted changes"
+
+      - name: Run pre-release tests
+        run: |
+          poetry run pytest tests/ --cov=src/ --cov-report=xml --cov-fail-under=85
+          poetry run mypy src/
+          poetry run bandit -r src/ -c pyproject.toml
+
+      - name: Check CHANGELOG
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+            echo "❌ No changelog entry found for version $VERSION"
+            echo "Please add an entry to CHANGELOG.md"
+            exit 1
+          fi
+          echo "✅ Changelog entry found"
+
+  # ============================================================================
+  # BUILD & PACKAGE
+  # ============================================================================
+  build:
+    name: 🏗️ Build Packages
+    needs: [validate]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.10', '3.11']
+
+    steps:
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Extract changelog for this tag
-        id: changelog
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Build package
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-          # Extract changelog section for this tag
-          awk "/^## \[$TAG_NAME\]/ {flag=1; next} /^## \[/ {flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
-          echo 'RELEASE_NOTES<<EOF' >> $GITHUB_ENV
-          cat RELEASE_NOTES.md >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          poetry build --format wheel
+          poetry build --format sdist
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-packages-${{ matrix.os }}-${{ matrix.python-version }}
+          path: dist/
+          retention-days: 30
+
+  # ============================================================================
+  # TEST PACKAGES
+  # ============================================================================
+  test-packages:
+    name: 🧪 Test Built Packages
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "python-packages-*"
+          merge-multiple: true
+
+      - name: Test package installation
+        run: |
+          # Test wheel installation
+          pip install dist/*.whl --force-reinstall
+          python -c "import bleu_js; print('✅ Package imports successfully')"
+
+          # Test source distribution
+          pip install dist/*.tar.gz --force-reinstall
+          python -c "import bleu_js; print('✅ Source distribution works')"
+
+      - name: Test package functionality
+        run: |
+          python -c "
+          import bleu_js
+          from bleu_js import __version__
+          print(f'✅ Version: {__version__}')
+          "
+
+      - name: Test quantum components
+        run: |
+          python -c "
+          try:
+              from bleu_js.quantum import QuantumProcessor
+              print('✅ Quantum components available')
+          except ImportError:
+              print('⚠️ Quantum components not available (optional)')
+          "
+
+  # ============================================================================
+  # PUBLISH TO PYPI
+  # ============================================================================
+  publish-pypi:
+    name: 📦 Publish to PyPI
+    needs: [test-packages]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "python-packages-ubuntu-latest-3.11"
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        env:
+          TWINE_REPOSITORY: pypi
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m twine upload --skip-existing dist/*
+
+      - name: Publish to Test PyPI
+        env:
+          TWINE_REPOSITORY: testpypi
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          python -m twine upload --repository testpypi --skip-existing dist/*
+
+  # ============================================================================
+  # CREATE GITHUB RELEASE
+  # ============================================================================
+  create-release:
+    name: 🏷️ Create GitHub Release
+    needs: [publish-pypi]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "python-packages-*"
+          merge-multiple: true
+
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          VERSION="${{ needs.validate.outputs.version }}"
+
+          # Extract changelog section
+          awk "/^## \\[$VERSION\\]/,/^## /" CHANGELOG.md | head -n -1 > release-notes.md
+
+          # Add installation instructions
+          echo "" >> release-notes.md
+          echo "## Installation" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### Basic Installation" >> release-notes.md
+          echo "\`\`\`bash" >> release-notes.md
+          echo "pip install bleu-js" >> release-notes.md
+          echo "\`\`\`" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### With Quantum Support" >> release-notes.md
+          echo "\`\`\`bash" >> release-notes.md
+          echo "pip install bleu-js[quantum]" >> release-notes.md
+          echo "\`\`\`" >> release-notes.md
+
+          # Read the generated notes
+          RELEASE_NOTES=$(cat release-notes.md)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG_NAME }}
-          name: Release ${{ env.TAG_NAME }}
-          body: ${{ env.RELEASE_NOTES }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ needs.validate.outputs.version }}
+          name: Release ${{ needs.validate.outputs.version }}
+          body: ${{ steps.release-notes.outputs.notes }}
+          files: dist/*
+          draft: false
+          prerelease: ${{ needs.validate.outputs.is-prerelease }}
 
-      # Optionally upload build artifacts (wheel, sdist)
-      - name: Upload Python package artifacts
-        if: always()
-        uses: actions/upload-artifact@v3
+  # ============================================================================
+  # DOCKER IMAGES
+  # ============================================================================
+  docker:
+    name: 🐳 Build Docker Images
+    needs: [publish-pypi]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
-          name: python-artifacts
-          path: |
-            dist/*.whl
-            dist/*.tar.gz
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            bleujs/bleu-js:${{ needs.validate.outputs.version }}
+            bleujs/bleu-js:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build quantum variant
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.quantum
+          push: true
+          tags: |
+            bleujs/bleu-js-quantum:${{ needs.validate.outputs.version }}
+            bleujs/bleu-js-quantum:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ============================================================================
+  # NOTIFICATIONS
+  # ============================================================================
+  notify:
+    name: 📢 Release Notifications
+    needs: [create-release, docker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+
+    steps:
+      - name: Notify on success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "attachments": [{
+                "color": "good",
+                "title": "🎉 Release Successful",
+                "text": "Bleu.js ${{ needs.validate.outputs.version }} has been released",
+                "fields": [
+                  {
+                    "title": "Version",
+                    "value": "${{ needs.validate.outputs.version }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Type",
+                    "value": "${{ needs.validate.outputs.is-prerelease == 'true' && 'Pre-release' || 'Release' }}",
+                    "short": true
+                  },
+                  {
+                    "title": "PyPI",
+                    "value": "https://pypi.org/project/bleu-js/",
+                    "short": true
+                  },
+                  {
+                    "title": "Docker",
+                    "value": "https://hub.docker.com/r/bleujs/bleu-js",
+                    "short": true
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "attachments": [{
+                "color": "danger",
+                "title": "❌ Release Failed",
+                "text": "Release ${{ needs.validate.outputs.version }} failed",
+                "fields": [
+                  {
+                    "title": "Version",
+                    "value": "${{ needs.validate.outputs.version }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit",
+                    "value": "${{ github.sha }}",
+                    "short": true
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

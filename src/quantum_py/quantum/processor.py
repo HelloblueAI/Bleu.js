@@ -10,12 +10,13 @@ from qiskit_aer import QasmSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 
 from .circuit import QuantumCircuit
+from .quantum_processor_base import QuantumProcessorBase
 
 # Constants
 QUANTUM_CIRCUIT_NOT_INITIALIZED_ERROR = "Quantum circuit not initialized"
 
 
-class QuantumProcessor:
+class QuantumProcessor(QuantumProcessorBase):
     """Quantum processor for feature processing and optimization"""
 
     def __init__(
@@ -241,3 +242,6 @@ class QuantumProcessor:
             "feature_map_fidelity": 0.0,
             "circuit_optimization_score": 0.0,
         }
+
+    def get_backend_name(self) -> str:
+        return "Qiskit"
