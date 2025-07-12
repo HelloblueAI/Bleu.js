@@ -167,7 +167,7 @@ class QuantumCaseStudy:
             )
 
             # F541: Convert f-strings without placeholders to regular strings
-            msg3 = "\\nClassical Performance:"
+            msg3 = "\nClassical Performance:"
             msg4 = (
                 f"  {analysis['classical_performance']['metric']}: "
                 f"{analysis['classical_performance']['value']:.4f}"
@@ -180,7 +180,7 @@ class QuantumCaseStudy:
                 f"  Inference Time: "
                 f"{analysis['classical_performance']['inference_time']:.2f}s"
             )
-            msg7 = "\\nQuantum Performance:"
+            msg7 = "\nQuantum Performance:"
             msg8 = (
                 f"  {analysis['quantum_performance']['metric']}: "
                 f"{analysis['quantum_performance']['value']:.4f}"
@@ -193,7 +193,7 @@ class QuantumCaseStudy:
                 f"  Inference Time: "
                 f"{analysis['quantum_performance']['inference_time']:.2f}s"
             )
-            msg11 = "\\nImprovements:"
+            msg11 = "\nImprovements:"
             msg12 = (
                 f"  Performance: "
                 f"{analysis['improvement']['performance_improvement']:.2f}%"
