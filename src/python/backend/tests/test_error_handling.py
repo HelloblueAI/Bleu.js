@@ -88,7 +88,7 @@ async def test_retry_mechanism():
 
 
 @pytest.mark.asyncio
-async def test_circuit_breaker():
+async def test_circuit_breaker_async():
     """Test circuit breaker pattern."""
     # First two requests should fail
     for _ in range(2):
