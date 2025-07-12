@@ -7,6 +7,7 @@ import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Union
 
+import aiofiles
 import graphviz
 import lime
 import lime.lime_tabular
@@ -576,8 +577,8 @@ class ExplainabilityEngine:
         }
 
         # Save as msgpack for efficient binary serialization
-        with open(path, "wb") as f:
-            f.write(msgpack.packb(state))
+        async with aiofiles.open(path, "wb") as f:
+            await f.write(msgpack.packb(state))
         self.logger.info("explainability_engine_state_saved", path=path)
 
     def _serialize_explainer(self) -> Optional[Dict]:
@@ -625,8 +626,11 @@ class ExplainabilityEngine:
 
     async def load_state(self, path: str) -> None:
         """Load a saved state of the explainability engine."""
-        with open(path, "rb") as f:
-            state = msgpack.unpackb(f.read())
+        import msgpack
+
+        async with aiofiles.open(path, "rb") as f:
+            data = await f.read()
+            state = msgpack.unpackb(data)
 
         self.config = state["config"]
 

@@ -43,7 +43,7 @@ def manager(mock_gpu_utils, mock_torch_cuda):
 def test_initialization(manager):
     """Test manager initialization."""
     assert len(manager.devices) == 2
-    assert manager.quantum_reserve == 0.2
+    assert abs(manager.quantum_reserve - 0.2) < 1e-6
     assert manager.cache_size == 1024 * 1024 * 1024
     assert len(manager.memory_blocks) == 0
     assert len(manager.device_stats) == 2

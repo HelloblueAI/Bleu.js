@@ -88,9 +88,9 @@ async def test_redis_operations(redis_client):
     assert await redis_client.get("test_expire") == "value"
 
     # Wait for expiration
-    import time
+    import asyncio
 
-    time.sleep(1)
+    await asyncio.sleep(1)
     assert await redis_client.get("test_expire") is None
 
     # Cleanup

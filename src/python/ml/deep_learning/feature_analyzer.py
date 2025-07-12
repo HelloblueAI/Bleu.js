@@ -7,6 +7,7 @@ import os
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
+import aiofiles
 import matplotlib.pyplot as plt
 import msgpack
 import numpy as np
@@ -383,14 +384,17 @@ class FeatureAnalyzer:
         }
 
         # Save as msgpack for efficient binary serialization
-        with open(path, "wb") as f:
-            f.write(msgpack.packb(state))
+        async with aiofiles.open(path, "wb") as f:
+            await f.write(msgpack.packb(state))
         self.logger.info("feature_analyzer_state_saved", path=path)
 
     async def load_state(self, path: str) -> None:
         """Load a saved state of the feature analyzer."""
-        with open(path, "rb") as f:
-            state = msgpack.unpackb(f.read())
+        import msgpack
+
+        async with aiofiles.open(path, "rb") as f:
+            data = await f.read()
+            state = msgpack.unpackb(data)
 
         self.config = state["config"]
 

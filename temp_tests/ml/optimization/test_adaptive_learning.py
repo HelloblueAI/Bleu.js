@@ -119,7 +119,7 @@ def test_adaptive_adjustment(optimizer, config):
 
     # Test improvement in loss
     scheduler.step({"loss": 0.5})
-    assert scheduler.best_loss == 0.5
+    assert abs(scheduler.best_loss - 0.5) < 1e-6
     assert scheduler.patience_counter == 0
     assert optimizer.param_groups[0]["lr"] == initial_lr
 
@@ -178,7 +178,7 @@ def test_quantum_state_distance(optimizer, config):
 
     # Test with same state
     distance = scheduler.quantum_state_distance(state1, state1)
-    assert distance == 0
+    assert distance == 0.0
 
 
 def test_invalid_metrics(optimizer, config):
