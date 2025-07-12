@@ -85,7 +85,7 @@ jobs:
       - name: Run Bandit Security Scan
         id: bandit-scan
         run: |
-          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/ -f json -o bandit-report.json --exclude="*/bleujs-env-*/*,*/venv/*,*/env/*,*/__pycache__/*" || true
           if [ -f bandit-report.json ]; then
             VULNERABILITIES=$(jq '.results | length' bandit-report.json)
             echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
@@ -195,22 +195,22 @@ jobs:
 
       - name: Format Check with Black
         run: |
-          black --check --diff src/ tests/
+          black --check --diff src/ tests/ --exclude=".*bleujs-env.*|.*venv.*|.*env.*|.*__pycache__.*"
           black --check --diff .github/ scripts/
 
       - name: Import Sorting with isort
         run: |
-          isort --check-only --diff src/ tests/
+          isort --check-only --diff src/ tests/ --skip-glob="*bleujs-env*/*" --skip-glob="*venv/*" --skip-glob="*env/*" --skip-glob="*__pycache__/*"
           isort --check-only --diff .github/ scripts/
 
       - name: Lint with flake8
         run: |
-          flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics --exclude="*/bleujs-env-*/*,*/venv/*,*/env/*,*/__pycache__/*,*/\.*/*"
+          flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude="*/bleujs-env-*/*,*/venv/*,*/env/*,*/__pycache__/*,*/\.*/*"
 
       - name: Type Check with mypy
         run: |
-          mypy src/ --ignore-missing-imports --no-strict-optional
+          mypy src/ --ignore-missing-imports --no-strict-optional --exclude=.*bleujs-env.* --exclude=.*venv.* --exclude=.*env.* --exclude=.*__pycache__.*
 
       - name: Lint Check Summary
         id: lint-check
