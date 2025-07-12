@@ -6,7 +6,6 @@ import logging
 import re
 from collections import Counter
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
 
 import spacy
 import torch
@@ -27,7 +26,7 @@ class TokenizerConfig:
     use_fast: bool = True
     use_spacy: bool = False
     language: str = "en"
-    custom_tokens: Optional[List[str]] = None
+    custom_tokens: list[str] | None = None
 
 
 class EnhancedTokenizer:
@@ -50,7 +49,7 @@ class EnhancedTokenizer:
 
         self.special_tokens = self._get_special_tokens()
 
-    def _add_custom_tokens(self, custom_tokens: List[str]):
+    def _add_custom_tokens(self, custom_tokens: list[str]):
         """Add custom tokens to the tokenizer."""
         new_tokens = []
         for token in custom_tokens:
@@ -61,7 +60,7 @@ class EnhancedTokenizer:
             num_added = self.tokenizer.add_tokens(new_tokens)
             self.logger.info(f"Added {num_added} custom tokens")
 
-    def _get_special_tokens(self) -> Dict[str, str]:
+    def _get_special_tokens(self) -> dict[str, str]:
         """Get special tokens mapping."""
         return {
             "pad": self.tokenizer.pad_token,
@@ -74,8 +73,8 @@ class EnhancedTokenizer:
         }
 
     def tokenize(
-        self, texts: str | List[str], return_tensors: bool = True
-    ) -> Dict[str, torch.Tensor]:
+        self, texts: str | list[str], return_tensors: bool = True
+    ) -> dict[str, torch.Tensor]:
         """Tokenize text with advanced features."""
         if isinstance(texts, str):
             texts = [texts]
@@ -113,8 +112,8 @@ class EnhancedTokenizer:
         return text
 
     def _add_linguistic_features(
-        self, texts: List[str], encodings: Dict[str, torch.Tensor]
-    ) -> Dict[str, torch.Tensor]:
+        self, texts: list[str], encodings: dict[str, torch.Tensor]
+    ) -> dict[str, torch.Tensor]:
         """Add linguistic features using spaCy."""
         docs = list(self.nlp.pipe(texts))
 
@@ -147,12 +146,13 @@ class EnhancedTokenizer:
 
         return encodings
 
-    def _convert_features_to_tensors(self, features: List[List[str]]) -> torch.Tensor:
+    def _convert_features_to_tensors(self, features: list[list[str]]) -> torch.Tensor:
         """Convert linguistic features to tensors."""
         # Create vocabulary for features
-        vocab = Counter()
+        vocab: dict[str, int] = Counter()
         for seq in features:
-            vocab.update(seq)
+            # Convert list to proper format for Counter.update
+            vocab.update(dict.fromkeys(seq, 1))
 
         # Convert to indices
         indexed_features = []
@@ -170,7 +170,7 @@ class EnhancedTokenizer:
 
     def decode(
         self, token_ids: torch.Tensor, skip_special_tokens: bool = True
-    ) -> List[str]:
+    ) -> list[str]:
         """Decode token IDs to text."""
         return self.tokenizer.batch_decode(
             token_ids, skip_special_tokens=skip_special_tokens
@@ -188,7 +188,7 @@ class EnhancedTokenizer:
         """Load tokenizer from disk."""
         self.tokenizer = AutoTokenizer.from_pretrained(path)
 
-    def get_token_type_ids(self, text_pairs: List[Tuple[str, str]]) -> torch.Tensor:
+    def get_token_type_ids(self, text_pairs: list[tuple[str, str]]) -> torch.Tensor:
         """Get token type IDs for text pairs."""
         encodings = self.tokenizer(
             text_pairs,
@@ -200,7 +200,7 @@ class EnhancedTokenizer:
         )
         return encodings["token_type_ids"]
 
-    def get_attention_mask(self, texts: str | List[str]) -> torch.Tensor:
+    def get_attention_mask(self, texts: str | list[str]) -> torch.Tensor:
         """Get attention mask for texts."""
         encodings = self.tokenize(texts)
         return encodings["attention_mask"]

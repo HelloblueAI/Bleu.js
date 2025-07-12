@@ -1,132 +1,143 @@
-import uuid
-from datetime import datetime, timezone
-from typing import Dict, Optional
+"""Customer model."""
 
-from pydantic import BaseModel, ConfigDict, EmailStr
-from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
+import uuid
+from datetime import datetime
+
+from sqlalchemy import Column, DateTime, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from src.models.declarative_base import Base
+from src.models.base import Base
 
 
 class Customer(Base):
-    """Database model for storing customer information."""
+    """Customer model."""
 
     __tablename__ = "customers"
-    __table_args__ = {"extend_existing": True}
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    stripe_customer_id = Column(String, unique=True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    api_key = Column(String, unique=True, nullable=False)
-    plan = Column(String, nullable=False)
-    features = Column(JSON, nullable=False)
-    api_calls_remaining = Column(Integer, default=0)
-    rate_limit = Column(Integer, nullable=False)
-    subscription_start = Column(DateTime, nullable=False)
-    subscription_end = Column(DateTime, nullable=True)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(
-        DateTime,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-    )
-    subscription_id = Column(String, ForeignKey("subscriptions.id"), nullable=True)
-    api_calls_reset_at = Column(DateTime, nullable=True)
-    settings = Column(JSON, default={})
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String(255), unique=True, nullable=False)
+    name = Column(String(255), nullable=True)
+    company = Column(String(255), nullable=True)
+    phone = Column(String(50), nullable=True)
+    address = Column(Text, nullable=True)
+    city = Column(String(100), nullable=True)
+    state = Column(String(100), nullable=True)
+    country = Column(String(100), nullable=True)
+    postal_code = Column(String(20), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_active = Column(String(10), default="active")
+    notes = Column(Text, nullable=True)
 
     # Relationships
-    api_calls = relationship("APICall", back_populates="customer")
-    rate_limit_tokens = relationship(
-        "RateLimitToken", back_populates="customer", uselist=False
-    )
-    subscription = relationship("Subscription", back_populates="customer")
-    api_tokens = relationship("APIToken", back_populates="customer")
-    rate_limits = relationship("RateLimit", back_populates="customer")
+    subscriptions = relationship("Subscription", back_populates="customer")
     payments = relationship("Payment", back_populates="customer")
 
-    def reset_api_calls(self):
-        """Reset the API calls counter."""
-        self.api_calls_remaining = self.subscription.plan.api_calls_limit
-        self.api_calls_reset_at = datetime.now(timezone.utc)
+    def __repr__(self):
+        return f"<Customer(id={self.id}, email='{self.email}')>"
 
-    def can_make_api_call(self) -> bool:
-        """Check if the customer can make an API call."""
-        if not self.api_calls_reset_at:
-            return False
-
-        # Reset if the period has elapsed
-        now = datetime.now(timezone.utc)
-        if (now - self.api_calls_reset_at).days >= 30:  # Monthly reset
-            self.reset_api_calls()
-
-        return self.api_calls_remaining > 0
-
-    def decrement_api_calls(self):
-        """Decrement the API calls counter."""
-        if self.can_make_api_call():
-            self.api_calls_remaining -= 1
-            self.updated_at = datetime.now(timezone.utc)
-            return True
-        return False
+    def to_dict(self):
+        """Convert customer to dictionary."""
+        return {
+            "id": str(self.id),
+            "email": self.email,
+            "name": self.name,
+            "company": self.company,
+            "phone": self.phone,
+            "address": self.address,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "postal_code": self.postal_code,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "is_active": self.is_active,
+            "notes": self.notes,
+        }
 
 
-class RateLimitToken(Base):
-    """Database model for managing rate limiting tokens."""
+class CustomerCreate:
+    """Customer creation model."""
 
-    __tablename__ = "rate_limit_tokens"
-    __table_args__ = {"extend_existing": True}
+    def __init__(
+        self,
+        email: str,
+        name: str | None = None,
+        company: str | None = None,
+        phone: str | None = None,
+        address: str | None = None,
+        city: str | None = None,
+        state: str | None = None,
+        country: str | None = None,
+        postal_code: str | None = None,
+        notes: str | None = None,
+    ):
+        self.email = email
+        self.name = name
+        self.company = company
+        self.phone = phone
+        self.address = address
+        self.city = city
+        self.state = state
+        self.country = country
+        self.postal_code = postal_code
+        self.notes = notes
 
-    id = Column(String, primary_key=True)
-    customer_id = Column(
-        String, ForeignKey("customers.id"), unique=True, nullable=False
-    )
-    tokens = Column(Integer, nullable=False)
-    last_updated = Column(DateTime, nullable=False)
-
-    # Relationships
-    customer = relationship("Customer", back_populates="rate_limit_tokens")
-
-
-# Pydantic models for API
-class CustomerBase(BaseModel):
-    email: EmailStr
-    plan: str
-    features: Dict
-    api_calls_remaining: int
-    rate_limit: int
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-
-class CustomerCreate(CustomerBase):
-    stripe_customer_id: str
-    api_key: str
-    subscription_start: datetime
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-
-class CustomerUpdate(BaseModel):
-    plan: Optional[str] = None
-    features: Optional[Dict] = None
-    api_calls_remaining: Optional[int] = None
-    rate_limit: Optional[int] = None
-    is_active: Optional[bool] = None
-    subscription_end: Optional[datetime] = None
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    def to_dict(self):
+        """Convert to dictionary."""
+        return {
+            "email": self.email,
+            "name": self.name,
+            "company": self.company,
+            "phone": self.phone,
+            "address": self.address,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "postal_code": self.postal_code,
+            "notes": self.notes,
+        }
 
 
-class CustomerResponse(CustomerBase):
-    id: str
-    stripe_customer_id: str
-    api_key: str
-    subscription_start: datetime
-    subscription_end: Optional[datetime]
-    is_active: bool
-    created_at: datetime
-    updated_at: datetime
+class CustomerUpdate:
+    """Customer update model."""
 
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
+    def __init__(
+        self,
+        email: str | None = None,
+        name: str | None = None,
+        company: str | None = None,
+        phone: str | None = None,
+        address: str | None = None,
+        city: str | None = None,
+        state: str | None = None,
+        country: str | None = None,
+        postal_code: str | None = None,
+        notes: str | None = None,
+    ):
+        self.email = email
+        self.name = name
+        self.company = company
+        self.phone = phone
+        self.address = address
+        self.city = city
+        self.state = state
+        self.country = country
+        self.postal_code = postal_code
+        self.notes = notes
+
+    def to_dict(self):
+        """Convert to dictionary."""
+        return {
+            "email": self.email,
+            "name": self.name,
+            "company": self.company,
+            "phone": self.phone,
+            "address": self.address,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "postal_code": self.postal_code,
+            "notes": self.notes,
+        }

@@ -5,7 +5,7 @@ Copyright (c) 2024, Bleu.js
 
 import os
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any
 
 import aiofiles
 import matplotlib.pyplot as plt
@@ -25,13 +25,13 @@ from tensorflow import keras
 class FeatureAnalysisConfig:
     """Configuration for feature analysis."""
 
-    methods: Optional[List[str]] = None
+    methods: list[str] | None = None
     n_components: int = 10
     correlation_threshold: float = 0.8
     importance_threshold: float = 0.1
     enable_visualization: bool = True
     enable_distributed_computing: bool = True
-    feature_metrics: Optional[List[str]] = None
+    feature_metrics: list[str] | None = None
 
 
 class FeatureAnalyzer:
@@ -45,9 +45,9 @@ class FeatureAnalyzer:
         self.logger = structlog.get_logger()
         self.scaler: StandardScaler = StandardScaler()
         self.pca: PCA = PCA(n_components=config.n_components)
-        self.feature_importance: Dict = {}
-        self.correlation_matrix: Optional[np.ndarray] = None
-        self.feature_stats: Dict = {}
+        self.feature_importance: dict = {}
+        self.correlation_matrix: np.ndarray | None = None
+        self.feature_stats: dict = {}
 
         if self.config.methods is None:
             self.config.methods = [
@@ -120,8 +120,8 @@ class FeatureAnalyzer:
         )
 
     async def analyze(
-        self, features: np.ndarray, y: Optional[np.ndarray] = None
-    ) -> Dict[str, np.ndarray]:
+        self, features: np.ndarray, y: np.ndarray | None = None
+    ) -> dict[str, np.ndarray]:
         """
         Perform comprehensive feature analysis.
         """
@@ -141,19 +141,19 @@ class FeatureAnalyzer:
                 )
 
             # Calculate correlation matrix
-            if "correlation" in self.config.methods:
+            if "correlation" in (self.config.methods or []):
                 self.correlation_matrix = await self._calculate_correlation_matrix(
                     x_scaled
                 )
 
             # Perform PCA analysis
-            if "pca" in self.config.methods:
+            if "pca" in (self.config.methods or []):
                 pca_results = await self._perform_pca(x_scaled)
                 self.feature_stats["pca"] = pca_results
 
             # Perform autoencoder analysis
-            if "autoencoder" in self.config.methods:
-                autoencoder_results = await self._analyze_with_autoencoder()
+            if "autoencoder" in (self.config.methods or []):
+                autoencoder_results = await self._analyze_with_autoencoder(features)
                 self.feature_stats["autoencoder"] = autoencoder_results
 
             # Generate visualizations if enabled
@@ -167,14 +167,14 @@ class FeatureAnalyzer:
             self.logger.error("feature_analysis_failed", error=str(e))
             raise
 
-    async def _calculate_feature_stats(self, features: np.ndarray) -> Dict:
+    async def _calculate_feature_stats(self, features: np.ndarray) -> dict:
         """Calculate basic feature statistics."""
-        stats_dict = {}
+        stats_dict: dict[str, Any] = {}
 
         if self.config.feature_metrics is None:
             return stats_dict
 
-        for metric in self.config.feature_metrics:
+        for metric in self.config.feature_metrics or []:
             if metric == "variance":
                 stats_dict["variance"] = np.var(features, axis=0)
             elif metric == "skewness":
@@ -186,14 +186,14 @@ class FeatureAnalyzer:
 
     async def _calculate_feature_importance(
         self, features: np.ndarray, y: np.ndarray
-    ) -> Dict[str, np.ndarray]:
+    ) -> dict[str, np.ndarray]:
         """Calculate feature importance using multiple methods."""
         importance_dict = {}
 
-        if "mutual_info" in self.config.methods:
+        if "mutual_info" in (self.config.methods or []):
             importance_dict["mutual_info"] = mutual_info_classif(features, y)
 
-        if "f_score" in self.config.methods:
+        if "f_score" in (self.config.methods or []):
             importance_dict["f_score"] = f_classif(features, y)[0]
 
         # Normalize importance scores
@@ -206,7 +206,7 @@ class FeatureAnalyzer:
         """Calculate feature correlation matrix."""
         return np.corrcoef(features.T)
 
-    async def _perform_pca(self, features: np.ndarray) -> Dict:
+    async def _perform_pca(self, features: np.ndarray) -> dict:
         """Perform PCA analysis."""
         # Fit PCA
         pca_result = self.pca.fit_transform(features)
@@ -222,16 +222,16 @@ class FeatureAnalyzer:
             "loadings": self.pca.components_,
         }
 
-    async def _analyze_with_autoencoder(self) -> Dict:
+    async def _analyze_with_autoencoder(self, features: np.ndarray) -> dict:
         """Analyze features using autoencoder."""
         # Update input dimension if needed
-        if self.autoencoder.layers[0].input_shape[1] != self.features.shape[1]:
+        if self.autoencoder.layers[0].input_shape[1] != features.shape[1]:
             await self._initialize_autoencoder()
 
         # Train autoencoder
         self.autoencoder.fit(
-            self.features,
-            self.features,
+            features,
+            features,
             epochs=50,
             batch_size=32,
             validation_split=0.2,
@@ -239,11 +239,11 @@ class FeatureAnalyzer:
         )
 
         # Get encoded features
-        encoded_features = self.autoencoder.layers[0].predict(self.features)
+        encoded_features = self.autoencoder.layers[0].predict(features)
 
         # Calculate reconstruction error
-        reconstructed = self.autoencoder.predict(self.features)
-        reconstruction_error = np.mean(np.square(self.features - reconstructed), axis=0)
+        reconstructed = self.autoencoder.predict(features)
+        reconstruction_error = np.mean(np.square(features - reconstructed), axis=0)
 
         return {
             "encoded_features": encoded_features,
@@ -286,8 +286,8 @@ class FeatureAnalyzer:
             plt.close()
 
     async def select_features(
-        self, features: np.ndarray, threshold: Optional[float] = None
-    ) -> Tuple[np.ndarray, List[int]]:
+        self, features: np.ndarray, threshold: float | None = None
+    ) -> tuple[np.ndarray, list[int]]:
         """
         Select features based on importance scores.
         """
@@ -306,7 +306,7 @@ class FeatureAnalyzer:
 
         return selected_features, selected_indices.tolist()
 
-    def _get_scaler_state(self) -> Optional[Dict]:
+    def _get_scaler_state(self) -> dict | None:
         """Get the state of the scaler."""
         if not self.scaler:
             return None
@@ -323,7 +323,7 @@ class FeatureAnalyzer:
             "n_samples_seen_": self.scaler.n_samples_seen_,
         }
 
-    def _get_pca_state(self) -> Optional[Dict]:
+    def _get_pca_state(self) -> dict | None:
         """Get the state of the PCA."""
         if not self.pca:
             return None
@@ -352,11 +352,11 @@ class FeatureAnalyzer:
             "n_components_": self.pca.n_components_,
         }
 
-    def _get_config_state(self) -> Dict:
+    def _get_config_state(self) -> dict:
         """Get the state of the config."""
         return self.config.dict() if hasattr(self.config, "dict") else self.config
 
-    def _get_feature_importance_state(self) -> Dict:
+    def _get_feature_importance_state(self) -> dict:
         """Get the state of feature importance."""
         return (
             {
@@ -466,14 +466,7 @@ class FeatureAnalyzer:
         return self.pca.fit_transform(scaled_features)
 
     def get_feature_importance(self):
-        """Get feature importance based on PCA components."""
-        if self.pca is None or not hasattr(self.pca, "components_"):
-            self._initialize_transformers()
-            raise ValueError(
-                "PCA has not been fitted yet. Transform some features first."
-            )
-
-        importance = np.abs(self.pca.components_)
-        explained_var = self.pca.explained_variance_ratio_
-
-        return {"importance": importance, "explained_variance": explained_var}
+        """Get feature importance scores."""
+        if hasattr(self, "feature_importance"):
+            return self.feature_importance
+        return {}

@@ -19,11 +19,11 @@ from sqlalchemy import (
     create_engine,
 )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import DeclarativeMeta, relationship, sessionmaker
 
 from .models import SubscriptionTier
 
-Base = declarative_base()
+Base: DeclarativeMeta = declarative_base()
 
 
 class User(Base):

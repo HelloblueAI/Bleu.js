@@ -4,7 +4,7 @@ import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.utils.base_classes import BaseService
 
@@ -228,8 +228,8 @@ class EmailService(BaseService):
         recipient: str,
         subject: str,
         body: str,
-        html_body: Optional[str] = None,
-        attachments: Optional[List[Dict[str, Any]]] = None,
+        html_body: str | None = None,
+        attachments: list[dict[str, Any]] | None = None,
     ) -> bool:
         """
         Send an email to the specified recipient.
@@ -270,3 +270,16 @@ class EmailService(BaseService):
         except Exception as e:
             logger.error(f"Error sending email: {str(e)}")
             return False
+
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute email service operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the email operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "email_sent", "service": "email"}

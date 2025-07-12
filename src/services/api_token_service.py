@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime, timedelta, timezone
-from typing import List
+from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -50,7 +50,7 @@ class APITokenService(BaseService):
 
         return APITokenResponse.model_validate(token)
 
-    async def get_user_tokens(self, user: UserResponse) -> List[APITokenResponse]:
+    async def get_user_tokens(self, user: UserResponse) -> list[APITokenResponse]:
         """Get all API tokens for a user."""
         tokens = self.db.query(APIToken).filter(APIToken.user_id == user.id).all()
         return [APITokenResponse.model_validate(token) for token in tokens]
@@ -111,3 +111,16 @@ class APITokenService(BaseService):
             return False
 
         return True
+
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute API token service operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the API token operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "token_processed", "service": "api_token"}

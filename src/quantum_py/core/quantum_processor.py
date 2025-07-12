@@ -4,7 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from multiprocessing import Pool
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import numpy as np
 import sparse
@@ -37,12 +37,13 @@ class ProcessorConfig:
     use_error_correction: bool = True
     noise_model: str = "depolarizing"
     version: str = "1.1.4"
+    max_memory: int = 1024  # Added for compatibility
 
 
 class QuantumProcessor(QuantumProcessorBase):
     """Quantum processor implementation."""
 
-    def __init__(self, config: Optional[ProcessorConfig] = None):
+    def __init__(self, config: ProcessorConfig | None = None):
         """Initialize quantum processor."""
         self.config = config or ProcessorConfig()
         self.simulator = AerSimulator()
@@ -50,10 +51,10 @@ class QuantumProcessor(QuantumProcessorBase):
         self.estimator = AerEstimator()
         self.circuit = Circuit()
         self.qubits = LineQubit.range(self.config.num_qubits)
-        self.error_correction_circuits: Dict[str, QuantumCircuit] = {}
-        self.measurement_results: List[Dict[int, int]] = []
-        self.noise_models: Dict[str, callable] = {}
-        self.error_rates: Dict[int, float] = {}
+        self.error_correction_circuits: dict[str, QuantumCircuit] = {}
+        self.measurement_results: list[dict[int, int]] = []
+        self.noise_models: dict[str, callable] = {}
+        self.error_rates: dict[int, float] = {}
 
         # Initialize components
         self._initialize_error_correction()
@@ -347,6 +348,7 @@ class QuantumProcessor(QuantumProcessorBase):
     def _determine_correction_operation(self, qubit_idx):
         """Determine the appropriate correction operation for a given qubit."""
         # Implementation depends on the error correction code being used
+        pass
 
     def _select_error_correction_type(self) -> str:
         """Select appropriate error correction code based on current conditions."""
@@ -360,7 +362,7 @@ class QuantumProcessor(QuantumProcessorBase):
         else:
             return "steane"  # More efficient code
 
-    def _measure_syndrome(self, correction_type: str) -> Dict[int, Tuple[int, float]]:
+    def _measure_syndrome(self, correction_type: str) -> dict[int, tuple[int, float]]:
         """Perform enhanced syndrome measurement."""
         syndrome = {}
 
@@ -402,7 +404,7 @@ class QuantumProcessor(QuantumProcessorBase):
         total_time = len(self.circuit.gates) * self.config.gate_time
         return total_time > self.config.decoherence_time
 
-    def run_parallel_circuits(self, circuits: List[QuantumCircuit]) -> List[np.ndarray]:
+    def run_parallel_circuits(self, circuits: list[QuantumCircuit]) -> list[np.ndarray]:
         """Run multiple circuits in parallel using multiprocessing.
 
         Args:
@@ -415,9 +417,9 @@ class QuantumProcessor(QuantumProcessorBase):
             results = pool.map(self.apply_circuit, circuits)
         return results
 
-    def get_measurement_statistics(self) -> Dict[str, float]:
+    def get_measurement_statistics(self) -> dict[str, float]:
         """Get statistics of all measurements."""
-        stats: Dict[str, float] = {}
+        stats: dict[str, float] = {}
         total_measurements = len(self.measurement_results)
 
         if total_measurements == 0:
@@ -560,10 +562,30 @@ class QuantumProcessor(QuantumProcessorBase):
             {"time": time.time(), "qubit": qubit_idx, "type": "correction"}
         )
 
+    def _allocate_classical_resources(self) -> None:
+        """Allocate classical resources."""
+        pass  # Placeholder implementation
+
+    def _balance_resources(self) -> None:
+        """Balance quantum and classical resources."""
+        pass  # Placeholder implementation
+
+    def _get_memory_usage(self) -> float:
+        """Get current memory usage."""
+        return 0.0  # Placeholder
+
+    def _get_cpu_usage(self) -> float:
+        """Get current CPU usage."""
+        return 0.0  # Placeholder
+
+    def _get_qubit_utilization(self) -> float:
+        """Get qubit utilization."""
+        return 0.0  # Placeholder
+
 
 def process_quantum_circuit(
-    circuit: QuantumCircuit, backend: Optional[str] = None, shots: int = 1024
-) -> Dict[str, Any]:
+    circuit: QuantumCircuit, backend: str | None = None, shots: int = 1024
+) -> dict[str, Any]:
     """
     Process a quantum circuit using the specified backend.
 
@@ -579,8 +601,8 @@ def process_quantum_circuit(
 
 
 def analyze_quantum_results(
-    results: Dict[str, Any], threshold: float = 0.1, max_iterations: int = 100
-) -> Dict[str, Union[float, List[float]]]:
+    results: dict[str, Any], threshold: float = 0.1, max_iterations: int = 100
+) -> dict[str, float | list[float]]:
     """
     Analyze quantum computation results with detailed metrics.
 
@@ -596,8 +618,8 @@ def analyze_quantum_results(
 
 
 def optimize_quantum_parameters(
-    initial_params: List[float], learning_rate: float = 0.01, max_iterations: int = 1000
-) -> Dict[str, Union[List[float], float]]:
+    initial_params: list[float], learning_rate: float = 0.01, max_iterations: int = 1000
+) -> dict[str, list[float] | float]:
     """
     Optimize quantum circuit parameters using gradient descent.
 

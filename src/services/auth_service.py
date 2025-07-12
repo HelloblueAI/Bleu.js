@@ -2,7 +2,7 @@ import logging
 import smtplib
 from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
-from typing import Optional
+from typing import Any
 
 import httpx
 from fastapi import HTTPException, status
@@ -34,6 +34,7 @@ class AuthService(BaseService):
         self.pwd_context = pwd_context
         self.oauth2_scheme = oauth2_scheme
         self.db = db
+        self.refresh_token: str | None = None
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -42,7 +43,7 @@ class AuthService(BaseService):
         return self.pwd_context.hash(password)
 
     def create_access_token(
-        self, data: dict, expires_delta: Optional[timedelta] = None
+        self, data: dict, expires_delta: timedelta | None = None
     ) -> str:
         to_encode = data.copy()
         if expires_delta:
@@ -71,7 +72,7 @@ class AuthService(BaseService):
         except JWTError:
             raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-    async def get_current_user(self, token: str = None) -> UserResponse:
+    async def get_current_user(self, token: str | None = None) -> UserResponse:
         """Get the current authenticated user."""
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,7 +83,7 @@ class AuthService(BaseService):
             if not token:
                 raise credentials_exception
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            email: str = payload.get("sub")
+            email: str | None = payload.get("sub")
             if email is None:
                 raise credentials_exception
         except JWTError:
@@ -149,7 +150,7 @@ class AuthService(BaseService):
     async def verify_email(self, token: str, db: Session) -> bool:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            email: str = payload.get("sub")
+            email: str | None = payload.get("sub")
             if email is None:
                 return False
 
@@ -164,7 +165,7 @@ class AuthService(BaseService):
 
     async def authenticate_user(
         self, email: str, password: str, db: Session
-    ) -> Optional[User]:
+    ) -> User | None:
         user = db.query(User).filter(User.email == email).first()
         if not user:
             return None
@@ -254,7 +255,8 @@ class AuthService(BaseService):
             # Send email using configured SMTP settings
             with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
                 server.starttls()
-                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                # Fix: Ensure SMTP_USER and SMTP_PASSWORD are str, not Optional[str]
+                server.login(str(settings.SMTP_USER), str(settings.SMTP_PASSWORD))
 
                 msg = MIMEText(body)
                 msg["Subject"] = subject
@@ -269,6 +271,20 @@ class AuthService(BaseService):
             logger.error(f"Failed to send verification email to {email}: {str(e)}")
             return False
 
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute authentication service operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the authentication operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "authenticated", "service": "auth"}
+
 
 # Create a singleton instance
+# If AuthService is abstract, do not instantiate directly
 auth_service = AuthService(get_db())

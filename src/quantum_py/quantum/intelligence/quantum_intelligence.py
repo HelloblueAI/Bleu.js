@@ -1,7 +1,7 @@
 """Advanced Quantum Intelligence System."""
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -41,7 +41,7 @@ class IntelligenceConfig:
 class QuantumIntelligence:
     """Advanced Quantum Intelligence System"""
 
-    def __init__(self, config: Optional[IntelligenceConfig] = None):
+    def __init__(self, config: IntelligenceConfig | None = None):
         self.config = config or IntelligenceConfig()
         self.quantum_processor = QuantumProcessor()
         self.xgboost_model = EnhancedXGBoost()
@@ -54,11 +54,11 @@ class QuantumIntelligence:
 
         # Intelligence metrics
         self.intelligence_score = 0.0
-        self.adaptation_history = []
-        self.optimization_history = []
+        self.adaptation_history: list[dict[str, Any]] = []
+        self.optimization_history: list[dict[str, Any]] = []
 
     async def _apply_quantum_enhancements(
-        self, quantum_features: np.ndarray, context: Optional[Dict] = None
+        self, quantum_features: np.ndarray, context: dict | None = None
     ) -> np.ndarray:
         """Apply quantum enhancements to features."""
         if self.config.use_quantum_attention:
@@ -72,8 +72,8 @@ class QuantumIntelligence:
         return quantum_features
 
     async def _perform_intelligence_optimization(
-        self, quantum_features: np.ndarray, _target: Optional[np.ndarray] = None
-    ) -> Optional[Dict]:
+        self, quantum_features: np.ndarray, _target: np.ndarray | None = None
+    ) -> dict | None:
         """Perform intelligence optimization if enabled."""
         if not self.config.use_quantum_optimization:
             return None
@@ -90,9 +90,9 @@ class QuantumIntelligence:
     async def enhance_intelligence(
         self,
         data: np.ndarray,
-        target: Optional[np.ndarray] = None,
-        context: Optional[Dict] = None,
-    ) -> Dict:
+        target: np.ndarray | None = None,
+        context: dict | None = None,
+    ) -> dict:
         """Enhance intelligence using quantum computing"""
         try:
             # Process data through quantum circuits
@@ -122,8 +122,8 @@ class QuantumIntelligence:
             raise
 
     async def predict_optimal_actions(
-        self, state: np.ndarray, context: Optional[Dict] = None
-    ) -> Tuple[np.ndarray, float]:
+        self, state: np.ndarray, context: dict | None = None
+    ) -> tuple[np.ndarray, float]:
         """Predict optimal actions using quantum intelligence"""
         try:
             # Process state through quantum circuits
@@ -165,7 +165,7 @@ class QuantumIntelligence:
         return quantum_features
 
     def _apply_quantum_attention(
-        self, features: np.ndarray, _context: Optional[Dict]
+        self, features: np.ndarray, _context: dict | None
     ) -> np.ndarray:
         """Apply quantum attention mechanism"""
         # Initialize attention weights
@@ -192,8 +192,8 @@ class QuantumIntelligence:
             self.quantum_memory = self.quantum_memory[-1000:]
 
     async def _optimize_intelligence(
-        self, _features: np.ndarray, _target: Optional[np.ndarray]
-    ) -> Dict:
+        self, _features: np.ndarray, _target: np.ndarray | None
+    ) -> dict:
         """Optimize intelligence using quantum algorithms"""
         # Define optimization parameters
         optimization_params = {
@@ -247,7 +247,7 @@ class QuantumIntelligence:
         """Initialize quantum memory"""
         return np.array([])
 
-    def _initialize_attention_circuits(self) -> List:
+    def _initialize_attention_circuits(self) -> list:
         """Initialize quantum attention circuits"""
         return []
 
@@ -258,7 +258,7 @@ class QuantumIntelligence:
         return min(1.0, len(self.quantum_memory) / 1000)
 
     def _calculate_optimization_score_with_params(
-        self, params: Dict, *_args, **_kwargs
+        self, params: dict, *_args, **_kwargs
     ) -> float:
         """Calculate optimization score with parameters"""
         # This is a placeholder implementation

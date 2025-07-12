@@ -5,8 +5,8 @@ and dynamic optimization.
 """
 
 import logging
+import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set
 
 import torch
 
@@ -33,7 +33,7 @@ class QuantumGPUManager:
 
     def __init__(
         self,
-        devices: Optional[List[int]] = None,
+        devices: list[int] | None = None,
         quantum_reserve: float = 0.2,
         cache_size: int = 1024 * 1024 * 1024,  # 1GB default cache
     ):
@@ -45,8 +45,8 @@ class QuantumGPUManager:
 
         self.quantum_reserve = quantum_reserve
         self.cache_size = cache_size
-        self.memory_blocks: Dict[int, MemoryBlock] = {}
-        self.quantum_allocations: Set[int] = set()
+        self.memory_blocks: dict[int, MemoryBlock] = {}
+        self.quantum_allocations: set[int] = set()
         self.next_handle = 1
 
         # Initialize device statistics
@@ -73,8 +73,8 @@ class QuantumGPUManager:
                 }
 
     def allocate(
-        self, size: int, device: Optional[int] = None, is_quantum: bool = False
-    ) -> Optional[int]:
+        self, size: int, device: int | None = None, is_quantum: bool = False
+    ) -> int | None:
         """Allocate memory block."""
         if size <= 0:
             logger.error("Invalid allocation size")
@@ -101,7 +101,12 @@ class QuantumGPUManager:
         # Create memory block
         handle = self._generate_handle()
         block = MemoryBlock(
-            handle=handle, size=size, device=device, is_quantum=is_quantum
+            handle=handle,
+            size=size,
+            device=device,
+            is_quantum=is_quantum,
+            timestamp=time.time(),
+            in_use=True,
         )
 
         # Update device stats
@@ -124,7 +129,7 @@ class QuantumGPUManager:
 
             del self.memory_blocks[handle]
 
-    def _select_best_device(self, size: int, is_quantum: bool) -> Optional[int]:
+    def _select_best_device(self, size: int, is_quantum: bool) -> int | None:
         """Select the best device for allocation."""
         best_device = None
         max_available = 0
@@ -171,7 +176,7 @@ class QuantumGPUManager:
         fragmentation = 1.0 - (max_block / total_allocated)
         self.device_stats[device]["fragmentation"] = fragmentation
 
-    def get_memory_info(self) -> Dict[str, Dict]:
+    def get_memory_info(self) -> dict[str, dict]:
         """Get detailed memory usage information."""
         info = {}
 

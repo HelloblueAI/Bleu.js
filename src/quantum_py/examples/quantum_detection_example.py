@@ -17,7 +17,6 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import psutil
@@ -52,7 +51,7 @@ class DetectionResult:
 
     class_name: str
     confidence: float
-    bbox: Optional[List[float]]
+    bbox: list[float] | None
     uncertainty: float
     quantum_features: np.ndarray
     processing_time: float
@@ -80,7 +79,7 @@ class AdvancedQuantumDetector:
 
         # Initialize metrics
         self.metrics = self._initialize_metrics()
-        self.optimization_history = []
+        self.optimization_history: list = []
 
     def _initialize_feature_map(self) -> np.ndarray:
         """Initialize quantum-inspired feature map."""
@@ -91,7 +90,7 @@ class AdvancedQuantumDetector:
             feature_map /= norm
         return feature_map
 
-    def _initialize_metrics(self) -> Dict:
+    def _initialize_metrics(self) -> dict:
         """Initialize comprehensive metrics tracking system."""
         return {
             "detection_metrics": {
@@ -135,8 +134,8 @@ class AdvancedQuantumDetector:
         entanglement_map += 0.1 * np.sin(np.outer(phase, phase))
 
         # Calculate quantum properties
-        coherence_score = np.mean(np.abs(np.fft.fft2(entanglement_map)))
-        fidelity = np.sum(amplitude**2)
+        coherence_score = float(np.mean(np.abs(np.fft.fft2(entanglement_map))))
+        fidelity: float = np.sum(amplitude**2)
 
         return QuantumState(
             amplitude=amplitude,
@@ -181,7 +180,7 @@ class AdvancedQuantumDetector:
 
         return transformed
 
-    def preprocess_image(self, image_path: str) -> Optional[np.ndarray]:
+    def preprocess_image(self, image_path: str) -> np.ndarray | None:
         """Preprocess image with advanced techniques."""
         try:
             # Load and preprocess image
@@ -208,7 +207,7 @@ class AdvancedQuantumDetector:
             logger.error(f"Error preprocessing image: {str(e)}")
             return None
 
-    def detect_objects(self, image_path: str) -> List[DetectionResult]:
+    def detect_objects(self, image_path: str) -> list[DetectionResult]:
         """Perform advanced object detection with quantum enhancement."""
         try:
             start_time = time.time()
@@ -253,7 +252,7 @@ class AdvancedQuantumDetector:
             return []
 
     def _update_metrics(
-        self, results: List[DetectionResult], start_time: float, memory_util: float
+        self, results: list[DetectionResult], start_time: float, memory_util: float
     ):
         """Update comprehensive system metrics."""
         execution_time = time.time() - start_time
@@ -313,18 +312,18 @@ class AdvancedQuantumDetector:
             else 0.0
         )
 
-    def train(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, float]:
-        """Train the quantum detection model."""
-        # ... existing code ...
+    def train(self, features: np.ndarray, labels: np.ndarray) -> dict[str, float]:
+        # Implementation goes here
+        return {}
 
     def predict(self, features: np.ndarray) -> np.ndarray:
-        """Make predictions using the trained model."""
-        # ... existing code ...
+        # Implementation goes here
+        return np.array([])
 
 
 def generate_data(
     n_samples: int = 1000, n_features: int = 10
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data for testing."""
     rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
     features = rng.normal(0, 1, (n_samples, n_features))

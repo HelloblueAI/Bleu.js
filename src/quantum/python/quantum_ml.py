@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
@@ -20,8 +20,8 @@ class QuantumConfig:
 
     n_qubits: int
     n_layers: int
-    rotation_blocks: Optional[List[str]] = None
-    entanglement_blocks: Optional[List[str]] = None
+    rotation_blocks: list[str] | None = None
+    entanglement_blocks: list[str] | None = None
     entanglement: str = "full"
     reps: int = 3
     insert_barriers: bool = False
@@ -148,8 +148,8 @@ class QuantumNeuralNetwork(BaseEstimator, ClassifierMixin):
 class QuantumErrorCorrection:
     def __init__(self, code_type: str = "stabilizer"):
         self.code_type = code_type
-        self.error_syndromes = {}
-        self.correction_methods = {}
+        self.error_syndromes: dict[str, Any] = {}
+        self.correction_methods: dict[str, Any] = {}
 
     def encode(self, state: np.ndarray) -> np.ndarray:
         """Encode a quantum state with error correction."""
@@ -183,8 +183,8 @@ class QuantumErrorCorrection:
 class QuantumOptimizer:
     def __init__(self, optimization_level: int = 2):
         self.optimization_level = optimization_level
-        self.optimization_rules = []
-        self.performance_metrics = {}
+        self.optimization_rules: list[Any] = []
+        self.performance_metrics: dict[str, float] = {}
 
     def optimize_circuit(self, circuit: QuantumCircuit) -> QuantumCircuit:
         """Optimize a quantum circuit."""
@@ -202,7 +202,7 @@ class QuantumOptimizer:
         """Add a new optimization rule."""
         self.optimization_rules.append(rule)
 
-    def get_performance_metrics(self) -> Dict[str, float]:
+    def get_performance_metrics(self) -> dict[str, float]:
         """Get the current performance metrics."""
         return self.performance_metrics.copy()
 
@@ -212,12 +212,12 @@ class BleusQuantumConfig:
     num_qubits: int
     num_layers: int
     entanglement: str = "bleus_full"
-    rotation_blocks: List[str] = None
-    entanglement_blocks: List[str] = None
+    rotation_blocks: list[str] = None
+    entanglement_blocks: list[str] = None
     skip_final_rotation_layer: bool = False
     reps: int = 3
     insert_barriers: bool = False
-    initial_state: Optional[QuantumCircuit] = None
+    initial_state: QuantumCircuit | None = None
     parameter_prefix: str = "θ"
     name: str = "bleus_quantum_circuit"
     bleus_factor: float = 1.0
@@ -231,7 +231,7 @@ class BleusQuantumNeuralNetwork:
         self.sampler = Sampler()
         self.qnn = self._create_bleus_qnn()
         self.optimizer = COBYLA(maxiter=100)
-        self.bleus_history = []
+        self.bleus_history: list[dict[str, Any]] = []
 
     def _create_bleus_circuit(self) -> QuantumCircuit:
         """Create a Bleus-enhanced quantum circuit."""
@@ -275,7 +275,7 @@ class BleusQuantumNeuralNetwork:
 
     def train_bleus_classifier(
         self, X: np.ndarray, y: np.ndarray, epochs: int = 100, batch_size: int = 32
-    ) -> Dict[str, List[float]]:
+    ) -> dict[str, list[float]]:
         """Train the Bleus-enhanced quantum neural network as a classifier."""
         classifier = NeuralNetworkClassifier(
             neural_network=self.qnn, optimizer=self.optimizer, loss="cross_entropy"
@@ -295,7 +295,7 @@ class BleusQuantumNeuralNetwork:
 
     def train_bleus_regressor(
         self, X: np.ndarray, y: np.ndarray, epochs: int = 100, batch_size: int = 32
-    ) -> Dict[str, List[float]]:
+    ) -> dict[str, list[float]]:
         """Train the Bleus-enhanced quantum neural network as a regressor."""
         regressor = NeuralNetworkRegressor(
             neural_network=self.qnn, optimizer=self.optimizer, loss="mse"
@@ -316,21 +316,21 @@ class BleusQuantumNeuralNetwork:
         """Make predictions using the Bleus-enhanced quantum neural network."""
         return self.qnn.forward(X)
 
-    def get_bleus_parameters(self) -> Dict[str, float]:
+    def get_bleus_parameters(self) -> dict[str, float]:
         """Get the current Bleus circuit parameters."""
         return {param.name: param.value for param in self.circuit.parameters}
 
-    def set_bleus_parameters(self, parameters: Dict[str, float]):
+    def set_bleus_parameters(self, parameters: dict[str, float]):
         """Set the Bleus circuit parameters."""
         for param_name, value in parameters.items():
             if param_name in self.circuit.parameters:
                 self.circuit.parameters[param_name].value = value
 
-    def get_bleus_history(self) -> List[Dict[str, Union[int, float, List[float]]]]:
+    def get_bleus_history(self) -> list[dict[str, int | float | list[float]]]:
         """Get the training history with Bleus-specific metrics."""
         return self.bleus_history
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """Get model information."""
         return {
             "n_qubits": self.config.num_qubits,
@@ -343,8 +343,8 @@ class BleusQuantumNeuralNetwork:
 class BleusQuantumErrorCorrection:
     def __init__(self, code_type: str = "bleus_stabilizer"):
         self.code_type = code_type
-        self.error_syndromes = {}
-        self.correction_methods = {}
+        self.error_syndromes: dict[str, Any] = {}
+        self.correction_methods: dict[str, Any] = {}
         self.bleus_error_threshold = 0.01
 
     def encode_bleus(self, state: np.ndarray) -> np.ndarray:
@@ -379,8 +379,8 @@ class BleusQuantumErrorCorrection:
 class BleusQuantumOptimizer:
     def __init__(self, optimization_level: int = 2):
         self.optimization_level = optimization_level
-        self.optimization_rules = []
-        self.performance_metrics = {}
+        self.optimization_rules: list[Any] = []
+        self.performance_metrics: dict[str, float] = {}
         self.bleus_optimization_factor = 1.0
 
     def optimize_bleus_circuit(self, circuit: QuantumCircuit) -> QuantumCircuit:
@@ -399,6 +399,6 @@ class BleusQuantumOptimizer:
         """Add a new Bleus optimization rule."""
         self.optimization_rules.append(rule)
 
-    def get_bleus_metrics(self) -> Dict[str, float]:
+    def get_bleus_metrics(self) -> dict[str, float]:
         """Get the current Bleus performance metrics."""
         return self.performance_metrics.copy()

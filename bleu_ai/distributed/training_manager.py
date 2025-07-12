@@ -4,7 +4,6 @@ Provides distributed training capabilities for machine learning models.
 """
 
 import logging
-from typing import Dict, Optional
 
 import ray
 import torch
@@ -175,19 +174,22 @@ class TrainingManager:
         self,
         model: nn.Module,
         train_dataset: torch.utils.data.Dataset,
-        val_dataset: Optional[torch.utils.data.Dataset] = None,
+        val_dataset: torch.utils.data.Dataset | None = None,
         optimizer_class: type = torch.optim.Adam,
         criterion_class: type = nn.CrossEntropyLoss,
-    ) -> Dict:
+    ) -> dict:
         """Train model using distributed training."""
         try:
             if not self.initialized:
                 self.initialize()
 
             # Setup model and loaders
-            model, train_loader, val_loader, train_sampler = (
-                self._setup_model_and_loaders(model, train_dataset, val_dataset)
-            )
+            (
+                model,
+                train_loader,
+                val_loader,
+                train_sampler,
+            ) = self._setup_model_and_loaders(model, train_dataset, val_dataset)
 
             # Initialize optimizer and criterion
             optimizer = optimizer_class(
@@ -196,7 +198,12 @@ class TrainingManager:
             criterion = criterion_class()
 
             # Training history
-            history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
+            history: dict[str, list[float]] = {
+                "train_loss": [],
+                "train_acc": [],
+                "val_loss": [],
+                "val_acc": [],
+            }
 
             # Training loop
             for epoch in range(self.n_epochs):
@@ -261,9 +268,9 @@ class TrainingManager:
         model_class: type,
         train_dataset: torch.utils.data.Dataset,
         val_dataset: torch.utils.data.Dataset,
-        config: Dict,
+        config: dict,
         n_trials: int = 10,
-    ) -> Dict:
+    ) -> dict:
         """Perform distributed hyperparameter tuning using Ray Tune."""
         try:
             if not self.initialized:

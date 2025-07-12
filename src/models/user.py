@@ -1,237 +1,159 @@
-"""User model module."""
+"""User model."""
 
+import uuid
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from pydantic import BaseModel, EmailStr
+from sqlalchemy import Boolean, Column, DateTime, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from src.models.declarative_base import Base
-from src.models.subscription import PlanType
+from src.models.base import Base
 
 
 class User(Base):
     """User model."""
 
     __tablename__ = "users"
-    __table_args__ = {"extend_existing": True}
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    full_name = Column(String)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    username = Column(String(255), unique=True, nullable=True)
+    hashed_password = Column(String(255), nullable=False)
+    full_name = Column(String(255), nullable=True)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    last_login = Column(DateTime)
-
-    # Constants
-    CASCADE_DELETE_ORPHAN = "all, delete-orphan"
+    is_admin = Column(Boolean, default=False)
+    api_key = Column(String(255), unique=True, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_login = Column(DateTime, nullable=True)
+    profile_picture = Column(String(500), nullable=True)
+    bio = Column(Text, nullable=True)
+    location = Column(String(255), nullable=True)
+    website = Column(String(500), nullable=True)
+    twitter_handle = Column(String(255), nullable=True)
+    github_username = Column(String(255), nullable=True)
+    linkedin_url = Column(String(500), nullable=True)
 
     # Relationships
-    api_tokens = relationship(
-        "APIToken", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
-    )
-    subscription = relationship(
-        "Subscription", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
-    )
-    api_calls = relationship(
-        "APICall", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
-    )
-    api_usage = relationship(
-        "APIUsage", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
-    )
-    rate_limits = relationship(
-        "RateLimit", back_populates="user", cascade=CASCADE_DELETE_ORPHAN
-    )
+    subscriptions = relationship("Subscription", back_populates="user")
+    api_calls = relationship("APICall", back_populates="user")
+    payments = relationship("Payment", back_populates="user")
+    api_tokens = relationship("APIToken", back_populates="user")
 
-    def __repr__(self) -> str:
-        """Get string representation of user.
+    def __repr__(self):
+        return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
 
-        Returns:
-            str: String representation
-        """
-        return f"<User {self.username}>"
-
-    def to_dict(self) -> dict:
-        """Convert user to dictionary.
-
-        Returns:
-            dict: User data
-        """
+    def to_dict(self):
+        """Convert user to dictionary."""
         return {
-            "id": self.id,
+            "id": str(self.id),
             "email": self.email,
             "username": self.username,
             "full_name": self.full_name,
             "is_active": self.is_active,
             "is_superuser": self.is_superuser,
+            "is_admin": self.is_admin,
+            "api_key": self.api_key,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "last_login": self.last_login.isoformat() if self.last_login else None,
+            "profile_picture": self.profile_picture,
+            "bio": self.bio,
+            "location": self.location,
+            "website": self.website,
+            "twitter_handle": self.twitter_handle,
+            "github_username": self.github_username,
+            "linkedin_url": self.linkedin_url,
         }
 
-    @property
-    def is_authenticated(self) -> bool:
-        """Check if user is authenticated.
 
-        Returns:
-            bool: True if user is authenticated
-        """
-        return True
+# Pydantic models for API
+class Token(BaseModel):
+    """Token model for authentication."""
 
-    @property
-    def is_anonymous(self) -> bool:
-        """Check if user is anonymous.
+    access_token: str
+    token_type: str = "bearer"
 
-        Returns:
-            bool: True if user is anonymous
-        """
-        return False
 
-    def get_id(self) -> str:
-        """Get user ID.
+class TokenData(BaseModel):
+    """Token data model."""
 
-        Returns:
-            str: User ID
-        """
-        return str(self.id)
-
-    def update_last_login(self) -> None:
-        """Update last login timestamp."""
-        self.last_login = datetime.now()
-
-    def check_password(self, password: str) -> bool:
-        """Check if password is correct.
-
-        Args:
-            password: Password to check
-
-        Returns:
-            bool: True if password is correct
-        """
-        from src.security.password import verify_password
-
-        return verify_password(password, self.hashed_password)
-
-    def set_password(self, password: str) -> None:
-        """Set user password.
-
-        Args:
-            password: Password to set
-        """
-        from src.security.password import get_password_hash
-
-        self.hashed_password = get_password_hash(password)
-
-    def validate_password(self, password: str) -> None:
-        """Validate password strength."""
-        if len(password) < 8:
-            raise ValueError(
-                "Password must be at least 8 characters long, "
-                "contain a number, an uppercase letter, and a special character."
-            )
-
-    def has_permission(self, permission: str) -> bool:
-        """Check if user has permission.
-
-        Args:
-            permission: Permission to check
-
-        Returns:
-            bool: True if user has permission
-        """
-        # Superusers have all permissions
-        if self.is_superuser:
-            return True
-
-        # Check user-specific permissions
-        # This is a basic implementation - in production, you'd want a proper RBAC
-        # system
-        user_permissions = getattr(self, "permissions", [])
-        return permission in user_permissions
-
-    def has_subscription(self, subscription_type: str) -> bool:
-        """Check if user has subscription.
-
-        Args:
-            subscription_type: Subscription type to check
-
-        Returns:
-            bool: True if user has subscription
-        """
-        return any(
-            subscription.type == subscription_type and subscription.is_active
-            for subscription in self.subscriptions
-        )
-
-    def get_active_api_token(self) -> Optional[str]:
-        """Get active API token.
-
-        Returns:
-            Optional[str]: Active API token
-        """
-        active_token = next(
-            (token for token in self.api_tokens if token.is_active),
-            None,
-        )
-        return active_token.token if active_token else None
+    email: str | None = None
 
 
 class UserBase(BaseModel):
     """Base user model."""
 
     email: EmailStr
-    username: str = Field(..., min_length=3, max_length=50)
-    full_name: Optional[str] = None
+    username: str | None = None
+    full_name: str | None = None
+    is_active: bool = True
+    is_superuser: bool = False
+    is_admin: bool = False
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:
+        from_attributes = True
 
 
 class UserCreate(UserBase):
     """User creation model."""
 
-    password: str = Field(..., min_length=8)
-    plan_type: PlanType
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    password: str
 
 
-class UserResponse(BaseModel):
+class UserUpdate(BaseModel):
+    """User update model."""
+
+    email: EmailStr | None = None
+    username: str | None = None
+    full_name: str | None = None
+    password: str | None = None
+    is_active: bool | None = None
+    is_superuser: bool | None = None
+    is_admin: bool | None = None
+    profile_picture: str | None = None
+    bio: str | None = None
+    location: str | None = None
+    website: str | None = None
+    twitter_handle: str | None = None
+    github_username: str | None = None
+    linkedin_url: str | None = None
+
+    class Config:
+        from_attributes = True
+
+
+class UserResponse(UserBase):
     """User response model."""
 
-    id: int
-    email: EmailStr
-    username: str
-    full_name: Optional[str] = None
-    is_active: bool
-    is_superuser: bool
+    id: str
+    api_key: str | None = None
     created_at: datetime
     updated_at: datetime
-    last_login: Optional[datetime] = None
+    last_login: datetime | None = None
+    profile_picture: str | None = None
+    bio: str | None = None
+    location: str | None = None
+    website: str | None = None
+    twitter_handle: str | None = None
+    github_username: str | None = None
+    linkedin_url: str | None = None
 
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
-
-
-class Token(BaseModel):
-    """Token model."""
-
-    access_token: str
-    token_type: str = "bearer"
-    expires_in: int
-    refresh_token: Optional[str] = None
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:
+        from_attributes = True
 
 
-class TokenData(BaseModel):
-    """Token data model."""
+class UserInDB(UserBase):
+    """User in database model."""
 
-    sub: str
-    exp: datetime
-    refresh: bool = False
+    id: str
+    hashed_password: str
+    api_key: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    last_login: datetime | None = None
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:
+        from_attributes = True

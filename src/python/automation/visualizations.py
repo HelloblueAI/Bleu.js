@@ -3,7 +3,6 @@ Analytics visualization utilities for the automation pipeline.
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, List
 
 import networkx as nx
 import numpy as np
@@ -26,8 +25,8 @@ class PipelineVisualizer:
 
     def create_performance_dashboard(
         self,
-        metrics: Dict[str, List[float]],
-        history: List[Dict],
+        metrics: dict[str, list[float]],
+        history: list[dict],
         timeframe: str = "1d",
     ) -> go.Figure:
         """
@@ -89,7 +88,7 @@ class PipelineVisualizer:
         return fig
 
     def create_trend_analysis(
-        self, metrics: Dict[str, List[float]], window: int = 10
+        self, metrics: dict[str, list[float]], window: int = 10
     ) -> go.Figure:
         """
         Create trend analysis visualization.
@@ -139,7 +138,7 @@ class PipelineVisualizer:
 
         return fig
 
-    def create_step_analysis(self, history: List[Dict]) -> go.Figure:
+    def create_step_analysis(self, history: list[dict]) -> go.Figure:
         """
         Create step-level performance analysis.
 
@@ -203,7 +202,7 @@ class PipelineVisualizer:
 
         return fig
 
-    def create_error_analysis(self, history: List[Dict]) -> go.Figure:
+    def create_error_analysis(self, history: list[dict]) -> go.Figure:
         """
         Create error analysis visualization.
 
@@ -285,7 +284,7 @@ class PipelineVisualizer:
 
         return fig
 
-    def _filter_by_timeframe(self, history: List[Dict], timeframe: str) -> List[Dict]:
+    def _filter_by_timeframe(self, history: list[dict], timeframe: str) -> list[dict]:
         """Filter history data by timeframe."""
         now = datetime.now()
 
@@ -306,7 +305,7 @@ class PipelineVisualizer:
             if datetime.fromisoformat(entry["timestamp"]) > cutoff
         ]
 
-    def _init_step_data(self) -> Dict:
+    def _init_step_data(self) -> dict:
         """Initialize the step data structure."""
         return {
             "step_names": [],
@@ -316,7 +315,7 @@ class PipelineVisualizer:
             "resource_usage": {},
         }
 
-    def _update_step_metrics(self, step_data: Dict, step: Dict) -> None:
+    def _update_step_metrics(self, step_data: dict, step: dict) -> None:
         """Update basic step metrics."""
         if step["name"] not in step_data["step_names"]:
             step_data["step_names"].append(step["name"])
@@ -324,19 +323,19 @@ class PipelineVisualizer:
         step_data["execution_times"].append(step["execution_time"])
         step_data["success_rates"].append(1 if step["status"] == "success" else 0)
 
-    def _update_step_dependencies(self, step_data: Dict, step: Dict) -> None:
+    def _update_step_dependencies(self, step_data: dict, step: dict) -> None:
         """Update step dependencies."""
         if "dependencies" in step:
             step_data["dependencies"][step["name"]] = step["dependencies"]
 
-    def _update_resource_usage(self, step_data: Dict, step: Dict) -> None:
+    def _update_resource_usage(self, step_data: dict, step: dict) -> None:
         """Update resource usage data."""
         if "resources" in step:
             if step["name"] not in step_data["resource_usage"]:
                 step_data["resource_usage"][step["name"]] = []
             step_data["resource_usage"][step["name"]].append(step["resources"])
 
-    def _process_step_data(self, history: List[Dict]) -> Dict:
+    def _process_step_data(self, history: list[dict]) -> dict:
         """Process step-level performance data."""
         step_data = self._init_step_data()
 
@@ -349,9 +348,9 @@ class PipelineVisualizer:
 
         return step_data
 
-    def _process_error_data(self, history: List[Dict]) -> Dict:
+    def _process_error_data(self, history: list[dict]) -> dict:
         """Process error-related data."""
-        error_data = {
+        error_data: dict[str, list] = {
             "timestamps": [],
             "frequencies": [],
             "types": [],
@@ -380,7 +379,7 @@ class PipelineVisualizer:
         return error_data
 
     def _add_execution_times_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add execution times plot to dashboard."""
         times = [entry["execution_time"] for entry in data]
@@ -395,7 +394,7 @@ class PipelineVisualizer:
         )
 
     def _add_rates_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add success/error rates plot to dashboard."""
         success_rates = [entry["success_rate"] for entry in data]
@@ -427,7 +426,7 @@ class PipelineVisualizer:
         )
 
     def _add_throughput_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add throughput plot to dashboard."""
         throughput = [
@@ -447,7 +446,7 @@ class PipelineVisualizer:
         )
 
     def _add_resource_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add resource usage plot to dashboard."""
         if not data or "resources" not in data[0]:
@@ -466,13 +465,13 @@ class PipelineVisualizer:
             )
 
     def _add_step_performance_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add step performance plot to dashboard."""
         if not data or "steps" not in data[0]:
             return
 
-        step_times = {}
+        step_times: dict[str, list] = {}
         for entry in data:
             for step in entry["steps"]:
                 if step["name"] not in step_times:
@@ -490,10 +489,10 @@ class PipelineVisualizer:
         )
 
     def _add_error_distribution_plot(
-        self, fig: go.Figure, data: List[Dict], row: int, col: int
+        self, fig: go.Figure, data: list[dict], row: int, col: int
     ) -> None:
         """Add error distribution plot to dashboard."""
-        error_counts = {}
+        error_counts: dict[str, int] = {}
         for entry in data:
             if entry.get("status") == "failed":
                 error_type = entry.get("error", "Unknown").split(":")[0]
@@ -510,7 +509,7 @@ class PipelineVisualizer:
         )
 
     def _add_dependency_network(
-        self, fig: go.Figure, data: Dict, row: int, col: int
+        self, fig: go.Figure, data: dict, row: int, col: int
     ) -> None:
         """Add step dependency network plot."""
         if not data["dependencies"]:
@@ -558,7 +557,7 @@ class PipelineVisualizer:
         )
 
     def _add_resource_heatmap(
-        self, fig: go.Figure, data: Dict, row: int, col: int
+        self, fig: go.Figure, data: dict, row: int, col: int
     ) -> None:
         """Add resource usage heatmap."""
         if not data["resource_usage"]:

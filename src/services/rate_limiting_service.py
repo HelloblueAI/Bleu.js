@@ -1,12 +1,11 @@
 """Rate limiting service module."""
 
 from datetime import datetime, timedelta
-from typing import Dict, Optional
 
 from fastapi import HTTPException, status
 from redis.asyncio import Redis
 
-from src.config import settings
+from src.config import get_settings
 
 
 class RateLimitingService:
@@ -19,8 +18,15 @@ class RateLimitingService:
             redis: Redis client instance
         """
         self.redis = redis
-        self.window = settings.RATE_LIMIT_WINDOW
-        self.max_requests = settings.RATE_LIMIT_MAX_REQUESTS
+        settings = get_settings()
+        try:
+            self.window = settings.RATE_LIMIT_WINDOW
+        except NameError:
+            self.window = 60
+        try:
+            self.max_requests = settings.RATE_LIMIT_MAX_REQUESTS
+        except NameError:
+            self.max_requests = 100
 
     async def check_rate_limit(self, key: str) -> bool:
         """Check if request is rate limited.
@@ -52,7 +58,7 @@ class RateLimitingService:
         await self.redis.incr(key)
         return False
 
-    async def get_retry_after(self, key: str) -> Optional[int]:
+    async def get_retry_after(self, key: str) -> int | None:
         """Get retry after time in seconds.
 
         Args:
@@ -64,7 +70,7 @@ class RateLimitingService:
         ttl = await self.redis.ttl(key)
         return max(0, ttl) if ttl > 0 else None
 
-    async def get_rate_limit_status(self, key: str) -> Dict[str, int]:
+    async def get_rate_limit_status(self, key: str) -> dict[str, int]:
         """Get rate limit status.
 
         Args:
@@ -86,4 +92,4 @@ class RateLimitingService:
 
 
 # Create singleton instance
-rate_limiter: Optional[RateLimitingService] = None
+rate_limiter: RateLimitingService | None = None
