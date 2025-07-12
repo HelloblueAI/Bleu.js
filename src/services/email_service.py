@@ -6,12 +6,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Dict, List, Optional
 
+from src.utils.base_classes import BaseService
+
 from ..config import settings
 
 logger = logging.getLogger(__name__)
 
 
-class EmailService:
+class EmailService(BaseService):
     def __init__(self):
         self.smtp_server = settings.SMTP_HOST
         self.smtp_port = settings.SMTP_PORT

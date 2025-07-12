@@ -1,0 +1,42 @@
+# Minimal requirements for Bleu.js project
+# Core dependencies only - avoids conflicts
+
+# FastAPI and web framework
+fastapi==0.109.2
+uvicorn==0.27.1
+starlette==0.36.3
+
+# Database and ORM
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Authentication and security
+pydantic==2.6.1
+python-jose==3.5.0
+passlib==1.7.4
+bcrypt==4.3.0
+
+# AWS services
+boto3==1.38.33
+botocore==1.38.33
+
+# ML and AI
+numpy==1.26.4
+pandas==2.0.3
+scipy==1.15.3
+scikit-learn==1.7.0
+torch==2.7.1
+transformers==4.52.4
+
+# Quantum computing
+qiskit==1.4.2
+cirq==1.2.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.32.4
+pyyaml==6.0.2
+
+# Testing (will be installed separately)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0

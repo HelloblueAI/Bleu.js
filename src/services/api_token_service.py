@@ -7,9 +7,10 @@ from sqlalchemy.orm import Session
 
 from src.models.subscription import APIToken, APITokenCreate, APITokenResponse
 from src.models.user import User, UserResponse
+from src.utils.base_classes import BaseService
 
 
-class APITokenService:
+class APITokenService(BaseService):
     def __init__(self, db: Session):
         self.db = db
 

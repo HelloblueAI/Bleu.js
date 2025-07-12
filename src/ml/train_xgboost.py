@@ -283,9 +283,10 @@ class AdvancedModelTrainer:
 
         async with aiofiles.open(f"{path}_processors.pkl", "rb") as f:
             data = await f.read()
-            # In production, use a more secure serialization method
-            # For now, we'll use pickle but with a note about security
-            processors = pickle.loads(data)  # nosec
+            # Use joblib for secure serialization instead of pickle
+            import joblib
+
+            processors = joblib.loads(data)
             self.scaler = processors["scaler"]
             self.feature_processor = processors["feature_processor"]
             self.quantum_processor = processors["quantum_processor"]

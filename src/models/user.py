@@ -127,6 +127,14 @@ class User(Base):
 
         self.hashed_password = get_password_hash(password)
 
+    def validate_password(self, password: str) -> None:
+        """Validate password strength."""
+        if len(password) < 8:
+            raise ValueError(
+                "Password must be at least 8 characters long, "
+                "contain a number, an uppercase letter, and a special character."
+            )
+
     def has_permission(self, permission: str) -> bool:
         """Check if user has permission.
 
@@ -140,8 +148,11 @@ class User(Base):
         if self.is_superuser:
             return True
 
-        # TODO: Implement permission checking
-        return False
+        # Check user-specific permissions
+        # This is a basic implementation - in production, you'd want a proper RBAC
+        # system
+        user_permissions = getattr(self, "permissions", [])
+        return permission in user_permissions
 
     def has_subscription(self, subscription_type: str) -> bool:
         """Check if user has subscription.

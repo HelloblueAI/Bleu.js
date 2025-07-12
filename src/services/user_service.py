@@ -11,11 +11,12 @@ from sqlalchemy.orm import Session
 from src.models.user import User
 from src.schemas.user import UserCreate, UserUpdate
 from src.services.stripe_service import StripeService
+from src.utils.base_classes import BaseService
 
 logger = logging.getLogger(__name__)
 
 
-class UserService:
+class UserService(BaseService):
     """Service for managing users."""
 
     def __init__(self, db: Session, stripe_service: Optional[StripeService] = None):

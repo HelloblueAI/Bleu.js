@@ -6,7 +6,7 @@ import logging
 import re
 from collections import Counter
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import spacy
 import torch
@@ -74,7 +74,7 @@ class EnhancedTokenizer:
         }
 
     def tokenize(
-        self, texts: Union[str, List[str]], return_tensors: bool = True
+        self, texts: str | List[str], return_tensors: bool = True
     ) -> Dict[str, torch.Tensor]:
         """Tokenize text with advanced features."""
         if isinstance(texts, str):
@@ -200,7 +200,7 @@ class EnhancedTokenizer:
         )
         return encodings["token_type_ids"]
 
-    def get_attention_mask(self, texts: Union[str, List[str]]) -> torch.Tensor:
+    def get_attention_mask(self, texts: str | List[str]) -> torch.Tensor:
         """Get attention mask for texts."""
         encodings = self.tokenize(texts)
         return encodings["attention_mask"]

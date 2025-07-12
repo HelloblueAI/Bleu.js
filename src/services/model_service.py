@@ -7,9 +7,10 @@ from sklearn.base import BaseEstimator
 
 from src.ml.metrics import PerformanceMetrics
 from src.ml.optimize import HyperparameterOptimizer
+from src.utils.base_classes import BaseService
 
 
-class ModelService:
+class ModelService(BaseService):
     """Service for managing machine learning models."""
 
     def __init__(self, model: BaseEstimator) -> None:

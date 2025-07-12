@@ -9,6 +9,8 @@ from fastapi import Depends, HTTPException
 from prometheus_client import Counter, Gauge, Histogram
 from sqlalchemy.orm import Session
 
+from src.utils.base_classes import BaseService
+
 from ..config import settings
 from ..database import get_db
 from ..models import APICall, APIUsage, User
@@ -30,7 +32,7 @@ active_users = Gauge("active_users", "Number of active users")
 api_usage_gauge = Gauge("api_usage", "Current API usage", ["user_id", "plan"])
 
 
-class APIService:
+class APIService(BaseService):
     def __init__(self, db: Session = Depends(get_db)):
         self.db = db
         self.market_intelligence = MarketIntelligence()

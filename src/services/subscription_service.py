@@ -17,6 +17,7 @@ from src.models.subscription import (
 )
 from src.models.user import User
 from src.services.api_service import APIService
+from src.utils.base_classes import BaseService
 
 from ..config import settings
 from ..constants import NO_ACTIVE_SUBSCRIPTION, SUBSCRIPTION_NOT_FOUND
@@ -56,7 +57,7 @@ active_subscriptions = Gauge(
 )
 
 
-class SubscriptionService:
+class SubscriptionService(BaseService):
     """Service for managing API subscriptions and usage tracking."""
 
     def __init__(
@@ -64,7 +65,7 @@ class SubscriptionService:
         db: Session = Depends(get_db),
         stripe_service: Optional[StripeService] = None,
     ):
-        self.db = db
+        super().__init__(db)
         self.settings = settings
         self.stripe = stripe
         self.email_service = EmailService()

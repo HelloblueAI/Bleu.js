@@ -15,6 +15,7 @@ from src.config.settings import settings
 from src.database import get_db
 from src.models.subscription import Subscription, SubscriptionPlan
 from src.models.user import User, UserCreate, UserResponse
+from src.utils.base_classes import BaseService
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-class AuthService:
+class AuthService(BaseService):
     def __init__(self, db: Session):
         self.pwd_context = pwd_context
         self.oauth2_scheme = oauth2_scheme

@@ -16,6 +16,7 @@ from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Estimator as AerEstimator
 from qiskit_aer.primitives import Sampler as AerSampler
 
+from ..quantum.quantum_processor_base import QuantumProcessorBase
 from .quantum_circuit import QuantumCircuit
 from .quantum_gate import QuantumGate
 
@@ -38,7 +39,7 @@ class ProcessorConfig:
     version: str = "1.1.4"
 
 
-class QuantumProcessor:
+class QuantumProcessor(QuantumProcessorBase):
     """Quantum processor implementation."""
 
     def __init__(self, config: Optional[ProcessorConfig] = None):
@@ -443,6 +444,9 @@ class QuantumProcessor:
             f"error_rate={self.config.error_rate}, "
             f"noise_model={self.config.noise_model})"
         )
+
+    def get_backend_name(self) -> str:
+        return "Cirq/Qiskit"
 
     def _optimize_resource_utilization(self) -> None:
         """Optimize resource utilization with advanced techniques."""

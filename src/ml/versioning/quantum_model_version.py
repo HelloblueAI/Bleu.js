@@ -12,7 +12,7 @@ import os
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import git
 import numpy as np
@@ -98,7 +98,7 @@ class QuantumModelVersioning:
     and security features.
     """
 
-    def __init__(self, storage_path: Union[str, Path]):
+    def __init__(self, storage_path: str | Path):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.encryption_key = self._generate_encryption_key()

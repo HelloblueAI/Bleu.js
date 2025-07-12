@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bleu-js"
-version = "1.1.7"
+version = "1.1.8"
 description = "Advanced AI and Quantum Computing Framework"
 authors = [
     {name = "Bleu.js Team", email = "team@bleu.js"}
@@ -25,30 +25,22 @@ classifiers = [
 ]
 
 dependencies = [
-    # Core AI/ML
-    "tensorflow>=2.16.2",
-    "torch>=2.2.2",
-    "transformers>=4.37.0",
-    "scikit-learn>=1.2.2",
-    "numpy>=1.24.3",
+    # Core AI/ML - Fixed versions for compatibility
+    "numpy>=1.24.3,<2.0.0",
     "pandas>=2.0.0",
+    "scikit-learn>=1.2.2",
 
-    # Quantum Computing
-    "qiskit>=0.44.0",
-    "cirq>=1.2.0",
-    "pennylane>=0.32.0",
-
-    # Web Framework
+    # Web Framework - Pinned for stability
     "fastapi==0.109.2",
     "uvicorn==0.27.1",
     "pydantic[email]==2.6.1",
 
-    # Security (Fixed versions)
+    # Security - Fixed versions
     "urllib3>=2.5.0",
     "requests>=2.32.4",
     "cryptography>=42.0.5",
 
-    # Database
+    # Database - Pinned versions
     "sqlalchemy==2.0.23",
     "alembic==1.13.1",
     "psycopg2-binary==2.9.9",
@@ -64,6 +56,23 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Core ML features
+ml = [
+    "tensorflow>=2.16.2",
+    "torch>=2.2.2",
+    "transformers>=4.37.0",
+]
+
+# Quantum computing (separate to avoid conflicts)
+quantum = [
+    "qiskit>=0.44.0,<1.0.0",
+    "cirq>=1.2.0,<2.0.0",
+    "pennylane>=0.32.0,<1.0.0",
+    "qiskit-aer>=0.13.0",
+    "optuna>=3.2.0",
+]
+
+# Development tools
 dev = [
     "pytest>=7.3.1",
     "pytest-cov>=4.1.0",
@@ -75,16 +84,17 @@ dev = [
     "bandit>=1.7.5",
 ]
 
-quantum = [
-    "qiskit-aer>=0.13.0",
-    "optuna>=3.2.0",
-]
-
+# Monitoring and observability
 monitoring = [
     "prometheus-client>=0.19.0",
     "opentelemetry-api>=1.22.0",
     "opentelemetry-sdk>=1.22.0",
     "structlog>=24.1.0",
+]
+
+# All features
+all = [
+    "bleu-js[ml,quantum,dev,monitoring]",
 ]
 
 [project.scripts]

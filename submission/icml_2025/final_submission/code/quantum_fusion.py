@@ -70,7 +70,7 @@ class QuantumFusion:
         self._prepare_quantum_state(x2_norm)
 
         # Apply quantum gates
-        rng = np.random.default_rng()
+        rng = np.random.default_rng(seed=42)
         params = rng.standard_normal(self.config.num_qubits - 1)
         fused_state = self._apply_quantum_gates(params)
 

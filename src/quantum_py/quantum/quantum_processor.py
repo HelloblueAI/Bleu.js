@@ -22,6 +22,7 @@ from sklearn.preprocessing import MinMaxScaler
 # Import QuantumCircuit from core module
 # from ..core.quantum_circuit import QuantumCircuit as QuantumCircuitCore
 from ..core.quantum_state import QuantumState
+from .quantum_processor_base import QuantumProcessorBase
 
 # Constants for error messages
 SCALER_NOT_INITIALIZED = "Scaler not initialized"
@@ -41,7 +42,7 @@ class ProcessorConfig:
     max_memory: int
 
 
-class QuantumProcessor(Generic[Device]):
+class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
     """Quantum processor for executing quantum circuits."""
 
     def __init__(
@@ -332,8 +333,9 @@ class QuantumProcessor(Generic[Device]):
         if self.circuit is None or self.state is None:
             raise ValueError("Circuit or state not initialized")
 
-        # Placeholder for actual circuit execution
-        return np.zeros(self.circuit.n_qubits)
+        # Research placeholder - returns dummy results for experimentation
+        # In production, this would execute the actual quantum circuit
+        return np.random.randn(self.circuit.n_qubits).astype(np.float64)
 
     def _check_decoherence(self) -> bool:
         """Check for decoherence in quantum circuit.
@@ -435,3 +437,6 @@ class QuantumProcessor(Generic[Device]):
         self.error_history = []
         self.qnn = None
         self.vqc = None
+
+    def get_backend_name(self) -> str:
+        return "Qiskit/PennyLane"

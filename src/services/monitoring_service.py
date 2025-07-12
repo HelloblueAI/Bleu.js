@@ -9,11 +9,12 @@ from fastapi import HTTPException, status
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram
 
 from src.config import settings
+from src.utils.base_classes import BaseService
 
 logger = logging.getLogger(__name__)
 
 
-class MonitoringService:
+class MonitoringService(BaseService):
     _instance = None
     _initialized = False
 
