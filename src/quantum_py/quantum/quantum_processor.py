@@ -20,7 +20,7 @@ from qiskit_machine_learning.neural_networks import CircuitQNN
 from sklearn.preprocessing import MinMaxScaler
 
 # Import QuantumCircuit from core module
-from ..core.quantum_circuit import QuantumCircuit
+# from ..core.quantum_circuit import QuantumCircuit as QuantumCircuitCore
 from ..core.quantum_state import QuantumState
 
 # Constants for error messages
