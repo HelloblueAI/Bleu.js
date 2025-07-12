@@ -119,11 +119,13 @@ class QuantumFeatureProcessor:
                 # Apply quantum transformation
                 state = self._classical_to_quantum(X[i])
                 quantum_features[i] = state
-
             return quantum_features
-        except Exception as e:
-            logger.error(f"Error in quantum feature processing: {str(e)}")
+        except (ValueError, ImportError) as e:
+            logger.error(f"Quantum feature processing error: {str(e)}")
             return X
+        except Exception as e:
+            logger.error(f"Unexpected error in quantum feature processing: {str(e)}")
+            raise
 
     def _classical_to_quantum(self, x: np.ndarray) -> np.ndarray:
         """Convert classical data to quantum state"""
