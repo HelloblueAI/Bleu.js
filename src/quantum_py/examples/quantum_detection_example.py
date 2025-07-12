@@ -26,7 +26,10 @@ from PIL import Image
 # Configure advanced logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+    format=(
+        "%(asctime)s - %(name)s - %(levelname)s - "
+        "[%(filename)s:%(lineno)d] - %(message)s"
+    ),
     handlers=[logging.StreamHandler(), logging.FileHandler("quantum_detection.log")],
 )
 logger = logging.getLogger(__name__)
@@ -232,7 +235,8 @@ class AdvancedQuantumDetector:
                 result = DetectionResult(
                     class_name="quantum_enhanced_object",
                     confidence=float(confidence),
-                    bbox=None,  # Would be filled with actual bbox in full implementation
+                    bbox=None,  # Would be filled with actual bbox in full
+                    # implementation
                     uncertainty=float(uncertainty),
                     quantum_features=quantum_features,
                     processing_time=time.time() - start_time,

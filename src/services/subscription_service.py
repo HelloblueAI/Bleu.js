@@ -322,7 +322,9 @@ class SubscriptionService:
                     }
                 ],
                 mode="subscription",
-                success_url="https://your-domain.com/success?session_id={CHECKOUT_SESSION_ID}",
+                success_url=(
+                    "https://your-domain.com/success?session_id={CHECKOUT_SESSION_ID}"
+                ),
                 cancel_url="https://your-domain.com/cancel",
                 metadata={"plan": plan},
             )
@@ -502,7 +504,10 @@ class SubscriptionService:
                 after_completion={
                     "type": "redirect",
                     "redirect": {
-                        "url": "https://bleujs.org/success?session_id={CHECKOUT_SESSION_ID}"
+                        "url": (
+                            "https://bleujs.org/success?session_id="
+                            "{CHECKOUT_SESSION_ID}"
+                        )
                     },
                 },
                 allow_promotion_codes=True,

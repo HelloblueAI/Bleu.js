@@ -442,11 +442,11 @@ class EnsembleManager:
         # ... existing code ...
         pass
 
-    def predict(self, features: np.ndarray) -> np.ndarray:
+    def predict_sync(self, features: np.ndarray) -> np.ndarray:
         # ... existing code ...
         pass
 
-    def _calculate_diversity(self, features: np.ndarray) -> float:
+    def _calculate_diversity_sync(self, features: np.ndarray) -> float:
         # ... existing code ...
         pass
 

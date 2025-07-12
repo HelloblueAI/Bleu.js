@@ -43,7 +43,9 @@ def run_tests():
     # Run tests with coverage
     print("\nRunning tests with coverage...")
     run_command(
-        f"{venv_python} -m pytest --cov=./ --cov-report=term-missing src/python/ml/computer_vision/test_quantum_fusion.py src/python/ml/computer_vision/test_quantum_vision.py"
+        f"{venv_python} -m pytest --cov=./ --cov-report=term-missing "
+        f"src/python/ml/computer_vision/test_quantum_fusion.py "
+        f"src/python/ml/computer_vision/test_quantum_vision.py"
     )
 
     # Run linting checks

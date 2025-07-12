@@ -309,9 +309,7 @@ class EnhancedXGBoost:
             X_processed = self.quantum_processor.process_features(X)
 
             # Optimize batch size and workers
-            batch_size = self.performance_optimizer.optimize_batch_size(
-                self.model, X_processed, y
-            )
+            self.performance_optimizer.optimize_batch_size(self.model, X_processed, y)
             self.performance_optimizer.optimize_num_workers()
 
             # Initialize XGBoost model with optimized parameters

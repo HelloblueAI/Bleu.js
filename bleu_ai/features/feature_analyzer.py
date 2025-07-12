@@ -276,7 +276,7 @@ class FeatureAnalyzer:
                 return []
 
             # Calculate feature importance
-            importance = self._calculate_importance(features)
+            importance = self._calculate_importance_sync(features)
 
             # Select features above threshold
             selected = np.where(importance > threshold)[0]
@@ -309,7 +309,7 @@ class FeatureAnalyzer:
             logger.error(f"Feature transformation error: {e}")
             return np.array([])
 
-    def _calculate_importance(self, features: np.ndarray) -> np.ndarray:
+    def _calculate_importance_sync(self, features: np.ndarray) -> np.ndarray:
         """Calculate feature importance scores."""
         try:
             if features is None or len(features) == 0:

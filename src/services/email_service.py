@@ -99,12 +99,18 @@ class EmailService:
         <html>
             <head>
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background-color: #1a56db; color: white; padding: 20px; text-align: center; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6;
+                           color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto;
+                                padding: 20px; }}
+                    .header {{ background-color: #1a56db; color: white;
+                              padding: 20px; text-align: center; }}
                     .content {{ padding: 20px; }}
-                    .api-key {{ background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0; }}
-                    .button {{ display: inline-block; padding: 10px 20px; background-color: #1a56db; color: white; text-decoration: none; border-radius: 5px; }}
+                    .api-key {{ background-color: #f3f4f6; padding: 15px;
+                               border-radius: 5px; margin: 20px 0; }}
+                    .button {{ display: inline-block; padding: 10px 20px;
+                              background-color: #1a56db; color: white;
+                              text-decoration: none; border-radius: 5px; }}
                 </style>
             </head>
             <body>
@@ -113,15 +119,19 @@ class EmailService:
                         <h1>Welcome to Bleu.js {plan.title()} Plan!</h1>
                     </div>
                     <div class="content">
-                        <p>Thank you for choosing Bleu.js! We're excited to have you on board.</p>
-                        <p>Your account has been set up successfully with the following details:</p>
+                        <p>Thank you for choosing Bleu.js! We're excited to
+                           have you on board.</p>
+                        <p>Your account has been set up successfully with the
+                           following details:</p>
                         <ul>
                             <li>Plan: {plan.title()}</li>
                             <li>API Key: <div class="api-key">{api_key}</div></li>
                         </ul>
                         <p>To get started, please visit our documentation:</p>
-                        <p><a href="{documentation_url}" class="button">View Documentation</a></p>
-                        <p>If you have any questions or need assistance, our support team is here to help.</p>
+                        <p><a href="{documentation_url}" class="button">
+                           View Documentation</a></p>
+                        <p>If you have any questions or need assistance, our
+                           support team is here to help.</p>
                         <p>Best regards,<br>The Bleu.js Team</p>
                     </div>
                 </div>
@@ -157,11 +167,16 @@ class EmailService:
         <html>
             <head>
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background-color: #dc2626; color: white; padding: 20px; text-align: center; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6;
+                           color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto;
+                                padding: 20px; }}
+                    .header {{ background-color: #dc2626; color: white;
+                              padding: 20px; text-align: center; }}
                     .content {{ padding: 20px; }}
-                    .button {{ display: inline-block; padding: 10px 20px; background-color: #1a56db; color: white; text-decoration: none; border-radius: 5px; }}
+                    .button {{ display: inline-block; padding: 10px 20px;
+                              background-color: #1a56db; color: white;
+                              text-decoration: none; border-radius: 5px; }}
                 </style>
             </head>
             <body>
@@ -170,14 +185,16 @@ class EmailService:
                         <h1>API Usage Alert</h1>
                     </div>
                     <div class="content">
-                        <p>Your Bleu.js API usage has reached {usage_percentage}% of your monthly limit.</p>
+                        <p>Your Bleu.js API usage has reached "
+                        f"{usage_percentage}% of your monthly limit.</p>
                         <p>To ensure uninterrupted service, please consider:</p>
                         <ul>
                             <li>Upgrading your plan for higher limits</li>
                             <li>Optimizing your API usage</li>
                             <li>Contacting our support team for assistance</li>
                         </ul>
-                        <p><a href="https://bleujs.org/pricing" class="button">View Plans</a></p>
+                        <p><a href="https://bleujs.org/pricing" class="button">
+                           View Plans</a></p>
                         <p>Best regards,<br>The Bleu.js Team</p>
                     </div>
                 </div>
@@ -190,7 +207,8 @@ class EmailService:
         return f"""
         API Usage Alert
 
-        Your Bleu.js API usage has reached {usage_percentage}% of your monthly limit.
+        Your Bleu.js API usage has reached {usage_percentage}% "
+        f"of your monthly limit.</p>
 
         To ensure uninterrupted service, please consider:
         - Upgrading your plan for higher limits

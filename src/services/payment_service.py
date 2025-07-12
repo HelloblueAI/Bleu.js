@@ -31,7 +31,8 @@ class PaymentService:
                 "api_calls": 100,
             },
             "enterprise": {
-                "stripe_price_id": "price_enterprise",  # Replace with actual Stripe price ID
+                "stripe_price_id": "price_enterprise",  # Replace with actual
+                # Stripe price ID
                 "name": "Enterprise Plan",
                 "price": 499,
                 "api_calls": 5000,

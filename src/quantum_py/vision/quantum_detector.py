@@ -10,7 +10,6 @@ import torch
 import torch.nn as nn
 
 from ..quantum.processor import QuantumProcessor
-from .quantum import QuantumProcessor
 from .quantum.self_learning import QuantumSelfLearning
 from .scene import SceneAnalyzer
 from .temporal import TemporalAnalyzer
@@ -163,6 +162,16 @@ class QuantumDetector:
             logger.error(f"Error during cleanup: {str(e)}")
             raise
 
+    def _update_detections_with_context(
+        self, detections, quantum_features, scene_context, temporal_context_data
+    ):
+        for i, detection in enumerate(detections):
+            detection.quantum_features = quantum_features[i]
+            detection.scene_context = scene_context
+            detection.temporal_context = (
+                temporal_context_data if self.use_temporal_context else None
+            )
+
     async def detect(
         self, image: np.ndarray, temporal_context: Optional[np.ndarray] = None
     ) -> List[DetectionResult]:
@@ -184,41 +193,19 @@ class QuantumDetector:
 
             # If we have detections, enhance them with quantum features
             if detections:
-                # Extract features from detections
-                detection_features = []
-                for detection in detections:
-                    bbox = detection.bbox
-                    # Extract region features from the processed image
-                    x1, y1, w, h = bbox
-                    region = processed_image[
-                        :, :, int(y1) : int(y1 + h), int(x1) : int(x1 + w)
-                    ]
-                    try:
-                        with torch.no_grad():
-                            results = self.model(region)
-                            region_features = results.xyxy[0].cpu().numpy()
-                        detection_features.append(region_features)
-                    except Exception as e:
-                        logger.error(f"Error extracting region features: {e}")
-                        continue
-
+                detection_features = self._extract_detection_features(
+                    detections, processed_image
+                )
                 if detection_features:
-                    # Convert to numpy array
                     detection_features = np.array(detection_features)
-
-                    # Apply quantum enhancement
                     quantum_features = await self._apply_quantum_enhancement(
                         detection_features
                     )
-
-                    # Analyze scene context
                     scene_context = {}
                     if self.scene_analyzer is not None:
                         scene_context = await self._analyze_scene_context(
                             processed_image
                         )
-
-                    # Analyze temporal context
                     temporal_context_data = {}
                     if (
                         self.temporal_analyzer is not None
@@ -227,24 +214,16 @@ class QuantumDetector:
                         temporal_context_data = await self._analyze_temporal_context(
                             temporal_context
                         )
-
-                    # Update detections with enhanced features and context
-                    for i, detection in enumerate(detections):
-                        detection.quantum_features = quantum_features[i]
-                        detection.scene_context = scene_context
-                        detection.temporal_context = (
-                            temporal_context_data if self.use_temporal_context else None
-                        )
-
-                    # Apply self-learning if enabled
+                    self._update_detections_with_context(
+                        detections,
+                        quantum_features,
+                        scene_context,
+                        temporal_context_data,
+                    )
                     if self.self_learning is not None:
                         await self._apply_self_learning(detections)
-
-                    # Update performance metrics
                     self._update_metrics(detections)
-
             return detections
-
         except Exception as e:
             logger.error(f"Error during detection: {str(e)}")
             raise
@@ -376,3 +355,19 @@ class QuantumDetector:
                 self.performance_metrics["temporal_accuracy"] = np.mean(
                     temporal_confidences
                 )
+
+    def _extract_detection_features(self, detections, processed_image):
+        detection_features = []
+        for detection in detections:
+            bbox = detection.bbox
+            x1, y1, w, h = bbox
+            region = processed_image[:, :, int(y1) : int(y1 + h), int(x1) : int(x1 + w)]
+            try:
+                with torch.no_grad():
+                    results = self.model(region)
+                    region_features = results.xyxy[0].cpu().numpy()
+                detection_features.append(region_features)
+            except Exception as e:
+                logger.error(f"Error extracting region features: {e}")
+                continue
+        return detection_features

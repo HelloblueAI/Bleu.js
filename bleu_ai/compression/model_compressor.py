@@ -70,7 +70,8 @@ class ModelCompressor:
             self.compression_ratio = self.compressed_size / self.original_size
 
             logging.info(
-                f"✅ Model compressed successfully. Compression ratio: {self.compression_ratio:.2f}"
+                f"✅ Model compressed successfully. "
+                f"Compression ratio: {self.compression_ratio:.2f}"
             )
             return compressed
 

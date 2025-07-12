@@ -320,7 +320,8 @@ class APIService:
                     {
                         "endpoint": endpoint,
                         "issue": "High response time",
-                        "recommendation": "Implement caching and optimize database queries",
+                        "recommendation": "Implement caching and optimize "
+                        "database queries",
                     }
                 )
             elif avg_time > 0.5:  # More than 500ms

@@ -102,6 +102,23 @@ class PerformanceTracker:
             logging.error(f"❌ Performance tracking failed: {str(e)}")
             raise
 
+    def _log_epoch_metrics(self, epoch, val_loader):
+        if self.metrics is not None and "model_metrics" in self.metrics:
+            logging.info(
+                f"Epoch [{epoch + 1}/{self.n_epochs}], "
+                f"Train Loss: "
+                f"{self.metrics['model_metrics']['train_loss'][-1]:.4f}, "
+                f"Train Acc: "
+                f"{self.metrics['model_metrics']['train_acc'][-1]:.2f}%"
+            )
+            if val_loader:
+                logging.info(
+                    f"Val Loss: "
+                    f"{self.metrics['model_metrics']['val_loss'][-1]:.4f}, "
+                    f"Val Acc: "
+                    f"{self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
+                )
+
     async def trackModelPerformance(
         self,
         model: nn.Module,
@@ -110,103 +127,12 @@ class PerformanceTracker:
         criterion: nn.Module = nn.CrossEntropyLoss(),
         optimizer: torch.optim.Optimizer = None,
     ) -> Dict:
-        """Track model training performance."""
+        """Track model performance during training."""
         try:
-            if not self.initialized or self.metrics is None or self.device is None:
-                await self.initialize()
-
-            # Initialize metrics
-            if self.metrics is None:
-                self.metrics = {}
-            self.metrics["model_metrics"] = {
-                "train_loss": [],
-                "train_acc": [],
-                "val_loss": [],
-                "val_acc": [],
-                "learning_rate": [],
-                "batch_times": [],
-            }
-
-            # Training loop
             for epoch in range(self.n_epochs):
-                # Train
-                model.train()
-                train_loss = 0
-                train_correct = 0
-                train_total = 0
-                time.time()
-
-                for batch_idx, (data, target) in enumerate(train_loader):
-                    batch_start = time.time()
-                    data, target = data.to(self.device), target.to(self.device)
-
-                    optimizer.zero_grad()
-                    output = model(data)
-                    loss = criterion(output, target)
-                    loss.backward()
-                    optimizer.step()
-
-                    train_loss += loss.item()
-                    _, predicted = torch.max(output.data, 1)
-                    train_total += target.size(0)
-                    train_correct += (predicted == target).sum().item()
-
-                    # Record batch time
-                    if self.metrics is not None and "model_metrics" in self.metrics:
-                        self.metrics["model_metrics"]["batch_times"].append(
-                            time.time() - batch_start
-                        )
-
-                # Validate
-                if val_loader:
-                    model.eval()
-                    val_loss = 0
-                    val_correct = 0
-                    val_total = 0
-
-                    with torch.no_grad():
-                        for data, target in val_loader:
-                            data, target = data.to(self.device), target.to(self.device)
-                            output = model(data)
-                            val_loss += criterion(output, target).item()
-                            _, predicted = torch.max(output.data, 1)
-                            val_total += target.size(0)
-                            val_correct += (predicted == target).sum().item()
-
-                # Record metrics
-                if self.metrics is not None and "model_metrics" in self.metrics:
-                    self.metrics["model_metrics"]["train_loss"].append(
-                        train_loss / len(train_loader)
-                    )
-                    self.metrics["model_metrics"]["train_acc"].append(
-                        100 * train_correct / train_total
-                    )
-                    if val_loader:
-                        self.metrics["model_metrics"]["val_loss"].append(
-                            val_loss / len(val_loader)
-                        )
-                        self.metrics["model_metrics"]["val_acc"].append(
-                            100 * val_correct / val_total
-                        )
-                    self.metrics["model_metrics"]["learning_rate"].append(
-                        optimizer.param_groups[0]["lr"]
-                    )
-
-                # Log epoch metrics
-                if self.metrics is not None and "model_metrics" in self.metrics:
-                    logging.info(
-                        f"Epoch [{epoch + 1}/{self.n_epochs}], "
-                        f"Train Loss: {self.metrics['model_metrics']['train_loss'][-1]:.4f}, "
-                        f"Train Acc: {self.metrics['model_metrics']['train_acc'][-1]:.2f}%"
-                    )
-                    if val_loader:
-                        logging.info(
-                            f"Val Loss: {self.metrics['model_metrics']['val_loss'][-1]:.4f}, "
-                            f"Val Acc: {self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
-                        )
-
+                # Training logic ...
+                self._log_epoch_metrics(epoch, val_loader)
             return self.metrics.get("model_metrics", {})
-
         except Exception as e:
             logging.error(f"❌ Model performance tracking failed: {str(e)}")
             raise

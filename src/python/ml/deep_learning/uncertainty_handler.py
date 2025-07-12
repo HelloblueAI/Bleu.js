@@ -54,8 +54,8 @@ def is_predictor(obj: Any) -> TypeGuard[PredictorProtocol]:
 
 class UncertaintyHandler(Generic[T]):
     """
-    Advanced uncertainty handler that provides multiple methods for uncertainty estimation
-    in machine learning predictions.
+    Advanced uncertainty handler that provides multiple methods for uncertainty
+    estimation in machine learning predictions.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
@@ -163,50 +163,22 @@ class UncertaintyHandler(Generic[T]):
             self.logger.error("uncertainty_calculation_failed", error=str(e))
             raise
 
-    async def _calculate_entropy(self, X: np.ndarray) -> float:
-        """Calculate entropy of predictions."""
-        if self.config.method == "ensemble":
-            if not self.ensemble_models:
-                raise ValueError("Ensemble models not initialized")
-            predictions = []
-            for model in self.ensemble_models:
-                if not is_predictor(model):
-                    raise ValueError("Invalid model in ensemble")
-                pred = model.predict(X)
-                predictions.append(pred)
+    def _calculate_entropy(self, probabilities: np.ndarray) -> float:
+        """Calculate entropy of a probability distribution."""
+        # Move input validation to a helper
+        self._validate_probabilities(probabilities)
+        entropy = -np.sum(probabilities * np.log(probabilities + 1e-12))
+        return float(entropy)
 
-            predictions = np.array(predictions)
-            mean_pred = np.mean(predictions, axis=0)
-            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
-            return float(entropy)
-
-        elif self.config.method == "bayesian":
-            if not self.bayesian_model:
-                raise ValueError("Bayesian model not initialized")
-            predictions = []
-            for _ in range(self.config.n_samples):
-                pred = self.bayesian_model.predict(X, verbose=0)
-                predictions.append(pred)
-
-            predictions = np.array(predictions)
-            mean_pred = np.mean(predictions, axis=0)
-            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
-            return float(entropy)
-
-        else:  # monte_carlo
-            if not self.monte_carlo_samples:
-                raise ValueError("Monte Carlo samples not initialized")
-            predictions = []
-            for sample in self.monte_carlo_samples:
-                if not is_predictor(sample):
-                    raise ValueError("Invalid sample in Monte Carlo samples")
-                pred = sample.predict(X)
-                predictions.append(pred)
-
-            predictions = np.array(predictions)
-            mean_pred = np.mean(predictions, axis=0)
-            entropy = -np.sum(mean_pred * np.log2(mean_pred + 1e-10))
-            return float(entropy)
+    def _validate_probabilities(self, probabilities: np.ndarray):
+        if not isinstance(probabilities, np.ndarray):
+            raise ValueError("Input must be a numpy array.")
+        if probabilities.ndim != 1:
+            raise ValueError("Probabilities must be a 1D array.")
+        if not np.all(probabilities >= 0):
+            raise ValueError("Probabilities must be non-negative.")
+        if not np.isclose(np.sum(probabilities), 1.0):
+            raise ValueError("Probabilities must sum to 1.")
 
     async def _calculate_variance(self, X: np.ndarray) -> float:
         """Calculate prediction variance as a measure of uncertainty."""

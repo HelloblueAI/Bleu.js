@@ -191,35 +191,56 @@ class BenchmarkSuite:
         report = [
             "=== Bleu.js Benchmark Report ===",
             "\n1. Face Recognition Performance",
-            f"   - Classical Accuracy: {results['face_recognition']['classical_accuracy']:.2%}",
-            f"   - Quantum Accuracy: {results['face_recognition']['quantum_accuracy']:.2%}",
-            f"   - Improvement: {results['face_recognition']['accuracy_improvement']:.2%}",
-            f"   - Speed Improvement: {results['face_recognition']['speed_improvement']:.2f}x",
+            f"   - Classical Accuracy: "
+            f"{results['face_recognition']['classical_accuracy']:.2%}",
+            f"   - Quantum Accuracy: "
+            f"{results['face_recognition']['quantum_accuracy']:.2%}",
+            f"   - Improvement: "
+            f"{results['face_recognition']['accuracy_improvement']:.2%}",
+            f"   - Speed Improvement: "
+            f"{results['face_recognition']['speed_improvement']:.2f}x",
             "\n2. Object Detection Performance",
             f"   - Classical mAP: {results['object_detection']['classical_mAP']:.2%}",
             f"   - Quantum mAP: {results['object_detection']['quantum_mAP']:.2%}",
             f"   - Improvement: {results['object_detection']['mAP_improvement']:.2%}",
-            f"   - Speed Improvement: {results['object_detection']['speed_improvement']:.2f}x",
+            f"   - Speed Improvement: "
+            f"{results['object_detection']['speed_improvement']:.2f}x",
             "\n3. Scene Understanding Performance",
-            f"   - Classical Accuracy: {results['scene_understanding']['classical_accuracy']:.2%}",
-            f"   - Quantum Accuracy: {results['scene_understanding']['quantum_accuracy']:.2%}",
-            f"   - Improvement: {results['scene_understanding']['accuracy_improvement']:.2%}",
-            f"   - Speed Improvement: {results['scene_understanding']['speed_improvement']:.2f}x",
+            f"   - Classical Accuracy: "
+            f"{results['scene_understanding']['classical_accuracy']:.2%}",
+            f"   - Quantum Accuracy: "
+            f"{results['scene_understanding']['quantum_accuracy']:.2%}",
+            f"   - Improvement: "
+            f"{results['scene_understanding']['accuracy_improvement']:.2%}",
+            f"   - Speed Improvement: "
+            f"{results['scene_understanding']['speed_improvement']:.2f}x",
             "\n4. Quantum Advantages",
-            f"   - Optimization Improvement: {results['quantum_advantages']['optimization_improvement']:.2%}",
-            f"   - Feature Extraction Improvement: {results['quantum_advantages']['feature_extraction_improvement']:.2%}",
-            f"   - Security Improvement: {results['quantum_advantages']['security_improvement']:.2%}",
-            f"   - Overall Quantum Advantage: {results['quantum_advantages']['overall_quantum_advantage']:.2%}",
+            f"   - Optimization Improvement: "
+            f"{results['quantum_advantages']['optimization_improvement']:.2%}",
+            f"   - Feature Extraction Improvement: "
+            f"{results['quantum_advantages']['feature_extraction_improvement']:.2%}",
+            f"   - Security Improvement: "
+            f"{results['quantum_advantages']['security_improvement']:.2%}",
+            f"   - Overall Quantum Advantage: "
+            f"{results['quantum_advantages']['overall_quantum_advantage']:.2%}",
             "\n5. System Performance",
-            f"   - Memory Usage: {results['system_performance']['memory_usage_mb']:.2f} MB",
-            f"   - CPU Usage: {results['system_performance']['cpu_usage_percent']:.2f}%",
-            f"   - GPU Usage: {results['system_performance']['gpu_usage_percent']:.2f}%",
-            f"   - Response Time: {results['system_performance']['response_time_ms']:.2f} ms",
-            f"   - Throughput: {results['system_performance']['throughput_fps']:.2f} FPS",
+            f"   - Memory Usage: "
+            f"{results['system_performance']['memory_usage_mb']:.2f} MB",
+            f"   - CPU Usage: "
+            f"{results['system_performance']['cpu_usage_percent']:.2f}%",
+            f"   - GPU Usage: "
+            f"{results['system_performance']['gpu_usage_percent']:.2f}%",
+            f"   - Response Time: "
+            f"{results['system_performance']['response_time_ms']:.2f} ms",
+            f"   - Throughput: "
+            f"{results['system_performance']['throughput_fps']:.2f} FPS",
             "\n6. Energy Efficiency",
-            f"   - Power Consumption: {results['energy_efficiency']['power_consumption_watts']:.2f} W",
-            f"   - Energy Efficiency Score: {results['energy_efficiency']['energy_efficiency_score']:.2f}",
-            f"   - Carbon Footprint Reduction: {results['energy_efficiency']['carbon_footprint_reduction']:.2%}",
+            f"   - Power Consumption: "
+            f"{results['energy_efficiency']['power_consumption_watts']:.2f} W",
+            f"   - Energy Efficiency Score: "
+            f"{results['energy_efficiency']['energy_efficiency_score']:.2f}",
+            f"   - Carbon Footprint Reduction: "
+            f"{results['energy_efficiency']['carbon_footprint_reduction']:.2%}",
             f"   - Cost Savings: {results['energy_efficiency']['cost_savings']:.2%}",
         ]
 

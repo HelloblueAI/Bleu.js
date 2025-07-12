@@ -1,6 +1,7 @@
 """
 Advanced Plots Implementation
-Provides sophisticated visualization capabilities for model analysis and performance tracking.
+Provides sophisticated visualization capabilities for model analysis
+and performance tracking.
 """
 
 import logging

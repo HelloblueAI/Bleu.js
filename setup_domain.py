@@ -66,7 +66,8 @@ class DomainManager:
                                 "Name": self.domain,
                                 "Type": "A",
                                 "AliasTarget": {
-                                    "HostedZoneId": "Z2FDTNDATAQYW2ZL",  # CloudFront hosted zone ID
+                                    "HostedZoneId": "Z2FDTNDATAQYW2ZL",  # CloudFront
+                                    # hosted zone ID
                                     "DNSName": distribution_domain,
                                     "EvaluateTargetHealth": False,
                                 },
@@ -110,7 +111,8 @@ class DomainManager:
                 Id=distribution_id, DistributionConfig=config
             )
             print(
-                f"Updated CloudFront distribution {distribution_id} with SSL certificate"
+                f"Updated CloudFront distribution {distribution_id} "
+                f"with SSL certificate"
             )
         except ClientError as e:
             print(f"Error updating CloudFront distribution: {e}")

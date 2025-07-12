@@ -66,7 +66,8 @@ def create_iam_user():
                     "Effect": "Allow",
                     "Action": ["rds-db:connect"],
                     "Resource": [
-                        f"arn:aws:rds-db:{os.getenv('AWS_REGION')}:{os.getenv('AWS_ACCOUNT_ID')}:dbuser:*/*"
+                        f"arn:aws:rds-db:{os.getenv('AWS_REGION')}:"
+                        f"{os.getenv('AWS_ACCOUNT_ID')}:dbuser:*/*"
                     ],
                 },
             ],

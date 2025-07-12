@@ -77,7 +77,8 @@ class ProcessOptimizer:
         Initialize the process optimizer.
 
         Args:
-            workflow_type: Type of workflow ('manufacturing', 'service', 'software', etc.)
+            workflow_type: Type of workflow ('manufacturing', 'service',
+                'software', etc.)
             optimization_goals: List of optimization objectives
             constraints: Dictionary of optimization constraints
             use_ml: Whether to use machine learning for optimization
@@ -303,7 +304,8 @@ class ProcessOptimizer:
             recommendations.append(
                 {
                     "type": "resource_reallocation",
-                    "description": "Reallocate resources from underutilized to overutilized areas",
+                    "description": "Reallocate resources from underutilized "
+                    "to overutilized areas",
                     "from_resources": underutilized,
                     "to_resources": overutilized,
                     "impact_score": 0.8,
@@ -322,7 +324,8 @@ class ProcessOptimizer:
             recommendations.append(
                 {
                     "type": "parallel_processing",
-                    "description": "Implement parallel processing for independent paths",
+                    "description": "Implement parallel processing for "
+                    "independent paths",
                     "paths": independent_paths,
                     "impact_score": 0.7,
                 }
