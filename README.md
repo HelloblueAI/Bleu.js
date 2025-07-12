@@ -128,7 +128,7 @@ pie title System Performance Distribution
 
 ## 📝 Changelog
 
-### [v1.1.4] - 2024-XX-XX
+### [v1.1.8] - 2024-XX-XX
 #### Added
 - Quantum-enhanced vision system with 18.90% confidence
 - Advanced quantum attention mechanism
