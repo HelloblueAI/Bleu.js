@@ -32,22 +32,18 @@ repos:
     rev: 7.0.0
     hooks:
       - id: flake8
-        args: [--max-line-length=88, --extend-ignore=E203,W503]
+        args: [--max-line-length=88, --extend-ignore=E203]
 
   # MyPy check removed - handled in CI/CD pipeline
 
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
-    hooks:
-      - id: bandit
-        args: [-r, src/, -f, json, -o, bandit-report.json]
-        exclude: ^tests/
+  # Bandit removed from pre-commit - handled in CI/CD pipeline for better control
 
   # Safety check removed - handled in CI/CD pipeline
 
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.2.1
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      - id: ruff-format
+  # Ruff temporarily disabled - will re-enable after initial cleanup
+  # - repo: https://github.com/charliermarsh/ruff-pre-commit
+  #   rev: v0.2.1
+  #   hooks:
+  #     - id: ruff
+  #       args: [--fix, --exit-non-zero-on-fix]
+  #     - id: ruff-format

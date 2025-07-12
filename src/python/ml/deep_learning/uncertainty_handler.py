@@ -4,19 +4,7 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Protocol,
-    Tuple,
-    TypeGuard,
-    TypeVar,
-    cast,
-    runtime_checkable,
-)
+from typing import Any, Generic, Protocol, TypeGuard, TypeVar, cast, runtime_checkable
 
 import numpy as np
 import ray
@@ -34,7 +22,7 @@ class UncertaintyConfig:
     confidence_threshold: float = 0.95
     use_bayesian_approximation: bool = True
     enable_distributed_computing: bool = True
-    uncertainty_metrics: Optional[List[str]] = None
+    uncertainty_metrics: list[str] | None = None
 
 
 T = TypeVar("T")
@@ -58,15 +46,15 @@ class UncertaintyHandler(Generic[T]):
     estimation in machine learning predictions.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         self.config = UncertaintyConfig(**(config or {}))
         self.logger = structlog.get_logger()
-        self.ensemble_models: List[PredictorProtocol] = []
-        self.bayesian_model: Optional[PredictorProtocol] = None
-        self.monte_carlo_samples: List[PredictorProtocol] = []
-        self.model: Optional[T] = None
-        self.uncertainty_estimator: Optional[T] = None
-        self.calibration_data: Optional[Tuple[np.ndarray, np.ndarray]] = None
+        self.ensemble_models: list[PredictorProtocol] = []
+        self.bayesian_model: PredictorProtocol | None = None
+        self.monte_carlo_samples: list[PredictorProtocol] = []
+        self.model: T | None = None
+        self.uncertainty_estimator: T | None = None
+        self.calibration_data: tuple[np.ndarray, np.ndarray] | None = None
 
         if self.config.uncertainty_metrics is None:
             self.config.uncertainty_metrics = [
@@ -130,8 +118,8 @@ class UncertaintyHandler(Generic[T]):
         self.monte_carlo_samples = np.random.normal(size=(self.config.n_samples, 100))
 
     async def calculate_uncertainty(
-        self, X: np.ndarray, y: Optional[np.ndarray] = None
-    ) -> Dict[str, float]:
+        self, X: np.ndarray, y: np.ndarray | None = None
+    ) -> dict[str, float]:
         """
         Calculate uncertainty metrics for the input data.
         """
@@ -216,7 +204,7 @@ class UncertaintyHandler(Generic[T]):
 
     async def _calculate_confidence_interval(
         self, X: np.ndarray, confidence: float = 0.95
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate confidence intervals for predictions."""
         if self.config.method == "ensemble":
             predictions = []
@@ -294,7 +282,7 @@ class UncertaintyHandler(Generic[T]):
         return float(1 - brier_score)  # Higher is better
 
     async def adjust_predictions(
-        self, predictions: np.ndarray, uncertainty: Dict[str, float]
+        self, predictions: np.ndarray, uncertainty: dict[str, float]
     ) -> np.ndarray:
         """
         Adjust predictions based on uncertainty estimates.
@@ -359,7 +347,7 @@ class UncertaintyHandler(Generic[T]):
             if hasattr(estimator, "fit"):
                 estimator.fit(features, labels)
 
-    async def get_calibration_metrics(self) -> Dict[str, float]:
+    async def get_calibration_metrics(self) -> dict[str, float]:
         """Get calibration metrics"""
         if self.calibration_data is None:
             return {}

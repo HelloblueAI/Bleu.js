@@ -1,14 +1,13 @@
 """Authentication middleware module."""
 
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from src.config import settings
+from src.config import get_settings
 from src.database import get_db
 from src.models.user import User
 from src.services.user_service import UserService
@@ -25,11 +24,12 @@ class AuthMiddleware:
     def __init__(self, user_service: UserService):
         """Initialize auth middleware."""
         self.user_service = user_service
+        self.settings = get_settings()
 
     async def __call__(
         self,
         request: Request,
-        credentials: Optional[HTTPAuthorizationCredentials] = None,
+        credentials: HTTPAuthorizationCredentials | None = None,
     ) -> User:
         """Process authentication middleware."""
         if not credentials:
@@ -42,8 +42,8 @@ class AuthMiddleware:
         try:
             payload = jwt.decode(
                 credentials.credentials,
-                settings.SECRET_KEY,
-                algorithms=[settings.ALGORITHM],
+                self.settings.SECRET_KEY,
+                algorithms=[self.settings.ALGORITHM],
             )
             user_id: str = payload.get("sub")
             if user_id is None:
@@ -77,8 +77,9 @@ class AuthMiddleware:
         return user
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     """Create a new access token."""
+    settings = get_settings()
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -98,6 +99,7 @@ def get_current_user(
     db: Session = Depends(get_db),
 ) -> User:
     """Get the current user from the token."""
+    settings = get_settings()
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=CREDENTIALS_ERROR_MESSAGE,
@@ -125,8 +127,9 @@ def get_current_user(
 def get_optional_current_user(
     request: Request,
     db: Session = Depends(get_db),
-) -> Optional[User]:
+) -> User | None:
     """Get the current user from the token if available."""
+    settings = get_settings()
     try:
         token = request.headers.get("Authorization", "").replace("Bearer ", "")
         if not token:

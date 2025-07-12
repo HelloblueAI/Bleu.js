@@ -3,7 +3,7 @@ API client for making requests to the Bleu.js API.
 """
 
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 import requests
 from requests.exceptions import RequestException
@@ -32,10 +32,10 @@ class APIClient:
         self,
         method: str,
         endpoint: str,
-        data: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-    ) -> Dict[str, Any]:
+        data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> dict[str, Any]:
         """Make a request to the API with retries."""
         url = f"{self.base_url}{endpoint}"
 
@@ -60,8 +60,10 @@ class APIClient:
                 if attempt == self.max_retries - 1:
                     raise
                 time.sleep(self.retry_delay)
+        # This should never be reached, but mypy needs it
+        raise RequestException("Max retries exceeded")
 
-    def predict(self, input_text: str) -> Dict[str, Any]:
+    def predict(self, input_text: str) -> dict[str, Any]:
         """Make a prediction request."""
         return self._make_request(
             method="POST",
@@ -69,17 +71,17 @@ class APIClient:
             data={"input": input_text},
         )
 
-    def get_root(self) -> Dict[str, Any]:
+    def get_root(self) -> dict[str, Any]:
         """Get root endpoint response."""
         return self._make_request(method="GET", endpoint=api_config.endpoints["root"])
 
-    def post_root(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def post_root(self, data: dict[str, Any]) -> dict[str, Any]:
         """Post to root endpoint."""
         return self._make_request(
             method="POST", endpoint=api_config.endpoints["root"], data=data
         )
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """Check API health."""
         return self._make_request(method="GET", endpoint=api_config.endpoints["health"])
 

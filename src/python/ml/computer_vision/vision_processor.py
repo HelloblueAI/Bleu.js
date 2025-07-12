@@ -5,7 +5,6 @@ Advanced Computer Vision Processor for Bleu.js
 import asyncio
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import cv2
 import numpy as np
@@ -33,12 +32,13 @@ class VisionConfig:
 class VisionProcessor:
     """Advanced computer vision processor with quantum-enhanced capabilities."""
 
-    def __init__(self, config: Optional[VisionConfig] = None):
+    def __init__(self, config: VisionConfig | None = None):
         self.config = config or VisionConfig()
         self.logger = structlog.get_logger()
-        self.models = {}
+        self.models: dict[str, tf.keras.Model] = {}
         self.initialized = False
         self.model = None
+        self._quantum_processor = None  # type: ignore
 
     def initialize(self):
         """Initialize the vision processor."""
@@ -50,7 +50,7 @@ class VisionProcessor:
             self.logger.error(f"Failed to initialize vision processor: {str(e)}")
             raise
 
-    def process_image(self, image: np.ndarray) -> Dict:
+    def process_image(self, image: np.ndarray) -> dict:
         """Process image with all vision capabilities."""
         if not self.initialized:
             raise RuntimeError(VISION_PROCESSOR_NOT_INITIALIZED)
@@ -69,7 +69,7 @@ class VisionProcessor:
             self.logger.error(f"Failed to process image: {str(e)}")
             raise
 
-    def detect_objects(self, image: np.ndarray) -> List[Dict]:
+    def detect_objects(self, image: np.ndarray) -> list[dict]:
         """Detect objects in image with quantum-enhanced accuracy."""
         if not self.initialized:
             raise RuntimeError(VISION_PROCESSOR_NOT_INITIALIZED)
@@ -92,7 +92,7 @@ class VisionProcessor:
             self.logger.error(f"Failed to detect objects: {str(e)}")
             raise
 
-    def analyze_scene(self, image: np.ndarray) -> Dict:
+    def analyze_scene(self, image: np.ndarray) -> dict:
         """Analyze scene with advanced understanding."""
         if not self.initialized:
             raise RuntimeError(VISION_PROCESSOR_NOT_INITIALIZED)
@@ -115,7 +115,7 @@ class VisionProcessor:
             self.logger.error(f"Failed to analyze scene: {str(e)}")
             raise
 
-    def detect_faces(self, image: np.ndarray) -> List[Dict]:
+    def detect_faces(self, image: np.ndarray) -> list[dict]:
         """Detect and analyze faces in image."""
         if not self.initialized:
             raise RuntimeError(VISION_PROCESSOR_NOT_INITIALIZED)
@@ -138,7 +138,7 @@ class VisionProcessor:
             self.logger.error(f"Failed to detect faces: {str(e)}")
             raise
 
-    def recognize_attributes(self, image: np.ndarray) -> Dict:
+    def recognize_attributes(self, image: np.ndarray) -> dict:
         """Recognize attributes in image."""
         if not self.initialized:
             raise RuntimeError(VISION_PROCESSOR_NOT_INITIALIZED)
@@ -176,7 +176,7 @@ class VisionProcessor:
 
         return image
 
-    def _run_parallel_inference(self, image: np.ndarray) -> Dict:
+    def _run_parallel_inference(self, image: np.ndarray) -> dict:
         """Run parallel inference on all models."""
         tasks = [
             self.models["object_detection"].predict(image),
@@ -185,7 +185,7 @@ class VisionProcessor:
             self.models["attribute_recognition"].predict(image),
         ]
 
-        results = asyncio.run(asyncio.gather(*tasks))
+        results: list = asyncio.run(asyncio.gather(*tasks))
 
         return {
             "object_detection": results[0],
@@ -194,7 +194,7 @@ class VisionProcessor:
             "attribute_recognition": results[3],
         }
 
-    def _post_process_results(self, results: Dict) -> Dict:
+    def _post_process_results(self, results: dict) -> dict:
         """Post-process all results."""
         return {
             "objects": self._process_object_detections(results["object_detection"]),
@@ -205,7 +205,7 @@ class VisionProcessor:
             ),
         }
 
-    def _process_object_detections(self, predictions: np.ndarray) -> List[Dict]:
+    def _process_object_detections(self, predictions: np.ndarray) -> list[dict]:
         """Process object detection predictions."""
         # Extract predictions
         boxes = predictions[..., :4]
@@ -220,7 +220,7 @@ class VisionProcessor:
 
         # Convert to list of detections
         detections = []
-        for box, score, class_id in zip(boxes, scores, classes):
+        for box, score, class_id in zip(boxes, scores, classes, strict=False):
             detections.append(
                 {
                     "bbox": box.tolist(),
@@ -232,7 +232,7 @@ class VisionProcessor:
 
         return detections
 
-    def _process_scene_analysis(self, predictions: np.ndarray) -> Dict:
+    def _process_scene_analysis(self, predictions: np.ndarray) -> dict:
         """Process scene analysis predictions."""
         # Get top scene categories
         top_indices = np.argsort(predictions[0])[-5:][::-1]
@@ -248,7 +248,7 @@ class VisionProcessor:
 
         return {"scenes": scenes, "primary_scene": scenes[0]}
 
-    def _process_face_detections(self, predictions: np.ndarray) -> List[Dict]:
+    def _process_face_detections(self, predictions: np.ndarray) -> list[dict]:
         """Process face detection predictions."""
         # Extract face detections
         boxes = predictions[..., :4]
@@ -256,7 +256,9 @@ class VisionProcessor:
         attributes = predictions[..., 14:]
 
         faces = []
-        for box, face_landmarks, face_attributes in zip(boxes, landmarks, attributes):
+        for box, face_landmarks, face_attributes in zip(
+            boxes, landmarks, attributes, strict=False
+        ):
             faces.append(
                 {
                     "bbox": box.tolist(),
@@ -277,7 +279,7 @@ class VisionProcessor:
 
         return faces
 
-    def _process_attribute_recognition(self, predictions: np.ndarray) -> Dict:
+    def _process_attribute_recognition(self, predictions: np.ndarray) -> dict:
         """Process attribute recognition predictions."""
         # Extract attribute predictions
         lighting = predictions[..., :4]
@@ -286,10 +288,10 @@ class VisionProcessor:
         season = predictions[..., 12:16]
 
         return {
-            "lighting": self._get_lighting(np.argmax(lighting[0])),
-            "weather": self._get_weather(np.argmax(weather[0])),
-            "time_of_day": self._get_time_of_day(np.argmax(time_of_day[0])),
-            "season": self._get_season(np.argmax(season[0])),
+            "lighting": self._get_lighting(int(np.argmax(lighting[0]))),
+            "weather": self._get_weather(int(np.argmax(weather[0]))),
+            "time_of_day": self._get_time_of_day(int(np.argmax(time_of_day[0]))),
+            "season": self._get_season(int(np.argmax(season[0]))),
         }
 
     def _apply_quantum_enhancements(self, features: np.ndarray) -> np.ndarray:
@@ -304,6 +306,14 @@ class VisionProcessor:
         processed_image = self._apply_enhancement(image)
         processed_image = self._apply_noise_reduction(processed_image)
         return processed_image
+
+    def _apply_enhancement(self, image: np.ndarray) -> np.ndarray:
+        """Apply enhancement to image (placeholder)."""
+        return image
+
+    def _apply_noise_reduction(self, image: np.ndarray) -> np.ndarray:
+        """Apply noise reduction to image (placeholder)."""
+        return image
 
     async def _load_model(self) -> tf.keras.Model:
         """Load the vision model."""

@@ -5,7 +5,7 @@ Provides advanced quantum computing capabilities for machine learning models.
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 import numpy as np
 import pennylane as qml
@@ -58,18 +58,18 @@ class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
         """
         self.config = config
         self.device = device
-        self.circuit: Optional[QuantumCircuit] = None
-        self.state: Optional[QuantumState] = None
-        self.error_history: List[float] = []
+        self.circuit: QuantumCircuit | None = None
+        self.state: QuantumState | None = None
+        self.error_history: list[float] = []
         self.logger = logging.getLogger(__name__)
-        self.scaler: Optional[MinMaxScaler] = None
-        self.quantum_circuit: Optional[QuantumCircuit] = None
+        self.scaler: MinMaxScaler | None = None
+        self.quantum_circuit: QuantumCircuit | None = None
         self.rng = np.random.default_rng(
             seed=DEFAULT_SEED
         )  # Using seeded random generator
         self.n_layers = 2
         self.n_qubits = 4
-        self.dev: Optional[Device] = None  # Using generic Device type
+        self.dev: Device | None = None  # Using generic Device type
         self.shots = 1000
         self.error_correction = True
         self.use_annealing = True
@@ -78,14 +78,14 @@ class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
         self.noise_model = self._create_noise_model()
         self.sampler = Sampler()
         self.optimizer = SPSA(maxiter=100)
-        self.qnn: Optional[CircuitQNN] = None
-        self.vqc: Optional[VQC] = None
+        self.qnn: CircuitQNN | None = None
+        self.vqc: VQC | None = None
         self._initialize_resources()
 
     def _initialize_resources(self) -> None:
-        self._qubits: List[Any] = []
-        self._classical_registers: List[Any] = []
-        self._error_rates: Dict[str, float] = {}
+        self._qubits: list[Any] = []
+        self._classical_registers: list[Any] = []
+        self._error_rates: dict[str, float] = {}
         self._memory_usage: float = 0.0
         self._cpu_usage: float = 0.0
 
@@ -355,7 +355,7 @@ class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
             raise RuntimeError("Processor not initialized")
         self._error_rates["decoherence"] = 0.0
 
-    def _get_current_error_rates(self) -> Dict[str, float]:
+    def _get_current_error_rates(self) -> dict[str, float]:
         """Get current error rates.
 
         Returns:
@@ -369,7 +369,7 @@ class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
         Returns:
             Qubit stability percentage
         """
-        return 1.0 - max(self._error_rates.values())
+        return float(1.0 - max(self._error_rates.values()))
 
     def _calculate_correction_success(self) -> float:
         """Calculate correction success rate.
@@ -389,11 +389,11 @@ class QuantumProcessor(QuantumProcessorBase, Generic[Device]):
         """Configure parallel circuit execution."""
         pass  # Placeholder implementation
 
-    def _allocate_qubits(self, n_qubits: int) -> List[Any]:
+    def _allocate_qubits(self, n_qubits: int) -> list[Any]:
         """Allocate qubits for processing."""
         return list(range(n_qubits))
 
-    def _allocate_classical_resources(self, n_registers: int) -> List[Any]:
+    def _allocate_classical_resources(self, n_registers: int) -> list[Any]:
         """Allocate classical resources."""
         return [0] * n_registers
 

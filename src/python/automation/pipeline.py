@@ -6,10 +6,11 @@ Provides workflow automation and orchestration capabilities.
 import asyncio
 import json
 import logging
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -25,8 +26,8 @@ class PipelineStep:
     retry_count: int = 3
     timeout: int = 300  # seconds
     required: bool = True
-    error_handler: Optional[Callable] = None
-    dependencies: List[str] = None
+    error_handler: Callable | None = None
+    dependencies: list[str] | None = None
 
     def __post_init__(self):
         if self.dependencies is None:
@@ -38,7 +39,7 @@ class PipelineMetrics:
     """Pipeline execution metrics."""
 
     total_execution_time: float
-    step_execution_times: Dict[str, float]
+    step_execution_times: dict[str, float]
     success_rate: float
     error_count: int
     retry_count: int
@@ -71,8 +72,8 @@ class PipelineAnalytics:
         )
 
         # Analytics storage
-        self.execution_history: List[Dict] = []
-        self.performance_metrics: Dict[str, List[float]] = {
+        self.execution_history: list[dict] = []
+        self.performance_metrics: dict[str, list[float]] = {
             "execution_times": [],
             "success_rates": [],
             "error_rates": [],
@@ -84,15 +85,15 @@ class EventTrigger:
     """Event-based pipeline trigger."""
 
     def __init__(
-        self, event_type: str, condition: Optional[Callable] = None, cooldown: int = 0
+        self, event_type: str, condition: Callable | None = None, cooldown: int = 0
     ):
         self.event_type = event_type
         self.condition = condition
         self.cooldown = cooldown
-        self.last_triggered: Optional[datetime] = None
-        self.handler: Optional[Callable] = None
+        self.last_triggered: datetime | None = None
+        self.handler: Callable | None = None
 
-    async def check_trigger(self, event_data: Dict) -> bool:
+    async def check_trigger(self, event_data: dict) -> bool:
         """Check if trigger should fire."""
         if (
             self.last_triggered
@@ -106,7 +107,7 @@ class EventTrigger:
         self.last_triggered = datetime.now()
         return True
 
-    async def handle_event(self, event_data: Dict) -> None:
+    async def handle_event(self, event_data: dict) -> None:
         """Handle triggered event."""
         if self.handler:
             await self.handler(event_data)
@@ -118,7 +119,7 @@ class AutomationPipeline:
     def __init__(
         self,
         name: str,
-        triggers: List[str],
+        triggers: list[str],
         error_handling: str = "retry",
         max_concurrent_steps: int = 4,
         monitoring_enabled: bool = True,
@@ -139,11 +140,13 @@ class AutomationPipeline:
         self.max_concurrent_steps = max_concurrent_steps
         self.monitoring_enabled = monitoring_enabled
 
-        self.steps: Dict[str, PipelineStep] = {}
-        self.step_results: Dict[str, Any] = {}
-        self.metrics: List[PipelineMetrics] = []
+        self.steps: dict[str, PipelineStep] = {}
+        self.step_results: dict[str, Any] = {}
+        self.metrics: list[PipelineMetrics] = []
         self.logger = logging.getLogger(__name__)
         self.executor = ThreadPoolExecutor(max_workers=max_concurrent_steps)
+        self.analytics: PipelineAnalytics | None = None
+        self.current_step: str | None = None
 
         # Initialize monitoring
         if monitoring_enabled:
@@ -153,11 +156,11 @@ class AutomationPipeline:
         self,
         name: str,
         function: Callable,
-        dependencies: List[str] = None,
+        dependencies: list[str] | None = None,
         retry_count: int = 3,
         timeout: int = 300,
         required: bool = True,
-        error_handler: Optional[Callable] = None,
+        error_handler: Callable | None = None,
     ) -> None:
         if dependencies is None:
             dependencies = []
@@ -203,7 +206,7 @@ class AutomationPipeline:
             self.logger.error(f"Error deploying pipeline: {str(e)}")
             raise
 
-    async def execute(self, input_data: Dict = None) -> Dict[str, Any]:
+    async def execute(self, input_data: dict[Any, Any] | None = None) -> dict[str, Any]:
         if input_data is None:
             input_data = {}
         """
@@ -239,7 +242,7 @@ class AutomationPipeline:
                 results = await asyncio.gather(*tasks, return_exceptions=True)
 
                 # Process results
-                for step_name, result in zip(step_batch, results):
+                for step_name, result in zip(step_batch, results, strict=False):
                     if isinstance(result, Exception):
                         self.logger.error(f"Step '{step_name}' failed: {str(result)}")
                         error_count += 1
@@ -258,7 +261,7 @@ class AutomationPipeline:
             self.logger.error(f"Pipeline execution failed: {str(e)}")
             raise
 
-    def get_metrics(self) -> List[PipelineMetrics]:
+    def get_metrics(self) -> list[PipelineMetrics]:
         """Get pipeline execution metrics."""
         return self.metrics
 
@@ -270,7 +273,7 @@ class AutomationPipeline:
         if not callable(step.function):
             raise ValueError(f"Step '{step.name}' function must be callable")
 
-        for dep in step.dependencies:
+        for dep in step.dependencies or []:
             if dep not in self.steps:
                 raise ValueError(
                     f"Step '{step.name}' depends on undefined step '{dep}'"
@@ -286,8 +289,8 @@ class AutomationPipeline:
 
     def _check_circular_dependencies(self) -> None:
         """Check for circular dependencies in pipeline steps."""
-        visited = set()
-        path = set()
+        visited: set[str] = set()
+        path: set[str] = set()
 
         def visit(step_name: str) -> None:
             if step_name in path:
@@ -299,7 +302,7 @@ class AutomationPipeline:
             visited.add(step_name)
             path.add(step_name)
 
-            for dep in self.steps[step_name].dependencies:
+            for dep in self.steps[step_name].dependencies or []:
                 visit(dep)
 
             path.remove(step_name)
@@ -307,10 +310,10 @@ class AutomationPipeline:
         for step_name in self.steps:
             visit(step_name)
 
-    def _get_execution_order(self) -> List[List[str]]:
+    def _get_execution_order(self) -> list[list[str]]:
         """Determine optimal execution order of steps."""
         # Build dependency graph
-        graph = {name: step.dependencies for name, step in self.steps.items()}
+        graph = {name: (step.dependencies or []) for name, step in self.steps.items()}
 
         # Topological sort with parallelization
         execution_order = []
@@ -333,7 +336,11 @@ class AutomationPipeline:
         return execution_order
 
     async def _execute_step(
-        self, step: PipelineStep, input_data: Dict, error_count: int, retry_count: int
+        self,
+        step: PipelineStep,
+        input_data: dict[Any, Any] | None,
+        error_count: int,
+        retry_count: int,
     ) -> Any:
         """Execute a single pipeline step."""
         start_time = datetime.now()
@@ -378,7 +385,7 @@ class AutomationPipeline:
                     return step.error_handler(e)
                 raise
 
-    async def _run_step_function(self, function: Callable, input_data: Dict) -> Any:
+    async def _run_step_function(self, function: Callable, input_data: dict) -> Any:
         """Run step function in thread pool."""
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(self.executor, function, input_data)
@@ -430,7 +437,7 @@ class EnhancedAutomationPipeline(AutomationPipeline):
     def __init__(
         self,
         name: str,
-        triggers: List[str],
+        triggers: list[str],
         error_handling: str = "retry",
         max_concurrent_steps: int = 4,
         monitoring_enabled: bool = True,
@@ -447,10 +454,11 @@ class EnhancedAutomationPipeline(AutomationPipeline):
 
         # Enhanced components
         self.analytics = PipelineAnalytics() if analytics_enabled else None
-        self.event_triggers: Dict[str, EventTrigger] = {}
-        self.active_steps: Set[str] = set()
-        self.step_dependencies: Dict[str, Set[str]] = {}
-
+        self.event_triggers: dict[str, EventTrigger] = {}
+        self.active_steps: set[str] = set()
+        self.step_dependencies: dict[str, set[str]] = {}
+        self.error_count = 0
+        self.retry_count = 0
         # Initialize monitoring
         if monitoring_enabled and analytics_enabled and self.analytics:
             self._initialize_enhanced_monitoring()
@@ -459,7 +467,7 @@ class EnhancedAutomationPipeline(AutomationPipeline):
         self,
         event_type: str,
         handler: Callable,
-        condition: Optional[Callable] = None,
+        condition: Callable | None = None,
         cooldown: int = 0,
     ) -> None:
         """Add event-based trigger."""
@@ -467,14 +475,14 @@ class EnhancedAutomationPipeline(AutomationPipeline):
         trigger.handler = handler
         self.event_triggers[event_type] = trigger
 
-    async def handle_event(self, event_type: str, event_data: Dict) -> None:
+    async def handle_event(self, event_type: str, event_data: dict) -> None:
         """Handle incoming event."""
         if event_type in self.event_triggers:
             trigger = self.event_triggers[event_type]
             if await trigger.check_trigger(event_data):
                 await trigger.handle_event(event_data)
 
-    async def execute(self, input_data: Dict = None) -> Dict[str, Any]:
+    async def execute(self, input_data: dict[Any, Any] | None = None) -> dict[str, Any]:
         """Enhanced pipeline execution with analytics."""
         if input_data is None:
             input_data = {}
@@ -510,7 +518,11 @@ class EnhancedAutomationPipeline(AutomationPipeline):
                 ).set(0)
 
     async def _execute_step(
-        self, step: PipelineStep, input_data: Dict, error_count: int, retry_count: int
+        self,
+        step: PipelineStep,
+        input_data: dict[Any, Any] | None,
+        error_count: int,
+        retry_count: int,
     ) -> Any:
         """Enhanced step execution with monitoring."""
         start_time = datetime.now()
@@ -600,7 +612,7 @@ class EnhancedAutomationPipeline(AutomationPipeline):
             }
         )
 
-    def get_analytics_report(self) -> Dict[str, Any]:
+    def get_analytics_report(self) -> dict[str, Any]:
         """Generate analytics report."""
         if not self.analytics_enabled or not self.analytics:
             return {}

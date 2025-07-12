@@ -2,8 +2,8 @@
 
 import os
 import sys
-from datetime import UTC, datetime
-from typing import Any, Optional
+from datetime import datetime, timezone
+from typing import Any
 
 import structlog
 
@@ -12,7 +12,7 @@ def configure_logger(
     level: str = "INFO",
     format: str = "json",
     output: str = "stdout",
-    file_path: Optional[str] = None,
+    file_path: str | None = None,
 ) -> structlog.BoundLogger:
     """
     Configure structured logging for Bleu.js.
@@ -60,7 +60,7 @@ def configure_logger(
         "bleu",
         version=os.getenv("BLEU_VERSION", "1.1.3"),
         environment=os.getenv("BLEU_ENV", "development"),
-        timestamp=datetime.now(UTC).isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
     )
 
     return logger
@@ -90,4 +90,4 @@ def get_logger(name: str, **context: Any) -> structlog.BoundLogger:
 
 
 def get_timestamp():
-    return datetime.now(UTC).isoformat()
+    return datetime.now(timezone.utc).isoformat()

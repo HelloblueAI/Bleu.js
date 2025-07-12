@@ -7,7 +7,6 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
 
 import tensorflow as tf
 from quantum_vision_model import QuantumVisionConfig, QuantumVisionModel
@@ -15,10 +14,10 @@ from quantum_vision_model import QuantumVisionConfig, QuantumVisionModel
 
 def setup_logging(log_dir: str) -> None:
     """Setup logging configuration."""
-    log_dir = Path(log_dir)
-    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = Path(log_dir)
+    log_path.mkdir(parents=True, exist_ok=True)
 
-    log_file = log_dir / f"training_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    log_file = log_path / f"training_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
     logging.basicConfig(
         level=logging.INFO,
@@ -28,8 +27,8 @@ def setup_logging(log_dir: str) -> None:
 
 
 def load_and_preprocess_data(
-    data_dir: str, batch_size: int, img_size: Tuple[int, int]
-) -> Tuple[tf.data.Dataset, tf.data.Dataset]:
+    data_dir: str, batch_size: int, img_size: tuple[int, int]
+) -> tuple[tf.data.Dataset, tf.data.Dataset]:
     """Load and preprocess training and validation data."""
     # Data augmentation for training
     train_augmentation = tf.keras.Sequential(

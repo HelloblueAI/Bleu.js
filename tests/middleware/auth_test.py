@@ -8,7 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.testclient import TestClient
 
-from src.config import settings
+from src.config import get_settings
 from src.middleware.auth import AuthMiddleware, get_current_user
 from src.models.user import User
 from src.services.user_service import UserService
@@ -70,6 +70,7 @@ def test_user(db_session):
 
 def create_test_token(user: User, expires_delta: timedelta = None):
     """Create a test JWT token."""
+    settings = get_settings()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:

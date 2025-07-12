@@ -1,7 +1,7 @@
 import logging
 import time
 from datetime import datetime, timedelta, timezone
-from typing import Dict
+from typing import Any
 
 import aiohttp
 import jwt
@@ -9,9 +9,9 @@ from fastapi import Depends, HTTPException
 from prometheus_client import Counter, Gauge, Histogram
 from sqlalchemy.orm import Session
 
+from src.config import get_settings
 from src.utils.base_classes import BaseService
 
-from ..config import settings
 from ..database import get_db
 from ..models import APICall, APIUsage, User
 from ..quantum_py.intelligence.market_intelligence import MarketIntelligence
@@ -33,17 +33,26 @@ api_usage_gauge = Gauge("api_usage", "Current API usage", ["user_id", "plan"])
 
 
 class APIService(BaseService):
+    """Service for handling API operations."""
+
     def __init__(self, db: Session = Depends(get_db)):
-        self.db = db
+        """Initialize API service."""
+        super().__init__(db)
+        self.settings = get_settings()
+        self.start_time = time.time()
         self.market_intelligence = MarketIntelligence()
         self.strategic_intelligence = StrategicIntelligence()
         self.quantum_intelligence = QuantumIntelligence()
         self.logger = logging.getLogger(__name__)
 
     async def validate_api_key(self, api_key: str) -> User:
-        """Validate API key and return associated user"""
+        """Validate API key and return user."""
         try:
-            payload = jwt.decode(api_key, settings.SECRET_KEY, algorithms=["HS256"])
+            payload = jwt.decode(
+                api_key,
+                self.settings.SECRET_KEY,
+                algorithms=["HS256"],
+            )
             user_id = payload.get("sub")
             if not user_id:
                 raise HTTPException(status_code=401, detail="Invalid API key")
@@ -138,7 +147,7 @@ class APIService(BaseService):
             user_id=str(user.id), plan=user.subscription.plan_type
         ).set(monthly_usage.calls_count)
 
-    async def get_usage_analytics(self, user: User) -> Dict:
+    async def get_usage_analytics(self, user: User) -> dict:
         """Get detailed usage analytics for user"""
         current_period_start = user.subscription.current_period_start
         current_period_end = user.subscription.current_period_end
@@ -165,7 +174,7 @@ class APIService(BaseService):
         }
 
         # Get endpoint usage
-        endpoint_usage = {}
+        endpoint_usage: dict[str, int] = {}
         for call in daily_usage:
             endpoint_usage[call.endpoint] = endpoint_usage.get(call.endpoint, 0) + 1
 
@@ -183,7 +192,7 @@ class APIService(BaseService):
             ),
         }
 
-    async def get_advanced_analytics(self, user: User) -> Dict:
+    async def get_advanced_analytics(self, user: User) -> dict:
         """Get advanced analytics for enterprise users"""
         if user.subscription.plan_type != "ENTERPRISE":
             raise HTTPException(
@@ -206,7 +215,7 @@ class APIService(BaseService):
             "quantum_analysis": quantum_analysis,
         }
 
-    async def get_user_dashboard_data(self, user: User) -> Dict:
+    async def get_user_dashboard_data(self, user: User) -> dict:
         """Get all dashboard data for user"""
         usage_analytics = await self.get_usage_analytics(user)
 
@@ -242,7 +251,7 @@ class APIService(BaseService):
 
         return dashboard_data
 
-    async def monitor_api_health(self) -> Dict:
+    async def monitor_api_health(self) -> dict:
         """Monitor overall API health"""
         # Get system metrics
         system_metrics = {
@@ -268,7 +277,7 @@ class APIService(BaseService):
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(
-                    settings.QUANTUM_SERVICE_URL + "/health"
+                    self.settings.QUANTUM_SERVICE_URL + "/health"
                 ) as response:
                     quantum_health = (
                         "healthy" if response.status == 200 else "unhealthy"
@@ -284,7 +293,7 @@ class APIService(BaseService):
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
-    async def optimize_api_performance(self) -> Dict:
+    async def optimize_api_performance(self) -> dict:
         """Optimize API performance based on usage patterns"""
         # Get recent API calls
         recent_calls = (
@@ -302,7 +311,7 @@ class APIService(BaseService):
         )
 
         # Identify slow endpoints
-        endpoint_times = {}
+        endpoint_times: dict[str, list[float]] = {}
         for call in recent_calls:
             if call.endpoint not in endpoint_times:
                 endpoint_times[call.endpoint] = []
@@ -341,3 +350,16 @@ class APIService(BaseService):
             "recommendations": recommendations,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
+
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute API service operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the API operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "api_processed", "service": "api"}

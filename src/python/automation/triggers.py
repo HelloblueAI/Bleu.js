@@ -4,8 +4,8 @@ Specialized event triggers for the automation pipeline.
 
 import asyncio
 import os
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Dict, List, Optional
 
 import aiocron
 from aiohttp import web
@@ -21,9 +21,9 @@ class FileSystemTrigger(FileSystemEventHandler):
     def __init__(
         self,
         path: str,
-        patterns: List[str] = None,
-        ignore_patterns: List[str] = None,
-        handler: Optional[Callable] = None,
+        patterns: list[str] | None = None,
+        ignore_patterns: list[str] | None = None,
+        handler: Callable | None = None,
         cooldown: int = 0,
     ):
         super().__init__()
@@ -32,7 +32,7 @@ class FileSystemTrigger(FileSystemEventHandler):
         self.ignore_patterns = ignore_patterns or []
         self.handler = handler
         self.cooldown = cooldown
-        self.last_triggered = None
+        self.last_triggered: datetime | None = None
         self.observer = Observer()
 
         # Metrics
@@ -112,7 +112,7 @@ class ScheduledTrigger:
     """Time-based scheduled trigger."""
 
     def __init__(
-        self, schedule: str, handler: Optional[Callable] = None, timezone: str = "UTC"
+        self, schedule: str, handler: Callable | None = None, timezone: str = "UTC"
     ):
         self.schedule = schedule
         self.handler = handler
@@ -146,7 +146,7 @@ class DatabaseTrigger:
         connection_string: str,
         query: str,
         interval: int = 60,
-        handler: Optional[Callable] = None,
+        handler: Callable | None = None,
     ):
         self.engine = create_engine(connection_string)
         self.query = query
@@ -204,16 +204,16 @@ class WebhookTrigger:
         self,
         path: str,
         port: int = 8000,
-        methods: List[str] = None,
-        handler: Optional[Callable] = None,
-        auth_key: Optional[str] = None,
+        methods: list[str] | None = None,
+        handler: Callable | None = None,
+        auth_key: str | None = None,
     ):
         self.path = path
         self.port = port
         self.methods = methods or ["POST"]
         self.handler = handler
         self.auth_key = auth_key
-        self.app: Optional[web.Application] = None
+        self.app: web.Application | None = None
 
         # Metrics
         self.webhook_counter = Counter(
@@ -286,8 +286,8 @@ class MessageQueueTrigger:
         self,
         queue_url: str,
         queue_type: str = "rabbitmq",
-        handler: Optional[Callable] = None,
-        credentials: Optional[Dict] = None,
+        handler: Callable | None = None,
+        credentials: dict | None = None,
     ):
         self.queue_url = queue_url
         self.queue_type = queue_type
@@ -316,8 +316,12 @@ class MessageQueueTrigger:
             )
 
             # Start consuming
-            async with self.connection:
-                channel = await self.connection.channel()
+            if self.connection is None:
+                raise RuntimeError("Connection is not initialized.")
+            async with self.connection as conn:
+                if not hasattr(conn, "channel"):
+                    raise RuntimeError("Connection object has no 'channel' attribute.")
+                channel = await conn.channel()
                 queue = await channel.declare_queue("events")
 
                 async with queue.iterator() as queue_iter:

@@ -2,7 +2,6 @@
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import xgboost as xgb
@@ -53,9 +52,9 @@ class AdvancedModelTrainer:
 
     def __init__(
         self,
-        training_config: Optional[Dict] = None,
-        quantum_config: Optional[Dict] = None,
-        security_config: Optional[Dict] = None,
+        training_config: dict | None = None,
+        quantum_config: dict | None = None,
+        security_config: dict | None = None,
     ):
         # Convert dict configs to dataclass instances
         self.training_config = TrainingConfig(**(training_config or {}))
@@ -77,7 +76,7 @@ class AdvancedModelTrainer:
         )
         self.logger = logging.getLogger(__name__)
 
-    async def train(self, features: np.ndarray, labels: np.ndarray) -> Dict[str, float]:
+    async def train(self, features: np.ndarray, labels: np.ndarray) -> dict[str, float]:
         """Train the model with quantum enhancements and security measures."""
         try:
             # Apply security measures
@@ -148,7 +147,7 @@ class AdvancedModelTrainer:
 
     def _apply_security_measures(
         self, features: np.ndarray, labels: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Apply security measures to data"""
         if self.security_config.differential_privacy:
             # Add noise for differential privacy
@@ -164,10 +163,10 @@ class AdvancedModelTrainer:
         self,
         features: np.ndarray,
         labels: np.ndarray,
-        eval_set: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None,
-    ) -> Dict:
+        eval_set: list[tuple[np.ndarray, np.ndarray]] | None = None,
+    ) -> dict:
         """Calculate training metrics"""
-        metrics = {}
+        metrics: dict[str, float] = {}
 
         # Training metrics
         if not self.model:

@@ -1,6 +1,6 @@
 """Model service module."""
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import numpy as np
 from sklearn.base import BaseEstimator
@@ -21,19 +21,19 @@ class ModelService(BaseService):
         """
         self.model = model
         self.is_trained = False
-        self.optimizer: Optional[HyperparameterOptimizer] = None
+        self.optimizer: HyperparameterOptimizer | None = None
 
     def train(
         self,
         X: np.ndarray,
         y: np.ndarray,
-        param_grid: Optional[Dict[str, Any]] = None,
+        param_grid: dict[str, Any] | None = None,
         test_size: float = 0.2,
-        random_state: Optional[int] = None,
+        random_state: int | None = None,
         optimize: bool = False,
         optimization_method: str = "grid",
         **optimization_params: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Train model.
 
         Args:
@@ -91,7 +91,7 @@ class ModelService(BaseService):
 
     def predict(
         self, X: np.ndarray, return_proba: bool = False
-    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+    ) -> np.ndarray | tuple[np.ndarray, np.ndarray]:
         """Make predictions.
 
         Args:
@@ -118,7 +118,7 @@ class ModelService(BaseService):
         X: np.ndarray,
         y: np.ndarray,
         return_proba: bool = True,
-    ) -> Tuple[PerformanceMetrics, Dict[str, Any]]:
+    ) -> tuple[PerformanceMetrics, dict[str, Any]]:
         """Evaluate model performance.
 
         Args:
@@ -157,8 +157,8 @@ class ModelService(BaseService):
         X: np.ndarray,
         y: np.ndarray,
         cv: int = 5,
-        scoring: Optional[List[str]] = None,
-    ) -> Dict[str, List[float]]:
+        scoring: list[str] | None = None,
+    ) -> dict[str, list[float]]:
         """Perform cross-validation.
 
         Args:
@@ -212,3 +212,16 @@ class ModelService(BaseService):
         service = cls(model)
         service.is_trained = True
         return service
+
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute model service operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the model service operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "model_processed", "service": "model_service"}

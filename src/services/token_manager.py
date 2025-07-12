@@ -1,13 +1,12 @@
 """Token manager service module."""
 
 from datetime import datetime, timedelta
-from typing import Dict, Optional, Tuple
 
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from src.config import settings
+from src.config import get_settings
 from src.models.user import User
 from src.services.user_service import UserService
 
@@ -23,11 +22,12 @@ class TokenManager:
         """
         self.db = db
         self.user_service = UserService(db)
+        self.settings = get_settings()
 
     def create_access_token(
         self,
-        data: Dict,
-        expires_delta: Optional[timedelta] = None,
+        data: dict,
+        expires_delta: timedelta | None = None,
     ) -> str:
         """Create a new access token.
 
@@ -46,15 +46,15 @@ class TokenManager:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(
             to_encode,
-            settings.SECRET_KEY,
-            algorithm=settings.ALGORITHM,
+            self.settings.SECRET_KEY,
+            algorithm=self.settings.ALGORITHM,
         )
         return encoded_jwt
 
     def create_refresh_token(
         self,
-        data: Dict,
-        expires_delta: Optional[timedelta] = None,
+        data: dict,
+        expires_delta: timedelta | None = None,
     ) -> str:
         """Create a new refresh token.
 
@@ -73,12 +73,12 @@ class TokenManager:
         to_encode.update({"exp": expire, "refresh": True})
         encoded_jwt = jwt.encode(
             to_encode,
-            settings.SECRET_KEY,
-            algorithm=settings.ALGORITHM,
+            self.settings.SECRET_KEY,
+            algorithm=self.settings.ALGORITHM,
         )
         return encoded_jwt
 
-    def decode_token(self, token: str) -> Dict:
+    def decode_token(self, token: str) -> dict:
         """Decode a JWT token.
 
         Args:
@@ -93,8 +93,8 @@ class TokenManager:
         try:
             payload = jwt.decode(
                 token,
-                settings.SECRET_KEY,
-                algorithms=[settings.ALGORITHM],
+                self.settings.SECRET_KEY,
+                algorithms=[self.settings.ALGORITHM],
             )
             return payload
         except JWTError:
@@ -104,7 +104,7 @@ class TokenManager:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-    def create_tokens(self, user: User) -> Tuple[str, str]:
+    def create_tokens(self, user: User) -> tuple[str, str]:
         """Create access and refresh tokens for a user.
 
         Args:
@@ -113,8 +113,12 @@ class TokenManager:
         Returns:
             Tuple[str, str]: Access token and refresh token
         """
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token_expires = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        access_token_expires = timedelta(
+            minutes=self.settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+        refresh_token_expires = timedelta(
+            days=self.settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+        )
 
         access_token = self.create_access_token(
             data={"sub": str(user.id)},
@@ -128,7 +132,7 @@ class TokenManager:
 
         return access_token, refresh_token
 
-    def refresh_tokens(self, refresh_token: str) -> Tuple[str, str]:
+    def refresh_tokens(self, refresh_token: str) -> tuple[str, str]:
         """Refresh access and refresh tokens.
 
         Args:

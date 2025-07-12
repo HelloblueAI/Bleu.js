@@ -3,7 +3,6 @@ Subscription service for managing API access.
 """
 
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
 
 from sqlalchemy.orm import Session
 
@@ -54,7 +53,7 @@ class SubscriptionService:
     @classmethod
     def check_api_access(
         cls, db: Session, user_id: int, endpoint: str, method: str = "GET"
-    ) -> Tuple[bool, Optional[str]]:
+    ) -> tuple[bool, str | None]:
         """Check if a user has access to make an API call."""
         subscription = cls.get_or_create_subscription(db, user_id)
 
@@ -96,7 +95,7 @@ class SubscriptionService:
                 APICallLog.method == method,
                 APICallLog.status_code == 0,  # Find the most recent uncompleted log
             )
-            .order_by(APICallLog.created_at.desc())
+            .order_by(APICallLog.created_at.desc())  # type: ignore
             .first()
         )
 
@@ -114,7 +113,7 @@ class SubscriptionService:
         recent_calls = (
             db.query(APICallLog)
             .filter(APICallLog.user_id == user_id)
-            .order_by(APICallLog.created_at.desc())
+            .order_by(APICallLog.created_at.desc())  # type: ignore
             .limit(10)
             .all()
         )

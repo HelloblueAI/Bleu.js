@@ -4,8 +4,9 @@ Job queue manager for the backend.
 
 import asyncio
 import logging
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any
 
 from ..config.settings import settings
 from .database import db_manager
@@ -56,7 +57,7 @@ class JobQueueManager:
             finally:
                 self._queue.task_done()
 
-    async def _process_job(self, job_data: Dict[str, Any]):
+    async def _process_job(self, job_data: dict[str, Any]):
         """Process a single job."""
         job_id = job_data["job_id"]
         job_type = job_data["job_type"]
@@ -100,7 +101,7 @@ class JobQueueManager:
                     job.completed_at = datetime.utcnow()
                     session.commit()
 
-    def _get_job_handler(self, job_type: str) -> Optional[Callable]:
+    def _get_job_handler(self, job_type: str) -> Callable | None:
         """Get handler function for job type."""
         handlers = {
             "train_model": self._handle_train_model,
@@ -117,7 +118,7 @@ class JobQueueManager:
         return handlers.get(job_type)
 
     async def enqueue_job(
-        self, job_type: str, parameters: Dict[str, Any], user_id: int
+        self, job_type: str, parameters: dict[str, Any], user_id: int
     ) -> int:
         """Enqueue a new job."""
         try:
@@ -147,7 +148,7 @@ class JobQueueManager:
             self.logger.error(f"Failed to enqueue job: {e}")
             raise
 
-    async def get_job_status(self, job_id: int) -> Optional[Dict[str, Any]]:
+    async def get_job_status(self, job_id: int) -> dict[str, Any] | None:
         """Get status of a job."""
         try:
             with db_manager.get_session() as session:
@@ -185,53 +186,53 @@ class JobQueueManager:
             return False
 
     # Job handlers
-    async def _handle_train_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_train_model(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle model training job."""
-        # Implementation depends on your training logic
+        return {}
 
     async def _handle_evaluate_model(
-        self, parameters: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, parameters: dict[str, Any]
+    ) -> dict[str, Any]:
         """Handle model evaluation job."""
-        # Implementation depends on your evaluation logic
+        return {}
 
-    async def _handle_predict(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_predict(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle prediction job."""
-        # Implementation depends on your prediction logic
+        return {}
 
     async def _handle_optimize_model(
-        self, parameters: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, parameters: dict[str, Any]
+    ) -> dict[str, Any]:
         """Handle model optimization job."""
-        # Implementation depends on your optimization logic
+        return {}
 
     async def _handle_process_dataset(
-        self, parameters: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, parameters: dict[str, Any]
+    ) -> dict[str, Any]:
         """Handle dataset processing job."""
-        # Implementation depends on your dataset processing logic
+        return {}
 
-    async def _handle_export_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_export_model(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle model export job."""
-        # Implementation depends on your export logic
+        return {}
 
-    async def _handle_import_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_import_model(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle model import job."""
-        # Implementation depends on your import logic
+        return {}
 
-    async def _handle_delete_model(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_delete_model(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle model deletion job."""
-        # Implementation depends on your deletion logic
+        return {}
 
     async def _handle_delete_dataset(
-        self, parameters: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, parameters: dict[str, Any]
+    ) -> dict[str, Any]:
         """Handle dataset deletion job."""
-        # Implementation depends on your deletion logic
+        return {}
 
-    async def _handle_cleanup(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_cleanup(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """Handle cleanup job."""
-        # Implementation depends on your cleanup logic
+        return {}
 
 
 # Create global job queue manager instance

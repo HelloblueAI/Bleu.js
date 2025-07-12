@@ -55,11 +55,8 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
             key = f"{client_ip}:{request.url.path}"
 
             # Check rate limit
-            is_allowed, rate_limit_info = await self.rate_limiter.check_rate_limit(
-                key=key,
-                limit=self.settings.RATE_LIMIT,
-                window=self.settings.RATE_LIMIT_WINDOW,
-            )
+            is_allowed = not await self.rate_limiter.check_rate_limit(key=key)
+            rate_limit_info = await self.rate_limiter.get_rate_limit_status(key=key)
 
             if not is_allowed:
                 # Update metrics

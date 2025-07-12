@@ -4,7 +4,7 @@ Quantum-Enhanced Feature Fusion Module
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Optional
 
 import numpy as np
 import torch
@@ -18,7 +18,7 @@ class QuantumFusionConfig:
     """Configuration for quantum feature fusion."""
 
     num_qubits: int = 4
-    feature_dims: Optional[List[int]] = None
+    feature_dims: list[int] | None = None
     fusion_dim: int = 2048
     num_layers: int = 3
     dropout_rate: float = 0.1
@@ -31,7 +31,7 @@ class QuantumFusionConfig:
 class QuantumFusion:
     """Quantum-enhanced feature fusion with adaptive weighting."""
 
-    def __init__(self, config: Optional[QuantumFusionConfig] = None):
+    def __init__(self, config: QuantumFusionConfig | None = None):
         self.config = config or QuantumFusionConfig()
         if self.config.feature_dims is None:
             self.config.feature_dims = [2048, 1024, 512]
@@ -42,7 +42,9 @@ class QuantumFusion:
         self.initialized = False
         self.rng = np.random.default_rng(seed=42)  # Fixed seed for reproducibility
         self.backend = None
-        self._state_cache = {}  # Cache for quantum state reshaping
+        self._state_cache: dict[int, np.ndarray] = (
+            {}
+        )  # Cache for quantum state reshaping
         self._build_quantum_circuit()
         self._build_fusion_layers()
 
@@ -175,7 +177,7 @@ class QuantumFusion:
         except Exception as e:
             raise ValueError(f"Failed to prepare quantum state: {str(e)}")
 
-    def fuse_features(self, features: List[torch.Tensor]) -> torch.Tensor:
+    def fuse_features(self, features: list[torch.Tensor]) -> torch.Tensor:
         """Fuse features using quantum-enhanced fusion."""
         try:
             if not features:
@@ -206,7 +208,7 @@ class QuantumFusion:
         except Exception as e:
             raise ValueError(f"Failed to fuse features: {str(e)}")
 
-    def get_config(self) -> Dict:
+    def get_config(self) -> dict:
         """Get configuration as dictionary."""
         return {
             "num_qubits": self.config.num_qubits,
@@ -221,7 +223,7 @@ class QuantumFusion:
         }
 
     @classmethod
-    def from_config(cls, config: Dict) -> "QuantumFusion":
+    def from_config(cls, config: dict) -> "QuantumFusion":
         """Create instance from configuration dictionary."""
         fusion_config = QuantumFusionConfig(**config)
         return cls(fusion_config)
@@ -267,7 +269,7 @@ class QuantumFusion:
         except Exception as e:
             raise RuntimeError(f"Failed to apply quantum circuit: {str(e)}")
 
-    def _counts_to_state(self, counts: Dict[str, int]) -> np.ndarray:
+    def _counts_to_state(self, counts: dict[str, int]) -> np.ndarray:
         """Convert measurement counts to state vector."""
         total_shots = sum(counts.values())
         state = np.zeros(2**self.config.num_qubits, dtype=np.complex128)
@@ -395,7 +397,7 @@ class QuantumFusionLayer(torch.nn.Module):
         # Add a projection layer to match dimensions
         self.projection = torch.nn.Linear(2**config.num_qubits, self.fusion_dim)
 
-    def forward(self, inputs: List[torch.Tensor]) -> torch.Tensor:
+    def forward(self, inputs: list[torch.Tensor]) -> torch.Tensor:
         """Forward pass."""
         if not isinstance(inputs, list):
             raise ValueError("Inputs must be a list of tensors")

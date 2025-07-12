@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import redis.asyncio as redis
 from redis.asyncio.connection import ConnectionPool
@@ -12,16 +11,17 @@ logger = logging.getLogger(__name__)
 class RedisClient:
     """Redis client factory with connection pooling."""
 
-    _pool: Optional[ConnectionPool] = None
-    _client: Optional[redis.Redis] = None
+    _pool: ConnectionPool | None = None
+    _client: redis.Redis | None = None
 
     @classmethod
     async def get_client(cls) -> redis.Redis:
         """Get a Redis client instance."""
         if cls._client is None:
             try:
+                redis_config = RedisConfig()
                 cls._pool = ConnectionPool.from_url(
-                    RedisConfig.get_connection_url(),
+                    redis_config.get_connection_url(),
                     max_connections=10,
                     decode_responses=True,
                 )

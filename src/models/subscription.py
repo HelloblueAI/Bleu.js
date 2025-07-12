@@ -1,243 +1,243 @@
-import enum
-import uuid
-from datetime import datetime, timezone
-from typing import Dict, Optional
+"""Subscription model."""
 
-from pydantic import BaseModel, ConfigDict
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    Enum,
-    ForeignKey,
-    Integer,
-    String,
-)
+import uuid
+from datetime import datetime
+from enum import Enum
+
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from src.models.declarative_base import Base
+from src.models.base import Base
 
 
-class PlanType(str, enum.Enum):
-    FREE = "FREE"
-    CORE = "CORE"
-    ENTERPRISE = "ENTERPRISE"
+class PlanType(str, Enum):
+    """Subscription plan types."""
+
+    COR_E = "cor-e"
+    ENTERPRISE = "enterprise"
 
 
-class SubscriptionStatus(str, enum.Enum):
+class SubscriptionStatus(str, Enum):
+    """Subscription status types."""
+
     ACTIVE = "active"
     CANCELLED = "cancelled"
     EXPIRED = "expired"
-    TRIAL = "trial"
-
-
-class Subscription(Base):
-    """Database model for user subscriptions."""
-
-    __tablename__ = "subscriptions"
-    __table_args__ = {"extend_existing": True}
-
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    plan_id = Column(String, ForeignKey("subscription_plans.id"), nullable=False)
-    stripe_subscription_id = Column(String, nullable=True)
-    status = Column(
-        Enum(SubscriptionStatus), nullable=False, default=SubscriptionStatus.TRIAL
-    )
-    current_period_start = Column(DateTime(timezone=True), nullable=False)
-    current_period_end = Column(DateTime(timezone=True), nullable=False)
-    api_calls_remaining = Column(Integer, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-    )
-
-    # Relationships
-    user = relationship("User", back_populates="subscription")
-    plan = relationship("SubscriptionPlan", back_populates="subscriptions")
-    api_tokens = relationship(
-        "APIToken", back_populates="subscription", cascade="all, delete-orphan"
-    )
-    customer = relationship("Customer", back_populates="subscription", uselist=False)
+    PENDING = "pending"
 
 
 class APIToken(Base):
-    """Database model for storing API tokens."""
+    """API Token model."""
 
     __tablename__ = "api_tokens"
-    __table_args__ = {"extend_existing": True}
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    subscription_id = Column(String, ForeignKey("subscriptions.id"), nullable=False)
-    customer_id = Column(String, ForeignKey("customers.id"), nullable=True)
-    name = Column(String, nullable=False)
-    token = Column(String, unique=True, nullable=False)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    last_used_at = Column(DateTime, nullable=True)
-    expires_at = Column(DateTime, nullable=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    name = Column(String(255), nullable=False)
+    token_hash = Column(String(255), nullable=False, unique=True)
+    is_active = Column(String(10), default="active")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="api_tokens")
-    subscription = relationship("Subscription", back_populates="api_tokens")
-    customer = relationship("Customer", back_populates="api_tokens")
+
+    def __repr__(self):
+        return f"<APIToken(id={self.id}, name='{self.name}', user_id={self.user_id})>"
 
 
 class SubscriptionPlan(Base):
-    """Database model for subscription plans."""
+    """Subscription plan model."""
 
     __tablename__ = "subscription_plans"
-    __table_args__ = {"extend_existing": True}
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String, nullable=False)
-    plan_type = Column(Enum(PlanType), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), nullable=False)
+    plan_type = Column(String(50), nullable=False)
     price = Column(Integer, nullable=False)  # Price in cents
     api_calls_limit = Column(Integer, nullable=False)
-    rate_limit = Column(Integer, nullable=False)  # Rate limit per second
-    uptime_sla = Column(String, nullable=False)
-    support_level = Column(String, nullable=False)
-    features = Column(JSON, nullable=False)
-    trial_days = Column(Integer, nullable=False, default=30)
-    created_at = Column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-    )
+    features = Column(Text, nullable=True)  # JSON string of features
+    is_active = Column(String(10), default="active")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     subscriptions = relationship("Subscription", back_populates="plan")
 
-    @staticmethod
-    def get_core_plan():
-        return {
-            "name": "COR-E Plan",
-            "plan_type": PlanType.CORE,
-            "price": 2900,  # $29/month
-            "api_calls_limit": 100,
-            "rate_limit": 10,  # 10 requests per second
-            "uptime_sla": "99.9%",
-            "support_level": "standard",
-            "features": {
-                "core_ai_model_access": True,
-                "basic_analytics": True,
-                "email_support": True,
-                "api_documentation": True,
-                "standard_response_time": True,
-            },
-            "trial_days": 14,
-        }
+    def __repr__(self):
+        return (
+            f"<SubscriptionPlan(id={self.id}, name='{self.name}', "
+            f"plan_type='{self.plan_type}')>"
+        )
 
-    @staticmethod
-    def get_enterprise_plan():
+
+class Subscription(Base):
+    """Subscription model."""
+
+    __tablename__ = "subscriptions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    plan_id = Column(
+        UUID(as_uuid=True), ForeignKey("subscription_plans.id"), nullable=False
+    )
+    status = Column(String(50), default="active")
+    start_date = Column(DateTime, default=datetime.utcnow)
+    end_date = Column(DateTime, nullable=True)
+    api_calls_used = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="subscriptions")
+    plan = relationship("SubscriptionPlan", back_populates="subscriptions")
+
+    def __repr__(self):
+        return (
+            f"<Subscription(id={self.id}, user_id={self.user_id}, "
+            f"status='{self.status}')>"
+        )
+
+    def to_dict(self):
+        """Convert subscription to dictionary."""
         return {
-            "name": "Enterprise Plan",
-            "plan_type": PlanType.ENTERPRISE,
-            "price": 49900,  # $499/month
-            "api_calls_limit": 5000,
-            "rate_limit": 100,  # 100 requests per second
-            "uptime_sla": "99.99%",
-            "support_level": "premium",
-            "features": {
-                "core_ai_model_access": True,
-                "advanced_analytics": True,
-                "priority_support": True,
-                "dedicated_account_manager": True,
-                "custom_model_training": True,
-                "custom_integrations": True,
-                "sla_guarantees": True,
-                "advanced_documentation": True,
-            },
-            "trial_days": 30,
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "plan_id": str(self.plan_id),
+            "status": self.status,
+            "start_date": self.start_date.isoformat() if self.start_date else None,
+            "end_date": self.end_date.isoformat() if self.end_date else None,
+            "api_calls_used": self.api_calls_used,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
 
 
 # Pydantic models for API
 class APITokenBase(BaseModel):
-    name: str
-    expires_at: Optional[datetime] = None
+    """Base API token model."""
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    name: str
+
+    class Config:
+        from_attributes = True
 
 
 class APITokenCreate(APITokenBase):
+    """API token creation model."""
+
     pass
 
 
+class APITokenUpdate(BaseModel):
+    """API token update model."""
+
+    name: str | None = None
+    is_active: str | None = None
+
+    class Config:
+        from_attributes = True
+
+
 class APITokenResponse(APITokenBase):
+    """API token response model."""
+
     id: str
     user_id: str
-    token: str
-    is_active: bool
-    last_used_at: Optional[datetime]
+    token_hash: str
+    is_active: str
     created_at: datetime
+    updated_at: datetime
 
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class SubscriptionPlanBase(BaseModel):
+    """Base subscription plan model."""
+
     name: str
     plan_type: PlanType
     price: int
     api_calls_limit: int
-    trial_days: int
-    features: Dict
-    rate_limit: int
-    uptime_sla: str
-    support_level: str
+    features: str | None = None
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:
+        from_attributes = True
 
 
 class SubscriptionPlanCreate(SubscriptionPlanBase):
+    """Subscription plan creation model."""
+
     pass
 
 
+class SubscriptionPlanUpdate(BaseModel):
+    """Subscription plan update model."""
+
+    name: str | None = None
+    plan_type: PlanType | None = None
+    price: int | None = None
+    api_calls_limit: int | None = None
+    features: str | None = None
+    is_active: str | None = None
+
+    class Config:
+        from_attributes = True
+
+
 class SubscriptionPlanResponse(SubscriptionPlanBase):
+    """Subscription plan response model."""
+
     id: str
+    is_active: str
     created_at: datetime
     updated_at: datetime
 
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class SubscriptionBase(BaseModel):
+    """Base subscription model."""
+
     user_id: str
     plan_id: str
-    stripe_subscription_id: Optional[str] = None
-    status: str
-    current_period_start: datetime
-    current_period_end: datetime
-    trial_end_date: Optional[datetime]
-    api_calls_remaining: int
+    status: SubscriptionStatus
+    start_date: datetime
+    end_date: datetime | None = None
+    api_calls_used: int = 0
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:
+        from_attributes = True
 
 
-class SubscriptionCreate(BaseModel):
-    tier: str
-    payment_method_id: str
+class SubscriptionCreate(SubscriptionBase):
+    """Subscription creation model."""
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    pass
+
+
+class SubscriptionUpdate(BaseModel):
+    """Subscription update model."""
+
+    plan_id: str | None = None
+    status: SubscriptionStatus | None = None
+    end_date: datetime | None = None
+    api_calls_used: int | None = None
+
+    class Config:
+        from_attributes = True
 
 
 class SubscriptionResponse(SubscriptionBase):
+    """Subscription response model."""
+
     id: str
     created_at: datetime
     updated_at: datetime
-    plan: SubscriptionPlanResponse
 
-    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
+    class Config:
+        from_attributes = True

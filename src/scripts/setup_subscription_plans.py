@@ -11,7 +11,7 @@ def setup_subscription_plans(db: Session):
     core_plan = SubscriptionPlan(
         id=str(uuid.uuid4()),
         name="COR-E",
-        plan_type=PlanType.CORE,
+        plan_type=PlanType.COR_E,
         price=2900,  # $29 in cents
         api_calls_limit=100,
         trial_days=30,

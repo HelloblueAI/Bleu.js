@@ -11,7 +11,6 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from ipaddress import ip_address, ip_network
-from typing import Dict, List
 
 import bcrypt
 import jwt
@@ -42,8 +41,8 @@ class SecurityConfig:
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
     rate_limit: RateLimitConfig = RateLimitConfig()
-    allowed_ips: List[str] = None
-    blocked_ips: List[str] = None
+    allowed_ips: list[str] | None = None
+    blocked_ips: list[str] | None = None
 
 
 class SecurityManager:
@@ -58,8 +57,8 @@ class SecurityManager:
 
     def _setup_rate_limiting(self):
         """Setup rate limiting."""
-        self.rate_limit_data: Dict[str, List[datetime]] = {}
-        self.blocked_ips: Dict[str, datetime] = {}
+        self.rate_limit_data: dict[str, list[datetime]] = {}
+        self.blocked_ips: dict[str, datetime] = {}
 
     def _setup_ip_filtering(self):
         """Setup IP filtering."""
@@ -199,18 +198,14 @@ class SecurityManager:
 
 def initialize_security_manager():
     """Initialize the security manager with configuration from environment variables."""
+    allowed_ips_str = os.getenv("ALLOWED_IPS", "10.0.0.0/8,192.168.0.0/16")
+    blocked_ips_str = os.getenv("BLOCKED_IPS", "")
     security_manager = SecurityManager(
         SecurityConfig(
             secret_key=os.getenv("SECRET_KEY", ""),  # Must be set in environment
             rate_limit=RateLimitConfig(),
-            allowed_ips=os.getenv("ALLOWED_IPS", "10.0.0.0/8,192.168.0.0/16").split(
-                ","
-            ),
-            blocked_ips=(
-                os.getenv("BLOCKED_IPS", "").split(",")
-                if os.getenv("BLOCKED_IPS")
-                else []
-            ),
+            allowed_ips=allowed_ips_str.split(",") if allowed_ips_str else [],
+            blocked_ips=blocked_ips_str.split(",") if blocked_ips_str else [],
         )
     )
     return security_manager

@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 88
-extend-ignore = E203
+extend-ignore = E203,W503
 exclude = .git,__pycache__,build,dist,src/quantum_py/bleujs-env-3.12/lib/python3.12/site-packages/pip/_vendor
 per-file-ignores =
     __init__.py: F401

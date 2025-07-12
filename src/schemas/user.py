@@ -1,62 +1,69 @@
-"""User schemas module."""
+"""User schemas."""
 
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
     """Base user schema."""
 
     email: EmailStr
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str | None = None
+    full_name: str | None = None
+    is_active: bool = True
+    is_superuser: bool = False
+    is_admin: bool = False
 
 
 class UserCreate(UserBase):
-    """Schema for creating a user."""
+    """User creation schema."""
 
-    password: str = Field(..., min_length=8)
+    password: str
 
 
 class UserUpdate(BaseModel):
-    """Schema for updating a user."""
+    """User update schema."""
 
-    email: Optional[EmailStr] = None
-    username: Optional[str] = Field(None, min_length=3, max_length=50)
-    password: Optional[str] = Field(None, min_length=8)
+    email: EmailStr | None = None
+    username: str | None = None
+    full_name: str | None = None
+    password: str | None = None
+    is_active: bool | None = None
+    is_superuser: bool | None = None
+    is_admin: bool | None = None
+    profile_picture: str | None = None
+    bio: str | None = None
+    location: str | None = None
+    website: str | None = None
+    twitter_handle: str | None = None
+    github_username: str | None = None
+    linkedin_url: str | None = None
+
+
+class UserResponse(UserBase):
+    """User response schema."""
+
+    id: str
+    api_key: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    last_login: datetime | None = None
+    profile_picture: str | None = None
+    bio: str | None = None
+    location: str | None = None
+    website: str | None = None
+    twitter_handle: str | None = None
+    github_username: str | None = None
+    linkedin_url: str | None = None
 
 
 class UserInDB(UserBase):
-    """Schema for user in database."""
+    """User in database schema."""
 
-    id: int
+    id: str
     hashed_password: str
-    stripe_customer_id: str
-    email_verified: bool = False
-    email_verified_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
-    password_changed_at: Optional[datetime] = None
+    api_key: str | None = None
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        """Pydantic configuration."""
-
-        from_attributes = True
-
-
-class User(UserBase):
-    """Schema for user response."""
-
-    id: int
-    email_verified: bool = False
-    email_verified_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        """Pydantic configuration."""
-
-        from_attributes = True
+    last_login: datetime | None = None

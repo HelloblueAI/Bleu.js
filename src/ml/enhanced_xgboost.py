@@ -13,7 +13,7 @@ import os
 import warnings
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Any
 
 import GPUtil
 import numpy as np
@@ -54,8 +54,8 @@ class QuantumFeatureConfig:
 class SecurityConfig:
     """Configuration for security features"""
 
-    encryption_key: Optional[str] = None
-    model_signature: Optional[str] = None
+    encryption_key: str | None = None
+    model_signature: str | None = None
     access_control: bool = True
     audit_logging: bool = True
     tamper_detection: bool = True
@@ -129,6 +129,33 @@ class QuantumFeatureProcessor(BaseProcessor):
             logger.error(f"Unexpected error in quantum feature processing: {str(e)}")
             raise
 
+    def process(self, data: Any) -> Any:
+        """Process data - required by BaseProcessor.
+
+        Args:
+            data: Input data to process
+
+        Returns:
+            Any: Processed data
+        """
+        # Convert to numpy array if needed
+        if not isinstance(data, np.ndarray):
+            data = np.array(data)
+        return self.process_features(data)
+
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute quantum feature processing operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the quantum feature processing operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "quantum_features_processed", "service": "quantum_processor"}
+
     def _classical_to_quantum(self, x: np.ndarray) -> np.ndarray:
         """Convert classical data to quantum state"""
         # Implement quantum state preparation
@@ -174,7 +201,7 @@ class SecurityManager(BaseService):
         """Verify model signature"""
         return self.generate_signature(model_data) == signature
 
-    def log_access(self, action: str, user: str, details: Dict):
+    def log_access(self, action: str, user: str, details: dict):
         """Log access attempts and actions"""
         if self.config.audit_logging:
             log_entry = {
@@ -185,6 +212,19 @@ class SecurityManager(BaseService):
             }
             self.audit_log.append(log_entry)
 
+    def execute(self, *args, **kwargs) -> Any:
+        """Execute security management operation.
+
+        Args:
+            *args: Variable length argument list
+            **kwargs: Arbitrary keyword arguments
+
+        Returns:
+            Any: Result of the security management operation
+        """
+        # Default implementation - can be overridden by subclasses
+        return {"status": "security_processed", "service": "security_manager"}
+
 
 class PerformanceOptimizer:
     """Advanced performance optimization"""
@@ -192,7 +232,7 @@ class PerformanceOptimizer:
     def __init__(self, config: PerformanceConfig):
         self.config = config
         self.resource_monitor = ResourceMonitor()
-        self.optimization_history = []
+        self.optimization_history: list[dict[str, Any]] = []
 
     def optimize_batch_size(
         self, model: xgb.XGBClassifier, features: np.ndarray
@@ -241,7 +281,7 @@ class ResourceMonitor:
     def __init__(self):
         self.metrics_history = []
 
-    def get_system_metrics(self) -> Dict:
+    def get_system_metrics(self) -> dict:
         """Get current system metrics"""
         metrics = {
             "cpu_percent": psutil.cpu_percent(),
@@ -274,9 +314,9 @@ class EnhancedXGBoost:
 
     def __init__(
         self,
-        quantum_config: Optional[QuantumFeatureConfig] = None,
-        security_config: Optional[SecurityConfig] = None,
-        performance_config: Optional[PerformanceConfig] = None,
+        quantum_config: QuantumFeatureConfig | None = None,
+        security_config: SecurityConfig | None = None,
+        performance_config: PerformanceConfig | None = None,
     ):
         self.quantum_config = quantum_config or QuantumFeatureConfig()
         self.security_config = security_config or SecurityConfig()
@@ -289,8 +329,8 @@ class EnhancedXGBoost:
 
         self.model = None
         self.feature_importance = None
-        self.training_history = []
-        self.validation_history = []
+        self.training_history: list[dict[str, Any]] = []
+        self.validation_history: list[dict[str, Any]] = []
 
         # Initialize Ray for distributed training
         if not ray.is_initialized():
@@ -300,7 +340,7 @@ class EnhancedXGBoost:
         self,
         features: np.ndarray,
         y: np.ndarray,
-        eval_set: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None,
+        eval_set: list[tuple[np.ndarray, np.ndarray]] | None = None,
         **kwargs,
     ) -> "EnhancedXGBoost":
         """Enhanced training with quantum features and distributed processing"""
@@ -429,7 +469,7 @@ class EnhancedXGBoost:
                 encrypted_data = f.read()
 
             # Load metadata
-            with open(f"{path}.meta", "r") as f:
+            with open(f"{path}.meta") as f:
                 metadata = json.load(f)
 
             # Decrypt model data
@@ -485,7 +525,7 @@ class EnhancedXGBoost:
 
         # Implement additional integrity checks
 
-    def get_feature_importance(self) -> Dict[str, float]:
+    def get_feature_importance(self) -> dict[str, float]:
         """Get feature importance with security checks"""
         if self.feature_importance is None:
             raise ValueError("Model not trained")
@@ -496,7 +536,7 @@ class EnhancedXGBoost:
 
     def optimize_hyperparameters(
         self, features: np.ndarray, y: np.ndarray, n_trials: int = 100
-    ) -> Dict:
+    ) -> dict:
         """Optimize hyperparameters using quantum-enhanced search"""
 
         def objective(trial):

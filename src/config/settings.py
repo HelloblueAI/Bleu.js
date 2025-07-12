@@ -1,14 +1,12 @@
 """Application settings."""
 
 import os
-from typing import List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, RedisDsn, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.config.rate_limiting_config import RateLimitingConfig
 from src.config.redis_config import RedisConfig
-from src.config.secrets_manager_config import SecretsManagerConfig
 from src.config.security_headers_config import SecurityHeadersConfig
 
 
@@ -66,7 +64,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
-    REDIS_PASSWORD: Optional[SecretStr] = None
+    REDIS_PASSWORD: SecretStr | None = None
     REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0")
     REDIS_CONFIG: RedisConfig = RedisConfig()
 
@@ -87,7 +85,7 @@ class Settings(BaseSettings):
     ENABLE_SECURITY: bool = True
 
     @property
-    def cors_origins_list(self) -> List[str]:
+    def cors_origins_list(self) -> list[str]:
         """Get CORS origins as a list."""
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
@@ -101,45 +99,15 @@ class Settings(BaseSettings):
     TEST_RATE_LIMIT: int = 100
     TEST_RATE_LIMIT_WINDOW: int = 3600
 
-    # AWS settings
-    AWS_REGION: str = "us-east-1"
-    AWS_PROFILE: str = "default"
-    AWS_ACCESS_KEY_ID: Optional[str] = None
-    AWS_SECRET_ACCESS_KEY: Optional[SecretStr] = None
-    AWS_ACCOUNT_ID: str = "202533510486"
-    AWS_S3_BUCKET: str = "bleujs-dev-assets"
-    S3_BUCKET: str = "bleujs-assets"
-    AWS_LAMBDA_FUNCTION: str = "bleujs-dev-lambda"
-    SECURITY_GROUP_ID: str = "sg-0a1b2c3d4e5f6g7h8"
-    CLOUDFRONT_DISTRIBUTION_ID: str = "your_cloudfront_distribution_id"
-    AWS_SSO_START_URL: str = "https://bleujs.awsapps.com/start"
-    AWS_SSO_REGION: str = "us-east-1"
-    AWS_SSO_ACCOUNT_ID: str = "123456789012"
-    AWS_SSO_ROLE_NAME: str = "Developer"
-    AWS_API_CONFIG_BASE_URL: str = (
-        "https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod"
-    )
-    SECRETS_MANAGER: SecretsManagerConfig = SecretsManagerConfig()
-
     # Email settings
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[SecretStr] = None
-    EMAILS_FROM_EMAIL: Optional[EmailStr] = None
-    EMAILS_FROM_NAME: Optional[str] = None
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: SecretStr | None = None
+    EMAILS_FROM_EMAIL: EmailStr | None = None
+    EMAILS_FROM_NAME: str | None = None
     FROM_EMAIL: str = "noreply@bleujs.org"
     ALERT_EMAIL: str = "your-email@example.com"
-
-    # Stripe settings
-    STRIPE_API_KEY: Optional[SecretStr] = None
-    STRIPE_WEBHOOK_SECRET: Optional[SecretStr] = None
-    STRIPE_PUBLISHABLE_KEY: str = "pk_test_51R8JFN8512V8V5P...A6JQXkZSixh1N00Cwi7ggPP"
-    STRIPE_SECRET_KEY: SecretStr = Field(default="sk_test_example")
-    CORE_PLAN_ID: str = "prod_S2OOUMgSGerlwl"
-    ENTERPRISE_PLAN_ID: str = "prod_S2OPRAPAJONst2"
-    STRIPE_CORE_PRICE_ID: str = "price_core_test"
-    STRIPE_ENTERPRISE_PRICE_ID: str = "price_enterprise_test"
 
     # OAuth settings
     GITHUB_CLIENT_ID: str = "your_github_client_id"
@@ -226,7 +194,7 @@ class Settings(BaseSettings):
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
-    def assemble_db_url(cls, v: Optional[str], info) -> str:
+    def assemble_db_url(cls, v: str | None, info) -> str:
         """Assemble database URL from components if not provided."""
         if isinstance(v, str):
             return v

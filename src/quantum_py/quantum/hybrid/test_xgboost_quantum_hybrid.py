@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple, cast
+from typing import Any, cast
 from unittest.mock import Mock
 
 import numpy as np
@@ -122,16 +122,16 @@ async def test_predict(hybrid_model, sample_data):
 @pytest.mark.asyncio
 async def test_optimize_hyperparameters(
     hybrid_model: HybridModel,
-    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+    sample_data: tuple[NDArray[np.float64], NDArray[np.float64]],
 ) -> None:
     """Test hyperparameter optimization"""
     features, labels = sample_data
 
     # Mock enhanced XGBoost optimize_hyperparameters method
-    async def mock_optimize(*args: Any, **kwargs: Any) -> Dict[str, Any]:
+    async def mock_optimize(*args: Any, **kwargs: Any) -> dict[str, Any]:
         return {"n_estimators": 100, "learning_rate": 0.1, "max_depth": 3}
 
-    hybrid_model.enhanced_xgb.optimize_hyperparameters = mock_optimize  # type: ignore
+    hybrid_model.enhanced_xgb.optimize_hyperparameters = mock_optimize
 
     # Optimize hyperparameters
     best_params = await hybrid_model.optimize_hyperparameters(
@@ -161,41 +161,39 @@ def test_get_feature_importance(hybrid_model: HybridModel) -> None:
 @pytest.mark.asyncio
 async def test_error_handling(
     hybrid_model: HybridModel,
-    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+    sample_data: tuple[NDArray[np.float64], NDArray[np.float64]],
 ) -> None:
     """Test error handling in various methods"""
     features, labels = sample_data
 
     # Test training error
-    hybrid_model.enhanced_xgb.fit = Mock(
-        side_effect=RuntimeError("Training error")
-    )  # type: ignore
+    hybrid_model.enhanced_xgb.fit = Mock(side_effect=RuntimeError("Training error"))
     with pytest.raises(RuntimeError):
         await hybrid_model.train(features, labels)
 
     # Test prediction error
-    hybrid_model.enhanced_xgb.predict = Mock(  # type: ignore
+    hybrid_model.enhanced_xgb.predict = Mock(
         side_effect=RuntimeError("Prediction error")
     )
     with pytest.raises(RuntimeError):
         await hybrid_model.predict(features)
 
     # Test optimization error
-    hybrid_model.enhanced_xgb.optimize_hyperparameters = Mock(  # type: ignore
+    hybrid_model.enhanced_xgb.optimize_hyperparameters = Mock(
         side_effect=RuntimeError("Optimization error")
     )
     with pytest.raises(RuntimeError):
         await hybrid_model.optimize_hyperparameters(features, labels)
 
     # Test invalid input error
-    hybrid_model.enhanced_xgb.predict = Mock(  # type: ignore
+    hybrid_model.enhanced_xgb.predict = Mock(
         side_effect=ValueError("Invalid input data")
     )
     with pytest.raises(ValueError):
         await hybrid_model.predict(features)
 
     # Test dependency error
-    hybrid_model.enhanced_xgb.fit = Mock(  # type: ignore
+    hybrid_model.enhanced_xgb.fit = Mock(
         side_effect=ImportError("Failed to import required dependencies")
     )
     with pytest.raises(ImportError):
@@ -205,7 +203,7 @@ async def test_error_handling(
 @pytest.mark.asyncio
 async def test_fusion_weights(
     hybrid_model: HybridModel,
-    sample_data: Tuple[NDArray[np.float64], NDArray[np.float64]],
+    sample_data: tuple[NDArray[np.float64], NDArray[np.float64]],
 ) -> None:
     """Test fusion weights"""
     _, _ = sample_data  # Use _ for unused variables
@@ -221,7 +219,7 @@ async def test_fusion_weights(
 
 def generate_data(
     n_samples: int = 1000, n_features: int = 10
-) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Generate synthetic data for testing."""
     rng = np.random.default_rng(seed=42)
     X = rng.normal(0, 1, (n_samples, n_features))
