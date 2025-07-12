@@ -28,7 +28,7 @@ class EnsembleModel:
         self.weights = [w / sum(self.weights) for w in self.weights]
 
     def predict(
-        self, X: np.ndarray, return_proba: bool = False
+        self, features: np.ndarray, return_proba: bool = False
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Make predictions using the ensemble of models."""
         try:
@@ -37,11 +37,11 @@ class EnsembleModel:
 
             for model in self.models:
                 if return_proba:
-                    pred, proba = model.predict(X, return_proba=True)
+                    pred, proba = model.predict(features, return_proba=True)
                     predictions.append(pred)
                     probabilities.append(proba)
                 else:
-                    predictions.append(model.predict(X))
+                    predictions.append(model.predict(features))
 
             # Weighted voting for classification
             if return_proba:

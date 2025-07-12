@@ -1,6 +1,6 @@
 """
 Feature Analyzer Implementation
-Provides advanced feature analysis capabilities for machine learning models.
+Provides advanced feature analysis and selection capabilities.
 """
 
 import logging
@@ -12,9 +12,8 @@ import pandas as pd
 import seaborn as sns
 import shap
 from scipy import stats
-from scipy.stats import spearmanr
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
+from sklearn.feature_selection import mutual_info_classif
+from sklearn.inspection import permutation_importance
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
 logger = logging.getLogger(__name__)
@@ -38,55 +37,62 @@ class FeatureAnalyzer:
         self.scaler = StandardScaler()
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the feature analyzer."""
         try:
+            self.scaler = StandardScaler()
             self.initialized = True
             logging.info("✅ Feature analyzer initialized successfully")
         except Exception as e:
             logging.error(f"❌ Failed to initialize feature analyzer: {str(e)}")
             raise
 
-    async def analyze(
-        self, X: np.ndarray, y: np.ndarray, feature_names: Optional[List[str]] = None
+    def analyze(
+        self,
+        features: np.ndarray,
+        targets: np.ndarray,
+        feature_names: Optional[List[str]] = None,
     ) -> Dict:
-        """Analyze features using various methods."""
+        """Analyze features and calculate importance scores."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
-            if self.method is None:
-                raise ValueError("Analysis method not initialized")
+            if features is None or len(features) == 0:
+                return {}
 
             # Scale features
             if self.scaler is None:
-                self.scaler = StandardScaler()
-            X_scaled = self.scaler.fit_transform(X)
+                logger.error("Scaler not initialized")
+                return {}
 
-            # Set feature names
-            if feature_names is None:
-                feature_names = [f"Feature {i}" for i in range(X.shape[1])]
+            features_scaled = self.scaler.fit_transform(features)
 
             # Calculate feature importance
-            importance = await self._calculate_importance(X_scaled, y)
-            self.feature_importances = importance
+            importance = self._calculate_importance(features_scaled, targets)
 
             # Calculate feature interactions
-            interactions = await self._calculate_interactions(X_scaled)
-            self.feature_interactions = interactions
+            interactions = self._calculate_interactions(features_scaled)
 
-            # Select important features
-            selected = await self._select_features(X_scaled, y)
+            # Select features
+            selected = self._select_features(features_scaled, targets)
+
+            # Store results
+            self.feature_importances = importance
+            self.feature_interactions = interactions
             self.selected_features = selected
 
             # Create visualizations
-            await self._create_visualizations(
-                X_scaled, importance, interactions, feature_names
+            if feature_names is None:
+                feature_names = [f"Feature_{i}" for i in range(features.shape[1])]
+
+            self._create_visualizations(
+                features_scaled, importance, interactions, feature_names
             )
 
             return {
-                "feature_importances": importance,
-                "feature_interactions": interactions,
+                "importance": importance,
+                "interactions": interactions,
                 "selected_features": selected,
                 "feature_names": feature_names,
             }
@@ -95,32 +101,24 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature analysis failed: {str(e)}")
             raise
 
-    async def _calculate_importance(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
-        """Calculate feature importance using specified method."""
+    def _calculate_importance(
+        self, features: np.ndarray, targets: np.ndarray
+    ) -> np.ndarray:
+        """Calculate feature importance scores."""
         try:
             if self.method == "shap":
-                # Use SHAP values
-                model = RandomForestClassifier(
-                    n_estimators=self.n_estimators, random_state=42
-                )
-                model.fit(X, y)
-                explainer = shap.TreeExplainer(model)
-                shap_values = explainer.shap_values(X)
-                if isinstance(shap_values, list):
-                    importance = np.abs(shap_values[0]).mean(0)
-                else:
-                    importance = np.abs(shap_values).mean(0)
+                # Use SHAP for feature importance
+                explainer = shap.TreeExplainer(self.model)
+                shap_values = explainer.shap_values(features)
+                importance = np.abs(shap_values).mean(axis=0)
+            elif self.method == "permutation":
+                # Use permutation importance
+                importance = permutation_importance(
+                    self.model, features, targets, n_repeats=10, random_state=42
+                ).importances_mean
             elif self.method == "mutual_info":
                 # Use mutual information
-                if len(np.unique(y)) > 2:
-                    importance = mutual_info_classif(X, y)
-                else:
-                    importance = mutual_info_regression(X, y)
-            elif self.method == "correlation":
-                # Use correlation coefficients
-                importance = np.array(
-                    [abs(spearmanr(X[:, i], y)[0]) for i in range(X.shape[1])]
-                )
+                importance = mutual_info_classif(features, targets, random_state=42)
             else:
                 raise ValueError(f"Unsupported importance method: {self.method}")
 
@@ -130,11 +128,11 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature importance calculation failed: {str(e)}")
             raise
 
-    async def _calculate_interactions(self, X: np.ndarray) -> np.ndarray:
+    def _calculate_interactions(self, features: np.ndarray) -> np.ndarray:
         """Calculate feature interactions."""
         try:
             # Calculate correlation matrix
-            interactions = np.corrcoef(X.T)
+            interactions = np.corrcoef(features.T)
 
             # Set diagonal to zero
             np.fill_diagonal(interactions, 0)
@@ -145,7 +143,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature interaction calculation failed: {str(e)}")
             raise
 
-    async def _select_features(self, X: np.ndarray, y: np.ndarray) -> List[int]:
+    def _select_features(self, features: np.ndarray, targets: np.ndarray) -> List[int]:
         """Select important features based on importance scores."""
         try:
             if self.feature_importances is None:
@@ -156,7 +154,7 @@ class FeatureAnalyzer:
                 selected = np.argsort(self.feature_importances)[-self.n_features :]
             else:
                 # Select features above threshold
-                selected = np.where(self.feature_importances > self.threshold)[0]
+                selected = np.nonzero(self.feature_importances > self.threshold)[0]
 
             return selected.tolist()
 
@@ -164,9 +162,9 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature selection failed: {str(e)}")
             raise
 
-    async def _create_visualizations(
+    def _create_visualizations(
         self,
-        X: np.ndarray,
+        features: np.ndarray,
         importance: np.ndarray,
         interactions: np.ndarray,
         feature_names: List[str],
@@ -228,7 +226,7 @@ class FeatureAnalyzer:
         """Get indices of selected features."""
         return self.selected_features
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.feature_importances = None
@@ -279,7 +277,7 @@ class FeatureAnalyzer:
             importance = self._calculate_importance_sync(features)
 
             # Select features above threshold
-            selected = np.where(importance > threshold)[0]
+            selected = np.nonzero(importance > threshold)[0]
 
             return selected.tolist()
         except Exception as e:
@@ -297,7 +295,7 @@ class FeatureAnalyzer:
 
             # Add polynomial features if configured
             if self.config.use_polynomial:
-                poly = PolynomialFeatures(degree=2)
+                poly = PolynomialFeatures(degree=2, interaction_only=False)
                 transformed = poly.fit_transform(transformed)
 
             # Add interaction features if configured
@@ -316,7 +314,9 @@ class FeatureAnalyzer:
                 return np.array([])
 
             # Use mutual information for feature importance
-            importance = mutual_info_classif(features, np.zeros(len(features)))
+            importance = mutual_info_classif(
+                features, np.zeros(len(features)), random_state=42
+            )
             return importance
         except Exception as e:
             logger.error(f"Feature importance calculation error: {e}")
