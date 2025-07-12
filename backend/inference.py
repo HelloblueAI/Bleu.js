@@ -112,6 +112,67 @@ def get_model_metadata() -> Dict[str, Any]:
     return metadata
 
 
+def _load_model_file() -> Tuple[Optional[Any], Optional[str]]:
+    """Load the model file and return model or error."""
+    if not os.path.exists(MODEL_PATH):
+        error_msg = f"Model file not found at {MODEL_PATH}"
+        logger.error(f"❌ {error_msg}")
+        return None, error_msg
+
+    try:
+        logger.info(f"🔄 Loading model from {MODEL_PATH}")
+        model = joblib.load(MODEL_PATH)
+        return model, None
+    except Exception as e:
+        error_msg = f"Failed to load model: {str(e)}"
+        logger.error(f"❌ {error_msg}")
+        logger.error(traceback.format_exc())
+        return None, error_msg
+
+
+def _extract_model_info(model: Any) -> None:
+    """Extract feature count and names from the model."""
+    # Try to determine feature count
+    try:
+        MODEL_CACHE["feature_count"] = model.n_features_in_
+        logger.info(f"✅ Model expects {MODEL_CACHE['feature_count']} features")
+    except AttributeError:
+        try:
+            MODEL_CACHE["feature_count"] = model.get_booster().num_features()
+            logger.info(
+                f"✅ Model expects {MODEL_CACHE['feature_count']} "
+                f"features (from booster)"
+            )
+        except Exception:
+            logger.warning("⚠️ Could not determine feature count from model")
+            MODEL_CACHE["feature_count"] = None
+
+    # Try to get feature names
+    try:
+        MODEL_CACHE["feature_names"] = model.feature_names_in_.tolist()
+        logger.info(
+            f"✅ Found {len(MODEL_CACHE['feature_names'])} "
+            f"feature names"
+        )
+    except AttributeError:
+        MODEL_CACHE["feature_names"] = None
+        logger.info("ℹ️ No feature names found in model")
+
+
+def _load_scaler() -> None:
+    """Load scaler if it exists."""
+    if os.path.exists(SCALER_PATH):
+        logger.info(f"🔄 Loading scaler from {SCALER_PATH}")
+        MODEL_CACHE["scaler"] = joblib.load(SCALER_PATH)
+        logger.info("✅ Scaler loaded successfully")
+    else:
+        logger.warning(
+            f"⚠️ Scaler file not found at {SCALER_PATH}. "
+            f"Will proceed without scaling."
+        )
+        MODEL_CACHE["scaler"] = None
+
+
 def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
     """
     Load the XGBoost model and scaler with robust error handling.
@@ -132,76 +193,25 @@ def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
             MODEL_CACHE["model"] = None
             MODEL_CACHE["scaler"] = None
 
-        # Check model file existence
-        if not os.path.exists(MODEL_PATH):
-            error_msg = f"Model file not found at {MODEL_PATH}"
-            logger.error(f"❌ {error_msg}")
-            return False, error_msg
+        # Load the model file
+        model, error = _load_model_file()
+        if error:
+            return False, error
 
-        try:
-            # Load the model
-            logger.info(f"🔄 Loading model from {MODEL_PATH}")
-            start_time = time.time()
+        MODEL_CACHE["model"] = model
 
-            model = joblib.load(MODEL_PATH)
-            MODEL_CACHE["model"] = model
+        # Extract model information
+        _extract_model_info(model)
 
-            # Try to determine feature count
-            try:
-                # For XGBoost models
-                MODEL_CACHE["feature_count"] = model.n_features_in_
-                logger.info(f"✅ Model expects {MODEL_CACHE['feature_count']} features")
-            except AttributeError:
-                try:
-                    # Alternative way for XGBoost
-                    MODEL_CACHE["feature_count"] = model.get_booster().num_features()
-                                    logger.info(
-                    f"✅ Model expects {MODEL_CACHE['feature_count']} "
-                    f"features (from booster)"
-                )
-                except Exception:
-                    logger.warning("⚠️ Could not determine feature count from model")
-                    MODEL_CACHE["feature_count"] = None
+        # Load scaler
+        _load_scaler()
 
-            # Try to get feature names
-            try:
-                MODEL_CACHE["feature_names"] = model.feature_names_in_.tolist()
-                logger.info(
-                    f"✅ Found {len(MODEL_CACHE['feature_names'])} "
-                    f"feature names"
-                )
-            except AttributeError:
-                MODEL_CACHE["feature_names"] = None
-                logger.info("ℹ️ No feature names found in model")
+        # Record loading information
+        MODEL_CACHE["loaded_at"] = datetime.now().isoformat()
+        MODEL_CACHE["metadata"] = get_model_metadata()
 
-            # Try to load scaler if it exists
-            if os.path.exists(SCALER_PATH):
-                logger.info(f"🔄 Loading scaler from {SCALER_PATH}")
-                MODEL_CACHE["scaler"] = joblib.load(SCALER_PATH)
-                logger.info("✅ Scaler loaded successfully")
-            else:
-                logger.warning(
-                    f"⚠️ Scaler file not found at {SCALER_PATH}. "
-                    f"Will proceed without scaling."
-                )
-                MODEL_CACHE["scaler"] = None
-
-            # Record loading information
-            loading_time = time.time() - start_time
-            MODEL_CACHE["loaded_at"] = datetime.now().isoformat()
-            MODEL_CACHE["metadata"] = get_model_metadata()
-
-            logger.info(
-                f"✅ Model and dependencies loaded successfully in "
-                f"{loading_time:.2f} seconds"
-            )
-            return True, None
-
-        except Exception as e:
-            error_msg = f"Failed to load model: {str(e)}"
-            logger.error(f"❌ {error_msg}")
-            logger.error(traceback.format_exc())
-            return False, error_msg
+        logger.info("✅ Model and dependencies loaded successfully")
+        return True, None
 
 
 def preprocess_features(
@@ -302,6 +312,69 @@ def validate_inputs(features: List[float]) -> Optional[str]:
     return None
 
 
+def _create_diagnostics(features: List[float]) -> Dict[str, Any]:
+    """Create diagnostic information for the prediction."""
+    return {
+        "request_time": datetime.now().isoformat(),
+        "input_feature_count": len(features),
+        "model_info": {
+            "loaded_at": MODEL_CACHE.get("loaded_at"),
+            "prediction_count": MODEL_CACHE.get("prediction_count", 0),
+        },
+    }
+
+
+def _get_prediction_with_probabilities(processed_features: np.ndarray) -> Dict[str, Any]:
+    """Get prediction with probabilities if available."""
+    try:
+        prediction = MODEL_CACHE["model"].predict(processed_features)
+        prediction_prob = MODEL_CACHE["model"].predict_proba(processed_features)
+        
+        class_probs = prediction_prob[0].tolist()
+        confidence = float(max(prediction_prob[0]))
+        predicted_class_idx = int(prediction[0])
+
+        logger.info(
+            f"🔮 Prediction: {predicted_class_idx}, "
+            f"Confidence: {confidence:.4f}, "
+            f"Class probabilities: {class_probs}"
+        )
+
+        return {
+            "prediction": predicted_class_idx,
+            "confidence": confidence,
+            "probabilities": class_probs,
+        }
+    except Exception as e:
+        logger.warning(f"⚠️ Could not get prediction probabilities: {str(e)}")
+        return {"prediction": int(prediction[0])}
+
+
+def _run_prediction_with_timeout(processed_features: np.ndarray, timeout: float) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    """Run prediction in a separate thread with timeout."""
+    prediction_result = {}
+    prediction_error = None
+
+    def run_prediction():
+        nonlocal prediction_result, prediction_error
+        try:
+            prediction_result = _get_prediction_with_probabilities(processed_features)
+        except Exception as e:
+            logger.error(f"❌ Prediction error: {str(e)}")
+            logger.error(traceback.format_exc())
+            prediction_error = str(e)
+
+    prediction_thread = threading.Thread(target=run_prediction)
+    prediction_thread.daemon = True
+    prediction_thread.start()
+    prediction_thread.join(timeout)
+
+    if prediction_thread.is_alive():
+        return None, f"Prediction timed out after {timeout} seconds"
+
+    return prediction_result, prediction_error
+
+
 def predict(
     features: List[float], timeout: float = 10.0, return_diagnostics: bool = False
 ) -> Dict[str, Any]:
@@ -321,14 +394,7 @@ def predict(
 
     # Include basic diagnostics if requested
     if return_diagnostics:
-        result["diagnostics"] = {
-            "request_time": datetime.now().isoformat(),
-            "input_feature_count": len(features),
-            "model_info": {
-                "loaded_at": MODEL_CACHE.get("loaded_at"),
-                "prediction_count": MODEL_CACHE.get("prediction_count", 0),
-            },
-        }
+        result["diagnostics"] = _create_diagnostics(features)
 
     try:
         # Load model if not already loaded
@@ -347,60 +413,10 @@ def predict(
         if error:
             return {"error": error}
 
-        # Make prediction in a separate thread with timeout
-        prediction_result = {}
-        prediction_error = None
-
-        def run_prediction():
-            nonlocal prediction_result, prediction_error
-            try:
-                # Get raw prediction
-                prediction = MODEL_CACHE["model"].predict(processed_features)
-
-                # Get probability if possible
-                try:
-                    prediction_prob = MODEL_CACHE["model"].predict_proba(
-                        processed_features
-                    )
-                    class_probs = prediction_prob[0].tolist()
-
-                    # Determine confidence based on highest probability
-                    confidence = float(max(prediction_prob[0]))
-                    predicted_class_idx = int(prediction[0])
-
-                    prediction_result = {
-                        "prediction": predicted_class_idx,
-                        "confidence": confidence,
-                        "probabilities": class_probs,
-                    }
-
-                    # Log more detailed information
-                    logger.info(
-                        f"🔮 Prediction: {predicted_class_idx}, "
-                        f"Confidence: {confidence:.4f}, "
-                        f"Class probabilities: {class_probs}"
-                    )
-
-                except Exception as e:
-                    # Fall back to just the prediction if probabilities fail
-                    logger.warning(
-                        f"⚠️ Could not get prediction probabilities: {str(e)}"
-                    )
-                    prediction_result = {"prediction": int(prediction[0])}
-
-            except Exception as e:
-                logger.error(f"❌ Prediction error: {str(e)}")
-                logger.error(traceback.format_exc())
-                prediction_error = str(e)
-
-        # Run prediction in a thread with timeout
-        prediction_thread = threading.Thread(target=run_prediction)
-        prediction_thread.daemon = True
-        prediction_thread.start()
-        prediction_thread.join(timeout)
-
-        if prediction_thread.is_alive():
-            return {"error": f"Prediction timed out after {timeout} seconds"}
+        # Make prediction with timeout
+        prediction_result, prediction_error = _run_prediction_with_timeout(
+            processed_features, timeout
+        )
 
         if prediction_error:
             return {"error": f"Prediction error: {prediction_error}"}
@@ -483,9 +499,8 @@ def handle_prediction_request(
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-def main():
-    """Main function when the script is invoked directly."""
-    # Pre-load the model
+def _initialize_model() -> None:
+    """Initialize the model and exit on failure."""
     try:
         success, error = load_model()
         if not success:
@@ -495,67 +510,77 @@ def main():
         print(json.dumps({"error": f"Initialization error: {str(e)}"}, indent=2))
         sys.exit(1)
 
+
+def _handle_command_flags() -> bool:
+    """Handle command line flags and return True if handled."""
+    if len(sys.argv) <= 1:
+        return False
+
+    command = sys.argv[1]
+    
+    if command == "--health":
+        health_info = get_model_health()
+        print(json.dumps(health_info, indent=2))
+        sys.exit(0)
+    elif command == "--info":
+        metadata = get_model_metadata()
+        print(json.dumps(metadata, indent=2))
+        sys.exit(0)
+    elif command == "--reload":
+        success, error = load_model(force_reload=True)
+        if success:
+            print(json.dumps({"status": "Model reloaded successfully"}, indent=2))
+        else:
+            print(json.dumps({"error": f"Model reload failed: {error}"}, indent=2))
+        sys.exit(0)
+    elif command == "--help":
+        _show_help()
+        sys.exit(0)
+    
+    return False
+
+
+def _show_help() -> None:
+    """Show help message."""
+    print("\nXGBoost Model Inference Script")
+    print("------------------------------")
+    print("Usage:")
+    print("  python inference.py '[feature1, feature2, ...]'   - Make a prediction")
+    print("  python inference.py --health                      - Check model health")
+    print("  python inference.py --info                        - Get model metadata")
+    print("  python inference.py --reload                      - Reload the model")
+    print("  python inference.py --help                        - Show this help message")
+
+
+def _handle_prediction_request() -> None:
+    """Handle prediction request from command line."""
+    if len(sys.argv) != 2:
+        print(
+            json.dumps(
+                {"error": "Please provide a list of features as a JSON array"},
+                indent=2,
+            )
+        )
+        sys.exit(1)
+
+    include_diagnostics = "--diagnostics" in sys.argv
+    result = handle_prediction_request(sys.argv[1], include_diagnostics)
+    print(json.dumps(result, indent=2))
+
+
+def main():
+    """Main function when the script is invoked directly."""
+    # Pre-load the model
+    _initialize_model()
+
     # Process command line arguments
     try:
         # Check for command flags
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "--health":
-                # Return model health status
-                health_info = get_model_health()
-                print(json.dumps(health_info, indent=2))
-                sys.exit(0)
-            elif sys.argv[1] == "--info":
-                # Return model metadata
-                metadata = get_model_metadata()
-                print(json.dumps(metadata, indent=2))
-                sys.exit(0)
-            elif sys.argv[1] == "--reload":
-                # Force model reload
-                success, error = load_model(force_reload=True)
-                if success:
-                    print(
-                        json.dumps({"status": "Model reloaded successfully"}, indent=2)
-                    )
-                else:
-                    print(
-                        json.dumps({"error": f"Model reload failed: {error}"}, indent=2)
-                    )
-                sys.exit(0)
-            elif sys.argv[1] == "--help":
-                # Show help
-                print("\nXGBoost Model Inference Script")
-                print("------------------------------")
-                print("Usage:")
-                print(
-                    "  python inference.py '[feature1, feature2, ...]'   - Make a prediction"
-                )
-                print(
-                    "  python inference.py --health                      - Check model health"
-                )
-                print(
-                    "  python inference.py --info                        - Get model metadata"
-                )
-                print(
-                    "  python inference.py --reload                      - Reload the model"
-                )
-                print(
-                    "  python inference.py --help                        - Show this help message"
-                )
-                sys.exit(0)
+        if _handle_command_flags():
+            return
 
         # Handle prediction request
-        if len(sys.argv) != 2:
-            print(
-                json.dumps(
-                    {"error": "Please provide a list of features as a JSON array"},
-                    indent=2,
-                )
-            )
-            sys.exit(1)
-
-        include_diagnostics = "--diagnostics" in sys.argv
-        result = handle_prediction_request(sys.argv[1], include_diagnostics)
-        print(json.dumps(result, indent=2))
+        _handle_prediction_request()
 
     except Exception as e:
         print(json.dumps({"error": f"Invalid input: {str(e)}"}, indent=2))
