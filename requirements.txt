@@ -31,7 +31,7 @@ bcrypt==4.3.0
 beautifulsoup4==4.10.0
 beniget==0.4.1
 binaryornot==0.4.4
-black==24.3.0
+black
 blinker==1.9.0
 boto3==1.38.33
 boto3-stubs==1.38.29
@@ -120,7 +120,7 @@ googleapis-common-protos==1.70.0
 greenlet==3.2.3
 grpcio==1.73.0
 grpcio-status==1.62.3
-h11==0.16.0
+h11>=0.16.0
 h5py==3.14.0
 hf-xet==1.1.3
 hidpidaemon==18.4.6
@@ -198,7 +198,7 @@ networkx==3.4.2
 nh3==0.2.21
 nltk==3.9.1
 nodeenv==1.9.1
-numpy==1.26.4
+numpy<2.0
 nvidia-cublas-cu12==12.6.4.1
 nvidia-cuda-cupti-cu12==12.6.80
 nvidia-cuda-nvrtc-cu12==12.6.77
@@ -243,7 +243,7 @@ pre_commit==4.2.0
 prometheus_client==0.22.1
 propcache==0.3.2
 proto-plus==1.26.1
-protobuf==4.25.8
+protobuf>=4.25.8
 psutil==6.1.1
 psycopg2-binary==2.9.9
 pyarrow==20.0.0
@@ -292,13 +292,13 @@ pythran==0.10.0
 pytz==2025.2
 pyxdg==0.27
 PyYAML==6.0.2
-qiskit==1.4.2
-qiskit-aer==0.17.1
-readme_renderer==44.0
+qiskit>=1.4.2
+qiskit-aer>=0.17.1
+
 regex==2024.11.6
 repolib==2.2.1
 repoman==1.4.0
-requests==2.32.4
+requests>=2.32.4
 requests-toolbelt==0.9.1
 rfc3986==2.0.0
 rich==14.0.0
@@ -328,7 +328,7 @@ sniffio==1.3.1
 sortedcontainers==2.4.0
 soupsieve==2.3.1
 SQLAlchemy==2.0.23
-starlette==0.36.3
+starlette>=0.36.3
 stevedore==5.4.1
 streamlit==1.46.1
 stripe==7.4.0
@@ -351,9 +351,9 @@ tokenizers==0.21.1
 toml==0.10.2
 tomli==2.2.1
 tomlkit==0.13.2
-torch==2.7.1
-torchaudio==2.7.1
-torchvision==0.22.1
+torch>=2.7.1
+torchaudio>=2.7.1
+torchvision>=0.22.1
 tornado==6.5.1
 tqdm==4.67.1
 transformers==4.52.4
@@ -373,7 +373,7 @@ ufoLib2==0.13.1
 ufw==0.36.1
 unattended-upgrades==0.1
 unicodedata2==14.0.0
-urllib3==2.5.0
+urllib3>=2.5.0
 uvicorn==0.27.1
 validators==0.35.0
 virtualenv==20.31.2
