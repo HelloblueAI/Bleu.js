@@ -15,6 +15,9 @@ from sklearn.preprocessing import StandardScaler
 
 logger = logging.getLogger(__name__)
 
+# Constants
+SCALER_NOT_INITIALIZED = "Scaler not initialized"
+
 
 class ExplainabilityEngine:
     def __init__(
@@ -27,20 +30,20 @@ class ExplainabilityEngine:
         self.n_samples = n_samples
         self.feature_names = feature_names
         self.explainer = None
-        self.scaler = StandardScaler()
-        self.initialized = False
+        self.scaler = None
+        self.model = None
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the explainability engine."""
         try:
-            self.initialized = True
+            self.scaler = StandardScaler()
             logging.info("✅ Explainability engine initialized successfully")
         except Exception as e:
             logging.error(f"❌ Failed to initialize explainability engine: {str(e)}")
             raise
 
-    async def generate_explanation(self, features: np.ndarray) -> Dict[str, Any]:
-        """Generate explanation for model predictions."""
+    def generate_explanation(self, features: np.ndarray) -> Dict[str, Any]:
+        """Generate explanation for the given features."""
         try:
             if self.method is None:
                 logger.error("Explanation method not initialized")
@@ -48,22 +51,20 @@ class ExplainabilityEngine:
 
             # Scale features
             if self.scaler is None:
-                logger.error("Scaler not initialized")
+                logger.error(SCALER_NOT_INITIALIZED)
                 return {}
 
             features_scaled = self.scaler.fit_transform(features)
 
             # Generate explanation
-            explanation = await self._generate_shap_explanation(features_scaled)
+            explanation = self._generate_shap_explanation(features_scaled)
 
             return explanation
         except Exception as e:
             logger.error(f"Explanation generation error: {e}")
             return {}
 
-    async def analyze_feature_importance(
-        self, features: np.ndarray
-    ) -> Dict[str, float]:
+    def analyze_feature_importance(self, features: np.ndarray) -> Dict[str, float]:
         """Analyze feature importance scores."""
         try:
             if self.explainer is None:
@@ -88,7 +89,7 @@ class ExplainabilityEngine:
             logger.error(f"Feature importance analysis error: {e}")
             return {}
 
-    async def explain_prediction(self, features: np.ndarray) -> Dict[str, Any]:
+    def explain_prediction(self, features: np.ndarray) -> Dict[str, Any]:
         """Generate detailed explanation for a single prediction."""
         try:
             if self.explainer is None:
@@ -108,10 +109,10 @@ class ExplainabilityEngine:
                 return {}
 
             # Get feature importance
-            importance = await self.analyze_feature_importance(features)
+            importance = self.analyze_feature_importance(features)
 
             # Generate explanation
-            explanation = await self.generate_explanation(features)
+            explanation = self.generate_explanation(features)
 
             return {
                 "prediction": shap_values.tolist(),
@@ -122,8 +123,8 @@ class ExplainabilityEngine:
             logger.error(f"Prediction explanation error: {e}")
             return {}
 
-    async def _generate_shap_explanation(
-        self, X: np.ndarray, instance: Optional[np.ndarray] = None
+    def _generate_shap_explanation(
+        self, features: np.ndarray, instance: Optional[np.ndarray] = None
     ) -> Dict:
         """Generate SHAP-based explanations."""
         try:
@@ -138,7 +139,7 @@ class ExplainabilityEngine:
                 raise ValueError("SHAP explainer not initialized")
 
             if self.scaler is None:
-                raise ValueError("Scaler not initialized")
+                raise ValueError(SCALER_NOT_INITIALIZED)
 
             if instance is not None:
                 # For single instance
@@ -148,7 +149,7 @@ class ExplainabilityEngine:
                     shap_values = shap_values[0]
             else:
                 # For dataset
-                shap_values = self.explainer.shap_values(X)
+                shap_values = self.explainer.shap_values(features)
                 if isinstance(shap_values, list):
                     shap_values = shap_values[0]
 
@@ -160,7 +161,7 @@ class ExplainabilityEngine:
                 "shap_values": shap_values,
                 "feature_importance": feature_importance,
                 "feature_names": self.feature_names
-                or [f"Feature {i}" for i in range(X.shape[1])],
+                or [f"Feature {i}" for i in range(features.shape[1])],
             }
 
             return explanation
@@ -169,21 +170,21 @@ class ExplainabilityEngine:
             logger.error(f"❌ SHAP explanation generation failed: {str(e)}")
             raise
 
-    async def _generate_lime_explanation(
-        self, X: np.ndarray, instance: Optional[np.ndarray] = None
+    def _generate_lime_explanation(
+        self, features: np.ndarray, instance: Optional[np.ndarray] = None
     ) -> Dict:
         """Generate LIME-based explanations."""
         try:
             if self.scaler is None:
-                raise ValueError("Scaler not initialized")
+                raise ValueError(SCALER_NOT_INITIALIZED)
 
             # Create feature names if not provided
             if self.feature_names is None:
-                self.feature_names = [f"Feature {i}" for i in range(X.shape[1])]
+                self.feature_names = [f"Feature {i}" for i in range(features.shape[1])]
 
             # Create LIME explainer
             self.explainer = lime.lime_tabular.LimeTabularExplainer(
-                X,
+                features,
                 feature_names=self.feature_names,
                 class_names=["Negative", "Positive"],
                 mode="classification",
@@ -199,7 +200,7 @@ class ExplainabilityEngine:
             else:
                 # For dataset
                 exp = self.explainer.explain_instance(
-                    X[0], self.explainer.predict_proba
+                    features[0], self.explainer.predict_proba
                 )
 
             # Extract feature importance
@@ -220,7 +221,7 @@ class ExplainabilityEngine:
             logger.error(f"❌ LIME explanation generation failed: {str(e)}")
             raise
 
-    async def _create_explanation_plot(self, explanation: Dict) -> None:
+    def _create_explanation_plot(self, explanation: Dict) -> None:
         """Create visualization of the explanation."""
         try:
             if self.method is None:
@@ -256,26 +257,27 @@ class ExplainabilityEngine:
                 # Create LIME plot
                 plt.figure(figsize=(10, 6))
                 explanation["lime_explanation"].as_pyplot_figure()
-                plt.title("LIME Feature Importance")
+                plt.title("LIME Explanation")
                 plt.tight_layout()
                 plt.savefig("lime_explanation.png")
                 plt.close()
 
-            logger.info("✅ Explanation plots saved successfully")
+            logging.info("✅ Explanation plots created successfully")
 
         except Exception as e:
-            logger.error(f"❌ Failed to create explanation plots: {str(e)}")
+            logging.error(f"❌ Plot creation failed: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
-            self.explainer = None
-            self.scaler = None
-            self.method = None
-            self.feature_names = None
-            self.initialized = False
-            logger.info("✅ Explainability engine resources cleaned up")
+            if self.explainer is not None:
+                del self.explainer
+            if self.scaler is not None:
+                del self.scaler
+            if self.model is not None:
+                del self.model
+            logging.info("✅ Explainability engine resources cleaned up")
         except Exception as e:
-            logger.error(f"❌ Failed to clean up explainability engine: {str(e)}")
+            logging.error(f"❌ Cleanup failed: {str(e)}")
             raise
