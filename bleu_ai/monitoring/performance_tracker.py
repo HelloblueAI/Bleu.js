@@ -1,26 +1,30 @@
 """
 Performance Tracker Implementation
-Provides comprehensive performance monitoring and analysis capabilities.
+Provides comprehensive performance monitoring and tracking capabilities.
 """
 
-import asyncio
 import json
 import logging
 import time
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import psutil
-import seaborn as sns
 import torch
 import torch.nn as nn
 
+logger = logging.getLogger(__name__)
+
 
 class PerformanceTracker:
+    """Advanced performance tracking and monitoring system."""
+
+    # Constants for duplicated strings
+    TIME_LABEL = "Time (s)"
+    CIPHER_SUITE_ERROR = "Cipher suite not initialized"
+
     def __init__(
         self,
         save_dir: Optional[str] = None,
@@ -35,7 +39,7 @@ class PerformanceTracker:
         self.metrics = {}
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the performance tracker."""
         try:
             # Create save directory
@@ -57,11 +61,11 @@ class PerformanceTracker:
             logging.error(f"❌ Failed to initialize performance tracker: {str(e)}")
             raise
 
-    async def startTracking(self):
+    def start_tracking(self):
         """Start tracking system resources."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             # Start tracking loop
             while True:
@@ -96,7 +100,7 @@ class PerformanceTracker:
                     {"timestamp": time.time(), "value": cpu_percent}
                 )
 
-                await asyncio.sleep(1)  # Update every second
+                time.sleep(1)  # Update every second
 
         except Exception as e:
             logging.error(f"❌ Performance tracking failed: {str(e)}")
@@ -119,29 +123,25 @@ class PerformanceTracker:
                     f"{self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
                 )
 
-    async def trackModelPerformance(
+    def track_model_performance(
         self,
         model: nn.Module,
-        train_loader: torch.utils.data.DataLoader,
-        val_loader: Optional[torch.utils.data.DataLoader] = None,
-        criterion: nn.Module = nn.CrossEntropyLoss(),
-        optimizer: torch.optim.Optimizer = None,
     ) -> Dict:
         """Track model performance during training."""
         try:
             for epoch in range(self.n_epochs):
                 # Training logic ...
-                self._log_epoch_metrics(epoch, val_loader)
+                self._log_epoch_metrics(epoch, None)
             return self.metrics.get("model_metrics", {})
         except Exception as e:
             logging.error(f"❌ Model performance tracking failed: {str(e)}")
             raise
 
-    async def analyzePerformance(self) -> Dict:
+    def analyze_performance(self) -> Dict:
         """Analyze collected performance metrics."""
         try:
             if not self.initialized or self.metrics is None:
-                await self.initialize()
+                self.initialize()
 
             if self.metrics is None:
                 return {}
@@ -237,112 +237,103 @@ class PerformanceTracker:
             logging.error(f"❌ Performance analysis failed: {str(e)}")
             raise
 
-    async def plotPerformanceMetrics(self):
-        """Create visualizations of performance metrics."""
+    def plot_performance_metrics(self):
+        """Plot performance metrics."""
         try:
-            if not self.initialized:
-                await self.initialize()
+            if not self.initialized or self.metrics is None:
+                return
 
-            # Create plots directory
-            plots_dir = self.save_dir / "plots"
-            plots_dir.mkdir(exist_ok=True)
+            # Create subplots
+            fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+            fig.suptitle("Performance Metrics", fontsize=16)
 
-            # Plot memory usage
-            if self.track_memory:
-                plt.figure(figsize=(10, 6))
-                memory_data = pd.DataFrame(self.metrics["memory_usage"])
-                sns.lineplot(data=memory_data, x="timestamp", y="value")
-                plt.title("Memory Usage Over Time")
-                plt.xlabel("Time (s)")
-                plt.ylabel("Memory Usage (MB)")
-                plt.savefig(plots_dir / "memory_usage.png")
-                plt.close()
+            # Memory usage
+            if self.metrics.get("memory_usage"):
+                memory_times = [m["timestamp"] for m in self.metrics["memory_usage"]]
+                memory_values = [m["value"] for m in self.metrics["memory_usage"]]
+                axes[0, 0].plot(memory_times, memory_values)
+                axes[0, 0].set_title("Memory Usage")
+                axes[0, 0].set_xlabel(self.TIME_LABEL)
+                axes[0, 0].set_ylabel("Memory (MB)")
 
-            # Plot GPU usage
-            if self.track_gpu:
-                plt.figure(figsize=(10, 6))
-                gpu_data = pd.DataFrame(self.metrics["gpu_usage"])
-                sns.lineplot(data=gpu_data, x="timestamp", y="value")
-                plt.title("GPU Usage Over Time")
-                plt.xlabel("Time (s)")
-                plt.ylabel("GPU Memory Usage (MB)")
-                plt.savefig(plots_dir / "gpu_usage.png")
-                plt.close()
+            # GPU usage
+            if self.metrics.get("gpu_usage"):
+                gpu_times = [m["timestamp"] for m in self.metrics["gpu_usage"]]
+                gpu_values = [m["value"] for m in self.metrics["gpu_usage"]]
+                axes[0, 1].plot(gpu_times, gpu_values)
+                axes[0, 1].set_title("GPU Usage")
+                axes[0, 1].set_xlabel(self.TIME_LABEL)
+                axes[0, 1].set_ylabel("GPU Memory (MB)")
 
-            # Plot CPU usage
-            plt.figure(figsize=(10, 6))
-            cpu_data = pd.DataFrame(self.metrics["cpu_usage"])
-            sns.lineplot(data=cpu_data, x="timestamp", y="value")
-            plt.title("CPU Usage Over Time")
-            plt.xlabel("Time (s)")
-            plt.ylabel("CPU Usage (%)")
-            plt.savefig(plots_dir / "cpu_usage.png")
+            # CPU usage
+            if self.metrics.get("cpu_usage"):
+                cpu_times = [m["timestamp"] for m in self.metrics["cpu_usage"]]
+                cpu_values = [m["value"] for m in self.metrics["cpu_usage"]]
+                axes[1, 0].plot(cpu_times, cpu_values)
+                axes[1, 0].set_title("CPU Usage")
+                axes[1, 0].set_xlabel(self.TIME_LABEL)
+                axes[1, 0].set_ylabel("CPU (%)")
+
+            # Network usage
+            if self.metrics.get("network_usage"):
+                net_times = [m["timestamp"] for m in self.metrics["network_usage"]]
+                net_sent = [m["bytes_sent"] for m in self.metrics["network_usage"]]
+                net_recv = [m["bytes_recv"] for m in self.metrics["network_usage"]]
+                axes[1, 1].plot(net_times, net_sent, label="Sent")
+                axes[1, 1].plot(net_times, net_recv, label="Received")
+                axes[1, 1].set_title("Network Usage")
+                axes[1, 1].set_xlabel(self.TIME_LABEL)
+                axes[1, 1].set_ylabel("Bytes")
+                axes[1, 1].legend()
+
+            plt.tight_layout()
+            plt.savefig(self.save_dir / "performance_metrics.png")
             plt.close()
 
-            # Plot model metrics if available
-            if self.metrics["model_metrics"]:
-                plt.figure(figsize=(10, 6))
-                plt.plot(
-                    self.metrics["model_metrics"]["train_loss"], label="Train Loss"
-                )
-                if "val_loss" in self.metrics["model_metrics"]:
-                    plt.plot(
-                        self.metrics["model_metrics"]["val_loss"], label="Val Loss"
-                    )
-                plt.title("Model Loss Over Time")
-                plt.xlabel("Epoch")
-                plt.ylabel("Loss")
-                plt.legend()
-                plt.savefig(plots_dir / "model_loss.png")
-                plt.close()
-
-                plt.figure(figsize=(10, 6))
-                plt.plot(self.metrics["model_metrics"]["train_acc"], label="Train Acc")
-                if "val_acc" in self.metrics["model_metrics"]:
-                    plt.plot(self.metrics["model_metrics"]["val_acc"], label="Val Acc")
-                plt.title("Model Accuracy Over Time")
-                plt.xlabel("Epoch")
-                plt.ylabel("Accuracy (%)")
-                plt.legend()
-                plt.savefig(plots_dir / "model_accuracy.png")
-                plt.close()
-
-            logging.info(f"✅ Performance plots saved to {plots_dir}")
+            logging.info("✅ Performance metrics plotted successfully")
 
         except Exception as e:
-            logging.error(f"❌ Performance plotting failed: {str(e)}")
+            logging.error(f"❌ Failed to plot performance metrics: {str(e)}")
             raise
 
-    async def saveMetrics(self):
-        """Save collected metrics to file."""
+    def save_metrics(self):
+        """Save metrics to file."""
         try:
-            if not self.initialized:
-                await self.initialize()
+            if not self.initialized or self.metrics is None:
+                return
 
             # Save metrics to JSON
-            metrics_file = (
-                self.save_dir
-                / f'metrics_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
-            )
+            metrics_file = self.save_dir / "performance_metrics.json"
             with open(metrics_file, "w") as f:
-                json.dump(self.metrics, f, indent=4)
+                json.dump(self.metrics, f, indent=2, default=str)
 
-            logging.info(f"✅ Performance metrics saved to {metrics_file}")
+            # Save analysis
+            analysis = self.analyze_performance()
+            analysis_file = self.save_dir / "performance_analysis.json"
+            with open(analysis_file, "w") as f:
+                json.dump(analysis, f, indent=2, default=str)
+
+            logging.info("✅ Performance metrics saved successfully")
 
         except Exception as e:
-            logging.error(f"❌ Failed to save performance metrics: {str(e)}")
+            logging.error(f"❌ Failed to save metrics: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             # Save final metrics
-            await self.saveMetrics()
+            self.save_metrics()
+
+            # Plot final metrics
+            self.plot_performance_metrics()
 
             # Clear metrics
             self.metrics = {}
             self.initialized = False
-            logging.info("✅ Performance tracker resources cleaned up")
+
+            logging.info("✅ Performance tracker disposed successfully")
+
         except Exception as e:
-            logging.error(f"❌ Failed to clean up performance tracker: {str(e)}")
+            logging.error(f"❌ Failed to dispose performance tracker: {str(e)}")
             raise

@@ -21,8 +21,9 @@ class QuantumProcessor:
         self.dev = None
         self.circuit = None
         self.initialized = False
+        self.rng = np.random.default_rng(42)
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the quantum processor."""
         try:
             # Initialize PennyLane device
@@ -54,17 +55,17 @@ class QuantumProcessor:
             logging.error(f"❌ Failed to initialize quantum processor: {str(e)}")
             raise
 
-    async def enhanceInput(
+    def enhance_input(
         self, data: np.ndarray, weights: Optional[np.ndarray] = None
     ) -> np.ndarray:
         """Enhance input data using quantum processing."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             # Generate random weights if not provided
             if weights is None:
-                weights = np.random.randn(self.n_layers, self.n_qubits, 3)
+                weights = self.rng.standard_normal((self.n_layers, self.n_qubits, 3))
 
             # Process data in batches
             enhanced_data = []
@@ -96,25 +97,25 @@ class QuantumProcessor:
             logging.error(f"❌ Quantum enhancement failed: {str(e)}")
             raise
 
-    async def optimizeWeights(
+    def optimize_weights(
         self, data: np.ndarray, target: np.ndarray, n_steps: int = 100
     ) -> np.ndarray:
         """Optimize quantum circuit weights."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             # Initialize weights
-            weights = np.random.randn(self.n_layers, self.n_qubits, 3)
+            weights = self.rng.standard_normal((self.n_layers, self.n_qubits, 3))
             weights = torch.tensor(weights, requires_grad=True)
-            optimizer = torch.optim.Adam([weights], lr=0.01)
+            optimizer = torch.optim.Adam([weights], lr=0.01, weight_decay=1e-4)
 
             # Training loop
             for step in range(n_steps):
                 optimizer.zero_grad()
 
                 # Forward pass
-                enhanced = await self.enhanceInput(data, weights.detach().numpy())
+                enhanced = self.enhance_input(data, weights.detach().numpy())
 
                 # Calculate loss
                 loss = torch.nn.MSELoss()(torch.tensor(enhanced), torch.tensor(target))
@@ -132,13 +133,13 @@ class QuantumProcessor:
             logging.error(f"❌ Weight optimization failed: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.dev = None
             self.circuit = None
             self.initialized = False
-            logging.info("✅ Quantum processor resources cleaned up")
+            logging.info("✅ Quantum processor disposed successfully")
         except Exception as e:
-            logging.error(f"❌ Failed to clean up quantum processor: {str(e)}")
+            logging.error(f"❌ Failed to dispose quantum processor: {str(e)}")
             raise

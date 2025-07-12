@@ -4,6 +4,8 @@ Provides secure data handling and model protection capabilities.
 """
 
 import base64
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -21,6 +23,11 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 class EncryptionManager:
+    """Advanced encryption and security management system."""
+
+    # Constants for duplicated strings
+    CIPHER_SUITE_ERROR = "Cipher suite not initialized"
+
     def __init__(
         self,
         key: Optional[bytes] = None,
@@ -34,7 +41,7 @@ class EncryptionManager:
         self.initialized = False
         self.signing_key: Optional[bytes] = None
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the encryption manager."""
         try:
             if self.key is None:
@@ -55,13 +62,13 @@ class EncryptionManager:
             logging.error(f"❌ Failed to initialize encryption manager: {str(e)}")
             raise
 
-    async def encryptData(
+    def encrypt_data(
         self, data: Union[np.ndarray, torch.Tensor, Dict], data_type: str = "numpy"
     ) -> bytes:
         """Encrypt data using Fernet symmetric encryption."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Convert data to bytes using msgpack for binary data
             if data_type == "numpy":
@@ -88,7 +95,7 @@ class EncryptionManager:
 
             # Encrypt data
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             encrypted_data = self.cipher_suite.encrypt(data_bytes)
             return encrypted_data
 
@@ -96,17 +103,17 @@ class EncryptionManager:
             logging.error(f"❌ Data encryption failed: {str(e)}")
             raise
 
-    async def decryptData(
+    def decrypt_data(
         self, encrypted_data: bytes, data_type: str = "numpy"
     ) -> Union[np.ndarray, torch.Tensor, Dict]:
         """Decrypt data using Fernet symmetric encryption."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Decrypt data
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
             # Convert back to original type
@@ -133,13 +140,11 @@ class EncryptionManager:
             logging.error(f"❌ Data decryption failed: {str(e)}")
             raise
 
-    async def encryptModel(
-        self, model: nn.Module, save_path: Optional[str] = None
-    ) -> bytes:
+    def encrypt_model(self, model: nn.Module, save_path: Optional[str] = None) -> bytes:
         """Encrypt PyTorch model state."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Get model state and convert to bytes using msgpack
             model_state = {
@@ -158,7 +163,7 @@ class EncryptionManager:
 
             # Encrypt model
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             encrypted_model = self.cipher_suite.encrypt(model_bytes)
 
             # Save if path provided
@@ -176,7 +181,7 @@ class EncryptionManager:
             logging.error(f"❌ Model encryption failed: {str(e)}")
             raise
 
-    async def decryptModel(
+    def decrypt_model(
         self,
         model: nn.Module,
         encrypted_model: Union[bytes, str],
@@ -185,7 +190,7 @@ class EncryptionManager:
         """Decrypt and load PyTorch model state."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Load encrypted model if path provided
             if load_path:
@@ -194,7 +199,7 @@ class EncryptionManager:
 
             # Decrypt model
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             decrypted_model = self.cipher_suite.decrypt(encrypted_model)
 
             # Unpack model state using msgpack
@@ -216,24 +221,22 @@ class EncryptionManager:
             logging.error(f"❌ Model decryption failed: {str(e)}")
             raise
 
-    async def encryptFile(
-        self, file_path: str, output_path: Optional[str] = None
-    ) -> bytes:
+    def encrypt_file(self, file_path: str, output_path: Optional[str] = None) -> bytes:
         """Encrypt file contents."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Read file
             with open(file_path, "rb") as f:
                 file_data = f.read()
 
-            # Encrypt file
+            # Encrypt file data
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             encrypted_data = self.cipher_suite.encrypt(file_data)
 
-            # Save if output path provided
+            # Save encrypted file if output path provided
             if output_path:
                 path = Path(output_path)
                 if path.parent is not None:
@@ -248,25 +251,25 @@ class EncryptionManager:
             logging.error(f"❌ File encryption failed: {str(e)}")
             raise
 
-    async def decryptFile(
+    def decrypt_file(
         self, encrypted_data: Union[bytes, str], output_path: Optional[str] = None
     ) -> bytes:
         """Decrypt file contents."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Load encrypted data if path provided
             if isinstance(encrypted_data, str):
                 with open(encrypted_data, "rb") as f:
                     encrypted_data = f.read()
 
-            # Decrypt data
+            # Decrypt file data
             if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
+                raise ValueError(self.CIPHER_SUITE_ERROR)
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
 
-            # Save if output path provided
+            # Save decrypted file if output path provided
             if output_path:
                 path = Path(output_path)
                 if path.parent is not None:
@@ -281,26 +284,25 @@ class EncryptionManager:
             logging.error(f"❌ File decryption failed: {str(e)}")
             raise
 
-    async def secureDataTransfer(
+    def secure_data_transfer(
         self,
         data: Union[np.ndarray, torch.Tensor, Dict],
-        recipient_key: bytes,
         data_type: str = "numpy",
     ) -> Tuple[bytes, bytes]:
-        """Securely transfer data to another party."""
+        """Securely transfer data with encryption and signing."""
         try:
             if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
+                self.initialize()
 
             # Encrypt data
-            if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
-            encrypted_data = await self.encryptData(data, data_type)
+            encrypted_data = self.encrypt_data(data, data_type)
 
-            # Sign data
+            # Sign data for integrity verification
             if self.signing_key is None:
-                raise ValueError("Signing key not initialized")
-            signature = self.signing_key.sign(encrypted_data)
+                self.signing_key = os.urandom(32)
+            signature = hmac.new(
+                self.signing_key, encrypted_data, hashlib.sha256
+            ).digest()
 
             return encrypted_data, signature
 
@@ -308,39 +310,28 @@ class EncryptionManager:
             logging.error(f"❌ Secure data transfer failed: {str(e)}")
             raise
 
-    async def verifyDataIntegrity(self, data: bytes, signature: bytes) -> bool:
-        """Verify data integrity using signature."""
+    def verify_data_integrity(self, data: bytes, signature: bytes) -> bool:
+        """Verify data integrity using HMAC signature."""
         try:
-            if not self.initialized or self.cipher_suite is None:
-                await self.initialize()
-
-            # Create signing object
-            if self.cipher_suite is None:
-                raise ValueError("Cipher suite not initialized")
-            signing_key = self.cipher_suite.signing_key
-            if signing_key is None:
+            if self.signing_key is None:
                 raise ValueError("Signing key not initialized")
 
-            # Verify signature
-            try:
-                signing_key.verify(data, signature)
-                return True
-            except Exception:
-                return False
+            expected_signature = hmac.new(
+                self.signing_key, data, hashlib.sha256
+            ).digest()
+            return hmac.compare_digest(signature, expected_signature)
 
         except Exception as e:
             logging.error(f"❌ Data integrity verification failed: {str(e)}")
-            raise
+            return False
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
-            self.key = None
-            self.salt = None
             self.cipher_suite = None
-            self.initialized = False
             self.signing_key = None
-            logging.info("✅ Encryption manager resources cleaned up")
+            self.initialized = False
+            logging.info("✅ Encryption manager disposed successfully")
         except Exception as e:
-            logging.error(f"❌ Failed to clean up encryption manager: {str(e)}")
+            logging.error(f"❌ Failed to dispose encryption manager: {str(e)}")
             raise

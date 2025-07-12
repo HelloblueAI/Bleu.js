@@ -14,6 +14,11 @@ from scipy.optimize import minimize
 
 
 class QuantumOptimizer:
+    """Quantum-enhanced optimization for machine learning models."""
+
+    # Constants for duplicated strings
+    QUANTUM_CIRCUIT_ERROR = "Quantum circuit not initialized"
+
     def __init__(
         self,
         n_qubits: int = 4,
@@ -27,8 +32,9 @@ class QuantumOptimizer:
         self.device = device
         self.dev = qml.device(device, wires=n_qubits)
         self.initialized = False
+        self.rng = np.random.default_rng(42)
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the quantum optimizer."""
         try:
             # Define quantum circuit
@@ -53,7 +59,7 @@ class QuantumOptimizer:
             logging.error(f"❌ Failed to initialize quantum optimizer: {str(e)}")
             raise
 
-    async def optimize(
+    def optimize(
         self,
         objective_function: callable,
         initial_params: Optional[np.ndarray] = None,
@@ -63,17 +69,19 @@ class QuantumOptimizer:
         """Optimize parameters using quantum-enhanced optimization."""
         try:
             if not self.initialized or self.circuit is None or self.dev is None:
-                await self.initialize()
+                self.initialize()
 
             # Initialize parameters if not provided
             if initial_params is None:
-                initial_params = np.random.randn(self.n_layers, self.n_qubits, 3)
+                initial_params = self.rng.standard_normal(
+                    (self.n_layers, self.n_qubits, 3)
+                )
 
             # Define quantum-enhanced objective
             def quantum_objective(params):
                 # Get quantum circuit outputs
                 if self.circuit is None:
-                    raise ValueError("Quantum circuit not initialized")
+                    raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
                 quantum_outputs = self.circuit(params)
 
                 # Combine with classical objective
@@ -102,7 +110,7 @@ class QuantumOptimizer:
             logging.error(f"❌ Quantum optimization failed: {str(e)}")
             raise
 
-    async def optimizeModel(
+    def optimize_model(
         self,
         model: nn.Module,
         train_data: torch.Tensor,
@@ -113,10 +121,12 @@ class QuantumOptimizer:
         """Optimize a PyTorch model using quantum-enhanced training."""
         try:
             if not self.initialized or self.circuit is None:
-                await self.initialize()
+                self.initialize()
 
             # Initialize optimizer
-            optimizer = torch.optim.Adam(model.parameters(), lr=self.learning_rate)
+            optimizer = torch.optim.Adam(
+                model.parameters(), lr=self.learning_rate, weight_decay=1e-4
+            )
             criterion = nn.CrossEntropyLoss()
 
             # Training history
@@ -141,7 +151,7 @@ class QuantumOptimizer:
                     # Quantum enhancement
                     with torch.no_grad():
                         if self.circuit is None:
-                            raise ValueError("Quantum circuit not initialized")
+                            raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
                         quantum_outputs = self.circuit(
                             model.parameters().__next__().detach().numpy()
                         )
@@ -178,7 +188,7 @@ class QuantumOptimizer:
             logging.error(f"❌ Quantum model optimization failed: {str(e)}")
             raise
 
-    async def optimizeHyperparameters(
+    def optimize_hyperparameters(
         self,
         model_class: type,
         train_data: np.ndarray,
@@ -189,7 +199,7 @@ class QuantumOptimizer:
         """Optimize hyperparameters using quantum-enhanced search."""
         try:
             if not self.initialized or self.circuit is None:
-                await self.initialize()
+                self.initialize()
 
             best_score = float("-inf")
             best_params = None
@@ -199,7 +209,7 @@ class QuantumOptimizer:
             for _ in range(n_trials):
                 # Sample parameters
                 params = {
-                    key: np.random.choice(values) for key, values in param_grid.items()
+                    key: self.rng.choice(values) for key, values in param_grid.items()
                 }
 
                 # Create and train model
@@ -209,7 +219,7 @@ class QuantumOptimizer:
 
                 # Quantum enhancement
                 if self.circuit is None:
-                    raise ValueError("Quantum circuit not initialized")
+                    raise ValueError(self.QUANTUM_CIRCUIT_ERROR)
                 quantum_outputs = self.circuit(
                     np.array(list(params.values())).reshape(-1, 3)
                 )
@@ -232,20 +242,20 @@ class QuantumOptimizer:
             return {
                 "best_params": best_params,
                 "best_score": best_score,
-                "results": results,
+                "all_results": results,
             }
 
         except Exception as e:
             logging.error(f"❌ Quantum hyperparameter optimization failed: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.circuit = None
             self.dev = None
             self.initialized = False
-            logging.info("✅ Quantum optimizer resources cleaned up")
+            logging.info("✅ Quantum optimizer disposed successfully")
         except Exception as e:
-            logging.error(f"❌ Failed to clean up quantum optimizer: {str(e)}")
+            logging.error(f"❌ Failed to dispose quantum optimizer: {str(e)}")
             raise
