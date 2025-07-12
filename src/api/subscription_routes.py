@@ -10,6 +10,7 @@ from ..models.subscription import (
     UsageMetrics,
 )
 from ..services.subscription_service import subscription_service
+from ..services.user_service import user_service
 
 # Constants
 USER_ID_HEADER = "User ID"
@@ -30,8 +31,15 @@ async def create_subscription(
 ):
     """Create a new subscription."""
     try:
-        return subscription_service.create_subscription(
-            user_id=x_user_id, tier=subscription.tier
+        # Get user from database
+        user = user_service.get_user(x_user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return await subscription_service.create_subscription(
+            user=user, 
+            plan_type=subscription.tier,
+            payment_method_id=subscription.payment_method_id
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
