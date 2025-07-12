@@ -1,5 +1,3 @@
-import time
-
 import pytest
 from fastapi import HTTPException
 
@@ -99,7 +97,9 @@ async def test_token_refill(rate_limiter):
         await rate_limiter.check_rate_limit(user_id, plan)
 
     # Wait for refill (1 second should refill 1.67 tokens)
-    time.sleep(1)
+    import asyncio
+
+    await asyncio.sleep(1)
 
     # Should be able to make at least one more request
     assert await rate_limiter.check_rate_limit(user_id, plan) is True

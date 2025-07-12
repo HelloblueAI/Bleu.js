@@ -1,12 +1,12 @@
 """Advanced self-learning module for quantum-enhanced machine learning."""
 
-import json
 import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import aiofiles
 import numpy as np
 from qiskit.algorithms import QAOA, VQE
 from qiskit.algorithms.optimizers import SPSA
@@ -373,8 +373,10 @@ class SelfLearningSystem:
                 ]
             }
 
-            with open(history_file, "w") as f:
-                json.dump(history_data, f)
+            import json
+
+            async with aiofiles.open(history_file, "w") as f:
+                await f.write(json.dumps(history_data))
 
         except Exception as e:
             self.logger.error(f"Error saving learning history: {str(e)}")
@@ -384,8 +386,11 @@ class SelfLearningSystem:
         try:
             history_file = self.save_path / "learning_history.json"
             if history_file.exists():
-                with open(history_file, "r") as f:
-                    history_data = json.load(f)
+                import json
+
+                async with aiofiles.open(history_file, "r") as f:
+                    data = await f.read()
+                    history_data = json.loads(data)
 
                 self.learning_history = [
                     LearningMetrics(

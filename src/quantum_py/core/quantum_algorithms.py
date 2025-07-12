@@ -54,11 +54,11 @@ class QuantumAlgorithms:
             power = 2**i
             U_power = np.linalg.matrix_power(unitary, power)
             controlled_U = create_controlled_unitary(U_power)
-            qpe_circuit.add_custom_gate("CUSTOM", controlled_U, [control])
+            qpe_circuit.add_custom_gate("CUSTOM", controlled_U, [control], [])
 
         # Apply inverse QFT to control qubits
         qft_inv = np.conj(quantum_fourier_transform(precision_qubits)).T
-        qpe_circuit.add_custom_gate("CUSTOM", qft_inv, control_qubits)
+        qpe_circuit.add_custom_gate("CUSTOM", qft_inv, control_qubits, [])
 
         # Run circuit multiple times and collect statistics
         phases = []
@@ -111,9 +111,9 @@ class QuantumAlgorithms:
         # Apply Grover iterations
         for _ in range(num_iterations):
             # Apply oracle
-            circuit.add_custom_gate("CUSTOM", oracle, list(range(num_qubits)))
+            circuit.add_custom_gate("CUSTOM", oracle, list(range(num_qubits)), [])
             # Apply diffusion operator
-            circuit.add_custom_gate("CUSTOM", G, list(range(num_qubits)))
+            circuit.add_custom_gate("CUSTOM", G, list(range(num_qubits)), [])
 
         # Run circuit and measure
         final_state = self.processor.apply_circuit(circuit)
