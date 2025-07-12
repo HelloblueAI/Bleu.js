@@ -227,8 +227,11 @@ class SubscriptionBase(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-class SubscriptionCreate(SubscriptionBase):
-    pass
+class SubscriptionCreate(BaseModel):
+    tier: str
+    payment_method_id: str
+    
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class SubscriptionResponse(SubscriptionBase):
