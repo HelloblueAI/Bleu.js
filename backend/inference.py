@@ -155,9 +155,10 @@ def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
                 try:
                     # Alternative way for XGBoost
                     MODEL_CACHE["feature_count"] = model.get_booster().num_features()
-                    logger.info(
-                        f"✅ Model expects {MODEL_CACHE['feature_count']} features (from booster)"
-                    )
+                                    logger.info(
+                    f"✅ Model expects {MODEL_CACHE['feature_count']} "
+                    f"features (from booster)"
+                )
                 except Exception:
                     logger.warning("⚠️ Could not determine feature count from model")
                     MODEL_CACHE["feature_count"] = None
@@ -166,7 +167,8 @@ def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
             try:
                 MODEL_CACHE["feature_names"] = model.feature_names_in_.tolist()
                 logger.info(
-                    f"✅ Found {len(MODEL_CACHE['feature_names'])} feature names"
+                    f"✅ Found {len(MODEL_CACHE['feature_names'])} "
+                    f"feature names"
                 )
             except AttributeError:
                 MODEL_CACHE["feature_names"] = None
@@ -179,7 +181,8 @@ def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
                 logger.info("✅ Scaler loaded successfully")
             else:
                 logger.warning(
-                    f"⚠️ Scaler file not found at {SCALER_PATH}. Will proceed without scaling."
+                    f"⚠️ Scaler file not found at {SCALER_PATH}. "
+                    f"Will proceed without scaling."
                 )
                 MODEL_CACHE["scaler"] = None
 
@@ -189,7 +192,8 @@ def load_model(force_reload: bool = False) -> Tuple[bool, Optional[str]]:
             MODEL_CACHE["metadata"] = get_model_metadata()
 
             logger.info(
-                f"✅ Model and dependencies loaded successfully in {loading_time:.2f} seconds"
+                f"✅ Model and dependencies loaded successfully in "
+                f"{loading_time:.2f} seconds"
             )
             return True, None
 

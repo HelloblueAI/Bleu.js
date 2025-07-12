@@ -27,7 +27,8 @@ try:
     model = joblib.load(MODEL_PATH)
     expected_features = model.get_booster().num_features()
     logging.info(
-        f"✅ Model loaded successfully! Expected features: {expected_features}"
+        f"✅ Model loaded successfully! "
+        f"Expected features: {expected_features}"
     )
 except Exception as e:
     logging.error(f"❌ Failed to load model: {str(e)}")
@@ -48,12 +49,14 @@ async def predict(input_data: PredictionInput):
         # Validate feature shape
         if features_array.shape[0] < expected_features:
             return {
-                "error": f"❌ Too few features: expected {expected_features}, got {features_array.shape[0]}"
+                "error": f"❌ Too few features: expected {expected_features}, "
+                f"got {features_array.shape[0]}"
             }
 
         elif features_array.shape[0] > expected_features:
             return {
-                "error": f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}"
+                "error": f"❌ Too many features: expected {expected_features}, "
+                f"got {features_array.shape[0]}"
             }
 
         features_array = features_array.reshape(1, -1)
@@ -63,7 +66,8 @@ async def predict(input_data: PredictionInput):
         prediction_prob = model.predict_proba(features_array)
 
         logging.info(
-            f"🔮 Prediction: {prediction.tolist()}, Confidence: {prediction_prob.tolist()}"
+            f"🔮 Prediction: {prediction.tolist()}, "
+            f"Confidence: {prediction_prob.tolist()}"
         )
 
         return {
