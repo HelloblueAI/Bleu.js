@@ -47,7 +47,7 @@ class QuantumProcessor:
         self.n_qubits = 4
         self.dev: Optional[Device] = None  # Using generic Device type
 
-    async def enhance_input(self, input_data: np.ndarray) -> np.ndarray:
+    def enhance_input(self, input_data: np.ndarray) -> np.ndarray:
         """
         Enhance input data using quantum processing techniques.
 
@@ -78,7 +78,7 @@ class QuantumProcessor:
 
         return enhanced_data
 
-    async def optimize_circuit(self, input_data: np.ndarray) -> None:
+    def optimize_circuit(self, input_data: np.ndarray) -> None:
         """
         Optimize the quantum circuit configuration for given input data.
 
@@ -112,7 +112,7 @@ class QuantumProcessor:
             raise ValueError(QUANTUM_CIRCUIT_NOT_INITIALIZED)
         return self.quantum_circuit.process(data_batch)
 
-    async def measure_uncertainty(self, input_data: np.ndarray) -> np.ndarray:
+    def measure_uncertainty(self, input_data: np.ndarray) -> np.ndarray:
         """
         Measure uncertainty in quantum predictions.
 
@@ -137,7 +137,7 @@ class QuantumProcessor:
         # Measure quantum state uncertainty
         return self.quantum_circuit.measure_uncertainty(data_scaled + quantum_noise)
 
-    async def dispose(self) -> None:
+    def dispose(self) -> None:
         """Clean up quantum resources."""
         try:
             if self.dev is not None:

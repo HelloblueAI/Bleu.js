@@ -30,7 +30,7 @@ class FeatureAnalyzer:
         self.scaler = StandardScaler()
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the feature analyzer."""
         try:
             self.initialized = True
@@ -39,13 +39,16 @@ class FeatureAnalyzer:
             logging.error(f"❌ Failed to initialize feature analyzer: {str(e)}")
             raise
 
-    async def analyzeFeatures(
-        self, X: np.ndarray, y: np.ndarray, feature_names: Optional[List[str]] = None
+    def analyze_features(
+        self,
+        features: np.ndarray,
+        targets: np.ndarray,
+        feature_names: Optional[List[str]] = None,
     ) -> np.ndarray:
         """Analyze feature importance and interactions."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             if self.method is None:
                 raise ValueError("Analysis method not initialized")
@@ -53,13 +56,13 @@ class FeatureAnalyzer:
             # Scale features
             if self.scaler is None:
                 self.scaler = StandardScaler()
-            X_scaled = self.scaler.fit_transform(X)
+            features_scaled = self.scaler.fit_transform(features)
 
             # Calculate feature importance based on method
             if self.method == "shap":
-                importance = await self._analyze_shap(X_scaled, y)
+                importance = self._analyze_shap(features_scaled, targets)
             elif self.method == "mutual_info":
-                importance = await self._analyze_mutual_info(X_scaled, y)
+                importance = self._analyze_mutual_info(features_scaled, targets)
             else:
                 raise ValueError(f"Unsupported analysis method: {self.method}")
 
@@ -67,7 +70,7 @@ class FeatureAnalyzer:
             self.feature_importances = importance
 
             # Calculate feature interactions
-            self.feature_interactions = await self._calculate_interactions(X_scaled)
+            self.feature_interactions = self._calculate_interactions(features_scaled)
 
             # Select top features if n_features is specified
             if self.n_features is not None:
@@ -75,8 +78,8 @@ class FeatureAnalyzer:
 
             # Create feature importance plot
             if feature_names is None:
-                feature_names = [f"Feature {i}" for i in range(X.shape[1])]
-            await self._plot_feature_importance(importance, feature_names)
+                feature_names = [f"Feature {i}" for i in range(features.shape[1])]
+            self._plot_feature_importance(importance, feature_names)
 
             return importance
 
@@ -84,18 +87,23 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature analysis failed: {str(e)}")
             raise
 
-    async def _analyze_shap(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def _analyze_shap(self, features: np.ndarray, targets: np.ndarray) -> np.ndarray:
         """Analyze feature importance using SHAP values."""
         try:
             # Create a simple model for SHAP analysis
             from sklearn.ensemble import RandomForestClassifier
 
-            model = RandomForestClassifier(n_estimators=100)
-            model.fit(X, y)
+            model = RandomForestClassifier(
+                n_estimators=100,
+                min_samples_leaf=1,
+                max_features="sqrt",
+                random_state=42,
+            )
+            model.fit(features, targets)
 
             # Calculate SHAP values
             explainer = shap.TreeExplainer(model)
-            shap_values = explainer.shap_values(X)
+            shap_values = explainer.shap_values(features)
 
             # Calculate mean absolute SHAP values
             if isinstance(shap_values, list):
@@ -113,16 +121,18 @@ class FeatureAnalyzer:
             logging.error(f"❌ SHAP analysis failed: {str(e)}")
             raise
 
-    async def _analyze_mutual_info(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def _analyze_mutual_info(
+        self, features: np.ndarray, targets: np.ndarray
+    ) -> np.ndarray:
         """Analyze feature importance using mutual information."""
         try:
             # Calculate mutual information scores
-            if len(np.unique(y)) > 2:
+            if len(np.unique(targets)) > 2:
                 # For classification problems
-                mi_scores = mutual_info_classif(X, y)
+                mi_scores = mutual_info_classif(features, targets, random_state=42)
             else:
                 # For regression problems
-                mi_scores = mutual_info_regression(X, y)
+                mi_scores = mutual_info_regression(features, targets, random_state=42)
 
             return mi_scores
 
@@ -130,11 +140,11 @@ class FeatureAnalyzer:
             logging.error(f"❌ Mutual information analysis failed: {str(e)}")
             raise
 
-    async def _calculate_interactions(self, X: np.ndarray) -> np.ndarray:
+    def _calculate_interactions(self, features: np.ndarray) -> np.ndarray:
         """Calculate feature interactions using correlation matrix."""
         try:
             # Calculate correlation matrix
-            corr_matrix = np.corrcoef(X.T)
+            corr_matrix = np.corrcoef(features.T)
 
             # Store interactions
             self.feature_interactions = corr_matrix
@@ -164,7 +174,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature selection failed: {str(e)}")
             raise
 
-    async def _plot_feature_importance(
+    def _plot_feature_importance(
         self, importance: np.ndarray, feature_names: List[str]
     ):
         """Plot feature importance scores."""
@@ -191,7 +201,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Failed to create feature importance plot: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.feature_importances = None

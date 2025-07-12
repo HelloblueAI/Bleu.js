@@ -48,7 +48,7 @@ class DependencyManager:
 
     def check_dependency_conflicts(self) -> List[Dict]:
         """Check for dependency conflicts"""
-        code, stdout, stderr = self.run_command("pip check")
+        code, _, stderr = self.run_command("pip check")
         conflicts = []
 
         if code != 0:

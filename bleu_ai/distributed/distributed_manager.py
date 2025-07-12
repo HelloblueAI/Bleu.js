@@ -32,7 +32,7 @@ class DistributedTrainingManager:
         self.cluster = None
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the distributed training manager."""
         try:
             if self.backend == "torch":
@@ -57,18 +57,18 @@ class DistributedTrainingManager:
             )
             raise
 
-    async def train_model(
-        self, X: np.ndarray, y: np.ndarray, params: Optional[Dict] = None
+    def train_model(
+        self, features: np.ndarray, targets: np.ndarray, params: Optional[Dict] = None
     ) -> Union[xgb.XGBClassifier, nn.Module]:
         """Train model in a distributed setting."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             if self.backend == "torch":
-                return await self._train_torch_model(X, y, params)
+                return self._train_torch_model(features, targets, params)
             elif self.backend == "dask":
-                return await self._train_dask_model(X, y, params)
+                return self._train_dask_model(features, targets, params)
             else:
                 raise ValueError(f"Unsupported backend: {self.backend}")
 
@@ -76,32 +76,34 @@ class DistributedTrainingManager:
             logging.error(f"❌ Distributed training failed: {str(e)}")
             raise
 
-    async def _train_torch_model(
-        self, X: np.ndarray, y: np.ndarray, params: Optional[Dict] = None
+    def _train_torch_model(
+        self, features: np.ndarray, targets: np.ndarray, params: Optional[Dict] = None
     ) -> nn.Module:
         """Train PyTorch model in distributed setting."""
         try:
             # Create model
-            model = self._create_model(X.shape[1])
+            model = self._create_model(features.shape[1])
             model = model.to(self.device)
 
             # Wrap model with DistributedDataParallel
             model = DistributedDataParallel(model)
 
             # Create optimizer
-            optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+            optimizer = torch.optim.Adam(
+                model.parameters(), lr=0.001, weight_decay=1e-5
+            )
             criterion = nn.BCEWithLogitsLoss()
 
             # Convert data to tensors
-            X_tensor = torch.FloatTensor(X).to(self.device)
-            y_tensor = torch.FloatTensor(y).to(self.device)
+            features_tensor = torch.FloatTensor(features).to(self.device)
+            targets_tensor = torch.FloatTensor(targets).to(self.device)
 
             # Train model
             model.train()
             for epoch in range(100):  # Adjust epochs as needed
                 optimizer.zero_grad()
-                outputs = model(X_tensor)
-                loss = criterion(outputs, y_tensor)
+                outputs = model(features_tensor)
+                loss = criterion(outputs, targets_tensor)
                 loss.backward()
                 optimizer.step()
 
@@ -114,8 +116,8 @@ class DistributedTrainingManager:
             logging.error(f"❌ PyTorch distributed training failed: {str(e)}")
             raise
 
-    async def _train_dask_model(
-        self, X: np.ndarray, y: np.ndarray, params: Optional[Dict] = None
+    def _train_dask_model(
+        self, features: np.ndarray, targets: np.ndarray, params: Optional[Dict] = None
     ) -> xgb.XGBClassifier:
         """Train XGBoost model using Dask."""
         try:
@@ -123,12 +125,12 @@ class DistributedTrainingManager:
                 raise ValueError("Dask client not initialized")
 
             # Convert to dask arrays
-            X_dask = da.from_array(X, chunks="auto")
-            y_dask = da.from_array(y, chunks="auto")
+            features_dask = da.from_array(features, chunks="auto")
+            targets_dask = da.from_array(targets, chunks="auto")
 
             # Create and train model
             model = xgb.dask.DaskXGBClassifier(n_estimators=100, **(params or {}))
-            model.fit(X_dask, y_dask)
+            model.fit(features_dask, targets_dask)
 
             # Convert back to regular XGBoost model
             return model.get_booster()
@@ -149,7 +151,7 @@ class DistributedTrainingManager:
             nn.Linear(32, 1),
         )
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             if self.backend == "torch" and dist.is_initialized():

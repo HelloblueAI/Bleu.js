@@ -1,7 +1,10 @@
 """
-Bleu AI Models Package
-Contains various ML model implementations and utilities.
+Bleu AI models module.
+
+This module provides AI models for Bleu.js.
 """
+
+__version__ = "1.1.7"
 
 from .ensemble_model import EnsembleModel
 from .model_factory import ModelFactory

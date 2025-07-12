@@ -34,7 +34,7 @@ class TrainingManager:
         self.device = torch.device("cuda" if self.use_gpu else "cpu")
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the training manager."""
         try:
             # Initialize Ray
@@ -182,7 +182,7 @@ class TrainingManager:
         """Train model using distributed training."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             # Setup model and loaders
             model, train_loader, val_loader, train_sampler = (
@@ -361,7 +361,7 @@ class TrainingManager:
             return tensor.item()
         return metric
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             if dist.is_initialized():

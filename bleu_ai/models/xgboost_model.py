@@ -139,7 +139,7 @@ class XGBoostModel:
             return False
 
     def optimize_hyperparameters(
-        self, features: np.ndarray, targets: np.ndarray, n_trials: int = 20
+        self, features: np.ndarray, targets: np.ndarray
     ) -> Dict:
         """Optimize hyperparameters using cross-validation."""
         try:

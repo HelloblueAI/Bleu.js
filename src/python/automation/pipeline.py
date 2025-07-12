@@ -159,6 +159,8 @@ class AutomationPipeline:
         required: bool = True,
         error_handler: Optional[Callable] = None,
     ) -> None:
+        if dependencies is None:
+            dependencies = []
         """
         Add a step to the pipeline.
 
@@ -202,6 +204,8 @@ class AutomationPipeline:
             raise
 
     async def execute(self, input_data: Dict = None) -> Dict[str, Any]:
+        if input_data is None:
+            input_data = {}
         """
         Execute the pipeline with given input data.
 
@@ -472,6 +476,8 @@ class EnhancedAutomationPipeline(AutomationPipeline):
 
     async def execute(self, input_data: Dict = None) -> Dict[str, Any]:
         """Enhanced pipeline execution with analytics."""
+        if input_data is None:
+            input_data = {}
         start_time = datetime.now()
 
         try:

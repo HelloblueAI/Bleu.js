@@ -22,11 +22,13 @@ from sklearn.model_selection import KFold
 class EnsembleManager:
     def __init__(
         self,
-        methods: List[str] = ["rf", "gb", "xgb", "lgb", "catboost"],
+        methods: List[str] = None,
         n_estimators: int = 100,
         n_folds: int = 5,
         voting: str = "soft",
     ):
+        if methods is None:
+            methods = ["rf", "gb", "xgb", "lgb", "catboost"]
         self.methods = methods
         self.n_estimators = n_estimators
         self.n_folds = n_folds

@@ -143,7 +143,7 @@ class FeatureAnalyzer:
             logging.error(f"❌ Feature interaction calculation failed: {str(e)}")
             raise
 
-    def _select_features(self, features: np.ndarray, targets: np.ndarray) -> List[int]:
+    def _select_features(self, features: np.ndarray) -> List[int]:
         """Select important features based on importance scores."""
         try:
             if self.feature_importances is None:

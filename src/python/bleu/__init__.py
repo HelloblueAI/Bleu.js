@@ -1,8 +1,10 @@
 """
-Bleu.js - Next-generation AI framework with quantum computing integration
+Bleu Python module.
+
+This module provides core Bleu.js functionality in Python.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.1.7"
 __author__ = "Helloblue Inc."
 __email__ = "contact@helloblue.ai"
 __license__ = "MIT"

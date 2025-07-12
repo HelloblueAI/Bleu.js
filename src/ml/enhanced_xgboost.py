@@ -193,7 +193,7 @@ class PerformanceOptimizer:
         self.optimization_history = []
 
     def optimize_batch_size(
-        self, model: xgb.XGBClassifier, features: np.ndarray, y: np.ndarray
+        self, model: xgb.XGBClassifier, features: np.ndarray
     ) -> int:
         """Dynamically optimize batch size based on system resources"""
         available_memory = psutil.virtual_memory().available
@@ -222,9 +222,7 @@ class PerformanceOptimizer:
             logger.warning(f"Could not get GPU memory: {e}")
         return 0
 
-    def optimize_learning_rate(
-        self, model: xgb.XGBClassifier, features: np.ndarray, y: np.ndarray
-    ) -> float:
+    def optimize_learning_rate(self, model: xgb.XGBClassifier) -> float:
         """Dynamically optimize learning rate"""
         # Implement learning rate optimization logic
         return model.get_params().get("learning_rate", 0.1)
@@ -310,7 +308,7 @@ class EnhancedXGBoost:
 
             # Optimize batch size and workers
             self.performance_optimizer.optimize_batch_size(
-                self.model, features_processed, y
+                self.model, features_processed
             )
             self.performance_optimizer.optimize_num_workers()
 

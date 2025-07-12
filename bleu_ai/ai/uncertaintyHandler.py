@@ -30,7 +30,7 @@ class UncertaintyHandler:
         self.confidence_scores = None
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the uncertainty handler."""
         try:
             self.initialized = True
@@ -39,24 +39,24 @@ class UncertaintyHandler:
             logging.error(f"❌ Failed to initialize uncertainty handler: {str(e)}")
             raise
 
-    async def calculate_uncertainty(
+    def calculate_uncertainty(
         self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty and confidence scores."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             if self.method is None:
                 raise ValueError("Uncertainty method not initialized")
 
             # Calculate uncertainty based on method
             if self.method == "ensemble":
-                uncertainty, confidence = await self._ensemble_uncertainty(features)
+                uncertainty, confidence = self._ensemble_uncertainty(features)
             elif self.method == "bayesian":
-                uncertainty, confidence = await self._bayesian_uncertainty(features)
+                uncertainty, confidence = self._bayesian_uncertainty(features)
             elif self.method == "monte_carlo":
-                uncertainty, confidence = await self._monte_carlo_uncertainty(features)
+                uncertainty, confidence = self._monte_carlo_uncertainty(features)
             else:
                 raise ValueError(f"Unsupported uncertainty method: {self.method}")
 
@@ -70,7 +70,7 @@ class UncertaintyHandler:
             logging.error(f"❌ Uncertainty calculation failed: {str(e)}")
             raise
 
-    async def _ensemble_uncertainty(
+    def _ensemble_uncertainty(
         self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using ensemble methods."""
@@ -81,7 +81,11 @@ class UncertaintyHandler:
             # Create ensemble of models
             if self.ensemble is None:
                 self.ensemble = RandomForestClassifier(
-                    n_estimators=self.n_estimators, n_jobs=-1
+                    n_estimators=self.n_estimators,
+                    n_jobs=-1,
+                    min_samples_leaf=1,
+                    max_features="sqrt",
+                    random_state=42,
                 )
 
             # Fit ensemble
@@ -111,7 +115,7 @@ class UncertaintyHandler:
             logging.error(f"❌ Ensemble uncertainty calculation failed: {str(e)}")
             raise
 
-    async def _bayesian_uncertainty(
+    def _bayesian_uncertainty(
         self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using Bayesian methods."""
@@ -164,7 +168,7 @@ class UncertaintyHandler:
             logging.error(f"❌ Bayesian uncertainty calculation failed: {str(e)}")
             raise
 
-    async def _monte_carlo_uncertainty(
+    def _monte_carlo_uncertainty(
         self, features: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Calculate uncertainty using Monte Carlo dropout."""
@@ -222,7 +226,7 @@ class UncertaintyHandler:
             threshold = self.get_uncertainty_threshold()
         return uncertainty <= threshold
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.ensemble = None

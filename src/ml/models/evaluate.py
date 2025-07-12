@@ -15,8 +15,8 @@ class ModelEvaluator:
     def __init__(
         self,
         model: BaseEstimator,
-        X: np.ndarray,
-        y: np.ndarray,
+        features: np.ndarray,
+        targets: np.ndarray,
         test_size: float = 0.2,
         random_state: Optional[int] = None,
     ) -> None:
@@ -30,14 +30,19 @@ class ModelEvaluator:
             random_state: Random state for reproducibility
         """
         self.model = model
-        self.X = X
-        self.y = y
+        self.features = features
+        self.targets = targets
         self.test_size = test_size
         self.random_state = random_state
 
         # Split data
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X, y, test_size=test_size, random_state=random_state
+        (
+            self.features_train,
+            self.features_test,
+            self.targets_train,
+            self.targets_test,
+        ) = train_test_split(
+            features, targets, test_size=test_size, random_state=random_state
         )
 
     def train_and_evaluate(self) -> Tuple[PerformanceMetrics, Dict[str, Any]]:
@@ -48,28 +53,28 @@ class ModelEvaluator:
             and training info
         """
         # Train model
-        self.model.fit(self.X_train, self.y_train)
+        self.model.fit(self.features_train, self.targets_train)
 
         # Get predictions
-        y_pred = self.model.predict(self.X_test)
-        y_prob = (
-            self.model.predict_proba(self.X_test)
+        targets_pred = self.model.predict(self.features_test)
+        targets_prob = (
+            self.model.predict_proba(self.features_test)
             if hasattr(self.model, "predict_proba")
             else None
         )
 
         # Calculate metrics
         metrics = PerformanceMetrics(
-            y_true=self.y_test,
-            y_pred=y_pred,
-            y_prob=y_prob,
+            y_true=self.targets_test,
+            y_pred=targets_pred,
+            y_prob=targets_prob,
         )
 
         # Get training info
         training_info = {
             "model_type": type(self.model).__name__,
-            "n_samples": len(self.X),
-            "n_features": self.X.shape[1],
+            "n_samples": len(self.features),
+            "n_features": self.features.shape[1],
             "test_size": self.test_size,
             "random_state": self.random_state,
         }
@@ -89,7 +94,9 @@ class ModelEvaluator:
             Dict[str, List[float]]: Cross-validation scores
         """
         # Perform cross-validation with single metric
-        scores = cross_val_score(self.model, self.X, self.y, cv=cv, scoring=scoring)
+        scores = cross_val_score(
+            self.model, self.features, self.targets, cv=cv, scoring=scoring
+        )
         metric_name = scoring if scoring else "score"
         return {metric_name: scores.tolist()}
 
@@ -138,8 +145,8 @@ class ModelEvaluator:
         # Calculate learning curve
         train_sizes, train_scores, test_scores = learning_curve(
             self.model,
-            self.X,
-            self.y,
+            self.features,
+            self.targets,
             cv=cv,
             n_jobs=n_jobs,
             train_sizes=train_sizes,

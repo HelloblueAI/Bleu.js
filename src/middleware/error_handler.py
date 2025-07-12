@@ -43,7 +43,7 @@ class ErrorHandler:
         app.add_exception_handler(422, self.handle_validation_error)
         app.add_exception_handler(500, self.handle_server_error)
 
-    async def handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
+    def handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
         """Handle general exceptions.
 
         Args:
@@ -75,7 +75,7 @@ class ErrorHandler:
             },
         )
 
-    async def handle_not_found(self, request: Request, exc: Exception) -> JSONResponse:
+    def handle_not_found(self, request: Request, exc: Exception) -> JSONResponse:
         """Handle 404 Not Found errors.
 
         Args:
@@ -105,9 +105,7 @@ class ErrorHandler:
             },
         )
 
-    async def handle_validation_error(
-        self, request: Request, exc: Exception
-    ) -> JSONResponse:
+    def handle_validation_error(self, request: Request, exc: Exception) -> JSONResponse:
         """Handle 422 Validation Error.
 
         Args:
@@ -135,9 +133,7 @@ class ErrorHandler:
             content={"error": "Validation error", "message": str(exc)},
         )
 
-    async def handle_server_error(
-        self, request: Request, exc: Exception
-    ) -> JSONResponse:
+    def handle_server_error(self, request: Request, exc: Exception) -> JSONResponse:
         """Handle 500 Server Error.
 
         Args:

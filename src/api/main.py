@@ -51,7 +51,7 @@ async def health_check():
 
         return {
             "status": "healthy",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(datetime.timezone.utc).isoformat(),
             "system": {
                 "cpu_percent": cpu_percent,
                 "memory_percent": memory.percent,

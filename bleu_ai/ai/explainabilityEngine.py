@@ -129,9 +129,9 @@ class ExplainabilityEngine:
         """Generate SHAP-based explanations."""
         try:
             # Create SHAP explainer
-            if isinstance(self.explainer, (shap.TreeExplainer, shap.KernelExplainer)):
-                pass
-            else:
+            if not isinstance(
+                self.explainer, (shap.TreeExplainer, shap.KernelExplainer)
+            ):
                 self.explainer = shap.TreeExplainer(self.explainer)
 
             # Calculate SHAP values

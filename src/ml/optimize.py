@@ -45,13 +45,13 @@ class ModelOptimizer:
         data = pd.read_csv(self.data_path)
 
         # Separate features and target
-        X = data.drop("target", axis=1)
-        y = data["target"]
+        features = data.drop("target", axis=1)
+        targets = data["target"]
 
         # Scale the features
-        X_scaled = self.scaler.fit_transform(X)
+        features_scaled = self.scaler.fit_transform(features)
 
-        return X_scaled, y, X.columns
+        return features_scaled, targets, features.columns
 
     def create_neural_network(self, input_dim):
         """Create a neural network model."""
@@ -66,28 +66,28 @@ class ModelOptimizer:
             nn.Sigmoid(),
         )
 
-    def train_neural_network(self, X, y, params):
+    def train_neural_network(self, features, targets, params):
         """Train a neural network model."""
         # Convert data to PyTorch tensors
-        X_tensor = torch.FloatTensor(X)
-        y_tensor = torch.FloatTensor(y.values)
+        features_tensor = torch.FloatTensor(features)
+        targets_tensor = torch.FloatTensor(targets.values)
 
         # Create data loader
-        dataset = TensorDataset(X_tensor, y_tensor)
+        dataset = TensorDataset(features_tensor, targets_tensor)
         dataloader = DataLoader(dataset, batch_size=params["batch_size"], shuffle=True)
 
         # Create model
-        model = self.create_neural_network(X.shape[1])
+        model = self.create_neural_network(features.shape[1])
         criterion = nn.BCELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=params["learning_rate"])
 
         # Train model
         model.train()
         for epoch in range(params["epochs"]):
-            for batch_X, batch_y in dataloader:
+            for batch_features, batch_targets in dataloader:
                 optimizer.zero_grad()
-                outputs = model(batch_X)
-                loss = criterion(outputs.squeeze(), batch_y)
+                outputs = model(batch_features)
+                loss = criterion(outputs.squeeze(), batch_targets)
                 loss.backward()
                 optimizer.step()
 
@@ -111,15 +111,18 @@ class ModelOptimizer:
         }
 
         # Load data
-        X_scaled, y, feature_names = self.load_data()
+        features_scaled, targets, feature_names = self.load_data()
 
         # Perform k-fold cross-validation
         kf = KFold(n_splits=5, shuffle=True, random_state=42)
         cv_scores = []
 
-        for train_idx, val_idx in kf.split(X_scaled):
-            X_train, X_val = X_scaled[train_idx], X_scaled[val_idx]
-            y_train, y_val = y[train_idx], y[val_idx]
+        for train_idx, val_idx in kf.split(features_scaled):
+            features_train, features_val = (
+                features_scaled[train_idx],
+                features_scaled[val_idx],
+            )
+            targets_train, targets_val = targets[train_idx], targets[val_idx]
 
             # Train XGBoost model
             xgb_model = xgb.XGBClassifier(
@@ -130,14 +133,16 @@ class ModelOptimizer:
                 },
                 random_state=42,
             )
-            xgb_model.fit(X_train, y_train)
+            xgb_model.fit(features_train, targets_train)
 
             # Train neural network
-            nn_model = self.train_neural_network(X_train, y_train, param)
+            nn_model = self.train_neural_network(features_train, targets_train, param)
 
             # Make predictions
-            xgb_pred = xgb_model.predict_proba(X_val)[:, 1]
-            nn_pred = nn_model(torch.FloatTensor(X_val)).detach().numpy().squeeze()
+            xgb_pred = xgb_model.predict_proba(features_val)[:, 1]
+            nn_pred = (
+                nn_model(torch.FloatTensor(features_val)).detach().numpy().squeeze()
+            )
 
             # Ensemble predictions
             ensemble_pred = 0.7 * xgb_pred + 0.3 * nn_pred
@@ -145,9 +150,9 @@ class ModelOptimizer:
             # Calculate metrics
             cv_scores.append(
                 {
-                    "accuracy": accuracy_score(y_val, ensemble_pred > 0.5),
-                    "roc_auc": roc_auc_score(y_val, ensemble_pred),
-                    "f1": f1_score(y_val, ensemble_pred > 0.5),
+                    "accuracy": accuracy_score(targets_val, ensemble_pred > 0.5),
+                    "roc_auc": roc_auc_score(targets_val, ensemble_pred),
+                    "f1": f1_score(targets_val, ensemble_pred > 0.5),
                 }
             )
 
@@ -180,7 +185,7 @@ class ModelOptimizer:
         """Train the final ensemble model."""
         print("Training final model...")
 
-        X_scaled, y, feature_names = self.load_data()
+        features_scaled, targets, feature_names = self.load_data()
 
         # Train XGBoost model
         if self.best_params is None:
@@ -191,10 +196,10 @@ class ModelOptimizer:
             if k not in ["batch_size", "epochs", "neural_network_lr"]
         }
         xgb_model = xgb.XGBClassifier(**xgb_params, random_state=42)
-        xgb_model.fit(X_scaled, y)
+        xgb_model.fit(features_scaled, targets)
 
         # Train neural network
-        nn_model = self.train_neural_network(X_scaled, y, self.best_params)
+        nn_model = self.train_neural_network(features_scaled, targets, self.best_params)
 
         # Get feature importance from XGBoost
         self.feature_importance = dict(

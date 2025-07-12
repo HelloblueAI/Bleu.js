@@ -10,6 +10,7 @@ try {
   console.log('✓ Python detected:', pythonVersion.trim());
 } catch (error) {
   console.error('✗ Python 3 is required but not found. Please install Python 3.');
+  console.error('Error details:', error.message);
   process.exit(1);
 }
 
@@ -19,6 +20,7 @@ try {
   console.log('✓ pip detected:', pipVersion.trim());
 } catch (error) {
   console.error('✗ pip is required but not found. Please install pip.');
+  console.error('Error details:', error.message);
   process.exit(1);
 }
 
@@ -29,6 +31,7 @@ try {
   console.log('✓ Python dependencies installed successfully');
 } catch (error) {
   console.error('✗ Failed to install Python dependencies:', error.message);
+  console.error('Error details:', error.message);
   process.exit(1);
 }
 
@@ -38,6 +41,7 @@ try {
   console.log('✓ Quantum computing package verified');
 } catch (error) {
   console.error('✗ Quantum computing package not properly installed:', error.message);
+  console.error('Error details:', error.message);
   process.exit(1);
 }
 
@@ -47,6 +51,7 @@ try {
   console.log('✓ XGBoost package verified');
 } catch (error) {
   console.error('✗ XGBoost package not properly installed:', error.message);
+  console.error('Error details:', error.message);
   process.exit(1);
 }
 

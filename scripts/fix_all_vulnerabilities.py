@@ -62,7 +62,7 @@ class VulnerabilityFixer:
         for package, version in self.vulnerable_packages.items():
             print(f"📦 Updating {package} to {version}...")
             cmd = f"pip install {package}=={version}"
-            code, stdout, stderr = self.run_command(cmd)
+            code, _, stderr = self.run_command(cmd)
 
             if code == 0:
                 print(f"✅ {package} updated successfully")
@@ -79,13 +79,13 @@ class VulnerabilityFixer:
 
         # Run black to format code
         print("🖤 Running black...")
-        code, stdout, stderr = self.run_command("black .")
+        code, _, stderr = self.run_command("black .")
         if code != 0:
             print(f"⚠️ Black issues: {stderr}")
 
         # Run isort to sort imports
         print("📦 Running isort...")
-        code, stdout, stderr = self.run_command("isort .")
+        code, _, stderr = self.run_command("isort .")
         if code != 0:
             print(f"⚠️ isort issues: {stderr}")
 
@@ -175,7 +175,7 @@ class VulnerabilityFixer:
         print("\n📊 Generating security report...")
 
         # Run safety scan
-        code, stdout, stderr = self.run_command("safety scan --full-report")
+        code, stdout, _ = self.run_command("safety scan --full-report")
 
         report = {
             "vulnerabilities": [],

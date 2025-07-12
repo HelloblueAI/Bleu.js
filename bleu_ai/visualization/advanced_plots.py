@@ -307,7 +307,7 @@ class AdvancedPlots:
             n_cols = min(3, n_features)
             n_rows = (n_features + n_cols - 1) // n_cols
 
-            fig, axes = plt.subplots(n_rows, n_cols, figsize=(15, 5 * n_rows))
+            _, axes = plt.subplots(n_rows, n_cols, figsize=(15, 5 * n_rows))
             if n_features == 1:
                 axes = [axes]
             elif n_rows == 1:

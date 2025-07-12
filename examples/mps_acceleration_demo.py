@@ -31,7 +31,7 @@ class SimpleNN(nn.Module):
 
 def train_model(model, device, num_iterations=1000):
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 
     start_time = time.time()
 
