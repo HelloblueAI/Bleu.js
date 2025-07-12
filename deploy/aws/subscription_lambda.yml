@@ -28,6 +28,13 @@ Resources:
           Value:
             Fn::Sub: ${AWS::StackName}-subscription-lambda
 
+  SubscriptionLambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Sub: /aws/lambda/${AWS::StackName}-subscription-management
+      RetentionInDays: 14
+
   SubscriptionLambdaRole:
     Type: AWS::IAM::Role
     Properties:

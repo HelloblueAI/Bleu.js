@@ -159,6 +159,13 @@ Resources:
           Value:
             Fn::Sub: ${AWS::StackName}-billing
 
+  BillingFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Sub: /aws/lambda/${AWS::StackName}-billing
+      RetentionInDays: 14
+
   BillingFunctionRole:
     Type: AWS::IAM::Role
     Properties:

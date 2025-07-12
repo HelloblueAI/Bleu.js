@@ -82,7 +82,7 @@ class BenchmarkSuite:
         quantum_time = time.time() - quantum_start
 
         # Calculate improvements
-        mAP_improvement = self.calculate_mAP_improvement(
+        map_improvement = self.calculate_map_improvement(
             classical_results, quantum_results
         )
         speed_improvement = classical_time / quantum_time
@@ -90,7 +90,7 @@ class BenchmarkSuite:
         return {
             "classical_mAP": classical_results["mAP"],
             "quantum_mAP": quantum_results["mAP"],
-            "mAP_improvement": mAP_improvement,
+            "mAP_improvement": map_improvement,
             "speed_improvement": speed_improvement,
             "quantum_time": quantum_time,
             "classical_time": classical_time,
@@ -255,7 +255,7 @@ class BenchmarkSuite:
         """Calculate accuracy improvement percentage."""
         return (quantum["accuracy"] - classical["accuracy"]) / classical["accuracy"]
 
-    def calculate_mAP_improvement(self, classical: Dict, quantum: Dict) -> float:
+    def calculate_map_improvement(self, classical: Dict, quantum: Dict) -> float:
         """Calculate mAP improvement percentage."""
         return (quantum["mAP"] - classical["mAP"]) / classical["mAP"]
 

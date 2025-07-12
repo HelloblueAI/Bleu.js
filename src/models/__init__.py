@@ -1,6 +1,10 @@
 """
-Models package.
+Bleu models module.
+
+This module provides data models for Bleu.js.
 """
+
+__version__ = "1.1.7"
 
 from .api_call import APICall, APIUsage
 from .customer import Customer

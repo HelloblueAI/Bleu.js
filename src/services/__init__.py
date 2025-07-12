@@ -1,4 +1,10 @@
-"""Services package."""
+"""
+Bleu services module.
+
+This module provides service layer functionality for Bleu.js.
+"""
+
+__version__ = "1.1.7"
 
 from typing import Dict
 

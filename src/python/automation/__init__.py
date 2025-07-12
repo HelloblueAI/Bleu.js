@@ -1,7 +1,10 @@
 """
-BleuJS Automation Module
-Provides workflow automation and pipeline orchestration capabilities.
+Bleu automation module.
+
+This module provides automation capabilities for Bleu.js.
 """
+
+__version__ = "1.1.7"
 
 from .pipeline import AutomationPipeline, PipelineMetrics, PipelineStep
 

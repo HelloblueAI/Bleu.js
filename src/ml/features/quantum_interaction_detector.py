@@ -58,7 +58,7 @@ class QuantumInteractionDetector:
         self._compute_quantum_correlations(features, feature_names)
 
         if target is not None:
-            self._compute_shap_interactions(features, feature_names, target)
+            self._compute_shap_interactions(features, feature_names)
 
         return self._combine_interaction_scores(feature_names)
 
@@ -90,7 +90,7 @@ class QuantumInteractionDetector:
                 self.quantum_correlations[pair] = correlation
 
     def _compute_shap_interactions(
-        self, features: np.ndarray, feature_names: List[str], target: np.ndarray
+        self, features: np.ndarray, feature_names: List[str]
     ) -> None:
         """Compute SHAP interaction values between features."""
         explainer = shap.TreeExplainer(features)

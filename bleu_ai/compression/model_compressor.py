@@ -34,7 +34,7 @@ class ModelCompressor:
         self.compressed_size = None
         self.initialized = False
 
-    async def initialize(self):
+    def initialize(self):
         """Initialize the model compressor."""
         try:
             logging.info("Initializing model compressor...")
@@ -45,13 +45,13 @@ class ModelCompressor:
             logging.error(f"❌ Failed to initialize model compressor: {str(e)}")
             raise
 
-    async def compress_model(
+    def compress_model(
         self, model: Union[xgb.XGBClassifier, nn.Module], method: Optional[str] = None
     ) -> Union[xgb.XGBClassifier, nn.Module]:
         """Compress the model using the specified method."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             if method is None and self.compression_method is None:
                 raise ValueError("No compression method specified")
@@ -60,9 +60,9 @@ class ModelCompressor:
             self.original_size = self._get_model_size(model)
 
             if isinstance(model, xgb.XGBClassifier):
-                compressed = await self._compress_xgboost(model, method)
+                compressed = self._compress_xgboost(model, method)
             else:
-                compressed = await self._compress_pytorch(model, method)
+                compressed = self._compress_pytorch(model, method)
 
             self.compressed_size = self._get_model_size(compressed)
             if self.original_size is None or self.compressed_size is None:
@@ -79,17 +79,17 @@ class ModelCompressor:
             logging.error(f"❌ Model compression failed: {str(e)}")
             raise
 
-    async def _compress_xgboost(
+    def _compress_xgboost(
         self, model: xgb.XGBClassifier, method: str
     ) -> xgb.XGBClassifier:
         """Compress XGBoost model using various techniques."""
         try:
             if method == "quantization":
-                return await self._quantize_xgboost(model)
+                return self._quantize_xgboost(model)
             elif method == "pruning":
-                return await self._prune_xgboost(model)
+                return self._prune_xgboost(model)
             elif method == "clustering":
-                return await self._cluster_xgboost(model)
+                return self._cluster_xgboost(model)
             else:
                 raise ValueError(f"Unsupported compression method: {method}")
 
@@ -97,13 +97,13 @@ class ModelCompressor:
             logging.error(f"❌ XGBoost compression failed: {str(e)}")
             raise
 
-    async def _compress_pytorch(self, model: nn.Module, method: str) -> nn.Module:
+    def _compress_pytorch(self, model: nn.Module, method: str) -> nn.Module:
         """Compress PyTorch model using various techniques."""
         try:
             if method == "quantization":
-                return await self._quantize_pytorch(model)
+                return self._quantize_pytorch(model)
             elif method == "pruning":
-                return await self._prune_pytorch(model)
+                return self._prune_pytorch(model)
             else:
                 raise ValueError(f"Unsupported compression method: {method}")
 
@@ -111,7 +111,7 @@ class ModelCompressor:
             logging.error(f"❌ PyTorch compression failed: {str(e)}")
             raise
 
-    async def _quantize_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
+    def _quantize_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Quantize XGBoost model parameters."""
         try:
             if self.quantization_bits is None:
@@ -142,7 +142,7 @@ class ModelCompressor:
             logging.error(f"❌ XGBoost quantization failed: {str(e)}")
             raise
 
-    async def _prune_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
+    def _prune_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Prune XGBoost model by removing less important trees."""
         try:
             if self.pruning_threshold is None:
@@ -175,7 +175,7 @@ class ModelCompressor:
             logging.error(f"❌ XGBoost pruning failed: {str(e)}")
             raise
 
-    async def _cluster_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
+    def _cluster_xgboost(self, model: xgb.XGBClassifier) -> xgb.XGBClassifier:
         """Cluster XGBoost model parameters to reduce redundancy."""
         try:
             if self.clustering_n_clusters is None:
@@ -190,7 +190,7 @@ class ModelCompressor:
             importances = model.feature_importances_
 
             # Perform clustering
-            kmeans = KMeans(n_clusters=self.clustering_n_clusters)
+            kmeans = KMeans(n_clusters=self.clustering_n_clusters, random_state=42)
             clusters = kmeans.fit_predict(importances.reshape(-1, 1))
 
             # Replace values with cluster centers
@@ -205,7 +205,7 @@ class ModelCompressor:
             logging.error(f"❌ XGBoost clustering failed: {str(e)}")
             raise
 
-    async def _quantize_pytorch(self, model: nn.Module) -> nn.Module:
+    def _quantize_pytorch(self, model: nn.Module) -> nn.Module:
         """Quantize PyTorch model parameters."""
         try:
             if not hasattr(model, "eval") or not callable(model.eval):
@@ -230,7 +230,7 @@ class ModelCompressor:
             logging.error(f"❌ PyTorch quantization failed: {str(e)}")
             raise
 
-    async def _prune_pytorch(self, model: nn.Module) -> nn.Module:
+    def _prune_pytorch(self, model: nn.Module) -> nn.Module:
         """Prune PyTorch model by removing less important weights."""
         try:
             if self.pruning_threshold is None:
@@ -305,7 +305,7 @@ class ModelCompressor:
             logging.error(f"❌ Failed to get model size: {str(e)}")
             raise
 
-    async def dispose(self):
+    def dispose(self):
         """Clean up resources."""
         try:
             self.compression_method = None

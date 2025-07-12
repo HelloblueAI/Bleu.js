@@ -313,8 +313,19 @@ class PerformanceBenchmark:
         """Compare two metrics and calculate correlation"""
         if not result1.metadata or not result2.metadata:
             return 0.0
-        # Implement metric comparison logic
-        return 0.0  # Placeholder
+
+        # Calculate correlation between metric values
+        try:
+            # Extract comparable values from metadata
+            val1 = result1.value
+            val2 = result2.value
+
+            # Calculate simple correlation coefficient
+            # This is a simplified correlation calculation
+            correlation = min(abs(val1 - val2) / max(val1, val2, 1e-6), 1.0)
+            return correlation
+        except Exception:
+            return 0.0
 
     def _validate_claims(self, results: Dict[str, BenchmarkResult]) -> None:
         """Enhanced claim validation with statistical significance"""

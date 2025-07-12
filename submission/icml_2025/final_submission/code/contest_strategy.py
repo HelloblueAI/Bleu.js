@@ -41,6 +41,8 @@ class QuantumContestStrategy:
         )
         self.initialized = False
         self.params = np.random.randn(config.num_layers, config.num_qubits)
+        self.optimizer = AdamOptimizer(config.learning_rate)
+        self.quantum_circuit = None
         self._build_quantum_circuit()
 
     def _build_quantum_circuit(self) -> None:
@@ -58,12 +60,16 @@ class QuantumContestStrategy:
         """Optimize quantum circuit parameters for given problem data."""
         if not problem_data:
             raise ValueError("Problem data cannot be empty")
-        features = self._prepare_features(problem_data)
-        params = self._initialize_parameters()
-        for _ in range(self.config.num_layers):
-            cost = self.quantum_circuit(features)
-            params = self.optimizer.step(lambda p: cost, params)
-        return self._process_results(params)
+        try:
+            features = self._prepare_features(problem_data)
+            params = self._initialize_parameters()
+            for _ in range(self.config.num_layers):
+                if self.quantum_circuit is not None:
+                    cost = self.quantum_circuit(features)
+                    params = self.optimizer.step(lambda p: cost, params)
+            return self._process_results(params)
+        except Exception as e:
+            raise RuntimeError(f"Optimization failed: {str(e)}")
 
     def _prepare_quantum_state(self, features: np.ndarray) -> np.ndarray:
         """Prepare quantum state from input features."""
@@ -77,7 +83,10 @@ class QuantumContestStrategy:
 
     def _normalize_data(self, data: np.ndarray) -> np.ndarray:
         """Normalize input data."""
-        return data / np.linalg.norm(data, axis=-1, keepdims=True)
+        norm = np.linalg.norm(data, axis=-1, keepdims=True)
+        if np.any(norm == 0):
+            return data
+        return data / norm
 
     def _apply_optimization_gates(self) -> None:
         """Apply quantum optimization gates."""
@@ -144,10 +153,13 @@ class BleuQuantumContestOptimizer(QuantumContestStrategy):
     def _process_results(self, result) -> Dict:
         """Process quantum execution results."""
         counts = result.get_counts()
+        if not counts:
+            return {"status": "no_results", "message": "No quantum results available"}
+
         processed_results = {
             "counts": counts,
-            "optimal_value": max(counts.values()),
-            "optimal_state": max(counts, key=counts.get),
+            "optimal_value": max(counts.values()) if counts else 0,
+            "optimal_state": max(counts, key=counts.get) if counts else "",
         }
         return processed_results
 
