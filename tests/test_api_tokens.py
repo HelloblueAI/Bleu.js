@@ -1,6 +1,7 @@
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi import HTTPException
@@ -24,7 +25,10 @@ client = TestClient(app)
 
 @pytest.fixture
 def services(db: Session):
-    return init_services(db)
+    from src.main import app
+
+    mock_redis = MagicMock()
+    return init_services(app, db, mock_redis)
 
 
 @pytest.fixture
@@ -130,7 +134,7 @@ def auth_headers(test_user: User, db: Session) -> dict:
     return {"Authorization": f"Bearer {access_token}"}
 
 
-async def test_create_token(client: TestClient, test_user: User, auth_headers: dict):
+def test_create_token(client: TestClient, test_user: User, auth_headers: dict):
     """Test creating a new API token."""
     response = client.post(
         "/api/v1/tokens",
@@ -144,7 +148,7 @@ async def test_create_token(client: TestClient, test_user: User, auth_headers: d
     assert data["is_active"] is True
 
 
-async def test_create_token_without_subscription(
+def test_create_token_without_subscription(
     client: TestClient, db: Session, auth_headers: dict
 ):
     """Test creating a token without an active subscription."""
@@ -172,7 +176,7 @@ async def test_create_token_without_subscription(
     assert response.status_code == 403
 
 
-async def test_get_tokens(
+def test_get_tokens(
     client: TestClient, test_user: User, test_token: APIToken, auth_headers: dict
 ):
     """Test getting all user's API tokens."""
@@ -183,7 +187,7 @@ async def test_get_tokens(
     assert data[0]["id"] == test_token.id
 
 
-async def test_revoke_token(
+def test_revoke_token(
     client: TestClient, test_user: User, test_token: APIToken, auth_headers: dict
 ):
     """Test revoking an API token."""
@@ -197,7 +201,7 @@ async def test_revoke_token(
     assert data["is_active"] is False
 
 
-async def test_rotate_token(
+def test_rotate_token(
     client: TestClient, test_user: User, test_token: APIToken, auth_headers: dict
 ):
     """Test rotating an API token."""

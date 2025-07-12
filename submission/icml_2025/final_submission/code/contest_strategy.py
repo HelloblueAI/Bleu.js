@@ -423,14 +423,8 @@ class BleuQuantumContestOptimizer(QuantumContestStrategy):
 
         return self._build_quantum_circuit(num_qubits, num_layers, params)
 
-    def estimate_quantum_advantage(
-        self, problem_size: int, classical_runtime: float
-    ) -> float:
+    def estimate_quantum_advantage(self) -> float:
         """Estimate potential quantum advantage for a given problem.
-
-        Args:
-            problem_size: Size of the problem
-            classical_runtime: Runtime of classical algorithm
 
         Returns:
             Estimated quantum advantage ratio
@@ -442,14 +436,11 @@ class BleuQuantumContestOptimizer(QuantumContestStrategy):
         # - Error rate analysis
         return 1.0  # Placeholder
 
-    def optimize_for_contest(
-        self, problem: QuadraticProgram, time_limit: float
-    ) -> Dict:
+    def optimize_for_contest(self, problem: QuadraticProgram) -> Dict:
         """Optimize solution for a quantum computing contest.
 
         Args:
             problem: Problem to solve
-            time_limit: Time limit for optimization
 
         Returns:
             Dictionary containing optimized solution
@@ -462,7 +453,7 @@ class BleuQuantumContestOptimizer(QuantumContestStrategy):
         # - Error mitigation
         return self.solve_optimization_problem(problem)
 
-    def _build_quantum_circuit(self, features: np.ndarray) -> None:
+    def _build_quantum_circuit(self, features: np.ndarray = None) -> None:
         """Build quantum circuit for optimization."""
         self._prepare_quantum_state(features)
 

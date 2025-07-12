@@ -132,7 +132,7 @@ async def test_validate_token_with_subscription(
     assert validated_token.last_used is not None
 
 
-async def test_validate_token_without_subscription(db: Session, test_user):
+def test_validate_token_without_subscription(db: Session, test_user):
     token = APIToken(
         id="no_sub_token_id",
         user_id=test_user.id,
@@ -147,7 +147,7 @@ async def test_validate_token_without_subscription(db: Session, test_user):
     assert validated_token is None
 
 
-async def test_validate_token_rate_limit_exceeded(
+def test_validate_token_rate_limit_exceeded(
     db: Session, test_user, test_subscription, test_token
 ):
     # Set rate limit to maximum
@@ -162,7 +162,7 @@ async def test_validate_token_rate_limit_exceeded(
     assert validated_token is None
 
 
-async def test_validate_token_after_rate_limit_reset(
+def test_validate_token_after_rate_limit_reset(
     db: Session, test_user, test_subscription, test_token
 ):
     # Set rate limit to maximum

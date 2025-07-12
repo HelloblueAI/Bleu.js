@@ -17,16 +17,16 @@ def sample_data():
     n_features = 5
 
     # Generate base features
-    X_base, y = make_regression(
+    x_base, y = make_regression(
         n_samples=n_samples, n_features=n_features, noise=0.1, random_state=42
     )
 
     # Create interaction features
-    X = np.copy(X_base)
+    X = np.copy(x_base)
     # Add interaction between features 0 and 1
-    X[:, 0] = X_base[:, 0] + 0.5 * X_base[:, 1]
+    X[:, 0] = x_base[:, 0] + 0.5 * x_base[:, 1]
     # Add interaction between features 2 and 3
-    X[:, 2] = X_base[:, 2] * 0.7 * X_base[:, 3]
+    X[:, 2] = x_base[:, 2] * 0.7 * x_base[:, 3]
 
     return X, y
 
@@ -127,7 +127,7 @@ def test_interaction_detection(config, sample_data):
 
     # Check that known interactions are detected
     interactions = results["interactions"]
-    interaction_pairs = set(tuple(k.split(" × ")) for k in interactions.keys())
+    interaction_pairs = {tuple(k.split(" × ")) for k in interactions.keys()}
     assert ("feature_0", "feature_1") in interaction_pairs
     assert ("feature_2", "feature_3") in interaction_pairs
 
@@ -174,8 +174,9 @@ def test_error_handling(config):
         detector.detect_interactions(None, None)
 
     # Test with mismatched dimensions
-    X = np.random.rand(10, 3)
-    y = np.random.rand(5)
+    rng = np.random.default_rng()
+    X = rng.random((10, 3))
+    y = rng.random(5)
     with pytest.raises(ValueError):
         detector.detect_interactions(X, y)
 

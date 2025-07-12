@@ -101,7 +101,7 @@ def test_imports() -> Dict[str, Any]:
 
         # Test numpy operations
         arr = np.array([1, 2, 3])
-        assert arr.sum() == 6, "NumPy basic operations failed"
+        assert arr.sum(axis=0) == 6, "NumPy basic operations failed"
 
         # Test PyTorch operations
         tensor = torch.tensor([1, 2, 3])

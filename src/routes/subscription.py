@@ -28,7 +28,9 @@ def create_subscription(
 ) -> Subscription:
     """Create a new subscription."""
     subscription_service = SubscriptionService(db, StripeService())
-    return subscription_service.create_subscription(current_user.id, subscription_data)
+    return subscription_service.create_subscription(
+        current_user, subscription_data.plan_type, subscription_data.payment_method_id
+    )
 
 
 @router.get("/", response_model=List[SubscriptionResponse])

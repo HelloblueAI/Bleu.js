@@ -181,14 +181,15 @@ def test_hardware_info(benchmark):
 
 def test_statistical_significance(benchmark, model, test_data):
     """Test statistical significance calculation"""
+    rng = np.random.default_rng()
     # Test with clearly different distributions
-    values1 = np.random.normal(100, 10, 1000)
-    values2 = np.random.normal(200, 10, 1000)
+    values1 = rng.normal(100, 10, 1000)
+    values2 = rng.normal(200, 10, 1000)
     p_value = benchmark._calculate_statistical_significance(values1, values2)
     assert p_value < 0.01  # Should be statistically significant
 
     # Test with similar distributions
-    values3 = np.random.normal(100, 10, 1000)
-    values4 = np.random.normal(101, 10, 1000)
+    values3 = rng.normal(100, 10, 1000)
+    values4 = rng.normal(101, 10, 1000)
     p_value = benchmark._calculate_statistical_significance(values3, values4)
     assert p_value > 0.01  # Should not be statistically significant

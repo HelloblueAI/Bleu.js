@@ -14,16 +14,16 @@ def sample_data():
     n_features = 5
 
     # Generate base features
-    X_base, y = make_regression(
+    x_base, y = make_regression(
         n_samples=n_samples, n_features=n_features, noise=0.1, random_state=42
     )
 
     # Create interaction features
-    X = np.copy(X_base)
+    X = np.copy(x_base)
     # Add interaction between features 0 and 1
-    X[:, 0] = X_base[:, 0] + 0.5 * X_base[:, 1]
+    X[:, 0] = x_base[:, 0] + 0.5 * x_base[:, 1]
     # Add interaction between features 2 and 3
-    X[:, 2] = X_base[:, 2] * 0.7 * X_base[:, 3]
+    X[:, 2] = x_base[:, 2] * 0.7 * x_base[:, 3]
 
     feature_names = [f"feature_{i}" for i in range(n_features)]
     return X, y, feature_names
@@ -141,6 +141,7 @@ def test_error_handling(quantum_processor):
         detector.detect_interactions(None, None)
 
     with pytest.raises(ValueError):
-        X = np.random.rand(10, 3)
+        rng = np.random.default_rng()
+        X = rng.random((10, 3))
         feature_names = ["f1", "f2"]  # Mismatched length
         detector.detect_interactions(X, feature_names)

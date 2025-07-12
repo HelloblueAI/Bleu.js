@@ -18,7 +18,7 @@ def client(app):
     return TestClient(app)
 
 
-async def test_security_headers(client):
+def test_security_headers(client):
     """Test that security headers are properly set."""
     response = client.get("/")
 

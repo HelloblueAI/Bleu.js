@@ -200,7 +200,7 @@ class QuantumGPUManager:
     def __del__(self):
         """Cleanup on deletion."""
         # Free all allocated blocks
-        for handle in list(self.memory_blocks.keys()):
+        for handle in self.memory_blocks.keys():
             self.free(handle)
 
         # Reset device stats
