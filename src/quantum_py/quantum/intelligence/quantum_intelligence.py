@@ -57,6 +57,36 @@ class QuantumIntelligence:
         self.adaptation_history = []
         self.optimization_history = []
 
+    async def _apply_quantum_enhancements(
+        self, quantum_features: np.ndarray, context: Optional[Dict] = None
+    ) -> np.ndarray:
+        """Apply quantum enhancements to features."""
+        if self.config.use_quantum_attention:
+            quantum_features = await self._apply_quantum_attention(
+                quantum_features, context
+            )
+
+        if self.config.use_quantum_memory:
+            await self._update_quantum_memory(quantum_features)
+
+        return quantum_features
+
+    async def _perform_intelligence_optimization(
+        self, quantum_features: np.ndarray, target: Optional[np.ndarray] = None
+    ) -> Optional[Dict]:
+        """Perform intelligence optimization if enabled."""
+        if not self.config.use_quantum_optimization:
+            return None
+
+        return await self._optimize_intelligence(quantum_features, target)
+
+    async def _update_intelligence_score(self) -> None:
+        """Update intelligence score and adapt if necessary."""
+        self.intelligence_score = await self._calculate_intelligence_score()
+
+        if self.intelligence_score < self.config.intelligence_threshold:
+            await self._adapt_intelligence()
+
     async def enhance_intelligence(
         self,
         data: np.ndarray,
@@ -68,28 +98,18 @@ class QuantumIntelligence:
             # Process data through quantum circuits
             quantum_features = await self._process_quantum_features(data)
 
-            # Apply quantum attention
-            if self.config.use_quantum_attention:
-                quantum_features = await self._apply_quantum_attention(
-                    quantum_features, context
-                )
+            # Apply quantum enhancements
+            quantum_features = await self._apply_quantum_enhancements(
+                quantum_features, context
+            )
 
-            # Update quantum memory
-            if self.config.use_quantum_memory:
-                await self._update_quantum_memory(quantum_features)
+            # Perform optimization
+            optimization_results = await self._perform_intelligence_optimization(
+                quantum_features, target
+            )
 
-            # Optimize intelligence
-            if self.config.use_quantum_optimization:
-                optimization_results = await self._optimize_intelligence(
-                    quantum_features, target
-                )
-
-            # Calculate new intelligence score
-            self.intelligence_score = await self._calculate_intelligence_score()
-
-            # Adapt if necessary
-            if self.intelligence_score < self.config.intelligence_threshold:
-                await self._adapt_intelligence()
+            # Update intelligence score
+            await self._update_intelligence_score()
 
             return {
                 "intelligence_score": self.intelligence_score,
