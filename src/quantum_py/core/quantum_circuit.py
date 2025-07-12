@@ -72,36 +72,55 @@ class QuantumCircuit:
         """Add a quantum gate to the circuit."""
         if control_qubits is None:
             control_qubits = []
-
-        if gate_name == "H":
-            for qubit in target_qubits:
-                self.circuit.h(qubit)
-        elif gate_name == "X":
-            for qubit in target_qubits:
-                self.circuit.x(qubit)
-        elif gate_name == "Y":
-            for qubit in target_qubits:
-                self.circuit.y(qubit)
-        elif gate_name == "Z":
-            for qubit in target_qubits:
-                self.circuit.z(qubit)
-        elif gate_name == "CNOT":
-            for control, target in zip(control_qubits, target_qubits):
-                self.circuit.cx(control, target)
-        elif gate_name == "RX":
-            angle = params[0] if params else 0.0
-            for qubit in target_qubits:
-                self.circuit.rx(angle, qubit)
-        elif gate_name == "RY":
-            angle = params[0] if params else 0.0
-            for qubit in target_qubits:
-                self.circuit.ry(angle, qubit)
-        elif gate_name == "RZ":
-            angle = params[0] if params else 0.0
-            for qubit in target_qubits:
-                self.circuit.rz(angle, qubit)
+        gate_dispatch = {
+            "H": self._add_h_gate,
+            "X": self._add_x_gate,
+            "Y": self._add_y_gate,
+            "Z": self._add_z_gate,
+            "CNOT": self._add_cnot_gate,
+            "RX": self._add_rx_gate,
+            "RY": self._add_ry_gate,
+            "RZ": self._add_rz_gate,
+        }
+        if gate_name in gate_dispatch:
+            gate_dispatch[gate_name](target_qubits, control_qubits, params)
         else:
             raise ValueError(f"Unsupported gate: {gate_name}")
+
+    def _add_h_gate(self, target_qubits, control_qubits, params):
+        for qubit in target_qubits:
+            self.circuit.h(qubit)
+
+    def _add_x_gate(self, target_qubits, control_qubits, params):
+        for qubit in target_qubits:
+            self.circuit.x(qubit)
+
+    def _add_y_gate(self, target_qubits, control_qubits, params):
+        for qubit in target_qubits:
+            self.circuit.y(qubit)
+
+    def _add_z_gate(self, target_qubits, control_qubits, params):
+        for qubit in target_qubits:
+            self.circuit.z(qubit)
+
+    def _add_cnot_gate(self, target_qubits, control_qubits, params):
+        for control, target in zip(control_qubits, target_qubits):
+            self.circuit.cx(control, target)
+
+    def _add_rx_gate(self, target_qubits, control_qubits, params):
+        angle = params[0] if params else 0.0
+        for qubit in target_qubits:
+            self.circuit.rx(angle, qubit)
+
+    def _add_ry_gate(self, target_qubits, control_qubits, params):
+        angle = params[0] if params else 0.0
+        for qubit in target_qubits:
+            self.circuit.ry(angle, qubit)
+
+    def _add_rz_gate(self, target_qubits, control_qubits, params):
+        angle = params[0] if params else 0.0
+        for qubit in target_qubits:
+            self.circuit.rz(angle, qubit)
 
     def add_measurement(self, qubits: Optional[List[int]] = None) -> None:
         """Add measurement to specified qubits or all qubits if none specified."""
