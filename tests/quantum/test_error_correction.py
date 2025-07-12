@@ -89,7 +89,7 @@ class TestQuantumErrorCorrection:
         """Test logical operations on encoded states."""
         # Prepare logical states
         zero_state = stabilizer_code.encode_state(basis_state=0)
-        one_state = stabilizer_code.encode_state(basis_state=1)
+        # _one_state = stabilizer_code.encode_state(basis_state=1)  # Unused for now
 
         # Apply logical X gate
         logical_x = stabilizer_code.logical_x()
