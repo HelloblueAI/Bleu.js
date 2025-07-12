@@ -1,82 +1,19 @@
-# Stage 1: Build environment
-FROM python:3.11-slim as builder
+# Dockerfile for building and publishing Bleu.js v1.1.4
+FROM python:3.10-slim
 
-# Set build environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    POETRY_VERSION=1.7.1
+WORKDIR /workspace
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Install build tools
+RUN pip install --upgrade pip setuptools wheel build twine
 
-# Install poetry for dependency management
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# Set working directory
-WORKDIR /app
-
-# Copy dependency files
-COPY pyproject.toml poetry.lock ./
-
-# Install dependencies
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-root
-
-# Copy source code
+# Copy project files
 COPY . .
 
-# Build the application
-RUN poetry build
+# Build the package
+RUN python3 -m build
 
-# Stage 2: Runtime environment
-FROM python:3.11-slim
+# Uncomment the following line to publish directly from Docker (requires PyPI token)
+# ARG PYPI_TOKEN
+# RUN twine upload dist/* -u __token__ -p $PYPI_TOKEN
 
-# Create non-root user
-RUN useradd -m -u 1000 bleujs
-
-# Set runtime environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/opt/venv/bin:$PATH"
-
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libopenblas-base \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy built artifacts from builder
-COPY --from=builder /app/dist/*.whl /tmp/
-COPY --from=builder /app/requirements.txt /tmp/
-
-# Create and activate virtual environment and set up directories
-RUN python -m venv /opt/venv \
-    && /opt/venv/bin/pip install --no-cache-dir /tmp/*.whl \
-    && /opt/venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt \
-    && mkdir -p /app/{logs,data,storage,mlruns} \
-    && chown -R bleujs:bleujs /app \
-    && chmod +x /app/docker-entrypoint.sh
-
-# Set working directory
-WORKDIR /app
-
-# Switch to non-root user
-USER bleujs
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8000/health"]
-
-# Expose ports
-EXPOSE 8000
-
-# Create entrypoint script
-COPY --chown=bleujs:bleujs docker-entrypoint.sh /app/
-
-# Set entrypoint
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD ["ls", "-l", "dist"]

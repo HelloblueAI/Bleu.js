@@ -3,7 +3,6 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
-from sklearn.base import BaseEstimator
 from sklearn.preprocessing import StandardScaler
 
 from src.ml.factory import ModelFactory

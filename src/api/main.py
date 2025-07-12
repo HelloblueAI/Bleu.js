@@ -1,10 +1,8 @@
-import json
 import os
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import datetime
 
 import psutil
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -13,7 +11,7 @@ from services.subscription_service import SubscriptionService
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.0.0",
+    version="1.1.4",
 )
 
 # Initialize services

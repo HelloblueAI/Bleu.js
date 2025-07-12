@@ -1,7 +1,6 @@
-from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 
 from ..models.subscription import (

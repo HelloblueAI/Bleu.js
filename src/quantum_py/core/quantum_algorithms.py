@@ -63,7 +63,7 @@ class QuantumAlgorithms:
         # Run circuit multiple times and collect statistics
         phases = []
         for _ in range(num_iterations):
-            final_state = self.processor.apply_circuit(qpe_circuit)
+            self.processor.apply_circuit(qpe_circuit)
             # Measure control qubits
             measurements = qpe_circuit.measure(control_qubits)
             # Convert measurements to phase
@@ -117,7 +117,7 @@ class QuantumAlgorithms:
 
         # Run circuit and measure
         final_state = self.processor.apply_circuit(circuit)
-        measurements = circuit.measure(list(range(num_qubits)))
+        circuit.measure(list(range(num_qubits)))
 
         # Return states with high probability
         threshold = 1 / (2 * np.sqrt(N))

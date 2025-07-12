@@ -5,7 +5,7 @@ feature representations in computer vision tasks.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List
 
 import numpy as np
 import pennylane as qml
@@ -66,8 +66,8 @@ class QuantumFusion:
         x2_norm = self._normalize_data(x2)
 
         # Prepare quantum states
-        state1 = self._prepare_quantum_state(x1_norm)
-        state2 = self._prepare_quantum_state(x2_norm)
+        self._prepare_quantum_state(x1_norm)
+        self._prepare_quantum_state(x2_norm)
 
         # Apply quantum gates
         params = np.random.randn(self.config.num_qubits - 1)

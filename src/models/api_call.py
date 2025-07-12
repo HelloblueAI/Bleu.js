@@ -1,7 +1,6 @@
 """API call model."""
 
 from datetime import datetime
-from typing import Dict
 
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String

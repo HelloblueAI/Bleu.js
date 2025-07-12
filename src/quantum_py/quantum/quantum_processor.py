@@ -5,17 +5,7 @@ Provides advanced quantum computing capabilities for machine learning models.
 
 import logging
 from dataclasses import dataclass
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Protocol,
-    TypeVar,
-    Union,
-)
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
 import numpy as np
 import pennylane as qml
@@ -23,16 +13,14 @@ from numpy.typing import NDArray
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import TwoLocal
 from qiskit.primitives import Sampler
-from qiskit.quantum_info import Statevector
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_algorithms.optimizers import SPSA
 from qiskit_machine_learning.algorithms import VQC
 from qiskit_machine_learning.neural_networks import CircuitQNN
-from qiskit_machine_learning.utils.loss_functions import CrossEntropyLoss
 from sklearn.preprocessing import MinMaxScaler
 
+# Import QuantumCircuit from core module
 from ..core.quantum_circuit import QuantumCircuit
-from ..core.quantum_gate import QuantumGate
 from ..core.quantum_state import QuantumState
 
 # Constants for error messages
@@ -42,15 +30,6 @@ DEFAULT_SEED = 42  # Default seed for reproducibility
 
 # Type definitions
 Device = TypeVar("Device", bound="qml.Device")  # Generic type for quantum devices
-
-
-class QuantumCircuit(Protocol):
-    """Protocol defining the interface for quantum circuits."""
-
-    def apply_gates(self, data: np.ndarray) -> None: ...
-    def process(self, data: np.ndarray) -> np.ndarray: ...
-    def optimize(self, data: np.ndarray) -> None: ...
-    def measure_uncertainty(self, data: np.ndarray) -> np.ndarray: ...
 
 
 @dataclass
@@ -290,7 +269,7 @@ class QuantumProcessor(Generic[Device]):
             qnn = CircuitQNN(
                 circuit=circuit,
                 input_params=var_form.parameters[: self.n_qubits],
-                weight_params=var_form.parameters[self.n_qubits :],
+                weight_params=var_form.parameters[self.n_qubits:],
                 sampling=True,
                 sampler=self.sampler,
             )

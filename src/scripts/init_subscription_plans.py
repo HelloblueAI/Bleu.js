@@ -1,7 +1,5 @@
 import uuid
 
-from sqlalchemy.orm import Session
-
 from src.database import SessionLocal
 from src.models.subscription import PlanType, SubscriptionPlan
 

@@ -2,7 +2,8 @@
 BleuJS Backend Package
 =====================
 
-This package contains the backend implementation of BleuJS, a Quantum-Enhanced Computer Vision System.
+This package contains the backend implementation of BleuJS, a "
+            "Quantum-Enhanced Computer Vision System."
 
 Main Components:
 - API: FastAPI-based REST API implementation

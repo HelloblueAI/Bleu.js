@@ -1,3 +1,7 @@
+from tests.test_config import get_test_settings
+from src.models.declarative_base import Base
+from src.models.customer import Customer
+from src.main import app
 import os
 from datetime import datetime, timezone
 
@@ -12,12 +16,8 @@ from sqlalchemy.pool import StaticPool
 os.environ["TESTING"] = "true"
 load_dotenv(".env.test")
 
-from src.main import app
-from src.models.customer import Customer
-from src.models.declarative_base import Base
 
 # Import test settings and models after setting TESTING=true
-from tests.test_config import get_test_settings
 
 # Get test settings
 settings = get_test_settings()

@@ -6,18 +6,14 @@ in computer vision contests, focusing on attention and feature fusion optimizati
 
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-import cirq
 import numpy as np
 import tensorflow as tf
-from cirq.contrib.qaoa import QAOAStrategy
-from pennylane import qaoa
 from qiskit import Aer, ClassicalRegister, QuantumCircuit, QuantumRegister, execute
 from qiskit.algorithms import QAOA, VQE
 from qiskit.algorithms.optimizers import COBYLA, SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit.optimization import QuadraticProgram
 from qiskit.optimization.algorithms import MinimumEigenOptimizer
-from qiskit.providers.aer import AerSimulator
 from qiskit.quantum_info import Statevector
 from qiskit.utils import QuantumInstance
 

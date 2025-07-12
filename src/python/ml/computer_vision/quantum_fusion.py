@@ -289,7 +289,8 @@ class QuantumFusion:
         if features.shape[1] < self.config.fusion_dim:
             padding = np.zeros((batch_size, self.config.fusion_dim - features.shape[1]))
             features = np.concatenate([features, padding], axis=1)
-        # If the number of features is greater than fusion_dim, take only the first fusion_dim features
+        # If the number of features is greater than fusion_dim, take only the
+        # first fusion_dim features
         elif features.shape[1] > self.config.fusion_dim:
             features = features[:, : self.config.fusion_dim]
 
@@ -412,7 +413,7 @@ class QuantumFusionLayer(torch.nn.Module):
             # Project to fusion dimension
             projected_state = self.projection(enhanced_state)
             # Weight the enhanced state
-            weighted_state = projected_state * self.fusion_weights[i : i + 1, :]
+            weighted_state = projected_state * self.fusion_weights[i: i + 1, :]
             quantum_features.append(weighted_state)
 
         # Combine quantum features

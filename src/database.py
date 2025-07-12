@@ -1,12 +1,10 @@
 import logging
 import os
-from contextlib import contextmanager
 
 from dotenv import load_dotenv
-from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import QueuePool, StaticPool
+from sqlalchemy.pool import StaticPool
 
 from src.models.declarative_base import Base
 

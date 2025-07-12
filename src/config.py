@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import List, Optional
+from typing import Optional
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -13,7 +13,7 @@ load_dotenv()
 class Settings(BaseSettings):
     # Application Settings
     APP_NAME: str = "Bleu.js"
-    VERSION: str = "1.0.0"
+    VERSION: str = "1.1.4"
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
 
     # AWS Settings

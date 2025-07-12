@@ -1,11 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.models.subscription import APITokenCreate, APITokenResponse
-from src.models.user import UserResponse
 from src.services.api_token_service import APITokenService
 from src.services.auth_service import AuthService, oauth2_scheme
 

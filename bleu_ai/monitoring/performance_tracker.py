@@ -134,7 +134,7 @@ class PerformanceTracker:
                 train_loss = 0
                 train_correct = 0
                 train_total = 0
-                epoch_start = time.time()
+                time.time()
 
                 for batch_idx, (data, target) in enumerate(train_loader):
                     batch_start = time.time()
@@ -197,13 +197,11 @@ class PerformanceTracker:
                     logging.info(
                         f"Epoch [{epoch + 1}/{self.n_epochs}], "
                         f"Train Loss: {self.metrics['model_metrics']['train_loss'][-1]:.4f}, "
-                        f"Train Acc: {self.metrics['model_metrics']['train_acc'][-1]:.2f}%"
-                    )
+                        f"Train Acc: {self.metrics['model_metrics']['train_acc'][-1]:.2f}%")
                     if val_loader:
                         logging.info(
                             f"Val Loss: {self.metrics['model_metrics']['val_loss'][-1]:.4f}, "
-                            f"Val Acc: {self.metrics['model_metrics']['val_acc'][-1]:.2f}%"
-                        )
+                            f"Val Acc: {self.metrics['model_metrics']['val_acc'][-1]:.2f}%")
 
             return self.metrics.get("model_metrics", {})
 

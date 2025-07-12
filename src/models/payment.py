@@ -1,7 +1,6 @@
 """Payment model implementation."""
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
@@ -58,7 +57,10 @@ class Payment(Base):
 
     def __repr__(self) -> str:
         """Return string representation of the payment."""
-        return f"<Payment(id={self.id}, customer_id={self.customer_id}, amount={self.amount}, status={self.status})>"
+        return (
+            f"<Payment(id={self.id}, customer_id={self.customer_id}, "
+            f"amount={self.amount}, status={self.status})>"
+        )
 
     def to_dict(self) -> dict:
         """Convert payment to dictionary."""

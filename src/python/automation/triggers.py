@@ -4,17 +4,13 @@ Specialized event triggers for the automation pipeline.
 
 import asyncio
 import os
-import time
-from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, List, Optional, Union
+from datetime import datetime
+from typing import Callable, Dict, List, Optional
 
 import aiocron
-import aiofiles
-import aiohttp
 from aiohttp import web
 from prometheus_client import Counter
 from sqlalchemy import create_engine, text
-from sqlalchemy.engine import Engine
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 

@@ -3,16 +3,15 @@ Quantum State Management Module
 Copyright (c) 2024, Bleu.js
 """
 
+from functools import reduce  # For _expand_gate method
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 from qiskit import QuantumCircuit
-from qiskit.quantum_info import DensityMatrix, Statevector
-from scipy.linalg import expm
-from scipy.sparse import csr_matrix
+from qiskit.quantum_info import Statevector
 
 logger = logging.getLogger(__name__)
 
@@ -343,7 +342,7 @@ class QuantumState:
         """String representation of the quantum state."""
         return f"QuantumState(num_qubits={self.n_qubits}, state=\n{self.amplitudes})"
 
-    def _apply_noise(self, state: np.ndarray) -> np.ndarray:
+    def _apply_noise_to_state(self, state: np.ndarray) -> np.ndarray:
         """Apply noise to quantum state."""
         noise = self.rng.normal(0, 0.1, state.shape)
         return state + noise
@@ -359,6 +358,3 @@ class QuantumState:
         for gate in self.circuit:
             state = self._apply_quantum_gate(state, gate)
         return state
-
-
-from functools import reduce  # For _expand_gate method

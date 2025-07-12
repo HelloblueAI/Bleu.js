@@ -3,7 +3,7 @@ Quantum-resistant security implementation with post-quantum cryptography and dif
 """
 
 import logging
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 from cryptography.hazmat.primitives import hashes

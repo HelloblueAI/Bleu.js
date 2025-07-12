@@ -3,7 +3,7 @@
 # Exit on error
 set -e
 
-echo "🚀 Publishing Bleu.js v1.1.3 to PyPI..."
+echo "🚀 Publishing Bleu.js v1.1.4 to PyPI..."
 
 # Check if we're on the main branch
 CURRENT_BRANCH=$(git branch --show-current)
@@ -27,8 +27,8 @@ python -m twine upload dist/*
 
 # Create git tag
 echo "🏷️ Creating git tag..."
-git tag -a v1.1.3 -m "Release v1.1.3"
-git push origin v1.1.3
+git tag -a v1.1.4 -m "Release v1.1.4"
+git push origin v1.1.4
 
 echo "✨ Publication completed successfully!"
 echo "📦 Package is now available on PyPI"

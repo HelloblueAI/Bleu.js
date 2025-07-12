@@ -1,41 +1,25 @@
-import asyncio
 import json
 import logging
-import os
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import stripe
 from fastapi import Depends, HTTPException, status
 from prometheus_client import Counter, Gauge
 from sqlalchemy.orm import Session
 
-from src.config import get_settings as get_prod_settings
-from src.models.customer import Customer
 from src.models.subscription import (
     PlanType,
     Subscription,
-    SubscriptionCreate,
     SubscriptionPlan,
     SubscriptionPlanCreate,
 )
 from src.models.user import User
 from src.services.api_service import APIService
-from tests.test_config import get_test_settings
 
 from ..config import settings
-from ..constants import (
-    INVALID_AMOUNT,
-    INVALID_DATE,
-    INVALID_STATUS,
-    INVALID_TIER,
-    METRICS,
-    NO_ACTIVE_SUBSCRIPTION,
-    QUOTA_EXCEEDED,
-    RATE_LIMIT_EXCEEDED,
-    SUBSCRIPTION_NOT_FOUND,
-)
+from ..constants import NO_ACTIVE_SUBSCRIPTION, SUBSCRIPTION_NOT_FOUND
 from ..database import get_db
 from ..models import Payment
 from .email_service import EmailService
@@ -55,16 +39,10 @@ ERROR_MESSAGES = {
     "RATE_LIMIT_EXCEEDED": "Rate limit exceeded",
 }
 
-METRICS = {"CALLS": ":calls", "QUOTA": ":quota", "RESET": ":reset"}
-
 # Initialize Stripe
-settings = (
-    get_test_settings() if os.getenv("TESTING") == "true" else get_prod_settings()
-)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Error messages
-SUBSCRIPTION_NOT_FOUND = "Subscription not found"
 
 # Prometheus metrics
 subscription_updates = Counter(
@@ -457,12 +435,10 @@ class SubscriptionService:
     async def _store_customer_data(self, customer_id: str, data: Dict) -> None:
         """Store customer data in database."""
         # Implement database storage
-        pass
 
     async def _get_customer_data(self, customer_id: str) -> Dict:
         """Retrieve customer data from database."""
         # Implement database retrieval
-        pass
 
     def _get_documentation_url(self, plan: str) -> str:
         """Get the appropriate documentation URL based on plan."""
@@ -472,7 +448,6 @@ class SubscriptionService:
     async def _setup_rate_limiting(self, customer_id: str, rate_limit: int) -> None:
         """Set up rate limiting for the customer."""
         # Implement rate limiting
-        pass
 
     async def validate_api_call(self, api_key: str) -> bool:
         """Validate API call and check limits."""
@@ -496,12 +471,10 @@ class SubscriptionService:
     async def _get_customer_by_api_key(self, api_key: str) -> Optional[Dict]:
         """Get customer data by API key."""
         # Implement API key lookup
-        pass
 
     async def _update_api_calls(self, customer_id: str) -> None:
         """Update remaining API calls for customer."""
         # Implement API calls update
-        pass
 
     async def create_payment_link(self, plan: str) -> Dict:
         """Create a Stripe payment link for subscription."""
@@ -561,15 +534,15 @@ class SubscriptionService:
         return db_plan
 
     @staticmethod
-    async def get_plan(plan_id: str, db: Session) -> Optional[SubscriptionPlan]:
-        """Get a subscription plan by ID."""
+    async def get_plan_static(plan_id: str, db: Session) -> Optional[SubscriptionPlan]:
+        """Get a subscription plan by ID (static method)."""
         return db.query(SubscriptionPlan).filter(SubscriptionPlan.id == plan_id).first()
 
     @staticmethod
-    async def get_plan_by_type(
+    async def get_plan_by_type_static(
         plan_type: PlanType, db: Session
     ) -> Optional[SubscriptionPlan]:
-        """Get a subscription plan by type."""
+        """Get a subscription plan by type (static method)."""
         return (
             db.query(SubscriptionPlan)
             .filter(SubscriptionPlan.plan_type == plan_type)
@@ -577,14 +550,14 @@ class SubscriptionService:
         )
 
     @staticmethod
-    async def create_subscription(
+    async def create_subscription_static(
         user: User,
         plan_id: str,
         db: Session,
         stripe_subscription_id: Optional[str] = None,
     ) -> Subscription:
-        """Create a new subscription for a user."""
-        plan = await SubscriptionService.get_plan(plan_id, db)
+        """Create a new subscription for a user (static method)."""
+        plan = await SubscriptionService.get_plan_static(plan_id, db)
         if not plan:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found"
@@ -621,10 +594,10 @@ class SubscriptionService:
         return db_subscription
 
     @staticmethod
-    async def get_user_subscription(
+    async def get_user_subscription_static(
         user_id: str, db: Session
     ) -> Optional[Subscription]:
-        """Get the active subscription for a user."""
+        """Get the active subscription for a user (static method)."""
         subscription = (
             db.query(Subscription)
             .filter(Subscription.user_id == user_id, Subscription.status == "active")

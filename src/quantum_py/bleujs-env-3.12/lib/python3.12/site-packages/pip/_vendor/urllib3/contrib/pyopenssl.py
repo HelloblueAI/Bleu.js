@@ -203,7 +203,7 @@ def _dnsname_to_stdlib(name):
         try:
             for prefix in ["*.", "."]:
                 if name.startswith(prefix):
-                    name = name[len(prefix) :]
+                    name = name[len(prefix):]
                     return prefix.encode("ascii") + idna.encode(name)
             return idna.encode(name)
         except idna.core.IDNAError:
@@ -364,7 +364,7 @@ class WrappedSocket(object):
         total_sent = 0
         while total_sent < len(data):
             sent = self._send_until_done(
-                data[total_sent : total_sent + SSL_WRITE_BLOCKSIZE]
+                data[total_sent: total_sent + SSL_WRITE_BLOCKSIZE]
             )
             total_sent += sent
 

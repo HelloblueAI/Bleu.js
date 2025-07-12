@@ -153,7 +153,7 @@ class FeatureAnalyzer:
 
             if self.n_features is not None:
                 # Select top N features
-                selected = np.argsort(self.feature_importances)[-self.n_features :]
+                selected = np.argsort(self.feature_importances)[-self.n_features:]
             else:
                 # Select features above threshold
                 selected = np.where(self.feature_importances > self.threshold)[0]

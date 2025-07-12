@@ -159,7 +159,6 @@ def create_domain_management_user():
 @click.group()
 def cli():
     """AWS setup CLI for Bleu.js"""
-    pass
 
 
 @cli.command()

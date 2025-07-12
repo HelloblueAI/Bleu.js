@@ -25,8 +25,6 @@ class SubscriptionBase(BaseModel):
 class SubscriptionCreate(SubscriptionBase):
     """Schema for creating a subscription."""
 
-    pass
-
 
 class SubscriptionUpdate(BaseModel):
     """Schema for updating a subscription."""
@@ -55,8 +53,6 @@ class SubscriptionInDB(SubscriptionBase):
 
 class Subscription(SubscriptionInDB):
     """Schema for subscription response."""
-
-    pass
 
 
 class SubscriptionResponse(BaseModel):

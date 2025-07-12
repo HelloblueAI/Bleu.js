@@ -5,11 +5,10 @@ Provides quantum computing capabilities for machine learning models.
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
+from typing import Optional, Protocol, TypeVar
 
 import numpy as np
 import pennylane as qml
-import torch
 from sklearn.preprocessing import MinMaxScaler
 
 # Constants for error messages

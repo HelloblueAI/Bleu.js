@@ -159,7 +159,6 @@ docker run -d -p 80:8000 bleujs/app:latest
 @click.group()
 def cli():
     """Deployment CLI for Bleu.js"""
-    pass
 
 
 @cli.command()

@@ -5,7 +5,7 @@ Enhanced comprehensive benchmarking system for Bleu.js performance validation.
 import logging
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import numpy as np
 import psutil
@@ -249,7 +249,7 @@ class PerformanceBenchmark:
 
             # Calculate comprehensive timing metrics
             avg_time = np.mean(times)
-            time_std = np.std(times)
+            np.std(times)
             min_time = np.min(times)
             max_time = np.max(times)
 

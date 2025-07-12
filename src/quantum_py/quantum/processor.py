@@ -6,7 +6,6 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 from numpy.typing import NDArray
-from qiskit.primitives import Sampler
 from qiskit_aer import QasmSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 
@@ -111,7 +110,7 @@ class QuantumProcessor:
             del features_normalized
             return result
 
-        except Exception as e:
+        except Exception:
             # Log sanitized error message
             logging.error("Error in quantum feature processing")
             return None

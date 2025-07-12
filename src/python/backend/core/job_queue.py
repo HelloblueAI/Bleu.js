@@ -61,7 +61,7 @@ class JobQueueManager:
         job_id = job_data["job_id"]
         job_type = job_data["job_type"]
         parameters = job_data["parameters"]
-        user_id = job_data["user_id"]
+        job_data["user_id"]
 
         try:
             # Update job status to running

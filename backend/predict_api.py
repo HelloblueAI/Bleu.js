@@ -48,13 +48,11 @@ async def predict(input_data: PredictionInput):
         # Validate feature shape
         if features_array.shape[0] < expected_features:
             return {
-                "error": f"❌ Too few features: expected {expected_features}, got {features_array.shape[0]}"
-            }
+                "error": f"❌ Too few features: expected {expected_features}, got {features_array.shape[0]}"}
 
         elif features_array.shape[0] > expected_features:
             return {
-                "error": f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}"
-            }
+                "error": f"❌ Too many features: expected {expected_features}, got {features_array.shape[0]}"}
 
         features_array = features_array.reshape(1, -1)
 

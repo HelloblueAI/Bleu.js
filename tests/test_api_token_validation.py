@@ -1,14 +1,11 @@
 from datetime import datetime, timedelta, timezone
 
 import pytest
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from models.rate_limit import RateLimit
 from models.subscription import APIToken, APITokenCreate
-from models.user import User
 from services.api_token_service import APITokenService
-from services.rate_limiting_service import RateLimitingService
 from services.token_manager import TokenManager
 
 

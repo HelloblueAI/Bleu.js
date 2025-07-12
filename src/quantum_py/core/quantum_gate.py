@@ -3,7 +3,7 @@ Quantum Gate Implementation
 Copyright (c) 2024, Bleu.js
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -11,8 +11,7 @@ from qiskit.circuit import Gate
 from qiskit.circuit.library import UnitaryGate
 
 if TYPE_CHECKING:
-    from cirq.ops.gate_features import SingleQubitGate, TwoQubitGate
-    from cirq.ops.matrix_gates import MatrixGate
+    pass
 
 
 class QuantumGate:

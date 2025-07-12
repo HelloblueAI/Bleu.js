@@ -2,7 +2,6 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from models.customer import Customer
 from models.subscription import PlanType
 from services.monitoring_service import MonitoringService
 

@@ -24,6 +24,7 @@ class PerformanceConfig:
     max_bin: int = 256
     max_leaves: int = 0
     sampling_method: str = "uniform"
+    version: str = "1.1.4"
 
 
 class EnhancedXGBoost:

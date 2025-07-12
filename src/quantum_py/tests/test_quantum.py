@@ -270,7 +270,7 @@ def test_error_correction():
     circuit.add_gate("X", [0])  # Bit flip on first qubit
 
     # Apply circuit with error correction
-    final_state = processor.apply_circuit(circuit)
+    processor.apply_circuit(circuit)
 
     # State should be corrected
     assert processor.circuit.error_correction is not None

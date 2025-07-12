@@ -6,11 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Dict, List, Optional
 
-from fastapi import BackgroundTasks
-from pydantic import EmailStr
-
 from ..config import settings
-from ..models.email import EmailMessage
 
 logger = logging.getLogger(__name__)
 

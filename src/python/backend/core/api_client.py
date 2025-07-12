@@ -56,7 +56,7 @@ class APIClient:
                 response.raise_for_status()
                 return response.json()
 
-            except RequestException as e:
+            except RequestException:
                 if attempt == self.max_retries - 1:
                     raise
                 time.sleep(self.retry_delay)

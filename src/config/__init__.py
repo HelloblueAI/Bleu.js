@@ -1,7 +1,6 @@
 """Configuration module."""
 
 from functools import lru_cache
-from typing import Optional
 
 _settings = None
 

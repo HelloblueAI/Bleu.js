@@ -268,7 +268,7 @@ class BleusQuantumNeuralNetwork:
         return CircuitQNN(
             circuit=self.circuit,
             input_params=self.circuit.parameters[: self.config.num_qubits],
-            weight_params=self.circuit.parameters[self.config.num_qubits :],
+            weight_params=self.circuit.parameters[self.config.num_qubits:],
             sampling=True,
             sampler=self.sampler,
         )

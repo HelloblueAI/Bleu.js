@@ -41,7 +41,7 @@ app = FastAPI(
         "A state-of-the-art quantum-enhanced vision system "
         "with advanced AI capabilities"
     ),
-    version="1.1.3",
+    version="1.1.4",
 )
 
 # Get settings based on environment
@@ -152,7 +152,7 @@ async def subscription_dashboard(request: Request):
 async def root():
     return {
         "message": "Welcome to Bleu.js API",
-        "version": "1.1.3",
+        "version": "1.1.4",
         "documentation": "/docs",
     }
 

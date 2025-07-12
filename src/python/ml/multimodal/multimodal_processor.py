@@ -26,6 +26,7 @@ class MultimodalConfig:
     fusion_method: str = "attention"  # attention, concat, or quantum
     model_path: str = "models/multimodal"
     cache_results: bool = True
+    version: str = "1.1.4"
 
 
 @dataclass

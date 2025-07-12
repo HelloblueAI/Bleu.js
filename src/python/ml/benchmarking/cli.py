@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 
 from .case_studies import QuantumCaseStudy
-from .quantum_benchmarks import QuantumBenchmark
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,5 @@
 """Quantum enhancer for feature processing."""
 
-from typing import List, Optional
-
 import numpy as np
 import qiskit
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister

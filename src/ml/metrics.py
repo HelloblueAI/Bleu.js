@@ -1,6 +1,6 @@
 """Performance metrics module."""
 
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import numpy as np
 from sklearn.metrics import (

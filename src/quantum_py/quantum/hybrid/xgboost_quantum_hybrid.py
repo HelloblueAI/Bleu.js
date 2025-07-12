@@ -161,7 +161,7 @@ class XGBoostQuantumHybrid:
             )
 
             # Log feature processing metrics
-            self.logger.info(f"Feature processing metrics:")
+            self.logger.info("Feature processing metrics:")
             self.logger.info(f"- Original features: {n_features}")
             self.logger.info(f"- Quantum features: {n_quantum_features}")
             self.logger.info(f"- Enhanced features: {features_enhanced.shape[1]}")

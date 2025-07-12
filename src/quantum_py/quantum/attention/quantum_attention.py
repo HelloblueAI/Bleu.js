@@ -1,7 +1,5 @@
 """Quantum attention mechanism implementation."""
 
-from typing import List, Optional, Tuple
-
 import numpy as np
 import qiskit
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister

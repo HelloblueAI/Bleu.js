@@ -1,9 +1,7 @@
-import asyncio
-import json
 import logging
 import time
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict
 
 import aiohttp
 import jwt
@@ -13,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from ..config import settings
 from ..database import get_db
-from ..models import APICall, APIUsage, Subscription, User
+from ..models import APICall, APIUsage, User
 from ..quantum_py.intelligence.market_intelligence import MarketIntelligence
 from ..quantum_py.intelligence.quantum_intelligence import QuantumIntelligence
 from ..quantum_py.intelligence.strategic_intelligence import StrategicIntelligence
@@ -323,8 +321,7 @@ class APIService:
                         "endpoint": endpoint,
                         "issue": "High response time",
                         "recommendation": "Implement caching and optimize database queries",
-                    }
-                )
+                    })
             elif avg_time > 0.5:  # More than 500ms
                 recommendations.append(
                     {

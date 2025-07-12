@@ -5,6 +5,41 @@ All notable changes to Bleu.js will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.7] - 2024-06-09
+### Security & Dependency Management
+- Fixed all known security vulnerabilities (h11, requests, urllib3)
+- Resolved all major and minor dependency conflicts (including streamlit, awscli/docutils)
+- Added robust, automated scripts for security updates and dependency management
+- Modernized packaging with pyproject.toml and lock file
+- Added CI/CD security scanning workflow
+- Professionalized documentation for dependency management and PyPI publishing
+- Added isolated PyPI publishing script to avoid build-time dependency conflicts
+- Updated all best practices for reproducible, secure, and maintainable builds
+
+### Other Improvements
+- Improved developer experience and onboarding docs
+- Ensured all tests and code quality checks pass
+- Environment is now production-grade and future-proof
+
+## [1.1.6] - 2024-06-10
+### Security
+- Updated h11 to >=0.16.0 to fix CVE-2025-43859 (HTTP Request Smuggling vulnerability)
+
+## [1.1.5] - 2024-06-10
+### Security
+- Updated requests package to >=2.31.0 to fix vulnerability related to sensitive information leakage
+
+## [1.1.4] - 2024-XX-XX
+### Added
+- (Describe new features and enhancements here)
+
+### Fixed
+- (Describe bug fixes and security updates here)
+
+### Security
+- Upgraded h11 to 0.16.0 to address HTTP Request Smuggling vulnerability
+- Confirmed no multer dependency in Node.js codebase
+
 ## [1.1.3] - 2024-04-04
 
 ### Performance Highlights

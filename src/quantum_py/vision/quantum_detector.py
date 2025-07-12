@@ -191,7 +191,7 @@ class QuantumDetector:
                     # Extract region features from the processed image
                     x1, y1, w, h = bbox
                     region = processed_image[
-                        :, :, int(y1) : int(y1 + h), int(x1) : int(x1 + w)
+                        :, :, int(y1): int(y1 + h), int(x1): int(x1 + w)
                     ]
                     try:
                         with torch.no_grad():

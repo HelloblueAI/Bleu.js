@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
-from typing import List, Optional
+from typing import List
 
 import pytest
 from dotenv import load_dotenv
@@ -12,7 +12,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from src.config import get_settings
-from src.models.customer import RateLimitToken
 from src.models.declarative_base import Base
 from src.models.rate_limit import RateLimit
 from src.models.subscription import APIToken, PlanType, Subscription, SubscriptionPlan
@@ -59,7 +58,7 @@ TEST_DATABASE_URL = get_settings().DATABASE_URL
 class TestSettings(BaseSettings):
     # Application Settings
     APP_NAME: str = Field(default="Bleu.js Test")
-    VERSION: str = Field(default="1.0.0")
+    VERSION: str = Field(default="1.1.4")
     DEBUG: bool = Field(default=True)
 
     # Database Settings
