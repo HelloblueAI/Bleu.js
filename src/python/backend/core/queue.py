@@ -2,9 +2,9 @@ from typing import Any, Dict
 
 from celery import Celery
 
-from ..config.settings import get_config
+from ..config.settings import settings
 
-config = get_config()
+config = settings.get_config()
 
 celery_app = Celery(
     "bleujs",

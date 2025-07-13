@@ -305,7 +305,7 @@ class AdvancedModelTrainer:
             kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
             # Store results
-            results = {"accuracy": [], "auc": [], "f1": []}
+            results: Dict[str, List[float]] = {"accuracy": [], "auc": [], "f1": []}
 
             # Perform cross-validation
             for train_idx, val_idx in kf.split(features):

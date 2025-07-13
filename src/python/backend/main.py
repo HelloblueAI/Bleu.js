@@ -12,14 +12,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.router import router
-from .config.settings import get_config
+from .config.settings import settings
 from .core.database import Base, engine, get_db
 
 
 # Configure logging
 def setup_logging():
     """Setup logging configuration."""
-    config = get_config()
+    config = settings.get_config()
     logger = logging.getLogger()
     logger.setLevel(config.logging.level)
 

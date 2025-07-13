@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from ..config.settings import get_config
+from ..config.settings import settings
 from ..core.auth import (
     create_access_token,
     get_current_user,
@@ -40,7 +40,7 @@ from ..core.models import (
 )
 from ..core.subscription import SubscriptionService
 
-config = get_config()
+config = settings.get_config()
 
 # Create router
 router = APIRouter()
