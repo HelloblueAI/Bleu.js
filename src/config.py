@@ -13,7 +13,7 @@ load_dotenv()
 class Settings(BaseSettings):
     # Application Settings
     APP_NAME: str = "Bleu.js"
-    VERSION: str = "1.1.4"
+    VERSION: str = "1.1.8"
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
 
     # AWS Settings

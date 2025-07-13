@@ -3,7 +3,7 @@
 ## Project Overview
 Bleu.js is an advanced AI and ML framework designed to provide comprehensive tools for building intelligent applications. This roadmap outlines our development plans and progress tracking.
 
-## Current Status (v1.1.4)
+## Current Status (v1.1.8)
 
 ### Core Features Status
 

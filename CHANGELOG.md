@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Updated requests package to >=2.31.0 to fix vulnerability related to sensitive information leakage
 
-## [1.1.4] - 2024-XX-XX
+## [1.1.8] - 2024-XX-XX
 ### Added
 - (Describe new features and enhancements here)
 
