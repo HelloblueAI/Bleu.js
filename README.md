@@ -18,14 +18,11 @@ Here's the actual installation and usage process of Bleu.js in a real terminal s
 ```bash
 # Check current directory
 $ pwd
-/home/pejmanhaghighatnia/Documents/Bleu.js
 
 # Show project structure
 $ ls -la | head -5
 total 3608
-drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .
-drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..
--rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json
+
 ...
 ```
 
@@ -48,11 +45,10 @@ $ source bleujs-demo-env/bin/activate
 ```bash
 # Check pip version
 $ pip --version
-pip 22.0.2 from /home/pejmanhaghighatnia/Documents/Bleu.js/bleujs-demo-env/lib/python3.10/site-packages/pip (python 3.10)
+pip 22.0.2 (python 3.10)
 
 # Install Bleu.js
 $ pip install -e .
-Obtaining file:///home/pejmanhaghighatnia/Documents/Bleu.js
   Installing build dependencies ... done
   Checking if build backend supports build_editable ... done
   Getting requirements to build editable ... done
