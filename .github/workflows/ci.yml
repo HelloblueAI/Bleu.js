@@ -112,24 +112,28 @@ jobs:
         poetry run pip freeze | grep -E "black|qiskit|fastapi|starlette"
         poetry run pip show black qiskit fastapi starlette
 
-    - name: Run tests with coverage
-      id: coverage
-      run: |
-        coverage=$(poetry run pytest --cov=./ --cov-report=term-missing \
-          src/python/ml/computer_vision/test_quantum_fusion.py \
-          src/python/ml/computer_vision/test_quantum_vision.py \
-          src/python/tests/test_quantum_enhancer.py \
-          src/quantum_py/tests/test_quantum.py \
-          tests/quantum/test_quantum_processor.py | grep 'TOTAL' | awk '{print $4}' | sed 's/%//')
-        echo "coverage=$coverage" >> $GITHUB_OUTPUT
-
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         fail_ci_if_error: true
         verbose: true
+
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh
+
+    - name: Install gh-actions-cache extension
+      run: |
+        gh extension install actions/gh-actions-cache
+
+    - name: Run tests with coverage
+      id: coverage
+      run: |
+        coverage=$(poetry run pytest --cov=./ --cov-report=term-missing tests/ | grep 'TOTAL' | awk '{print $4}' | sed 's/%//')
+        echo "coverage=$coverage" >> $GITHUB_OUTPUT
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
