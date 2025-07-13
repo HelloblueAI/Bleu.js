@@ -1,310 +1,167 @@
 #!/usr/bin/env python3
 """
-Create HTML player for Bleu.js demo and provide GIF creation instructions
+Create an animated GIF from the interactive demo for embedding in README.
 """
 
 import os
+import subprocess
+import sys
+import time
 
 
-def create_html_player():
-    """Create an HTML player for the asciinema cast"""
+def check_dependencies():
+    """Check if required tools are available."""
+    missing = []
 
-    html_content = """<!DOCTYPE html>
-<html>
-<head>
-    <title>Bleu.js - Quantum-Enhanced AI Platform Demo</title>
-    <style>
-        body {
-            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
-            margin: 0;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #00e0ff;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 224, 255, 0.5);
-        }
-        .subtitle {
-            text-align: center;
-            color: #888;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        .terminal-container {
-            background: #000000;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-        }
-        .terminal-header {
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 8px 8px 0 0;
-            margin: -20px -20px 20px -20px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            align-items: center;
-        }
-        .terminal-dots {
-            display: flex;
-            gap: 8px;
-        }
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .dot.red { background: #ff5f56; }
-        .dot.yellow { background: #ffbd2e; }
-        .dot.green { background: #27ca3f; }
-        .terminal-title {
-            margin-left: 15px;
-            color: #888;
-            font-size: 14px;
-        }
-        .instructions {
-            margin-top: 30px;
-            background: rgba(0, 224, 255, 0.1);
-            border: 1px solid rgba(0, 224, 255, 0.3);
-            border-radius: 8px;
-            padding: 20px;
-            color: #ccc;
-        }
-        .instructions h3 {
-            color: #00e0ff;
-            margin-top: 0;
-        }
-        .instructions code {
-            background: #1a1a1a;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #00e0ff;
-        }
-        .instructions ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        .instructions li {
-            margin: 5px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">🚀 Bleu.js - Quantum-Enhanced AI Platform</div>
-        <div class="subtitle">Terminal Demo - Watch the magic happen!</div>
+    try:
+        import playwright  # noqa: F401
+    except ImportError:
+        missing.append("playwright")
 
-        <div class="terminal-container">
-            <div class="terminal-header">
-                <div class="terminal-dots">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <div class="terminal-title">Bleu.js Demo Terminal</div>
-            </div>
-            <asciinema-player src="bleu-demo.cast" cols="80" rows="24" theme="monokai" speed="1"></asciinema-player>
-        </div>
+    # Check ffmpeg
+    try:
+        subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        missing.append("ffmpeg")
 
-        <div class="instructions">
-            <h3>📹 How to Create the GIF</h3>
-            <p>To create the terminal-demo.gif for the README:</p>
-            <ul>
-                <li><strong>Method 1:</strong> Use screen recording software while playing the cast</li>
-                <li><strong>Method 2:</strong> Use browser developer tools to record this page</li>
-                <li><strong>Method 3:</strong> Use asciinema with screen recording</li>
-            </ul>
-
-            <h3>🎯 Quick Commands</h3>
-            <ul>
-                <li>Play the cast: <code>asciinema play bleu-demo.cast</code></li>
-                <li>Record screen: Use your system's screen recorder</li>
-                <li>Save as: <code>terminal-demo.gif</code></li>
-                <li>Upload to: GitHub assets folder</li>
-            </ul>
-
-            <h3>⚙️ Recording Settings</h3>
-            <ul>
-                <li>Resolution: 1280x720 or higher</li>
-                <li>Frame rate: 30 FPS</li>
-                <li>Duration: ~30-45 seconds</li>
-                <li>Quality: High for crisp text</li>
-            </ul>
-        </div>
-    </div>
-
-    <script src="https://asciinema.org/a/asciinema-player.js"></script>
-</body>
-</html>"""
-
-    with open("bleu-demo-player.html", "w") as f:
-        f.write(html_content)
-
-    print("✅ Created HTML player: bleu-demo-player.html")
+    if missing:
+        print(f"Missing dependencies: {', '.join(missing)}")
+        print("Install with: pip install playwright && playwright install")
+        return False
     return True
 
 
-def create_instructions():
-    """Create detailed instructions for GIF creation"""
+def create_demo_gif():
+    """Create an animated GIF from the interactive demo."""
 
-    instructions = """# 🎬 Bleu.js Terminal Demo GIF Creation
+    if not check_dependencies():
+        return False
 
-## Quick Start
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Installing playwright...")
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "playwright"], check=True
+        )
+        subprocess.run([sys.executable, "-m", "playwright", "install"], check=True)
+        from playwright.sync_api import sync_playwright
 
-1. **Open the HTML player:**
-   ```bash
-   open bleu-demo-player.html
-   # or
-   firefox bleu-demo-player.html
-   # or
-   google-chrome bleu-demo-player.html
-   ```
+    # Demo HTML file path
+    demo_html = "simple_animated_demo.html"
 
-2. **Record the demo:**
-   - Use your system's screen recorder
-   - Record the terminal area only
-   - Set to 30 FPS for smooth playback
-   - Duration: ~30-45 seconds
+    if not os.path.exists(demo_html):
+        print(f"Demo HTML file not found: {demo_html}")
+        return False
 
-3. **Save and upload:**
-   - Save as: `terminal-demo.gif`
-   - Upload to: `https://github.com/HelloblueAI/Bleu.js/assets/81389644/`
+    print("Creating animated GIF from interactive demo...")
 
-## Alternative Methods
+    try:
+        with sync_playwright() as p:
+            # Launch browser
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={"width": 800, "height": 600})
 
-### Method 1: Direct Terminal Recording
-```bash
-# Play the cast and record your terminal
-asciinema play bleu-demo.cast
-# Use screen recorder while it plays
-```
+            # Load the demo
+            page.goto(f"file://{os.path.abspath(demo_html)}")
 
-### Method 2: Browser Recording
-```bash
-# Open the HTML player
-open bleu-demo-player.html
-# Use browser's developer tools to record
-# Or use browser extensions for screen recording
-```
+            # Wait for demo to load
+            page.wait_for_load_state("networkidle")
+            time.sleep(2)
 
-### Method 3: Command Line Tools
-```bash
-# Install recording tools
-sudo apt-get install simplescreenrecorder
-# Record terminal while playing cast
-```
+            # Create frames directory
+            frames_dir = "demo_frames"
+            os.makedirs(frames_dir, exist_ok=True)
 
-## File Locations
+            # Capture frames during demo
+            frames = []
+            for i in range(30):  # 30 frames for 3 seconds at 10fps
+                frame_path = os.path.join(frames_dir, f"frame_{i:03d}.png")
+                page.screenshot(path=frame_path, full_page=True)
+                frames.append(frame_path)
+                time.sleep(0.1)  # 100ms between frames
 
-- **Cast file:** `bleu-demo.cast` ✅ (Ready)
-- **HTML player:** `bleu-demo-player.html` ✅ (Ready)
-- **Target GIF:** `terminal-demo.gif` (To be created)
-- **Upload location:** GitHub assets folder
+            browser.close()
 
-## Recording Tips
+            # Convert frames to GIF using ffmpeg
+            output_gif = "interactive_demo.gif"
+            cmd = [
+                "ffmpeg",
+                "-y",  # Overwrite output
+                "-framerate",
+                "10",  # 10 fps
+                "-i",
+                os.path.join(frames_dir, "frame_%03d.png"),
+                "-vf",
+                "scale=800:-1:flags=lanczos",  # Scale to 800px width
+                "-f",
+                "gif",
+                output_gif,
+            ]
 
-### Terminal Setup
-- Use dark theme (Dracula, One Dark, etc.)
-- Set terminal size to 80x24
-- Use monospace font (Fira Code, JetBrains Mono)
-- Enable smooth scrolling
+            subprocess.run(cmd, check=True)
 
-### Recording Settings
-- **Resolution:** 1280x720 or higher
-- **Frame Rate:** 30 FPS
-- **Quality:** High for crisp text
-- **Duration:** ~30-45 seconds total
+            # Clean up frames
+            for frame in frames:
+                os.remove(frame)
+            os.rmdir(frames_dir)
 
-### Demo Content
-The demo shows:
-- ✅ Bleu.js banner with colors
-- ✅ Step-by-step initialization (5 steps)
-- ✅ Loading animations with dots
-- ✅ Quantum processing simulation
-- ✅ Performance metrics display
-- ✅ AI results and security status
-- ✅ Professional completion message
+            print(f"✅ Created animated GIF: {output_gif}")
+            return True
+    except Exception as e:
+        print(f"❌ Error creating GIF: {e}")
+        return False
 
-## Expected Output
 
-The final GIF should show:
-- Smooth terminal animations
-- Colorful text and progress indicators
-- Professional Bleu.js branding
-- Clear demonstration of quantum AI features
-- File size: < 5MB for web optimization
+def update_readme_with_gif():
+    """Update README to include the animated GIF."""
+    gif_path = "interactive_demo.gif"
 
-## Troubleshooting
+    if not os.path.exists(gif_path):
+        print(f"GIF not found: {gif_path}")
+        return False
 
-- **Colors not showing:** Ensure terminal supports ANSI colors
-- **Font issues:** Install a monospace font
-- **Recording quality:** Use high bitrate settings
-- **File size:** Optimize GIF for web (max 5MB)
+    readme_path = "README.md"
 
-## Next Steps
+    # Read current README
+    with open(readme_path, "r") as f:
+        content = f.read()
 
-1. Open `bleu-demo-player.html` in your browser
-2. Record the terminal demo using your preferred method
-3. Save as `terminal-demo.gif`
-4. Upload to GitHub assets
-5. The README will automatically display the GIF!
+    # Find the demo section and add GIF
+    demo_section = "**📺 [Interactive Demo Player]"
 
-🎉 **Ready to create the perfect Bleu.js demo GIF!**
-"""
+    if demo_section in content:
+        # Add GIF before the link
+        gif_markdown = f"""
+![Interactive Demo]({gif_path})
 
-    with open("GIF_CREATION_GUIDE.md", "w") as f:
-        f.write(instructions)
+**📺 [Interactive Demo Player]"""
 
-    print("✅ Created GIF creation guide: GIF_CREATION_GUIDE.md")
-    return True
+        content = content.replace(demo_section, gif_markdown)
+
+        # Write updated README
+        with open(readme_path, "w") as f:
+            f.write(content)
+
+        print("✅ Updated README with animated GIF")
+        return True
+    else:
+        print("❌ Demo section not found in README")
+        return False
 
 
 def main():
-    """Main function to create all demo files"""
-    print("🎬 Creating Bleu.js Demo Files")
-    print("=" * 40)
+    """Main function."""
+    print("🎬 Creating animated GIF from interactive demo...")
 
-    # Check if cast file exists
-    if not os.path.exists("bleu-demo.cast"):
-        print("❌ Cast file not found!")
-        print("Run the demo recording first: python3 auto_record_demo.py")
-        return
-
-    print("✅ Cast file found: bleu-demo.cast")
-
-    # Create HTML player
-    create_html_player()
-
-    # Create instructions
-    create_instructions()
-
-    print("\n🎉 Demo files created successfully!")
-    print("\n📁 Files created:")
-    print("  • bleu-demo.cast (recording)")
-    print("  • bleu-demo-player.html (player)")
-    print("  • GIF_CREATION_GUIDE.md (instructions)")
-
-    print("\n🚀 Next steps:")
-    print("  1. Open bleu-demo-player.html in your browser")
-    print("  2. Record the demo using screen recording")
-    print("  3. Save as terminal-demo.gif")
-    print("  4. Upload to GitHub assets")
-
-    print("\n✨ The README will automatically display the GIF once uploaded!")
+    if create_demo_gif():
+        if update_readme_with_gif():
+            print("🎉 Success! Animated GIF created and README updated.")
+            print("📝 Don't forget to commit and push the changes!")
+        else:
+            print("⚠️  GIF created but README update failed.")
+    else:
+        print("❌ Failed to create animated GIF.")
 
 
 if __name__ == "__main__":
