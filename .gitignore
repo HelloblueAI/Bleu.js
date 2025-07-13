@@ -755,8 +755,7 @@ Thumbs.db
 # ----------------------------------------
 # 🚀 GitHub Actions
 # ----------------------------------------
-.github/
-!.github/workflows/
+# Note: .github/workflows/ is explicitly included above
 
 # Environment and secrets
 .env
