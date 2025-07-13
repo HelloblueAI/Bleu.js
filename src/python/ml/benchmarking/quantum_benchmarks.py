@@ -188,7 +188,7 @@ class QuantumBenchmark:
         """Save benchmark results to CSV file."""
         df = self.get_summary()
         df.to_csv(filename, index=False)
-        logger.info(f"Saved benchmark results to {filename}")
+        logger.info("Saved benchmark results to [REDACTED]")
 
     def plot_results(self):
         """Plot benchmark results."""
