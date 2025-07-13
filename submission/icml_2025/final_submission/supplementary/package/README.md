@@ -247,10 +247,10 @@ graph TD
 
 ```bash
 # Using npm
-npm install bleujs@1.1.3
+npm install bleujs@1.1.8
 
 # Using pnpm
-pnpm add bleujs@1.1.3
+pnpm add bleujs@1.1.8
 
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git

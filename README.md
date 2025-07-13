@@ -6,8 +6,6 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
-![Interactive Demo Preview](terminal-demo.gif)
-
 **📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
 
 ### Real Terminal Demo
@@ -67,9 +65,9 @@ Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.3
+bleu                               1.1.8
 bleu-js                            1.1.8
-bleujs                             1.1.3
+bleujs                             1.1.8
 ```
 
 ### Step 5: Explore Examples
@@ -221,10 +219,10 @@ pip install "bleu-js[ml]" --constraint requirements-basic.txt
 
 ```bash
 # Using npm
-npm install bleujs@1.1.3
+npm install bleujs@1.1.8
 
 # Using pnpm
-pnpm add bleujs@1.1.3
+pnpm add bleujs@1.1.8
 
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
