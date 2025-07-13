@@ -6,6 +6,10 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
+![Interactive Demo Preview](terminal-demo.gif)
+
+**📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
+
 ### Real Terminal Demo
 
 Here's the actual installation and usage process of Bleu.js in a real terminal session:
