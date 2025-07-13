@@ -6,6 +6,14 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
+### Terminal Demonstration
+
+Watch Bleu.js in action:
+
+![Bleu.js Terminal Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/terminal-demo.gif)
+
+*Real-time quantum processing and AI inference in action*
+
 ## Overview
 
 Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
@@ -1417,8 +1425,6 @@ These improvements demonstrate our commitment to professional code quality stand
 
 **Pejman Haghighatnia**
 
-This software is maintained by Helloblue, Inc., a company dedicated to advanced innovations in AI solutions.
-
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
@@ -1440,6 +1446,8 @@ This software is maintained by Helloblue, Inc., a company dedicated to advanced 
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
+
+This software is maintained by Helloblue, Inc., a company dedicated to advanced innovations in AI solutions.
 
 ## License
 
