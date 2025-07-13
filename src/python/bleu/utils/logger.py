@@ -58,7 +58,7 @@ def configure_logger(
     # Create logger with context
     logger = structlog.get_logger(
         "bleu",
-        version=os.getenv("BLEU_VERSION", "1.1.3"),
+        version=os.getenv("BLEU_VERSION", "1.1.8"),
         environment=os.getenv("BLEU_ENV", "development"),
         timestamp=datetime.now(timezone.utc).isoformat(),
     )

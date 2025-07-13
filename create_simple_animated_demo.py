@@ -4,18 +4,19 @@ Create Simple Animated Demo for Bleu.js
 Shows installation process with animations
 """
 
+import os
 import subprocess
 import time
-import os
 from pathlib import Path
+
 
 def create_simple_demo():
     """Create a simple animated demo"""
-    
+
     print("🎬 Creating simple animated demo...")
-    
+
     # Create a simple demo script
-    demo_script = '''#!/bin/bash
+    demo_script = """#!/bin/bash
 
 echo "🚀 Bleu.js Installation Demo"
 echo "============================="
@@ -66,44 +67,45 @@ echo ""
 
 echo "🎉 Installation completed successfully!"
 echo "✨ Bleu.js is ready to use!"
-'''
+"""
 
     # Write the demo script
-    with open('simple_demo.sh', 'w') as f:
+    with open("simple_demo.sh", "w") as f:
         f.write(demo_script)
-    
+
     # Make it executable
-    os.chmod('simple_demo.sh', 0o755)
-    
+    os.chmod("simple_demo.sh", 0o755)
+
     print("✅ Demo script created: simple_demo.sh")
-    
+
     # Run the demo and capture output
     print("📹 Running demo and capturing output...")
-    
+
     try:
-        result = subprocess.run(['bash', 'simple_demo.sh'], 
-                              capture_output=True, text=True, check=True)
-        
+        result = subprocess.run(
+            ["bash", "simple_demo.sh"], capture_output=True, text=True, check=True
+        )
+
         # Create a simple animated text file
-        output_lines = result.stdout.split('\n')
-        
+        output_lines = result.stdout.split("\n")
+
         # Create an animated demo file
-        with open('animated_demo_output.txt', 'w') as f:
+        with open("animated_demo_output.txt", "w") as f:
             f.write("🚀 Bleu.js Installation Demo\n")
             f.write("=============================\n\n")
-            
+
             for line in output_lines:
-                f.write(line + '\n')
+                f.write(line + "\n")
                 time.sleep(0.1)  # Simulate typing
-        
+
         print("✅ Demo output captured: animated_demo_output.txt")
-        
+
     except subprocess.CalledProcessError as e:
         print(f"❌ Demo failed: {e}")
         return False
-    
+
     # Create a simple HTML demo
-    html_content = '''<!DOCTYPE html>
+    html_content = """<!DOCTYPE html>
 <html>
 <head>
     <title>Bleu.js Installation Demo</title>
@@ -173,9 +175,9 @@ echo "✨ Bleu.js is ready to use!"
             { text: "Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1", type: "success" },
             { text: "", type: "output" },
             { text: "🔍 Verifying installation:", type: "info" },
-            { text: "bleu                               1.1.3", type: "output" },
+            { text: "bleu                               1.1.8", type: "output" },
             { text: "bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
-            { text: "bleujs                             1.1.3", type: "output" },
+            { text: "bleujs                             1.1.8", type: "output" },
             { text: "", type: "output" },
             { text: "📁 Project structure:", type: "info" },
             { text: "total 152", type: "output" },
@@ -214,7 +216,7 @@ echo "✨ Bleu.js is ready to use!"
             isPlaying = true;
             currentStep = 0;
             document.getElementById('demo').innerHTML = '';
-            
+
             function playStep() {
                 if (currentStep < demoSteps.length && isPlaying) {
                     const step = demoSteps[currentStep];
@@ -225,7 +227,7 @@ echo "✨ Bleu.js is ready to use!"
                     isPlaying = false;
                 }
             }
-            
+
             playStep();
         }
 
@@ -240,33 +242,34 @@ echo "✨ Bleu.js is ready to use!"
         }
     </script>
 </body>
-</html>'''
-    
-    with open('simple_animated_demo.html', 'w') as f:
+</html>"""
+
+    with open("simple_animated_demo.html", "w") as f:
         f.write(html_content)
     print("✅ HTML demo created: simple_animated_demo.html")
-    
+
     return True
+
 
 def update_readme():
     """Update README with the simple animated demo"""
-    
+
     print("📝 Updating README with simple animated demo...")
-    
+
     # Read current README
-    with open('README.md', 'r') as f:
+    with open("README.md", "r") as f:
         content = f.read()
-    
+
     # Replace the demo section
-    old_demo = '''**🎬 Watch the real installation process:**
+    old_demo = """**🎬 Watch the real installation process:**
 
 [![Bleu.js Real Terminal Demo](real_terminal_demo.svg)](real_terminal_demo_player.html)
 
 **📺 [Interactive HTML Player](real_terminal_demo_player.html)** - Experience the full demo in your browser!
 
-**📄 [Raw Recording](real_terminal_demo.cast)** - Download and play with asciinema'''
-    
-    new_demo = '''**🎬 Watch the animated installation process:**
+**📄 [Raw Recording](real_terminal_demo.cast)** - Download and play with asciinema"""
+
+    new_demo = """**🎬 Watch the animated installation process:**
 
 [![Bleu.js Animated Installation Demo](simple_animated_demo.html)](simple_animated_demo.html)
 
@@ -274,39 +277,41 @@ def update_readme():
 
 **🎬 [Live Demo Script](simple_demo.sh)** - Run the installation demo yourself!
 
-**📄 [Demo Output](animated_demo_output.txt)** - View the complete installation output'''
-    
+**📄 [Demo Output](animated_demo_output.txt)** - View the complete installation output"""
+
     content = content.replace(old_demo, new_demo)
-    
+
     # Write updated README
-    with open('README.md', 'w') as f:
+    with open("README.md", "w") as f:
         f.write(content)
-    
+
     print("✅ README updated with simple animated demo")
+
 
 def main():
     """Main function"""
     print("🎬 Bleu.js Simple Animated Demo Creator")
     print("=" * 45)
-    
+
     if not create_simple_demo():
         print("❌ Failed to create simple animated demo")
         return False
-    
+
     update_readme()
-    
+
     print("\n🎉 Simple animated demo creation completed!")
     print("\n📁 Generated files:")
     print("  - simple_animated_demo.html (Interactive animated demo)")
     print("  - simple_demo.sh (Demo script)")
     print("  - animated_demo_output.txt (Demo output)")
-    
+
     print("\n📋 Next steps:")
     print("  1. Commit and push the new demo files")
     print("  2. The animated demo will appear in your README")
     print("  3. Users can click to play the installation demo")
-    
+
     return True
 
+
 if __name__ == "__main__":
-    main() 
+    main()
