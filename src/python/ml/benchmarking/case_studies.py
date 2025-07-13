@@ -85,7 +85,7 @@ class QuantumCaseStudy:
 
         all_results = {}
         for name, study_func in studies.items():
-            logger.info(f"Running {name} case study...")
+            logger.info("Running [REDACTED] case study...")
             all_results[name] = study_func()
 
         return all_results
@@ -125,7 +125,7 @@ class QuantumCaseStudy:
         }
 
         # Log results without sensitive data
-        logger.info(f"\n{study_name} Case Study Results:")
+        logger.info("\n[REDACTED] Case Study Results:")
         logger.info("Classical {}: [REDACTED]".format(classical_result.metric_name))
         logger.info("Quantum {}: [REDACTED]".format(quantum_result.metric_name))
         logger.info("Quantum Advantage: [REDACTED]")
@@ -172,8 +172,8 @@ class QuantumCaseStudy:
 
             report.extend(
                 [
-                    f"\n{analysis['study_name']}",
-                    "-" * len(analysis["study_name"]),
+                    "\n[REDACTED]",
+                    "-" * 10,
                     msg3,
                     msg4,
                     msg5,

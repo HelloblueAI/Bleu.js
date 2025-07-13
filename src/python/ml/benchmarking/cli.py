@@ -65,13 +65,13 @@ def main():
         case_study.run_all_studies()
     else:
         if args.medical:
-            logger.info("Running medical diagnosis case study...")
+            logger.info("Running [REDACTED] case study...")
             case_study.run_medical_diagnosis_study()
         if args.financial:
-            logger.info("Running financial forecasting case study...")
+            logger.info("Running [REDACTED] case study...")
             case_study.run_financial_forecasting_study()
         if args.industrial:
-            logger.info("Running industrial optimization case study...")
+            logger.info("Running [REDACTED] case study...")
             case_study.run_industrial_optimization_study()
 
     # Save results and generate report
