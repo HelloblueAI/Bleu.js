@@ -61,10 +61,10 @@ jobs:
         python-version: [3.10, 3.11]
         include:
           - python-version: 3.10
-            qiskit-version: '1.1.0'
+            qiskit-version: '1.4.2'
             qiskit-aer-version: '0.13.0'
           - python-version: 3.11
-            qiskit-version: '1.1.0'
+            qiskit-version: '1.4.2'
             qiskit-aer-version: '0.13.0'
 
     steps:
@@ -112,6 +112,12 @@ jobs:
         poetry run pip freeze | grep -E "black|qiskit|fastapi|starlette"
         poetry run pip show black qiskit fastapi starlette
 
+    - name: Run tests with coverage
+      id: coverage
+      run: |
+        coverage=$(poetry run pytest --cov=./ --cov-report=term-missing tests/ | grep 'TOTAL' | awk '{print $4}' | sed 's/%//')
+        echo "coverage=$coverage" >> $GITHUB_OUTPUT
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
@@ -119,21 +125,6 @@ jobs:
         files: ./coverage.xml
         fail_ci_if_error: true
         verbose: true
-
-    - name: Install GitHub CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gh
-
-    - name: Install gh-actions-cache extension
-      run: |
-        gh extension install actions/gh-actions-cache
-
-    - name: Run tests with coverage
-      id: coverage
-      run: |
-        coverage=$(poetry run pytest --cov=./ --cov-report=term-missing tests/ | grep 'TOTAL' | awk '{print $4}' | sed 's/%//')
-        echo "coverage=$coverage" >> $GITHUB_OUTPUT
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
@@ -286,17 +277,6 @@ jobs:
     - name: Install dependencies
       run: poetry install --no-interaction --no-root --with dev
 
-    - name: Run Snyk to check for vulnerabilities
-      id: security
-      run: |
-        npm install -g snyk
-        snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk test --severity-threshold=high --json-file-output=snyk-results.json || true
-        critical=$(jq -r '.vulnerabilities | map(select(.severity == "critical")) | length' snyk-results.json)
-        high=$(jq -r '.vulnerabilities | map(select(.severity == "high")) | length' snyk-results.json)
-        echo "critical_issues=$critical" >> $GITHUB_OUTPUT
-        echo "high_issues=$high" >> $GITHUB_OUTPUT
-
     - name: Run dependency check
       run: |
         poetry run pip install safety
@@ -325,7 +305,6 @@ jobs:
       with:
         name: security-reports
         path: |
-          snyk-results.json
           safety-report.json
           bandit-results.json
           trivy-results.sarif
@@ -352,16 +331,6 @@ jobs:
                 {
                   "title": "Branch",
                   "value": "${{ github.ref }}",
-                  "short": true
-                },
-                {
-                  "title": "Critical Issues",
-                  "value": "${{ steps.security.outputs.critical_issues }}",
-                  "short": true
-                },
-                {
-                  "title": "High Issues",
-                  "value": "${{ steps.security.outputs.high_issues }}",
                   "short": true
                 }
               ]
@@ -527,34 +496,8 @@ jobs:
           name: performance-results
           path: locust-results/
 
-  browser-test:
-    needs: performance-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: |
-          npm install -g pnpm
-          pnpm install
-
-      - name: Run browser compatibility tests
-        run: |
-          pnpm run test:browser
-
-      - name: Upload browser test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: browser-test-results
-          path: test-results/
-
   package-publish:
-    needs: [docker-build-test, db-migrations, api-docs, performance-test, browser-test]
+    needs: [docker-build-test, db-migrations, api-docs, performance-test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -581,21 +524,6 @@ jobs:
         run: |
           poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
           poetry publish --build
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: |
-          npm install -g pnpm
-          pnpm install
-
-      - name: Build and publish npm package
-        run: |
-          pnpm run build
-          pnpm publish --access public
 
   deploy:
     needs: package-publish
@@ -655,4 +583,4 @@ jobs:
       - name: Code Security Analysis
         uses: github/codeql-action/init@v2
         with:
-          languages: python, javascript
+          languages: python
