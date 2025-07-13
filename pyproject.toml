@@ -31,7 +31,7 @@ dependencies = [
     "scikit-learn>=1.2.2",
 
     # Web Framework - Pinned for stability
-    "fastapi==0.109.2",
+    "fastapi>=0.110.0",
     "uvicorn==0.27.1",
     "pydantic[email]==2.6.1",
 
