@@ -216,28 +216,19 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const { owner, repo } = context.repo;
-            const sha = context.sha;
-            const metrics = {
-              total: ${{ steps.cache-cleanup.outputs.TOTAL_CACHES }},
-              deleted: ${{ steps.cache-cleanup.outputs.DELETED_CACHES }},
-              protected: ${{ steps.cache-cleanup.outputs.PROTECTED_CACHES }},
-              kept: ${{ steps.cache-cleanup.outputs.KEPT_CACHES }},
-              totalSize: ${{ steps.cache-cleanup.outputs.TOTAL_SIZE }}
-            };
+            const total = process.env.TOTAL_CACHES;
+            const deleted = process.env.DELETED_CACHES;
+            const protectedCount = process.env.PROTECTED_CACHES;
+            const kept = process.env.KEPT_CACHES;
+            const totalSize = process.env.TOTAL_SIZE;
 
-            const summary = `Cache Cleanup Summary:
-            - Total caches: ${metrics.total}
-            - Deleted: ${metrics.deleted}
-            - Protected: ${metrics.protected}
-            - Kept: ${metrics.kept}
-            - Total size: ${metrics.totalSize}MB`;
+            const summary = `Cache Cleanup Summary:\n- Total caches: ${total}\n- Deleted: ${deleted}\n- Protected: ${protectedCount}\n- Kept: ${kept}\n- Total size: ${totalSize}MB`;
 
             await github.rest.checks.create({
-              owner,
-              repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               name: 'Cache Management Status',
-              head_sha: sha,
+              head_sha: context.sha,
               status: 'completed',
               conclusion: 'success',
               completed_at: new Date().toISOString(),
@@ -246,23 +237,24 @@ jobs:
                 summary: summary
               }
             });
+        env:
+          TOTAL_CACHES: ${{ steps.cache-cleanup.outputs.TOTAL_CACHES }}
+          DELETED_CACHES: ${{ steps.cache-cleanup.outputs.DELETED_CACHES }}
+          PROTECTED_CACHES: ${{ steps.cache-cleanup.outputs.PROTECTED_CACHES }}
+          KEPT_CACHES: ${{ steps.cache-cleanup.outputs.KEPT_CACHES }}
+          TOTAL_SIZE: ${{ steps.cache-cleanup.outputs.TOTAL_SIZE }}
 
       - name: Create Issue on Large Cache Usage
-        if: steps.cache-cleanup.outputs.TOTAL_SIZE > 5000
+        if: env.TOTAL_SIZE > 5000
         uses: actions/github-script@v7
         with:
           script: |
-            const totalSize = ${{ steps.cache-cleanup.outputs.TOTAL_SIZE }};
+            const totalSize = process.env.TOTAL_SIZE;
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '⚠️ Large Cache Usage Detected',
-              body: `Total cache size (${totalSize}MB) exceeds 5GB threshold.
-
-              Please review the latest cache analysis report for details.
-
-              Consider:
-              - Reviewing cache retention policies
-              - Optimizing build artifacts
-              - Cleaning up unused dependencies`
+              body: `Total cache size (${totalSize}MB) exceeds 5GB threshold.\n\nPlease review the latest cache analysis report for details.\n\nConsider:\n- Reviewing cache retention policies\n- Optimizing build artifacts\n- Cleaning up unused dependencies`
             });
+        env:
+          TOTAL_SIZE: ${{ steps.cache-cleanup.outputs.TOTAL_SIZE }}
