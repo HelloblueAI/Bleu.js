@@ -317,7 +317,7 @@ class AutomationPipeline:
 
         # Topological sort with parallelization
         execution_order = []
-        visited = set()
+        visited: set[str] = set()
 
         while len(visited) < len(self.steps):
             # Find steps with satisfied dependencies

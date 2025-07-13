@@ -32,10 +32,10 @@ class QuantumInteractionDetector:
 
         self.weights = weights or {"classical": 0.3, "quantum": 0.4, "shap": 0.3}
 
-        self.interaction_scores = {}
-        self.classical_correlations = {}
-        self.quantum_correlations = {}
-        self.shap_interactions = {}
+        self.interaction_scores: Dict[Tuple[str, str], float] = {}
+        self.classical_correlations: Dict[Tuple[str, str], float] = {}
+        self.quantum_correlations: Dict[Tuple[str, str], float] = {}
+        self.shap_interactions: Dict[Tuple[str, str], float] = {}
 
     def detect_interactions(
         self,

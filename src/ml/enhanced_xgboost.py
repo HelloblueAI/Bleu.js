@@ -168,7 +168,7 @@ class SecurityManager(BaseService):
     def __init__(self, config: SecurityConfig):
         self.config = config
         self.fernet = self._initialize_encryption()
-        self.audit_log = []
+        self.audit_log: list[dict[str, Any]] = []
 
     def _initialize_encryption(self) -> Fernet:
         """Initialize encryption system"""
