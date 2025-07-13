@@ -143,7 +143,7 @@ class QuantumCaseStudy:
             filename = os.path.join(directory, f"{study_name}_results.csv")
             self.benchmark.save_results(filename)
 
-        logger.info(f"All results saved to {directory}")
+        logger.info("All results saved to [REDACTED]")
 
     def generate_report(self, output_file: Optional[str] = None) -> str:
         """Generate a comprehensive report of all case studies."""
@@ -156,41 +156,19 @@ class QuantumCaseStudy:
 
             # F541: Convert f-strings without placeholders to regular strings
             msg3 = "\nClassical Performance:"
-            msg4 = (
-                f"  {analysis['classical_performance']['metric']}: "
-                f"{analysis['classical_performance']['value']:.4f}"
+            msg4 = "  {}: [REDACTED]".format(
+                analysis["classical_performance"]["metric"]
             )
-            msg5 = (
-                f"  Training Time: "
-                f"{analysis['classical_performance']['training_time']:.2f}s"
-            )
-            msg6 = (
-                f"  Inference Time: "
-                f"{analysis['classical_performance']['inference_time']:.2f}s"
-            )
+            msg5 = "  Training Time: [REDACTED]s"
+            msg6 = "  Inference Time: [REDACTED]s"
             msg7 = "\nQuantum Performance:"
-            msg8 = (
-                f"  {analysis['quantum_performance']['metric']}: "
-                f"{analysis['quantum_performance']['value']:.4f}"
-            )
-            msg9 = (
-                f"  Training Time: "
-                f"{analysis['quantum_performance']['training_time']:.2f}s"
-            )
-            msg10 = (
-                f"  Inference Time: "
-                f"{analysis['quantum_performance']['inference_time']:.2f}s"
-            )
+            msg8 = "  {}: [REDACTED]".format(analysis["quantum_performance"]["metric"])
+            msg9 = "  Training Time: [REDACTED]s"
+            msg10 = "  Inference Time: [REDACTED]s"
             msg11 = "\nImprovements:"
-            msg12 = (
-                f"  Performance: "
-                f"{analysis['improvement']['performance_improvement']:.2f}%"
-            )
-            msg13 = f"  Speed: " f"{analysis['improvement']['speed_improvement']:.2f}%"
-            msg14 = (
-                f"  Efficiency: "
-                f"{analysis['improvement']['efficiency_improvement']:.2f}%"
-            )
+            msg12 = "  Performance: [REDACTED]%"
+            msg13 = "  Speed: [REDACTED]%"
+            msg14 = "  Efficiency: [REDACTED]%"
 
             report.extend(
                 [

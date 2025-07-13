@@ -79,8 +79,8 @@ def main():
     report_file = output_dir / "quantum_advantage_report.txt"
     case_study.generate_report(str(report_file))
 
-    logger.info(f"Results saved to {output_dir}")
-    logger.info(f"Report generated at {report_file}")
+    logger.info("Results saved to [REDACTED]")
+    logger.info("Report generated at [REDACTED]")
 
 
 if __name__ == "__main__":
