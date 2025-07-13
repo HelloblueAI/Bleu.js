@@ -62,3 +62,150 @@ class Job(BaseModel):
     updated_at: datetime
     result: Optional[dict] = None
     error: Optional[str] = None
+
+
+class User(BaseModel):
+    """User model."""
+
+    id: int
+    username: str
+    email: str
+    is_active: bool = True
+    is_admin: bool = False
+    created_at: datetime
+
+
+class UserCreate(BaseModel):
+    """User creation model."""
+
+    username: str
+    email: str
+    password: str
+
+
+class UserResponse(BaseModel):
+    """User response model."""
+
+    id: int
+    username: str
+    email: str
+    is_active: bool
+    is_admin: bool
+    created_at: datetime
+
+
+class Project(BaseModel):
+    """Project model."""
+
+    id: int
+    name: str
+    description: str
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class ProjectCreate(BaseModel):
+    """Project creation model."""
+
+    name: str
+    description: str
+
+
+class ProjectResponse(BaseModel):
+    """Project response model."""
+
+    id: int
+    name: str
+    description: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class Model(BaseModel):
+    """Model model."""
+
+    id: int
+    name: str
+    description: str
+    model_type: str
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class ModelCreate(BaseModel):
+    """Model creation model."""
+
+    name: str
+    description: str
+    model_type: str
+
+
+class ModelResponse(BaseModel):
+    """Model response model."""
+
+    id: int
+    name: str
+    description: str
+    model_type: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class Dataset(BaseModel):
+    """Dataset model."""
+
+    id: int
+    name: str
+    description: str
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class DatasetCreate(BaseModel):
+    """Dataset creation model."""
+
+    name: str
+    description: str
+
+
+class DatasetResponse(BaseModel):
+    """Dataset response model."""
+
+    id: int
+    name: str
+    description: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class JobList(BaseModel):
+    """Job list response model."""
+
+    jobs: list[Job]
+    total: int
+    page: int
+    limit: int
+
+
+class JobResponse(BaseModel):
+    """Job response model."""
+
+    id: int
+    user_id: int
+    job_type: str
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    result: Optional[dict] = None
+    error: Optional[str] = None
+
+
+class JobUpdate(BaseModel):
+    """Job update model."""
+
+    status: str
+    result: Optional[dict] = None
+    error: Optional[str] = None
