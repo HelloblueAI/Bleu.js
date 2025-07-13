@@ -1,4 +1,4 @@
-# Dockerfile for building and publishing Bleu.js v1.1.4
+# Dockerfile for building and publishing Bleu.js v1.1.8
 FROM python:3.10-slim
 
 WORKDIR /workspace
