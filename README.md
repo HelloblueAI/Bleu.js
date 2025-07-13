@@ -68,37 +68,26 @@ Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 # Verify installation
 $ pip list | grep -i bleu
 bleu                               1.1.3
-bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js
+bleu-js                            1.1.8
 bleujs                             1.1.3
-
-# Show project structure
-$ ls -la src/
-total 152
-drwxrwxr-x 27 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 .
-drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 05:39 api
-drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 03:20 applications
-...
-
-# Show available examples
-$ ls -la examples/
-total 60
-drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .
--rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 16427 Jul 13 00:47 ci_cd_demo.py
--rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  2255 Jul 12 05:28 mps_acceleration_demo.py
-...
 ```
 
-### Step 5: Success! 🎉
+### Step 5: Explore Examples
 ```bash
-🎉 Installation completed successfully!
-✨ Bleu.js is ready to use!
+ls examples/
+# sample_usage.py  mps_acceleration_demo.py  ci_cd_demo.py
 ```
+
+### Step 6: Run a Sample
+```bash
+python3 examples/sample_usage.py
+```
+
+🎉 Installation and verification complete! Bleu.js is ready to use.
 
 ---
 
 **📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
-
-**🎬 [Run Demo Yourself](simple_demo.sh)** - Execute the installation demo locally
 
 **📄 [Complete Output](animated_demo_output.txt)** - View the full installation log
 
@@ -253,21 +242,25 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Memory Efficiency**: 1.94MB memory usage
 - **Qubit Stability**: 0.9556 stability score
 
-### Quantum Rating Chart
+### Quantum Performance Metrics
 
 ```mermaid
-radar
-    title Quantum Performance Metrics
-    axis "Qubit Stability" 0 1
-    axis "Quantum Advantage" 0 2
-    axis "Energy Efficiency" 0 100
-    axis "Memory Efficiency" 0 5
-    axis "Processing Speed" 0 50
-    axis "Detection Accuracy" 0 100
-
-    "Current Performance" 0.9556 1.95 95.56 1.94 23.73 18.90
-    "Target Performance" 1.0 2.5 100 2.0 20 25
+pie title Current vs Target Performance
+    "Qubit Stability (95.6%)" : 95.6
+    "Quantum Advantage (78.0%)" : 78.0
+    "Energy Efficiency (95.6%)" : 95.6
+    "Memory Efficiency (97.0%)" : 97.0
+    "Processing Speed (118.7%)" : 118.7
+    "Detection Accuracy (75.6%)" : 75.6
 ```
+
+**Performance Breakdown:**
+- **Qubit Stability**: 0.9556/1.0 (95.6% of target)
+- **Quantum Advantage**: 1.95x/2.5x (78.0% of target)
+- **Energy Efficiency**: 95.56%/100% (95.6% of target)
+- **Memory Efficiency**: 1.94MB/2.0MB (97.0% of target)
+- **Processing Speed**: 23.73ms/20ms (118.7% - exceeding target!)
+- **Detection Accuracy**: 18.90%/25% (75.6% of target)
 
 ### Advanced Quantum Features
 
@@ -1222,18 +1215,22 @@ graph TD
 ## Performance Metrics
 
 ```mermaid
-radar
-    title System Performance Metrics
-    axis "Speed" 0 100
-    axis "Accuracy" 0 100
-    axis "Efficiency" 0 100
-    axis "Scalability" 0 100
-    axis "Reliability" 0 100
-    axis "Security" 0 100
-
-    "Current" 95 93 90 98 99 100
-    "Target" 100 100 100 100 100 100
+pie title System Performance Metrics
+    "Speed (95%)" : 95
+    "Accuracy (93%)" : 93
+    "Efficiency (90%)" : 90
+    "Scalability (98%)" : 98
+    "Reliability (99%)" : 99
+    "Security (100%)" : 100
 ```
+
+**Performance Breakdown:**
+- **Speed**: 95% of target (excellent performance)
+- **Accuracy**: 93% of target (high precision)
+- **Efficiency**: 90% of target (optimized resource usage)
+- **Scalability**: 98% of target (near-perfect scaling)
+- **Reliability**: 99% of target (exceptional stability)
+- **Security**: 100% of target (maximum security)
 
 ## Contribution Guidelines
 
