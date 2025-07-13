@@ -8,27 +8,33 @@
 
 **📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
 
-### Real Terminal Demo
-
-Here's the actual installation and usage process of Bleu.js in a real terminal session:
-
 ## 🎬 Live Installation Demo
 
-**Watch the real installation process step-by-step:**
+**Experience the real installation process interactively:**
 
-### Step 1: Environment Setup
+<div align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
+    <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
+  </a>
+</div>
+
+### Step-by-Step Installation Process
+
+**Step 1: Environment Setup**
 ```bash
 # Check current directory
 $ pwd
+/home/pejmanhaghighatnia/Documents/Bleu.js
 
 # Show project structure
 $ ls -la | head -5
 total 3608
-
-...
+drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .
+drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json
 ```
 
-### Step 2: Python Environment
+**Step 2: Python Environment**
 ```bash
 # Check Python version
 $ python3 --version
@@ -43,7 +49,7 @@ $ source bleujs-demo-env/bin/activate
 ✅ Virtual environment activated
 ```
 
-### Step 3: Installation Process
+**Step 3: Installation Process**
 ```bash
 # Check pip version
 $ pip --version
@@ -61,7 +67,7 @@ Collecting numpy<2.0.0,>=1.24.3
 Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 ```
 
-### Step 4: Verification
+**Step 4: Verification**
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
@@ -70,23 +76,21 @@ bleu-js                            1.1.8
 bleujs                             1.1.8
 ```
 
-### Step 5: Explore Examples
+**Step 5: Explore Examples**
 ```bash
-ls examples/
-# sample_usage.py  mps_acceleration_demo.py  ci_cd_demo.py
+$ ls examples/
+ci_cd_demo.py  mps_acceleration_demo.py  sample_usage.py
 ```
 
-### Step 6: Run a Sample
+**Step 6: Run a Sample**
 ```bash
-python3 examples/sample_usage.py
-```
-
+$ python3 examples/sample_usage.py
 🎉 Installation and verification complete! Bleu.js is ready to use.
+```
 
 ---
 
 **📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
-
 
 This real terminal session shows the actual installation process, including:
 - ✅ Real project structure and files
