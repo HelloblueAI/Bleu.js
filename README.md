@@ -6,12 +6,6 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
-### 🚀 Magical Terminal Demonstration
-
-**Watch Bleu.js in action - A truly magical experience:**
-
-![Bleu.js Magical Demo](https://github.com/HelloblueAI/Bleu.js/blob/main/terminal-demo.gif)
-
 ### Real Terminal Demo
 
 Here's the actual installation and usage process of Bleu.js in a real terminal session:
