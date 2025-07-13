@@ -4,18 +4,19 @@ Create GitHub-Compatible Demo for Bleu.js
 Uses GitHub's built-in features for displaying demos
 """
 
+import os
 import subprocess
 import time
-import os
 from pathlib import Path
+
 
 def create_github_demo():
     """Create a GitHub-compatible demo"""
-    
+
     print("🎬 Creating GitHub-compatible demo...")
-    
+
     # Create a simple animated demo using GitHub's markdown features
-    demo_markdown = '''## 🎬 Live Installation Demo
+    demo_markdown = """## 🎬 Live Installation Demo
 
 **Watch the real installation process step-by-step:**
 
@@ -72,9 +73,9 @@ Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.3
+bleu                               1.1.8
 bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js
-bleujs                             1.1.3
+bleujs                             1.1.8
 
 # Show project structure
 $ ls -la src/
@@ -106,18 +107,18 @@ drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .
 **🎬 [Run Demo Yourself](simple_demo.sh)** - Execute the installation demo locally
 
 **📄 [Complete Output](animated_demo_output.txt)** - View the full installation log
-'''
-    
-    with open('GITHUB_DEMO.md', 'w') as f:
+"""
+
+    with open("GITHUB_DEMO.md", "w") as f:
         f.write(demo_markdown)
-    
+
     print("✅ GitHub demo created: GITHUB_DEMO.md")
-    
+
     # Create a simple GIF demo using asciinema
     print("📹 Creating GIF demo...")
-    
+
     # Create a simple demo script
-    demo_script = '''#!/bin/bash
+    demo_script = """#!/bin/bash
 
 echo "🚀 Bleu.js Installation Demo"
 echo "============================="
@@ -168,27 +169,28 @@ echo ""
 
 echo "🎉 Installation completed successfully!"
 echo "✨ Bleu.js is ready to use!"
-'''
+"""
 
-    with open('github_demo.sh', 'w') as f:
+    with open("github_demo.sh", "w") as f:
         f.write(demo_script)
-    
-    os.chmod('github_demo.sh', 0o755)
+
+    os.chmod("github_demo.sh", 0o755)
     print("✅ Demo script created: github_demo.sh")
-    
+
     return True
+
 
 def update_readme():
     """Update README with the GitHub-compatible demo"""
-    
+
     print("📝 Updating README with GitHub-compatible demo...")
-    
+
     # Read current README
-    with open('README.md', 'r') as f:
+    with open("README.md", "r") as f:
         content = f.read()
-    
+
     # Replace the demo section
-    old_demo = '''**🎬 Watch the animated installation process:**
+    old_demo = """**🎬 Watch the animated installation process:**
 
 [![Bleu.js Animated Installation Demo](simple_animated_demo.html)](simple_animated_demo.html)
 
@@ -196,9 +198,9 @@ def update_readme():
 
 **🎬 [Live Demo Script](simple_demo.sh)** - Run the installation demo yourself!
 
-**📄 [Demo Output](animated_demo_output.txt)** - View the complete installation output'''
-    
-    new_demo = '''## 🎬 Live Installation Demo
+**📄 [Demo Output](animated_demo_output.txt)** - View the complete installation output"""
+
+    new_demo = """## 🎬 Live Installation Demo
 
 **Watch the real installation process step-by-step:**
 
@@ -255,9 +257,9 @@ Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.3
+bleu                               1.1.8
 bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js
-bleujs                             1.1.3
+bleujs                             1.1.8
 
 # Show project structure
 $ ls -la src/
@@ -288,38 +290,40 @@ drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .
 
 **🎬 [Run Demo Yourself](simple_demo.sh)** - Execute the installation demo locally
 
-**📄 [Complete Output](animated_demo_output.txt)** - View the full installation log'''
-    
+**📄 [Complete Output](animated_demo_output.txt)** - View the full installation log"""
+
     content = content.replace(old_demo, new_demo)
-    
+
     # Write updated README
-    with open('README.md', 'w') as f:
+    with open("README.md", "w") as f:
         f.write(content)
-    
+
     print("✅ README updated with GitHub-compatible demo")
+
 
 def main():
     """Main function"""
     print("🎬 Bleu.js GitHub Demo Creator")
     print("=" * 35)
-    
+
     if not create_github_demo():
         print("❌ Failed to create GitHub demo")
         return False
-    
+
     update_readme()
-    
+
     print("\n🎉 GitHub demo creation completed!")
     print("\n📁 Generated files:")
     print("  - GITHUB_DEMO.md (GitHub-compatible demo)")
     print("  - github_demo.sh (Demo script)")
-    
+
     print("\n📋 Next steps:")
     print("  1. Commit and push the new demo files")
     print("  2. The demo will display properly in GitHub README")
     print("  3. Users can see the step-by-step installation process")
-    
+
     return True
 
+
 if __name__ == "__main__":
-    main() 
+    main()

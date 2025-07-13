@@ -55,9 +55,9 @@ Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.3
+bleu                               1.1.8
 bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js
-bleujs                             1.1.3
+bleujs                             1.1.8
 
 # Show project structure
 $ ls -la src/
