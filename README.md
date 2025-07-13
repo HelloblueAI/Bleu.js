@@ -18,14 +18,11 @@
 ```bash
 # Check current directory
 $ pwd
-/home/pejmanhaghighatnia/Documents/Bleu.js
+
 
 # Show project structure
 $ ls -la | head -5
 total 3608
-drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .
-drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..
--rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json
 ```
 
 **Step 2: Python Environment**
