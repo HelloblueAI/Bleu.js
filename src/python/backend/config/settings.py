@@ -43,6 +43,7 @@ class APIConfig:
     jwt_secret: str
     jwt_algorithm: str
     jwt_expires_in: int
+    access_token_expire_minutes: int
 
 
 @dataclass
@@ -67,6 +68,27 @@ class LoggingConfig:
     backup_count: int = 5
 
 
+class CelerySettings(BaseSettings):
+    """Celery configuration settings."""
+
+    broker_url: str = Field(default="redis://localhost:6379/0", env="CELERY_BROKER_URL")
+    result_backend: str = Field(
+        default="redis://localhost:6379/0", env="CELERY_RESULT_BACKEND"
+    )
+    task_serializer: str = Field(default="json", env="CELERY_TASK_SERIALIZER")
+    result_serializer: str = Field(default="json", env="CELERY_RESULT_SERIALIZER")
+    accept_content: list = Field(default=["json"], env="CELERY_ACCEPT_CONTENT")
+    task_ignore_result: bool = Field(default=False, env="CELERY_TASK_IGNORE_RESULT")
+    task_time_limit: int = Field(default=3600, env="CELERY_TASK_TIME_LIMIT")
+    task_soft_time_limit: int = Field(default=3000, env="CELERY_TASK_SOFT_TIME_LIMIT")
+    worker_max_tasks_per_child: int = Field(
+        default=1000, env="CELERY_WORKER_MAX_TASKS_PER_CHILD"
+    )
+    worker_prefetch_multiplier: int = Field(
+        default=1, env="CELERY_WORKER_PREFETCH_MULTIPLIER"
+    )
+
+
 @dataclass
 class BackendConfig:
     """Main backend configuration."""
@@ -76,6 +98,7 @@ class BackendConfig:
     database: DatabaseConfig
     api: APIConfig
     cache: CacheConfig
+    celery: CelerySettings
     logging: LoggingConfig
     model_path: str
     batch_size: int
@@ -130,27 +153,6 @@ class RedisSettings(BaseSettings):
     password: Optional[str] = Field(default=None, env="REDIS_PASSWORD")
     ssl: bool = Field(default=False, env="REDIS_SSL")
     ssl_cert_reqs: Optional[str] = Field(default=None, env="REDIS_SSL_CERT_REQS")
-
-
-class CelerySettings(BaseSettings):
-    """Celery configuration settings."""
-
-    broker_url: str = Field(default="redis://localhost:6379/0", env="CELERY_BROKER_URL")
-    result_backend: str = Field(
-        default="redis://localhost:6379/0", env="CELERY_RESULT_BACKEND"
-    )
-    task_serializer: str = Field(default="json", env="CELERY_TASK_SERIALIZER")
-    result_serializer: str = Field(default="json", env="CELERY_RESULT_SERIALIZER")
-    accept_content: list = Field(default=["json"], env="CELERY_ACCEPT_CONTENT")
-    task_ignore_result: bool = Field(default=False, env="CELERY_TASK_IGNORE_RESULT")
-    task_time_limit: int = Field(default=3600, env="CELERY_TASK_TIME_LIMIT")
-    task_soft_time_limit: int = Field(default=3000, env="CELERY_TASK_SOFT_TIME_LIMIT")
-    worker_max_tasks_per_child: int = Field(
-        default=1000, env="CELERY_WORKER_MAX_TASKS_PER_CHILD"
-    )
-    worker_prefetch_multiplier: int = Field(
-        default=1, env="CELERY_WORKER_PREFETCH_MULTIPLIER"
-    )
 
 
 class Settings(BaseSettings):
@@ -280,6 +282,7 @@ class Settings(BaseSettings):
             database=DatabaseConfig(**data["database"]),
             api=APIConfig(**data["api"]),
             cache=CacheConfig(**data["cache"]),
+            celery=CelerySettings(),
             logging=LoggingConfig(**data["logging"]),
             model_path=data["model_path"],
             batch_size=data["batch_size"],

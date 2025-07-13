@@ -116,3 +116,27 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+class DatabaseManager:
+    """Database manager for handling database operations."""
+
+    def __init__(self):
+        self.engine = engine
+        self.SessionLocal = SessionLocal
+
+    def get_session(self):
+        """Get a new database session."""
+        return self.SessionLocal()
+
+    def create_tables(self):
+        """Create all database tables."""
+        Base.metadata.create_all(bind=self.engine)
+
+    def drop_tables(self):
+        """Drop all database tables."""
+        Base.metadata.drop_all(bind=self.engine)
+
+
+# Create global database manager instance
+db_manager = DatabaseManager()
