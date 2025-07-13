@@ -24,19 +24,22 @@ pyquil>=3.2.1
 python-jose>=3.5.0
 
 # Quantum (compatible versions without problematic dependencies)
-qiskit==0.44.2
+qiskit==1.4.2
 qiskit-aer==0.12.2
 qiskit-algorithms==0.2.1
 ray>=2.47.1
+requests>=2.32.4
 scikit-learn>=1.7.0
 scipy>=1.15.3
 seaborn>=0.13.2
+setuptools>=78.1.1
 # Core ML/AI
 tensorflow>=2.16.2
 torch>=2.7.1
 
 # NLP
 transformers>=4.52.4
+urllib3>=2.5.0
 
 # Tracking/Experimentation
 wandb>=0.21.0

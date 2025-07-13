@@ -31,7 +31,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const sha = context.sha;
-            
+
             await github.rest.checks.create({
               owner,
               repo,
@@ -45,14 +45,14 @@ jobs:
         id: cache-cleanup
         run: |
           gh extension install actions/gh-actions-cache
-          
+
           REPO=${{ github.repository }}
           BRANCH="main"
-          
+
           # Initialize monitoring file
           echo "Cache Analysis Report - $(date)" > cache_report.txt
           echo "=================================" >> cache_report.txt
-          
+
           # Function to convert size to MB
           convert_to_mb() {
             local size="$1"
@@ -66,20 +66,20 @@ jobs:
               fi
             fi
           }
-          
+
           # Function to calculate cache score (higher score = more important to keep)
           calculate_cache_score() {
             local cache_key="$1"
             local age="$2"
             local size_mb="$3"
             local base_score=100
-            
+
             # Reduce score based on age
             local age_penalty=$(echo "scale=2; $age * 5" | bc)
-            
+
             # Reduce score based on size (larger files get lower scores)
             local size_penalty=$(echo "scale=2; $size_mb / 100" | bc)
-            
+
             # Bonus for important cache types
             local type_bonus=0
             case "$cache_key" in
@@ -88,19 +88,19 @@ jobs:
               *"test-results"*) type_bonus=30 ;; # Test results help with debugging
               *"deps"*) type_bonus=20 ;; # Dependencies are important but replaceable
             esac
-            
+
             echo "$(echo "$base_score - $age_penalty - $size_penalty + $type_bonus" | bc)"
           }
-          
+
           # Initialize counters
           total_size_mb=0
           cache_count=0
           deleted_count=0
           protected_count=0
           kept_count=0
-          
+
           echo "Analyzing cache usage patterns..."
-          
+
           # First pass: Gather statistics
           while read -r line; do
             cache_key=$(echo "$line" | awk '{print $1}')
@@ -108,16 +108,16 @@ jobs:
             size_mb=$(convert_to_mb "$size")
             total_size_mb=$(echo "$total_size_mb + $size_mb" | bc)
             ((cache_count++))
-            
+
             echo "Cache: $cache_key" >> cache_report.txt
             echo "Size: $size" >> cache_report.txt
             echo "------------------------" >> cache_report.txt
           done < <(gh actions-cache list -R $REPO -B $BRANCH)
-          
+
           # Calculate average cache size
           avg_size_mb=$(echo "scale=2; $total_size_mb / $cache_count" | bc)
           echo "Average cache size: ${avg_size_mb}MB" >> cache_report.txt
-          
+
           # Define dynamic retention rules based on usage patterns
           declare -A retention_rules=(
             ["quantum"]=$([ $avg_size_mb -gt 1000 ] && echo "5" || echo "7")
@@ -125,15 +125,15 @@ jobs:
             ["deps"]="14"
             ["build"]="3"
           )
-          
+
           echo "Applying intelligent cleanup rules..."
-          
+
           # Second pass: Apply cleanup rules
           while read -r line; do
             cache_key=$(echo "$line" | awk '{print $1}')
             size=$(echo "$line" | awk '{print $2, $3}')
             created_time=$(echo "$line" | grep -oP '\d+ \w+ ago')
-            
+
             # Convert time to days
             days_old=0
             if [[ $created_time =~ ([0-9]+)[[:space:]]+(hour|hours|day|days|week|weeks|month|months)[[:space:]]+ago ]]; then
@@ -146,12 +146,12 @@ jobs:
                 month|months) days_old=$(echo "$number * 30" | bc) ;;
               esac
             fi
-            
+
             size_mb=$(convert_to_mb "$size")
-            
+
             # Calculate cache score
             score=$(calculate_cache_score "$cache_key" "$days_old" "$size_mb")
-            
+
             # Determine retention period
             retention_days=7  # Default
             for pattern in "${!retention_rules[@]}"; do
@@ -160,19 +160,19 @@ jobs:
                 break
               fi
             done
-            
+
             # Safety checks
             if [[ $cache_key == *"Linux-v1"* ]] && [ $(echo "$days_old < 2" | bc -l) -eq 1 ]; then
               echo "🔒 Protecting recent cache: $cache_key (Age: $days_old days, Size: $size, Score: $score)" | tee -a cache_report.txt
               ((protected_count++))
               continue
             fi
-            
+
             # Adaptive retention based on score
             if [ $(echo "$score > 70" | bc -l) -eq 1 ]; then
               retention_days=$(echo "$retention_days * 1.5" | bc)
             fi
-            
+
             if [ $(echo "$days_old > $retention_days" | bc -l) -eq 1 ]; then
               echo "🗑️ Deleting cache: $cache_key (Age: $days_old days, Size: $size, Score: $score)" | tee -a cache_report.txt
               gh actions-cache delete $cache_key -R $REPO -B $BRANCH --confirm
@@ -182,7 +182,7 @@ jobs:
               ((kept_count++))
             fi
           done < <(gh actions-cache list -R $REPO -B $BRANCH)
-          
+
           # Generate summary
           echo -e "\nSummary" >> cache_report.txt
           echo "=======" >> cache_report.txt
@@ -192,20 +192,20 @@ jobs:
           echo "Caches kept: $kept_count" >> cache_report.txt
           echo "Total cache size: ${total_size_mb}MB" >> cache_report.txt
           echo "Average cache size: ${avg_size_mb}MB" >> cache_report.txt
-          
+
           # Save metrics for GitHub status
           echo "TOTAL_CACHES=$cache_count" >> $GITHUB_OUTPUT
           echo "DELETED_CACHES=$deleted_count" >> $GITHUB_OUTPUT
           echo "PROTECTED_CACHES=$protected_count" >> $GITHUB_OUTPUT
           echo "KEPT_CACHES=$kept_count" >> $GITHUB_OUTPUT
           echo "TOTAL_SIZE=${total_size_mb}" >> $GITHUB_OUTPUT
-          
+
           cat cache_report.txt
         env:
           GH_TOKEN: ${{ github.token }}
 
       - name: Upload Cache Analysis Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cache-analysis-report
           path: cache_report.txt
@@ -225,14 +225,14 @@ jobs:
               kept: ${{ steps.cache-cleanup.outputs.KEPT_CACHES }},
               totalSize: ${{ steps.cache-cleanup.outputs.TOTAL_SIZE }}
             };
-            
+
             const summary = `Cache Cleanup Summary:
             - Total caches: ${metrics.total}
             - Deleted: ${metrics.deleted}
             - Protected: ${metrics.protected}
             - Kept: ${metrics.kept}
             - Total size: ${metrics.totalSize}MB`;
-            
+
             await github.rest.checks.create({
               owner,
               repo,
@@ -258,11 +258,11 @@ jobs:
               repo: context.repo.repo,
               title: '⚠️ Large Cache Usage Detected',
               body: `Total cache size (${totalSize}MB) exceeds 5GB threshold.
-              
+
               Please review the latest cache analysis report for details.
-              
+
               Consider:
               - Reviewing cache retention policies
               - Optimizing build artifacts
               - Cleaning up unused dependencies`
-            }); 
+            });
