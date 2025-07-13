@@ -12,10 +12,6 @@
 
 ![Bleu.js Magical Demo](https://github.com/HelloblueAI/Bleu.js/blob/main/terminal-demo.gif)
 
-*✨ Real-time quantum processing with stunning visual effects and professional AI inference ✨*
-
-**🎬 [Interactive Demo Player](magical-demo-player.html)** - Experience the full magical demo in your browser!
-
 ## Overview
 
 Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
