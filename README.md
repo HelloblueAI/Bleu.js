@@ -10,6 +10,16 @@
 
 Here's the actual installation and usage process of Bleu.js in a real terminal session:
 
+**🎬 Watch the animated installation process:**
+
+[![Bleu.js Animated Installation Demo](simple_animated_demo.html)](simple_animated_demo.html)
+
+**📺 [Interactive HTML Demo](simple_animated_demo.html)** - Experience the full animated demo in your browser!
+
+**🎬 [Live Demo Script](simple_demo.sh)** - Run the installation demo yourself!
+
+**📄 [Demo Output](animated_demo_output.txt)** - View the complete installation output
+
 ```bash
 # Check current directory and project structure
 $ pwd

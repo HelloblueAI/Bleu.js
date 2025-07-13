@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bleu.js Installation Demo</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background: #1e1e1e; color: #ffffff; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .demo { background: #2d2d2d; padding: 20px; border-radius: 10px; border: 1px solid #444; }
+        .line { margin: 5px 0; }
+        .command { color: #4CAF50; }
+        .output { color: #ffffff; }
+        .success { color: #4CAF50; }
+        .info { color: #2196F3; }
+        .warning { color: #FF9800; }
+        .error { color: #f44336; }
+        h1 { text-align: center; color: #4CAF50; }
+        .controls { text-align: center; margin: 20px 0; }
+        button { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bleu.js Installation Demo</h1>
+        <div class="controls">
+            <button onclick="startDemo()">▶️ Start Demo</button>
+            <button onclick="resetDemo()">🔄 Reset</button>
+            <button onclick="toggleSpeed()">⚡ Toggle Speed</button>
+        </div>
+        <div class="demo" id="demo">
+            <div class="line">Click "Start Demo" to begin the installation process...</div>
+        </div>
+    </div>
+
+    <script>
+        const demoSteps = [
+            { text: "📍 Current directory:", type: "info" },
+            { text: "/home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "", type: "output" },
+            { text: "📁 Project structure:", type: "info" },
+            { text: "total 3608", type: "output" },
+            { text: "drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .", type: "output" },
+            { text: "drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "🐍 Python version:", type: "info" },
+            { text: "Python 3.10.12", type: "output" },
+            { text: "", type: "output" },
+            { text: "🔧 Creating virtual environment...", type: "info" },
+            { text: "✅ Virtual environment created", type: "success" },
+            { text: "", type: "output" },
+            { text: "🔌 Activating virtual environment...", type: "info" },
+            { text: "✅ Virtual environment activated", type: "success" },
+            { text: "", type: "output" },
+            { text: "📦 Pip version:", type: "info" },
+            { text: "pip 22.0.2 from /home/pejmanhaghighatnia/Documents/Bleu.js/bleujs-demo-env/lib/python3.10/site-packages/pip (python 3.10)", type: "output" },
+            { text: "", type: "output" },
+            { text: "📥 Installing Bleu.js...", type: "info" },
+            { text: "Obtaining file:///home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "  Installing build dependencies ... done", type: "output" },
+            { text: "  Checking if build backend supports build_editable ... done", type: "output" },
+            { text: "  Getting requirements to build editable ... done", type: "output" },
+            { text: "  Preparing editable metadata (pyproject.toml) ... done", type: "output" },
+            { text: "Collecting numpy<2.0.0,>=1.24.3", type: "output" },
+            { text: "  Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)", type: "output" },
+            { text: "     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 84.2 MB/s eta 0:00:00", type: "output" },
+            { text: "Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1", type: "success" },
+            { text: "", type: "output" },
+            { text: "🔍 Verifying installation:", type: "info" },
+            { text: "bleu                               1.1.3", type: "output" },
+            { text: "bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "bleujs                             1.1.3", type: "output" },
+            { text: "", type: "output" },
+            { text: "📁 Project structure:", type: "info" },
+            { text: "total 152", type: "output" },
+            { text: "drwxrwxr-x 27 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 .", type: "output" },
+            { text: "drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 05:39 api", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 03:20 applications", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "📚 Available examples:", type: "info" },
+            { text: "total 60", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia 12288 Jul 13 01:08 ..", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 16427 Jul 13 00:47 ci_cd_demo.py", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  2255 Jul 12 05:28 mps_acceleration_demo.py", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "🎉 Installation completed successfully!", type: "success" },
+            { text: "✨ Bleu.js is ready to use!", type: "success" }
+        ];
+
+        let currentStep = 0;
+        let isPlaying = false;
+        let speed = 100; // milliseconds
+
+        function addLine(text, type) {
+            const demo = document.getElementById('demo');
+            const line = document.createElement('div');
+            line.className = `line ${type}`;
+            line.textContent = text;
+            demo.appendChild(line);
+            demo.scrollTop = demo.scrollHeight;
+        }
+
+        function startDemo() {
+            if (isPlaying) return;
+            isPlaying = true;
+            currentStep = 0;
+            document.getElementById('demo').innerHTML = '';
+            
+            function playStep() {
+                if (currentStep < demoSteps.length && isPlaying) {
+                    const step = demoSteps[currentStep];
+                    addLine(step.text, step.type);
+                    currentStep++;
+                    setTimeout(playStep, speed);
+                } else {
+                    isPlaying = false;
+                }
+            }
+            
+            playStep();
+        }
+
+        function resetDemo() {
+            isPlaying = false;
+            currentStep = 0;
+            document.getElementById('demo').innerHTML = '<div class="line">Click "Start Demo" to begin the installation process...</div>';
+        }
+
+        function toggleSpeed() {
+            speed = speed === 100 ? 50 : 100;
+        }
+    </script>
+</body>
+</html>
