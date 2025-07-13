@@ -6,13 +6,7 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
-**📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
-
-## 🎬 Live Installation Demo
-
-**Experience the real installation process interactively:**
-
-<div align="center">
+<div align="left">
   <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
     <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
   </a>
@@ -89,8 +83,6 @@ $ python3 examples/sample_usage.py
 ```
 
 ---
-
-**📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
 
 This real terminal session shows the actual installation process, including:
 - ✅ Real project structure and files
