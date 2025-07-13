@@ -102,8 +102,9 @@ async def health_check():
         db = next(get_db())
         db.execute("SELECT 1")
         return {"status": "healthy", "database": "healthy"}
-    except Exception as e:
-        return {"status": "unhealthy", "error": str(e)}
+    except Exception:
+        # Don't expose internal error details
+        return {"status": "unhealthy", "error": "Database connection failed"}
 
 
 @app.get("/")

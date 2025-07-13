@@ -8,6 +8,12 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # Weekly dependency check
 
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+  actions: read
+
 env:
   AWS_REGION: us-east-1
   PYTHON_VERSION: '3.10'
@@ -20,6 +26,8 @@ jobs:
   auto-assign:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
     steps:
       - uses: kentaro-m/auto-assign-action@v1.2.0
         with:
@@ -29,6 +37,8 @@ jobs:
     needs: auto-assign
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -359,6 +369,9 @@ jobs:
   check-dependencies:
     needs: security
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v3
 
@@ -540,6 +553,8 @@ jobs:
     needs: [docker-build-test, db-migrations, api-docs, performance-test, browser-test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -582,6 +597,9 @@ jobs:
     needs: package-publish
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v3
 

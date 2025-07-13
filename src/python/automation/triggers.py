@@ -272,11 +272,12 @@ class WebhookTrigger:
             ).inc()
             return web.Response(status=200)
 
-        except Exception as e:
+        except Exception:
             self.webhook_counter.labels(
                 path=self.path, method=request.method, status="error"
             ).inc()
-            return web.Response(status=500, text=str(e))
+            # Don't expose internal error details
+            return web.Response(status=500, text="Internal server error")
 
 
 class MessageQueueTrigger:
