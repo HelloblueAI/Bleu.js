@@ -89,8 +89,6 @@ python3 examples/sample_usage.py
 
 **📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
 
-**📄 [Complete Output](animated_demo_output.txt)** - View the full installation log
-
 ```bash
 # Check current directory and project structure
 $ pwd
