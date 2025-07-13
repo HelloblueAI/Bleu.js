@@ -1,0 +1,448 @@
+🚀 Bleu.js Real Terminal Demo
+==============================
+
+📍 Current directory:
+/home/pejmanhaghighatnia/Documents/Bleu.js
+total 3608
+drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .
+drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 03:20 alembic
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3756 Jun 10 06:42 alembic.ini
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    8820 Jul 12 06:26 all_packages.txt
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 assets
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 1490283 Jun 10 06:42 Asset.svg
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   11124 Jul 13 00:47 auto_record_demo.py
+drwxrwxr-x  5 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 03:47 backend
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2522 Jul 12 12:41 .bandit
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia       0 Jul 12 15:26 bandit-report.json
+drwxrwxr-x 14 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:39 bleu_ai
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    7096 Jul 13 00:45 bleu-demo.cast
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    4525 Jul 13 00:46 bleu-demo-player.html
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 bleujs-api-docs
+drwxrwxr-x  5 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 13 01:07 bleujs-demo-env
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 bluejs.org
+drwxrwxr-x  4 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 12:48 build
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3736 Jul 12 02:25 CHANGELOG.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   10370 Jul 12 11:27 CI_CD_IMPROVEMENTS.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    5996 Jul 12 11:05 CLEANUP_SUMMARY.md
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    2241 Jul 12 11:27 cleanup_unnecessary_files.sh
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 cloudformation
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1839 Jun 10 06:42 cloudwatch_config.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     397 Jun 10 06:42 codecov.yml
+drwxrwxr-x  4 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 11:51 collaboration-tools
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     537 Jun 10 06:42 commitlint.config.js
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     413 Jun 10 06:42 COMMIT_MESSAGE_TEMPLATE
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:39 config
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    5115 Jun 10 06:42 configure_cloudwatch.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     249 Jul 12 02:38 conftest.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3360 Jun 10 06:42 CONTRIBUTING.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3196 Jul 13 00:47 convert_cast_to_gif.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2215 Jul 13 01:02 CORRECT_UPLOAD_INSTRUCTIONS.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    8923 Jul 13 00:47 create_demo_gif.py
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    1682 Jul 13 00:56 create_gif.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3304 Jul 13 00:57 create_placeholder_gif.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    7704 Jul 13 01:07 create_real_terminal_demo.py
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 data
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 13 01:07 demo_installation
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    5405 Jul 13 00:47 demo_terminal.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    7655 Jul 12 02:30 DEPENDENCY_MANAGEMENT.md
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 deploy
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     874 Jun 10 06:42 deploy.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1261 Jun 10 06:42 docker-compose.dev.yml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1347 Jun 10 06:42 docker-compose.prod.yml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2817 Jun 10 06:42 docker-compose.yml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1238 Jun 10 06:42 docker-entrypoint.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     436 Jun 10 07:42 Dockerfile
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     884 Jul 12 03:52 Dockerfile.test
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     838 Jun 10 06:42 .dockerignore
+drwxrwxr-x 10 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 12:50 docs
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 .ebextensions
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    3112 Jun 10 06:42 ec2-user-data.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    8751 Jun 10 06:42 .env.example
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1571 Jul 12 07:11 .env.local
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 13 00:47 examples
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     227 Jul 12 15:27 .flake8
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2646 Jul 13 00:46 GIF_CREATION_GUIDE.md
+drwxrwxr-x  9 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 13 01:07 .git
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3755 Jun 10 06:42 .gitattributes
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 .github
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1634 Jul 13 01:00 GITHUB_UPLOAD_GUIDE.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   12158 Jul 12 23:11 .gitignore
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 .husky
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    5425 Jul 12 11:05 INSTALLATION_GUIDE.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3394 Jun 10 06:42 install.sh
+-rw-r--r--  1 pejmanhaghighatnia pejmanhaghighatnia    1056 Jun 30 19:46 LICENSE
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1070 Jun 10 06:42 LICENSE.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   16187 Jul 13 00:49 magical-bleu-demo.cast
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   10249 Jul 13 00:50 magical-demo-player.html
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   10341 Jul 13 00:48 magical_demo.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1745 Jun 10 06:42 main.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1305 Jun 10 06:42 main.yml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3381 Jun 10 06:42 mkdocs.yml
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 mlruns
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1305 Jun 10 06:42 model.json
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 models
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     340 Jul 12 13:15 mypy-advanced-decision-tree-fix10.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     976 Jul 12 13:13 mypy-advanced-decision-tree-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     735 Jul 12 13:14 mypy-advanced-decision-tree-fix3.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     507 Jul 12 13:14 mypy-advanced-decision-tree-fix4.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     507 Jul 12 13:14 mypy-advanced-decision-tree-fix5.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     339 Jul 12 13:14 mypy-advanced-decision-tree-fix6.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     226 Jul 12 13:15 mypy-advanced-decision-tree-fix7.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     226 Jul 12 13:15 mypy-advanced-decision-tree-fix8.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     226 Jul 12 13:15 mypy-advanced-decision-tree-fix9.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1381 Jul 12 13:13 mypy-advanced-decision-tree-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 12:59 mypy-auth-middleware-fix.log
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 12:56 .mypy_cache
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     889 Jul 12 13:20 mypy-core-quantum-processor-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2372 Jul 12 13:11 mypy-ensemble-manager-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1356 Jul 12 13:11 mypy-ensemble-manager-fix3.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     513 Jul 12 13:12 mypy-ensemble-manager-fix4.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     515 Jul 12 13:12 mypy-ensemble-manager-fix5.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     351 Jul 12 13:12 mypy-ensemble-manager-fix6.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 13:12 mypy-ensemble-manager-fix7.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3166 Jul 12 13:11 mypy-ensemble-manager-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3517 Jul 12 13:22 mypy-explainability-engine-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     991 Jul 12 13:21 mypy-feature-analyzer-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2890 Jul 12 12:56 mypy.ini
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 12:59 mypy-job-queue-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  117279 Jul 12 15:24 mypy-latest.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1531 Jul 12 13:16 mypy-pipeline-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     876 Jul 12 13:17 mypy-pipeline-fix3.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     790 Jul 12 13:17 mypy-pipeline-fix4.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1135 Jul 12 13:16 mypy-pipeline-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1317 Jul 12 13:01 mypy-process-optimizer-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     817 Jul 12 13:02 mypy-process-optimizer-fix3.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     525 Jul 12 13:02 mypy-process-optimizer-fix4.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     525 Jul 12 13:02 mypy-process-optimizer-fix5.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     354 Jul 12 13:03 mypy-process-optimizer-fix6.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     205 Jul 12 13:03 mypy-process-optimizer-fix7.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 13:03 mypy-process-optimizer-fix8.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3209 Jul 12 13:01 mypy-process-optimizer-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 13:00 mypy-quantum-detection-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     226 Jul 12 13:00 mypy-quantum-detection-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     368 Jul 12 13:19 mypy-quantum-processor-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      43 Jul 12 12:58 mypy-rate-limit-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  259937 Jul 12 12:56 mypy-relaxed.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 12:58 mypy-token-manager-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      42 Jul 12 13:00 mypy-triggers-fix2.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     493 Jul 12 12:59 mypy-triggers-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     457 Jul 12 13:20 mypy-vision-processor-fix.log
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1679 Jun 10 06:42 netlify.toml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2476 Jun 10 06:42 .npmignore
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia      44 Jun 10 06:42 .npmrc
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  216917 Jul 12 22:53 poetry.lock
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1329 Jul 12 15:51 .pre-commit-config.yaml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   13425 Jul 13 00:59 professional_gif_creator.py
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 12:23 __pycache__
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3647 Jul 12 22:53 pyproject.toml
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     226 Jun 10 06:42 pyrightconfig.json
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 11:59 .pytest_cache
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     278 Jun 10 06:42 pytest.ini
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 07:29 python
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    2075 Jul 13 00:46 quick_record.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    8054 Jul 12 02:30 README_DEPENDENCIES.md
+-rw-r--r--  1 pejmanhaghighatnia pejmanhaghighatnia   46066 Jul 13 01:05 README.md
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    1468 Jul 13 01:08 real_demo_script.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     294 Jul 13 01:08 real_terminal_demo.cast
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    1414 Jul 13 00:46 record_demo.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2422 Jul 13 00:46 RECORDING_INSTRUCTIONS.md
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    2754 Jul 13 01:08 record_real_demo.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     478 Jul 12 11:05 requirements-basic.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     979 Jul 12 12:25 requirements-ci.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     435 Jul 12 11:57 requirements-dev.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    7102 Jul 12 02:26 requirements.lock
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     668 Jul 12 12:00 requirements-minimal.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     100 Jul 12 12:04 requirements-quantum.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    1802 Jul 12 02:46 requirements-secure.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     448 Jul 12 23:01 requirements-test.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     693 Jul 12 22:39 requirements.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     159 Jun 10 06:42 requirements-types.txt
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 research
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2838 Jun 10 07:06 ROADMAP.md
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 15:24 .ruff_cache
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jun 10 06:42 rust
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  348967 Jul 12 12:25 safety-report.json
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 12:50 scripts
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    5325 Jul 12 02:54 SECURITY_REPORT.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2098 Jul 12 03:37 setup_and_test.py
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    6221 Jul 12 03:46 setup_domain.py
+-rwxrwxr-x  1 pejmanhaghighatnia pejmanhaghighatnia    2656 Jun 10 06:42 setup_env.sh
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2262 Jul 12 07:49 setup.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2118 Jul 12 11:05 sonarcloud_support_request.md
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia     545 Jul 12 11:49 sonar-project.properties
+drwxrwxr-x 27 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 11:59 src
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:26 storage
+drwxrwxr-x  6 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 03:47 submission
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    7096 Jul 13 00:45 terminal-demo.cast
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  329914 Jul 13 00:59 terminal-demo.gif
+drwxrwxr-x 13 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 11:59 tests
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3386 Jul 13 01:03 upload_gif_to_repo.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    3913 Jul 13 01:00 upload_to_github.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia    2613 Jun 10 06:42 user_data.sh
+drwxrwxr-x  5 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 15:19 venv
+
+📊 Git status:
+?? CORRECT_UPLOAD_INSTRUCTIONS.md
+?? bleujs-demo-env/
+?? create_real_terminal_demo.py
+?? demo_installation/
+?? real_demo_script.sh
+?? real_terminal_demo.cast
+?? record_real_demo.sh
+?? upload_gif_to_repo.py
+
+🐍 Python version:
+Python 3.10.12
+
+🔧 Creating virtual environment...
+✅ Virtual environment created
+
+🔌 Activating virtual environment...
+✅ Virtual environment activated
+
+📦 Pip version:
+pip 22.0.2 from /home/pejmanhaghighatnia/Documents/Bleu.js/bleujs-demo-env/lib/python3.10/site-packages/pip (python 3.10)
+
+📥 Installing Bleu.js...
+Obtaining file:///home/pejmanhaghighatnia/Documents/Bleu.js
+  Installing build dependencies ... [?25l- \ | done
+[?25h  Checking if build backend supports build_editable ... [?25ldone
+[?25h  Getting requirements to build editable ... [?25l- done
+[?25h  Preparing editable metadata (pyproject.toml) ... [?25l- done
+[?25hCollecting numpy<2.0.0,>=1.24.3
+  Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/18.2 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.2/18.2 MB[0m [31m6.9 MB/s[0m eta [36m0:00:03[0m[2K     [38;2;249;38;114m━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.6/18.2 MB[0m [31m23.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m5.4/18.2 MB[0m [31m52.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m7.2/18.2 MB[0m [31m61.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━[0m [32m11.3/18.2 MB[0m [31m94.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━[0m [32m15.2/18.2 MB[0m [31m95.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━[0m [32m16.8/18.2 MB[0m [31m83.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m18.2/18.2 MB[0m [31m84.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting urllib3>=2.5.0
+  Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/129.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m129.8/129.8 KB[0m [31m51.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting sqlalchemy==2.0.23
+  Downloading SQLAlchemy-2.0.23-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/3.0 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.0/3.0 MB[0m [31m97.5 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting alembic==1.13.1
+  Downloading alembic-1.13.1-py3-none-any.whl (233 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/233.4 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m233.4/233.4 KB[0m [31m58.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting uvicorn==0.27.1
+  Downloading uvicorn-0.27.1-py3-none-any.whl (60 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/60.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m60.8/60.8 KB[0m [31m25.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pandas>=2.0.0
+  Downloading pandas-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.3 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/12.3 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.0/12.3 MB[0m [31m119.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━[0m [32m9.2/12.3 MB[0m [31m111.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m [32m12.3/12.3 MB[0m [31m110.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.3/12.3 MB[0m [31m94.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting requests>=2.32.4
+  Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/64.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m64.8/64.8 KB[0m [31m23.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting setuptools>=78.1.1
+  Using cached setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+Collecting h11==0.16.0
+  Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Collecting scikit-learn>=1.2.2
+  Downloading scikit_learn-1.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.9 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/12.9 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.0/12.9 MB[0m [31m119.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━[0m [32m8.0/12.9 MB[0m [31m117.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━[0m [32m11.1/12.9 MB[0m [31m107.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.9/12.9 MB[0m [31m94.7 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pydantic[email]==2.6.1
+  Downloading pydantic-2.6.1-py3-none-any.whl (394 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/394.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m394.8/394.8 KB[0m [31m56.1 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting cryptography>=42.0.5
+  Downloading cryptography-45.0.5-cp37-abi3-manylinux_2_34_x86_64.whl (4.4 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/4.4 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━[0m [32m4.0/4.4 MB[0m [31m119.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.4/4.4 MB[0m [31m101.4 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting python-dotenv>=0.20.0
+  Downloading python_dotenv-1.1.1-py3-none-any.whl (20 kB)
+Collecting aiohttp>=3.9.3
+  Downloading aiohttp-3.12.14-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.6 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/1.6 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.6/1.6 MB[0m [31m89.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting httpx>=0.27.0
+  Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/73.5 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m73.5/73.5 KB[0m [31m30.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting psycopg2-binary==2.9.9
+  Downloading psycopg2_binary-2.9.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/3.0 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.0/3.0 MB[0m [31m98.5 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting fastapi>=0.110.0
+  Downloading fastapi-0.116.1-py3-none-any.whl (95 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/95.6 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m95.6/95.6 KB[0m [31m38.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting boto3>=1.24.0
+  Downloading boto3-1.39.4-py3-none-any.whl (139 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/139.9 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m139.9/139.9 KB[0m [31m57.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting Mako
+  Downloading mako-1.3.10-py3-none-any.whl (78 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/78.5 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m78.5/78.5 KB[0m [31m33.1 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting typing-extensions>=4
+  Downloading typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/43.9 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m43.9/43.9 KB[0m [31m17.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pydantic-core==2.16.2
+  Downloading pydantic_core-2.16.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/2.2 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.2/2.2 MB[0m [31m77.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting annotated-types>=0.4.0
+  Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Collecting email-validator>=2.0.0
+  Downloading email_validator-2.2.0-py3-none-any.whl (33 kB)
+Collecting greenlet!=0.4.17
+  Downloading greenlet-3.2.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (582 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/582.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m582.2/582.2 KB[0m [31m66.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting click>=7.0
+  Downloading click-8.2.1-py3-none-any.whl (102 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/102.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m102.2/102.2 KB[0m [31m39.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting attrs>=17.3.0
+  Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/63.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m63.8/63.8 KB[0m [31m22.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting aiosignal>=1.4.0
+  Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting async-timeout<6.0,>=4.0
+  Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Collecting propcache>=0.2.0
+  Downloading propcache-0.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (198 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/198.3 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m198.3/198.3 KB[0m [31m71.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting multidict<7.0,>=4.5
+  Downloading multidict-6.6.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (241 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/241.6 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m241.6/241.6 KB[0m [31m42.1 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting yarl<2.0,>=1.17.0
+  Downloading yarl-1.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (326 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/326.1 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m326.1/326.1 KB[0m [31m53.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting frozenlist>=1.1.1
+  Downloading frozenlist-1.7.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (222 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/222.9 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m222.9/222.9 KB[0m [31m71.4 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting aiohappyeyeballs>=2.5.0
+  Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Collecting jmespath<2.0.0,>=0.7.1
+  Downloading jmespath-1.0.1-py3-none-any.whl (20 kB)
+Collecting s3transfer<0.14.0,>=0.13.0
+  Downloading s3transfer-0.13.0-py3-none-any.whl (85 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/85.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m85.2/85.2 KB[0m [31m36.1 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting botocore<1.40.0,>=1.39.4
+  Downloading botocore-1.39.4-py3-none-any.whl (13.8 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/13.8 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.9/13.8 MB[0m [31m118.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━[0m [32m8.0/13.8 MB[0m [31m117.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━[0m [32m12.0/13.8 MB[0m [31m116.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m13.8/13.8 MB[0m [31m101.5 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting cffi>=1.14
+  Downloading cffi-1.17.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (446 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/446.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m446.2/446.2 KB[0m [31m58.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting starlette<0.48.0,>=0.40.0
+  Downloading starlette-0.47.1-py3-none-any.whl (72 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/72.7 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m72.7/72.7 KB[0m [31m30.1 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting httpcore==1.*
+  Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/78.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m78.8/78.8 KB[0m [31m29.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting anyio
+  Downloading anyio-4.9.0-py3-none-any.whl (100 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/100.9 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m100.9/100.9 KB[0m [31m35.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting idna
+  Downloading idna-3.10-py3-none-any.whl (70 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/70.4 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m70.4/70.4 KB[0m [31m29.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting certifi
+  Downloading certifi-2025.7.9-py3-none-any.whl (159 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/159.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m159.2/159.2 KB[0m [31m45.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting python-dateutil>=2.8.2
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/229.9 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m229.9/229.9 KB[0m [31m65.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pytz>=2020.1
+  Downloading pytz-2025.2-py2.py3-none-any.whl (509 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/509.2 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m509.2/509.2 KB[0m [31m76.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting tzdata>=2022.7
+  Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/347.8 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m347.8/347.8 KB[0m [31m66.8 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (149 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/149.5 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m149.5/149.5 KB[0m [31m39.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting joblib>=1.2.0
+  Downloading joblib-1.5.1-py3-none-any.whl (307 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/307.7 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m307.7/307.7 KB[0m [31m65.7 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting scipy>=1.8.0
+  Downloading scipy-1.15.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.7 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/37.7 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;249;38;114m━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.0/37.7 MB[0m [31m119.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m7.9/37.7 MB[0m [31m117.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.0/37.7 MB[0m [31m115.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━[0m [32m15.9/37.7 MB[0m [31m116.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━[0m [32m19.9/37.7 MB[0m [31m115.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━[0m [32m23.9/37.7 MB[0m [31m116.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━━━━━[0m [32m27.8/37.7 MB[0m [31m116.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━━━━━[0m [32m31.8/37.7 MB[0m [31m115.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m[38;5;237m━━[0m [32m35.7/37.7 MB[0m [31m116.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;249;38;114m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;2;249;38;114m╸[0m [32m37.7/37.7 MB[0m [31m116.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m37.7/37.7 MB[0m [31m75.4 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting threadpoolctl>=3.1.0
+  Downloading threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Collecting pycparser
+  Downloading pycparser-2.22-py3-none-any.whl (117 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/117.6 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m117.6/117.6 KB[0m [31m45.0 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting dnspython>=2.0.0
+  Downloading dnspython-2.7.0-py3-none-any.whl (313 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/313.6 KB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m313.6/313.6 KB[0m [31m73.4 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting six>=1.5
+  Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting sniffio>=1.1
+  Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Collecting exceptiongroup>=1.0.2
+  Downloading exceptiongroup-1.3.0-py3-none-any.whl (16 kB)
+Collecting MarkupSafe>=0.9.2
+  Downloading MarkupSafe-3.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (20 kB)
+Building wheels for collected packages: bleu-js
+  Building editable for bleu-js (pyproject.toml) ... [?25l- done
+[?25h  Created wheel for bleu-js: filename=bleu_js-1.1.8-0.editable-py3-none-any.whl size=18253 sha256=f5221e5a3d2dced48d3168e23a793c12af8181ec69052457202c5c3d4218682f
+  Stored in directory: /tmp/pip-ephem-wheel-cache-gag4l5v6/wheels/bb/6a/81/b4a08b7f976696182f53c081efefe2f8f2e593c401d68eec12
+Successfully built bleu-js
+Installing collected packages: pytz, urllib3, tzdata, typing-extensions, threadpoolctl, sniffio, six, setuptools, python-dotenv, pycparser, psycopg2-binary, propcache, numpy, MarkupSafe, joblib, jmespath, idna, h11, greenlet, frozenlist, dnspython, click, charset_normalizer, certifi, attrs, async-timeout, annotated-types, aiohappyeyeballs, uvicorn, sqlalchemy, scipy, requests, python-dateutil, pydantic-core, multidict, Mako, httpcore, exceptiongroup, email-validator, cffi, aiosignal, yarl, scikit-learn, pydantic, pandas, cryptography, botocore, anyio, alembic, starlette, s3transfer, httpx, aiohttp, fastapi, boto3, bleu-js
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 59.6.0
+    Uninstalling setuptools-59.6.0:
+      Successfully uninstalled setuptools-59.6.0
+Successfully installed Mako-1.3.10 MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.14 aiosignal-1.4.0 alembic-1.13.1 annotated-types-0.7.0 anyio-4.9.0 async-timeout-5.0.1 attrs-25.3.0 bleu-js-1.1.8 boto3-1.39.4 botocore-1.39.4 certifi-2025.7.9 cffi-1.17.1 charset_normalizer-3.4.2 click-8.2.1 cryptography-45.0.5 dnspython-2.7.0 email-validator-2.2.0 exceptiongroup-1.3.0 fastapi-0.116.1 frozenlist-1.7.0 greenlet-3.2.3 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.10 jmespath-1.0.1 joblib-1.5.1 multidict-6.6.3 numpy-1.26.4 pandas-2.3.1 propcache-0.3.2 psycopg2-binary-2.9.9 pycparser-2.22 pydantic-2.6.1 pydantic-core-2.16.2 python-dateutil-2.9.0.post0 python-dotenv-1.1.1 pytz-2025.2 requests-2.32.4 s3transfer-0.13.0 scikit-learn-1.7.0 scipy-1.15.3 setuptools-80.9.0 six-1.17.0 sniffio-1.3.1 sqlalchemy-2.0.23 starlette-0.47.1 threadpoolctl-3.6.0 typing-extensions-4.14.1 tzdata-2025.2 urllib3-2.5.0 uvicorn-0.27.1 yarl-1.20.1
+✅ Bleu.js installed
+
+🔍 Verifying installation:
+bleu               1.1.3
+bleu-js            1.1.8       /home/pejmanhaghighatnia/Documents/Bleu.js
+bleujs             1.1.3
+
+🧪 Testing Bleu.js import...
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ImportError: cannot import name 'BleuJS' from 'src.bleujs' (/home/pejmanhaghighatnia/Documents/Bleu.js/src/bleujs/__init__.py)
+⚠️ Import test failed
+
+📁 Project structure:
+total 152
+drwxrwxr-x 27 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 .
+drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia 12288 Jul 13 01:08 ..
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 05:39 api
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 03:20 applications
+drwxrwxr-x  6 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 backend
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 05:39 benchmarks
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 bleu.egg-info
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 01:07 bleujs
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 01:08 bleu_js.egg-info
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 bleujs.egg-info
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 config
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  2939 Jul 12 11:05 config.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   506 Jun 10 06:42 constants.py
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 core
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  1993 Jul 12 02:38 database.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   658 Jul 12 03:38 db_config.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  5651 Jun 10 06:42 deploy.zip
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   121 Jul 12 03:46 __init__.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  5523 Jul 12 06:49 main.py
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 middleware
+drwxrwxr-x  6 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:08 ml
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 models
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 __pycache__
+drwxrwxr-x  9 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 python
+drwxrwxr-x  4 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 quantum
+drwxrwxr-x 20 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 quantum_py
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 routes
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 schemas
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 scripts
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 03:47 security
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 services
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 static
+drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jun 10 06:42 templates
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 15:51 utils
+
+📚 Available examples:
+total 60
+drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .
+drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia 12288 Jul 13 01:08 ..
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 16427 Jul 13 00:47 ci_cd_demo.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  2255 Jul 12 05:28 mps_acceleration_demo.py
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  1373 Jul 13 00:47 requirements.txt
+-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 15562 Jul 13 00:47 sample_usage.py
+
+📖 README preview:
+# Bleu.js - Quantum-Enhanced AI Platform
+
+> **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from PyPI.
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" zoomAndPan="magnify" viewBox="0 0 150 149.999998" height="200" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="ef0777e725"><path d="M 95 0 L 114.464844 0 L 114.464844 42 L 95 42 Z M 95 0 " clip-rule="nonzero"/></clipPath><clipPath id="26e0b5bc96"><path d="M 35.714844 23 L 114.464844 23 L 114.464844 101.515625 L 35.714844 101.515625 Z M 35.714844 23 " clip-rule="nonzero"/></clipPath></defs><rect x="-15" width="180" fill="#ffffff" y="-15" height="179.999997" fill-opacity="1"/><rect x="-15" width="180" fill="#25292f" y="-15" height="179.999997" fill-opacity="1"/><path fill="#25292f" d="M 65.441406 8.042969 L 84.546875 8.042969 L 84.546875 41.9375 L 65.441406 41.9375 Z M 65.441406 8.042969 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#ef0777e725)"><path fill="#25292f" d="M 95.125 -6.484375 L 114.230469 -6.484375 L 114.230469 41.9375 L 95.125 41.9375 Z M 95.125 -6.484375 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#26e0b5bc96)"><path fill="#00e0ff" d="M 81.632812 71.839844 L 65.441406 71.839844 L 65.441406 52.753906 L 114.230469 52.753906 L 114.230469 101.457031 L 95.125 101.457031 L 95.125 85.265625 L 78.957031 101.457031 L 35.757812 101.457031 L 35.757812 23.199219 L 54.863281 23.199219 L 54.863281 82.4375 L 71.074219 82.4375 Z M 81.632812 71.839844 " fill-opacity="1" fill-rule="nonzero"/></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(34.627324, 123.863116)"><g><path d="M 1.125 -15.40625 L 5.90625 -15.40625 C 7.34375 -15.40625 8.488281 -15.097656 9.34375 -14.484375 C 10.207031 -13.867188 10.640625 -12.867188 10.640625 -11.484375 C 10.640625 -9.941406 10 -8.835938 8.71875 -8.171875 C 10.90625 -7.785156 12 -6.492188 12 -4.296875 C 12 -3.003906 11.550781 -1.960938 10.65625 -1.171875 C 9.757812 -0.390625 8.53125 0 6.96875 0 L 1.125 0 Z M 4.625 -9.375 L 4.90625 -9.375 C 5.695312 -9.375 6.285156 -9.507812 6.671875 -9.78125 C 7.054688 -10.050781 7.25 -10.5 7.25 -11.125 C 7.25 -12.175781 6.46875 -12.703125 4.90625 -12.703125 L 4.625 -12.703125 Z M 4.625 -2.703125 L 5.734375 -2.703125 C 7.453125 -2.703125 8.3125 -3.273438 8.3125 -4.421875 C 8.3125 -5.109375 8.09375 -5.597656 7.65625 -5.890625 C 7.226562 -6.191406 6.585938 -6.34375 5.734375 -6.34375 L 4.625 -6.34375 Z M 4.625 -2.703125 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(47.799184, 123.863116)"><g><path d="M 4.625 -15.40625 L 4.625 -3.078125 L 9.9375 -3.078125 L 9.9375 0 L 1.125 0 L 1.125 -15.40625 Z M 4.625 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(59.086775, 123.863116)"><g><path d="M 9.9375 -15.40625 L 9.9375 -12.328125 L 4.625 -12.328125 L 4.625 -9.265625 L 9.703125 -9.265625 L 9.703125 -6.1875 L 4.625 -6.1875 L 4.625 -3.078125 L 9.9375 -3.078125 L 9.9375 0 L 1.125 0 L 1.125 -15.40625 Z M 9.9375 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(70.654207, 123.863116)"><g><path d="M 12.953125 -15.40625 L 12.953125 -5.46875 C 12.953125 -3.570312 12.441406 -2.140625 11.421875 -1.171875 C 10.398438 -0.203125 8.90625 0.28125 6.9375 0.28125 C 4.976562 0.28125 3.488281 -0.203125 2.46875 -1.171875 C 1.445312 -2.140625 0.9375 -3.570312 0.9375 -5.46875 L 0.9375 -15.40625 L 4.4375 -15.40625 L 4.4375 -6.5 C 4.4375 -5.25 4.632812 -4.378906 5.03125 -3.890625 C 5.425781 -3.410156 6.0625 -3.171875 6.9375 -3.171875 C 7.820312 -3.171875 8.460938 -3.410156 8.859375 -3.890625 C 9.253906 -4.378906 9.453125 -5.25 9.453125 -6.5 L 9.453125 -15.40625 Z M 12.953125 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(85.281253, 123.863116)"><g><path d="M 3.25 -4 C 3.84375 -4 4.347656 -3.789062 4.765625 -3.375 C 5.179688 -2.957031 5.390625 -2.445312 5.390625 -1.84375 C 5.390625 -1.257812 5.179688 -0.757812 4.765625 -0.34375 C 4.347656 0.0703125 3.84375 0.28125 3.25 0.28125 C 2.664062 0.28125 2.164062 0.0703125 1.75 -0.34375 C 1.332031 -0.757812 1.125 -1.257812 1.125 -1.84375 C 1.125 -2.445312 1.332031 -2.957031 1.75 -3.375 C 2.164062 -3.789062 2.664062 -4 3.25 -4 Z M 3.25 -4 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(92.539101, 123.863116)"><g><path d="M 7.828125 -15.40625 L 7.828125 -4.34375 C 7.828125 -2.84375 7.410156 -1.695312 6.578125 -0.90625 C 5.753906 -0.113281 4.570312 0.28125 3.03125 0.28125 C 2.613281 0.28125 2.207031 0.226562 1.8125 0.125 C 1.414062 0.03125 1.078125 -0.0859375 0.796875 -0.234375 C 0.523438 -0.378906 0.28125 -0.523438 0.0625 -0.671875 C -0.15625 -0.816406 -0.3125 -0.941406 -0.40625 -1.046875 L -0.578125 -1.1875 L 0.546875 -4.125 C 1.273438 -3.425781 1.941406 -3.078125 2.546875 -3.078125 C 3.078125 -3.078125 3.503906 -3.253906 3.828125 -3.609375 C 4.148438 -3.960938 4.3125 -4.507812 4.3125 -5.25 L 4.3125 -15.40625 Z M 7.828125 -15.40625 "/></g></g></g></svg>
+
+![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
+
+### 🚀 Magical Terminal Demonstration
+
+
+🎉 Demo completed successfully!
+✨ Bleu.js is ready to use!
