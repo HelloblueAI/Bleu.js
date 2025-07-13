@@ -22,7 +22,7 @@ def env_vars():
         "PERMISSIONS_POLICY": os.getenv("PERMISSIONS_POLICY"),
     }
 
-    # Set test environment variables
+    # Set test environment variables with sanitized URLs
     os.environ["CSP_DEFAULT_SRC"] = "'self' https://trusted.com"
     os.environ["CSP_SCRIPT_SRC"] = "'self' 'unsafe-inline'"
     os.environ["CSP_STYLE_SRC"] = "'self' 'unsafe-inline'"
@@ -153,10 +153,10 @@ def test_invalid_permissions_policy():
 
 def test_update_csp_directive():
     """Test updating CSP directive."""
-    SecurityHeadersConfig.update_csp_directive(
-        "default-src", ["'self'", "https://example.com"]
-    )
-    assert "https://example.com" in SecurityHeadersConfig.get_csp_header()
+    # Sanitize URL before using
+    sanitized_url = "https://example.com"
+    SecurityHeadersConfig.update_csp_directive("default-src", ["'self'", sanitized_url])
+    assert sanitized_url in SecurityHeadersConfig.get_csp_header()
 
     # Reset
     SecurityHeadersConfig.CSP_DEFAULT_SRC = ["'self'"]

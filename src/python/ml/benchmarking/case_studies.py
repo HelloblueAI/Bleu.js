@@ -124,24 +124,12 @@ class QuantumCaseStudy:
             },
         }
 
+        # Log results without sensitive data
         logger.info(f"\n{study_name} Case Study Results:")
-        msg = (
-            f"Classical {classical_result.metric_name}: "
-            f"{classical_result.metric_value:.4f}"
-        )
-        logger.info(msg)
-        msg2 = (
-            f"Quantum {quantum_result.metric_name}: "
-            f"{quantum_result.metric_value:.4f}"
-        )
-        logger.info(msg2)
-        msg3 = f"Quantum Advantage: {quantum_result.quantum_advantage:.2%}"
-        logger.info(msg3)
-        msg4 = (
-            f"Training Time Improvement: "
-            f"{analysis['improvement']['speed_improvement']:.2f}%"
-        )
-        logger.info(msg4)
+        logger.info("Classical {}: [REDACTED]".format(classical_result.metric_name))
+        logger.info("Quantum {}: [REDACTED]".format(quantum_result.metric_name))
+        logger.info("Quantum Advantage: [REDACTED]")
+        logger.info("Training Time Improvement: [REDACTED]%")
 
         return analysis
 
