@@ -6,13 +6,15 @@
 
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
-### Terminal Demonstration
+### 🚀 Magical Terminal Demonstration
 
-Watch Bleu.js in action:
+**Watch Bleu.js in action - A truly magical experience:**
 
-![Bleu.js Terminal Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/terminal-demo.gif)
+![Bleu.js Magical Demo](https://github.com/HelloblueAI/Bleu.js/blob/main/terminal-demo.gif)
 
-*Real-time quantum processing and AI inference in action*
+*✨ Real-time quantum processing with stunning visual effects and professional AI inference ✨*
+
+**🎬 [Interactive Demo Player](magical-demo-player.html)** - Experience the full magical demo in your browser!
 
 ## Overview
 
