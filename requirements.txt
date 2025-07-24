@@ -7,7 +7,7 @@ lime>=0.2.0.1
 
 # Visualization
 matplotlib>=3.8.4
-mlflow>=3.1.1
+mlflow>=3.1.1,<4.0.0
 numpy>=1.26.4
 opencv-python>=4.11.0.86
 optuna>=4.3.0
@@ -21,13 +21,13 @@ psutil>=6.1.1
 pyquil>=3.2.1
 
 # Security
-python-jose>=3.5.0
+python-jose>=3.5.0,<4.0.0
 
 # Quantum (compatible versions without problematic dependencies)
 qiskit==1.4.2
 qiskit-aer==0.12.2
 qiskit-algorithms==0.2.1
-ray>=2.47.1
+ray>=2.47.1,<3.0.0
 requests>=2.32.4
 scikit-learn>=1.7.0
 scipy>=1.15.3
