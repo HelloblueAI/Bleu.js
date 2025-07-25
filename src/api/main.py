@@ -11,7 +11,7 @@ from services.subscription_service import SubscriptionService
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.1.4",
+    version="1.1.8",
 )
 
 # Initialize services
