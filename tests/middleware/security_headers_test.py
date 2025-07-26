@@ -2,8 +2,11 @@ import pytest
 from fastapi import FastAPI, HTTPException
 from starlette.testclient import TestClient
 
-from src.middleware.security_headers import SecurityHeaders, SecurityHeadersMiddleware
-from src.python.backend.middleware.security_headers import setup_security_headers
+from src.middleware.security_headers import (
+    SecurityHeaders,
+    SecurityHeadersMiddleware,
+    setup_security_headers,
+)
 
 
 @pytest.fixture

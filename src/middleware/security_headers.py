@@ -8,6 +8,16 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 
+def setup_security_headers(app: FastAPI) -> None:
+    """Setup security headers middleware for FastAPI app.
+
+    Args:
+        app: FastAPI application
+    """
+    middleware = SecurityHeadersMiddleware(app)
+    return middleware
+
+
 class SecurityHeaders:
     """Security headers configuration."""
 

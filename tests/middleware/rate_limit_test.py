@@ -4,15 +4,17 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from src.python.backend.middleware.rate_limit import RateLimitMiddleware
+from src.middleware.rate_limiter import RateLimiterMiddleware
 
 
 @pytest.fixture
 def app():
     app = FastAPI()
-    app.add_middleware(
-        RateLimitMiddleware, rate_limit=5, time_window=60  # 5 requests
-    )  # per 60 seconds
+    # Create a mock rate limiter service
+    from unittest.mock import Mock
+
+    mock_rate_limiter = Mock()
+    app.add_middleware(RateLimiterMiddleware, rate_limiter=mock_rate_limiter)
     return app
 
 

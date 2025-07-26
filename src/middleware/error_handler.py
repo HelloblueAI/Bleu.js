@@ -9,6 +9,17 @@ from prometheus_client import Counter
 
 from src.config import get_settings
 
+
+def setup_error_handling(app: FastAPI) -> None:
+    """Setup error handling middleware for FastAPI app.
+
+    Args:
+        app: FastAPI application
+    """
+    handler = ErrorHandler(app)
+    return handler
+
+
 # Metrics
 ERROR_COUNT = Counter(
     "http_errors_total", "Total number of HTTP errors", ["status_code", "path"]

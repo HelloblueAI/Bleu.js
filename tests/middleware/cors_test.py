@@ -2,7 +2,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from src.python.backend.middleware.cors import setup_cors
+from src.middleware.cors import setup_cors
 
 
 @pytest.fixture
