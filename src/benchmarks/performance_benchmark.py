@@ -50,10 +50,10 @@ class PerformanceBenchmark:
     def __init__(self, config: BenchmarkConfig):
         self.config = config
         self.process = psutil.Process()
+        self.hardware_info = self._get_hardware_info()
         self.initial_energy = self._get_energy_usage()
         self.initial_memory = self._get_memory_usage()
         self.results: List[BenchmarkResult] = []
-        self.hardware_info = self._get_hardware_info()
 
     def _get_hardware_info(self) -> Dict:
         """Get detailed hardware information"""
