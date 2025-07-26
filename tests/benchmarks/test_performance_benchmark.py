@@ -2,8 +2,6 @@
 Enhanced tests for the performance benchmarking system.
 """
 
-import time
-
 import numpy as np
 import pytest
 
