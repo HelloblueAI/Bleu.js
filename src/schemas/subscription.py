@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SubscriptionBase(BaseModel):
@@ -45,10 +45,7 @@ class SubscriptionInDB(SubscriptionBase):
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
 
-    class Config:
-        """Pydantic config."""
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Subscription(SubscriptionInDB):

@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import BaseSettings, Field
+from pydantic import BaseSettings, ConfigDict, Field
 
 
 class AWSElasticConfig(BaseSettings):
@@ -27,9 +27,7 @@ class AWSElasticConfig(BaseSettings):
     elasticsearch_index: str = Field(..., env="ELASTICSEARCH_INDEX")
     elasticsearch_ssl_verify: bool = Field(default=True, env="ELASTICSEARCH_SSL_VERIFY")
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(env_file=".env", case_sensitive=True)
 
 
 @lru_cache()

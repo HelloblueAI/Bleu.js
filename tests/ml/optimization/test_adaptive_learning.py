@@ -81,28 +81,36 @@ def test_quantum_impact_adjustment(optimizer, config):
 
     class MockQuantumProcessor:
         def __init__(self):
-            self.state = np.array([0.1, 0.2, 0.3])
+            self.call_count = 0
 
         def get_state(self):
-            self.state += 0.1
-            return self.state
+            # Return different states for each call to ensure distance > 0
+            self.call_count += 1
+            if self.call_count == 1:
+                return np.array([0.1, 0.2, 0.3])
+            elif self.call_count == 2:
+                return np.array([0.4, 0.5, 0.6])
+            else:
+                return np.array([0.7, 0.8, 0.9])
 
     quantum_processor = MockQuantumProcessor()
     scheduler = QuantumAwareScheduler(optimizer, config, quantum_processor)
 
-    # Skip warmup
+    # Skip warmup and set epoch to trigger quantum adjustment
     scheduler.epoch = config.warmup_epochs
 
     # Test quantum impact adjustment
     initial_lr = optimizer.param_groups[0]["lr"]
 
-    # Add quantum measurements
-    scheduler.quantum_measurements = [
-        np.array([0.1, 0.2, 0.3]),
-        np.array([0.4, 0.5, 0.6]),
-    ]
+    # First step to collect initial measurement (epoch 3, should not trigger quantum adjustment)
+    scheduler.step()
 
-    # Step with high quantum impact
+    # Second step to collect another measurement (epoch 4, should trigger quantum adjustment)
+    scheduler.epoch = config.warmup_epochs + 1
+    scheduler.step()
+
+    # Third step to trigger quantum adjustment with 2 measurements (epoch 6, should trigger quantum adjustment)
+    scheduler.epoch = config.warmup_epochs + 3  # epoch 6, 6 % 2 == 0
     scheduler.step()
 
     # Learning rate should be reduced due to quantum impact

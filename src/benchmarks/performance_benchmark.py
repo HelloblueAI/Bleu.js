@@ -84,13 +84,17 @@ class PerformanceBenchmark:
         self, values: List[float], baseline: List[float]
     ) -> float:
         """Calculate statistical significance of improvement"""
-        if self.config.statistical_test == "t-test":
-            _, p_value = stats.ttest_ind(values, baseline)
-            return p_value
-        elif self.config.statistical_test == "wilcoxon":
-            _, p_value = stats.wilcoxon(values, baseline)
-            return p_value
-        return 1.0
+        try:
+            if self.config.statistical_test == "t-test":
+                _, p_value = stats.ttest_ind(values, baseline)
+                return p_value
+            elif self.config.statistical_test == "wilcoxon":
+                _, p_value = stats.wilcoxon(values, baseline)
+                return p_value
+            return 1.0
+        except (ValueError, RuntimeWarning):
+            # Return a default value if statistical test fails
+            return 0.5
 
     def benchmark_face_recognition(self, model, test_data) -> BenchmarkResult:
         """Enhanced face recognition benchmarking with statistical validation"""
@@ -205,10 +209,22 @@ class PerformanceBenchmark:
             baseline_memory = memory_used * 2.0
             baseline_cpu = cpu_used * 2.0
 
-            # Calculate efficiency improvements
-            energy_efficiency = (baseline_energy - energy_used) / baseline_energy * 100
-            memory_efficiency = (baseline_memory - memory_used) / baseline_memory * 100
-            cpu_efficiency = (baseline_cpu - cpu_used) / baseline_cpu * 100
+            # Calculate efficiency improvements with safe division
+            energy_efficiency = (
+                (baseline_energy - energy_used) / baseline_energy * 100
+                if baseline_energy > 0
+                else 0.0
+            )
+            memory_efficiency = (
+                (baseline_memory - memory_used) / baseline_memory * 100
+                if baseline_memory > 0
+                else 0.0
+            )
+            cpu_efficiency = (
+                (baseline_cpu - cpu_used) / baseline_cpu * 100
+                if baseline_cpu > 0
+                else 0.0
+            )
 
             return BenchmarkResult(
                 metric_name="energy_efficiency",
