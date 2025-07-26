@@ -5,7 +5,7 @@ aiohttp>=3.9.3
 alembic==1.13.1
 aws-lambda-powertools>=2.30.0
 bandit>=1.7.5
-black>=23.3.0
+black>=25.1.0
 
 # AWS
 boto3>=1.24.0
@@ -13,7 +13,7 @@ boto3>=1.24.0
 # Build tools
 build>=1.2.2
 cirq>=1.5.0
-cryptography>=42.0.5
+cryptography>=44.0.3
 
 # Web Framework
 fastapi==0.109.2
@@ -56,7 +56,7 @@ structlog>=24.1.0
 
 # ML frameworks
 tensorflow>=2.16.2
-torch>=2.2.2
+torch>=2.7.1
 transformers>=4.37.0
 twine>=6.1.0
 
