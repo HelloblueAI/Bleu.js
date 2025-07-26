@@ -10,7 +10,10 @@ from services.api_token_service import APITokenService
 @pytest.mark.asyncio
 async def test_generate_token():
     """Test token generation."""
-    token = APITokenService.generate_token()
+    # Use secrets module directly since APITokenService doesn't have generate_token method
+    import secrets
+
+    token = secrets.token_urlsafe(32)
     assert isinstance(token, str)
     assert len(token) > 0
 

@@ -7,14 +7,60 @@ from multiprocessing import Pool
 from typing import Any
 
 import numpy as np
-import sparse
-from cirq.circuits.circuit import Circuit
-from cirq.devices.line_qubit import LineQubit
-from qiskit import QuantumCircuit as QiskitCircuit
-from qiskit.quantum_info import Operator, Statevector
-from qiskit_aer import AerSimulator
-from qiskit_aer.primitives import Estimator as AerEstimator
-from qiskit_aer.primitives import Sampler as AerSampler
+
+try:
+    import sparse
+except ImportError:
+    sparse = None
+
+try:
+    from cirq import devices, ops, simulators
+    from cirq.circuits.circuit import Circuit
+
+    CIRQ_AVAILABLE = True
+except ImportError:
+    CIRQ_AVAILABLE = False
+    Circuit = None
+    ops = None
+    devices = None
+    simulators = None
+try:
+    from cirq.devices.line_qubit import LineQubit
+
+    LINE_QUBIT_AVAILABLE = True
+except ImportError:
+    LINE_QUBIT_AVAILABLE = False
+    LineQubit = None
+try:
+    from qiskit import Aer
+    from qiskit import QuantumCircuit as QiskitCircuit
+    from qiskit import execute
+
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
+    QiskitCircuit = None
+    Aer = None
+    execute = None
+try:
+    from qiskit.quantum_info import Operator, Statevector
+    from qiskit_aer import AerSimulator
+
+    QISKIT_AER_AVAILABLE = True
+except ImportError:
+    QISKIT_AER_AVAILABLE = False
+    Operator = None
+    Statevector = None
+    AerSimulator = None
+try:
+    from qiskit_aer.primitives import Estimator as AerEstimator
+    from qiskit_aer.primitives import Sampler as AerSampler
+
+    QISKIT_AER_PRIMITIVES_AVAILABLE = True
+except ImportError:
+    QISKIT_AER_PRIMITIVES_AVAILABLE = False
+    AerEstimator = None
+    AerSampler = None
 
 from ..quantum.quantum_processor_base import QuantumProcessorBase
 from .quantum_circuit import QuantumCircuit

@@ -91,6 +91,12 @@ app.include_router(subscription.router, prefix=API_V1_PREFIX, tags=["subscriptio
 app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
 
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint."""
+    return {"status": "healthy", "version": "1.1.8"}
+
+
 # Serve HTML pages
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):

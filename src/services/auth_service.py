@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from typing import Any
 
 import httpx
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -14,7 +14,8 @@ from sqlalchemy.orm import Session
 from src.config.settings import settings
 from src.database import get_db
 from src.models.subscription import Subscription, SubscriptionPlan
-from src.models.user import User, UserCreate, UserResponse
+from src.models.user import Token, User
+from src.schemas.user import UserCreate, UserResponse
 from src.utils.base_classes import BaseService
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,23 @@ REFRESH_SECRET_KEY = settings.JWT_SECRET_KEY  # Using same secret key for refres
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Create access token for backward compatibility."""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify password for backward compatibility."""
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 class AuthService(BaseService):
@@ -93,7 +111,7 @@ class AuthService(BaseService):
         if user is None:
             raise credentials_exception
 
-        return UserResponse.model_validate(user)
+        return UserResponse.model_validate(user.to_dict())
 
     async def create_user(self, user: UserCreate, db: Session) -> UserResponse:
         """Create a new user with subscription."""
@@ -145,7 +163,7 @@ class AuthService(BaseService):
         # Send verification email
         await self.send_verification_email(user.email)
 
-        return UserResponse.model_validate(db_user)
+        return UserResponse.model_validate(db_user.to_dict())
 
     async def verify_email(self, token: str, db: Session) -> bool:
         try:
@@ -184,7 +202,7 @@ class AuthService(BaseService):
         # Check if user exists
         db_user = db.query(User).filter(User.email == user_data["email"]).first()
         if db_user:
-            return UserResponse.from_orm(db_user)
+            return UserResponse.model_validate(db_user.to_dict())
 
         # Create new user
         db_user = User(
@@ -285,6 +303,5 @@ class AuthService(BaseService):
         return {"status": "authenticated", "service": "auth"}
 
 
-# Create a singleton instance
-# If AuthService is abstract, do not instantiate directly
-auth_service = AuthService(get_db())
+def get_current_user_dep(db: Session = Depends(get_db)):
+    return AuthService(db).get_current_user

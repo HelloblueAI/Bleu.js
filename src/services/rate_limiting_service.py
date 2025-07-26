@@ -93,3 +93,6 @@ class RateLimitingService:
 
 # Create singleton instance
 rate_limiter: RateLimitingService | None = None
+
+# Alias for backward compatibility
+RateLimiter = RateLimitingService

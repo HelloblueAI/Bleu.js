@@ -1,7 +1,7 @@
 import pytest
 
-from models.ec2 import EC2Instance
-from services.ec2_service import EC2Service
+from src.models.ec2 import EC2Instance
+from src.services.ec2_service import EC2Service
 
 
 @pytest.fixture

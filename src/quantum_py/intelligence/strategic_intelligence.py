@@ -110,9 +110,10 @@ class StrategicIntelligence:
             market_features = await self._process_market_data(market_data)
 
             # Generate predictions using quantum intelligence
-            predictions, confidence = (
-                await self.quantum_intelligence.predict_optimal_actions(market_features)
-            )
+            (
+                predictions,
+                confidence,
+            ) = await self.quantum_intelligence.predict_optimal_actions(market_features)
 
             # Simulate strategy execution
             simulation_results = await self._simulate_strategy(

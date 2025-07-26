@@ -19,7 +19,6 @@ from src.utils.base_classes import BaseService
 from ..config import settings
 from ..database import get_db
 from .email_service import EmailService
-from .monitoring_service import MonitoringService
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +53,6 @@ class SubscriptionService(BaseService):
         self.settings = settings
         # Initialize services with proper arguments
         self.email_service = EmailService()
-        self.monitoring_service = MonitoringService()
         self.api_service = APIService(db)
 
         # Plan features and pricing

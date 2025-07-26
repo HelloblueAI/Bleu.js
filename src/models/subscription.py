@@ -6,7 +6,6 @@ from enum import Enum
 
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from src.models.base import Base
@@ -32,9 +31,10 @@ class APIToken(Base):
     """API Token model."""
 
     __tablename__ = "api_tokens"
+    __table_args__ = {"extend_existing": True}
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
     name = Column(String(255), nullable=False)
     token_hash = Column(String(255), nullable=False, unique=True)
     is_active = Column(String(10), default="active")
@@ -47,13 +47,26 @@ class APIToken(Base):
     def __repr__(self):
         return f"<APIToken(id={self.id}, name='{self.name}', user_id={self.user_id})>"
 
+    def to_dict(self):
+        """Convert API token to dictionary."""
+        return {
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "name": self.name,
+            "token_hash": self.token_hash,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
 
 class SubscriptionPlan(Base):
     """Subscription plan model."""
 
     __tablename__ = "subscription_plans"
+    __table_args__ = {"extend_existing": True}
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String(255), nullable=False)
     plan_type = Column(String(50), nullable=False)
     price = Column(Integer, nullable=False)  # Price in cents
@@ -77,12 +90,11 @@ class Subscription(Base):
     """Subscription model."""
 
     __tablename__ = "subscriptions"
+    __table_args__ = {"extend_existing": True}
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    plan_id = Column(
-        UUID(as_uuid=True), ForeignKey("subscription_plans.id"), nullable=False
-    )
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
+    plan_id = Column(String(36), ForeignKey("subscription_plans.id"), nullable=False)
     status = Column(String(50), default="active")
     start_date = Column(DateTime, default=datetime.utcnow)
     end_date = Column(DateTime, nullable=True)

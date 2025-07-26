@@ -1,16 +1,10 @@
-"""
-Bleu models module.
+"""Models package."""
 
-This module provides data models for Bleu.js.
-"""
-
-__version__ = "1.1.7"
-
+# Import all models to ensure they are registered with SQLAlchemy
 from .api_call import APICall, APIUsage
 from .customer import Customer
 from .declarative_base import Base
 from .payment import Payment
-from .rate_limit import RateLimit
 from .subscription import APIToken, PlanType, Subscription
 from .user import User
 
@@ -21,7 +15,6 @@ __all__ = [
     "PlanType",
     "APIToken",
     "Customer",
-    "RateLimit",
     "APICall",
     "APIUsage",
     "Payment",

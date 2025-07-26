@@ -2,7 +2,7 @@ import subprocess
 
 import pytest
 
-from ..config import LOG_PATHS, SERVICE_COMMANDS, SSH_BASE
+from tests.config import LOG_PATHS, SERVICE_COMMANDS, SSH_BASE
 
 
 @pytest.mark.ec2
