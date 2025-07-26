@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
@@ -63,10 +63,22 @@ class RateLimitingMiddleware(BaseHTTPMiddleware):
             max_requests=self.max_requests,
             window_seconds=self.window_seconds,
         ):
-            raise HTTPException(
+            # Return rate limit exceeded response instead of raising exception
+            response = Response(
+                content='{"detail": "Rate limit exceeded. Please try again later."}',
                 status_code=429,
-                detail="Rate limit exceeded. Please try again later.",
+                media_type="application/json",
             )
+            response.headers["Retry-After"] = str(self.window_seconds)
+            response.headers["X-RateLimit-Limit"] = str(self.max_requests)
+            response.headers["X-RateLimit-Remaining"] = "0"
+            response.headers["X-RateLimit-Reset"] = str(
+                await self.rate_limiting_service.get_window_reset_time(
+                    client_id=client_id,
+                    window_seconds=self.window_seconds,
+                )
+            )
+            return response
 
         # Process request
         response = await call_next(request)
@@ -97,6 +109,11 @@ class RateLimitingMiddleware(BaseHTTPMiddleware):
         Returns:
             str: Client identifier
         """
+        # Try to get user ID from header
+        user_id = request.headers.get("X-User-ID")
+        if user_id:
+            return f"user:{user_id}"
+
         # Try to get API key from header
         api_key = request.headers.get("X-API-Key")
         if api_key:

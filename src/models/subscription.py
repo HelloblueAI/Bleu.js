@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
@@ -133,8 +133,7 @@ class APITokenBase(BaseModel):
 
     name: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class APITokenCreate(APITokenBase):
@@ -149,8 +148,7 @@ class APITokenUpdate(BaseModel):
     name: str | None = None
     is_active: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class APITokenResponse(APITokenBase):
@@ -163,8 +161,7 @@ class APITokenResponse(APITokenBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionPlanBase(BaseModel):
@@ -176,8 +173,7 @@ class SubscriptionPlanBase(BaseModel):
     api_calls_limit: int
     features: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionPlanCreate(SubscriptionPlanBase):
@@ -196,8 +192,7 @@ class SubscriptionPlanUpdate(BaseModel):
     features: str | None = None
     is_active: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionPlanResponse(SubscriptionPlanBase):
@@ -208,8 +203,7 @@ class SubscriptionPlanResponse(SubscriptionPlanBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionBase(BaseModel):
@@ -222,8 +216,7 @@ class SubscriptionBase(BaseModel):
     end_date: datetime | None = None
     api_calls_used: int = 0
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionCreate(SubscriptionBase):
@@ -240,8 +233,7 @@ class SubscriptionUpdate(BaseModel):
     end_date: datetime | None = None
     api_calls_used: int | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SubscriptionResponse(SubscriptionBase):
@@ -251,5 +243,4 @@ class SubscriptionResponse(SubscriptionBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

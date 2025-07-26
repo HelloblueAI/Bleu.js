@@ -54,11 +54,21 @@ class QuantumInteractionDetector:
         Returns:
             Dictionary mapping feature pairs to interaction scores
         """
+        # Input validation
+        if features is None or feature_names is None:
+            raise ValueError("Features and feature_names cannot be None")
+
+        if len(features) == 0 or len(feature_names) == 0:
+            raise ValueError("Features and feature_names cannot be empty")
+
+        if features.shape[1] != len(feature_names):
+            raise ValueError("Number of features must match number of feature names")
+
         self._compute_classical_correlations(features, feature_names)
         self._compute_quantum_correlations(features, feature_names)
 
         if target is not None:
-            self._compute_shap_interactions(features, feature_names)
+            self._compute_shap_interactions(features, feature_names, target)
 
         return self._combine_interaction_scores(feature_names)
 
@@ -90,18 +100,40 @@ class QuantumInteractionDetector:
                 self.quantum_correlations[pair] = correlation
 
     def _compute_shap_interactions(
-        self, features: np.ndarray, feature_names: List[str]
+        self, features: np.ndarray, feature_names: List[str], target: np.ndarray
     ) -> None:
         """Compute SHAP interaction values between features."""
-        explainer = shap.TreeExplainer(features)
-        shap_values = explainer.shap_interaction_values(features)
+        try:
+            # Use a simple model for SHAP analysis
+            from sklearn.ensemble import RandomForestRegressor
 
+            model = RandomForestRegressor(n_estimators=10, random_state=42)
+            model.fit(features, target)
+
+            explainer = shap.TreeExplainer(model)
+            shap_values = explainer.shap_interaction_values(features)
+
+            n_features = len(feature_names)
+            for i in range(n_features):
+                for j in range(i + 1, n_features):
+                    interaction_value = np.abs(shap_values[:, i, j]).mean()
+                    pair = (feature_names[i], feature_names[j])
+                    self.shap_interactions[pair] = interaction_value
+        except Exception as e:
+            # Fallback to correlation-based interaction if SHAP fails
+            print(f"SHAP computation failed: {e}. Using correlation fallback.")
+            self._compute_correlation_fallback(features, feature_names)
+
+    def _compute_correlation_fallback(
+        self, features: np.ndarray, feature_names: List[str]
+    ) -> None:
+        """Fallback method using correlation for interaction detection."""
         n_features = len(feature_names)
         for i in range(n_features):
             for j in range(i + 1, n_features):
-                interaction_value = np.abs(shap_values[:, i, j]).mean()
+                correlation, _ = spearmanr(features[:, i], features[:, j])
                 pair = (feature_names[i], feature_names[j])
-                self.shap_interactions[pair] = interaction_value
+                self.shap_interactions[pair] = abs(correlation)
 
     def _combine_interaction_scores(
         self, feature_names: List[str]

@@ -1,6 +1,6 @@
 """Customer schemas."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class CustomerBase(BaseModel):
@@ -17,8 +17,7 @@ class CustomerBase(BaseModel):
     postal_code: str | None = None
     notes: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CustomerCreate(CustomerBase):
@@ -41,8 +40,7 @@ class CustomerUpdate(BaseModel):
     postal_code: str | None = None
     notes: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CustomerInDB(CustomerBase):
@@ -53,8 +51,7 @@ class CustomerInDB(CustomerBase):
     created_at: str
     updated_at: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CustomerSchema(CustomerInDB):
@@ -81,5 +78,4 @@ class CustomerResponse(BaseModel):
     created_at: str
     updated_at: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
