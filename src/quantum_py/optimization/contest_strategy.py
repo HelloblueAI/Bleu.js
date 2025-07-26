@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 
 try:
-    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, execute
     from qiskit_aer import Aer
 
     QISKIT_AVAILABLE = True
@@ -33,6 +33,10 @@ except ImportError:
     class ClassicalRegister:
         def __init__(self, *args, **kwargs):
             pass
+
+    def execute(*args, **kwargs):
+        """Mock execute function for when qiskit is not available."""
+        return type("MockResult", (), {"result": lambda: {"counts": {"0": 1}}})()
 
 
 try:
@@ -88,8 +92,19 @@ class QuantumInstance:
         pass
 
 
-from src.python.ml.computer_vision.quantum_attention import QuantumAttention
-from src.python.ml.computer_vision.quantum_fusion import QuantumFusion
+# Import local modules
+try:
+    from src.python.ml.computer_vision.quantum_attention import QuantumAttention
+    from src.python.ml.computer_vision.quantum_fusion import QuantumFusion
+except ImportError:
+    # Mock classes for when modules are not available
+    class QuantumAttention:
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class QuantumFusion:
+        def __init__(self, *args, **kwargs):
+            pass
 
 
 class BleuQuantumContestOptimizer:
