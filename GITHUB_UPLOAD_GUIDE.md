@@ -58,7 +58,7 @@ Once uploaded, your README will display:
 ## Professional Features
 
 ✅ **Optimized for web** - Fast loading
-✅ **Professional quality** - Crisp text and colors  
+✅ **Professional quality** - Crisp text and colors
 ✅ **Perfect timing** - 6-second duration
 ✅ **Responsive design** - Works on all devices
 ✅ **Branded content** - Bleu.js professional styling

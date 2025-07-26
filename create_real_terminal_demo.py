@@ -4,10 +4,11 @@ Create Real Terminal Demo for Bleu.js
 Shows actual installation and usage process
 """
 
+import os
 import subprocess
 import time
-import os
 from pathlib import Path
+
 
 def run_command_with_delay(cmd, delay=1.0, description=""):
     """Run a command and wait"""
@@ -20,110 +21,102 @@ def run_command_with_delay(cmd, delay=1.0, description=""):
     time.sleep(delay)
     return result
 
+
 def create_real_terminal_demo():
     """Create a real terminal demo showing Bleu.js installation and usage"""
-    
+
     print("🎬 Creating Real Terminal Demo for Bleu.js")
     print("=" * 50)
-    
+
     # Create demo directory
     demo_dir = Path("demo_installation")
     demo_dir.mkdir(exist_ok=True)
-    
+
     # Start recording
     print("📹 Starting terminal recording...")
-    
+
     # Step 1: Show current directory and git status
     run_command_with_delay(
-        "pwd && ls -la",
-        delay=2.0,
-        description="Checking current directory"
+        "pwd && ls -la", delay=2.0, description="Checking current directory"
     )
-    
+
     # Step 2: Show git status
     run_command_with_delay(
-        "git status --porcelain",
-        delay=1.5,
-        description="Checking git status"
+        "git status --porcelain", delay=1.5, description="Checking git status"
     )
-    
+
     # Step 3: Show Python version
     run_command_with_delay(
-        "python3 --version",
-        delay=1.0,
-        description="Checking Python version"
+        "python3 --version", delay=1.0, description="Checking Python version"
     )
-    
+
     # Step 4: Create virtual environment
     run_command_with_delay(
         "python3 -m venv bleujs-demo-env",
         delay=2.0,
-        description="Creating virtual environment"
+        description="Creating virtual environment",
     )
-    
+
     # Step 5: Activate virtual environment
     run_command_with_delay(
         "source bleujs-demo-env/bin/activate && echo 'Virtual environment activated'",
         delay=1.5,
-        description="Activating virtual environment"
+        description="Activating virtual environment",
     )
-    
+
     # Step 6: Show pip version
     run_command_with_delay(
-        "pip --version",
-        delay=1.0,
-        description="Checking pip version"
+        "pip --version", delay=1.0, description="Checking pip version"
     )
-    
+
     # Step 7: Install Bleu.js
     run_command_with_delay(
         "pip install -e .",
         delay=3.0,
-        description="Installing Bleu.js in development mode"
+        description="Installing Bleu.js in development mode",
     )
-    
+
     # Step 8: Show installed packages
     run_command_with_delay(
         "pip list | grep -i bleu",
         delay=1.5,
-        description="Verifying Bleu.js installation"
+        description="Verifying Bleu.js installation",
     )
-    
+
     # Step 9: Run a simple test
     run_command_with_delay(
         "python3 -c \"from src.bleujs import BleuJS; print('✅ Bleu.js imported successfully')\"",
         delay=2.0,
-        description="Testing Bleu.js import"
+        description="Testing Bleu.js import",
     )
-    
+
     # Step 10: Show the sample usage
     run_command_with_delay(
         "python3 examples/sample_usage.py",
         delay=5.0,
-        description="Running Bleu.js sample usage"
+        description="Running Bleu.js sample usage",
     )
-    
+
     # Step 11: Show project structure
     run_command_with_delay(
         "tree -I '__pycache__|*.pyc|*.egg-info' -L 2",
         delay=2.0,
-        description="Showing project structure"
+        description="Showing project structure",
     )
-    
+
     # Step 12: Show README
     run_command_with_delay(
-        "head -20 README.md",
-        delay=2.0,
-        description="Showing README header"
+        "head -20 README.md", delay=2.0, description="Showing README header"
     )
-    
+
     print("\n🎉 Real terminal demo completed!")
     print("📁 Demo files created in: demo_installation/")
 
+
 def create_demo_script():
     """Create a script that can be run to show the demo"""
-    
-    script_content = '''#!/bin/bash
+
+    script_content = """#!/bin/bash
 # Real Terminal Demo for Bleu.js
 # This script shows the actual installation and usage process
 
@@ -194,20 +187,21 @@ echo ""
 
 echo "🎉 Demo completed successfully!"
 echo "✨ Bleu.js is ready to use!"
-'''
+"""
 
     with open("demo_installation/run_demo.sh", "w") as f:
         f.write(script_content)
-    
+
     # Make it executable
     os.chmod("demo_installation/run_demo.sh", 0o755)
-    
+
     print("📝 Created demo script: demo_installation/run_demo.sh")
+
 
 def create_recording_instructions():
     """Create instructions for recording the demo"""
-    
-    instructions = '''# 🎬 Recording Real Terminal Demo
+
+    instructions = """# 🎬 Recording Real Terminal Demo
 
 ## Method 1: Using `script` command
 
@@ -257,7 +251,7 @@ ttyplay demo.rec
 ## Expected Demo Flow:
 
 1. 📁 Show current directory
-2. 📊 Check git status  
+2. 📊 Check git status
 3. 🐍 Show Python version
 4. 🔧 Create virtual environment
 5. 🔌 Activate environment
@@ -276,32 +270,35 @@ ttyplay demo.rec
 - Show clear success/error messages
 - Keep the demo under 2 minutes
 - Use consistent formatting
-'''
-    
+"""
+
     with open("demo_installation/RECORDING_INSTRUCTIONS.md", "w") as f:
         f.write(instructions)
-    
-    print("📋 Created recording instructions: demo_installation/RECORDING_INSTRUCTIONS.md")
+
+    print(
+        "📋 Created recording instructions: demo_installation/RECORDING_INSTRUCTIONS.md"
+    )
+
 
 def main():
     """Main function"""
     print("🎬 Creating Real Terminal Demo for Bleu.js")
     print("=" * 50)
-    
+
     # Create demo directory
     demo_dir = Path("demo_installation")
     demo_dir.mkdir(exist_ok=True)
-    
+
     # Create the demo script
     create_demo_script()
-    
+
     # Create recording instructions
     create_recording_instructions()
-    
+
     # Run the demo
     print("\n🎯 Running the real demo now...")
     create_real_terminal_demo()
-    
+
     print("\n✅ Real terminal demo created!")
     print("📁 Files created:")
     print("  - demo_installation/run_demo.sh")
@@ -312,5 +309,6 @@ def main():
     print("  3. Convert to GIF")
     print("  4. Replace terminal-demo.gif")
 
+
 if __name__ == "__main__":
-    main() 
+    main()

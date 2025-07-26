@@ -3,6 +3,7 @@
 import numpy as np
 import pytest
 from qiskit import execute
+
 from src.quantum_py.quantum.quantum_config import QuantumConfig
 from src.quantum_py.quantum.quantum_ml import QuantumML
 from src.quantum_py.quantum.quantum_processor import QuantumProcessor

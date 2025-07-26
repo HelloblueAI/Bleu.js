@@ -87,4 +87,4 @@ After upload, you should see:
 - ✅ README displays the demo
 - ✅ Professional magical demo visible to everyone
 
-🎉 **Ready to impress the world!** 
+🎉 **Ready to impress the world!**

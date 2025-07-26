@@ -33,4 +33,4 @@ echo "Running linting..."
 pip install flake8
 flake8 src/ tests/
 
-echo "All checks passed! You can now push to CI/CD." 
+echo "All checks passed! You can now push to CI/CD."

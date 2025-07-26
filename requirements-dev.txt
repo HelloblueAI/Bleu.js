@@ -1,22 +1,22 @@
 # Development dependencies - install separately from main requirements
 # This avoids conflicts with awscli which requires docutils<=0.19
 
-# Documentation and packaging
-readme_renderer>=44.0
-twine>=6.1.0
-build>=1.2.2
-
-# Testing and linting
-pytest>=8.4.0
-pytest-cov>=6.1.1
-pytest-asyncio>=0.21.1
-flake8>=7.2.0
+bandit>=1.8.3
 black>=24.0.0
+build>=1.2.2
+flake8>=7.2.0
 isort>=5.13.2
 mypy>=1.16.0
-bandit>=1.8.3
-safety>=3.6.0
+pipdeptree>=2.26.1
 
 # Development tools
 pre-commit>=4.2.0
-pipdeptree>=2.26.1
+
+# Testing and linting
+pytest>=8.4.0
+pytest-asyncio>=0.21.1
+pytest-cov>=6.1.1
+# Documentation and packaging
+readme_renderer>=44.0
+safety>=3.6.0
+twine>=6.1.0

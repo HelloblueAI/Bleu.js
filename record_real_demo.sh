@@ -116,4 +116,4 @@ fi
 
 echo ""
 echo "🎬 Demo recording complete!"
-echo "📤 Upload the GIF to replace terminal-demo.gif" 
+echo "📤 Upload the GIF to replace terminal-demo.gif"

@@ -15,18 +15,18 @@
             align-items: center;
             overflow-x: hidden;
         }
-        
+
         .container {
             max-width: 1400px;
             width: 100%;
         }
-        
+
         .header {
             text-align: center;
             margin-bottom: 30px;
             animation: glow 2s ease-in-out infinite alternate;
         }
-        
+
         .title {
             color: #00e0ff;
             font-size: 36px;
@@ -34,18 +34,18 @@
             text-shadow: 0 0 20px rgba(0, 224, 255, 0.8);
             margin-bottom: 10px;
         }
-        
+
         .subtitle {
             color: #888;
             font-size: 18px;
             margin-bottom: 20px;
         }
-        
+
         .terminal-container {
             background: linear-gradient(145deg, #000000 0%, #1a1a1a 100%);
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 
+            box-shadow:
                 0 20px 40px rgba(0,0,0,0.8),
                 0 0 0 1px rgba(0, 224, 255, 0.3),
                 inset 0 1px 0 rgba(255,255,255,0.1);
@@ -53,7 +53,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .terminal-container::before {
             content: '';
             position: absolute;
@@ -64,7 +64,7 @@
             background: linear-gradient(90deg, transparent, rgba(0, 224, 255, 0.1), transparent);
             animation: scan 3s ease-in-out infinite;
         }
-        
+
         .terminal-header {
             background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
             padding: 15px 25px;
@@ -75,36 +75,36 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .terminal-dots {
             display: flex;
             gap: 10px;
         }
-        
+
         .dot {
             width: 14px;
             height: 14px;
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        
+
         .dot.red { background: linear-gradient(145deg, #ff5f56, #e74c3c); }
         .dot.yellow { background: linear-gradient(145deg, #ffbd2e, #f39c12); }
         .dot.green { background: linear-gradient(145deg, #27ca3f, #27ae60); }
-        
+
         .terminal-title {
             color: #00e0ff;
             font-size: 16px;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 224, 255, 0.5);
         }
-        
+
         .terminal-status {
             color: #27ae60;
             font-size: 14px;
             font-weight: bold;
         }
-        
+
         .instructions {
             margin-top: 40px;
             background: rgba(0, 224, 255, 0.05);
@@ -114,14 +114,14 @@
             color: #ccc;
             backdrop-filter: blur(10px);
         }
-        
+
         .instructions h3 {
             color: #00e0ff;
             margin-top: 0;
             font-size: 20px;
             text-shadow: 0 0 10px rgba(0, 224, 255, 0.5);
         }
-        
+
         .instructions code {
             background: rgba(0, 0, 0, 0.8);
             padding: 4px 8px;
@@ -129,24 +129,24 @@
             color: #00e0ff;
             border: 1px solid rgba(0, 224, 255, 0.3);
         }
-        
+
         .instructions ul {
             margin: 15px 0;
             padding-left: 25px;
         }
-        
+
         .instructions li {
             margin: 8px 0;
             line-height: 1.6;
         }
-        
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
-        
+
         .feature-card {
             background: rgba(0, 224, 255, 0.05);
             border: 1px solid rgba(0, 224, 255, 0.2);
@@ -154,41 +154,41 @@
             padding: 20px;
             text-align: center;
         }
-        
+
         .feature-icon {
             font-size: 48px;
             margin-bottom: 15px;
         }
-        
+
         .feature-title {
             color: #00e0ff;
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 10px;
         }
-        
+
         .feature-desc {
             color: #ccc;
             font-size: 14px;
             line-height: 1.5;
         }
-        
+
         @keyframes glow {
             from { text-shadow: 0 0 20px rgba(0, 224, 255, 0.8); }
             to { text-shadow: 0 0 30px rgba(0, 224, 255, 1), 0 0 40px rgba(0, 224, 255, 0.5); }
         }
-        
+
         @keyframes scan {
             0% { left: -100%; }
             50% { left: 100%; }
             100% { left: 100%; }
         }
-        
+
         .asciinema-player {
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .cta-section {
             text-align: center;
             margin-top: 40px;
@@ -197,7 +197,7 @@
             border-radius: 15px;
             border: 2px solid rgba(0, 224, 255, 0.3);
         }
-        
+
         .cta-button {
             display: inline-block;
             background: linear-gradient(145deg, #00e0ff, #0099cc);
@@ -211,7 +211,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 224, 255, 0.3);
         }
-        
+
         .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 224, 255, 0.5);
@@ -224,7 +224,7 @@
             <div class="title">🚀 Bleu.js - Quantum-Enhanced AI Platform</div>
             <div class="subtitle">Watch the Magic Happen in Real-Time</div>
         </div>
-        
+
         <div class="terminal-container">
             <div class="terminal-header">
                 <div class="terminal-dots">
@@ -237,7 +237,7 @@
             </div>
             <asciinema-player src="magical-bleu-demo.cast" cols="80" rows="24" theme="monokai" speed="1" idle-time-limit="1"></asciinema-player>
         </div>
-        
+
         <div class="feature-grid">
             <div class="feature-card">
                 <div class="feature-icon">⚛️</div>
@@ -260,7 +260,7 @@
                 <div class="feature-desc">Real-time monitoring with 95.56% energy efficiency and 23.73ms processing speed</div>
             </div>
         </div>
-        
+
         <div class="instructions">
             <h3>🌟 Create Your Own Magical Demo</h3>
             <p>To create the perfect terminal-demo.gif for your README:</p>
@@ -269,7 +269,7 @@
                 <li><strong>🌐 Method 2:</strong> Use browser developer tools to record this page</li>
                 <li><strong>🛠️ Method 3:</strong> Use asciinema with screen recording</li>
             </ul>
-            
+
             <h3>⚡ Quick Commands</h3>
             <ul>
                 <li>Play the cast: <code>asciinema play magical-bleu-demo.cast</code></li>
@@ -277,7 +277,7 @@
                 <li>Save as: <code>terminal-demo.gif</code></li>
                 <li>Upload to: GitHub assets folder</li>
             </ul>
-            
+
             <h3>🎯 Recording Settings</h3>
             <ul>
                 <li>Resolution: 1280x720 or higher</li>
@@ -286,7 +286,7 @@
                 <li>Quality: High for crisp text and animations</li>
             </ul>
         </div>
-        
+
         <div class="cta-section">
             <h3>🚀 Ready to Impress the World?</h3>
             <p>This magical demo showcases Bleu.js's cutting-edge quantum-enhanced AI capabilities.</p>
@@ -294,7 +294,7 @@
             <a href="https://pypi.org/project/bleu-js/" class="cta-button">📦 Install from PyPI</a>
         </div>
     </div>
-    
+
     <script src="https://asciinema.org/a/asciinema-player.js"></script>
 </body>
-</html> 
+</html>

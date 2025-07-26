@@ -48,7 +48,7 @@ ttyplay demo.rec
 ## Expected Demo Flow:
 
 1. 📁 Show current directory
-2. 📊 Check git status  
+2. 📊 Check git status
 3. 🐍 Show Python version
 4. 🔧 Create virtual environment
 5. 🔌 Activate environment

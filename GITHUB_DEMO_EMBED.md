@@ -12,7 +12,7 @@
 
 ### What you'll see:
 - ✅ Real project structure and files
-- ✅ Actual Python environment setup  
+- ✅ Actual Python environment setup
 - ✅ Real pip installation with progress bars
 - ✅ Actual dependency resolution and conflicts
 - ✅ Real import errors (authentic development)
