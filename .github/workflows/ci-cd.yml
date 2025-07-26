@@ -388,7 +388,7 @@ jobs:
 
       - name: SonarCloud Quality Gate Check
         id: sonarqube-quality-gate
-        uses: sonarqube-quality-gate-action@v1.0.2
+        uses: SonarSource/sonarqube-quality-gate-action@v1.0.2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
