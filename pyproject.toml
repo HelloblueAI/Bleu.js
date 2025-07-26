@@ -1,17 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "bleu-js"
 version = "1.1.8"
 description = "Advanced AI and Quantum Computing Framework"
-authors = [
-    {name = "Bleu.js Team", email = "team@bleu.js"}
-]
+authors = ["Bleu.js Team <team@bleu.js>"]
 readme = "README.md"
-license = {text = "MIT"}
-requires-python = ">=3.10"
+license = "MIT"
+packages = [{include = "bleujs", from = "src"}]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -24,49 +22,51 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Quantum Computing",
 ]
 
-dependencies = [
-    # Core AI/ML - Fixed versions for compatibility
-    "numpy>=1.24.3,<2.0.0",
-    "pandas>=2.0.0",
-    "scikit-learn>=1.2.2",
+[tool.poetry.dependencies]
+python = "^3.10"
+# Core AI/ML - Fixed versions for compatibility
+numpy = "^1.24.3,<2.0.0"
+pandas = "^2.0.0"
+scikit-learn = "^1.2.2"
 
-    # Web Framework - Pinned for stability
-    "fastapi>=0.110.0",
-    "uvicorn==0.27.1",
-    "pydantic[email]==2.6.1",
+# Web Framework - Pinned for stability
+fastapi = "^0.110.0"
+uvicorn = "0.27.1"
+pydantic = {extras = ["email"], version = "2.6.1"}
 
-    # Security - Fixed versions
-    "urllib3>=2.5.0",
-    "requests>=2.32.4",
-    "cryptography>=42.0.5",
-    "setuptools>=78.1.1",
+# Security - Fixed versions
+urllib3 = "^2.5.0"
+requests = "^2.32.4"
+cryptography = "^42.0.5"
+setuptools = "^78.1.1"
 
-    # Database - Pinned versions
-    "sqlalchemy==2.0.23",
-    "alembic==1.13.1",
-    "psycopg2-binary==2.9.9",
+# Database - Pinned versions
+sqlalchemy = "2.0.23"
+alembic = "1.13.1"
+psycopg2-binary = "2.9.9"
 
-    # AWS
-    "boto3>=1.24.0",
-    # "aws-lambda-powertools>=2.30.0",  # Temporarily disabled for poetry lock
+# AWS
+boto3 = "^1.24.0"
 
-    # Utilities
-    "python-dotenv>=0.20.0",
-    "httpx>=0.27.0",
-    "aiohttp>=3.12.14",
-    "h11 (==0.16.0)",
-]
+# Utilities
+python-dotenv = "^0.20.0"
+httpx = "^0.27.0"
+aiohttp = "^3.12.14"
+h11 = "0.16.0"
 
-# [project.optional-dependencies]
-# all = [
-#     "bleu-js[ml,quantum,dev,monitoring]",
-# ]
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+pytest-cov = "^4.0.0"
+black = "^22.0.0"
+isort = "^5.0.0"
+flake8 = "^4.0.0"
+mypy = "^0.900"
+pre-commit = "^2.0.0"
+ruff = "^0.1.0"
+bandit = "^1.7.0"
 
-[project.scripts]
+[tool.poetry.scripts]
 bleu-js = "src.bleujs.cli:main"
-
-[tool.setuptools.packages.find]
-where = ["src"]
 
 [tool.black]
 line-length = 88
