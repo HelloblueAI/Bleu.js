@@ -1,4 +1,4 @@
-# Bleu.js - Quantum-Enhanced AI Platform
+### Bleu.js - Quantum-Enhanced AI Platform
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from PyPI.
 
