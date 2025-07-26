@@ -125,13 +125,29 @@ echo "✨ Bleu.js is ready to use!"
 <html>
 <head>
     <title>Bleu.js Animated Installation Demo</title>
-    <script src="https://asciinema.org/a/embed.js" id="asciicast" data-size="medium" data-speed="2"></script>
+    <script src="https://asciinema.org/a/embed.js" id="asciicast" \
+        data-size="medium" data-speed="2"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
         h1 { color: #333; text-align: center; }
-        .demo { border-radius: 5px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .info { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .demo {
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -149,10 +165,10 @@ echo "✨ Bleu.js is ready to use!"
             </ul>
         </div>
         <div class="demo">
-            <asciinema-player 
-                src="animated_demo.cast" 
-                cols="100" 
-                rows="25" 
+            <asciinema-player
+                src="animated_demo.cast"
+                cols="100"
+                rows="25"
                 speed="2">
             </asciinema-player>
         </div>
@@ -177,23 +193,19 @@ def update_readme():
         content = f.read()
 
     # Replace the demo section
-    old_demo = """**🎬 Watch the real installation process:**
-
-[![Bleu.js Real Terminal Demo](real_terminal_demo.svg)](real_terminal_demo_player.html)
-
-**📺 [Interactive HTML Player](real_terminal_demo_player.html)** - Experience the full demo in your browser!
-
+    old_demo = """**🎬 Watch the real installation process:**\n\n\
+[![Bleu.js Real Terminal Demo](real_terminal_demo.svg)](\
+    real_terminal_demo_player.html)\n\n\
+**📺 [Interactive HTML Player](real_terminal_demo_player.html)** -\
+Experience the full demo in your browser!\n\n\
 **📄 [Raw Recording](real_terminal_demo.cast)** - Download and play with asciinema"""
 
-    new_demo = """**🎬 Watch the animated installation process:**
-
-[![Bleu.js Animated Installation Demo](animated_demo.svg)](
-    animated_demo_player.html)
-
-**📺 [Interactive HTML Player](animated_demo_player.html)** - Experience the full animated demo in your browser!
-
-**📄 [Raw Recording](animated_demo.cast)** - Download and play with asciinema
-
+    new_demo = """**🎬 Watch the animated installation process:**\n\n\
+[![Bleu.js Animated Installation Demo](animated_demo.svg)](\
+    animated_demo_player.html)\n\n\
+**📺 [Interactive HTML Player](animated_demo_player.html)** -\
+Experience the full animated demo in your browser!\n\n\
+**📄 [Raw Recording](animated_demo.cast)** - Download and play with asciinema\n\
 **🎬 [Live Demo Script](demo_installation.sh)** - Run the installation demo yourself!"""
 
     content = content.replace(old_demo, new_demo)
