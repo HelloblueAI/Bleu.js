@@ -57,4 +57,4 @@ echo ""
 asciinema play magical-bleu-demo.cast --speed 1
 
 echo ""
-echo "✨ Ready to record! Choose your preferred method above." 
+echo "✨ Ready to record! Choose your preferred method above."

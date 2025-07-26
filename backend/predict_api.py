@@ -27,8 +27,7 @@ try:
     model = joblib.load(MODEL_PATH)
     expected_features = model.get_booster().num_features()
     logging.info(
-        f"✅ Model loaded successfully! "
-        f"Expected features: {expected_features}"
+        f"✅ Model loaded successfully! " f"Expected features: {expected_features}"
     )
 except Exception as e:
     logging.error(f"❌ Failed to load model: {str(e)}")

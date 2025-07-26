@@ -82,4 +82,3 @@ drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia 12288 Jul 13 01:43 ..
 
 🎉 Installation completed successfully!
 ✨ Bleu.js is ready to use!
-

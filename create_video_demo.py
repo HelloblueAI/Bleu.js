@@ -4,89 +4,93 @@ Create Video Demo from Terminal Recording
 Converts asciinema recording to video formats
 """
 
-import subprocess
 import os
+import subprocess
 import sys
 from pathlib import Path
 
+
 def check_dependencies():
     """Check if required tools are installed"""
-    tools = {
-        'asciinema': 'asciinema',
-        'ffmpeg': 'ffmpeg',
-        'gifsicle': 'gifsicle'
-    }
-    
+    tools = {"asciinema": "asciinema", "ffmpeg": "ffmpeg", "gifsicle": "gifsicle"}
+
     missing = []
     for tool, command in tools.items():
         try:
-            subprocess.run([command, '--version'], capture_output=True, check=True)
+            subprocess.run([command, "--version"], capture_output=True, check=True)
             print(f"✅ {tool} is installed")
         except (subprocess.CalledProcessError, FileNotFoundError):
             missing.append(tool)
             print(f"❌ {tool} is missing")
-    
+
     return missing
+
 
 def install_dependencies():
     """Install missing dependencies"""
     print("📦 Installing missing dependencies...")
-    
+
     try:
         # Install asciinema
-        subprocess.run(['sudo', 'apt-get', 'update'], check=True)
-        subprocess.run(['sudo', 'apt-get', 'install', '-y', 'asciinema'], check=True)
+        subprocess.run(["sudo", "apt-get", "update"], check=True)
+        subprocess.run(["sudo", "apt-get", "install", "-y", "asciinema"], check=True)
         print("✅ asciinema installed")
     except subprocess.CalledProcessError:
         print("❌ Failed to install asciinema")
         return False
-    
+
     try:
         # Install ffmpeg
-        subprocess.run(['sudo', 'apt-get', 'install', '-y', 'ffmpeg'], check=True)
+        subprocess.run(["sudo", "apt-get", "install", "-y", "ffmpeg"], check=True)
         print("✅ ffmpeg installed")
     except subprocess.CalledProcessError:
         print("❌ Failed to install ffmpeg")
         return False
-    
+
     try:
         # Install gifsicle
-        subprocess.run(['sudo', 'apt-get', 'install', '-y', 'gifsicle'], check=True)
+        subprocess.run(["sudo", "apt-get", "install", "-y", "gifsicle"], check=True)
         print("✅ gifsicle installed")
     except subprocess.CalledProcessError:
         print("❌ Failed to install gifsicle")
         return False
-    
+
     return True
+
 
 def create_video_demo():
     """Create video demo from terminal recording"""
-    
+
     cast_file = Path("real_terminal_demo.cast")
     if not cast_file.exists():
         print("❌ real_terminal_demo.cast not found!")
         return False
-    
+
     print("🎬 Creating video demo from terminal recording...")
-    
+
     # Method 1: Convert to GIF using asciicast2gif
     try:
         print("📹 Converting to GIF...")
-        subprocess.run(['asciicast2gif', str(cast_file), 'real_terminal_demo.gif'], check=True)
+        subprocess.run(
+            ["asciicast2gif", str(cast_file), "real_terminal_demo.gif"], check=True
+        )
         print("✅ GIF created: real_terminal_demo.gif")
     except (subprocess.CalledProcessError, FileNotFoundError):
         print("⚠️ asciicast2gif failed, trying alternative method...")
-        
+
         # Method 2: Convert to SVG first, then to video
         try:
             print("🎨 Converting to SVG...")
-            subprocess.run(['asciinema', 'cat', str(cast_file)], 
-                         stdout=open('real_terminal_demo.svg', 'w'), check=True)
+            subprocess.run(
+                ["asciinema", "cat", str(cast_file)],
+                stdout=open("real_terminal_demo.svg", "w"),
+                check=True,
+            )
             print("✅ SVG created: real_terminal_demo.svg")
         except subprocess.CalledProcessError:
             print("❌ SVG conversion failed")
             return False
-    
+
     # Method 3: Create HTML player
     print("🌐 Creating HTML player...")
     html_content = f"""
@@ -112,18 +116,19 @@ def create_video_demo():
 </body>
 </html>
 """
-    
-    with open('real_terminal_demo_player.html', 'w') as f:
+
+    with open("real_terminal_demo_player.html", "w") as f:
         f.write(html_content)
     print("✅ HTML player created: real_terminal_demo_player.html")
-    
+
     return True
+
 
 def create_github_embed():
     """Create GitHub-compatible embed code"""
-    
+
     print("🔗 Creating GitHub embed code...")
-    
+
     embed_code = """
 ## 🎬 Interactive Terminal Demo
 
@@ -138,7 +143,7 @@ def create_github_embed():
 
 ### What you'll see:
 - ✅ Real project structure and files
-- ✅ Actual Python environment setup  
+- ✅ Actual Python environment setup
 - ✅ Real pip installation with progress bars
 - ✅ Actual dependency resolution and conflicts
 - ✅ Real import errors (authentic development)
@@ -147,53 +152,55 @@ def create_github_embed():
 
 This demonstrates the **authentic, unedited** process of setting up and using Bleu.js!
 """
-    
-    with open('GITHUB_DEMO_EMBED.md', 'w') as f:
+
+    with open("GITHUB_DEMO_EMBED.md", "w") as f:
         f.write(embed_code)
     print("✅ GitHub embed code created: GITHUB_DEMO_EMBED.md")
-    
+
     return True
+
 
 def main():
     """Main function"""
     print("🎬 Bleu.js Video Demo Creator")
     print("=" * 40)
-    
+
     # Check dependencies
     missing = check_dependencies()
     if missing:
         print(f"\n❌ Missing dependencies: {', '.join(missing)}")
         install = input("Install missing dependencies? (y/n): ")
-        if install.lower() == 'y':
+        if install.lower() == "y":
             if not install_dependencies():
                 print("❌ Failed to install dependencies")
                 return False
         else:
             print("❌ Cannot proceed without dependencies")
             return False
-    
+
     # Create video demo
     if not create_video_demo():
         print("❌ Failed to create video demo")
         return False
-    
+
     # Create GitHub embed
     if not create_github_embed():
         print("❌ Failed to create GitHub embed")
         return False
-    
+
     print("\n🎉 Video demo creation completed!")
     print("\n📁 Generated files:")
     print("  - real_terminal_demo.gif (GIF version)")
     print("  - real_terminal_demo_player.html (Interactive HTML player)")
     print("  - GITHUB_DEMO_EMBED.md (GitHub embed code)")
-    
+
     print("\n📋 Next steps:")
     print("  1. Upload the GIF to GitHub")
     print("  2. Add the embed code to your README")
     print("  3. Share the HTML player for interactive demos")
-    
+
     return True
 
+
 if __name__ == "__main__":
-    main() 
+    main()
