@@ -3,9 +3,8 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from sqlalchemy import Boolean, Column, DateTime, String, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from src.models.base import Base
@@ -15,8 +14,9 @@ class User(Base):
     """User model."""
 
     __tablename__ = "users"
+    __table_args__ = {"extend_existing": True}
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String(255), unique=True, nullable=False, index=True)
     username = Column(String(255), unique=True, nullable=True)
     hashed_password = Column(String(255), nullable=False)
@@ -39,7 +39,7 @@ class User(Base):
     # Relationships
     subscriptions = relationship("Subscription", back_populates="user")
     api_calls = relationship("APICall", back_populates="user")
-    payments = relationship("Payment", back_populates="user")
+    api_usage = relationship("APIUsage", back_populates="user")
     api_tokens = relationship("APIToken", back_populates="user")
 
     def __repr__(self):
@@ -69,7 +69,7 @@ class User(Base):
         }
 
 
-# Pydantic models for API
+# Pydantic models for authentication only
 class Token(BaseModel):
     """Token model for authentication."""
 
@@ -81,79 +81,3 @@ class TokenData(BaseModel):
     """Token data model."""
 
     email: str | None = None
-
-
-class UserBase(BaseModel):
-    """Base user model."""
-
-    email: EmailStr
-    username: str | None = None
-    full_name: str | None = None
-    is_active: bool = True
-    is_superuser: bool = False
-    is_admin: bool = False
-
-    class Config:
-        from_attributes = True
-
-
-class UserCreate(UserBase):
-    """User creation model."""
-
-    password: str
-
-
-class UserUpdate(BaseModel):
-    """User update model."""
-
-    email: EmailStr | None = None
-    username: str | None = None
-    full_name: str | None = None
-    password: str | None = None
-    is_active: bool | None = None
-    is_superuser: bool | None = None
-    is_admin: bool | None = None
-    profile_picture: str | None = None
-    bio: str | None = None
-    location: str | None = None
-    website: str | None = None
-    twitter_handle: str | None = None
-    github_username: str | None = None
-    linkedin_url: str | None = None
-
-    class Config:
-        from_attributes = True
-
-
-class UserResponse(UserBase):
-    """User response model."""
-
-    id: str
-    api_key: str | None = None
-    created_at: datetime
-    updated_at: datetime
-    last_login: datetime | None = None
-    profile_picture: str | None = None
-    bio: str | None = None
-    location: str | None = None
-    website: str | None = None
-    twitter_handle: str | None = None
-    github_username: str | None = None
-    linkedin_url: str | None = None
-
-    class Config:
-        from_attributes = True
-
-
-class UserInDB(UserBase):
-    """User in database model."""
-
-    id: str
-    hashed_password: str
-    api_key: str | None = None
-    created_at: datetime
-    updated_at: datetime
-    last_login: datetime | None = None
-
-    class Config:
-        from_attributes = True

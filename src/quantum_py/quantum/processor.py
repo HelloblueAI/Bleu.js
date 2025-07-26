@@ -6,8 +6,18 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 from numpy.typing import NDArray
-from qiskit_aer import QasmSimulator
-from qiskit_aer.noise import NoiseModel, depolarizing_error
+
+# Try to import qiskit_aer dependencies, with fallbacks
+try:
+    from qiskit_aer import QasmSimulator
+    from qiskit_aer.noise import NoiseModel, depolarizing_error
+
+    QISKIT_AER_AVAILABLE = True
+except ImportError:
+    QISKIT_AER_AVAILABLE = False
+    QasmSimulator = None
+    NoiseModel = None
+    depolarizing_error = None
 
 from .circuit import QuantumCircuit
 from .quantum_processor_base import QuantumProcessorBase

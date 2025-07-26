@@ -100,10 +100,12 @@ class Settings(BaseSettings):
     TEST_RATE_LIMIT_WINDOW: int = 3600
 
     # Email settings
-    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_HOST: str = "localhost"
     SMTP_PORT: int = 587
-    SMTP_USER: str | None = None
-    SMTP_PASSWORD: SecretStr | None = None
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_USE_TLS: bool = True
+    SMTP_USE_SSL: bool = False
     EMAILS_FROM_EMAIL: EmailStr | None = None
     EMAILS_FROM_NAME: str | None = None
     FROM_EMAIL: str = "noreply@bleujs.org"
@@ -209,4 +211,5 @@ class Settings(BaseSettings):
         return f"postgresql://{user}:{password}@{host}:{port}/{db}"
 
 
+# Create settings instance
 settings = Settings()

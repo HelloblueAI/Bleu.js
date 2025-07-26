@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from src.database import get_db
 from src.models.user import User
-from src.services.auth_service import get_current_user
+from src.services.auth_service import get_current_user_dep
 from src.services.subscription_service import SubscriptionService
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ async def get_subscription_plans(
 
 @router.get("/current", response_model=dict)
 async def get_current_subscription(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Get current user's subscription."""
@@ -58,7 +58,7 @@ async def get_current_subscription(
 
 @router.get("/usage", response_model=dict)
 async def get_subscription_usage(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Get current user's subscription usage."""
@@ -78,7 +78,7 @@ async def get_subscription_usage(
 @router.post("/upgrade/{tier}", response_model=dict)
 async def upgrade_subscription(
     tier: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Upgrade user's subscription tier."""
@@ -99,7 +99,7 @@ async def upgrade_subscription(
 
 @router.post("/renew", response_model=dict)
 async def renew_subscription(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Renew user's subscription."""
@@ -118,7 +118,7 @@ async def renew_subscription(
 
 @router.post("/cancel", response_model=dict)
 async def cancel_subscription(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Cancel user's subscription."""
@@ -141,7 +141,7 @@ async def cancel_subscription(
 
 @router.get("/analytics", response_model=dict)
 async def get_subscription_analytics(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Get subscription analytics (admin only)."""
@@ -167,7 +167,7 @@ async def get_subscription_analytics(
 
 @router.get("/user-data", response_model=dict)
 async def get_user_subscription_data(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_dep()),
     db: Session = Depends(get_db),
 ):
     """Get comprehensive subscription data for current user."""

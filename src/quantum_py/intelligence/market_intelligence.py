@@ -125,10 +125,11 @@ class MarketIntelligence:
             )
 
             # Predict trends
-            predictions, confidence = (
-                await self.quantum_intelligence.predict_optimal_actions(
-                    quantum_features
-                )
+            (
+                predictions,
+                confidence,
+            ) = await self.quantum_intelligence.predict_optimal_actions(
+                quantum_features
             )
 
             # Analyze prediction confidence

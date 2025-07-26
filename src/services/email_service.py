@@ -6,9 +6,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any
 
+from src.config.settings import settings
 from src.utils.base_classes import BaseService
-
-from ..config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +16,7 @@ class EmailService(BaseService):
     def __init__(self):
         self.smtp_server = settings.SMTP_HOST
         self.smtp_port = settings.SMTP_PORT
-        self.smtp_username = settings.SMTP_USER
+        self.smtp_username = settings.SMTP_USERNAME
         self.smtp_password = settings.SMTP_PASSWORD
         self.from_email = settings.FROM_EMAIL
 

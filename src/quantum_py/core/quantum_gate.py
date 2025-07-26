@@ -7,8 +7,17 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import numpy as np
 from numpy.typing import NDArray
-from qiskit.circuit import Gate
-from qiskit.circuit.library import UnitaryGate
+
+# Try to import qiskit Gate, with fallback
+try:
+    from qiskit.circuit import Gate
+except ImportError:
+    Gate = None
+# Try to import qiskit UnitaryGate, with fallback
+try:
+    from qiskit.circuit.library import UnitaryGate
+except ImportError:
+    UnitaryGate = None
 
 if TYPE_CHECKING:
     pass

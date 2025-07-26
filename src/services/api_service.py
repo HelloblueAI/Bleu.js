@@ -13,7 +13,8 @@ from src.config import get_settings
 from src.utils.base_classes import BaseService
 
 from ..database import get_db
-from ..models import APICall, APIUsage, User
+from ..models.api_call import APICall, APIUsage
+from ..models.user import User
 from ..quantum_py.intelligence.market_intelligence import MarketIntelligence
 from ..quantum_py.intelligence.quantum_intelligence import QuantumIntelligence
 from ..quantum_py.intelligence.strategic_intelligence import StrategicIntelligence

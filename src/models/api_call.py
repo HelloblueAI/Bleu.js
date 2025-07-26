@@ -13,6 +13,7 @@ class APICall(Base):
     """API call model."""
 
     __tablename__ = "api_calls"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String, ForeignKey("users.id"))
@@ -31,6 +32,7 @@ class APIUsage(Base):
     """API usage model."""
 
     __tablename__ = "api_usage"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String, ForeignKey("users.id"))

@@ -1,92 +1,118 @@
+"""Configuration module."""
+
 import os
-from functools import lru_cache
-from typing import Optional
+from typing import Any, Dict
 
-from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic import BaseSettings
 
-from db_config import DATABASE_URL
+from src.config.settings import settings
 
-load_dotenv()
+# Database configuration
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./bleu_js.db")
+
+# Redis configuration
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+
+# JWT configuration
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+)
+
+# CORS configuration
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
+
+# Rate limiting configuration
+RATE_LIMIT_WINDOW = int(os.getenv("RATE_LIMIT_WINDOW", "60"))
+RATE_LIMIT_MAX_REQUESTS = int(os.getenv("RATE_LIMIT_MAX_REQUESTS", "100"))
+
+# Email configuration
+SMTP_HOST = os.getenv("SMTP_HOST", "localhost")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
+
+# AWS configuration
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+
+# Application configuration
+DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+# API configuration
+API_V1_PREFIX = "/api/v1"
+PROJECT_NAME = "Bleu.js API"
+VERSION = "1.1.8"
+
+# Security configuration
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+
+# Monitoring configuration
+ENABLE_MONITORING = os.getenv("ENABLE_MONITORING", "true").lower() == "true"
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+# Quantum configuration
+QUANTUM_BACKEND = os.getenv("QUANTUM_BACKEND", "default")
+QUANTUM_SHOTS = int(os.getenv("QUANTUM_SHOTS", "1000"))
+
+# ML configuration
+ML_MODEL_PATH = os.getenv("ML_MODEL_PATH", "./models")
+ENABLE_GPU = os.getenv("ENABLE_GPU", "false").lower() == "true"
+
+# Feature flags
+ENABLE_QUANTUM_FEATURES = os.getenv("ENABLE_QUANTUM_FEATURES", "true").lower() == "true"
+ENABLE_ML_FEATURES = os.getenv("ENABLE_ML_FEATURES", "true").lower() == "true"
+ENABLE_MONITORING_FEATURES = (
+    os.getenv("ENABLE_MONITORING_FEATURES", "true").lower() == "true"
+)
+
+# Configuration dictionary
+config: Dict[str, Any] = {
+    "database_url": DATABASE_URL,
+    "redis_url": REDIS_URL,
+    "jwt_secret_key": JWT_SECRET_KEY,
+    "jwt_algorithm": JWT_ALGORITHM,
+    "jwt_access_token_expire_minutes": JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
+    "cors_origins": CORS_ORIGINS,
+    "rate_limit_window": RATE_LIMIT_WINDOW,
+    "rate_limit_max_requests": RATE_LIMIT_MAX_REQUESTS,
+    "smtp_host": SMTP_HOST,
+    "smtp_port": SMTP_PORT,
+    "smtp_username": SMTP_USERNAME,
+    "smtp_password": SMTP_PASSWORD,
+    "smtp_use_tls": SMTP_USE_TLS,
+    "aws_access_key_id": AWS_ACCESS_KEY_ID,
+    "aws_secret_access_key": AWS_SECRET_ACCESS_KEY,
+    "aws_region": AWS_REGION,
+    "debug": DEBUG,
+    "environment": ENVIRONMENT,
+    "api_v1_prefix": API_V1_PREFIX,
+    "project_name": PROJECT_NAME,
+    "version": VERSION,
+    "secret_key": SECRET_KEY,
+    "algorithm": ALGORITHM,
+    "enable_monitoring": ENABLE_MONITORING,
+    "log_level": LOG_LEVEL,
+    "quantum_backend": QUANTUM_BACKEND,
+    "quantum_shots": QUANTUM_SHOTS,
+    "ml_model_path": ML_MODEL_PATH,
+    "enable_gpu": ENABLE_GPU,
+    "enable_quantum_features": ENABLE_QUANTUM_FEATURES,
+    "enable_ml_features": ENABLE_ML_FEATURES,
+    "enable_monitoring_features": ENABLE_MONITORING_FEATURES,
+}
 
 
-class Settings(BaseSettings):
-    # Application Settings
-    APP_NAME: str = "Bleu.js"
-    VERSION: str = "1.1.8"
-    DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
-
-    # AWS Settings
-    AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
-    AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
-    AWS_REGION: str = os.getenv("AWS_REGION", "us-west-2")
-    S3_BUCKET: str = os.getenv("S3_BUCKET", "bleujs-assets")
-
-    # Database Settings
-    DATABASE_URL: str = DATABASE_URL
-
-    # JWT Settings
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-secret-key")
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-
-    # Stripe Settings
-    STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")
-    STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
-    STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
-
-    # Product IDs
-    CORE_PLAN_ID: str = os.getenv("CORE_PLAN_ID", "")
-    ENTERPRISE_PLAN_ID: str = os.getenv("ENTERPRISE_PLAN_ID", "")
-
-    # OAuth Settings
-    GITHUB_CLIENT_ID: str = os.getenv("GITHUB_CLIENT_ID", "")
-    GITHUB_CLIENT_SECRET: str = os.getenv("GITHUB_CLIENT_SECRET", "")
-    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
-    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
-
-    # Email Settings
-    SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
-    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
-    SMTP_USER: str = os.getenv("SMTP_USER", "")
-    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
-    FROM_EMAIL: str = os.getenv("FROM_EMAIL", "noreply@bleujs.com")
-
-    # Rate Limiting
-    RATE_LIMIT_CORE: int = 100  # requests per month for CORE plan
-    RATE_LIMIT_ENTERPRISE: int = 5000  # requests per month for Enterprise plan
-
-    # Cache Settings
-    REDIS_URL: Optional[str] = os.getenv("REDIS_URL")
-
-    # Monitoring
-    SENTRY_DSN: Optional[str] = os.getenv("SENTRY_DSN")
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-
-    # Security
-    ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-    if ENVIRONMENT == "production":
-        CORS_ORIGINS = os.getenv("CORS_ORIGINS", "https://bleujs.com")
-    else:
-        CORS_ORIGINS = os.getenv(
-            "CORS_ORIGINS", "http://localhost:3000,https://bleujs.com"
-        )
-    ALLOWED_HOSTS: str = os.getenv("ALLOWED_HOSTS", "*")
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-        extra = "allow"
+def get_settings() -> BaseSettings:
+    """Get application settings."""
+    return settings
 
 
-@lru_cache()
-def get_settings() -> Settings:
-    """
-    Get cached settings instance.
-    Using lru_cache to prevent multiple reads of environment variables.
-    """
-    return Settings()
-
-
-# Create a global settings instance
-settings = get_settings()
+def get_config() -> Dict[str, Any]:
+    """Get configuration dictionary."""
+    return config

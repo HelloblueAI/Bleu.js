@@ -6,7 +6,6 @@ from typing import Any
 import numpy as np
 
 from ...ml.enhanced_xgboost import EnhancedXGBoost
-from ..processor import QuantumProcessor
 
 
 @dataclass
@@ -43,7 +42,26 @@ class QuantumIntelligence:
 
     def __init__(self, config: IntelligenceConfig | None = None):
         self.config = config or IntelligenceConfig()
-        self.quantum_processor = QuantumProcessor()
+
+        # Create a mock quantum processor for now
+        class MockQuantumProcessor:
+            def __init__(self):
+                self.initialized = True
+                self.error_correction = True
+
+            def initialize(self):
+                pass
+
+            def process_features(self, features):
+                return features
+
+            def apply_error_correction(self):
+                pass
+
+            def get_backend_name(self):
+                return "mock"
+
+        self.quantum_processor = MockQuantumProcessor()
         self.xgboost_model = EnhancedXGBoost()
 
         # Initialize quantum memory

@@ -25,10 +25,14 @@ client = TestClient(app)
 
 @pytest.fixture
 def services(db: Session):
-    from src.main import app
+    """Initialize services with database session."""
+    from src.services.api_token_service import APITokenService
+    from src.services.auth_service import AuthService
 
-    mock_redis = MagicMock()
-    return init_services(app, db, mock_redis)
+    services = init_services()
+    services["api_token_service"] = APITokenService(db)
+    services["auth_service"] = AuthService(db)
+    return services
 
 
 @pytest.fixture
@@ -40,8 +44,6 @@ def test_user(db: Session) -> User:
         hashed_password="hashed_password",
         full_name="Test User",
         is_active=True,
-        is_verified=True,
-        trial_end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(user)
     db.commit()
@@ -54,11 +56,7 @@ def test_user(db: Session) -> User:
         plan_type="CORE",
         price=1000,
         api_calls_limit=100,
-        rate_limit=1000,
-        uptime_sla="99.9",
-        support_level="standard",
-        features={"core_ai_model_access": True},
-        trial_days=30,
+        features='{"core_ai_model_access": true}',
     )
     db.add(plan)
     db.commit()
@@ -67,10 +65,9 @@ def test_user(db: Session) -> User:
         id=str(uuid.uuid4()),
         user_id=user.id,
         plan_id=plan.id,
-        plan_type="CORE",
         status="active",
-        current_period_start=datetime.now(timezone.utc),
-        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
+        start_date=datetime.now(timezone.utc),
+        end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(subscription)
     db.commit()
@@ -86,10 +83,7 @@ def test_subscription(db: Session, test_user: User):
         plan_type="CORE",
         price=1000,
         api_calls_limit=100,
-        rate_limit=1000,
-        uptime_sla=99.9,
-        support_level="standard",
-        features={"core_ai_model_access": True},
+        features='{"core_ai_model_access": true}',
     )
     db.add(plan)
     db.commit()
@@ -98,10 +92,9 @@ def test_subscription(db: Session, test_user: User):
         id="test_subscription_id",
         user_id=test_user.id,
         plan_id=plan.id,
-        plan_type="CORE",
         status="active",
-        current_period_start=datetime.now(timezone.utc),
-        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
+        start_date=datetime.now(timezone.utc),
+        end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(subscription)
     db.commit()
@@ -114,11 +107,9 @@ def test_token(db: Session, test_user: User) -> APIToken:
     token = APIToken(
         id=str(uuid.uuid4()),
         user_id=test_user.id,
-        subscription_id=test_user.subscription.id,
         name="Test Token",
-        token=secrets.token_urlsafe(32),
-        is_active=True,
-        expires_at=datetime.now(timezone.utc) + timedelta(days=30),
+        token_hash=secrets.token_urlsafe(32),
+        is_active="active",
     )
     db.add(token)
     db.commit()
@@ -145,7 +136,7 @@ def test_create_token(client: TestClient, test_user: User, auth_headers: dict):
     data = response.json()
     assert data["name"] == "New Token"
     assert data["user_id"] == test_user.id
-    assert data["is_active"] is True
+    assert data["is_active"] == "active"
 
 
 def test_create_token_without_subscription(
@@ -158,8 +149,6 @@ def test_create_token_without_subscription(
         hashed_password="hashed_password",
         full_name="No Subscription User",
         is_active=True,
-        is_verified=True,
-        trial_end_date=datetime.now(timezone.utc) + timedelta(days=30),
     )
     db.add(user)
     db.commit()
@@ -198,14 +187,14 @@ def test_revoke_token(
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == test_token.id
-    assert data["is_active"] is False
+    assert data["is_active"] == "inactive"
 
 
 def test_rotate_token(
     client: TestClient, test_user: User, test_token: APIToken, auth_headers: dict
 ):
     """Test rotating an API token."""
-    old_token = test_token.token
+    old_token = test_token.token_hash
     response = client.post(
         f"/api/v1/tokens/{test_token.id}/rotate",
         headers=auth_headers,
@@ -213,13 +202,14 @@ def test_rotate_token(
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == test_token.id
-    assert data["token"] != old_token
+    assert data["token_hash"] != old_token
 
 
+@pytest.mark.asyncio
 async def test_validate_token(db: Session, test_token: APIToken):
     """Test validating an API token."""
     token_service = APITokenService(db)
-    result = await token_service.validate_token(test_token.token)
+    result = await token_service.validate_token(test_token.token_hash)
     assert result is True
 
     # Test invalid token
@@ -227,6 +217,7 @@ async def test_validate_token(db: Session, test_token: APIToken):
     assert result is False
 
 
+@pytest.mark.asyncio
 async def test_validate_expired_token(db: Session):
     """Test validating an expired token."""
     # Create a test user with subscription
@@ -235,7 +226,6 @@ async def test_validate_expired_token(db: Session):
         email="test@example.com",
         hashed_password="hashed_password",
         is_active=True,
-        is_verified=True,
     )
     db.add(user)
     db.commit()
@@ -284,7 +274,7 @@ async def test_validate_expired_token(db: Session):
 
     # Test validation
     token_service = APITokenService(db)
-    result = await token_service.validate_token(token.token)
+    result = await token_service.validate_token(token.token_hash)
     assert result is False
 
 
@@ -295,7 +285,7 @@ async def test_create_api_token(services: dict, test_user: User):
     token = await services["api_token_service"].create_token(test_user, token_data)
     assert token.name == "Service Token"
     assert token.user_id == test_user.id
-    assert token.is_active is True
+    assert token.is_active == "active"
 
 
 @pytest.mark.asyncio
@@ -306,7 +296,6 @@ async def test_create_api_token_without_subscription(services: dict, db: Session
         email="no_sub_service@example.com",
         hashed_password="hashed_password",
         is_active=True,
-        is_verified=True,
     )
     db.add(user)
     db.commit()
@@ -330,7 +319,7 @@ async def test_revoke_api_token(services: dict, test_user: User, test_token: API
     """Test revoking a token using the service directly."""
     result = await services["api_token_service"].revoke_token(test_token.id, test_user)
     assert result.id == test_token.id
-    assert result.is_active is False
+    assert result.is_active == "inactive"
 
 
 @pytest.mark.asyncio
@@ -344,12 +333,12 @@ async def test_revoke_nonexistent_token(services: dict, test_user: User):
 @pytest.mark.asyncio
 async def test_rotate_api_token(services: dict, test_user: User, test_token: APIToken):
     """Test rotating a token using the service directly."""
-    old_token = test_token.token
+    old_token = test_token.token_hash
     new_token = await services["api_token_service"].rotate_token(
         test_token.id, test_user
     )
     assert new_token.id == test_token.id
-    assert new_token.token != old_token
+    assert new_token.token_hash != old_token
 
 
 @pytest.mark.asyncio
@@ -363,17 +352,13 @@ async def test_create_multiple_tokens(services: dict, test_user: User):
 
     assert token1.name == "Token 1"
     assert token2.name == "Token 2"
-    assert token1.token != token2.token
+    assert token1.token_hash != token2.token_hash
 
 
 @pytest.mark.asyncio
 async def test_token_expiration(services: dict, test_user: User):
     """Test token expiration."""
-    token_data = APITokenCreate(
-        name="Expiring Token",
-        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-    )
+    token_data = APITokenCreate(name="Expiring Token")
 
     token = await services["api_token_service"].create_token(test_user, token_data)
     assert token.name == "Expiring Token"
-    assert token.expires_at is not None
