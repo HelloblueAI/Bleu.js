@@ -119,7 +119,7 @@ jobs:
 
       - name: Run Semgrep Security Scan
         id: semgrep-scan
-        uses: returntocorp/semgrep-action@v1
+        uses: returntocorp/semgrep-action@v1.0.0
         continue-on-error: true
         with:
           config: >-
@@ -581,7 +581,7 @@ jobs:
 
       - name: Notify Staging Deployment
         if: success()
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.0.0
         with:
           status: success
           text: "✅ Staging deployment successful for version ${{ needs.build.outputs.package-version }}"
@@ -642,7 +642,7 @@ jobs:
 
       - name: Notify Production Deployment
         if: success()
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.0.0
         with:
           status: success
           text: "🎉 Production deployment successful for version ${{ needs.build.outputs.package-version }}"
@@ -685,7 +685,7 @@ jobs:
 
       - name: Notify on Failure
         if: failure()
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.0.0
         with:
           status: custom
           custom_payload: |
@@ -723,7 +723,7 @@ jobs:
 
       - name: Notify on Success
         if: success()
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.0.0
         with:
           status: custom
           custom_payload: |
