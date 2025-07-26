@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 
-from src.python.backend.middleware.error_handling import setup_error_handling
+from src.middleware.error_handler import setup_error_handling
 
 
 @pytest.fixture

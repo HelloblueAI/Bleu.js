@@ -9,6 +9,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.config import get_settings
 
 
+def setup_cors(app: FastAPI) -> None:
+    """Setup CORS middleware for FastAPI app.
+
+    Args:
+        app: FastAPI application
+    """
+    middleware = CorsMiddleware(app)
+    return middleware
+
+
 class CorsMiddleware:
     """Middleware for handling CORS (Cross-Origin Resource Sharing)."""
 

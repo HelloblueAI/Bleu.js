@@ -2,7 +2,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from src.python.backend.middleware.csrf import setup_csrf_protection
+from src.middleware.csrf import setup_csrf_protection
 
 
 @pytest.fixture
