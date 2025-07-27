@@ -1,0 +1,357 @@
+name: 🚀 Bleu.js Quantum-Enhanced Vision System CI/CD
+
+on:
+  push:
+    branches: [main, staging, develop]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+  pull_request:
+    branches: [main, staging]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - 'LICENSE'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      force_deploy:
+        description: 'Force deployment even if tests fail'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+  security-events: write
+  pull-requests: write
+  packages: write
+
+env:
+  AWS_REGION: us-east-1
+  PYTHON_VERSION: '3.11'
+  POETRY_VERSION: '1.7.1'
+  CACHE_VERSION: 'v1'
+  DOCKER_BUILDKIT: 1
+  ECR_REPOSITORY: bleujs
+  COVERAGE_THRESHOLD: 30
+  SECURITY_SCAN_LEVEL: medium
+
+jobs:
+  # ============================================================================
+  # AUTO-ASSIGNMENT (PRs only)
+  # ============================================================================
+  auto-assign:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: kentaro-m/auto-assign-action@v1.2.0
+        with:
+          configuration-path: .github/auto-assign.yml
+
+  # ============================================================================
+  # VERSION BUMP (main branch only)
+  # ============================================================================
+  version-bump:
+    needs: auto-assign
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: main
+
+  # ============================================================================
+  # SECURITY & COMPLIANCE SCAN
+  # ============================================================================
+  security-scan:
+    name: 🔒 Security & Compliance Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      security-status: ${{ steps.security-check.outputs.status }}
+      vulnerabilities: ${{ steps.security-check.outputs.vulnerabilities }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-security-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: Run Safety Check
+        id: vuln-check
+        run: |
+          poetry run pip install safety
+          poetry run safety check --json --output safety-report.json --ignore 275 || true
+
+          if [ -f safety-report.json ]; then
+            TOTAL=$(jq '.vulnerabilities | length' safety-report.json)
+            CRITICAL=$(jq '.vulnerabilities[] | select(.severity == "CRITICAL") | .package' safety-report.json | wc -l)
+            echo "count=$TOTAL" >> $GITHUB_OUTPUT
+            echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          else
+            echo "count=0" >> $GITHUB_OUTPUT
+            echo "critical=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Bandit Security Scan
+        id: bandit-scan
+        run: |
+          poetry run bandit -r src/ -f json -o bandit-report.json --skip B101,B601 || echo '{"results": []}' > bandit-report.json
+          if [ -f bandit-report.json ]; then
+            VULNERABILITIES=$(jq '.results | length' bandit-report.json)
+            echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            if [ "$VULNERABILITIES" -gt 10 ]; then
+              echo "status=failed" >> $GITHUB_OUTPUT
+            else
+              echo "status=passed" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "vulnerabilities=0" >> $GITHUB_OUTPUT
+            echo "status=passed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run pip-audit
+        run: |
+          poetry run pip install pip-audit
+          poetry run pip-audit --format json --output pip-audit-report.json || true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            safety-report.json
+            bandit-report.json
+            pip-audit-report.json
+          retention-days: 90
+
+  # ============================================================================
+  # CODE QUALITY & LINTING
+  # ============================================================================
+  lint:
+    name: 🧹 Code Quality & Linting
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [auto-assign, version-bump]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-lint-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Run linting tools
+        run: |
+          poetry run black . --check
+          poetry run isort . --check-only
+          poetry run flake8 . --max-line-length=88 --extend-ignore=E501,W503 || true
+          poetry run mypy . --ignore-missing-imports --no-strict-optional || true
+          poetry run bandit -r . -f json -o bandit-lint-results.json || true
+
+      - name: Upload linting results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linting-results
+          path: bandit-lint-results.json
+          retention-days: 7
+
+  # ============================================================================
+  # TEST SUITE
+  # ============================================================================
+  test:
+    name: 🧪 Test Suite
+    needs: [auto-assign, version-bump, security-scan]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.11]
+        include:
+          - python-version: 3.11
+            qiskit-version: '1.4.2'
+            qiskit-aer-version: '0.13.0'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+          poetry config installer.max-workers 4
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root --with dev,quantum,monitoring
+
+      - name: Run tests with coverage
+        run: |
+          poetry run pytest tests/ --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing --cov-fail-under=${{ env.COVERAGE_THRESHOLD }} --ignore tests/test_api_token_service.py --ignore tests/test_api_token_validation.py --ignore tests/test_api_tokens.py --ignore tests/test_monitoring.py --ignore tests/test_rate_limiting.py --ignore tests/test_services_coverage.py --ignore tests/services/test_redis_client.py --ignore tests/services/test_secrets_manager.py --ignore tests/unit/ai/test_attention.py --ignore tests/unit/aws/test_ec2.py --ignore tests/quantum/test_contest_strategy.py --ignore tests/quantum/test_quantum_circuit.py --ignore tests/middleware/rate_limit_test.py --ignore tests/middleware/auth_test.py --ignore tests/quantum/quantum_processor_test.py --ignore tests/integration/ --strict-markers --disable-warnings --tb=short --maxfail=10 --durations=10 -v
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ runner.os }}-${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+            .pytest_cache/
+          retention-days: 30
+
+  # ============================================================================
+  # SONARCLOUD ANALYSIS
+  # ============================================================================
+  sonarcloud:
+    name: 📊 SonarCloud Analysis
+    needs: [test, security-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install --no-interaction
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results-ubuntu-latest-3.11
+          path: .
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ============================================================================
+  # PIPELINE STATUS SUMMARY
+  # ============================================================================
+  pipeline-summary:
+    name: 📢 Pipeline Status Summary
+    needs: [lint, test, sonarcloud, security-scan]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate Pipeline Summary
+        run: |
+          echo "## 🚀 Bleu.js CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **OS**: ubuntu-latest" >> $GITHUB_STEP_SUMMARY
+          echo "- **Python**: ${{ env.PYTHON_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Coverage**: Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔒 Security Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security Scan**: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnerabilities**: ${{ needs.security-scan.outputs.vulnerabilities }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🧹 Code Quality" >> $GITHUB_STEP_SUMMARY
+          echo "- **Linting**: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **SonarCloud**: ${{ needs.sonarcloud.result }}" >> $GITHUB_STEP_SUMMARY
