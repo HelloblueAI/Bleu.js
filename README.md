@@ -1467,9 +1467,7 @@ The benchmarking system provides:
 
 These improvements demonstrate our commitment to professional code quality standards, focus on performance and efficiency, strong TypeScript implementation, attention to memory management, and commitment to maintainable code.
 
-## Author
 
-**HelloblueAI Team**
 
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
@@ -1505,4 +1503,4 @@ For comprehensive support:
 - Email: support@helloblue.ai
 - Issues: [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
 - Stack Overflow: [bleujs](https://stackoverflow.com/questions/tagged/bleujs)
-### CI/CD Flow Test - Sat Jul 26 05:03:49 AM PDT 2025
+## CI/CD Flow Test - Sat Jul 26 05:03:49 AM PDT 2025
