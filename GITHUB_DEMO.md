@@ -84,7 +84,7 @@ drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .
 
 ---
 
-**📺 [Interactive Demo Player](https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html)** - Experience the full animated demo!
+**📺 [Interactive Demo Player](simple_animated_demo.html)** - Experience the full animated demo!
 
 **🎬 [Run Demo Yourself](simple_demo.sh)** - Execute the installation demo locally
 
