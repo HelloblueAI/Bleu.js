@@ -1484,7 +1484,7 @@ These improvements demonstrate our commitment to professional code quality stand
 [![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)](https://github.com/HelloblueAI/Bleu.js)
 [![Open Source Excellence](https://img.shields.io/badge/Award-Open%20Source%20Excellence-blueviolet?style=flat-square&logo=opensourceinitiative)](https://github.com/HelloblueAI/Bleu.js)
 [![Top Developer Tool](https://img.shields.io/badge/Award-Top%20Developer%20Tool-green?style=flat-square&logo=githubactions)](https://github.com/HelloblueAI/Bleu.js)
-[![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/ci-cd.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
+[![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)](https://github.com/HelloblueAI/Bleu.js)
