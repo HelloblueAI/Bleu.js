@@ -7,7 +7,7 @@
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
 <div align="left">
-  <a href="simple_animated_demo.html" target="_blank">
+  <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
     <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
   </a>
 </div>
