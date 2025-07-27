@@ -48,7 +48,9 @@ class SecretsManager:
         Returns:
             str: Redis URL
         """
-        return self.get_secret("REDIS_URL", "redis://localhost:6379")
+        redis_url = self.get_secret("REDIS_URL", "redis://localhost:6379")
+        # Convert RedisDsn to string if needed
+        return str(redis_url)
 
     def get_jwt_secret(self) -> str:
         """Get JWT secret from secrets.
