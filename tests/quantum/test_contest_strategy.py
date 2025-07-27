@@ -1,9 +1,6 @@
 """Test quantum contest strategy module."""
 
-import pytest
-import numpy as np
 import tensorflow as tf
-from unittest.mock import Mock, patch
 
 from src.quantum_py.optimization.contest_strategy import BleuQuantumContestOptimizer
 
@@ -17,10 +14,10 @@ def test_optimizer_initialization():
 def test_optimize_attention_mapping():
     """Test attention mapping optimization."""
     optimizer = BleuQuantumContestOptimizer()
-    
+
     # Create mock attention weights
     attention_weights = tf.random.normal((10, 10))
-    
+
     # Test that the method can be called
     try:
         result, circuit = optimizer.optimize_attention_mapping(attention_weights)
@@ -33,10 +30,10 @@ def test_optimize_attention_mapping():
 def test_optimize_fusion_strategy():
     """Test fusion strategy optimization."""
     optimizer = BleuQuantumContestOptimizer()
-    
+
     # Create mock features
     features = [tf.random.normal((10, 5)) for _ in range(3)]
-    
+
     # Test that the method can be called
     try:
         result, circuit = optimizer.optimize_fusion_strategy(features)
@@ -49,7 +46,7 @@ def test_optimize_fusion_strategy():
 def test_quantum_circuit_optimization():
     """Test quantum circuit optimization."""
     optimizer = BleuQuantumContestOptimizer()
-    
+
     # Test that the optimizer exists
     assert optimizer is not None
 
@@ -57,14 +54,14 @@ def test_quantum_circuit_optimization():
 def test_invalid_inputs():
     """Test invalid inputs handling."""
     optimizer = BleuQuantumContestOptimizer()
-    
+
     # Test with None inputs
     try:
         result, circuit = optimizer.optimize_attention_mapping(None)
     except Exception:
         # Expected to fail with None input
         pass
-    
+
     # Test that the optimizer exists
     assert optimizer is not None
 
@@ -72,6 +69,6 @@ def test_invalid_inputs():
 def test_end_to_end_optimization():
     """Test end-to-end optimization."""
     optimizer = BleuQuantumContestOptimizer()
-    
+
     # Test that the optimizer exists
     assert optimizer is not None

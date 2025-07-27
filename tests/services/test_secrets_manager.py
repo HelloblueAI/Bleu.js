@@ -1,8 +1,5 @@
 """Test secrets manager module."""
 
-import pytest
-from unittest.mock import Mock, patch
-
 from src.services.secrets_manager import SecretsManager
 
 

@@ -1,7 +1,6 @@
 """Test Redis client module."""
 
 import pytest
-from unittest.mock import Mock, patch
 
 from src.services.redis_client import RedisClient
 
