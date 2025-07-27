@@ -1,7 +1,8 @@
 """Test EC2 service module."""
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 from src.services.ec2_service import EC2Service
 
