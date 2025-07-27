@@ -1497,10 +1497,4 @@ This software is maintained by Helloblue Inc., a company dedicated to advanced i
 
 Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/main/LICENSE.md)
 
----
 
-For comprehensive support:
-- Email: support@helloblue.ai
-- Issues: [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
-- Stack Overflow: [bleujs](https://stackoverflow.com/questions/tagged/bleujs)
-## CI/CD Flow Test - Sat Jul 26 05:03:49 AM PDT 2025
