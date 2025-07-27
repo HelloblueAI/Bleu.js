@@ -21,7 +21,7 @@ requirements = [
 setup(
     name="bleu-js",
     version="1.1.8",
-    author="Pejman Haghighatnia",
+    author="HelloblueAI",
     author_email="support@helloblue.ai",
     description=(
         "A state-of-the-art quantum-enhanced vision system with "

@@ -138,7 +138,7 @@ A: Through continuous innovation in quantum computing integration, maintaining a
   - Competitive landscape
 
 ## Contact Information
-- Primary Contact: Pejman Haghighatnia
+- Primary Contact: HelloblueAI Team
 - Email: info@helloblue.ai
 - Backup Contacts: [Team Members]
 - Technical Support: tech@bleujs.com

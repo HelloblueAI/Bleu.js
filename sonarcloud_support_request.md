@@ -33,12 +33,12 @@ We would like to request that the coverage requirement be disabled for this spec
 If disabling coverage is not possible, we would appreciate guidance on how to configure a custom quality gate that focuses on code quality metrics (bugs, vulnerabilities, code smells, duplications) without requiring coverage.
 
 **Contact Information:**
-- Name: Pejman Haghighatnia
+- Name: HelloblueAI Team
 - Email: [Your email]
 - Project: Bleu.js AI Research Project
 
 Thank you for your assistance. We appreciate your support in helping us maintain code quality while allowing for the flexibility needed in research and development projects.
 
 Best regards,
-Pejman Haghighatnia
+HelloblueAI Team
 Bleu.js Development Team

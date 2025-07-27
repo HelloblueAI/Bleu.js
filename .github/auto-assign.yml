@@ -3,12 +3,10 @@
 
 # List of users to assign to pull requests
 assignees:
-  - pejmanhaghighatnia
   - helloblueai
 
 # List of users to request reviews from
 reviewers:
-  - pejmanhaghighatnia
   - helloblueai
 
 # Number of reviewers to request (0 = all reviewers)
@@ -52,12 +50,12 @@ add_reviewers_based_on_files: true
 # Map of file patterns to reviewers
 file_reviewers:
   "src/quantum/**":
-    - pejmanhaghighatnia
+    - helloblueai
   "src/ml/**":
-    - pejmanhaghighatnia
+    - helloblueai
   "tests/**":
-    - pejmanhaghighatnia
+    - helloblueai
   "docs/**":
     - helloblueai
   ".github/workflows/**":
-    - pejmanhaghighatnia
+    - helloblueai

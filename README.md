@@ -380,7 +380,7 @@ act -j security-scan
 act --dryrun
 
 # Run with specific actor (user)
-act --actor pejmantheory
+act --actor helloblueai
 
 # Run with specific event payload
 act push --eventpath .github/events/push.json
@@ -528,8 +528,8 @@ Create custom event files to test different scenarios:
     "full_name": "HelloblueAI/Bleu.js"
   },
   "pusher": {
-    "name": "pejmantheory",
-    "email": "pejman@helloblue.ai"
+    "name": "helloblueai",
+"email": "support@helloblue.ai"
   }
 }
 ```
@@ -1469,7 +1469,7 @@ These improvements demonstrate our commitment to professional code quality stand
 
 ## Author
 
-**Pejman Haghighatnia**
+**HelloblueAI Team**
 
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
@@ -1488,12 +1488,12 @@ These improvements demonstrate our commitment to professional code quality stand
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)](https://github.com/HelloblueAI/Bleu.js)
-[![codecov](https://codecov.io/gh/pejmantheory/Bleu.js/branch/main/graph/badge.svg)](https://codecov.io/gh/pejmantheory/Bleu.js)
+[![codecov](https://codecov.io/gh/HelloblueAI/Bleu.js/branch/main/graph/badge.svg)](https://codecov.io/gh/HelloblueAI/Bleu.js)
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)
 
-This software is maintained by Helloblue, Inc., a company dedicated to advanced innovations in AI solutions.
+This software is maintained by Helloblue Inc., a company dedicated to advanced innovations in AI solutions.
 
 ## License
 
@@ -1505,4 +1505,4 @@ For comprehensive support:
 - Email: support@helloblue.ai
 - Issues: [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
 - Stack Overflow: [bleujs](https://stackoverflow.com/questions/tagged/bleujs)
-# CI/CD Flow Test - Sat Jul 26 05:03:49 AM PDT 2025
+### CI/CD Flow Test - Sat Jul 26 05:03:49 AM PDT 2025

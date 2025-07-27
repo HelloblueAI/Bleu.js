@@ -40,7 +40,7 @@ Resources:
         #!/bin/bash
         yum update -y
         yum install -y git nodejs npm
-        git clone https://github.com/pejmanhaghighatnia/Bleu.js.git
+        git clone https://github.com/HelloblueAI/Bleu.js.git
         cd Bleu.js
         npm install
         npm start

@@ -57,7 +57,7 @@
 - Track award announcements
 
 ## Contact Information
-- Primary Contact: Pejman Haghighatnia
+- Primary Contact: HelloblueAI Team
 - Email: info@helloblue.ai
 - Phone: [Your Phone Number]
 - Company: Helloblue, Inc.
