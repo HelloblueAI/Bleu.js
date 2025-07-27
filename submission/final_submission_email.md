@@ -25,7 +25,7 @@ The submission package is organized for easy review and includes all necessary d
 Should you require any additional information or have questions about the submission, please don't hesitate to contact us at info@helloblue.ai.
 
 Best regards,
-Pejman Haghighatnia
+HelloblueAI Team
 Co-founder and Engineering at Helloblue, Inc.
 info@helloblue.ai
 

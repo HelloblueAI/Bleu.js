@@ -38,7 +38,7 @@ This package contains the complete submission materials for Bleu.js, a quantum-e
 
 For any questions regarding this submission, please contact:
 - Email: info@helloblue.ai
-- Contact Person: Pejman Haghighatnia, Co-founder and Engineering at Helloblue, Inc.
+- Contact Person: HelloblueAI Team, Engineering at Helloblue, Inc.
 - GitHub: https://github.com/HelloblueAI/Bleu.js
 
 ## Acknowledgments

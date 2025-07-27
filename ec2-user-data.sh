@@ -65,7 +65,7 @@ cd /var/www/Bleu.js
 if [ -d ".git" ]; then
     git pull origin main
 else
-    git clone https://github.com/pejmanS21/Bleu.js.git .
+    git clone https://github.com/HelloblueAI/Bleu.js.git .
 fi
 check_status "Repository clone"
 
