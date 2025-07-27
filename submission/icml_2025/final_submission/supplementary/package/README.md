@@ -1172,9 +1172,7 @@ The benchmarking system provides:
 
 
 
-### Author
 
-HelloblueAI Team
 
 # License
 
