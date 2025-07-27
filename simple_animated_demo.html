@@ -1,286 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bleu.js - Live Installation Demo</title>
+    <title>Bleu.js Installation Demo</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .demo-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .demo-title {
-            font-size: 2rem;
-            color: #667eea;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .demo-gif {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .demo-gif img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .steps {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-
-        .step {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .step h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
-            margin: 10px 0;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid #28a745;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .feature {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .feature h3 {
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: white;
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .demo-title {
-                font-size: 1.5rem;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-        }
+        body { font-family: 'Courier New', monospace; background: #1e1e1e; color: #ffffff; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .demo { background: #2d2d2d; padding: 20px; border-radius: 10px; border: 1px solid #444; }
+        .line { margin: 5px 0; }
+        .command { color: #4CAF50; }
+        .output { color: #ffffff; }
+        .success { color: #4CAF50; }
+        .info { color: #2196F3; }
+        .warning { color: #FF9800; }
+        .error { color: #f44336; }
+        h1 { text-align: center; color: #4CAF50; }
+        .controls { text-align: center; margin: 20px 0; }
+        button { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #45a049; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚀 Bleu.js</h1>
-            <p>Quantum-Enhanced AI Platform - Live Installation Demo</p>
+        <h1>🚀 Bleu.js Installation Demo</h1>
+        <div class="controls">
+            <button onclick="startDemo()">▶️ Start Demo</button>
+            <button onclick="resetDemo()">🔄 Reset</button>
+            <button onclick="toggleSpeed()">⚡ Toggle Speed</button>
         </div>
-
-        <div class="demo-section">
-            <h2 class="demo-title">🎬 Real Installation Demo</h2>
-            <p style="text-align: center; margin-bottom: 20px; font-size: 1.1rem;">
-                Watch the actual installation process step-by-step in real-time
-            </p>
-
-            <div class="demo-gif">
-                <img src="https://github.com/HelloblueAI/Bleu.js/raw/main/terminal-demo.gif"
-                     alt="Bleu.js Installation Demo"
-                     title="Click to view full demo">
-            </div>
-
-            <div class="steps">
-                <div class="step">
-                    <h3>✅ Step 1: Environment Setup</h3>
-                    <div class="code-block">
-$ pwd
-/home/pejmanhaghighatnia/Documents/Bleu.js
-
-$ ls -la | head -5
-total 3608
-drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .
-drwxr-xr-x  8 pejmanhaghihghatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..
-                    </div>
-                </div>
-
-                <div class="step">
-                    <h3>✅ Step 2: Python Environment</h3>
-                    <div class="code-block">
-$ python3 --version
-Python 3.10.12
-
-$ python3 -m venv bleujs-demo-env
-✅ Virtual environment created
-
-$ source bleujs-demo-env/bin/activate
-✅ Virtual environment activated
-                    </div>
-                </div>
-
-                <div class="step">
-                    <h3>✅ Step 3: Installation Process</h3>
-                    <div class="code-block">
-$ pip install -e .
-Installing build dependencies ... done
-Collecting numpy<2.0.0,>=1.24.3
-  Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 84.2 MB/s eta 0:00:00
-Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
-                    </div>
-                </div>
-
-                <div class="step">
-                    <h3>✅ Step 4: Verification</h3>
-                    <div class="code-block">
-$ pip list | grep -i bleu
-bleu                               1.1.8
-bleu-js                            1.1.8
-bleujs                             1.1.8
-                    </div>
-                    <div class="success">
-                        🎉 Installation completed successfully! Bleu.js is ready to use!
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="demo-section">
-            <h2 class="demo-title">✨ Key Features</h2>
-            <div class="features">
-                <div class="feature">
-                    <h3>🤖 Quantum-Enhanced AI</h3>
-                    <p>Advanced machine learning with quantum computing capabilities</p>
-                </div>
-                <div class="feature">
-                    <h3>🔬 Computer Vision</h3>
-                    <p>State-of-the-art image processing and analysis</p>
-                </div>
-                <div class="feature">
-                    <h3>⚡ High Performance</h3>
-                    <p>Optimized for speed and efficiency</p>
-                </div>
-                <div class="feature">
-                    <h3>🛡️ Enterprise Ready</h3>
-                    <p>Production-grade security and scalability</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="demo-section" style="text-align: center;">
-            <h2 class="demo-title">🚀 Get Started Now</h2>
-            <p style="margin-bottom: 30px; font-size: 1.1rem;">
-                Ready to experience the power of quantum-enhanced AI?
-            </p>
-            <a href="https://github.com/HelloblueAI/Bleu.js" class="cta-button" target="_blank">
-                📦 Install Bleu.js
-            </a>
-            <br><br>
-            <a href="https://github.com/HelloblueAI/Bleu.js/blob/main/README.md" class="cta-button" target="_blank">
-                📖 View Documentation
-            </a>
-        </div>
-
-        <div class="footer">
-            <p>© 2024 Bleu.js - Quantum-Enhanced AI Platform</p>
-            <p>Built with ❤️ by the HelloblueAI team</p>
+        <div class="demo" id="demo">
+            <div class="line">Click "Start Demo" to begin the installation process...</div>
         </div>
     </div>
+
+    <script>
+        const demoSteps = [
+            { text: "📍 Current directory:", type: "info" },
+            { text: "/home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "", type: "output" },
+            { text: "📁 Project structure:", type: "info" },
+            { text: "total 3608", type: "output" },
+            { text: "drwxrwxr-x 37 pejmanhaghighatnia pejmanhaghighatnia   12288 Jul 13 01:08 .", type: "output" },
+            { text: "drwxr-xr-x  8 pejmanhaghighatnia pejmanhaghighatnia    4096 Jul 12 05:55 ..", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia   26608 Jun 10 06:42 aggregated_responses.json", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "🐍 Python version:", type: "info" },
+            { text: "Python 3.10.12", type: "output" },
+            { text: "", type: "output" },
+            { text: "🔧 Creating virtual environment...", type: "info" },
+            { text: "✅ Virtual environment created", type: "success" },
+            { text: "", type: "output" },
+            { text: "🔌 Activating virtual environment...", type: "info" },
+            { text: "✅ Virtual environment activated", type: "success" },
+            { text: "", type: "output" },
+            { text: "📦 Pip version:", type: "info" },
+            { text: "pip 22.0.2 from /home/pejmanhaghighatnia/Documents/Bleu.js/bleujs-demo-env/lib/python3.10/site-packages/pip (python 3.10)", type: "output" },
+            { text: "", type: "output" },
+            { text: "📥 Installing Bleu.js...", type: "info" },
+            { text: "Obtaining file:///home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "  Installing build dependencies ... done", type: "output" },
+            { text: "  Checking if build backend supports build_editable ... done", type: "output" },
+            { text: "  Getting requirements to build editable ... done", type: "output" },
+            { text: "  Preparing editable metadata (pyproject.toml) ... done", type: "output" },
+            { text: "Collecting numpy<2.0.0,>=1.24.3", type: "output" },
+            { text: "  Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)", type: "output" },
+            { text: "     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 84.2 MB/s eta 0:00:00", type: "output" },
+            { text: "Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1", type: "success" },
+            { text: "", type: "output" },
+            { text: "🔍 Verifying installation:", type: "info" },
+            { text: "bleu                               1.1.3", type: "output" },
+            { text: "bleu-js                            1.1.8                   /home/pejmanhaghighatnia/Documents/Bleu.js", type: "output" },
+            { text: "bleujs                             1.1.3", type: "output" },
+            { text: "", type: "output" },
+            { text: "📁 Project structure:", type: "info" },
+            { text: "total 152", type: "output" },
+            { text: "drwxrwxr-x 27 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 11:59 .", type: "output" },
+            { text: "drwxrwxr-x  3 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 05:39 api", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 12 03:20 applications", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "📚 Available examples:", type: "info" },
+            { text: "total 60", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia  4096 Jul 13 00:47 .", type: "output" },
+            { text: "drwxrwxr-x  2 pejmanhaghighatnia pejmanhaghighatnia 12288 Jul 13 01:08 ..", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia 16427 Jul 13 00:47 ci_cd_demo.py", type: "output" },
+            { text: "-rw-rw-r--  1 pejmanhaghighatnia pejmanhaghighatnia  2255 Jul 12 05:28 mps_acceleration_demo.py", type: "output" },
+            { text: "...", type: "output" },
+            { text: "", type: "output" },
+            { text: "🎉 Installation completed successfully!", type: "success" },
+            { text: "✨ Bleu.js is ready to use!", type: "success" }
+        ];
+
+        let currentStep = 0;
+        let isPlaying = false;
+        let speed = 100; // milliseconds
+
+        function addLine(text, type) {
+            const demo = document.getElementById('demo');
+            const line = document.createElement('div');
+            line.className = `line ${type}`;
+            line.textContent = text;
+            demo.appendChild(line);
+            demo.scrollTop = demo.scrollHeight;
+        }
+
+        function startDemo() {
+            if (isPlaying) return;
+            isPlaying = true;
+            currentStep = 0;
+            document.getElementById('demo').innerHTML = '';
+
+            function playStep() {
+                if (currentStep < demoSteps.length && isPlaying) {
+                    const step = demoSteps[currentStep];
+                    addLine(step.text, step.type);
+                    currentStep++;
+                    setTimeout(playStep, speed);
+                } else {
+                    isPlaying = false;
+                }
+            }
+
+            playStep();
+        }
+
+        function resetDemo() {
+            isPlaying = false;
+            currentStep = 0;
+            document.getElementById('demo').innerHTML = '<div class="line">Click "Start Demo" to begin the installation process...</div>';
+        }
+
+        function toggleSpeed() {
+            speed = speed === 100 ? 50 : 100;
+        }
+    </script>
 </body>
 </html>
