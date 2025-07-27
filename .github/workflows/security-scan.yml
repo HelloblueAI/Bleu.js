@@ -150,7 +150,7 @@ jobs:
     name: 📋 Compliance & Policy Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ env.SCAN_LEVEL == 'full' || env.SCAN_LEVEL == 'compliance' }}
+    if: env.SCAN_LEVEL == 'full' || env.SCAN_LEVEL == 'compliance'
 
     steps:
       - name: Checkout code
