@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 
 from src.ml.enhanced_xgboost import EnhancedXGBoost, PerformanceConfig
-
 from src.ml.models.train import ModelTrainer
 from src.ml.optimize import HyperparameterOptimizer
 from src.ml.pipeline import MLPipeline

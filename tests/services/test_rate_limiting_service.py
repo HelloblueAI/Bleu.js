@@ -1,7 +1,8 @@
 """Test rate limiting service module."""
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 from src.services.rate_limiting_service import RateLimitingService
 

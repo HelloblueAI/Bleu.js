@@ -1,9 +1,5 @@
 """Test quantum circuit module."""
 
-import pytest
-import numpy as np
-from unittest.mock import Mock, patch
-
 from src.quantum_py.core.quantum_circuit import QuantumCircuit
 
 
