@@ -1,7 +1,8 @@
 """Test services module."""
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 from src.services.api_service import APIService
 from src.services.auth_service import AuthService
@@ -22,20 +23,20 @@ class TestAPIService:
     def test_api_service_initialization(self):
         """Test API service initialization"""
         # Mock the database dependency
-        with patch('src.services.api_service.get_db') as mock_get_db:
+        with patch("src.services.api_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = APIService(db=mock_db)
             assert service is not None
 
     @pytest.mark.asyncio
     async def test_make_request(self):
         """Test making API request"""
-        with patch('src.services.api_service.get_db') as mock_get_db:
+        with patch("src.services.api_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = APIService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
@@ -43,10 +44,10 @@ class TestAPIService:
     @pytest.mark.asyncio
     async def test_handle_rate_limiting(self):
         """Test rate limiting handling"""
-        with patch('src.services.api_service.get_db') as mock_get_db:
+        with patch("src.services.api_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = APIService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
@@ -58,49 +59,49 @@ class TestAuthService:
     def test_auth_service_initialization(self):
         """Test auth service initialization"""
         # Mock the database dependency
-        with patch('src.services.auth_service.get_db') as mock_get_db:
+        with patch("src.services.auth_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = AuthService(db=mock_db)
             assert service is not None
 
     def test_create_access_token(self):
         """Test creating access token"""
-        with patch('src.services.auth_service.get_db') as mock_get_db:
+        with patch("src.services.auth_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = AuthService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_verify_token(self):
         """Test token verification"""
-        with patch('src.services.auth_service.get_db') as mock_get_db:
+        with patch("src.services.auth_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = AuthService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_hash_password(self):
         """Test password hashing"""
-        with patch('src.services.auth_service.get_db') as mock_get_db:
+        with patch("src.services.auth_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = AuthService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_verify_password(self):
         """Test password verification"""
-        with patch('src.services.auth_service.get_db') as mock_get_db:
+        with patch("src.services.auth_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = AuthService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
@@ -298,39 +299,39 @@ class TestSubscriptionService:
     def test_subscription_service_initialization(self):
         """Test subscription service initialization"""
         # Mock the database dependency
-        with patch('src.services.subscription_service.get_db') as mock_get_db:
+        with patch("src.services.subscription_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = SubscriptionService(db=mock_db)
             assert service is not None
 
     def test_create_subscription(self):
         """Test creating subscription"""
-        with patch('src.services.subscription_service.get_db') as mock_get_db:
+        with patch("src.services.subscription_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = SubscriptionService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_cancel_subscription(self):
         """Test canceling subscription"""
-        with patch('src.services.subscription_service.get_db') as mock_get_db:
+        with patch("src.services.subscription_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = SubscriptionService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_get_subscription_status(self):
         """Test getting subscription status"""
-        with patch('src.services.subscription_service.get_db') as mock_get_db:
+        with patch("src.services.subscription_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = SubscriptionService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
@@ -342,39 +343,39 @@ class TestTokenManager:
     def test_token_manager_initialization(self):
         """Test token manager initialization"""
         # Mock the database dependency
-        with patch('src.services.token_manager.get_db') as mock_get_db:
+        with patch("src.services.token_manager.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = TokenManager(db=mock_db)
             assert service is not None
 
     def test_generate_token(self):
         """Test generating token"""
-        with patch('src.services.token_manager.get_db') as mock_get_db:
+        with patch("src.services.token_manager.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = TokenManager(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_validate_token(self):
         """Test validating token"""
-        with patch('src.services.token_manager.get_db') as mock_get_db:
+        with patch("src.services.token_manager.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = TokenManager(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_revoke_token(self):
         """Test revoking token"""
-        with patch('src.services.token_manager.get_db') as mock_get_db:
+        with patch("src.services.token_manager.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = TokenManager(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
@@ -386,49 +387,49 @@ class TestUserService:
     def test_user_service_initialization(self):
         """Test user service initialization"""
         # Mock the database dependency
-        with patch('src.services.user_service.get_db') as mock_get_db:
+        with patch("src.services.user_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = UserService(db=mock_db)
             assert service is not None
 
     def test_create_user(self):
         """Test creating user"""
-        with patch('src.services.user_service.get_db') as mock_get_db:
+        with patch("src.services.user_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = UserService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_get_user_by_email(self):
         """Test getting user by email"""
-        with patch('src.services.user_service.get_db') as mock_get_db:
+        with patch("src.services.user_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = UserService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_update_user(self):
         """Test updating user"""
-        with patch('src.services.user_service.get_db') as mock_get_db:
+        with patch("src.services.user_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = UserService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
 
     def test_delete_user(self):
         """Test deleting user"""
-        with patch('src.services.user_service.get_db') as mock_get_db:
+        with patch("src.services.user_service.get_db") as mock_get_db:
             mock_db = Mock()
             mock_get_db.return_value = mock_db
-            
+
             service = UserService(db=mock_db)
             # Test that the service can be instantiated
             assert service is not None
