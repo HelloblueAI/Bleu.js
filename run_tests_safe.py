@@ -23,11 +23,12 @@ def run_safe_tests():
         "tests/unit/aws/test_ec2.py",
         "tests/quantum/test_contest_strategy.py",
         "tests/quantum/test_quantum_circuit.py",
+        "tests/middleware/rate_limit_test.py",
     ]
     
     # Build pytest command
     cmd = [
-        "python", "-m", "pytest",
+        "python3", "-m", "pytest",
         "--strict-markers",
         "--disable-warnings", 
         "--tb=short",
@@ -52,7 +53,6 @@ def run_safe_tests():
         "tests/test_config.py", 
         "tests/benchmarks/",
         "tests/config/",
-        "tests/middleware/",
         "tests/ml/",
         "tests/performance/",
         "tests/services/test_rate_limiting_service.py",
