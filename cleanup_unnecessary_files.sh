@@ -1,76 +1,81 @@
 #!/bin/bash
 
-# Bleu.js Unnecessary Files Cleanup Script
-# This script removes all unnecessary files and directories
+echo "🧹 Cleaning up unnecessary files from Bleu.js project..."
 
-echo "🧹 Starting Bleu.js cleanup..."
+# Remove all mypy log files (they're just debug logs)
+echo "📝 Removing mypy log files..."
+rm -f *.log
 
-# Remove version files (pip output)
-echo "📦 Removing pip version files..."
-rm -f =0.12.20 =0.18.3 =0.20.0 =0.21.2 =0.27.0 =0.40.0
-rm -f =1.2.2 =2.10.1 =3.1.3 =3.2.1 =3.4.0 =3.5.1 =3.7
-rm -f =3.19.1 =4.9.1 =4.43.0 =5.0.9 =6.5.0 =24.2.0
-rm -f =42.0.5 =44.0.1 =2023.7.22
-
-# Remove build artifacts
-echo "🏗️ Removing build artifacts..."
-rm -rf dist/
-rm -rf build/
-rm -f build.log
-
-# Remove log files
-echo "📝 Removing log files..."
-rm -f sonar_output.log
-
-# Remove temporary test directory
-echo "🧪 Removing temporary test files..."
-rm -rf temp_test_dir/
-rm -f test_adaptive_learning.py
-rm -f adaptive_learning.py
-
-# Remove cache and generated files
-echo "🗂️ Removing cache files..."
+# Remove Python cache directories
+echo "🐍 Removing Python cache directories..."
 rm -rf __pycache__/
-rm -rf .scannerwork/
-rm -f coverage.xml
-rm -f scaler.pkl
+rm -rf .pytest_cache/
+find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
+find . -type f -name "*.pyc" -delete 2>/dev/null
+find . -type f -name "*.pyo" -delete 2>/dev/null
 
-# Remove virtual environments
-echo "🐍 Removing virtual environments..."
-rm -rf .venv/
-rm -rf venv/
-rm -f venv_build
-
-# Remove empty files
-echo "📄 Removing empty files..."
-rm -f pip pytest sdist bdist_wheel check install get_requires_for_build_sdist .venv_test
-
-# Remove development files
-echo "🔧 Removing development files..."
-rm -f fix_sonarcloud_coverage.py
-rm -f test_installation.py
-rm -f test_imports.py
-
-# Remove any remaining .pyc files
-echo "🐍 Removing Python cache files..."
-find . -name "*.pyc" -delete 2>/dev/null || true
-find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-
-# Remove any remaining temporary files
+# Remove temporary files
 echo "🗑️ Removing temporary files..."
-find . -name "*.tmp" -delete 2>/dev/null || true
-find . -name "*.temp" -delete 2>/dev/null || true
+rm -f *.tmp
+rm -f *.temp
+rm -f .DS_Store
+rm -f Thumbs.db
+
+# Remove coverage reports (they can be regenerated)
+echo "📊 Removing coverage reports..."
+rm -rf htmlcov/
+rm -f .coverage
+rm -f coverage.xml
+
+# Remove MLflow artifacts (they can be regenerated)
+echo "🔬 Removing MLflow artifacts..."
+rm -rf mlruns/
+
+# Remove any large test files that might have been created
+echo "🧪 Cleaning test artifacts..."
+find . -name "test_*.py" -size +100k -delete 2>/dev/null
+
+# Remove any backup files
+echo "💾 Removing backup files..."
+find . -name "*.bak" -delete 2>/dev/null
+find . -name "*.backup" -delete 2>/dev/null
+find . -name "*~" -delete 2>/dev/null
+
+# Remove any IDE-specific files
+echo "🛠️ Removing IDE files..."
+rm -rf .vscode/
+rm -rf .idea/
+rm -f .project
+rm -f .classpath
+
+# Remove any node_modules if they exist (this is a Python project)
+echo "📦 Removing Node.js artifacts..."
+rm -rf node_modules/
+rm -f package-lock.json
+rm -f yarn.lock
+
+# Remove any virtual environment artifacts
+echo "🐍 Removing virtual environment artifacts..."
+rm -rf venv/
+rm -rf .venv/
+rm -rf env/
+rm -rf .env/
+
+# Remove any large data files that shouldn't be in repo
+echo "📁 Checking for large data files..."
+find . -type f -size +10M -not -path "./.git/*" -not -path "./assets/*" -not -name "*.gif" -not -name "*.png" -not -name "*.jpg" -not -name "*.jpeg" -not -name "*.mp4" -not -name "*.mov" -not -name "*.avi" -exec echo "Large file found: {}" \;
 
 echo "✅ Cleanup completed!"
+echo "📊 Summary of what was removed:"
+echo "   • All mypy log files (*.log)"
+echo "   • Python cache directories (__pycache__, .pytest_cache)"
+echo "   • Compiled Python files (*.pyc, *.pyo)"
+echo "   • Temporary files (*.tmp, *.temp)"
+echo "   • Coverage reports (htmlcov/, .coverage, coverage.xml)"
+echo "   • MLflow artifacts (mlruns/)"
+echo "   • IDE files (.vscode/, .idea/)"
+echo "   • Node.js artifacts (node_modules/, package-lock.json)"
+echo "   • Virtual environment artifacts (venv/, .venv/)"
+
 echo ""
-echo "📊 Summary of removed items:"
-echo "  - 22 version files (pip output)"
-echo "  - Build artifacts (dist/, build/)"
-echo "  - Log files (sonar_output.log, build.log)"
-echo "  - Temporary test directory and files"
-echo "  - Cache files (__pycache__, .scannerwork)"
-echo "  - Virtual environments (.venv, venv)"
-echo "  - Empty files (pip, pytest, etc.)"
-echo "  - Development scripts"
-echo ""
-echo "🚀 Your Bleu.js project is now clean and ready for production!"
+echo "🚀 Your Bleu.js project is now clean and optimized!"
