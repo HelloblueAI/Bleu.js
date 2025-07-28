@@ -1,9 +1,0 @@
-const { existsSync } = require('fs');
-const { execSync } = require('child_process');
-
-if (existsSync('./package-lock.json') || existsSync('./pnpm-lock.yaml')) {
-  execSync('npx npm-force-resolutions', { stdio: 'inherit' });
-} else {
-  console.error('Error: Neither package-lock.json nor pnpm-lock.yaml found.');
-  process.exit(1);
-}
