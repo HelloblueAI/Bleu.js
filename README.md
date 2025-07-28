@@ -1485,7 +1485,7 @@ These improvements demonstrate our commitment to professional code quality stand
 [![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)](https://github.com/HelloblueAI/Bleu.js)
+[![SonarQube Grade](https://img.shields.io/badge/SonarQube-Quality%20Gate%20Failed-orange)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
 [![Coverage](https://img.shields.io/badge/Coverage-27%25-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
 
