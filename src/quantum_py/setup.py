@@ -4,8 +4,8 @@ setup(
     name="bleu-quantum",
     version="1.0.0",
     description="Advanced quantum computing capabilities for Bleu.js",
-    author="Bleu.js Team",
-    author_email="team@bleu.js",
+    author="Bleujs Team",
+    author_email="support@helloblue.ai",
     packages=find_packages(),
     install_requires=[
         "numpy>=1.21.0",

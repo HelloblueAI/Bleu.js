@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 name = "bleu-js"
 version = "1.1.8"
 description = "Advanced AI and Quantum Computing Framework"
-authors = ["Bleu.js Team <team@bleu.js>"]
+authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
 license = "MIT"
 packages = [{include = "bleujs", from = "src"}]
