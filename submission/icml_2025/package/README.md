@@ -246,11 +246,14 @@ graph TD
 ### Installation
 
 ```bash
+# Using pip
+pip install bleu-js
+
 # Using npm
-npm install bleujs@1.1.8
+npm install bleujs@1.1.9
 
 # Using pnpm
-pnpm add bleujs@1.1.8
+pnpm add bleujs@1.1.9
 
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git

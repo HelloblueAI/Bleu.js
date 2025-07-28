@@ -55,16 +55,16 @@ $ pip install -e .
 Collecting numpy<2.0.0,>=1.24.3
   Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 84.2 MB/s eta 0:00:00
-Successfully installed bleu-js-1.1.8 fastapi-0.116.1 starlette-0.47.1
+Successfully installed bleu-js-1.1.9 fastapi-0.116.1 starlette-0.47.1
 ```
 
 **Step 4: Verification**
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.8
-bleu-js                            1.1.8
-bleujs                             1.1.8
+bleu                               1.1.9
+bleu-js                            1.1.9
+bleujs                             1.1.9
 ```
 
 **Step 5: Explore Examples**
@@ -211,11 +211,14 @@ pip install "bleu-js[ml]" --constraint requirements-basic.txt
 ### Installation
 
 ```bash
+# Using pip
+pip install bleu-js
+
 # Using npm
-npm install bleujs@1.1.8
+npm install bleujs@1.1.9
 
 # Using pnpm
-pnpm add bleujs@1.1.8
+pnpm add bleujs@1.1.9
 
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -1472,7 +1475,7 @@ These improvements demonstrate our commitment to professional code quality stand
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![v1.1.8](https://img.shields.io/badge/v1.1.8-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![v1.1.9](https://img.shields.io/badge/v1.1.9-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
