@@ -1486,6 +1486,9 @@ These improvements demonstrate our commitment to professional code quality stand
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![SonarQube Grade](https://img.shields.io/badge/SonarQube-Coverage%2041%25-brightgreen)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
+[![Quantum Computing](https://img.shields.io/badge/Quantum-Qiskit%20%7C%20Cirq%20%7C%20PennyLane-blue?style=flat&logo=quantum)](https://github.com/HelloblueAI/Bleu.js)
+[![Quantum Enhanced](https://img.shields.io/badge/Quantum%20Enhanced-AI%20Platform-purple?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![Quantum ML](https://img.shields.io/badge/Quantum%20ML-XGBoost%20Enhanced-green?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
 
 This software is maintained by Helloblue Inc., a company dedicated to advanced innovations in AI solutions.
