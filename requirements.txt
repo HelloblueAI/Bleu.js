@@ -7,6 +7,8 @@ click>=8.2.1
 
 # Security and monitoring
 cryptography>=45.0.6
+# Use alternative to ray for distributed computing
+dask[complete]>=2024.1.0
 # Core dependencies
 fastapi>=0.104.1
 flake8>=7.3.0
@@ -23,6 +25,8 @@ pennylane>=0.42.1
 pip-audit>=2.9.0
 pre-commit>=3.5.0
 pydantic>=2.11.7
+# Use cryptography-based JWT instead of python-jose
+PyJWT[crypto]>=2.8.0
 
 # Development and testing
 pytest>=7.4.0
@@ -30,12 +34,10 @@ pytest-asyncio>=1.1.0
 pytest-cov>=6.2.1
 python-dateutil>=2.9.0.post0
 python-dotenv>=1.1.1
-python-jose[cryptography]>=3.5.0
 python-multipart>=0.0.6
 
 # Quantum computing
 qiskit>=2.1.1
-ray>=2.48.0
 redis>=6.3.0
 
 # Additional utilities
