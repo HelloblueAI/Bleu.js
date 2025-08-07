@@ -52,7 +52,8 @@ scikit-learn>=1.7.1
 
 # Database security
 sqlalchemy>=2.0.42
-starlette>=0.47.2
+# Pin to secure version to fix CVE-2025-54121
+starlette==0.47.2
 tensorflow>=2.19.0
 torch>=2.8.0
 transformers>=4.55.0
