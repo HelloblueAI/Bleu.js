@@ -167,7 +167,10 @@ class QuantumGPUManager:
                 }
 
     def allocate(
-        self, size: int, device: Optional[int] = None, is_quantum: bool = False
+        self,
+        size: int,
+        device: Optional[int] = None,
+        is_quantum: bool = False,
     ) -> Optional[int]:
         """Allocate memory block with enhanced error handling and optimization."""
         if size <= 0:
@@ -413,7 +416,10 @@ class QuantumGPUManager:
 
     @contextmanager
     def memory_context(
-        self, size: int, device: Optional[int] = None, is_quantum: bool = False
+        self,
+        size: int,
+        device: Optional[int] = None,
+        is_quantum: bool = False,
     ):
         """Context manager for automatic memory management."""
         handle = None

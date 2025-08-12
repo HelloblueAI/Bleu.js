@@ -247,7 +247,10 @@ class QuantumFeatureProcessor(BaseProcessor):
     def execute(self, *args, **kwargs) -> object:
         """Execute quantum feature processing operation."""
         # Default implementation - can be overridden by subclasses
-        return {"status": "quantum_features_processed", "service": "quantum_processor"}
+        return {
+            "status": "quantum_features_processed",
+            "service": "quantum_processor",
+        }
 
 
 class SecurityManager(BaseService):
@@ -311,7 +314,10 @@ class SecurityManager(BaseService):
             Any: Result of the security management operation
         """
         # Default implementation - can be overridden by subclasses
-        return {"status": "security_processed", "service": "security_manager"}
+        return {
+            "status": "security_processed",
+            "service": "security_manager",
+        }
 
 
 class PerformanceOptimizer:
@@ -451,7 +457,7 @@ class EnhancedXGBoost:
                 subsample=kwargs.get("subsample", 0.8),
                 colsample_bytree=kwargs.get("colsample_bytree", 0.8),
                 objective=kwargs.get("objective", "binary:logistic"),
-                tree_method="hist" if self.performance_config.use_gpu else "auto",
+                tree_method=("hist" if self.performance_config.use_gpu else "auto"),
                 gpu_id=0 if self.performance_config.use_gpu else None,
                 **kwargs,
             )
@@ -504,7 +510,10 @@ class EnhancedXGBoost:
                 self.security_manager.log_access(
                     "prediction",
                     "system",
-                    {"input_shape": features.shape, "output_shape": predictions.shape},
+                    {
+                        "input_shape": features.shape,
+                        "output_shape": predictions.shape,
+                    },
                 )
 
             return predictions
