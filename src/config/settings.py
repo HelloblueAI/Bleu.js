@@ -1,6 +1,7 @@
 """Application settings."""
 
 import os
+from typing import List
 
 from pydantic import AnyUrl, EmailStr, Field, RedisDsn, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -19,70 +20,113 @@ class SQLiteURL(AnyUrl):
 class Settings(BaseSettings):
     """Application settings."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
+    )
+
     # Application settings
     APP_NAME: str = "Bleu.js"
     APP_VERSION: str = "0.1.0"
-    DEBUG: bool = False
-    TESTING: bool = False
-    ENV_NAME: str = "bleujs-prod"
-    LOG_LEVEL: str = "INFO"
-    SECRET_KEY: str = Field(default_factory=lambda: os.urandom(32).hex())
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    PORT: int = 8000
-    HOST: str = "localhost"
-    APP_ENV: str = "development"
-    APP_DEBUG: bool = True
-    APP_URL: str = (
-        "https://localhost:3000"
-        if os.getenv("ENVIRONMENT") == "production"
-        else "http://localhost:3000"
+    DEBUG: bool = Field(default=False, env="DEBUG")
+    TESTING: bool = Field(default=False, env="TESTING")
+    ENV_NAME: str = Field(default="development", env="ENV_NAME")
+    LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
+
+    # Security - Critical: Use environment variables only
+    SECRET_KEY: str = Field(..., env="SECRET_KEY")  # Must be provided
+    ALGORITHM: str = Field(default="HS256", env="ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES"
     )
-    APP_PORT: int = 3000
+
+    # Server settings
+    PORT: int = Field(default=8000, env="PORT")
+    HOST: str = Field(default="localhost", env="HOST")
+    APP_ENV: str = Field(default="development", env="APP_ENV")
+    APP_DEBUG: bool = Field(default=False, env="APP_DEBUG")
+    APP_URL: str = Field(default="http://localhost:3000", env="APP_URL")
+    APP_PORT: int = Field(default=3000, env="APP_PORT")
     VERSION: str = "0.1.0"
     API_VERSION: str = "v1"
     API_PREFIX: str = "/api"
 
+    # Security: Allowed hosts for TrustedHostMiddleware
+    ALLOWED_HOSTS: List[str] = Field(
+        default=["localhost", "127.0.0.1", "::1"], env="ALLOWED_HOSTS"
+    )
+
     # Database settings
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
-    DB_NAME: str = "bleujs_dev"
-    DB_USER: str = "bleujs_dev"
-    DB_PASSWORD: SecretStr = Field(default="bleujs_dev_password")
-    DATABASE_URL: str = Field(default="sqlite:///./test.db")
-    DATABASE_POOL_SIZE: int = 5
-    DATABASE_MAX_OVERFLOW: int = 10
+    DB_HOST: str = Field(default="localhost", env="DB_HOST")
+    DB_PORT: int = Field(default=5432, env="DB_PORT")
+    DB_NAME: str = Field(default="bleujs_dev", env="DB_NAME")
+    DB_USER: str = Field(default="bleujs_dev", env="DB_USER")
+    DB_PASSWORD: SecretStr = Field(..., env="DB_PASSWORD")  # Must be provided
+    DATABASE_URL: str = Field(default="sqlite:///./test.db", env="DATABASE_URL")
+    DATABASE_POOL_SIZE: int = Field(default=5, env="DATABASE_POOL_SIZE")
+    DATABASE_MAX_OVERFLOW: int = Field(default=10, env="DATABASE_MAX_OVERFLOW")
 
     # Test Database settings
-    TEST_DB_HOST: str = "localhost"
-    TEST_DB_PORT: int = 5432
-    TEST_DB_NAME: str = "test_db"
-    TEST_DB_USER: str = "test_user"
-    TEST_DB_PASSWORD: str = "test_db_password_123"
+    TEST_DB_HOST: str = Field(default="localhost", env="TEST_DB_HOST")
+    TEST_DB_PORT: int = Field(default=5432, env="TEST_DB_PORT")
+    TEST_DB_NAME: str = Field(default="test_db", env="TEST_DB_NAME")
+    TEST_DB_USER: str = Field(default="test_user", env="TEST_DB_USER")
+    TEST_DB_PASSWORD: str = Field(
+        default="test_db_password_123", env="TEST_DB_PASSWORD"
+    )
 
     # Redis settings
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
-    REDIS_DB: int = 0
-    REDIS_PASSWORD: SecretStr | None = None
-    REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0")
+    REDIS_HOST: str = Field(default="localhost", env="REDIS_HOST")
+    REDIS_PORT: int = Field(default=6379, env="REDIS_PORT")
+    REDIS_DB: int = Field(default=0, env="REDIS_DB")
+    REDIS_PASSWORD: SecretStr | None = Field(default=None, env="REDIS_PASSWORD")
+    REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0", env="REDIS_URL")
     REDIS_CONFIG: RedisConfig = RedisConfig()
 
     # Security settings
-    CORS_ORIGINS: str = (
-        "https://localhost:3000"
-        if os.getenv("ENVIRONMENT") == "production"
-        else "http://localhost:3000"
+    CORS_ORIGINS: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000", env="CORS_ORIGINS"
     )
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
-    JWT_SECRET_KEY: str = Field(default="test_jwt_secret_key")
-    JWT_ALGORITHM: str = "HS256"
-    JWT_SECRET: str = Field(default="dev_jwt_secret_key_123")
-    JWT_EXPIRES_IN: str = "24h"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    ENCRYPTION_KEY: str = Field(default="dev_encryption_key_123")
-    ENABLE_SECURITY: bool = True
+
+    # JWT settings - All must be provided via environment
+    JWT_SECRET_KEY: str = Field(..., env="JWT_SECRET_KEY")
+    JWT_ALGORITHM: str = Field(default="HS256", env="JWT_ALGORITHM")
+    JWT_SECRET: str = Field(..., env="JWT_SECRET")
+    JWT_EXPIRES_IN: str = Field(default="24h", env="JWT_EXPIRES_IN")
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=30, env="JWT_ACCESS_TOKEN_EXPIRE_MINUTES"
+    )
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = Field(
+        default=7, env="JWT_REFRESH_TOKEN_EXPIRE_DAYS"
+    )
+
+    # Encryption settings
+    ENCRYPTION_KEY: str = Field(..., env="ENCRYPTION_KEY")
+    ENABLE_SECURITY: bool = Field(default=True, env="ENABLE_SECURITY")
+
+    @field_validator("SECRET_KEY", "JWT_SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY")
+    @classmethod
+    def validate_secrets(cls, v: str) -> str:
+        """Validate that secrets are properly set and secure."""
+        if not v or v in [
+            "test_jwt_secret_key",
+            "dev_jwt_secret_key_123",
+            "dev_encryption_key_123",
+        ]:
+            raise ValueError(
+                "Security keys must be properly set via environment variables"
+            )
+        if len(v) < 32:
+            raise ValueError("Security keys must be at least 32 characters long")
+        return v
+
+    @field_validator("ALLOWED_HOSTS", mode="before")
+    @classmethod
+    def parse_allowed_hosts(cls, v):
+        """Parse ALLOWED_HOSTS from string or list."""
+        if isinstance(v, str):
+            return [host.strip() for host in v.split(",")]
+        return v
 
     @property
     def cors_origins_list(self) -> list[str]:
@@ -91,13 +135,13 @@ class Settings(BaseSettings):
 
     # Rate limiting settings
     RATE_LIMITING: RateLimitingConfig = RateLimitingConfig()
-    RATE_LIMIT_WINDOW: int = 15
-    RATE_LIMIT_MAX_REQUESTS: int = 100
-    RATE_LIMIT_CORE: int = 100
-    RATE_LIMIT_ENTERPRISE: int = 1000
-    RATE_LIMIT_PERIOD: int = 3600
-    TEST_RATE_LIMIT: int = 100
-    TEST_RATE_LIMIT_WINDOW: int = 3600
+    RATE_LIMIT_WINDOW: int = Field(default=15, env="RATE_LIMIT_WINDOW")
+    RATE_LIMIT_MAX_REQUESTS: int = Field(default=100, env="RATE_LIMIT_MAX_REQUESTS")
+    RATE_LIMIT_CORE: int = Field(default=100, env="RATE_LIMIT_CORE")
+    RATE_LIMIT_ENTERPRISE: int = Field(default=1000, env="RATE_LIMIT_ENTERPRISE")
+    RATE_LIMIT_PERIOD: int = Field(default=3600, env="RATE_LIMIT_PERIOD")
+    TEST_RATE_LIMIT: int = Field(default=100, env="TEST_RATE_LIMIT")
+    TEST_RATE_LIMIT_WINDOW: int = Field(default=3600, env="TEST_RATE_LIMIT_WINDOW")
 
     # Email settings
     SMTP_HOST: str = "localhost"
@@ -137,7 +181,6 @@ class Settings(BaseSettings):
     # API settings
     API_KEY: SecretStr = Field(default="dev_api_key")
     API_SECRET: SecretStr = Field(default="dev_api_secret")
-    ALLOWED_HOSTS: str = "bleujs.com,www.bleujs.com"
     TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
     ENTERPRISE_TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
     TEST_API_HOST: str = "localhost"
@@ -186,13 +229,6 @@ class Settings(BaseSettings):
 
     # Node environment
     NODE_ENV: str = "development"
-
-    model_config = SettingsConfigDict(
-        env_file=".env.test" if os.getenv("TESTING") == "true" else ".env",
-        env_file_encoding="utf-8",
-        case_sensitive=True,
-        arbitrary_types_allowed=True,
-    )
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
