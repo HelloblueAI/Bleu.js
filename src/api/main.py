@@ -22,7 +22,7 @@ settings = get_settings()
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.1.8",
+    version="1.2.0",
 )
 
 # Initialize services
@@ -249,7 +249,7 @@ def _get_environment_info(start_time):
     return {
         "python_version": os.getenv("PYTHON_VERSION", "unknown"),
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "app_version": "1.1.8",
+        "app_version": "1.2.0",
         "uptime_seconds": int(time.time() - start_time),
     }
 
