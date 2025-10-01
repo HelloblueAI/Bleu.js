@@ -35,9 +35,9 @@ uvicorn = "0.27.1"
 pydantic = {extras = ["email"], version = "^2.7.0"}
 
 # Security - Fixed versions
-urllib3 = "^2.5.0"
+urllib3 = "^2.5.1"
 requests = "^2.32.4"
-cryptography = "^44.0.3"
+cryptography = "^45.0.7"
 setuptools = "^78.1.1"
 
 # Database - Pinned versions
@@ -51,7 +51,7 @@ boto3 = "^1.24.0"
 # Utilities
 python-dotenv = "^0.21.0"
 httpx = "^0.27.0"
-aiohttp = "^3.12.14"
+aiohttp = "^3.12.16"
 aiofiles = "^24.1.0"
 h11 = "0.16.0"
 sparse = "^0.17.0"
