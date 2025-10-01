@@ -1,4 +1,4 @@
-aiohttp>=3.12.16
+aiohttp>=3.12.14
 alembic>=1.13.1
 bandit>=1.8.6
 black>=23.0.0
@@ -6,11 +6,11 @@ cirq>=1.2.0
 click>=8.2.1
 
 # Security and monitoring
-cryptography>=45.0.7
+cryptography>=43.0.0
 # Use alternative to ray for distributed computing
 dask[complete]>=2024.1.0
 # Core dependencies
-fastapi>=0.115.6
+fastapi>=0.115.0
 flake8>=7.3.0
 isort>=5.12.0
 mlflow>=3.2.0
@@ -24,7 +24,7 @@ passlib[bcrypt]>=1.7.4
 pennylane>=0.42.1
 pip-audit>=2.9.0
 pre-commit>=3.5.0
-pydantic>=2.11.8
+pydantic>=2.11.0
 # Use cryptography-based JWT instead of python-jose
 PyJWT[crypto]>=2.8.0
 
@@ -51,7 +51,7 @@ starlette==0.47.2
 tensorflow>=2.19.0
 torch>=2.8.0
 transformers>=4.55.0
-urllib3>=2.5.1
+urllib3>=2.2.3
 uvicorn[standard]>=0.35.0
 wandb>=0.16.0
 xgboost>=3.0.3
