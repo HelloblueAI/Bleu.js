@@ -7,19 +7,13 @@ import logging
 from datetime import datetime, timezone
 from typing import Any
 
-import structlog
-
 
 def setup_logging(level: int = logging.INFO) -> None:
-    """Setup structured logging for the application."""
-    structlog.configure(
-        processors=[
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.JSONRenderer(),
-        ],
-        logger_factory=structlog.PrintLoggerFactory(),
-        wrapper_class=structlog.make_filtering_bound_logger(level),
-        cache_logger_on_first_use=True,
+    """Setup logging for the application."""
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
 
@@ -27,7 +21,7 @@ def get_metrics() -> dict[str, Any]:
     """Get current system metrics."""
     return {
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "version": "1.1.3",
+        "version": "1.2.0",
         "system": {
             "cpu_percent": 0.0,  # To be implemented
             "memory_percent": 0.0,  # To be implemented
