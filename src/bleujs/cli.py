@@ -7,7 +7,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from .quantum_detector import AdvancedQuantumDetector
+# from .quantum_detector import AdvancedQuantumDetector
 from .utils import setup_logging
 
 
@@ -31,9 +31,6 @@ def main():
     log_level = logging.DEBUG if args.verbose else logging.INFO
     setup_logging(log_level)
 
-    # Initialize detector
-    detector = AdvancedQuantumDetector(confidence_threshold=args.confidence)
-
     # Process image
     input_path = Path(args.input)
     if not input_path.exists():
@@ -41,15 +38,30 @@ def main():
         return 1
 
     try:
-        results = detector.detect_objects(str(input_path))
-        logging.info(f"Detection results: {results}")
+        # Basic file processing (placeholder for quantum detection)
+        logging.info(f"Processing image: {input_path}")
+        logging.info(f"Confidence threshold: {args.confidence}")
+
+        # Placeholder results
+        results = {
+            "file": str(input_path),
+            "confidence_threshold": args.confidence,
+            "status": "processed",
+            "message": "Bleu.js v1.2.0 - Quantum detection coming soon!",
+        }
+
+        logging.info(f"Processing results: {results}")
 
         # Save results if output directory specified
         if args.output:
             output_dir = Path(args.output)
             output_dir.mkdir(parents=True, exist_ok=True)
             results_file = output_dir / f"{input_path.stem}_results.json"
-            results.save_to_json(str(results_file))
+
+            import json
+
+            with open(results_file, "w") as f:
+                json.dump(results, f, indent=2)
             logging.info(f"Results saved to: {results_file}")
 
         return 0
