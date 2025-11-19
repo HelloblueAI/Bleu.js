@@ -1,6 +1,6 @@
 ### Bleu.js - Quantum-Enhanced AI Platform
 
-> **Version 1.2.0** - Enterprise-grade AI/ML platform with quantum computing capabilities
+> **Version 1.2.1** - Enterprise-grade AI/ML platform with quantum computing capabilities
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 
 ```bash
 # Install from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.0
+pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.1
 
 # Or clone and install
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -22,6 +22,21 @@ poetry install
 **See full installation guide:** [INSTALLATION.md](./INSTALLATION.md)
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
+
+## 📚 Important Documentation
+
+### For Users
+- **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
+- **[API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
+- **[Resource Requirements](./docs/RESOURCE_REQUIREMENTS.md)** - System requirements and use case guidance
+- **[Dependency Management](./docs/DEPENDENCY_MANAGEMENT.md)** - Managing dependencies and resolving conflicts
+- **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
+
+### For Contributors
+- **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
+- **[Contributor Guide](./docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
+- **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
+- **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards
 
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" zoomAndPan="magnify" viewBox="0 0 150 149.999998" height="200" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="ef0777e725"><path d="M 95 0 L 114.464844 0 L 114.464844 42 L 95 42 Z M 95 0 " clip-rule="nonzero"/></clipPath><clipPath id="26e0b5bc96"><path d="M 35.714844 23 L 114.464844 23 L 114.464844 101.515625 L 35.714844 101.515625 Z M 35.714844 23 " clip-rule="nonzero"/></clipPath></defs><rect x="-15" width="180" fill="#ffffff" y="-15" height="179.999997" fill-opacity="1"/><rect x="-15" width="180" fill="#25292f" y="-15" height="179.999997" fill-opacity="1"/><path fill="#25292f" d="M 65.441406 8.042969 L 84.546875 8.042969 L 84.546875 41.9375 L 65.441406 41.9375 Z M 65.441406 8.042969 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#ef0777e725)"><path fill="#25292f" d="M 95.125 -6.484375 L 114.230469 -6.484375 L 114.230469 41.9375 L 95.125 41.9375 Z M 95.125 -6.484375 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#26e0b5bc96)"><path fill="#00e0ff" d="M 81.632812 71.839844 L 65.441406 71.839844 L 65.441406 52.753906 L 114.230469 52.753906 L 114.230469 101.457031 L 95.125 101.457031 L 95.125 85.265625 L 78.957031 101.457031 L 35.757812 101.457031 L 35.757812 23.199219 L 54.863281 23.199219 L 54.863281 82.4375 L 71.074219 82.4375 Z M 81.632812 71.839844 " fill-opacity="1" fill-rule="nonzero"/></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(34.627324, 123.863116)"><g><path d="M 1.125 -15.40625 L 5.90625 -15.40625 C 7.34375 -15.40625 8.488281 -15.097656 9.34375 -14.484375 C 10.207031 -13.867188 10.640625 -12.867188 10.640625 -11.484375 C 10.640625 -9.941406 10 -8.835938 8.71875 -8.171875 C 10.90625 -7.785156 12 -6.492188 12 -4.296875 C 12 -3.003906 11.550781 -1.960938 10.65625 -1.171875 C 9.757812 -0.390625 8.53125 0 6.96875 0 L 1.125 0 Z M 4.625 -9.375 L 4.90625 -9.375 C 5.695312 -9.375 6.285156 -9.507812 6.671875 -9.78125 C 7.054688 -10.050781 7.25 -10.5 7.25 -11.125 C 7.25 -12.175781 6.46875 -12.703125 4.90625 -12.703125 L 4.625 -12.703125 Z M 4.625 -2.703125 L 5.734375 -2.703125 C 7.453125 -2.703125 8.3125 -3.273438 8.3125 -4.421875 C 8.3125 -5.109375 8.09375 -5.597656 7.65625 -5.890625 C 7.226562 -6.191406 6.585938 -6.34375 5.734375 -6.34375 L 4.625 -6.34375 Z M 4.625 -2.703125 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(47.799184, 123.863116)"><g><path d="M 4.625 -15.40625 L 4.625 -3.078125 L 9.9375 -3.078125 L 9.9375 0 L 1.125 0 L 1.125 -15.40625 Z M 4.625 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(59.086775, 123.863116)"><g><path d="M 9.9375 -15.40625 L 9.9375 -12.328125 L 4.625 -12.328125 L 4.625 -9.265625 L 9.703125 -9.265625 L 9.703125 -6.1875 L 4.625 -6.1875 L 4.625 -3.078125 L 9.9375 -3.078125 L 9.9375 0 L 1.125 0 L 1.125 -15.40625 Z M 9.9375 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(70.654207, 123.863116)"><g><path d="M 12.953125 -15.40625 L 12.953125 -5.46875 C 12.953125 -3.570312 12.441406 -2.140625 11.421875 -1.171875 C 10.398438 -0.203125 8.90625 0.28125 6.9375 0.28125 C 4.976562 0.28125 3.488281 -0.203125 2.46875 -1.171875 C 1.445312 -2.140625 0.9375 -3.570312 0.9375 -5.46875 L 0.9375 -15.40625 L 4.4375 -15.40625 L 4.4375 -6.5 C 4.4375 -5.25 4.632812 -4.378906 5.03125 -3.890625 C 5.425781 -3.410156 6.0625 -3.171875 6.9375 -3.171875 C 7.820312 -3.171875 8.460938 -3.410156 8.859375 -3.890625 C 9.253906 -4.378906 9.453125 -5.25 9.453125 -6.5 L 9.453125 -15.40625 Z M 12.953125 -15.40625 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(85.281253, 123.863116)"><g><path d="M 3.25 -4 C 3.84375 -4 4.347656 -3.789062 4.765625 -3.375 C 5.179688 -2.957031 5.390625 -2.445312 5.390625 -1.84375 C 5.390625 -1.257812 5.179688 -0.757812 4.765625 -0.34375 C 4.347656 0.0703125 3.84375 0.28125 3.25 0.28125 C 2.664062 0.28125 2.164062 0.0703125 1.75 -0.34375 C 1.332031 -0.757812 1.125 -1.257812 1.125 -1.84375 C 1.125 -2.445312 1.332031 -2.957031 1.75 -3.375 C 2.164062 -3.789062 2.664062 -4 3.25 -4 Z M 3.25 -4 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(92.539101, 123.863116)"><g><path d="M 7.828125 -15.40625 L 7.828125 -4.34375 C 7.828125 -2.84375 7.410156 -1.695312 6.578125 -0.90625 C 5.753906 -0.113281 4.570312 0.28125 3.03125 0.28125 C 2.613281 0.28125 2.207031 0.226562 1.8125 0.125 C 1.414062 0.03125 1.078125 -0.0859375 0.796875 -0.234375 C 0.523438 -0.378906 0.28125 -0.523438 0.0625 -0.671875 C -0.15625 -0.816406 -0.3125 -0.941406 -0.40625 -1.046875 L -0.578125 -1.1875 L 0.546875 -4.125 C 1.273438 -3.425781 1.941406 -3.078125 2.546875 -3.078125 C 3.078125 -3.078125 3.503906 -3.253906 3.828125 -3.609375 C 4.148438 -3.960938 4.3125 -4.507812 4.3125 -5.25 L 4.3125 -15.40625 Z M 7.828125 -15.40625 "/></g></g></g></svg>
 
@@ -1121,29 +1136,52 @@ pie title System Performance Metrics
 - **Reliability**: 99% of target (exceptional stability)
 - **Security**: 100% of target (maximum security)
 
-## Contribution Guidelines
+## 🤝 Contributing
 
-1. **Code of Conduct**
-   - Be respectful and inclusive
-   - Focus on constructive feedback
-   - Follow professional communication
-   - Respect different viewpoints
+We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or helping others, your contributions make Bleu.js better.
 
-2. **Development Process**
-   - Fork the repository
-   - Create a feature branch
-   - Make your changes
-   - Submit a pull request
-   - Address review comments
-   - Merge after approval
+### Quick Links
 
-3. **Code Standards**
-   - Follow PEP 8 guidelines
-   - Use type hints
-   - Write comprehensive docstrings
-   - Keep functions focused and small
-   - Write unit tests for new features
-   - Maintain test coverage above 80%
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete guide for contributors
+- **[Contributor Guide](docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
+- **[Onboarding Guide](docs/ONBOARDING.md)** - Get started in 10 minutes
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community standards
+
+### Ways to Contribute
+
+- 🐛 **Report bugs** - Help us find and fix issues
+- ✨ **Suggest features** - Share your ideas
+- 📝 **Improve documentation** - Make docs better for everyone
+- 🧪 **Add tests** - Improve test coverage
+- 💻 **Write code** - Fix bugs, add features
+- 💬 **Help others** - Answer questions in Discussions
+- 🔍 **Review PRs** - Help review pull requests
+
+### Getting Started
+
+1. **Read the guides:**
+   - [Contributor Guide](docs/CONTRIBUTOR_GUIDE.md) - Start here!
+   - [Contributing Guide](docs/CONTRIBUTING.md) - Full details
+
+2. **Find something to work on:**
+   - Look for `good first issue` labels
+   - Check [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
+
+3. **Make your first contribution:**
+   - Fix a typo
+   - Add a test
+   - Improve documentation
+
+**Questions?** Open a [Discussion](https://github.com/HelloblueAI/Bleu.js/discussions) or [Issue](https://github.com/HelloblueAI/Bleu.js/issues)!
+
+### Contributors
+
+Thank you to all contributors who help make Bleu.js better! 🎉
+
+<!-- Contributors will be automatically added by all-contributors bot -->
+<!-- See: https://allcontributors.org/ -->
+
+**Want to be recognized?** Make a contribution and you'll be added to our contributors list!
 
 ## Development Setup
 
@@ -1447,76 +1485,3 @@ python -m src.python.ml.benchmarking.cli --medical
 ```bash
 python -m src.python.ml.benchmarking.cli --financial
 ```
-
-3. **Industrial Optimization Study**:
-```bash
-python -m src.python.ml.benchmarking.cli --industrial
-```
-
-#### Run All Case Studies
-```bash
-python -m src.python.ml.benchmarking.cli --all
-```
-
-#### Additional Options
-- `-v, --verbose`: Enable detailed logging
-- `-o, --output-dir`: Specify output directory for results (default: "results")
-
-### Example Output
-```bash
-# Running all case studies with verbose output
-python -m src.python.ml.benchmarking.cli --all -v -o my_results
-
-# Results will be saved in:
-# - my_results/medical_diagnosis_results.csv
-# - my_results/financial_forecasting_results.csv
-# - my_results/industrial_optimization_results.csv
-# - my_results/quantum_advantage_report.txt
-```
-
-### Results Analysis
-The benchmarking system provides:
-- Detailed performance metrics for classical and quantum approaches
-- Quantum advantage calculations
-- Training and inference time comparisons
-- Comprehensive reports in text and CSV formats
-
-### Recent Performance Optimization Improvements
-
-- Enhanced type safety with proper number type declarations
-- Memory optimization through removal of unused variables
-- Improved predictive scaling implementation
-- Enhanced code maintainability
-- Strengthened TypeScript type definitions
-
-These improvements demonstrate our commitment to professional code quality standards, focus on performance and efficiency, strong TypeScript implementation, attention to memory management, and commitment to maintainable code.
-
-
-
-[![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
-[![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
-[![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![v1.1.9](https://img.shields.io/badge/v1.1.9-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
-[![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
-[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
-[![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)](https://github.com/HelloblueAI/Bleu.js)
-[![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
-[![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)](https://github.com/HelloblueAI/Bleu.js)
-[![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)](https://github.com/HelloblueAI/Bleu.js)
-[![Open Source Excellence](https://img.shields.io/badge/Award-Open%20Source%20Excellence-blueviolet?style=flat-square&logo=opensourceinitiative)](https://github.com/HelloblueAI/Bleu.js)
-[![Top Developer Tool](https://img.shields.io/badge/Award-Top%20Developer%20Tool-green?style=flat-square&logo=githubactions)](https://github.com/HelloblueAI/Bleu.js)
-[![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
-[![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
-[![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![SonarQube Grade](https://img.shields.io/badge/SonarQube-Coverage%2041%25-brightgreen)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
-[![Quantum Computing](https://img.shields.io/badge/Quantum-Qiskit%20%7C%20Cirq%20%7C%20PennyLane-blue?style=flat&logo=quantum)](https://github.com/HelloblueAI/Bleu.js)
-[![Quantum Enhanced](https://img.shields.io/badge/Quantum%20Enhanced-AI%20Platform-purple?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![Quantum ML](https://img.shields.io/badge/Quantum%20ML-XGBoost%20Enhanced-green?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
-
-This software is maintained by Helloblue Inc., a company dedicated to advanced innovations in AI solutions.
-
-## License
-
-Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/main/LICENSE.md)

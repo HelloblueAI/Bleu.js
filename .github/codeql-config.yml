@@ -1,0 +1,69 @@
+name: "CodeQL Configuration"
+
+# Exclude files and directories from CodeQL analysis
+paths-ignore:
+  # Dependencies
+  - "**/node_modules/**"
+  - "**/venv/**"
+  - "**/.venv/**"
+  - "**/env/**"
+  - "**/.env/**"
+  - "**/bleujs-env/**"
+
+  # Build artifacts
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/__pycache__/**"
+  - "**/*.pyc"
+  - "**/*.pyo"
+  - "**/*.pyd"
+  - "**/.pytest_cache/**"
+  - "**/.mypy_cache/**"
+
+  # Generated files
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/coverage/**"
+  - "**/.coverage"
+  - "**/htmlcov/**"
+
+  # Documentation and non-code
+  - "**/*.md"
+  - "**/*.txt"
+  - "**/*.json"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - "**/*.toml"
+  - "**/*.lock"
+
+  # Third-party and generated
+  - "**/all_packages.txt"
+  - "**/requirements*.txt"
+  - "**/poetry.lock"
+  - "**/package-lock.json"
+  - "**/yarn.lock"
+
+  # Test data and fixtures
+  - "**/tests/fixtures/**"
+  - "**/tests/data/**"
+
+  # IDE and editor files
+  - "**/.vscode/**"
+  - "**/.idea/**"
+  - "**/*.swp"
+  - "**/*.swo"
+  - "**/*~"
+
+# Languages to analyze
+languages:
+  - python
+  # Only analyze JavaScript/TypeScript if there are actual source files
+  # Exclude if only node_modules
+  - javascript
+  - typescript
+
+# Query filters (optional - can add specific query exclusions if needed)
+# query-filters:
+#   - exclude:
+#       id: js/unused-local-variable
+#       path: "**/node_modules/**"
