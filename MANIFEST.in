@@ -1,0 +1,26 @@
+# MANIFEST.in - Explicitly include API client and other files
+
+# Include all Python files in api_client
+recursive-include src/bleujs/api_client *.py
+
+# Include package data
+recursive-include src/bleujs *.py
+recursive-include models *
+recursive-include configs *
+recursive-include data *
+recursive-include static *
+recursive-include templates *
+
+# Include documentation
+include README.md
+include LICENSE.md
+include CHANGELOG.md
+include requirements*.txt
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude *.dylib
+

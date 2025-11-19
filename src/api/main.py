@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from services.subscription_service import SubscriptionService
 from src.config import get_settings
 from src.middleware.error_handling import ErrorHandlingMiddleware
+from src.routes import ai_models
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -22,11 +23,14 @@ settings = get_settings()
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.2.0",
+    version="1.2.1",
 )
 
 # Initialize services
 subscription_service = SubscriptionService()
+
+# Include API routers
+app.include_router(ai_models.router, tags=["AI Models"])
 
 # Add comprehensive error handling middleware first
 app.add_middleware(ErrorHandlingMiddleware)
@@ -249,7 +253,7 @@ def _get_environment_info(start_time):
     return {
         "python_version": os.getenv("PYTHON_VERSION", "unknown"),
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "app_version": "1.2.0",
+        "app_version": "1.2.1",
         "uptime_seconds": int(time.time() - start_time),
     }
 

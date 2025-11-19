@@ -90,6 +90,14 @@ app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
 app.include_router(subscription.router, prefix=API_V1_PREFIX, tags=["subscription"])
 app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
 
+# Import and include AI models router
+try:
+    from src.routes import ai_models
+    app.include_router(ai_models.router, tags=["AI Models"])
+    logger.info("AI Models API routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Could not load AI models routes: {e}")
+
 
 @app.get("/health")
 async def health_check():

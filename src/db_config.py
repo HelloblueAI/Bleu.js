@@ -21,3 +21,8 @@ else:
         f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}"
         f"@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['database']}"
     )
+
+
+def get_database_url() -> str:
+    """Return the configured database URL."""
+    return DATABASE_URL

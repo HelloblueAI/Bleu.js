@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/HelloblueAI/Bleu.js/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📚 Documentation
+    url: https://github.com/HelloblueAI/Bleu.js/tree/main/docs
+    about: Check our documentation for guides and references
+  - name: 🐛 Bug Reports
+    url: https://github.com/HelloblueAI/Bleu.js/issues/new?template=bug_report.md
+    about: Report a bug using our bug report template
+  - name: ✨ Feature Requests
+    url: https://github.com/HelloblueAI/Bleu.js/issues/new?template=feature_request.md
+    about: Suggest a new feature using our feature request template
+

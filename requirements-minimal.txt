@@ -32,9 +32,12 @@ scipy==1.15.3
 
 # Database and ORM
 sqlalchemy==2.0.23
-starlette>=0.36.3
+# Updated to fix DoS vulnerability (Issues #302, #303)
+starlette>=0.48.0
 torch>=2.7.1
-transformers==4.52.4
+# Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)
+# Note: Using latest available version (4.57.1 as of Feb 2025)
+transformers>=4.55.0
 uvicorn==0.27.1
 
 # Testing (will be installed separately)
