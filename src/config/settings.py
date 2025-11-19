@@ -21,88 +21,92 @@ class Settings(BaseSettings):
     """Application settings."""
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",
+        populate_by_name=True,
     )
 
     # Application settings
     APP_NAME: str = "Bleu.js"
     APP_VERSION: str = "0.1.0"
-    DEBUG: bool = Field(default=False, env="DEBUG")
-    TESTING: bool = Field(default=False, env="TESTING")
-    ENV_NAME: str = Field(default="development", env="ENV_NAME")
-    LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
+    DEBUG: bool = Field(default=False, alias="DEBUG")
+    TESTING: bool = Field(default=False, alias="TESTING")
+    ENV_NAME: str = Field(default="development", alias="ENV_NAME")
+    LOG_LEVEL: str = Field(default="INFO", alias="LOG_LEVEL")
 
     # Security - Critical: Use environment variables only
-    SECRET_KEY: str = Field(..., env="SECRET_KEY")  # Must be provided
-    ALGORITHM: str = Field(default="HS256", env="ALGORITHM")
+    SECRET_KEY: str = Field(..., alias="SECRET_KEY")  # Must be provided
+    ALGORITHM: str = Field(default="HS256", alias="ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES"
+        default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES"
     )
 
     # Server settings
-    PORT: int = Field(default=8000, env="PORT")
-    HOST: str = Field(default="localhost", env="HOST")
-    APP_ENV: str = Field(default="development", env="APP_ENV")
-    APP_DEBUG: bool = Field(default=False, env="APP_DEBUG")
-    APP_URL: str = Field(default="http://localhost:3000", env="APP_URL")
-    APP_PORT: int = Field(default=3000, env="APP_PORT")
+    PORT: int = Field(default=8000, alias="PORT")
+    HOST: str = Field(default="localhost", alias="HOST")
+    APP_ENV: str = Field(default="development", alias="APP_ENV")
+    APP_DEBUG: bool = Field(default=False, alias="APP_DEBUG")
+    APP_URL: str = Field(default="http://localhost:3000", alias="APP_URL")
+    APP_PORT: int = Field(default=3000, alias="APP_PORT")
     VERSION: str = "0.1.0"
     API_VERSION: str = "v1"
     API_PREFIX: str = "/api"
 
     # Security: Allowed hosts for TrustedHostMiddleware
     ALLOWED_HOSTS: List[str] = Field(
-        default=["localhost", "127.0.0.1", "::1"], env="ALLOWED_HOSTS"
+        default=["localhost", "127.0.0.1", "::1"], alias="ALLOWED_HOSTS"
     )
 
     # Database settings
-    DB_HOST: str = Field(default="localhost", env="DB_HOST")
-    DB_PORT: int = Field(default=5432, env="DB_PORT")
-    DB_NAME: str = Field(default="bleujs_dev", env="DB_NAME")
-    DB_USER: str = Field(default="bleujs_dev", env="DB_USER")
-    DB_PASSWORD: SecretStr = Field(..., env="DB_PASSWORD")  # Must be provided
-    DATABASE_URL: str = Field(default="sqlite:///./test.db", env="DATABASE_URL")
-    DATABASE_POOL_SIZE: int = Field(default=5, env="DATABASE_POOL_SIZE")
-    DATABASE_MAX_OVERFLOW: int = Field(default=10, env="DATABASE_MAX_OVERFLOW")
+    DB_HOST: str = Field(default="localhost", alias="DB_HOST")
+    DB_PORT: int = Field(default=5432, alias="DB_PORT")
+    DB_NAME: str = Field(default="bleujs_dev", alias="DB_NAME")
+    DB_USER: str = Field(default="bleujs_dev", alias="DB_USER")
+    DB_PASSWORD: SecretStr = Field(..., alias="DB_PASSWORD")  # Must be provided
+    DATABASE_URL: str = Field(default="sqlite:///./test.db", alias="DATABASE_URL")
+    DATABASE_POOL_SIZE: int = Field(default=5, alias="DATABASE_POOL_SIZE")
+    DATABASE_MAX_OVERFLOW: int = Field(default=10, alias="DATABASE_MAX_OVERFLOW")
 
     # Test Database settings
-    TEST_DB_HOST: str = Field(default="localhost", env="TEST_DB_HOST")
-    TEST_DB_PORT: int = Field(default=5432, env="TEST_DB_PORT")
-    TEST_DB_NAME: str = Field(default="test_db", env="TEST_DB_NAME")
-    TEST_DB_USER: str = Field(default="test_user", env="TEST_DB_USER")
+    TEST_DB_HOST: str = Field(default="localhost", alias="TEST_DB_HOST")
+    TEST_DB_PORT: int = Field(default=5432, alias="TEST_DB_PORT")
+    TEST_DB_NAME: str = Field(default="test_db", alias="TEST_DB_NAME")
+    TEST_DB_USER: str = Field(default="test_user", alias="TEST_DB_USER")
     TEST_DB_PASSWORD: str = Field(
-        default="test_db_password_123", env="TEST_DB_PASSWORD"
+        default="test_db_password_123", alias="TEST_DB_PASSWORD"
     )
 
     # Redis settings
-    REDIS_HOST: str = Field(default="localhost", env="REDIS_HOST")
-    REDIS_PORT: int = Field(default=6379, env="REDIS_PORT")
-    REDIS_DB: int = Field(default=0, env="REDIS_DB")
-    REDIS_PASSWORD: SecretStr | None = Field(default=None, env="REDIS_PASSWORD")
-    REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0", env="REDIS_URL")
+    REDIS_HOST: str = Field(default="localhost", alias="REDIS_HOST")
+    REDIS_PORT: int = Field(default=6379, alias="REDIS_PORT")
+    REDIS_DB: int = Field(default=0, alias="REDIS_DB")
+    REDIS_PASSWORD: SecretStr | None = Field(default=None, alias="REDIS_PASSWORD")
+    REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
     REDIS_CONFIG: RedisConfig = RedisConfig()
 
     # Security settings
     CORS_ORIGINS: str = Field(
-        default="http://localhost:3000,http://127.0.0.1:3000", env="CORS_ORIGINS"
+        default="http://localhost:3000,http://127.0.0.1:3000", alias="CORS_ORIGINS"
     )
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
 
     # JWT settings - All must be provided via environment
-    JWT_SECRET_KEY: str = Field(..., env="JWT_SECRET_KEY")
-    JWT_ALGORITHM: str = Field(default="HS256", env="JWT_ALGORITHM")
-    JWT_SECRET: str = Field(..., env="JWT_SECRET")
-    JWT_EXPIRES_IN: str = Field(default="24h", env="JWT_EXPIRES_IN")
+    JWT_SECRET_KEY: str = Field(..., alias="JWT_SECRET_KEY")
+    JWT_ALGORITHM: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    JWT_SECRET: str = Field(..., alias="JWT_SECRET")
+    JWT_EXPIRES_IN: str = Field(default="24h", alias="JWT_EXPIRES_IN")
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=30, env="JWT_ACCESS_TOKEN_EXPIRE_MINUTES"
+        default=30, alias="JWT_ACCESS_TOKEN_EXPIRE_MINUTES"
     )
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = Field(
-        default=7, env="JWT_REFRESH_TOKEN_EXPIRE_DAYS"
+        default=7, alias="JWT_REFRESH_TOKEN_EXPIRE_DAYS"
     )
 
     # Encryption settings
-    ENCRYPTION_KEY: str = Field(..., env="ENCRYPTION_KEY")
-    ENABLE_SECURITY: bool = Field(default=True, env="ENABLE_SECURITY")
+    ENCRYPTION_KEY: str = Field(..., alias="ENCRYPTION_KEY")
+    ENABLE_SECURITY: bool = Field(default=True, alias="ENABLE_SECURITY")
 
     @field_validator("SECRET_KEY", "JWT_SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY")
     @classmethod
@@ -133,15 +137,20 @@ class Settings(BaseSettings):
         """Get CORS origins as a list."""
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
+    @property
+    def app_name(self) -> str:
+        """Return the application display name."""
+        return self.APP_NAME
+
     # Rate limiting settings
     RATE_LIMITING: RateLimitingConfig = RateLimitingConfig()
-    RATE_LIMIT_WINDOW: int = Field(default=15, env="RATE_LIMIT_WINDOW")
-    RATE_LIMIT_MAX_REQUESTS: int = Field(default=100, env="RATE_LIMIT_MAX_REQUESTS")
-    RATE_LIMIT_CORE: int = Field(default=100, env="RATE_LIMIT_CORE")
-    RATE_LIMIT_ENTERPRISE: int = Field(default=1000, env="RATE_LIMIT_ENTERPRISE")
-    RATE_LIMIT_PERIOD: int = Field(default=3600, env="RATE_LIMIT_PERIOD")
-    TEST_RATE_LIMIT: int = Field(default=100, env="TEST_RATE_LIMIT")
-    TEST_RATE_LIMIT_WINDOW: int = Field(default=3600, env="TEST_RATE_LIMIT_WINDOW")
+    RATE_LIMIT_WINDOW: int = Field(default=15, alias="RATE_LIMIT_WINDOW")
+    RATE_LIMIT_MAX_REQUESTS: int = Field(default=100, alias="RATE_LIMIT_MAX_REQUESTS")
+    RATE_LIMIT_CORE: int = Field(default=100, alias="RATE_LIMIT_CORE")
+    RATE_LIMIT_ENTERPRISE: int = Field(default=1000, alias="RATE_LIMIT_ENTERPRISE")
+    RATE_LIMIT_PERIOD: int = Field(default=3600, alias="RATE_LIMIT_PERIOD")
+    TEST_RATE_LIMIT: int = Field(default=100, alias="TEST_RATE_LIMIT")
+    TEST_RATE_LIMIT_WINDOW: int = Field(default=3600, alias="TEST_RATE_LIMIT_WINDOW")
 
     # Email settings
     SMTP_HOST: str = "localhost"

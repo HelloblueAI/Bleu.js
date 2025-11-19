@@ -47,7 +47,7 @@ def main():
             "file": str(input_path),
             "confidence_threshold": args.confidence,
             "status": "processed",
-            "message": "Bleu.js v1.2.0 - Quantum detection coming soon!",
+            "message": "Bleu.js v1.2.1 - Quantum detection coming soon!",
         }
 
         logging.info(f"Processing results: {results}")
