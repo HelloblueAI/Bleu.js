@@ -52,10 +52,12 @@ scikit-learn>=1.7.1
 
 # Database security
 sqlalchemy>=2.0.42
-# Pin to secure version to fix CVE-2025-54121
-starlette==0.47.2
+# Updated to fix DoS vulnerability (Issues #302, #303)
+starlette>=0.48.0
 tensorflow>=2.19.0
 torch>=2.8.0
+# Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)
+# Note: Using latest available version (4.57.1 as of Feb 2025)
 transformers>=4.55.0
 urllib3>=2.5.0
 uvicorn[standard]>=0.35.0

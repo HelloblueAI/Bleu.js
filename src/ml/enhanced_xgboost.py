@@ -15,11 +15,19 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
-import GPUtil
+# Optional GPU utilities
+try:
+    import GPUtil
+except ImportError:  # pragma: no cover - optional dependency
+    GPUtil = None
 import numpy as np
 import optuna
 import psutil
-import ray
+
+try:
+    import ray
+except ImportError:  # pragma: no cover - optional dependency
+    ray = None
 import xgboost as xgb
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
@@ -350,11 +358,14 @@ class PerformanceOptimizer:
 
     def _get_gpu_memory(self) -> int:
         """Get available GPU memory"""
+        if GPUtil is None:
+            logger.debug("GPUtil not installed; skipping GPU memory check")
+            return 0
         try:
             gpus = GPUtil.getGPUs()
             if gpus:
                 return int(gpus[0].memoryFree * 1024 * 1024)  # Convert to bytes
-        except (ImportError, AttributeError, OSError) as e:
+        except (AttributeError, OSError) as e:
             logger.warning(f"Could not get GPU memory: {e}")
         return 0
 
@@ -385,18 +396,19 @@ class ResourceMonitor:
         }
 
         try:
-            gpus = GPUtil.getGPUs()
-            if gpus:
-                metrics["gpu_metrics"] = [
-                    {
-                        "id": gpu.id,
-                        "load": gpu.load,
-                        "memory_used": gpu.memoryUsed,
-                        "memory_total": gpu.memoryTotal,
-                    }
-                    for gpu in gpus
-                ]
-        except (ImportError, AttributeError, OSError) as e:
+            if GPUtil is not None:
+                gpus = GPUtil.getGPUs()
+                if gpus:
+                    metrics["gpu_metrics"] = [
+                        {
+                            "id": gpu.id,
+                            "load": gpu.load,
+                            "memory_used": gpu.memoryUsed,
+                            "memory_total": gpu.memoryTotal,
+                        }
+                        for gpu in gpus
+                    ]
+        except (AttributeError, OSError) as e:
             logger.warning(f"Could not get GPU metrics: {e}")
 
         self.metrics_history.append(metrics)
@@ -426,9 +438,12 @@ class EnhancedXGBoost:
         self.training_history: list[dict[str, Any]] = []
         self.validation_history: list[dict[str, Any]] = []
 
-        # Initialize Ray for distributed training
-        if not ray.is_initialized():
-            ray.init(ignore_reinit_error=True)
+        # Initialize Ray for distributed training when available
+        if ray is not None:
+            if not ray.is_initialized():
+                ray.init(ignore_reinit_error=True)
+        else:  # pragma: no cover - optional path
+            logger.info("Ray not available; distributed training disabled")
 
     def fit(
         self,

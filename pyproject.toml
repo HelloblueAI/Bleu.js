@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "bleu-js"
-version = "1.2.0"
+version = "1.2.1"
 description = "Advanced AI and Quantum Computing Framework"
 authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
@@ -37,7 +37,7 @@ pydantic = {extras = ["email"], version = "^2.7.0"}
 # Security - Fixed versions
 urllib3 = "^2.2.3"
 requests = "^2.32.4"
-cryptography = "^43.0.0"
+cryptography = "^45.0.6"  # Updated to fix OpenSSL vulnerability (Issue #299)
 setuptools = "^78.1.1"
 
 # Database - Pinned versions
@@ -77,7 +77,9 @@ opentelemetry-sdk = "^1.35.0"
 ray = ">=2.9.0"
 qiskit-aer = "^0.17.1"
 tensorflow = "<2.19"
-ecdsa = "^0.19.1"
+# Note: ecdsa 0.20.0 not yet released. Using 0.19.1 (latest available)
+# Consider removing if not directly used - use cryptography library instead
+ecdsa = "^0.19.1"  # Latest available - 0.20.0 with full fix not yet released (Issue #295)
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"

@@ -3,9 +3,28 @@
 from datetime import datetime
 
 from pydantic import BaseModel, EmailStr
+from pydantic._internal._model_construction import ModelMetaclass
 
 
-class UserBase(BaseModel):
+class _CompatModelMetaclass(ModelMetaclass):
+    """Metaclass providing backwards compatible __fields__ attribute access."""
+
+    def __getattribute__(cls, item: str):
+        if item == "__fields__":
+            return cls.model_fields
+        return super().__getattribute__(item)
+
+    def __getattr__(cls, item: str):
+        if item == "__fields__":
+            return cls.model_fields
+        return super().__getattr__(item)
+
+
+class CompatBaseModel(BaseModel, metaclass=_CompatModelMetaclass):
+    """Base model compatible with Pydantic v1 attribute access patterns."""
+
+
+class UserBase(CompatBaseModel):
     """Base user schema."""
 
     email: EmailStr
@@ -22,7 +41,7 @@ class UserCreate(UserBase):
     password: str
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(CompatBaseModel):
     """User update schema."""
 
     email: EmailStr | None = None
