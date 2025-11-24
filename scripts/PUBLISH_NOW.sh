@@ -66,4 +66,3 @@ echo "  2. Create GitHub release (v1.2.0)"
 echo "  3. Announce on social media"
 echo ""
 echo "🎊 Congratulations! 🎊"
-
