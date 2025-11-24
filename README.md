@@ -23,6 +23,29 @@ poetry install
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
+## 🤗 Pre-trained Models
+
+We provide pre-trained models on Hugging Face for easy integration:
+
+- **[Bleu.js XGBoost Classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier)** - Quantum-enhanced XGBoost classification model
+  - Ready-to-use XGBoost model with quantum-enhanced features
+  - Includes model weights and preprocessing scaler
+  - Complete model card with usage examples
+
+```python
+from huggingface_hub import hf_hub_download
+import pickle
+
+# Download and use the model
+model_path = hf_hub_download(
+    repo_id="helloblueai/bleu-xgboost-classifier",
+    filename="xgboost_model_latest.pkl"
+)
+
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
+```
+
 ## 📚 Important Documentation
 
 ### For Users
