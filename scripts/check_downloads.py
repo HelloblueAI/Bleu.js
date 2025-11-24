@@ -3,8 +3,9 @@
 Check PyPI download statistics for Bleu.js
 """
 import json
-import requests
 from datetime import datetime
+
+import requests
 
 
 def get_pypistats(package_name="bleu-js", stat_type="recent"):
@@ -47,7 +48,9 @@ def print_recent_stats():
         # Find peak day
         if downloads:
             peak = max(downloads, key=lambda x: x.get("downloads", 0))
-            print(f"🔥 Peak Day: {peak.get('date')} with {peak.get('downloads', 0):,} downloads")
+            print(
+                f"🔥 Peak Day: {peak.get('date')} with {peak.get('downloads', 0):,} downloads"
+            )
             print()
 
     # Python versions
@@ -58,9 +61,11 @@ def print_recent_stats():
             version = entry.get("category", "unknown")
             downloads = entry.get("downloads", 0)
             versions[version] = versions.get(version, 0) + downloads
-        
+
         print("🐍 Python Versions:")
-        for version, count in sorted(versions.items(), key=lambda x: x[1], reverse=True):
+        for version, count in sorted(
+            versions.items(), key=lambda x: x[1], reverse=True
+        ):
             print(f"   Python {version}: {count:,} downloads")
         print()
 
@@ -72,7 +77,7 @@ def print_recent_stats():
             os_name = entry.get("category", "unknown")
             downloads = entry.get("downloads", 0)
             systems[os_name] = systems.get(os_name, 0) + downloads
-        
+
         print("💻 Operating Systems:")
         for os_name, count in sorted(systems.items(), key=lambda x: x[1], reverse=True):
             if os_name and os_name != "null":
@@ -86,4 +91,3 @@ def print_recent_stats():
 
 if __name__ == "__main__":
     print_recent_stats()
-
