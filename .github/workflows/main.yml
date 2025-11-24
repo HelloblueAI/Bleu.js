@@ -2,7 +2,7 @@ name: 🚀 Bleu.js Quantum-Enhanced Vision System CI/CD
 
 on:
   push:
-    branches: [main, staging, develop]
+    branches: [main, staging, develop, 'security/**']
     paths-ignore:
       - '*.md'
       - 'docs/**'
