@@ -1508,3 +1508,95 @@ python -m src.python.ml.benchmarking.cli --medical
 ```bash
 python -m src.python.ml.benchmarking.cli --financial
 ```
+
+3. **Industrial Optimization Study**:
+```bash
+python -m src.python.ml.benchmarking.cli --industrial
+```
+
+#### Run All Case Studies
+```bash
+python -m src.python.ml.benchmarking.cli --all
+```
+
+#### Additional Options
+- `-v, --verbose`: Enable detailed logging
+- `-o, --output-dir`: Specify output directory for results (default: "results")
+
+### Example Output
+```bash
+# Running all case studies with verbose output
+python -m src.python.ml.benchmarking.cli --all -v -o my_results
+
+# Results will be saved in:
+# - my_results/medical_diagnosis_results.csv
+# - my_results/financial_forecasting_results.csv
+# - my_results/industrial_optimization_results.csv
+# - my_results/quantum_advantage_report.txt
+```
+
+### Results Analysis
+The benchmarking system provides:
+- Detailed performance metrics for classical and quantum approaches
+- Quantum advantage calculations
+- Training and inference time comparisons
+- Comprehensive reports in text and CSV formats
+
+---
+
+## 📖 Additional Resources
+
+### Documentation
+- **[Roadmap](./docs/ROADMAP.md)** - Development plans and future features
+- **[Changelog](./docs/CHANGELOG.md)** - Version history and release notes
+- **[Project Structure](./PROJECT_STRUCTURE.md)** - Project organization overview
+- **[Complete User Guide](./COMPLETE_USER_GUIDE.md)** - Comprehensive user documentation
+
+### Community & Support
+- **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
+- **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Common questions and answers
+- **[Contributing Guide](./docs/CONTRIBUTING.md)** - How to contribute to the project
+- **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
+
+### Quick Links
+- **GitHub Repository**: [HelloblueAI/Bleu.js](https://github.com/HelloblueAI/Bleu.js)
+- **Hugging Face Models**: [helloblueai/bleu-xgboost-classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier)
+- **Issues**: [Report a Bug](https://github.com/HelloblueAI/Bleu.js/issues)
+- **Discussions**: [Join the Discussion](https://github.com/HelloblueAI/Bleu.js/discussions)
+
+### Contact & Support
+- **General Support**: support@helloblue.ai
+- **Security Issues**: security@helloblue.ai (do NOT use public issues)
+- **Commercial Inquiries**: support@helloblue.ai
+
+---
+
+## Badges
+
+[![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
+[![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
+[![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
+[![v1.2.1](https://img.shields.io/badge/v1.2.1-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
+[![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
+[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
+[![Reinforcement Learning](https://img.shields.io/badge/Reinforcement%20Learning-Q%20Learning%20%7C%20Deep%20Q-blueviolet?style=flat-square&logo=google)](https://github.com/HelloblueAI/Bleu.js)
+[![Data Science](https://img.shields.io/badge/Data%20Science-Pandas%20%7C%20Numpy-yellow?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
+[![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20Seaborn-green?style=flat-square&logo=chart)](https://github.com/HelloblueAI/Bleu.js)
+[![Scalability](https://img.shields.io/badge/Scalability-Auto--Scales%20with%20Demand-007bff?style=flat&logo=server)](https://github.com/HelloblueAI/Bleu.js)
+[![Open Source Excellence](https://img.shields.io/badge/Award-Open%20Source%20Excellence-blueviolet?style=flat-square&logo=opensourceinitiative)](https://github.com/HelloblueAI/Bleu.js)
+[![Top Developer Tool](https://img.shields.io/badge/Award-Top%20Developer%20Tool-green?style=flat-square&logo=githubactions)](https://github.com/HelloblueAI/Bleu.js)
+[![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
+[![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
+[![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![SonarQube Grade](https://img.shields.io/badge/SonarQube-Coverage%2041%25-brightgreen)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
+[![Quantum Computing](https://img.shields.io/badge/Quantum-Qiskit%20%7C%20Cirq%20%7C%20PennyLane-blue?style=flat&logo=quantum)](https://github.com/HelloblueAI/Bleu.js)
+[![Quantum Enhanced](https://img.shields.io/badge/Quantum%20Enhanced-AI%20Platform-purple?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![Quantum ML](https://img.shields.io/badge/Quantum%20ML-XGBoost%20Enhanced-green?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)](https://github.com/HelloblueAI/Bleu.js)
+
+This software is maintained by Helloblue Inc., a company dedicated to advanced innovations in AI solutions.
+
+## License
+
+Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.js/blob/main/LICENSE.md)
