@@ -1,0 +1,96 @@
+# Bleu OS Package List
+# Packages to install in the base system
+
+# Core System
+bash
+coreutils
+util-linux
+systemd
+dbus
+udev
+
+# Network
+networkmanager
+wpa_supplicant
+iptables
+firewalld
+curl
+wget
+
+# Development Tools
+git
+gcc
+g++
+make
+cmake
+python3
+python3-pip
+python3-dev
+rust
+cargo
+go
+
+# Quantum Computing
+qiskit
+cirq
+pennylane
+qutip
+qsharp
+
+# Machine Learning
+python3-torch
+python3-tensorflow
+python3-xgboost
+python3-scikit-learn
+python3-pandas
+python3-numpy
+python3-scipy
+python3-matplotlib
+python3-seaborn
+
+# Jupyter Ecosystem
+jupyter
+jupyterlab
+jupyter-notebook
+ipython
+
+# Container Runtime
+podman
+docker
+containerd
+
+# Monitoring & Performance
+htop
+iotop
+nethogs
+perf
+strace
+sysstat
+
+# Security
+openssh-server
+fail2ban
+rkhunter
+clamav
+audit
+
+# Bleu.js Dependencies
+nodejs
+npm
+redis
+postgresql
+mongodb
+
+# GPU Support (NVIDIA)
+nvidia-driver
+cuda-toolkit
+cudnn
+
+# GPU Support (AMD)
+rocm
+rocm-dev
+
+# Quantum Hardware Drivers
+ibm-quantum-driver
+google-quantum-driver
+ionq-driver

@@ -1,0 +1,49 @@
+# Bleu OS Docker Image - Minimal Version
+# Lightweight version with only essential components
+
+FROM alpine:3.19
+
+ARG BLEU_OS_VERSION=1.0.0
+
+LABEL maintainer="HelloblueAI <support@helloblue.ai>"
+LABEL description="Bleu OS - Minimal Quantum-Enhanced AI Operating System"
+LABEL version="${BLEU_OS_VERSION}"
+
+# Install minimal dependencies
+RUN apk add --no-cache \
+    bash \
+    python3 \
+    py3-pip \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user
+RUN addgroup -g 1000 bleuos && \
+    adduser -D -u 1000 -G bleuos bleuos
+
+# Set environment
+ENV PYTHONUNBUFFERED=1 \
+    BLEU_OS_VERSION=${BLEU_OS_VERSION} \
+    PATH="/home/bleuos/.local/bin:$PATH"
+
+# Install only Bleu.js (minimal)
+USER bleuos
+WORKDIR /home/bleuos
+
+RUN pip3 install --user --no-cache-dir --break-system-packages \
+    bleu-js \
+    numpy
+
+# System config
+USER root
+COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
+COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/init-bleu-os.sh
+
+RUN mkdir -p /workspace && chown -R bleuos:bleuos /workspace
+
+USER bleuos
+WORKDIR /workspace
+
+ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
+CMD ["bash"]

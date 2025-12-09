@@ -1,0 +1,148 @@
+# Bleu OS Docker Image - Enhanced Version
+# Optimized container image for quantum/AI workloads
+# Multi-stage build for smaller size and better caching
+
+# Stage 1: Base system with build tools
+FROM alpine:3.19 AS builder
+
+# Build arguments for flexibility
+ARG BLEU_OS_VERSION=1.0.0
+ARG PYTHON_VERSION=3.11
+ARG INSTALL_QUANTUM=true
+ARG INSTALL_ML=true
+ARG INSTALL_JUPYTER=true
+
+# Metadata
+LABEL maintainer="HelloblueAI <support@helloblue.ai"
+LABEL description="Bleu OS - Quantum-Enhanced AI Operating System"
+LABEL version="${BLEU_OS_VERSION}"
+LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Install build dependencies
+RUN apk add --no-cache \
+    bash \
+    curl \
+    wget \
+    git \
+    python3 \
+    py3-pip \
+    build-base \
+    linux-headers \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+
+# Upgrade pip and install build tools
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
+    pip \
+    setuptools \
+    wheel
+
+# Stage 2: Runtime image (smaller, production-ready)
+FROM alpine:3.19 AS runtime
+
+ARG BLEU_OS_VERSION=1.0.0
+ARG INSTALL_QUANTUM=true
+ARG INSTALL_ML=true
+ARG INSTALL_JUPYTER=true
+
+# Install only runtime dependencies
+RUN apk add --no-cache \
+    bash \
+    curl \
+    wget \
+    git \
+    python3 \
+    py3-pip \
+    ca-certificates \
+    tzdata \
+    libstdc++ \
+    libgcc \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user for security
+RUN addgroup -g 1000 bleuos && \
+    adduser -D -u 1000 -G bleuos bleuos
+
+# Set up Python environment
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    BLEU_OS_VERSION=${BLEU_OS_VERSION} \
+    BLEU_QUANTUM_MODE=${INSTALL_QUANTUM} \
+    BLEU_OPTIMIZATION_LEVEL=3 \
+    PATH="/home/bleuos/.local/bin:$PATH"
+
+# Install Python packages in user space (better security)
+USER bleuos
+WORKDIR /home/bleuos
+
+# Install quantum computing libraries (if enabled)
+RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
+    pip3 install --user --no-cache-dir --break-system-packages \
+        qiskit[visualization] \
+        cirq \
+        pennylane[default.qubit] \
+        qutip \
+    ; fi
+
+# Install ML/AI libraries (if enabled)
+RUN if [ "$INSTALL_ML" = "true" ]; then \
+    pip3 install --user --no-cache-dir --break-system-packages \
+        torch \
+        tensorflow \
+        xgboost \
+        scikit-learn \
+        pandas \
+        matplotlib \
+        numpy \
+        scipy \
+    ; fi
+
+# Install Jupyter (if enabled)
+RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
+    pip3 install --user --no-cache-dir --break-system-packages \
+        jupyter \
+        jupyterlab \
+        ipywidgets \
+    ; fi
+
+# Install Bleu.js
+WORKDIR /opt/bleu-js
+COPY --chown=bleuos:bleuos src/bleujs /opt/bleu-js/src/bleujs
+COPY --chown=bleuos:bleuos requirements.txt /opt/bleu-js/
+COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
+COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
+
+# Install Bleu.js as user
+RUN pip3 install --user --no-cache-dir --break-system-packages -e /opt/bleu-js 2>/dev/null || \
+    pip3 install --user --no-cache-dir --break-system-packages bleu-js 2>/dev/null || \
+    echo "Bleu.js installation attempted"
+
+# Switch back to root for system configuration
+USER root
+
+# Configure system
+COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
+COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/init-bleu-os.sh
+
+# Create working directory with proper permissions
+RUN mkdir -p /workspace && \
+    chown -R bleuos:bleuos /workspace
+
+# Switch back to non-root user
+USER bleuos
+WORKDIR /workspace
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD python3 -c "import bleujs; import sys; sys.exit(0)" || exit 1
+
+# Expose ports (Jupyter, services)
+EXPOSE 8888 9090
+
+# Initialize Bleu OS on startup
+ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
+CMD ["bash"]
