@@ -41,7 +41,7 @@ cryptography = "^45.0.6"  # Updated to fix OpenSSL vulnerability (Issue #299)
 setuptools = "^78.1.1"
 
 # Database - Pinned versions
-sqlalchemy = "2.0.23"
+sqlalchemy = "2.0.44"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 
