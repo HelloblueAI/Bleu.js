@@ -1,0 +1,147 @@
+# Bleu OS Docker Image - Industry-Optimized Version
+# True multi-stage build: Build in one stage, minimal runtime in another
+# This is how big companies (Google, Netflix, AWS) structure their images
+
+# ============================================================================
+# Stage 1: Builder - All build tools and compilation happen here
+# ============================================================================
+FROM alpine:3.19 AS builder
+
+ARG BLEU_OS_VERSION=1.0.0
+ARG INSTALL_QUANTUM=true
+ARG INSTALL_ML=true
+ARG INSTALL_JUPYTER=false
+
+# Install ALL build dependencies (only in builder stage)
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    build-base \
+    linux-headers \
+    gcc \
+    g++ \
+    make \
+    cmake \
+    musl-dev \
+    python3-dev \
+    && rm -rf /var/cache/apk/*
+
+# Upgrade pip and build tools
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
+    pip \
+    setuptools \
+    wheel
+
+# Install quantum libraries (if enabled)
+RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
+        pip3 install --user --no-cache-dir --break-system-packages \
+            qiskit \
+            cirq \
+            pennylane \
+            qutip || echo "Some quantum libraries failed, continuing..."; \
+    fi
+
+# Install ML libraries (if enabled) - Build in builder stage
+RUN if [ "$INSTALL_ML" = "true" ]; then \
+        pip3 install --user --no-cache-dir --break-system-packages \
+            scikit-learn \
+            pandas \
+            matplotlib \
+            numpy \
+            scipy \
+            xgboost || echo "XGBoost install failed, continuing..."; \
+        # Try PyTorch (may fail on Alpine) \
+        pip3 install --user --no-cache-dir --break-system-packages \
+            --index-url https://download.pytorch.org/whl/cpu \
+            torch torchvision torchaudio 2>/dev/null || echo "PyTorch not available for Alpine"; \
+    fi
+
+# Install Jupyter (if enabled)
+RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
+        pip3 install --user --no-cache-dir --break-system-packages \
+            jupyter \
+            jupyterlab \
+            ipywidgets; \
+    fi
+
+# Install Bleu.js in builder
+WORKDIR /tmp/bleu-js
+COPY src/bleujs /tmp/bleu-js/src/bleujs
+COPY requirements.txt /tmp/bleu-js/
+COPY setup.py /tmp/bleu-js/
+COPY pyproject.toml /tmp/bleu-js/
+RUN pip3 install --user --no-cache-dir --break-system-packages -e /tmp/bleu-js 2>/dev/null || \
+    pip3 install --user --no-cache-dir --break-system-packages bleu-js 2>/dev/null || \
+    echo "Bleu.js installation attempted"
+
+# ============================================================================
+# Stage 2: Runtime - MINIMAL image with ONLY runtime dependencies
+# ============================================================================
+FROM alpine:3.19 AS runtime
+
+ARG BLEU_OS_VERSION=1.0.0
+ARG INSTALL_QUANTUM=true
+ARG INSTALL_ML=true
+ARG INSTALL_JUPYTER=false
+
+# Metadata
+LABEL maintainer="HelloblueAI <support@helloblue.ai>"
+LABEL description="Bleu OS - Quantum-Enhanced AI Operating System (Optimized)"
+LABEL version="${BLEU_OS_VERSION}"
+LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Install ONLY runtime dependencies (NO build tools!)
+RUN apk add --no-cache \
+    bash \
+    curl \
+    python3 \
+    py3-pip \
+    ca-certificates \
+    tzdata \
+    libstdc++ \
+    libgcc \
+    && rm -rf /var/cache/apk/* \
+    && addgroup -g 1000 bleuos \
+    && adduser -D -u 1000 -G bleuos bleuos
+
+# Copy installed Python packages from builder (NOT build tools!)
+COPY --from=builder --chown=bleuos:bleuos /root/.local /home/bleuos/.local
+
+# Copy Bleu.js from builder
+COPY --from=builder --chown=bleuos:bleuos /tmp/bleu-js /opt/bleu-js
+
+# Create directories
+RUN mkdir -p /workspace /data /var/log/bleu-os /var/cache/bleu-os \
+    && chown -R bleuos:bleuos /workspace /data /var/log/bleu-os /var/cache/bleu-os
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    BLEU_OS_VERSION=${BLEU_OS_VERSION} \
+    BLEU_QUANTUM_MODE=${INSTALL_QUANTUM} \
+    BLEU_OPTIMIZATION_LEVEL=3 \
+    PATH="/home/bleuos/.local/bin:$PATH" \
+    PYTHONPATH="/opt/bleu-js:/workspace"
+
+# Copy configuration files
+COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
+COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/init-bleu-os.sh
+
+# Switch to non-root user
+USER bleuos
+WORKDIR /workspace
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python3 -c "import bleujs; import sys; sys.exit(0)" 2>/dev/null || exit 1
+
+# Expose ports
+EXPOSE 8888 9090 8000
+
+# Initialize Bleu OS on startup
+ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
+CMD ["bash"]

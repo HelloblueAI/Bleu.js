@@ -86,21 +86,26 @@ RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
         pip3 install --user --no-cache-dir --break-system-packages cirq || echo "Cirq install failed, continuing..."; \
         pip3 install --user --no-cache-dir --break-system-packages pennylane || echo "PennyLane install failed, continuing..."; \
         pip3 install --user --no-cache-dir --break-system-packages qutip || echo "Qutip install failed, continuing..."; \
-        echo "Quantum libraries installation attempted"; \
+    echo "Quantum libraries installation attempted"; \
     fi
 
 # Install ML libraries (if enabled)
+# Note: PyTorch and TensorFlow don't have Alpine wheels, so we install alternatives
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
-        torch \
-        tensorflow \
-        xgboost \
         scikit-learn \
         pandas \
         matplotlib \
         numpy \
         scipy \
-    ; fi
+        xgboost || echo "XGBoost install failed, continuing..."; \
+    # Try to install PyTorch CPU-only (may fail on Alpine, that's OK) \
+    pip3 install --user --no-cache-dir --break-system-packages \
+        --index-url https://download.pytorch.org/whl/cpu \
+        torch torchvision torchaudio 2>/dev/null || echo "PyTorch not available for Alpine, skipping..."; \
+    # TensorFlow also doesn't work on Alpine, skip it \
+    echo "Note: TensorFlow requires glibc (not available on Alpine)"; \
+    fi
 
 # Install Jupyter (if enabled)
 RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \

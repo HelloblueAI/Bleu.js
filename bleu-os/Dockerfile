@@ -57,29 +57,29 @@ RUN mkdir -p /opt/bleu-js /workspace /data /var/log/bleu-os /var/cache/bleu-os &
 # Install quantum computing libraries (if enabled)
 RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
     pip3 install --no-cache-dir --break-system-packages \
-        qiskit \
-        cirq \
-        pennylane \
-        qutip \
+    qiskit \
+    cirq \
+    pennylane \
+    qutip \
     && rm -rf /root/.cache/pip; \
     fi
 
 # Install ML/AI libraries (if enabled)
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --no-cache-dir --break-system-packages \
-        torch \
-        tensorflow \
-        xgboost \
-        scikit-learn \
-        pandas \
-        matplotlib \
+    torch \
+    tensorflow \
+    xgboost \
+    scikit-learn \
+    pandas \
+    matplotlib \
     && rm -rf /root/.cache/pip; \
     fi
 
 # Install Jupyter (if enabled)
 RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
     pip3 install --no-cache-dir --break-system-packages \
-        jupyter \
+    jupyter \
         jupyterlab \
         ipywidgets \
     && rm -rf /root/.cache/pip; \
