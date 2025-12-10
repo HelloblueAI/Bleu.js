@@ -16,7 +16,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/bleu-os
+  # Use lowercase repository owner to avoid Docker registry naming issues
+  IMAGE_NAME: ${{ github.repository_owner }}/bleu-os
 
 jobs:
   build-and-push:
