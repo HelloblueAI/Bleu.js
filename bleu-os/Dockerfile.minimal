@@ -9,12 +9,14 @@ LABEL maintainer="HelloblueAI <support@helloblue.ai>"
 LABEL description="Bleu OS - Minimal Quantum-Enhanced AI Operating System"
 LABEL version="${BLEU_OS_VERSION}"
 
-# Install minimal dependencies
-RUN apk add --no-cache \
-    bash \
-    python3 \
-    py3-pip \
-    ca-certificates \
+# Install minimal dependencies (with security updates)
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        bash \
+        python3 \
+        py3-pip \
+        ca-certificates \
     && rm -rf /var/cache/apk/*
 
 # Create non-root user
