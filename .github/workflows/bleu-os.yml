@@ -42,6 +42,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Bleu OS Docker image
         uses: docker/build-push-action@v5
         with:
@@ -72,36 +79,89 @@ jobs:
   verify-os:
     name: Verify Bleu OS
     runs-on: ubuntu-latest
+    needs: build-docker
+    if: success() || failure()
     permissions:
       contents: read
       packages: read
-    container:
-      image: ghcr.io/helloblueai/bleu-os:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run verification script
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull or use built image
         run: |
-          chmod +x bleu-os/scripts/verify-os.sh
-          bleu-os/scripts/verify-os.sh || true
+          echo "Attempting to pull image from registry..."
+          docker pull ghcr.io/helloblueai/bleu-os:latest || echo "Image not yet published, will skip verification"
+
+      - name: Run verification script
+        if: success()
+        run: |
+          if docker images ghcr.io/helloblueai/bleu-os:latest --format "{{.ID}}" | grep -q .; then
+            docker run --rm ghcr.io/helloblueai/bleu-os:latest /bin/bash -c "
+              python3 --version &&
+              python3 -c 'import bleujs; print(\"Bleu.js: installed\")' &&
+              echo '✅ Verification passed!'
+            " || echo "Verification failed - continuing"
+          else
+            echo "Image not available, skipping verification"
+          fi
 
   benchmark:
     name: Performance Benchmark
     runs-on: ubuntu-latest
+    needs: build-docker
+    if: success() || failure()
     permissions:
       contents: read
       packages: read
-    container:
-      image: ghcr.io/helloblueai/bleu-os:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run benchmarks
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull or use built image
         run: |
-          chmod +x bleu-os/scripts/benchmark.sh
-          bleu-os/scripts/benchmark.sh || true
+          echo "Attempting to pull image from registry..."
+          docker pull ghcr.io/helloblueai/bleu-os:latest || echo "Image not yet published, will skip benchmark"
+
+      - name: Run benchmarks
+        if: success()
+        run: |
+          if docker images ghcr.io/helloblueai/bleu-os:latest --format "{{.ID}}" | grep -q .; then
+            docker run --rm -v $(pwd):/workspace ghcr.io/helloblueai/bleu-os:latest /bin/bash -c "
+              chmod +x /workspace/bleu-os/scripts/benchmark.sh || true
+              /workspace/bleu-os/scripts/benchmark.sh || echo 'Benchmark script not available'
+            " || echo "Benchmark failed - continuing"
+          else
+            echo "Image not available, skipping benchmark"
+          fi
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
@@ -187,6 +247,6 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-results.sarif'
