@@ -54,11 +54,36 @@ paths-ignore:
   - "**/*.swo"
   - "**/*~"
 
+  # Config files (not source code)
+  - "**/*.config.js"
+  - "**/*.config.ts"
+  - "**/commitlint.config.js"
+  - "**/.eslintrc.*"
+  - "**/.prettierrc.*"
+  - "**/tsconfig.json"
+  - "**/jsconfig.json"
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/yarn.lock"
+  - "**/pnpm-lock.yaml"
+
+  # Template and example files
+  - "**/*.template.*"
+  - "**/*.example.*"
+  - "**/examples/**"
+  - "**/templates/**"
+
+  # Documentation and static files
+  - "**/*.html"
+  - "**/*.css"
+  - "**/static/**"
+  - "**/public/**"
+
 # Languages to analyze
 languages:
   - python
-  # Only analyze JavaScript/TypeScript if there are actual source files
-  # Exclude if only node_modules
+  # JavaScript/TypeScript - analyze only actual source files
+  # Config files and templates are excluded above
   - javascript
   - typescript
 
