@@ -91,14 +91,18 @@ RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
 
 # Install ML libraries (if enabled)
 # Note: PyTorch and TensorFlow don't have Alpine wheels, so we install alternatives
+# Note: XGBoost must be compiled from source on Alpine (takes 10-20+ minutes)
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
         scikit-learn \
         pandas \
         matplotlib \
         numpy \
-        scipy \
-        xgboost || echo "XGBoost install failed, continuing..."; \
+        scipy; \
+    # XGBoost: Compiles from source on Alpine (slow but works) \
+    echo "Installing XGBoost (this will take 10-20+ minutes on Alpine)..."; \
+    pip3 install --user --no-cache-dir --break-system-packages \
+        xgboost || echo "XGBoost install failed or taking too long, continuing..."; \
     # Try to install PyTorch CPU-only (may fail on Alpine, that's OK) \
     pip3 install --user --no-cache-dir --break-system-packages \
         --index-url https://download.pytorch.org/whl/cpu \
