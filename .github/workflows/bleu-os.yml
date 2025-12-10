@@ -72,6 +72,8 @@ jobs:
   verify-os:
     name: Verify Bleu OS
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     container:
       image: bleuos/bleu-os:latest
     steps:
@@ -86,6 +88,8 @@ jobs:
   benchmark:
     name: Performance Benchmark
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     container:
       image: bleuos/bleu-os:latest
     steps:
@@ -110,6 +114,8 @@ jobs:
     name: Build ISO Image
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
     steps:
       - name: Free Disk Space
         run: |
@@ -154,6 +160,9 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Free Disk Space
         run: |
