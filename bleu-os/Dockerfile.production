@@ -82,11 +82,11 @@ WORKDIR /home/bleuos
 # Install quantum libraries (if enabled)
 # Install one at a time for better error handling
 RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
-    pip3 install --user --no-cache-dir --break-system-packages qiskit || echo "Qiskit install failed, continuing..." && \
-    pip3 install --user --no-cache-dir --break-system-packages cirq || echo "Cirq install failed, continuing..." && \
-    pip3 install --user --no-cache-dir --break-system-packages pennylane || echo "PennyLane install failed, continuing..." && \
-    pip3 install --user --no-cache-dir --break-system-packages qutip || echo "Qutip install failed, continuing..." && \
-    echo "Quantum libraries installation attempted"; \
+        pip3 install --user --no-cache-dir --break-system-packages qiskit || echo "Qiskit install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages cirq || echo "Cirq install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages pennylane || echo "PennyLane install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages qutip || echo "Qutip install failed, continuing..."; \
+        echo "Quantum libraries installation attempted"; \
     fi
 
 # Install ML libraries (if enabled)
