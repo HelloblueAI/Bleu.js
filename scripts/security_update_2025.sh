@@ -62,15 +62,11 @@ pip install --upgrade "transformers>=4.55.0"
 echo -e "${GREEN}3. Updating cryptography (>= 45.0.6)${NC}"
 pip install --upgrade "cryptography>=45.0.6"
 
-# Update ecdsa (fixes timing attack)
-# Note: Version 0.20.0 not yet released, using latest available (0.19.1)
-# The vulnerability may not be fully fixed until 0.20.0 is released
-echo -e "${GREEN}4. Updating ecdsa (latest available: 0.19.1)${NC}"
-echo -e "${YELLOW}   Note: 0.20.0 not yet available. Using 0.19.1 (latest)${NC}"
-pip install --upgrade "ecdsa>=0.19.1" || {
-    echo -e "${YELLOW}⚠️  ecdsa update skipped - version 0.20.0 not available${NC}"
-    echo -e "${YELLOW}   Consider removing ecdsa if not directly used${NC}"
-}
+# ecdsa removed - not used in source code and has unfixed Minerva timing attack vulnerability (Issue #295)
+# Use cryptography library for ECDSA operations if needed
+echo -e "${GREEN}4. ecdsa removed (not used, has unfixed vulnerability)${NC}"
+echo -e "${YELLOW}   ecdsa has been removed from dependencies${NC}"
+echo -e "${YELLOW}   Use cryptography library for ECDSA operations if needed${NC}"
 
 echo ""
 echo "✅ Dependencies updated!"
