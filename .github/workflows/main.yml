@@ -97,6 +97,17 @@ jobs:
       vulnerabilities: ${{ steps.security-check.outputs.vulnerabilities }}
 
     steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune -af --volumes || true
+          df -h
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -173,7 +184,8 @@ jobs:
             safety-report.json
             bandit-report.json
             pip-audit-report.json
-          retention-days: 90
+          retention-days: 30
+          compression-level: 6
 
   # ============================================================================
   # CODE QUALITY & LINTING
@@ -185,6 +197,15 @@ jobs:
     needs: [auto-assign, version-bump]
 
     steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          docker system prune -af --volumes || true
+          df -h
+
       - uses: actions/checkout@v4
 
       - name: Set up Python
@@ -226,7 +247,8 @@ jobs:
         with:
           name: linting-results
           path: bandit-lint-results.json
-          retention-days: 7
+          retention-days: 3
+          compression-level: 6
 
   # ============================================================================
   # TEST SUITE
@@ -292,6 +314,15 @@ jobs:
         run: |
           poetry run pytest tests/ --cov=src --cov-branch --cov-report=xml --cov-report=html --cov-report=term-missing --cov-fail-under=${{ env.COVERAGE_THRESHOLD }} --junitxml=junit.xml -o junit_family=legacy --ignore tests/test_api_token_service.py --ignore tests/test_api_token_validation.py --ignore tests/test_api_tokens.py --ignore tests/test_monitoring.py --ignore tests/test_rate_limiting.py --ignore tests/test_services_coverage.py --ignore tests/services/test_redis_client.py --ignore tests/services/test_secrets_manager.py --ignore tests/unit/ai/test_attention.py --ignore tests/unit/aws/test_ec2.py --ignore tests/quantum/test_contest_strategy.py --ignore tests/quantum/test_quantum_circuit.py --ignore tests/middleware/rate_limit_test.py --ignore tests/middleware/auth_test.py --ignore tests/quantum/quantum_processor_test.py --ignore tests/integration/ --strict-markers --disable-warnings --tb=short --maxfail=10 --durations=10 -v
 
+      - name: Clean up after tests
+        if: always()
+        run: |
+          echo "🧹 Cleaning up disk space after tests..."
+          poetry env remove --all || true
+          rm -rf .venv
+          docker system prune -af --volumes || true
+          df -h
+
       - name: Upload test results
         uses: actions/upload-artifact@v5
         if: always()
@@ -300,9 +331,9 @@ jobs:
           path: |
             coverage.xml
             htmlcov/
-            .pytest_cache/
             junit.xml
-          retention-days: 30
+          retention-days: 7
+          compression-level: 6
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
