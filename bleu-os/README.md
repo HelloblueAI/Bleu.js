@@ -373,6 +373,9 @@ bash scripts/verify-hardware.sh
 
 ## 📚 Documentation
 
+- **[Usage Guide](./USAGE_GUIDE.md)** ⭐ - Complete guide with examples (Start here!)
+- [Docker Usage Guide](./DOCKER_USAGE.md) - Docker commands and options
+- [Distribution Strategy](./DISTRIBUTION_STRATEGY.md) - How we distribute images
 - [Installation Guide](docs/INSTALLATION.md)
 - [Configuration Guide](docs/CONFIGURATION.md)
 - [Development Guide](docs/DEVELOPMENT.md)
