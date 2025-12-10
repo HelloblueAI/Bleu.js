@@ -63,10 +63,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check Docker Hub secrets
-        if: github.event_name != 'pull_request'
         id: check-dockerhub
         run: |
-          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "dockerhub_enabled=false" >> $GITHUB_OUTPUT
+            echo "ℹ️  Pull request - skipping Docker Hub publishing"
+          elif [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
             echo "dockerhub_enabled=false" >> $GITHUB_OUTPUT
             echo "⚠️  Docker Hub secrets not set. Skipping Docker Hub publishing."
             echo "   To enable, add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets."
@@ -100,7 +102,7 @@ jobs:
 
       - name: Extract metadata for Docker Hub
         id: meta-dockerhub
-        if: github.event_name != 'pull_request' && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != ''
+        if: github.event_name != 'pull_request' && steps.check-dockerhub.outputs.dockerhub_enabled == 'true'
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKERHUB_IMAGE_NAME }}
@@ -124,7 +126,7 @@ jobs:
           # Note: Multi-arch (arm64) can be added when build time allows
 
       - name: Build and push to Docker Hub
-        if: github.event_name != 'pull_request' && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != ''
+        if: github.event_name != 'pull_request' && steps.check-dockerhub.outputs.dockerhub_enabled == 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
