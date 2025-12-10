@@ -215,10 +215,12 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
         self, exc: ValueError, request_id: str
     ) -> JSONResponse:
         """Handle value errors."""
+        # Use generic message to avoid information exposure
+        # Full exception details are logged but not exposed in response
         error_response = {
             "error": {
                 "type": "ValueError",
-                "message": str(exc),
+                "message": "Invalid value provided",
                 "status_code": status.HTTP_400_BAD_REQUEST,
                 "request_id": request_id,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -235,16 +237,12 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
         self, exc: Exception, request_id: str
     ) -> JSONResponse:
         """Handle generic exceptions."""
-        # Don't expose internal errors in production
-        if self.settings.APP_ENV == "production":
-            message = "Internal server error"
-        else:
-            message = str(exc)
-
+        # Never expose exception details in response to avoid information exposure
+        # Full exception details are logged server-side but not exposed to clients
         error_response = {
             "error": {
                 "type": "InternalServerError",
-                "message": message,
+                "message": "Internal server error",
                 "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
                 "request_id": request_id,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
