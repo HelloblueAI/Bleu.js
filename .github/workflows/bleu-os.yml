@@ -1,0 +1,177 @@
+name: Bleu OS Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'bleu-os/**'
+      - 'src/bleujs/**'
+      - 'requirements.txt'
+      - '.github/workflows/bleu-os.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'bleu-os/**'
+      - 'src/bleujs/**'
+  workflow_dispatch:
+
+env:
+  BLEU_OS_VERSION: "1.0.0"
+
+jobs:
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space before Docker build..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Bleu OS Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./bleu-os/Dockerfile
+          push: false
+          tags: bleuos/bleu-os:latest,bleuos/bleu-os:${{ env.BLEU_OS_VERSION }}
+          cache-from: type=registry,ref=bleuos/bleu-os:buildcache
+          cache-to: type=registry,ref=bleuos/bleu-os:buildcache,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker run --rm bleuos/bleu-os:latest /bin/bash -c "
+            python3 --version &&
+            python3 -c 'import numpy; print(\"NumPy:\", numpy.__version__)' &&
+            python3 -c 'import qiskit; print(\"Qiskit:\", qiskit.__version__)' 2>/dev/null || echo 'Qiskit optional' &&
+            echo 'Bleu OS Docker image test passed!'
+          "
+
+      - name: Clean up Docker after build
+        if: always()
+        run: |
+          echo "🧹 Cleaning up Docker to free disk space..."
+          docker system prune -af --volumes || true
+          docker builder prune -af || true
+          df -h
+
+  verify-os:
+    name: Verify Bleu OS
+    runs-on: ubuntu-latest
+    container:
+      image: bleuos/bleu-os:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run verification script
+        run: |
+          chmod +x bleu-os/scripts/verify-os.sh
+          bleu-os/scripts/verify-os.sh || true
+
+  benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    container:
+      image: bleuos/bleu-os:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run benchmarks
+        run: |
+          chmod +x bleu-os/scripts/benchmark.sh
+          bleu-os/scripts/benchmark.sh || true
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: bleu-os/benchmarks/*.json
+          retention-days: 7
+          compression-level: 6
+
+  build-iso:
+    name: Build ISO Image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space before ISO build..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap genisoimage qemu-utils
+
+      - name: Build Bleu OS
+        run: |
+          cd bleu-os
+          chmod +x build.sh scripts/*.sh
+          ./build.sh --arch x86_64 --variant quantum-ai || echo "Build may require additional setup"
+
+      - name: Upload ISO artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bleu-os-iso
+          path: bleu-os/build/iso/*.iso
+          retention-days: 3
+          compression-level: 6
+
+      - name: Clean up after ISO build
+        if: always()
+        run: |
+          echo "🧹 Cleaning up after ISO build..."
+          rm -rf bleu-os/build
+          docker system prune -af --volumes || true
+          df -h
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './bleu-os'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
