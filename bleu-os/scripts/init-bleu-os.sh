@@ -11,7 +11,22 @@ log() {
 # Load configuration
 if [[ -f /etc/bleu-os/bleu-optimizations.conf ]]; then
     log "Loading Bleu OS configuration..."
-    source <(grep -v '^#' /etc/bleu-os/bleu-optimizations.conf | grep -v '^$' | sed 's/\[\(.*\)\]/\1/g')
+    # Parse INI-style config, only processing key=value lines
+    while IFS= read -r line; do
+        # Skip empty lines, comments, and section headers
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# || "$line" =~ ^[[:space:]]*\[ ]] && continue
+        # Only process lines with = sign
+        if [[ "$line" =~ = ]]; then
+            IFS='=' read -r key value <<< "$line"
+            # Remove leading/trailing whitespace
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+            # Export as environment variable (skip if empty or invalid)
+            if [[ -n "$key" && "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+                export "${key}=${value}" 2>/dev/null || true
+            fi
+        fi
+    done < /etc/bleu-os/bleu-optimizations.conf
 fi
 
 # Apply system optimizations
