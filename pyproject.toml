@@ -76,7 +76,7 @@ opentelemetry-api = "^1.35.0"
 opentelemetry-sdk = "^1.35.0"
 ray = ">=2.9.0"
 qiskit-aer = "^0.17.1"
-tensorflow = "<2.19"
+tensorflow = "^2.19.0"
 # Note: ecdsa 0.20.0 not yet released. Using 0.19.1 (latest available)
 # Consider removing if not directly used - use cryptography library instead
 ecdsa = "^0.19.1"  # Latest available - 0.20.0 with full fix not yet released (Issue #295)
