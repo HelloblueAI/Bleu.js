@@ -88,9 +88,10 @@ RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
 # Install Bleu.js
 WORKDIR /opt/bleu-js
 COPY --chown=bleuos:bleuos src/bleujs /opt/bleu-js/src/bleujs
-COPY --chown=bleuos:bleuos requirements.txt /opt/bleu-js/ 2>/dev/null || echo "requirements.txt not found, continuing..."
-COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/ 2>/dev/null || echo "setup.py not found, continuing..."
-COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/ 2>/dev/null || echo "pyproject.toml not found, continuing..."
+# Copy build files (files exist in project root)
+COPY --chown=bleuos:bleuos requirements.txt /opt/bleu-js/
+COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
+COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
 
 # Install Bleu.js with proper error handling
 RUN if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
