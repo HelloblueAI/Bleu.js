@@ -120,6 +120,12 @@ yarn.lock
 config/secrets.yml
 config/local_settings.py
 src/config/settings.py
+
+# Local credentials (never commit)
+**/DOCKERHUB_CREDENTIALS.local.md
+**/*.local.md
+**/*credentials*.local*
+**/*secrets*.local*
 .aws/
 .aws/*
 .aws/credentials
@@ -1005,3 +1011,5 @@ ENV/
 # Security scan artifacts
 bandit-report.json
 safety-report.json
+**/DOCKERHUB_CREDENTIALS.local.md
+**/*.local.md
