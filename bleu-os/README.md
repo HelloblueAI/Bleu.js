@@ -17,6 +17,17 @@ Bleu OS is a specialized Linux distribution designed from the ground up for quan
 - **Minimal Footprint**: Optimized for containers, edge devices, and cloud deployments
 - **Zero-Config**: Works out of the box with Bleu.js workloads
 
+### ⚡ Quick Start (30 seconds)
+
+```bash
+# Pull and run Bleu OS
+docker pull ghcr.io/helloblueai/bleu-os:latest
+docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
+
+# You're now in a quantum + AI ready environment!
+python3 -c "import qiskit, numpy, bleujs; print('✅ Ready!')"
+```
+
 ## 🎯 Key Features
 
 ### Quantum Computing Support
@@ -45,36 +56,54 @@ Bleu OS is a specialized Linux distribution designed from the ground up for quan
 
 ## 📦 Quick Start
 
-### Build Bleu OS Image
+### 🐳 Using Pre-built Docker Images (Recommended)
 
+**Pull and run the production image:**
+```bash
+# Pull the latest production image
+docker pull ghcr.io/helloblueai/bleu-os:latest
+
+# Run the container
+docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
+
+# Or with GPU support
+docker run -it --rm --gpus all ghcr.io/helloblueai/bleu-os:latest
+```
+
+**Available image variants:**
+```bash
+# Production (full-featured, ~2.8GB)
+docker pull ghcr.io/helloblueai/bleu-os:latest
+docker pull ghcr.io/helloblueai/bleu-os:1.0.0
+
+# Minimal (lightweight, ~200MB)
+docker pull ghcr.io/helloblueai/bleu-os:minimal
+```
+
+**With Docker Compose:**
+```bash
+cd bleu-os
+docker compose up -d bleu-os
+```
+
+### 🛠️ Building from Source
+
+**Build Bleu OS Image:**
 ```bash
 cd bleu-os
 ./build.sh
 ```
 
-### Run in Docker
-
-**Production (Recommended):**
+**Build Docker images manually:**
 ```bash
+# Production
 docker build -t bleu-os:latest -f Dockerfile.production .
-docker run -it --gpus all bleu-os:latest
-```
 
-**Development:**
-```bash
+# Development
 docker build -t bleu-os:dev -f Dockerfile .
-docker run -it --gpus all bleu-os:dev
-```
 
-**Minimal (Lightweight):**
-```bash
+# Minimal
 docker build -t bleu-os:minimal -f Dockerfile.minimal .
-docker run -it bleu-os:minimal
-```
-
-**With Docker Compose:**
-```bash
-docker-compose up -d
 ```
 
 ### Install on Bare Metal
@@ -126,25 +155,42 @@ docker-compose up -d
 
 ## 🔧 Installation
 
-### Option 1: Docker (Recommended for Development)
+### Option 1: Docker (Recommended)
 
-**From GitHub Container Registry (GHCR):**
+**Quick Start:**
 ```bash
+# Pull and run the latest production image
 docker pull ghcr.io/helloblueai/bleu-os:latest
-docker run -it --gpus all ghcr.io/helloblueai/bleu-os:latest
+docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
 ```
 
-**From Docker Hub (if published):**
+**With volumes for persistent data:**
 ```bash
-docker pull bleuos/bleu-os:latest
-docker run -it --gpus all bleuos/bleu-os:latest
+docker run -it --rm \
+  -v $(pwd)/workspace:/workspace \
+  -v $(pwd)/data:/data \
+  ghcr.io/helloblueai/bleu-os:latest
 ```
 
-**Available Tags:**
-- `latest` - Production build with all features
-- `minimal` - Lightweight version (~200MB)
-- `1.0.0` - Specific version
+**With GPU support (NVIDIA):**
+```bash
+docker run -it --rm --gpus all \
+  ghcr.io/helloblueai/bleu-os:latest
+```
+
+**Available Image Tags:**
+- `latest` - Production build with all features (quantum + ML)
+- `minimal` - Lightweight version (~200MB, essential only)
+- `1.0.0` - Specific version tag
 - `1.0` - Latest patch of major.minor version
+
+**Using Docker Compose:**
+```bash
+cd bleu-os
+docker compose up -d bleu-os        # Production
+docker compose up -d bleu-os-minimal # Minimal
+docker compose up -d jupyter        # Jupyter Lab
+```
 
 ### Option 2: ISO Installation
 
@@ -160,6 +206,88 @@ Available for:
 - Google Cloud (GCE)
 - Azure (VHD)
 - DigitalOcean (Snapshots)
+
+## 💻 Usage Examples
+
+### Basic Usage
+
+**Start an interactive session:**
+```bash
+docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
+```
+
+**Run Python scripts:**
+```bash
+docker run --rm -v $(pwd):/workspace \
+  ghcr.io/helloblueai/bleu-os:latest \
+  python3 /workspace/your_script.py
+```
+
+**Run Jupyter Lab:**
+```bash
+docker run -it --rm -p 8888:8888 \
+  -v $(pwd)/notebooks:/workspace/notebooks \
+  ghcr.io/helloblueai/bleu-os:latest \
+  jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+```
+
+**Access Jupyter at:** `http://localhost:8888`
+
+### Quantum Computing Examples
+
+**Run Qiskit code:**
+```bash
+docker run --rm -v $(pwd):/workspace \
+  ghcr.io/helloblueai/bleu-os:latest \
+  python3 -c "
+from qiskit import QuantumCircuit
+qc = QuantumCircuit(2)
+qc.h(0)
+qc.cx(0, 1)
+print('Quantum circuit created!')
+"
+```
+
+**Run PennyLane code:**
+```bash
+docker run --rm ghcr.io/helloblueai/bleu-os:latest \
+  python3 -c "
+import pennylane as qml
+dev = qml.device('default.qubit', wires=2)
+@qml.qnode(dev)
+def circuit():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.state()
+print(circuit())
+"
+```
+
+### Machine Learning Examples
+
+**Run scikit-learn:**
+```bash
+docker run --rm -v $(pwd):/workspace \
+  ghcr.io/helloblueai/bleu-os:latest \
+  python3 -c "
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+iris = datasets.load_iris()
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target)
+print(f'Training set: {X_train.shape}, Test set: {X_test.shape}')
+"
+```
+
+**Run with Bleu.js:**
+```bash
+docker run --rm ghcr.io/helloblueai/bleu-os:latest \
+  python3 -c "
+import bleujs
+import numpy as np
+print('Bleu.js version:', bleujs.__version__ if hasattr(bleujs, '__version__') else 'installed')
+print('NumPy available:', np.__version__)
+"
+```
 
 ## 🛠️ Development
 
