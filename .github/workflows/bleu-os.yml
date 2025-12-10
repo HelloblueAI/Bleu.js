@@ -22,6 +22,9 @@ jobs:
   build-docker:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Free Disk Space
         run: |
