@@ -17,22 +17,24 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 
-# Install base system and build dependencies
-RUN apk add --no-cache \
-    bash \
-    curl \
-    wget \
-    git \
-    python3 \
-    py3-pip \
-    py3-numpy \
-    py3-scipy \
-    build-base \
-    linux-headers \
-    ca-certificates \
-    tzdata \
-    libstdc++ \
-    libgcc \
+# Install base system and build dependencies (with security updates)
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        bash \
+        curl \
+        wget \
+        git \
+        python3 \
+        py3-pip \
+        py3-numpy \
+        py3-scipy \
+        build-base \
+        linux-headers \
+        ca-certificates \
+        tzdata \
+        libstdc++ \
+        libgcc \
     && rm -rf /var/cache/apk/*
 
 # Create non-root user for security

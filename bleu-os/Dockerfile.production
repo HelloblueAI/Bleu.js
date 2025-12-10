@@ -7,12 +7,14 @@ FROM alpine:3.19 AS builder
 ARG BLEU_OS_VERSION=1.0.0
 ARG PYTHON_VERSION=3.11
 
-# Install build tools
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    build-base \
-    linux-headers \
+# Install build tools (with security updates)
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        python3 \
+        py3-pip \
+        build-base \
+        linux-headers \
     && rm -rf /var/cache/apk/*
 
 # Upgrade pip
@@ -38,24 +40,26 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
 
-# Install runtime dependencies (including build tools for some packages)
-RUN apk add --no-cache \
-    bash \
-    curl \
-    python3 \
-    py3-pip \
-    build-base \
-    linux-headers \
-    gcc \
-    g++ \
-    make \
-    cmake \
-    musl-dev \
-    python3-dev \
-    ca-certificates \
-    tzdata \
-    libstdc++ \
-    libgcc \
+# Install runtime dependencies (with security updates)
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        bash \
+        curl \
+        python3 \
+        py3-pip \
+        build-base \
+        linux-headers \
+        gcc \
+        g++ \
+        make \
+        cmake \
+        musl-dev \
+        python3-dev \
+        ca-certificates \
+        tzdata \
+        libstdc++ \
+        libgcc \
     && rm -rf /var/cache/apk/* \
     && addgroup -g 1000 bleuos \
     && adduser -D -u 1000 -G bleuos bleuos
