@@ -19,7 +19,7 @@ env:
   # Use lowercase repository owner to avoid Docker registry naming issues
   # Docker registry names must be lowercase
   IMAGE_NAME: helloblueai/bleu-os
-  DOCKERHUB_IMAGE_NAME: henfarm/bleu-os
+  DOCKERHUB_IMAGE_NAME: bleuos/bleu-os
 
 jobs:
   build-and-push:
