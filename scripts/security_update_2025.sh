@@ -84,12 +84,10 @@ python3 << EOF
 import starlette
 import transformers
 import cryptography
-import ecdsa
 
 print(f"✅ starlette: {starlette.__version__}")
 print(f"✅ transformers: {transformers.__version__}")
 print(f"✅ cryptography: {cryptography.__version__}")
-print(f"✅ ecdsa: {ecdsa.__version__}")
 
 # Check versions meet requirements
 from packaging import version
@@ -98,18 +96,9 @@ assert version.parse(starlette.__version__) >= version.parse("0.48.0"), "starlet
 assert version.parse(transformers.__version__) >= version.parse("4.55.0"), "transformers version too old"
 assert version.parse(cryptography.__version__) >= version.parse("45.0.6"), "cryptography version too old"
 
-# Check ecdsa if installed
-try:
-    import ecdsa
-    ecdsa_version = ecdsa.__version__
-    print(f"✅ ecdsa: {ecdsa_version}")
-    if version.parse(ecdsa_version) < version.parse("0.19.1"):
-        print("⚠️  ecdsa version is older than recommended (0.19.1)")
-        print("   Note: Version 0.20.0 (with full fix) not yet available")
-    else:
-        print("   Note: Using latest available (0.19.1). Version 0.20.0 not yet released.")
-except ImportError:
-    print("ℹ️  ecdsa not installed (may not be required)")
+# ecdsa removed - not used in source code and has unfixed vulnerability (Issue #295)
+# Use cryptography library for ECDSA operations if needed
+print("ℹ️  ecdsa removed (not used, has unfixed Minerva timing attack vulnerability)")
 
 print("\n✅ All versions meet security requirements!")
 EOF
