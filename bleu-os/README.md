@@ -128,10 +128,23 @@ docker-compose up -d
 
 ### Option 1: Docker (Recommended for Development)
 
+**From GitHub Container Registry (GHCR):**
+```bash
+docker pull ghcr.io/helloblueai/bleu-os:latest
+docker run -it --gpus all ghcr.io/helloblueai/bleu-os:latest
+```
+
+**From Docker Hub (if published):**
 ```bash
 docker pull bleuos/bleu-os:latest
 docker run -it --gpus all bleuos/bleu-os:latest
 ```
+
+**Available Tags:**
+- `latest` - Production build with all features
+- `minimal` - Lightweight version (~200MB)
+- `1.0.0` - Specific version
+- `1.0` - Latest patch of major.minor version
 
 ### Option 2: ISO Installation
 
