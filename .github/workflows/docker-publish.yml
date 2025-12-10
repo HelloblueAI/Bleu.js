@@ -65,17 +65,36 @@ jobs:
       - name: Check Docker Hub secrets
         id: check-dockerhub
         run: |
+          echo "🔍 Checking Docker Hub secrets..."
+          echo "Event: ${{ github.event_name }}"
+
+          # Store secrets in variables to check length (without exposing values)
+          DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+          DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
+
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "dockerhub_enabled=false" >> $GITHUB_OUTPUT
             echo "ℹ️  Pull request - skipping Docker Hub publishing"
-          elif [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+          elif [ -z "$DOCKERHUB_USERNAME" ]; then
             echo "dockerhub_enabled=false" >> $GITHUB_OUTPUT
-            echo "⚠️  Docker Hub secrets not set. Skipping Docker Hub publishing."
-            echo "   To enable, add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets."
-            echo "   Images will still be published to GHCR."
+            echo "⚠️  DOCKERHUB_USERNAME is empty or not set"
+            echo "   To enable, add DOCKERHUB_USERNAME secret with value 'henfarm'"
+          elif [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "dockerhub_enabled=false" >> $GITHUB_OUTPUT
+            echo "⚠️  DOCKERHUB_TOKEN is empty or not set"
+            echo "   To enable, add DOCKERHUB_TOKEN secret with your Docker Hub access token"
           else
             echo "dockerhub_enabled=true" >> $GITHUB_OUTPUT
             echo "✅ Docker Hub secrets found"
+            echo "   Username length: ${#DOCKERHUB_USERNAME} chars"
+            echo "   Token length: ${#DOCKERHUB_TOKEN} chars"
+          fi
+
+          if [ "${{ github.event_name }}" != "pull_request" ] && ([ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]); then
+            echo ""
+            echo "⚠️  Docker Hub secrets not set. Skipping Docker Hub publishing."
+            echo "   To enable, add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets."
+            echo "   Images will still be published to GHCR."
           fi
 
       - name: Log in to Docker Hub
