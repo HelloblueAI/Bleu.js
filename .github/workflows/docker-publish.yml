@@ -109,8 +109,11 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix=sha-
             type=raw,value=${{ matrix.variant }},enable=${{ matrix.variant != 'production' }}
             type=raw,value=latest,enable=${{ matrix.variant == 'production' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) }}
+            type=raw,value=main,enable=${{ matrix.variant == 'production' && github.ref == 'refs/heads/main' }}
 
       - name: Build and push to GHCR
         uses: docker/build-push-action@v5
