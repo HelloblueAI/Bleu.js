@@ -17,7 +17,8 @@ on:
 env:
   REGISTRY: ghcr.io
   # Use lowercase repository owner to avoid Docker registry naming issues
-  IMAGE_NAME: ${{ github.repository_owner }}/bleu-os
+  # Docker registry names must be lowercase
+  IMAGE_NAME: helloblueai/bleu-os
 
 jobs:
   build-and-push:
@@ -64,6 +65,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          # Use lowercase image name to avoid Docker registry naming issues
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
