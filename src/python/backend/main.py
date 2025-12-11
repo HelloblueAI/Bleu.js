@@ -52,7 +52,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Bleu.js API",
     description="API for the Bleu.js machine learning platform",
-    version="1.0.0",
+    version="1.2.2",
 )
 
 # Configure CORS

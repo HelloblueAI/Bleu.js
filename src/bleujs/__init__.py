@@ -25,14 +25,14 @@ Machine Learning:
 For more examples, see: https://github.com/HelloblueAI/Bleu.js
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 __author__ = "Bleujs Team"
 __email__ = "support@helloblue.ai"
 __license__ = "MIT"
 
 # Core imports (always available)
 from .core import BleuJS
-from .utils import setup_logging, get_device, check_dependencies
+from .utils import check_dependencies, get_device, setup_logging
 
 # Optional imports (fail gracefully)
 try:

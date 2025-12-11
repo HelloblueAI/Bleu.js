@@ -5,6 +5,27 @@ All notable changes to Bleu.js will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2025-01-XX
+
+### 🐛 Critical Bug Fixes
+- **Fixed:** `router.add_middleware()` AttributeError - APIRouter doesn't support middleware, removed incorrect middleware configuration from router
+- **Fixed:** Missing SQLAlchemy models - Added Project, Model, and Dataset database models with proper relationships and foreign keys
+- **Fixed:** Type mismatch errors - Separated Pydantic models (for validation) from SQLAlchemy models (for database operations)
+- **Fixed:** Missing `user_id` assignments - Added required `user_id` field when creating Model and Dataset instances
+- **Fixed:** Incomplete Pydantic models - Added missing fields (project_id, architecture, hyperparameters, data_type, data_path, metadata) to ModelCreate and DatasetCreate
+- **Fixed:** Incorrect imports - Updated auth, job_queue, and tasks modules to use SQLAlchemy models instead of Pydantic models
+- **Fixed:** Job type references - Corrected response_model and return type annotations to use JobResponse instead of Job
+
+### 🔧 Backend Improvements
+- Added proper database relationships between User, Project, Model, and Dataset
+- Enhanced database models with cascade delete options for data integrity
+- Improved type safety across backend API endpoints
+- Fixed all database query operations to use correct SQLAlchemy models
+
+### 📚 Documentation
+- Updated version references across all package modules
+- Improved code comments and type hints
+
 ## [1.2.1] - 2025-11-07
 
 ### ✅ Compatibility & Tooling

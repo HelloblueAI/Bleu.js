@@ -23,7 +23,7 @@ settings = get_settings()
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.2.1",
+    version="1.2.2",
 )
 
 # Initialize services
@@ -61,7 +61,7 @@ class HealthResponse(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    """Enhanced health check endpoint with dependency monitoring and comprehensive metrics."""
+    """Enhanced health check endpoint with dependency monitoring."""
     try:
         start_time = time.time()
         health_status = "healthy"
