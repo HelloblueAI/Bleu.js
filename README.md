@@ -1,17 +1,20 @@
 ### Bleu.js - Quantum-Enhanced AI Platform
 
-> **Version 1.2.1** - Enterprise-grade AI/ML platform with quantum computing capabilities
+> **Version 1.2.2** - Enterprise-grade AI/ML platform with quantum computing capabilities
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-## 🚀 Quick Install
+##  Quick Install
 
 ```bash
-# Install from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.1
+# Install from PyPI (Recommended)
+pip install bleu-js
+
+# Or install from GitHub
+pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.2
 
 # Or clone and install
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -20,6 +23,24 @@ poetry install
 ```
 
 **See full installation guide:** [INSTALLATION.md](./INSTALLATION.md)
+
+## Upgrade to Latest Version
+
+```bash
+# Upgrade from PyPI
+pip install --upgrade bleu-js==1.2.2
+
+# Or upgrade from GitHub
+pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.2
+```
+
+**What's New in v1.2.2:**
+- Fixed critical backend API router bugs
+- Added missing database models (Project, Model, Dataset)
+- Fixed type mismatches and data integrity issues
+- Improved code reliability and type safety
+
+See [CHANGELOG.md](./docs/CHANGELOG.md) for complete details.
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
@@ -46,7 +67,7 @@ with open(model_path, 'rb') as f:
     model = pickle.load(f)
 ```
 
-## 📚 Important Documentation
+##  Important Documentation
 
 ### For Users
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
@@ -114,16 +135,16 @@ $ pip install -e .
 Collecting numpy<2.0.0,>=1.24.3
   Downloading numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 84.2 MB/s eta 0:00:00
-Successfully installed bleu-js-1.1.9 fastapi-0.116.1 starlette-0.47.1
+Successfully installed bleu-js-1.2.2 fastapi-0.116.1 starlette-0.47.1
 ```
 
 **Step 4: Verification**
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
-bleu                               1.1.9
-bleu-js                            1.1.9
-bleujs                             1.1.9
+bleu                               1.2.2
+bleu-js                            1.2.2
+bleujs                             1.2.2
 ```
 
 **Step 5: Explore Examples**
@@ -274,10 +295,10 @@ pip install "bleu-js[ml]" --constraint requirements-basic.txt
 pip install bleu-js
 
 # Using npm
-npm install bleujs@1.1.9
+npm install bleujs@1.2.2
 
 # Using pnpm
-pnpm add bleujs@1.1.9
+pnpm add bleujs@1.2.2
 
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -1654,7 +1675,7 @@ Get it now:
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![v1.2.1](https://img.shields.io/badge/v1.2.1-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![v1.2.2](https://img.shields.io/badge/v1.2.2-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
