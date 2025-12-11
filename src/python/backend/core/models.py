@@ -109,7 +109,7 @@ class ProjectCreate(BaseModel):
     """Project creation model."""
 
     name: str
-    description: str
+    description: Optional[str] = None
 
 
 class ProjectResponse(BaseModel):
@@ -138,8 +138,11 @@ class ModelCreate(BaseModel):
     """Model creation model."""
 
     name: str
-    description: str
+    description: Optional[str] = None
     model_type: str
+    architecture: Optional[str] = None
+    hyperparameters: Optional[dict] = None
+    project_id: int
 
 
 class ModelResponse(BaseModel):
@@ -147,8 +150,10 @@ class ModelResponse(BaseModel):
 
     id: int
     name: str
-    description: str
     model_type: str
+    architecture: Optional[str] = None
+    hyperparameters: Optional[dict] = None
+    project_id: int
     created_at: datetime
     updated_at: datetime
 
@@ -168,7 +173,11 @@ class DatasetCreate(BaseModel):
     """Dataset creation model."""
 
     name: str
-    description: str
+    description: Optional[str] = None
+    data_type: str
+    data_path: Optional[str] = None
+    metadata: Optional[dict] = None
+    project_id: int
 
 
 class DatasetResponse(BaseModel):
@@ -176,7 +185,10 @@ class DatasetResponse(BaseModel):
 
     id: int
     name: str
-    description: str
+    data_type: str
+    data_path: Optional[str] = None
+    metadata: Optional[dict] = None
+    project_id: int
     created_at: datetime
     updated_at: datetime
 
