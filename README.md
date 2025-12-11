@@ -1,13 +1,12 @@
-### Bleu.js - Quantum-Enhanced AI Platform
+### Bleu.js
 
 > **Version 1.2.2** - Enterprise-grade AI/ML platform with quantum computing capabilities
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-##  Quick Install
+###  Quick Install
 
 ```bash
 # Install from PyPI (Recommended)
@@ -24,7 +23,7 @@ poetry install
 
 **See full installation guide:** [INSTALLATION.md](./INSTALLATION.md)
 
-## Upgrade to Latest Version
+### Upgrade to Latest Version
 
 ```bash
 # Upgrade from PyPI
@@ -44,7 +43,7 @@ See [CHANGELOG.md](./docs/CHANGELOG.md) for complete details.
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
-## 🤗 Pre-trained Models
+### 🤗 Pre-trained Models
 
 We provide pre-trained models on Hugging Face for easy integration:
 
@@ -67,7 +66,7 @@ with open(model_path, 'rb') as f:
     model = pickle.load(f)
 ```
 
-##  Important Documentation
+###  Important Documentation
 
 ### For Users
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
@@ -172,7 +171,6 @@ This real terminal session shows the actual installation process, including:
 
 This demonstrates the authentic, unedited process of setting up and using Bleu.js!
 
-## Overview
 
 Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
 
@@ -248,7 +246,7 @@ pie title Current vs Target Performance
 - **Automated Security**: AI-powered threat detection
 - **Self-Improving Models**: Continuous learning and adaptation
 
-## Installation
+### Installation
 
 ### Basic Installation (Recommended)
 ```bash
@@ -334,7 +332,7 @@ results = bleu.process(
 )
 ```
 
-## Sample Usage - Bleu.js in Action
+### Sample Usage - Bleu.js in Action
 
 ### Terminal Example
 
@@ -392,7 +390,7 @@ $ python examples/sample_usage.py
 # }
 ```
 
-## CI/CD Pipeline
+### CI/CD Pipeline
 
 ### How Does It Work?
 
