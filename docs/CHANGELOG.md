@@ -5,7 +5,7 @@ All notable changes to Bleu.js will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.2] - 2025-01-XX
+## [1.2.2] - 2025-12-11
 
 ### 🐛 Critical Bug Fixes
 - **Fixed:** `router.add_middleware()` AttributeError - APIRouter doesn't support middleware, removed incorrect middleware configuration from router

@@ -1,6 +1,6 @@
 # 🐛 Bleu.js v1.2.2 - Critical Bug Fixes Release
 
-**Release Date:** 2025-01-XX
+**Release Date:** December 11, 2025
 **Type:** Patch Release (Bug Fixes)
 
 ---
