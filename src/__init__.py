@@ -17,4 +17,4 @@ warnings.filterwarnings(
     category=PydanticDeprecatedSince20,
 )
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

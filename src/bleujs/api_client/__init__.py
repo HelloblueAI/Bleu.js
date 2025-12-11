@@ -6,35 +6,36 @@ interacting with the Bleu.js cloud API.
 
 Usage:
     from bleu_ai.api_client import BleuAPIClient
-    
+
     client = BleuAPIClient(api_key="bleujs_sk_...")
     response = client.chat([{"role": "user", "content": "Hello!"}])
 """
 
 from .client import BleuAPIClient
 from .exceptions import (
-    BleuAPIError,
-    AuthenticationError,
-    RateLimitError,
-    InvalidRequestError,
     APIError,
+    AuthenticationError,
+    BleuAPIError,
+    InvalidRequestError,
     NetworkError,
+    RateLimitError,
     ValidationError,
 )
 from .models import (
-    ChatMessage,
     ChatCompletionRequest,
     ChatCompletionResponse,
-    GenerationRequest,
-    GenerationResponse,
+    ChatMessage,
     EmbeddingRequest,
     EmbeddingResponse,
+    GenerationRequest,
+    GenerationResponse,
     Model,
 )
 
 # Optional async client import
 try:
     from .async_client import AsyncBleuAPIClient
+
     __all__ = [
         "BleuAPIClient",
         "AsyncBleuAPIClient",
@@ -74,5 +75,4 @@ except ImportError:
         "Model",
     ]
 
-__version__ = "1.2.1"
-
+__version__ = "1.2.2"

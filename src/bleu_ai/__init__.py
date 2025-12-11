@@ -4,11 +4,12 @@ Bleujs - Quantum-Enhanced AI Platform
 A state-of-the-art quantum-enhanced vision system with advanced AI capabilities.
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 # Optional API client import
 try:
-    from .api_client import BleuAPIClient, AsyncBleuAPIClient
+    from .api_client import AsyncBleuAPIClient, BleuAPIClient
+
     __all__ = ["BleuAPIClient", "AsyncBleuAPIClient", "__version__"]
 except ImportError:
     __all__ = ["__version__"]
