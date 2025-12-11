@@ -5,8 +5,7 @@ from typing import Any, Dict
 from celery import Task
 from sqlalchemy.orm import Session
 
-from .database import SessionLocal
-from .models import Job
+from .database import Job, SessionLocal
 from .queue import celery_app
 
 

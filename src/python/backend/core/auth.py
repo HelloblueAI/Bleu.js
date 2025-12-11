@@ -8,8 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from ..config.settings import settings
-from .database import get_db
-from .models import User
+from .database import User, get_db
 
 config = settings.get_config()
 

@@ -9,8 +9,7 @@ from datetime import datetime
 from typing import Any
 
 from ..config.settings import settings
-from .database import db_manager
-from .models import Job
+from .database import Job, db_manager
 
 
 class JobQueueManager:

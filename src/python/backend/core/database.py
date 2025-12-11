@@ -45,6 +45,13 @@ class User(Base):
     subscription = relationship("Subscription", back_populates="user", uselist=False)
     api_calls = relationship("APICallLog", back_populates="user")
     jobs = relationship("Job", back_populates="user")
+    projects = relationship(
+        "Project", back_populates="user", cascade="all, delete-orphan"
+    )
+    models = relationship("Model", back_populates="user", cascade="all, delete-orphan")
+    datasets = relationship(
+        "Dataset", back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class Subscription(Base):
@@ -91,13 +98,80 @@ class Job(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     job_type = Column(String(50), nullable=False)
     status = Column(String(20), default="pending")
+    progress = Column(Float, default=0.0)
     result = Column(JSON)
     error = Column(Text)
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     user = relationship("User", back_populates="jobs")
+
+
+class Project(Base):
+    """Project model."""
+
+    __tablename__ = "projects"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="projects")
+    models = relationship(
+        "Model", back_populates="project", cascade="all, delete-orphan"
+    )
+    datasets = relationship(
+        "Dataset", back_populates="project", cascade="all, delete-orphan"
+    )
+
+
+class Model(Base):
+    """Model model."""
+
+    __tablename__ = "models"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=True)
+    model_type = Column(String(50), nullable=False)
+    architecture = Column(Text, nullable=True)
+    hyperparameters = Column(JSON, nullable=True)
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    project = relationship("Project", back_populates="models")
+    user = relationship("User", back_populates="models")
+
+
+class Dataset(Base):
+    """Dataset model."""
+
+    __tablename__ = "datasets"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=True)
+    data_type = Column(String(50), nullable=False)
+    data_path = Column(String(500), nullable=True)
+    metadata = Column(JSON, nullable=True)
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    project = relationship("Project", back_populates="datasets")
+    user = relationship("User", back_populates="datasets")
 
 
 # Database setup

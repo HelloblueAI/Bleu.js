@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -17,24 +16,24 @@ from ..core.auth import (
     get_password_hash,
     verify_password,
 )
+from ..core.database import Dataset as DatasetDB
+from ..core.database import Job as JobDB
+from ..core.database import Model as ModelDB
+from ..core.database import Project as ProjectDB
+from ..core.database import User as UserDB
 from ..core.database import get_db
 from ..core.models import (
-    Dataset,
     DatasetCreate,
     DatasetResponse,
-    Job,
     JobList,
     JobResponse,
     JobUpdate,
-    Model,
     ModelCreate,
     ModelResponse,
-    Project,
     ProjectCreate,
     ProjectResponse,
     Subscription,
     UsageStats,
-    User,
     UserCreate,
     UserResponse,
 )
@@ -48,14 +47,8 @@ router = APIRouter()
 # Security
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Configure CORS
-router.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Note: CORS middleware is configured in main.py on the FastAPI app instance
+# APIRouter does not support add_middleware() - this was a bug that has been fixed
 
 
 # Authentication endpoints
@@ -64,7 +57,7 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     """Login endpoint to get access token."""
-    user = db.query(User).filter(User.username == form_data.username).first()
+    user = db.query(UserDB).filter(UserDB.username == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -131,13 +124,13 @@ async def predict(request: Request, user_id: int, db: Session = Depends(get_db))
 @router.post("/users/", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create new user."""
-    db_user = db.query(User).filter(User.email == user.email).first()
+    db_user = db.query(UserDB).filter(UserDB.email == user.email).first()
     if db_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
     hashed_password = get_password_hash(user.password)
-    new_user = User(
+    new_user = UserDB(
         username=user.username, email=user.email, password_hash=hashed_password
     )
     db.add(new_user)
@@ -155,7 +148,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/users/me/", response_model=UserResponse)
-def read_users_me(current_user: User = Depends(get_current_user)):
+def read_users_me(current_user: UserDB = Depends(get_current_user)):
     """Get current user information."""
     return UserResponse(
         id=current_user.id,
@@ -171,11 +164,11 @@ def read_users_me(current_user: User = Depends(get_current_user)):
 @router.post("/projects/", response_model=ProjectResponse)
 def create_project(
     project: ProjectCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Create new project."""
-    new_project = Project(
+    new_project = ProjectDB(
         name=project.name, description=project.description, user_id=current_user.id
     )
     db.add(new_project)
@@ -195,13 +188,13 @@ def create_project(
 def read_projects(
     skip: int = 0,
     limit: int = 100,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """List user's projects."""
     projects = (
-        db.query(Project)
-        .filter(Project.user_id == current_user.id)
+        db.query(ProjectDB)
+        .filter(ProjectDB.user_id == current_user.id)
         .offset(skip)
         .limit(limit)
         .all()
@@ -221,11 +214,11 @@ def read_projects(
 @router.get("/projects/{project_id}", response_model=ProjectResponse)
 def read_project(
     project_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Get a specific project."""
-    project = db.query(Project).filter(Project.id == project_id).first()
+    project = db.query(ProjectDB).filter(ProjectDB.id == project_id).first()
     if project is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
@@ -247,14 +240,14 @@ def read_project(
 @router.post("/models/", response_model=ModelResponse)
 def create_model(
     model: ModelCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Create new model."""
     # Check if project exists and belongs to user
     project = (
-        db.query(Project)
-        .filter(Project.id == model.project_id, Project.user_id == current_user.id)
+        db.query(ProjectDB)
+        .filter(ProjectDB.id == model.project_id, ProjectDB.user_id == current_user.id)
         .first()
     )
     if not project:
@@ -262,12 +255,13 @@ def create_model(
             status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
         )
 
-    new_model = Model(
+    new_model = ModelDB(
         name=model.name,
         model_type=model.model_type,
         architecture=model.architecture,
         hyperparameters=model.hyperparameters,
         project_id=model.project_id,
+        user_id=current_user.id,  # Fixed: Added missing user_id
     )
     db.add(new_model)
     db.commit()
@@ -287,13 +281,13 @@ def create_model(
 def read_models(
     skip: int = 0,
     limit: int = 100,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """List user's models."""
     models = (
-        db.query(Model)
-        .filter(Model.user_id == current_user.id)
+        db.query(ModelDB)
+        .filter(ModelDB.user_id == current_user.id)
         .offset(skip)
         .limit(limit)
         .all()
@@ -314,11 +308,11 @@ def read_models(
 @router.get("/models/{model_id}", response_model=ModelResponse)
 def read_model(
     model_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Get a specific model."""
-    model = db.query(Model).filter(Model.id == model_id).first()
+    model = db.query(ModelDB).filter(ModelDB.id == model_id).first()
     if model is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Model not found"
@@ -341,14 +335,16 @@ def read_model(
 @router.post("/datasets/", response_model=DatasetResponse)
 def create_dataset(
     dataset: DatasetCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Create new dataset."""
     # Check if project exists and belongs to user
     project = (
-        db.query(Project)
-        .filter(Project.id == dataset.project_id, Project.user_id == current_user.id)
+        db.query(ProjectDB)
+        .filter(
+            ProjectDB.id == dataset.project_id, ProjectDB.user_id == current_user.id
+        )
         .first()
     )
     if not project:
@@ -356,12 +352,13 @@ def create_dataset(
             status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
         )
 
-    new_dataset = Dataset(
+    new_dataset = DatasetDB(
         name=dataset.name,
         data_type=dataset.data_type,
         data_path=dataset.data_path,
         metadata=dataset.metadata,
         project_id=dataset.project_id,
+        user_id=current_user.id,  # Fixed: Added missing user_id
     )
     db.add(new_dataset)
     db.commit()
@@ -381,13 +378,13 @@ def create_dataset(
 def read_datasets(
     skip: int = 0,
     limit: int = 100,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """List user's datasets."""
     datasets = (
-        db.query(Dataset)
-        .filter(Dataset.user_id == current_user.id)
+        db.query(DatasetDB)
+        .filter(DatasetDB.user_id == current_user.id)
         .offset(skip)
         .limit(limit)
         .all()
@@ -408,11 +405,11 @@ def read_datasets(
 @router.get("/datasets/{dataset_id}", response_model=DatasetResponse)
 def read_dataset(
     dataset_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Get a specific dataset."""
-    dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+    dataset = db.query(DatasetDB).filter(DatasetDB.id == dataset_id).first()
     if dataset is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Dataset not found"
@@ -432,8 +429,10 @@ def read_dataset(
 
 
 # Job endpoints
-@router.post("/jobs", response_model=Job)
-async def create_job(user_id: int, job_type: str, db: Session = Depends(get_db)) -> Job:
+@router.post("/jobs", response_model=JobResponse)
+async def create_job(
+    user_id: int, job_type: str, db: Session = Depends(get_db)
+) -> JobResponse:
     """Create a new job."""
     # Check API access
     has_access, error_message = SubscriptionService.check_api_access(
@@ -447,7 +446,7 @@ async def create_job(user_id: int, job_type: str, db: Session = Depends(get_db))
 
     try:
         # Create the job
-        job = Job(user_id=user_id, job_type=job_type, status="pending")
+        job = JobDB(user_id=user_id, job_type=job_type, status="pending")
         db.add(job)
         db.commit()
         db.refresh(job)
@@ -479,12 +478,12 @@ async def list_jobs(
     current_user=Depends(get_current_user),
 ):
     """List jobs with pagination and filtering."""
-    query = db.query(Job).filter(Job.user_id == current_user.id)
+    query = db.query(JobDB).filter(JobDB.user_id == current_user.id)
 
     if status:
-        query = query.filter(Job.status == status)
+        query = query.filter(JobDB.status == status)
     if job_type:
-        query = query.filter(Job.job_type == job_type)
+        query = query.filter(JobDB.job_type == job_type)
 
     total = query.count()
     jobs = query.offset(skip).limit(limit).all()
@@ -513,8 +512,10 @@ async def list_jobs(
     )
 
 
-@router.get("/jobs/{job_id}", response_model=Job)
-async def get_job(job_id: int, user_id: int, db: Session = Depends(get_db)) -> Job:
+@router.get("/jobs/{job_id}", response_model=JobResponse)
+async def get_job(
+    job_id: int, user_id: int, db: Session = Depends(get_db)
+) -> JobResponse:
     """Get a job by ID."""
     # Check API access
     has_access, error_message = SubscriptionService.check_api_access(
@@ -528,7 +529,9 @@ async def get_job(job_id: int, user_id: int, db: Session = Depends(get_db)) -> J
 
     try:
         # Get the job
-        job = db.query(Job).filter(Job.id == job_id, Job.user_id == user_id).first()
+        job = (
+            db.query(JobDB).filter(JobDB.id == job_id, JobDB.user_id == user_id).first()
+        )
 
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
@@ -566,10 +569,10 @@ async def update_job(
 ):
     """Update a job's status and progress."""
     job = (
-        db.query(Job)
+        db.query(JobDB)
         .filter(
-            Job.id == job_id,
-            Job.user_id == current_user.id,
+            JobDB.id == job_id,
+            JobDB.user_id == current_user.id,
         )
         .first()
     )
