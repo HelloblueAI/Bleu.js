@@ -1,7 +1,7 @@
 # Bleu OS Docker Image - Minimal Version
 # Lightweight version with only essential components
 
-FROM alpine:3.19
+FROM alpine:3.20
 
 ARG BLEU_OS_VERSION=1.0.0
 
@@ -13,10 +13,10 @@ LABEL version="${BLEU_OS_VERSION}"
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
-        bash \
-        python3 \
-        py3-pip \
-        ca-certificates \
+    bash \
+    python3 \
+    py3-pip \
+    ca-certificates \
     && rm -rf /var/cache/apk/*
 
 # Create non-root user
