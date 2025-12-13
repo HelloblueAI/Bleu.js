@@ -145,6 +145,9 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
           platforms: linux/amd64
+          # Generate SBOM attestations for supply chain security
+          provenance: true
+          sbom: true
           # Note: Multi-arch (arm64) can be added when build time allows
 
       - name: Build and push to Docker Hub
@@ -158,6 +161,9 @@ jobs:
           labels: ${{ steps.meta-dockerhub.outputs.labels }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           platforms: linux/amd64
+          # Generate SBOM attestations for supply chain security
+          provenance: true
+          sbom: true
 
       - name: Clean up
         if: always()
