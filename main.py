@@ -2,29 +2,37 @@
 Main entry point for the Bleu.js application.
 """
 
-import structlog
-import uvicorn
+import logging
+import os
+from contextlib import asynccontextmanager
 
-from src.python.config.settings import settings
-from src.python.core.cache import cache_manager
-from src.python.core.database import db_manager
-from src.python.core.job_queue import job_queue_manager
+import uvicorn
+from fastapi import FastAPI
+
+from src.python.backend.config.settings import settings
+from src.python.backend.core.cache import cache_manager
+from src.python.backend.core.database import db_manager
+from src.python.backend.core.job_queue import job_queue_manager
 
 # Configure logging
-logger = structlog.get_logger()
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 async def startup_event():
     """Initialize application components."""
     try:
-        # Initialize database
-        await db_manager.initialize()
+        # Initialize database - create tables if needed
+        db_manager.create_tables()
 
         # Initialize job queue
         await job_queue_manager.initialize()
 
         # Initialize cache
-        await cache_manager.initialize()
+        if hasattr(cache_manager, "initialize"):
+            await cache_manager.initialize()
 
         logger.info("Application components initialized successfully")
     except Exception as e:
@@ -35,14 +43,14 @@ async def startup_event():
 async def shutdown_event():
     """Cleanup application components."""
     try:
-        # Cleanup database
-        await db_manager.cleanup()
-
         # Cleanup job queue
-        await job_queue_manager.cleanup()
+        await job_queue_manager.shutdown()
 
         # Cleanup cache
-        await cache_manager.cleanup()
+        if hasattr(cache_manager, "cleanup"):
+            await cache_manager.cleanup()
+        if hasattr(cache_manager, "close"):
+            await cache_manager.close()
 
         logger.info("Application components cleaned up successfully")
     except Exception as e:
@@ -50,20 +58,53 @@ async def shutdown_event():
         raise
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan context manager."""
+    # Startup
+    await startup_event()
+    yield
+    # Shutdown
+    await shutdown_event()
+
+
 def main():
     """Main application entry point."""
-    config = settings.get_config()
+    try:
+        config = settings.get_config()
 
-    uvicorn.run(
-        "src.python.backend.api.router:router",
-        host=config.api.host,
-        port=config.api.port,
-        reload=config.api.debug,
-        workers=config.api.workers,
-        log_level=config.api.log_level,
-        on_startup=[startup_event],
-        on_shutdown=[shutdown_event],
-    )
+        # Allow environment variable to override port
+        port = int(os.getenv("API_PORT", config.api.port))
+        host = os.getenv("API_HOST", config.api.host)
+
+        # Create FastAPI app
+        app = FastAPI(
+            title="Bleu.js API",
+            description=(
+                "A state-of-the-art quantum-enhanced vision system "
+                "with advanced AI capabilities"
+            ),
+            version="1.2.3",
+            lifespan=lifespan,
+        )
+
+        # Include router
+        from src.python.backend.api.router import router
+
+        app.include_router(router)
+
+        # Run uvicorn server
+        # For production with workers, use: uvicorn main:app --workers 4
+        uvicorn.run(
+            app,
+            host=host,
+            port=port,
+            reload=config.api.debug,
+            log_level=config.api.log_level.lower(),
+        )
+    except Exception as e:
+        logger.error(f"Failed to start application: {e}")
+        raise
 
 
 if __name__ == "__main__":
