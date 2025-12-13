@@ -5,6 +5,33 @@ All notable changes to Bleu.js will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-12-13
+
+### 🐛 Critical Bug Fixes
+- **Fixed:** Import path errors - Corrected module paths from `src.python.config` to `src.python.backend.config`
+- **Fixed:** Method name mismatches - Changed `db_manager.initialize()` to `db_manager.create_tables()`
+- **Fixed:** Cache initialization - Deferred async task creation to prevent `RuntimeError: no running event loop`
+- **Fixed:** Redis connection handling - Made Redis failures non-fatal, cache gracefully degrades when Redis unavailable
+- **Fixed:** SQLAlchemy reserved attribute - Renamed `metadata` column to `dataset_metadata` in Dataset model
+- **Fixed:** Missing log_level attribute - Added `log_level` to `APIConfig` with default value
+- **Fixed:** Uvicorn startup/shutdown - Replaced deprecated `on_event` with modern `lifespan` handlers
+- **Fixed:** Port configuration - Added support for `API_PORT` and `API_HOST` environment variables
+
+### 🔧 Backend Improvements
+- Replaced `aioredis` with `redis.asyncio` for Python 3.12 compatibility
+- Improved error handling in cache initialization
+- Enhanced configuration loading with proper defaults
+- Updated FastAPI to use lifespan context manager instead of deprecated events
+
+### 📦 Dependencies
+- Installed missing dependencies: `python-dotenv`, `python-jose`, `passlib[bcrypt]`, `python-multipart`
+- Replaced `structlog` with standard `logging` (structlog was optional dependency)
+
+### 🧹 Code Quality
+- Removed debug instrumentation from production code
+- Cleaned up import statements
+- Improved error messages and logging
+
 ## [1.2.2] - 2025-12-11
 
 ### 🐛 Critical Bug Fixes
