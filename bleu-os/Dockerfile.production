@@ -81,9 +81,12 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/bleuos/.local/bin:$PATH" \
     PYTHONPATH="/opt/bleu-js:/workspace"
 
-# Switch to non-root user
+# Upgrade pip and setuptools to fixed versions in runtime stage (security updates)
 USER bleuos
 WORKDIR /home/bleuos
+RUN pip3 install --user --no-cache-dir --break-system-packages --upgrade \
+    pip>=25.3 \
+    setuptools>=78.1.1
 
 # Install quantum libraries (if enabled)
 # Install one at a time for better error handling
