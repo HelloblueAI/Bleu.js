@@ -18,10 +18,10 @@ RUN apk update && \
     linux-headers \
     && rm -rf /var/cache/apk/*
 
-# Upgrade pip
+# Upgrade pip and setuptools to fixed versions (security updates)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
-    pip \
-    setuptools \
+    pip>=25.3 \
+    setuptools>=78.1.1 \
     wheel
 
 # Stage 2: Runtime - Production image
