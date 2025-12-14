@@ -82,11 +82,14 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH="/opt/bleu-js:/workspace"
 
 # Upgrade pip and setuptools to fixed versions in runtime stage (security updates)
-USER bleuos
-WORKDIR /home/bleuos
-RUN pip3 install --user --no-cache-dir --break-system-packages --upgrade \
+# Upgrade system-wide to ensure Docker Scout detects the fixed versions
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     pip>=25.3 \
     setuptools>=78.1.1
+
+# Switch to non-root user
+USER bleuos
+WORKDIR /home/bleuos
 
 # Install quantum libraries (if enabled)
 # Install one at a time for better error handling
