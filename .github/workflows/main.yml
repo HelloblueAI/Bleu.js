@@ -371,7 +371,7 @@ jobs:
           poetry install --no-interaction
 
       - name: Download coverage reports
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: test-results-ubuntu-latest-3.11
           path: .
