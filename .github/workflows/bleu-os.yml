@@ -164,7 +164,7 @@ jobs:
           fi
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: benchmark-results
@@ -203,7 +203,7 @@ jobs:
           ./build.sh --arch x86_64 --variant quantum-ai || echo "Build may require additional setup"
 
       - name: Upload ISO artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: bleu-os-iso
