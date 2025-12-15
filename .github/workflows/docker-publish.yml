@@ -135,7 +135,7 @@ jobs:
             type=raw,value=main,enable=${{ matrix.variant == 'production' && github.ref == 'refs/heads/main' }}
 
       - name: Build and push to GHCR
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ matrix.dockerfile }}
@@ -152,7 +152,7 @@ jobs:
 
       - name: Build and push to Docker Hub
         if: github.event_name != 'pull_request' && steps.check-dockerhub.outputs.dockerhub_enabled == 'true'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ matrix.dockerfile }}
