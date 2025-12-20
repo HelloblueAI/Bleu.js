@@ -31,7 +31,7 @@ scikit-learn = "^1.2.2"
 
 # Web Framework - Pinned for stability
 fastapi = "^0.116.1"
-uvicorn = "0.27.1"
+uvicorn = "0.38.0"
 pydantic = {extras = ["email"], version = "^2.7.0"}
 
 # Security - Fixed versions
