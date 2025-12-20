@@ -176,7 +176,7 @@ jobs:
           poetry run pip-audit --format json --output pip-audit-report.json || true
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: security-reports
@@ -242,7 +242,7 @@ jobs:
           poetry run bandit -r . -f json -o bandit-lint-results.json || true
 
       - name: Upload linting results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: linting-results
@@ -324,7 +324,7 @@ jobs:
           df -h
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: test-results-${{ runner.os }}-${{ matrix.python-version }}
