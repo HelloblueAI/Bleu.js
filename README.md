@@ -6,7 +6,7 @@
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-## 🚀 SDK - Cloud API Access
+## SDK - Cloud API Access
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
 
@@ -41,7 +41,7 @@ print(response.embeddings)
 models = client.list_models()
 ```
 
-**📚 [Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** | **🔑 [Get API Key](https://bleujs.org)** | **💡 [Examples](./examples/api_client_*.py)**
+** [Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** | **🔑 [Get API Key](https://bleujs.org)** | **💡 [Examples](./examples/api_client_*.py)**
 
 ### Async Client
 
