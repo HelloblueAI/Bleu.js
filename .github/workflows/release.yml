@@ -78,8 +78,8 @@ jobs:
 
       - name: Install minimal dependencies for validation
         run: |
-          # Install only core dependencies, exclude heavy ones like tensorflow
-          poetry install --no-interaction --no-root --only main --without dev,quantum,deep
+          # Install only what's needed for validation, skip heavy optional deps
+          poetry install --no-interaction --no-root --without dev || poetry install --no-interaction --no-root
 
       - name: Get version information
         id: get-version
@@ -178,8 +178,8 @@ jobs:
 
       - name: Install minimal dependencies for build
         run: |
-          # Install only core dependencies needed for building, exclude heavy ones
-          poetry install --no-interaction --no-root --only main --without dev,quantum,deep
+          # For building, we don't need all dependencies - just install build tools
+          poetry install --no-interaction --no-root --without dev || poetry install --no-interaction --no-root
 
       - name: Build package
         run: |
