@@ -178,7 +178,7 @@ jobs:
 
       - name: Install minimal dependencies for build
         run: |
-          # Install only core dependencies needed for building, exclude heavy ones like tensorflow
+          # Install only core dependencies needed for building, exclude heavy ones
           poetry install --no-interaction --no-root --only main --without dev,quantum,deep
 
       - name: Build package
