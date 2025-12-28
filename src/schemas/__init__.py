@@ -4,7 +4,7 @@ Bleu schemas module.
 This module provides data schemas for Bleu.js.
 """
 
-__version__ = "1.1.7"
+__version__ = "1.3.0"
 
 from .auth import TokenData
 
