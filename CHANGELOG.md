@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.3.0] - 2025-12-28
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.2.4 to 1.3.0
+- See commit history for changes
+
+
 All notable changes to Bleu.js will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
