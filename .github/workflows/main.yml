@@ -119,7 +119,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv
           key: venv-security-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
@@ -215,7 +215,7 @@ jobs:
           cache: 'pip'
 
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv
           key: venv-lint-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
@@ -276,13 +276,13 @@ jobs:
           cache: 'pip'
 
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Cache pip packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ env.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
