@@ -43,6 +43,7 @@ setup(
     entry_points={
         "console_scripts": [
             "bleujs=bleujs.cli:main",
+            "bleu=bleujs.cli:main",
         ],
     },
     include_package_data=True,
