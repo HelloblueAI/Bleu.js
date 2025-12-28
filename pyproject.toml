@@ -37,7 +37,7 @@ pydantic = {extras = ["email"], version = "^2.7.0"}
 # Security - Fixed versions
 urllib3 = "^2.2.3"
 requests = "^2.32.4"
-cryptography = "^45.0.6"  # Updated to fix OpenSSL vulnerability (Issue #299)
+cryptography = ">=45.0.6,<47.0.0"  # Updated to fix OpenSSL vulnerability (Issue #299)
 setuptools = "^78.1.1"
 
 # Database - Pinned versions
