@@ -1,7 +1,7 @@
 # Minimal requirements for Bleu.js project
 # Core dependencies only - avoids conflicts
 
-bcrypt==4.3.0
+bcrypt==5.0.0
 
 # AWS services
 boto3==1.42.17
