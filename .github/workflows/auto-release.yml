@@ -1,0 +1,189 @@
+name: 🚀 Automatic Version Bump & Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.github/*.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-version-bump:
+    name: 🔄 Auto Bump Version & Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Get current version
+        id: get-version
+        run: |
+          CURRENT_VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Determine bump type
+        id: bump-type
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            BUMP_TYPE="${{ github.event.inputs.bump_type }}"
+          else
+            # Auto-detect from commit messages
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            if echo "$COMMIT_MSG" | grep -qiE "^(feat|feature|major)"; then
+              BUMP_TYPE="minor"
+            elif echo "$COMMIT_MSG" | grep -qiE "^(fix|bugfix|patch)"; then
+              BUMP_TYPE="patch"
+            else
+              BUMP_TYPE="patch"  # Default to patch
+            fi
+          fi
+          echo "type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+          echo "Bump type: $BUMP_TYPE"
+
+      - name: Calculate new version
+        id: new-version
+        run: |
+          CURRENT="${{ steps.get-version.outputs.current }}"
+          BUMP="${{ steps.bump-type.outputs.type }}"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+          case "$BUMP" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Update version in pyproject.toml
+        run: |
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          sed -i "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+          echo "✅ Updated pyproject.toml to $NEW_VERSION"
+
+      - name: Update version in setup.py
+        run: |
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          sed -i "s/version=\"[^\"]*\"/version=\"$NEW_VERSION\"/" setup.py
+          echo "✅ Updated setup.py to $NEW_VERSION"
+
+      - name: Update version in __init__.py files
+        run: |
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          find src -name "__init__.py" -type f -exec sed -i "s/__version__ = \"[^\"]*\"/__version__ = \"$NEW_VERSION\"/" {} \;
+          find src -name "__init__.py" -type f -exec grep -l "__version__" {} \; | xargs -I {} sh -c 'echo "✅ Updated {} to $NEW_VERSION"'
+          echo "✅ Updated all __init__.py files to $NEW_VERSION"
+
+      - name: Update CHANGELOG.md
+        run: |
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          DATE=$(date +%Y-%m-%d)
+          OLD_VERSION="${{ steps.get-version.outputs.current }}"
+          if [ -f CHANGELOG.md ]; then
+            {
+              echo ""
+              echo "## [v$NEW_VERSION] - $DATE"
+              echo ""
+              echo "### 🎉 Automatic Release"
+              echo "- Version bumped automatically from $OLD_VERSION to $NEW_VERSION"
+              echo "- See commit history for changes"
+              echo ""
+            } > /tmp/changelog_entry.txt
+            sed -i "/^# Changelog/r /tmp/changelog_entry.txt" CHANGELOG.md
+            echo "✅ Updated CHANGELOG.md"
+          else
+            echo "⚠️ CHANGELOG.md not found, skipping"
+          fi
+
+      - name: Commit version updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml setup.py src/**/__init__.py CHANGELOG.md
+          git commit -m "chore: Bump version to ${{ steps.new-version.outputs.version }} [skip ci]" || echo "No changes to commit"
+          git push origin main || echo "Nothing to push"
+
+      - name: Create and push tag
+        run: |
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          TAG="v$NEW_VERSION"
+          OLD_VERSION="${{ steps.get-version.outputs.current }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "⚠️ Tag $TAG already exists, skipping"
+          else
+            TAG_MSG="Release $TAG: Automatic version bump from $OLD_VERSION to $NEW_VERSION. All version files updated. Installation: pip install bleu-js==$NEW_VERSION"
+            git tag -a "$TAG" -m "$TAG_MSG"
+            git push origin "$TAG"
+            echo "✅ Created and pushed tag $TAG"
+          fi
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Automatic Version Bump Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Previous Version:** ${{ steps.get-version.outputs.current }}" >> $GITHUB_STEP_SUMMARY
+          echo "**New Version:** ${{ steps.new-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Bump Type:** ${{ steps.bump-type.outputs.type }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** v${{ steps.new-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All version files updated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ CHANGELOG.md updated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Git tag created and pushed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 The release workflow will now automatically:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Build packages" >> $GITHUB_STEP_SUMMARY
+          echo "   - Publish to PyPI" >> $GITHUB_STEP_SUMMARY
+          echo "   - Create GitHub release" >> $GITHUB_STEP_SUMMARY
