@@ -78,8 +78,8 @@ jobs:
 
       - name: Install minimal dependencies for validation
         run: |
-          # Install only what's needed for validation, skip heavy optional deps
-          poetry install --no-interaction --no-root --without dev || poetry install --no-interaction --no-root
+          # Install only dev dependencies for testing, skip heavy runtime deps
+          poetry install --no-interaction --no-root --only dev || poetry install --no-interaction --no-root --without dev
 
       - name: Get version information
         id: get-version
@@ -176,13 +176,10 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Install minimal dependencies for build
+      - name: Build package (no dependencies needed)
         run: |
-          # For building, we don't need all dependencies - just install build tools
-          poetry install --no-interaction --no-root --without dev || poetry install --no-interaction --no-root
-
-      - name: Build package
-        run: |
+          # poetry build doesn't require installing dependencies
+          poetry --version
           poetry build --format wheel
           poetry build --format sdist
 
