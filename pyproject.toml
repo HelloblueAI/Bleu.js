@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "bleu-js"
-version = "1.3.2"
+version = "1.3.3"
 description = "Advanced AI and Quantum Computing Framework"
 authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
