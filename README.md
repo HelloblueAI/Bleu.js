@@ -1,12 +1,10 @@
 ### Bleu.js
 
-> **Version 1.2.3** - Enterprise-grade AI/ML platform with quantum computing capabilities
-
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-## SDK - Cloud API Access
+### SDK - Cloud API Access
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
 
@@ -216,7 +214,7 @@ bleu chat "Hello"
 pip install bleu-js
 
 # Or install from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.3
+pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.4
 
 # Or clone and install
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -230,19 +228,36 @@ poetry install
 
 ```bash
 # Upgrade from PyPI
-pip install --upgrade bleu-js==1.2.3
+pip install --upgrade bleu-js==1.2.4
 
 # Or upgrade from GitHub
-pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.3
+pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.4
 ```
 
-**What's New in v1.2.3:**
+**What's New in v1.2.4:**
+
+🚀 **Major Feature: Comprehensive Bleu CLI**
+- New command-line interface with 7 powerful commands
+- `bleu chat` - Chat with AI models from terminal
+- `bleu generate` - Text generation with customizable parameters
+- `bleu embed` - Create embeddings for multiple texts
+- `bleu models` - Model management and information
+- `bleu config` - API key configuration management
+- `bleu health` - API health check
+- `bleu version` - Version information
+- Multiple input methods: arguments, files, stdin
+- JSON output support for automation
+- Built with Click framework for excellent UX
+
+📚 **Improvements:**
+- Enhanced SDK with better error handling
+- Improved documentation and examples
 - Fixed critical backend API router bugs
 - Added missing database models (Project, Model, Dataset)
 - Fixed type mismatches and data integrity issues
 - Improved code reliability and type safety
 
-See [CHANGELOG.md](./docs/CHANGELOG.md) for complete details.
+See [CHANGELOG.md](./CHANGELOG.md) for complete details.
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
@@ -724,7 +739,7 @@ graph LR
 ```
 
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or helping others, your contributions make Bleu.js better.
 
@@ -737,13 +752,13 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ### Ways to Contribute
 
-- 🐛 **Report bugs** - Help us find and fix issues
-- ✨ **Suggest features** - Share your ideas
-- 📝 **Improve documentation** - Make docs better for everyone
-- 🧪 **Add tests** - Improve test coverage
-- 💻 **Write code** - Fix bugs, add features
-- 💬 **Help others** - Answer questions in Discussions
-- 🔍 **Review PRs** - Help review pull requests
+-  **Report bugs** - Help us find and fix issues
+-  **Suggest features** - Share your ideas
+-  **Improve documentation** - Make docs better for everyone
+-  **Add tests** - Improve test coverage
+-  **Write code** - Fix bugs, add features
+-  **Help others** - Answer questions in Discussions
+-  **Review PRs** - Help review pull requests
 
 ### Getting Started
 
@@ -764,7 +779,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ### Contributors
 
-Thank you to all contributors who help make Bleu.js better! 🎉
+Thank you to all contributors who help make Bleu.js better!
 
 <!-- Contributors will be automatically added by all-contributors bot -->
 <!-- See: https://allcontributors.org/ -->
@@ -785,11 +800,11 @@ For contributors, see [Contributing Guide](./docs/CONTRIBUTING.md) for complete 
 Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads, with native Bleu.js integration.
 
 **Key Features:**
-- 🚀 **2x faster** quantum circuit execution
-- 🧠 **1.5x faster** ML training
-- ⚡ **3.75x faster** boot time
-- 🔒 Quantum-resistant security
-- 🎯 Zero-config Bleu.js integration
+-  **2x faster** quantum circuit execution
+-  **1.5x faster** ML training
+-  **3.75x faster** boot time
+-  Quantum-resistant security
+-  Zero-config Bleu.js integration
 
 ### 🐳 Get Bleu OS Now!
 
@@ -815,7 +830,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 - [Quick Start](./bleu-os/QUICKSTART.md) - Get started in 5 minutes
 
 
-## 📖 Additional Resources
+##  Additional Resources
 
 ### Documentation
 - **[Roadmap](./docs/ROADMAP.md)** - Development plans and future features
