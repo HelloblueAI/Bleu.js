@@ -59,6 +59,154 @@ async def main():
 asyncio.run(main())
 ```
 
+### 🖥️ Bleu CLI - Command Line Interface
+
+**NEW!** Access Bleu.js directly from your terminal with the comprehensive Bleu CLI.
+
+#### Installation
+
+```bash
+# Install with API client support (includes CLI)
+pip install "bleu-js[api]"
+```
+
+#### Quick Start
+
+```bash
+# Set your API key
+bleu config set api-key bleujs_sk_...
+
+# Or use environment variable
+export BLEUJS_API_KEY=bleujs_sk_...
+
+# Chat with AI
+bleu chat "What is quantum computing?"
+
+# Generate text
+bleu generate "Write a story about AI" --max-tokens 500
+
+# Create embeddings
+bleu embed "Hello world" "Goodbye world"
+
+# List available models
+bleu models list
+```
+
+#### Configuration
+
+```bash
+# Set API key
+bleu config set api-key <your-api-key>
+
+# View configuration
+bleu config show
+
+# Get specific config value
+bleu config get api-key
+```
+
+#### Commands
+
+**💬 Chat Completions**
+```bash
+# Simple chat
+bleu chat "Explain quantum computing"
+
+# With system message and custom temperature
+bleu chat "Write code" --system "You are a Python expert" --temperature 0.9
+
+# Read from file
+bleu chat --file prompt.txt
+
+# JSON output
+bleu chat "Hello" --json
+```
+
+**✨ Text Generation**
+```bash
+# Generate text
+bleu generate "Once upon a time"
+
+# With custom parameters
+bleu generate "Write a haiku" --temperature 0.8 --max-tokens 100
+
+# Read prompt from file
+bleu generate --file prompt.txt
+```
+
+**🔢 Embeddings**
+```bash
+# Embed multiple texts
+bleu embed "text1" "text2" "text3"
+
+# Embed from files
+bleu embed --file text1.txt --file text2.txt
+
+# JSON output
+bleu embed "Hello world" --json
+```
+
+**📋 Model Management**
+```bash
+# List all models
+bleu models list
+
+# Get model details
+bleu models info bleu-chat-v1
+
+# JSON output
+bleu models list --json
+```
+
+**⚙️ Utilities**
+```bash
+# Check API health
+bleu health
+
+# Show version
+bleu version
+
+# Show help
+bleu --help
+bleu chat --help
+```
+
+#### Advanced Usage
+
+**Piping and Input**
+```bash
+# Pipe input
+echo "Hello world" | bleu chat
+
+# Read from stdin
+bleu generate < prompt.txt
+```
+
+**JSON Output**
+```bash
+# Get structured output
+bleu chat "Hello" --json | jq '.content'
+bleu models list --json | jq '.[].id'
+```
+
+**Environment Variables**
+```bash
+# Use environment variable instead of config
+export BLEUJS_API_KEY=bleujs_sk_...
+bleu chat "Hello"
+```
+
+#### CLI Features
+
+- ✅ **Easy Configuration** - Simple API key management
+- ✅ **Multiple Input Methods** - Arguments, files, or stdin
+- ✅ **JSON Support** - Structured output for automation
+- ✅ **Error Handling** - Clear error messages and suggestions
+- ✅ **Model Management** - List and inspect available models
+- ✅ **Health Checks** - Verify API connectivity
+
+**📖 [Complete CLI Documentation](./docs/API_CLIENT_GUIDE.md#cli-usage)** | **🔑 [Get API Key](https://bleujs.org)**
+
 ---
 
 ###  Quick Install
