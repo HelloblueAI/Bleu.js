@@ -11,7 +11,7 @@ cirq>=1.5.0
 fastapi==0.109.2
 
 # ML and AI
-numpy<2.0
+numpy<3.0
 pandas==2.0.3
 passlib==1.7.4
 psycopg2-binary==2.9.11
