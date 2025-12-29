@@ -20,7 +20,7 @@ psycopg2-binary==2.9.11
 pydantic==2.12.5
 
 # Utilities
-python-dotenv==1.0.0
+python-dotenv==1.2.1
 python-jose==3.5.0
 pyyaml==6.0.3
 
