@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 requirements = [
     # Core dependencies (minimal, always required)
-    "numpy>=1.24.0,<2.0.0",
+    "numpy>=1.24.0,<3.0.0",
     "requests>=2.31.0",
 ]
 
