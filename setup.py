@@ -70,7 +70,7 @@ setup(
         # Deep learning features
         "deep": [
             "torch>=2.0.0",
-            "tensorflow>=2.10.0,<2.19",
+            "tensorflow>=2.10.0,<2.21",
         ],
         # Full installation (all features)
         "all": [
@@ -82,7 +82,7 @@ setup(
             "xgboost>=1.7.0",
             "pandas>=2.0.0",
             "torch>=2.0.0",
-            "tensorflow>=2.10.0,<2.19",
+            "tensorflow>=2.10.0,<2.21",
         ],
         # Development tools
         "dev": [
