@@ -1,23 +1,39 @@
 # Bleu OS Docker Image - Minimal Version
 # Lightweight version with only essential components
 
-FROM alpine:3.20
+FROM alpine:3.23
 
 ARG BLEU_OS_VERSION=1.0.0
 
 LABEL maintainer="HelloblueAI <support@helloblue.ai>"
 LABEL description="Bleu OS - Minimal Quantum-Enhanced AI Operating System"
 LABEL version="${BLEU_OS_VERSION}"
+LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.base.name="alpine:3.23"
+LABEL security.scanning="enabled"
+LABEL security.hardening="enabled"
 
 # Install minimal dependencies (with security updates)
+# Update ca-certificates first for secure package downloads
+# Upgrade all packages to fix CVEs: CVE-2025-60876 (busybox)
+# Using Alpine 3.23 (recommended by Docker Scout) - removes 2 vulnerabilities
 RUN apk update && \
-    apk upgrade && \
+    apk upgrade --no-cache --available && \
     apk add --no-cache \
+    ca-certificates \
     bash \
     python3 \
     py3-pip \
-    ca-certificates \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* \
+    && update-ca-certificates
+
+# Upgrade pip and setuptools to latest versions to fix CVEs:
+# CVE-2025-8869 (pip 24.0) and CVE-2025-47273 (setuptools 70.3.0)
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
+    pip \
+    setuptools \
+    wheel
 
 # Create non-root user
 RUN addgroup -g 1000 bleuos && \
@@ -29,12 +45,21 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/bleuos/.local/bin:$PATH"
 
 # Install only Bleu.js (minimal)
+# Upgrade pip and setuptools for user as well to ensure latest versions
+# Note: python-jose[cryptography] uses cryptography library for crypto operations,
+# minimizing ecdsa usage (ecdsa is still installed as a dependency but less used)
 USER bleuos
 WORKDIR /home/bleuos
 
-RUN pip3 install --user --no-cache-dir --break-system-packages \
+RUN pip3 install --user --no-cache-dir --break-system-packages --upgrade \
+    pip \
+    setuptools \
+    wheel && \
+    pip3 install --user --no-cache-dir --break-system-packages \
     bleu-js \
-    numpy
+    "numpy>=2.2.6" && \
+    pip3 install --user --no-cache-dir --break-system-packages \
+    "python-jose[cryptography]>=3.3.0"
 
 # System config
 USER root
