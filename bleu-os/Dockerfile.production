@@ -2,7 +2,7 @@
 # Optimized, secure, and production-grade container image
 
 # Stage 1: Builder - Install build dependencies
-FROM alpine:3.20 AS builder
+FROM alpine:3.23 AS builder
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG PYTHON_VERSION=3.11
@@ -25,7 +25,7 @@ RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     wheel
 
 # Stage 2: Runtime - Production image
-FROM alpine:3.20 AS runtime
+FROM alpine:3.23 AS runtime
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
@@ -40,12 +40,18 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
+LABEL org.opencontainers.image.base.name="alpine:3.23"
+LABEL security.scanning="enabled"
+LABEL security.hardening="enabled"
 
 # Install runtime dependencies (with security updates)
 # Use --upgrade flag to ensure all packages are at latest versions
+# Update ca-certificates first for secure package downloads
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
+    ca-certificates \
+    && apk add --no-cache --upgrade \
     bash \
     curl \
     python3 \
@@ -58,11 +64,11 @@ RUN apk update && \
     cmake \
     musl-dev \
     python3-dev \
-    ca-certificates \
     tzdata \
     libstdc++ \
     libgcc \
     && rm -rf /var/cache/apk/* \
+    && update-ca-certificates \
     && addgroup -g 1000 bleuos \
     && adduser -D -u 1000 -G bleuos bleuos
 
@@ -92,11 +98,11 @@ USER bleuos
 WORKDIR /home/bleuos
 
 # Install quantum libraries (if enabled)
-# Install one at a time for better error handling
+# Install with version constraints for security
 RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
-        pip3 install --user --no-cache-dir --break-system-packages qiskit || echo "Qiskit install failed, continuing..."; \
-        pip3 install --user --no-cache-dir --break-system-packages cirq || echo "Cirq install failed, continuing..."; \
-        pip3 install --user --no-cache-dir --break-system-packages pennylane || echo "PennyLane install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages "qiskit>=2.1.1" || echo "Qiskit install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages "cirq>=1.2.0" || echo "Cirq install failed, continuing..."; \
+        pip3 install --user --no-cache-dir --break-system-packages "pennylane>=0.42.1" || echo "PennyLane install failed, continuing..."; \
         pip3 install --user --no-cache-dir --break-system-packages qutip || echo "Qutip install failed, continuing..."; \
     echo "Quantum libraries installation attempted"; \
     fi
@@ -104,17 +110,18 @@ RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
 # Install ML libraries (if enabled)
 # Note: PyTorch and TensorFlow don't have Alpine wheels, so we install alternatives
 # Note: XGBoost must be compiled from source on Alpine (takes 10-20+ minutes)
+# Use version constraints from requirements.txt for security
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
-        scikit-learn \
-        pandas \
+        "scikit-learn>=1.7.1" \
+        "pandas>=2.0.0" \
         matplotlib \
-        numpy \
+        "numpy>=2.2.6" \
         scipy; \
     # XGBoost: Compiles from source on Alpine (slow but works) \
     echo "Installing XGBoost (this will take 10-20+ minutes on Alpine)..."; \
     pip3 install --user --no-cache-dir --break-system-packages \
-        xgboost || echo "XGBoost install failed or taking too long, continuing..."; \
+        "xgboost>=3.0.3" || echo "XGBoost install failed or taking too long, continuing..."; \
     # Try to install PyTorch CPU-only (may fail on Alpine, that's OK) \
     # Update to 2.8.0 to fix CVE-2025-3730 and CVE-2025-2953 \
     pip3 install --user --no-cache-dir --break-system-packages \
