@@ -38,7 +38,7 @@ pydantic = {extras = ["email"], version = "^2.7.0"}
 urllib3 = "^2.2.3"
 requests = "^2.32.4"
 cryptography = ">=45.0.6,<47.0.0"  # Updated to fix OpenSSL vulnerability (Issue #299)
-setuptools = "^78.1.1"
+setuptools = ">=78.1.1,<81.0.0"
 
 # Database - Pinned versions
 sqlalchemy = "2.0.44"
