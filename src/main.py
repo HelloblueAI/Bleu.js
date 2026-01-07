@@ -35,13 +35,24 @@ QUANTUM_CONFIG = ProcessorConfig(
     noise_model="depolarizing",
 )
 
+# Get version from centralized location
+try:
+    from src.bleujs import __version__ as BLEUJS_VERSION
+except ImportError:
+    try:
+        import importlib.metadata
+
+        BLEUJS_VERSION = importlib.metadata.version("bleu-js")
+    except Exception:
+        BLEUJS_VERSION = "1.3.6"  # Fallback
+
 app = FastAPI(
     title="Bleu.js API",
     description=(
         "A state-of-the-art quantum-enhanced vision system "
         "with advanced AI capabilities"
     ),
-    version="1.1.8",
+    version=BLEUJS_VERSION,
 )
 
 # Get settings based on environment
@@ -83,7 +94,8 @@ if not os.getenv("TESTING"):
         init_db()
     except Exception as e:
         logger.error(f"Database initialization failed: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Database initialization failed")
+        # Fix: Raise a regular Exception, not HTTPException, during module init
+        raise RuntimeError(f"Database initialization failed: {str(e)}")
 
 # Include routers
 app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
@@ -93,6 +105,7 @@ app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
 # Import and include AI models router
 try:
     from src.routes import ai_models
+
     app.include_router(ai_models.router, tags=["AI Models"])
     logger.info("AI Models API routes loaded successfully")
 except ImportError as e:
@@ -102,7 +115,7 @@ except ImportError as e:
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "version": "1.1.8"}
+    return {"status": "healthy", "version": BLEUJS_VERSION}
 
 
 # Serve HTML pages
@@ -162,11 +175,12 @@ async def subscription_dashboard(request: Request):
         raise HTTPException(status_code=500, detail=RENDER_ERROR_MSG)
 
 
-@app.get("/")
+@app.get("/api")
 async def root():
+    """API root endpoint - returns API information."""
     return {
         "message": "Welcome to Bleu.js API",
-        "version": "1.1.8",
+        "version": BLEUJS_VERSION,
         "documentation": "/docs",
     }
 

@@ -37,7 +37,10 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = Field(default="INFO", alias="LOG_LEVEL")
 
     # Security - Critical: Use environment variables only
-    SECRET_KEY: str = Field(..., alias="SECRET_KEY")  # Must be provided
+    # Provide development defaults but warn in production
+    SECRET_KEY: str = Field(
+        default="dev-secret-key-change-in-production-12345", alias="SECRET_KEY"
+    )
     ALGORITHM: str = Field(default="HS256", alias="ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
         default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES"
@@ -64,7 +67,8 @@ class Settings(BaseSettings):
     DB_PORT: int = Field(default=5432, alias="DB_PORT")
     DB_NAME: str = Field(default="bleujs_dev", alias="DB_NAME")
     DB_USER: str = Field(default="bleujs_dev", alias="DB_USER")
-    DB_PASSWORD: SecretStr = Field(..., alias="DB_PASSWORD")  # Must be provided
+    # DB_PASSWORD only required for PostgreSQL, optional for SQLite
+    DB_PASSWORD: SecretStr | None = Field(default=None, alias="DB_PASSWORD")
     DATABASE_URL: str = Field(default="sqlite:///./test.db", alias="DATABASE_URL")
     DATABASE_POOL_SIZE: int = Field(default=5, alias="DATABASE_POOL_SIZE")
     DATABASE_MAX_OVERFLOW: int = Field(default=10, alias="DATABASE_MAX_OVERFLOW")
@@ -92,10 +96,14 @@ class Settings(BaseSettings):
     )
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
 
-    # JWT settings - All must be provided via environment
-    JWT_SECRET_KEY: str = Field(..., alias="JWT_SECRET_KEY")
+    # JWT settings - Provide development defaults
+    JWT_SECRET_KEY: str = Field(
+        default="dev-jwt-secret-key-change-in-production-12345", alias="JWT_SECRET_KEY"
+    )
     JWT_ALGORITHM: str = Field(default="HS256", alias="JWT_ALGORITHM")
-    JWT_SECRET: str = Field(..., alias="JWT_SECRET")
+    JWT_SECRET: str = Field(
+        default="dev-jwt-secret-change-in-production-12345", alias="JWT_SECRET"
+    )
     JWT_EXPIRES_IN: str = Field(default="24h", alias="JWT_EXPIRES_IN")
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
         default=30, alias="JWT_ACCESS_TOKEN_EXPIRE_MINUTES"
@@ -105,7 +113,9 @@ class Settings(BaseSettings):
     )
 
     # Encryption settings
-    ENCRYPTION_KEY: str = Field(..., alias="ENCRYPTION_KEY")
+    ENCRYPTION_KEY: str = Field(
+        default="dev-encryption-key-change-in-production-12345", alias="ENCRYPTION_KEY"
+    )
     ENABLE_SECURITY: bool = Field(default=True, alias="ENABLE_SECURITY")
 
     @field_validator("SECRET_KEY", "JWT_SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY")
@@ -246,10 +256,16 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         values = info.data
-        user = values.get("DB_USER")
+        # If no password provided, fallback to SQLite
         password = values.get("DB_PASSWORD")
+        if password is None:
+            return "sqlite:///./bleujs.db"
         if isinstance(password, SecretStr):
             password = password.get_secret_value()
+        if password is None:
+            return "sqlite:///./bleujs.db"
+        # For PostgreSQL, assemble from components
+        user = values.get("DB_USER")
         host = values.get("DB_HOST")
         port = values.get("DB_PORT")
         db = values.get("DB_NAME")

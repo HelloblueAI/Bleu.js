@@ -75,4 +75,8 @@ except ImportError:
         "Model",
     ]
 
-__version__ = "1.2.4"
+# Get version from main package
+try:
+    from .. import __version__ as __version__
+except ImportError:
+    __version__ = "1.3.6"  # Fallback

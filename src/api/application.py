@@ -10,7 +10,7 @@ from pydantic import BaseModel
 application = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.1.8",
+    version="1.3.6",  # TODO: Read from centralized version
 )
 
 # CORS middleware configuration

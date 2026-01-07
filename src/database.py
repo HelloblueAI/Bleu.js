@@ -9,8 +9,8 @@ from sqlalchemy.pool import StaticPool
 
 from src.models.declarative_base import Base
 
-# Load environment variables
-load_dotenv()
+# Load environment variables (but don't override existing env vars)
+load_dotenv(override=False)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -20,9 +20,24 @@ logger = logging.getLogger(__name__)
 def get_database_url() -> str:
     """Get database URL with proper fallback logic."""
     try:
-        # First try environment variable
-        if os.getenv("DATABASE_URL"):
-            return os.getenv("DATABASE_URL")
+        # First try environment variable (highest priority)
+        env_db_url = os.getenv("DATABASE_URL")
+        if env_db_url:
+            logger.info(f"Using DATABASE_URL from environment: {env_db_url[:50]}...")
+            return env_db_url
+
+        # Try to get from Settings if available (but only if no env var)
+        try:
+            from src.config import get_settings
+
+            settings = get_settings()
+            if hasattr(settings, "DATABASE_URL") and settings.DATABASE_URL:
+                logger.info(
+                    f"Using DATABASE_URL from settings: {settings.DATABASE_URL[:50]}..."
+                )
+                return settings.DATABASE_URL
+        except Exception:
+            pass  # Settings might not be available yet
 
         # Fallback to individual components
         db_host = os.getenv("DB_HOST", "localhost")
@@ -31,10 +46,12 @@ def get_database_url() -> str:
         db_user = os.getenv("DB_USER", "bleujs_dev")
         db_password = os.getenv("DB_PASSWORD", "")
 
-        if db_password:
-            return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        else:
-            return f"postgresql://{db_user}@{db_host}:{db_port}/{db_name}"
+        # If no password, default to SQLite instead of PostgreSQL
+        if not db_password:
+            logger.info("No DB_PASSWORD found, defaulting to SQLite")
+            return "sqlite:///./bleujs.db"
+
+        return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
     except Exception as e:
         logger.warning(f"Failed to construct database URL: {e}")
@@ -131,13 +148,23 @@ def get_db_stats() -> dict:
     """Get database statistics and health metrics."""
     try:
         with engine.connect() as conn:
-            # Get basic connection info
-            result = conn.execute(text("SELECT version()"))
-            version = result.scalar()
+            db_url_str = str(engine.url)
+            is_sqlite = db_url_str.startswith("sqlite")
 
-            # Get connection count
-            result = conn.execute(text("SELECT count(*) FROM pg_stat_activity"))
-            active_connections = result.scalar()
+            # Get basic connection info
+            if is_sqlite:
+                version = "SQLite"
+                # SQLite doesn't have pg_stat_activity, use a simple query instead
+                result = conn.execute(text("SELECT 1"))
+                active_connections = (
+                    1  # SQLite doesn't track connection counts the same way
+                )
+            else:
+                # PostgreSQL-specific queries
+                result = conn.execute(text("SELECT version()"))
+                version = result.scalar()
+                result = conn.execute(text("SELECT count(*) FROM pg_stat_activity"))
+                active_connections = result.scalar()
 
             return {
                 "status": "healthy",
