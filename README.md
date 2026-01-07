@@ -788,7 +788,31 @@ Thank you to all contributors who help make Bleu.js better!
 
 ## Development Setup
 
-For contributors, see [Contributing Guide](./docs/CONTRIBUTING.md) for complete development setup instructions.
+### Running the Development Server
+
+**Quick Start (No Configuration Required):**
+
+The application now includes development defaults, so you can start the server immediately:
+
+```bash
+# Start the development server (uses SQLite by default)
+python -m uvicorn src.main:app --reload --port 8002
+
+# Or specify SQLite explicitly
+DATABASE_URL="sqlite:///./bleujs.db" python -m uvicorn src.main:app --reload --port 8002
+```
+
+**What Works Out of the Box:**
+- ✅ SQLite database (no PostgreSQL required for development)
+- ✅ Development secret keys (auto-generated defaults)
+- ✅ All core features functional
+- ✅ API documentation at http://localhost:8002/docs
+
+**For Production:**
+- Set proper `SECRET_KEY`, `JWT_SECRET_KEY`, `JWT_SECRET`, and `ENCRYPTION_KEY` in environment variables
+- Use PostgreSQL for production: `DATABASE_URL=postgresql://user:pass@host:port/dbname`
+
+For complete development setup instructions, see [Contributing Guide](./docs/CONTRIBUTING.md).
 
 
 ## 🖥️ Bleu OS - Quantum-Enhanced Operating System

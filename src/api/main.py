@@ -20,10 +20,21 @@ logger = logging.getLogger(__name__)
 # Get settings for configuration
 settings = get_settings()
 
+# Get version from centralized location
+try:
+    from src.bleujs import __version__ as API_VERSION
+except ImportError:
+    try:
+        import importlib.metadata
+
+        API_VERSION = importlib.metadata.version("bleu-js")
+    except Exception:
+        API_VERSION = "1.3.6"  # Fallback
+
 app = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.2.2",
+    version=API_VERSION,
 )
 
 # Initialize services

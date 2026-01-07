@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import aiohttp
-import jwt
 from fastapi import Depends, HTTPException
+from jose import JWTError, jwt
 from prometheus_client import Counter, Gauge, Histogram
 from sqlalchemy.orm import Session
 
@@ -15,9 +15,8 @@ from src.utils.base_classes import BaseService
 from ..database import get_db
 from ..models.api_call import APICall, APIUsage
 from ..models.user import User
-from ..quantum_py.intelligence.market_intelligence import MarketIntelligence
-from ..quantum_py.intelligence.quantum_intelligence import QuantumIntelligence
-from ..quantum_py.intelligence.strategic_intelligence import StrategicIntelligence
+
+# Lazy import for optional ML dependencies - only needed for advanced analytics
 
 # Prometheus metrics
 api_calls_total = Counter(
@@ -41,10 +40,51 @@ class APIService(BaseService):
         super().__init__(db)
         self.settings = get_settings()
         self.start_time = time.time()
-        self.market_intelligence = MarketIntelligence()
-        self.strategic_intelligence = StrategicIntelligence()
-        self.quantum_intelligence = QuantumIntelligence()
+        # Lazy initialization - only create when needed for advanced analytics
+        self._market_intelligence = None
+        self._strategic_intelligence = None
+        self._quantum_intelligence = None
         self.logger = logging.getLogger(__name__)
+
+    def _get_intelligence_services(self):
+        """Lazy load intelligence services only when needed."""
+        if self._market_intelligence is None:
+            try:
+                from ..quantum_py.intelligence.market_intelligence import (
+                    MarketIntelligence,
+                )
+                from ..quantum_py.intelligence.quantum_intelligence import (
+                    QuantumIntelligence,
+                )
+                from ..quantum_py.intelligence.strategic_intelligence import (
+                    StrategicIntelligence,
+                )
+
+                self._market_intelligence = MarketIntelligence()
+                self._strategic_intelligence = StrategicIntelligence()
+                self._quantum_intelligence = QuantumIntelligence()
+            except ImportError as e:
+                self.logger.error(f"Failed to import intelligence services: {e}")
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "Advanced analytics services are not available. "
+                        "Please install required dependencies."
+                    ),
+                )
+        return (
+            self._market_intelligence,
+            self._strategic_intelligence,
+            self._quantum_intelligence,
+        )
+
+    def _ensure_user_has_subscription(self, user: User) -> None:
+        """Helper method to ensure user has an active subscription."""
+        if not hasattr(user, "subscription") or user.subscription is None:
+            self.logger.warning(f"User {user.id} has no subscription")
+            raise HTTPException(
+                status_code=403, detail="User has no active subscription"
+            )
 
     async def validate_api_key(self, api_key: str) -> User:
         """Validate API key and return user."""
@@ -66,11 +106,14 @@ class APIService(BaseService):
                 raise HTTPException(status_code=401, detail="User account is inactive")
 
             return user
-        except jwt.InvalidTokenError:
+        except JWTError:
             raise HTTPException(status_code=401, detail="Invalid API key")
 
     async def check_rate_limit(self, user: User) -> bool:
         """Check if user has exceeded rate limit"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         current_time = datetime.now(timezone.utc)
         recent_calls = (
             self.db.query(APICall)
@@ -85,6 +128,9 @@ class APIService(BaseService):
 
     async def check_usage_limit(self, user: User) -> bool:
         """Check if user has exceeded monthly usage limit"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         current_period_start = user.subscription.current_period_start
         current_period_end = user.subscription.current_period_end
 
@@ -107,6 +153,9 @@ class APIService(BaseService):
         self, user: User, endpoint: str, response_time: float, status: int
     ):
         """Track API call metrics"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         # Update Prometheus metrics
         api_calls_total.labels(endpoint=endpoint, status=str(status)).inc()
         api_response_time.labels(endpoint=endpoint).observe(response_time)
@@ -150,6 +199,9 @@ class APIService(BaseService):
 
     async def get_usage_analytics(self, user: User) -> dict:
         """Get detailed usage analytics for user"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         current_period_start = user.subscription.current_period_start
         current_period_end = user.subscription.current_period_end
 
@@ -195,20 +247,31 @@ class APIService(BaseService):
 
     async def get_advanced_analytics(self, user: User) -> dict:
         """Get advanced analytics for enterprise users"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         if user.subscription.plan_type != "ENTERPRISE":
             raise HTTPException(
                 status_code=403,
                 detail="Advanced analytics only available for Enterprise plan",
             )
 
-        # Get market intelligence
-        market_data = await self.market_intelligence.get_market_analysis()
+        # Lazy load intelligence services only when needed
+        market_intelligence, strategic_intelligence, quantum_intelligence = (
+            self._get_intelligence_services()
+        )
 
-        # Get strategic insights
-        strategic_insights = await self.strategic_intelligence.get_strategic_insights()
+        # Get market intelligence (using empty dict as placeholder -
+        # real implementation would pass market data)
+        market_data = await market_intelligence.analyze_market({})
 
-        # Get quantum analysis
-        quantum_analysis = await self.quantum_intelligence.get_quantum_analysis()
+        # Get strategic insights (using optimize_strategy with empty data)
+        strategic_insights = await strategic_intelligence.optimize_strategy({})
+
+        # Get quantum analysis (using analyze_market_data - requires numpy array)
+        import numpy as np
+
+        quantum_analysis = await quantum_intelligence.analyze_market_data(np.array([]))
 
         return {
             "market_intelligence": market_data,
@@ -218,6 +281,9 @@ class APIService(BaseService):
 
     async def get_user_dashboard_data(self, user: User) -> dict:
         """Get all dashboard data for user"""
+        # Fix: Check if user has a subscription before accessing it
+        self._ensure_user_has_subscription(user)
+
         usage_analytics = await self.get_usage_analytics(user)
 
         dashboard_data = {
@@ -268,7 +334,10 @@ class APIService(BaseService):
 
         # Get database health
         try:
-            self.db.execute("SELECT 1")
+            # Fix: Use SQLAlchemy's text() function for raw SQL
+            from sqlalchemy import text
+
+            self.db.execute(text("SELECT 1"))
             db_health = "healthy"
         except Exception as e:
             db_health = "unhealthy"
