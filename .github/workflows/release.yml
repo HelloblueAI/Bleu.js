@@ -48,20 +48,22 @@ jobs:
       is-prerelease: ${{ steps.get-version.outputs.is-prerelease }}
 
     steps:
-      - name: Free Disk Space
+      - name: Free Disk Space (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           echo "🔧 Freeing up disk space..."
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            echo "Windows runner - skipping disk cleanup"
-          else
-            sudo rm -rf /usr/share/dotnet || true
-            sudo rm -rf /usr/local/lib/android || true
-            sudo rm -rf /opt/ghc || true
-            sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-            sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
-            docker system prune -af --volumes || true
-            df -h
-          fi
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Free Disk Space (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          echo "🔧 Windows runner - disk cleanup not needed"
 
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -154,20 +156,22 @@ jobs:
         python-version: ['3.10', '3.11']
 
     steps:
-      - name: Free Disk Space
+      - name: Free Disk Space (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           echo "🔧 Freeing up disk space..."
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            echo "Windows runner - skipping disk cleanup"
-          else
-            sudo rm -rf /usr/share/dotnet || true
-            sudo rm -rf /usr/local/lib/android || true
-            sudo rm -rf /opt/ghc || true
-            sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-            sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
-            docker system prune -af --volumes || true
-            df -h
-          fi
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Free Disk Space (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          echo "🔧 Windows runner - disk cleanup not needed"
 
       - name: Checkout Repository
         uses: actions/checkout@v6
