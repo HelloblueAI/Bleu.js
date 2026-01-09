@@ -1,17 +1,31 @@
 # Changelog
 
-## [v1.3.8] - 2026-01-07
+## [1.3.8] - 2026-01-07
 
 ### 🎉 Automatic Release
 - Version bumped automatically from 1.3.7 to 1.3.8
 - See commit history for changes
 
 
-## [v1.3.7] - 2026-01-07
+## [1.3.7] - 2026-01-07
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.3.6 to 1.3.7
-- See commit history for changes
+### 🐛 Critical Bug Fixes
+- Fixed 9 critical bugs affecting stability and usability
+- Resolved route conflicts - properly separated HTML (`/`) and JSON API (`/api`) endpoints
+- Added database compatibility - works seamlessly with both SQLite and PostgreSQL
+- Fixed module initialization errors - proper error handling during startup
+- Added comprehensive subscription validation - prevents crashes when users without subscriptions access API endpoints
+- Improved SQL execution safety - all raw SQL now uses SQLAlchemy's text() function
+- Implemented lazy loading for ML dependencies - application starts without ML dependencies; advanced analytics load on-demand
+- Added development defaults - developers can start the server immediately without configuration
+- Improved database URL resolution - respects DATABASE_URL environment variable, defaults to SQLite when no password provided
+- Centralized version management - all components now read from single source of truth
+
+### 🚀 Development Experience Improvements
+- Zero-configuration startup - application starts immediately without any setup
+- SQLite support for local development - no PostgreSQL required
+- Better error handling - clearer error messages and proper initialization
+- Security improvements - subscription validation and SQL injection prevention
 
 
 ## [v1.3.6] - 2026-01-06
