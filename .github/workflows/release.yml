@@ -198,6 +198,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    if: always() # Run even if some builds fail
 
     steps:
       - name: Checkout Repository
@@ -250,7 +251,7 @@ jobs:
     needs: [test-packages]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run))
 
     steps:
       - name: Checkout Repository
