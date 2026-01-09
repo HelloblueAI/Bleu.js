@@ -25,6 +25,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  workflows: write
 
 jobs:
   auto-version-bump:
@@ -152,7 +153,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Explicitly add only version files, excluding workflow files
           git add pyproject.toml setup.py src/**/__init__.py CHANGELOG.md
+          # Ensure no workflow files are staged
+          git reset .github/workflows/ || true
           git commit -m "chore: Bump version to ${{ steps.new-version.outputs.version }} [skip ci]" || echo "No changes to commit"
           git push origin main || echo "Nothing to push"
 
