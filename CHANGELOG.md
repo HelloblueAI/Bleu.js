@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.3.12] - 2026-01-09
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.3.11 to 1.3.12
+- See commit history for changes
+
+
 ## [v1.3.11] - 2026-01-09
 
 ### 🎉 Automatic Release
