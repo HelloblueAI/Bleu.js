@@ -22,6 +22,6 @@ pytest-xdist>=3.5.0
 python-jose>=3.3.0
 python-multipart>=0.0.9
 qiskit==2.3.0
-qiskit-aer==0.13.0
+qiskit-aer==0.17.2
 sqlalchemy>=2.0.40
 torch>=2.2.0
