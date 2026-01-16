@@ -62,4 +62,4 @@ twine>=6.1.0
 
 # Security
 urllib3>=2.5.0
-uvicorn==0.27.1
+uvicorn==0.40.0
