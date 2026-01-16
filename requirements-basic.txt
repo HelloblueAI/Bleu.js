@@ -24,7 +24,7 @@ requests>=2.32.4
 scikit-learn>=1.2.2
 
 # Database
-sqlalchemy==2.0.23
+sqlalchemy==2.0.45
 
 # Security
 urllib3>=2.5.0
