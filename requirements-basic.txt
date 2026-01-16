@@ -10,7 +10,7 @@ boto3>=1.24.0
 cryptography>=42.0.5
 
 # Web framework
-fastapi==0.109.2
+fastapi==0.128.0
 httpx>=0.27.0
 # Core dependencies
 numpy>=1.24.3,<3.0.0
