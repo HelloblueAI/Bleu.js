@@ -27,5 +27,5 @@ scikit-learn>=1.2.2
 sqlalchemy==2.0.45
 
 # Security
-urllib3>=2.5.0
+urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
 uvicorn==0.40.0

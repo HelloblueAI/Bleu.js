@@ -29,7 +29,7 @@ class VulnerabilityFixer:
             "sentry-sdk": "2.8.0",
             "setuptools": "78.1.1",
             "torch": "2.7.0",
-            "urllib3": "2.5.0",
+            "urllib3": "2.6.3",  # Fixed CVE-2026-21441
         }
 
         # Packages with no known fix

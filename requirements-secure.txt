@@ -59,6 +59,6 @@ torch>=2.8.0
 # Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)
 # Note: Using latest available version (4.57.1 as of Feb 2025)
 transformers>=4.55.0
-urllib3>=2.5.0
+urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
 uvicorn[standard]>=0.35.0
 xgboost>=3.0.3
