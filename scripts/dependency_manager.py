@@ -210,7 +210,7 @@ class DependencyManager:
     def is_secure_version(self, package: str, version: str) -> bool:
         """Check if a package version is secure"""
         security_versions = {
-            "urllib3": "2.5.0",
+            "urllib3": "2.6.3",  # Fixed CVE-2026-21441
             "requests": "2.32.4",
             "h11": "0.16.0",
             "cryptography": "42.0.5",
@@ -275,7 +275,7 @@ class DependencyManager:
 
         # 3. Update critical packages
         critical_updates = [
-            ("urllib3", "2.5.0"),
+            ("urllib3", "2.6.3"),  # Fixed CVE-2026-21441
             ("requests", "2.32.4"),
             ("cryptography", "42.0.5"),
         ]
