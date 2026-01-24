@@ -81,6 +81,25 @@ tensorflow = "^2.19.0"
 # ecdsa removed - not used in source code and has unfixed Minerva timing attack vulnerability (Issue #295)
 # Use cryptography library for ECDSA operations if needed
 
+[tool.poetry.extras]
+api = ["httpx", "pydantic"]
+ml = ["scikit-learn", "xgboost", "pandas"]
+quantum = ["qiskit", "qiskit-aer", "qiskit-algorithms", "pennylane"]
+deep = ["torch", "tensorflow"]
+all = [
+    "httpx",
+    "pydantic",
+    "scikit-learn",
+    "xgboost",
+    "pandas",
+    "qiskit",
+    "qiskit-aer",
+    "qiskit-algorithms",
+    "pennylane",
+    "torch",
+    "tensorflow",
+]
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.2"
 pytest-cov = ">=4,<8"
@@ -96,8 +115,9 @@ types-pyyaml = "^6.0.12.20250516"
 types-aiofiles = "^25.1.0.20251011"
 
 [tool.poetry.scripts]
-bleu-js = "src.bleujs.cli:main"
-bleu = "src.bleujs.cli:main"
+bleu = "bleujs.cli:main"
+bleu-js = "bleujs.cli:main"
+bleujs = "bleujs.cli:main"
 
 [tool.black]
 line-length = 88

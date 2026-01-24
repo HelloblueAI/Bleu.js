@@ -7,6 +7,7 @@ requirements = [
     # Core dependencies (minimal, always required)
     "numpy>=1.24.0,<3.0.0",
     "requests>=2.31.0",
+    "click>=8.0.0",
 ]
 
 setup(
@@ -42,6 +43,7 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
+            "bleu-js=bleujs.cli:main",
             "bleujs=bleujs.cli:main",
             "bleu=bleujs.cli:main",
         ],
