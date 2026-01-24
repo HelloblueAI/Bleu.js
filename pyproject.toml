@@ -42,7 +42,7 @@ setuptools = ">=78.1.1,<81.0.0"
 
 # Database - Pinned versions
 sqlalchemy = "2.0.45"
-alembic = "1.18.0"
+alembic = "1.18.1"
 psycopg2-binary = "2.9.11"
 
 # AWS
