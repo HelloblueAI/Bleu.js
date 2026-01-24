@@ -210,11 +210,11 @@ bleu chat "Hello"
 ###  Quick Install
 
 ```bash
-# Install from PyPI (Recommended)
-pip install bleu-js
+# Install from PyPI (Recommended - latest release)
+pip install --upgrade bleu-js
 
-# Or install from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.4
+# Or install from GitHub (latest main)
+pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 # Or clone and install
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -227,11 +227,11 @@ poetry install
 ### Upgrade to Latest Version
 
 ```bash
-# Upgrade from PyPI
-pip install --upgrade bleu-js==1.2.4
+# Upgrade from PyPI to latest
+pip install --upgrade bleu-js
 
-# Or upgrade from GitHub
-pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.4
+# Or upgrade from GitHub to latest main
+pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git
 ```
 
 **What's New in v1.2.4:**

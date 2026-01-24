@@ -424,7 +424,6 @@ That's it! You're ready to use Bleu.js! 🚀
 
 ---
 
-**Last Updated:** November 2025  
-**Version:** 1.2.1  
+**Last Updated:** January 2026
+**Version:** Latest PyPI release (`pip show bleu-js`)
 **Status:** Production-Ready ✅
-

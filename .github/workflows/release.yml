@@ -231,17 +231,17 @@ jobs:
         run: |
           # Test wheel installation
           pip install dist/*.whl --force-reinstall
-          python -c "import bleu_js; print('✅ Package imports successfully')"
+          python -c "import bleujs; print('✅ Package imports successfully')"
 
           # Test source distribution
           pip install dist/*.tar.gz --force-reinstall
-          python -c "import bleu_js; print('✅ Source distribution works')"
+          python -c "import bleujs; print('✅ Source distribution works')"
 
       - name: Test package functionality
         run: |
           python -c "
-          import bleu_js
-          from bleu_js import __version__
+          import bleujs
+          from bleujs import __version__
           print(f'✅ Version: {__version__}')
           "
 
@@ -249,7 +249,7 @@ jobs:
         run: |
           python -c "
           try:
-              from bleu_js.quantum import QuantumProcessor
+              from bleujs.quantum import QuantumFeatureExtractor
               print('✅ Quantum components available')
           except ImportError:
               print('⚠️ Quantum components not available (optional)')
