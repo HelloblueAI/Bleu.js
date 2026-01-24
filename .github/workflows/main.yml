@@ -135,7 +135,21 @@ jobs:
           poetry config virtualenvs.in-project true
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --with dev
+        run: |
+          set -e
+          for i in 1 2 3; do
+            echo "Attempt $i: poetry install --no-interaction --no-root --with dev"
+            if poetry install --no-interaction --no-root --with dev; then
+              echo "✅ Poetry install succeeded on attempt $i"
+              break
+            fi
+            if [ "$i" -eq 3 ]; then
+              echo "❌ Poetry install failed after $i attempts"
+              exit 1
+            fi
+            echo "⚠️ Poetry install failed (likely network issue), retrying in 30s..."
+            sleep 30
+          done
 
       - name: Run Safety Check
         id: vuln-check
@@ -300,7 +314,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install --no-interaction --no-root --with dev,quantum,monitoring
+          set -e
+          for i in 1 2 3; do
+            echo "Attempt $i: poetry install --no-interaction --no-root --with dev,quantum,monitoring"
+            if poetry install --no-interaction --no-root --with dev,quantum,monitoring; then
+              echo "✅ Poetry install (with quantum/monitoring) succeeded on attempt $i"
+              break
+            fi
+            if [ "$i" -eq 3 ]; then
+              echo "❌ Poetry install (with quantum/monitoring) failed after $i attempts"
+              exit 1
+            fi
+            echo "⚠️ Poetry install (with quantum/monitoring) failed (likely network issue), retrying in 30s..."
+            sleep 30
+          done
 
       - name: Run tests with coverage
         env:
