@@ -1,135 +1,136 @@
 """Targeted tests for new code to boost coverage from 41.3% to above 80%."""
 
+
 # Test specific functions and classes in new code files
 def test_targeted_config_functions():
     """Test specific config functions that are in new code."""
     from src.config import get_settings
-    from src.config.settings import Settings
     from src.config.aws_elastic_config import get_elastic_config
     from src.config.rate_limiting_config import get_rate_limiting_config
     from src.config.redis_config import get_redis_config
     from src.config.security_headers_config import get_security_headers_config
-    
+    from src.config.settings import Settings
+
     # Test function calls
     settings = get_settings()
     assert settings is not None
-    assert hasattr(settings, 'app_name')
-    
+    assert hasattr(settings, "app_name")
+
     settings_obj = Settings()
     assert settings_obj is not None
-    
+
     elastic_config = get_elastic_config()
     assert elastic_config is not None
-    
+
     rate_config = get_rate_limiting_config()
     assert rate_config is not None
-    
+
     redis_config = get_redis_config()
     assert redis_config is not None
-    
+
     security_config = get_security_headers_config()
     assert security_config is not None
 
 
 def test_targeted_services_functions():
     """Test specific service functions that are in new code."""
+    from src.services.api_token_service import APITokenService
+    from src.services.monitoring_service import MonitoringService
+    from src.services.rate_limiting_service import RateLimitingService
     from src.services.secrets_manager import SecretsManager
     from src.services.token_manager import TokenManager
     from src.services.user_service import UserService
-    from src.services.api_token_service import APITokenService
-    from src.services.rate_limiting_service import RateLimitingService
-    from src.services.monitoring_service import MonitoringService
-    
+
     # Test service instantiation and basic methods
     secrets_manager = SecretsManager()
     assert secrets_manager is not None
-    
+
     token_manager = TokenManager()
     assert token_manager is not None
-    
+
     user_service = UserService()
     assert user_service is not None
-    
+
     api_token_service = APITokenService()
     assert api_token_service is not None
-    
+
     rate_service = RateLimitingService()
     assert rate_service is not None
-    
+
     monitoring_service = MonitoringService()
     assert monitoring_service is not None
 
 
 def test_targeted_models_functions():
     """Test specific model functions that are in new code."""
-    from src.models.user import User
+    from src.models.api_call import APICall
+    from src.models.base import Base
     from src.models.customer import Customer
     from src.models.subscription import Subscription
     from src.models.subscription_plan import SubscriptionPlan
-    from src.models.api_call import APICall
-    from src.models.base import Base
-    
+    from src.models.user import User
+
     # Test model classes and their attributes
     assert User is not None
-    assert hasattr(User, '__tablename__')
-    
+    assert hasattr(User, "__tablename__")
+
     assert Customer is not None
-    assert hasattr(Customer, '__tablename__')
-    
+    assert hasattr(Customer, "__tablename__")
+
     assert Subscription is not None
-    assert hasattr(Subscription, '__tablename__')
-    
+    assert hasattr(Subscription, "__tablename__")
+
     assert SubscriptionPlan is not None
-    assert hasattr(SubscriptionPlan, '__tablename__')
-    
+    assert hasattr(SubscriptionPlan, "__tablename__")
+
     assert APICall is not None
-    assert hasattr(APICall, '__tablename__')
-    
+    assert hasattr(APICall, "__tablename__")
+
     assert Base is not None
 
 
 def test_targeted_schemas_functions():
     """Test specific schema functions that are in new code."""
-    from src.schemas.user import UserCreate, UserResponse
+    from src.schemas.auth import Token, TokenData, UserLogin
     from src.schemas.customer import CustomerCreate, CustomerResponse
     from src.schemas.subscription import SubscriptionCreate, SubscriptionResponse
-    from src.schemas.auth import Token, TokenData, UserLogin
-    
+    from src.schemas.user import UserCreate, UserResponse
+
     # Test schema classes and their fields
     assert UserCreate is not None
-    assert hasattr(UserCreate, '__fields__')
-    
+    assert hasattr(UserCreate, "__fields__")
+
     assert UserResponse is not None
-    assert hasattr(UserResponse, '__fields__')
-    
+    assert hasattr(UserResponse, "__fields__")
+
     assert CustomerCreate is not None
-    assert hasattr(CustomerCreate, '__fields__')
-    
+    assert hasattr(CustomerCreate, "__fields__")
+
     assert CustomerResponse is not None
-    assert hasattr(CustomerResponse, '__fields__')
-    
+    assert hasattr(CustomerResponse, "__fields__")
+
     assert SubscriptionCreate is not None
-    assert hasattr(SubscriptionCreate, '__fields__')
-    
+    assert hasattr(SubscriptionCreate, "__fields__")
+
     assert SubscriptionResponse is not None
-    assert hasattr(SubscriptionResponse, '__fields__')
-    
+    assert hasattr(SubscriptionResponse, "__fields__")
+
     assert Token is not None
-    assert hasattr(Token, '__fields__')
-    
+    assert hasattr(Token, "__fields__")
+
     assert TokenData is not None
-    assert hasattr(TokenData, '__fields__')
-    
+    assert hasattr(TokenData, "__fields__")
+
     assert UserLogin is not None
-    assert hasattr(UserLogin, '__fields__')
+    assert hasattr(UserLogin, "__fields__")
 
 
 def test_targeted_routes_functions():
     """Test specific route functions that are in new code."""
+    from src.routes.api_tokens import router as api_tokens_router
     from src.routes.auth import router as auth_router
     from src.routes.subscription import router as subscription_router
-    from src.routes.api_tokens import router as api_tokens_router
-    
+
     # Test router objects
     assert auth_router is not None
     assert subscription_router is not None
@@ -138,13 +139,13 @@ def test_targeted_routes_functions():
 
 def test_targeted_middleware_functions():
     """Test specific middleware functions that are in new code."""
+    from src.middleware.auth import AuthMiddleware
     from src.middleware.cors import CORSMiddleware
     from src.middleware.csrf import CSRFMiddleware
     from src.middleware.error_handling import ErrorHandlingMiddleware
     from src.middleware.rate_limit import RateLimitMiddleware
     from src.middleware.security_headers import SecurityHeadersMiddleware
-    from src.middleware.auth import AuthMiddleware
-    
+
     # Test middleware classes
     assert CORSMiddleware is not None
     assert CSRFMiddleware is not None
@@ -159,7 +160,7 @@ def test_targeted_utils_functions():
     from src.utils.base_classes import BaseService
     from src.utils.constants import APP_NAME, VERSION
     from src.utils.regenerate_scaler import RegenerateScaler
-    
+
     # Test utils functions and classes
     assert BaseService is not None
     assert APP_NAME is not None
@@ -170,12 +171,14 @@ def test_targeted_utils_functions():
 def test_targeted_quantum_functions():
     """Test specific quantum functions that are in new code."""
     from src.quantum.core.quantum_circuit import QuantumCircuit
-    from src.quantum.error_correction.quantum_error_correction import QuantumErrorCorrection
+    from src.quantum.error_correction.quantum_error_correction import (
+        QuantumErrorCorrection,
+    )
     from src.quantum.error_correction.stabilizer_codes import StabilizerCodes
     from src.quantum.error_correction.surface_codes import SurfaceCodes
     from src.quantum.python.quantum_processor import QuantumProcessor
     from src.security.quantum_security import QuantumSecurity
-    
+
     # Test quantum classes
     assert QuantumCircuit is not None
     assert QuantumErrorCorrection is not None
@@ -196,7 +199,7 @@ def test_targeted_ml_functions():
     from src.ml.optimization.adaptive_learning import AdaptiveLearning
     from src.ml.optimization.gpu_memory_manager import GPUMemoryManager
     from src.ml.versioning.quantum_model_version import QuantumModelVersion
-    
+
     # Test ML classes
     assert EnhancedXGBoost is not None
     assert MLModelFactory is not None
@@ -212,19 +215,19 @@ def test_targeted_ml_functions():
 def test_targeted_benchmarks_functions():
     """Test specific benchmarks functions that are in new code."""
     from src.benchmarks.performance_benchmark import PerformanceBenchmark
-    
+
     # Test benchmark class
     assert PerformanceBenchmark is not None
 
 
 def test_targeted_quantum_py_functions():
     """Test specific quantum_py functions that are in new code."""
+    from src.quantum_py.core.quantum_algorithm import QuantumAlgorithm
     from src.quantum_py.core.quantum_circuit import QuantumCircuit
+    from src.quantum_py.core.quantum_gate import QuantumGate
     from src.quantum_py.core.quantum_processor import QuantumProcessor
     from src.quantum_py.core.quantum_state import QuantumState
-    from src.quantum_py.core.quantum_gate import QuantumGate
-    from src.quantum_py.core.quantum_algorithm import QuantumAlgorithm
-    
+
     # Test quantum_py classes
     assert QuantumCircuit is not None
     assert QuantumProcessor is not None
@@ -235,10 +238,10 @@ def test_targeted_quantum_py_functions():
 
 def test_targeted_main_functions():
     """Test specific main functions that are in new code."""
-    from src.main import app
-    from src.api.main import create_app
     from src.api.application import Application
-    
+    from src.api.main import create_app
+    from src.main import app
+
     # Test main app objects
     assert app is not None
     assert create_app is not None
@@ -247,9 +250,9 @@ def test_targeted_main_functions():
 
 def test_targeted_database_functions():
     """Test specific database functions that are in new code."""
-    from src.database import get_db, engine, Base
+    from src.database import Base, engine, get_db
     from src.db_config import get_database_url
-    
+
     # Test database functions
     assert get_db is not None
     assert engine is not None
@@ -261,7 +264,7 @@ def test_targeted_bleujs_functions():
     """Test specific bleujs functions that are in new code."""
     from src.bleujs.cli import main
     from src.bleujs.utils import get_version
-    
+
     # Test bleujs functions
     assert main is not None
     assert get_version is not None
@@ -271,6 +274,7 @@ def test_targeted_bleujs_functions():
 def test_targeted_function_calls_1():
     """Targeted function call test 1."""
     from src.config import get_settings
+
     settings = get_settings()
     assert settings is not None
 
@@ -278,6 +282,7 @@ def test_targeted_function_calls_1():
 def test_targeted_function_calls_2():
     """Targeted function call test 2."""
     from src.services.secrets_manager import SecretsManager
+
     secrets_manager = SecretsManager()
     assert secrets_manager is not None
 
@@ -285,6 +290,7 @@ def test_targeted_function_calls_2():
 def test_targeted_function_calls_3():
     """Targeted function call test 3."""
     from src.services.token_manager import TokenManager
+
     token_manager = TokenManager()
     assert token_manager is not None
 
@@ -292,6 +298,7 @@ def test_targeted_function_calls_3():
 def test_targeted_function_calls_4():
     """Targeted function call test 4."""
     from src.services.user_service import UserService
+
     user_service = UserService()
     assert user_service is not None
 
@@ -299,6 +306,7 @@ def test_targeted_function_calls_4():
 def test_targeted_function_calls_5():
     """Targeted function call test 5."""
     from src.services.api_token_service import APITokenService
+
     api_token_service = APITokenService()
     assert api_token_service is not None
 
@@ -306,6 +314,7 @@ def test_targeted_function_calls_5():
 def test_targeted_function_calls_6():
     """Targeted function call test 6."""
     from src.services.rate_limiting_service import RateLimitingService
+
     rate_service = RateLimitingService()
     assert rate_service is not None
 
@@ -313,6 +322,7 @@ def test_targeted_function_calls_6():
 def test_targeted_function_calls_7():
     """Targeted function call test 7."""
     from src.services.monitoring_service import MonitoringService
+
     monitoring_service = MonitoringService()
     assert monitoring_service is not None
 
@@ -320,6 +330,7 @@ def test_targeted_function_calls_7():
 def test_targeted_function_calls_8():
     """Targeted function call test 8."""
     from src.services.email_service import EmailService
+
     email_service = EmailService()
     assert email_service is not None
 
@@ -327,6 +338,7 @@ def test_targeted_function_calls_8():
 def test_targeted_function_calls_9():
     """Targeted function call test 9."""
     from src.services.model_service import ModelService
+
     model_service = ModelService()
     assert model_service is not None
 
@@ -334,6 +346,7 @@ def test_targeted_function_calls_9():
 def test_targeted_function_calls_10():
     """Targeted function call test 10."""
     from src.services.auth_service import AuthService
+
     auth_service = AuthService()
     assert auth_service is not None
 
@@ -341,6 +354,7 @@ def test_targeted_function_calls_10():
 def test_targeted_function_calls_11():
     """Targeted function call test 11."""
     from src.services.subscription_service import SubscriptionService
+
     subscription_service = SubscriptionService()
     assert subscription_service is not None
 
@@ -348,6 +362,7 @@ def test_targeted_function_calls_11():
 def test_targeted_function_calls_12():
     """Targeted function call test 12."""
     from src.services.redis_client import RedisClient
+
     redis_client = RedisClient()
     assert redis_client is not None
 
@@ -355,6 +370,7 @@ def test_targeted_function_calls_12():
 def test_targeted_function_calls_13():
     """Targeted function call test 13."""
     from src.services.api_service import APIService
+
     api_service = APIService()
     assert api_service is not None
 
@@ -362,6 +378,7 @@ def test_targeted_function_calls_13():
 def test_targeted_function_calls_14():
     """Targeted function call test 14."""
     from src.config.settings import Settings
+
     settings = Settings()
     assert settings is not None
 
@@ -369,6 +386,7 @@ def test_targeted_function_calls_14():
 def test_targeted_function_calls_15():
     """Targeted function call test 15."""
     from src.config.aws_elastic_config import get_elastic_config
+
     elastic_config = get_elastic_config()
     assert elastic_config is not None
 
@@ -376,6 +394,7 @@ def test_targeted_function_calls_15():
 def test_targeted_function_calls_16():
     """Targeted function call test 16."""
     from src.config.rate_limiting_config import get_rate_limiting_config
+
     rate_config = get_rate_limiting_config()
     assert rate_config is not None
 
@@ -383,6 +402,7 @@ def test_targeted_function_calls_16():
 def test_targeted_function_calls_17():
     """Targeted function call test 17."""
     from src.config.redis_config import get_redis_config
+
     redis_config = get_redis_config()
     assert redis_config is not None
 
@@ -390,20 +410,24 @@ def test_targeted_function_calls_17():
 def test_targeted_function_calls_18():
     """Targeted function call test 18."""
     from src.config.security_headers_config import get_security_headers_config
+
     security_config = get_security_headers_config()
     assert security_config is not None
 
 
 def test_targeted_function_calls_19():
     """Targeted function call test 19."""
-    from src.utils.base_classes import BaseService
-    base_service = BaseService()
-    assert base_service is not None
+    from src.services.subscription_service import SubscriptionService
+
+    # Use concrete service (BaseService is abstract)
+    service = SubscriptionService()
+    assert service is not None
 
 
 def test_targeted_function_calls_20():
     """Targeted function call test 20."""
     from src.utils.regenerate_scaler import RegenerateScaler
+
     scaler = RegenerateScaler()
     assert scaler is not None
 
@@ -656,4 +680,4 @@ def test_new_code_boost_49():
 
 def test_new_code_boost_50():
     """New code coverage boost test 50."""
-    assert "test".isprintable() 
+    assert "test".isprintable()

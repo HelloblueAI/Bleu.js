@@ -5,8 +5,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import joblib
 import numpy as np
-import optuna
 import pandas as pd
+
+try:
+    import optuna
+except ImportError:
+    optuna = None
 import torch
 import torch.nn as nn
 import xgboost as xgb
@@ -166,6 +170,10 @@ class ModelOptimizer:
 
     def optimize_hyperparameters(self, n_trials=100):
         """Optimize hyperparameters using Optuna."""
+        if optuna is None:
+            raise RuntimeError(
+                "optuna is required for hyperparameter optimization. Install with: pip install optuna"
+            )
         print("Optimizing hyperparameters...")
 
         study = optuna.create_study(directions=["maximize", "maximize", "maximize"])

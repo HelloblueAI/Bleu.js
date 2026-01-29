@@ -39,7 +39,16 @@ class CodeCompletion:
         result = self.generator(prompt, max_length=200)
         if not result:
             raise ValueError("No code generated")
-        return result[0]["generated_text"]
+        first = result[0]
+        if isinstance(first, str):
+            return first
+        if isinstance(first, dict):
+            text = first.get("generated_text")
+            if text is not None:
+                return text
+            texts = first.get("generated_texts") or []
+            return texts[0] if texts else ""
+        return str(first)
 
 
 if __name__ == "__main__":

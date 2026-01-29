@@ -4,6 +4,16 @@ from typing import Dict, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+_default_redis_config: "RedisConfig | None" = None
+
+
+def get_redis_config() -> "RedisConfig":
+    """Return Redis config (singleton default)."""
+    global _default_redis_config
+    if _default_redis_config is None:
+        _default_redis_config = RedisConfig()
+    return _default_redis_config
+
 
 class RedisConfig(BaseModel):
     """Redis configuration."""

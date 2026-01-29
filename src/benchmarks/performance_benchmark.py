@@ -9,12 +9,32 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import psutil
-from opentelemetry import trace
 from pydantic import BaseModel
 from scipy import stats
 
 logger = logging.getLogger(__name__)
-tracer = trace.get_tracer(__name__)
+
+try:
+    from opentelemetry import trace
+
+    tracer = trace.get_tracer(__name__)
+except ImportError:
+    from contextlib import contextmanager
+    from typing import Iterator
+
+    class _NoOpSpan:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return None
+
+    class _NoOpTracer:
+        @contextmanager
+        def start_as_current_span(self, name: str) -> Iterator[_NoOpSpan]:
+            yield _NoOpSpan()
+
+    tracer = _NoOpTracer()
 
 
 @dataclass

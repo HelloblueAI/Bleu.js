@@ -2,6 +2,16 @@
 
 from pydantic import BaseModel, ConfigDict
 
+_default_security_config: "SecurityHeadersConfig | None" = None
+
+
+def get_security_headers_config() -> "SecurityHeadersConfig":
+    """Return security headers config (singleton default)."""
+    global _default_security_config
+    if _default_security_config is None:
+        _default_security_config = SecurityHeadersConfig()
+    return _default_security_config
+
 
 class SecurityHeadersConfig(BaseModel):
     """Security headers configuration."""

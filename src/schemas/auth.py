@@ -10,3 +10,17 @@ class TokenData(BaseModel):
 
     username: Optional[str] = None
     scopes: list[str] = []
+
+
+class Token(BaseModel):
+    """Token response schema (access_token, token_type)."""
+
+    access_token: str
+    token_type: str = "bearer"
+
+
+class UserLogin(BaseModel):
+    """User login request schema."""
+
+    email: str
+    password: str

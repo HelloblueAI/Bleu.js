@@ -7,8 +7,12 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-import shap
 from scipy.stats import spearmanr
+
+try:
+    import shap
+except ImportError:
+    shap = None
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +107,9 @@ class QuantumInteractionDetector:
         self, features: np.ndarray, feature_names: List[str], target: np.ndarray
     ) -> None:
         """Compute SHAP interaction values between features."""
+        if shap is None:
+            self._compute_correlation_fallback(features, feature_names)
+            return
         try:
             # Use a simple model for SHAP analysis
             from sklearn.ensemble import RandomForestRegressor

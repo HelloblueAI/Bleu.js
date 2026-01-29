@@ -157,7 +157,7 @@ jobs:
 
     steps:
       - name: Free Disk Space (Linux/macOS)
-        if: runner.os != 'Windows'
+        if: matrix.os != 'windows-latest'
         run: |
           echo "🔧 Freeing up disk space..."
           sudo rm -rf /usr/share/dotnet || true
@@ -167,11 +167,11 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
           docker system prune -af --volumes || true
           df -h
+        shell: bash
 
       - name: Free Disk Space (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          echo "🔧 Windows runner - disk cleanup not needed"
+        if: matrix.os == 'windows-latest'
+        run: echo "🔧 Windows runner - disk cleanup not needed"
 
       - name: Checkout Repository
         uses: actions/checkout@v6

@@ -14,7 +14,7 @@ RATE_LIMIT_EXCEEDED = "Rate limit exceeded"
 METRICS = {"CALLS": ":calls", "QUOTA": ":quota", "RESET": ":reset"}
 
 APP_NAME = "Bleu.js"
-APP_VERSION = "1.2.1"
+APP_VERSION = "1.3.21"
 
 __all__ = [
     "APP_NAME",

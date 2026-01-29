@@ -32,12 +32,20 @@ class CorsMiddleware:
         self.settings = get_settings()
         self.logger = logging.getLogger(__name__)
 
-        # Get CORS settings
-        origins = self.settings.CORS_ORIGINS
-        methods = self.settings.CORS_METHODS
-        headers = self.settings.CORS_HEADERS
-        credentials = self.settings.CORS_CREDENTIALS
-        max_age = self.settings.CORS_MAX_AGE
+        # Get CORS settings (origins as list for allow_origins)
+        origins = (
+            self.settings.cors_origins_list
+            if hasattr(self.settings, "cors_origins_list")
+            else self.settings.CORS_ORIGINS.split(",")
+        )
+        methods = getattr(
+            self.settings, "CORS_METHODS", ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        )
+        headers = getattr(
+            self.settings, "CORS_HEADERS", ["Content-Type", "Authorization"]
+        )
+        credentials = getattr(self.settings, "CORS_CREDENTIALS", True)
+        max_age = getattr(self.settings, "CORS_MAX_AGE", 600)
 
         # Add CORS middleware
         app.add_middleware(

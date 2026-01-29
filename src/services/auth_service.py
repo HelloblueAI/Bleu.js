@@ -48,7 +48,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 class AuthService(BaseService):
-    def __init__(self, db: Session):
+    def __init__(self, db: Session | None = None):
         self.pwd_context = pwd_context
         self.oauth2_scheme = oauth2_scheme
         self.db = db

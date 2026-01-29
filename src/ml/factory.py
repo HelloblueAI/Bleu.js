@@ -182,3 +182,7 @@ class ModelFactory:
             }
             for model_type, model_class in cls.MODEL_CLASSES.items()
         }
+
+
+# Alias for tests and external imports
+MLModelFactory = ModelFactory

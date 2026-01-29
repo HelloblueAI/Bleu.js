@@ -1,7 +1,8 @@
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import BaseSettings, ConfigDict, Field
+from pydantic import ConfigDict, Field
+from pydantic_settings import BaseSettings
 
 
 class AWSElasticConfig(BaseSettings):

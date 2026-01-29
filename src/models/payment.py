@@ -27,8 +27,8 @@ class Payment(Base):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
 
-    # Relationships
-    customer = relationship("Customer", back_populates="payments")
+    # Relationships (fully qualified to avoid registry errors)
+    customer = relationship("src.models.customer.Customer", back_populates="payments")
 
     def __init__(
         self,

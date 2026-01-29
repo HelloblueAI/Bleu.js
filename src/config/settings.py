@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     # Application settings
     APP_NAME: str = "Bleu.js"
-    APP_VERSION: str = "0.1.0"
+    APP_VERSION: str = "1.3.21"
     DEBUG: bool = Field(default=False, alias="DEBUG")
     TESTING: bool = Field(default=False, alias="TESTING")
     ENV_NAME: str = Field(default="development", alias="ENV_NAME")
@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     APP_DEBUG: bool = Field(default=False, alias="APP_DEBUG")
     APP_URL: str = Field(default="http://localhost:3000", alias="APP_URL")
     APP_PORT: int = Field(default=3000, alias="APP_PORT")
-    VERSION: str = "0.1.0"
+    VERSION: str = "1.3.21"
     API_VERSION: str = "v1"
     API_PREFIX: str = "/api"
 
@@ -94,6 +94,14 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = Field(
         default="http://localhost:3000,http://127.0.0.1:3000", alias="CORS_ORIGINS"
     )
+    CORS_METHODS: list[str] = Field(
+        default=["GET", "POST", "PUT", "DELETE", "OPTIONS"], alias="CORS_METHODS"
+    )
+    CORS_HEADERS: list[str] = Field(
+        default=["Content-Type", "Authorization"], alias="CORS_HEADERS"
+    )
+    CORS_CREDENTIALS: bool = Field(default=True, alias="CORS_CREDENTIALS")
+    CORS_MAX_AGE: int = Field(default=600, alias="CORS_MAX_AGE")
     SECURITY_HEADERS: SecurityHeadersConfig = SecurityHeadersConfig()
 
     # JWT settings - Provide development defaults

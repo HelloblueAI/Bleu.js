@@ -36,11 +36,13 @@ class User(Base):
     github_username = Column(String(255), nullable=True)
     linkedin_url = Column(String(500), nullable=True)
 
-    # Relationships
-    subscriptions = relationship("Subscription", back_populates="user")
-    api_calls = relationship("APICall", back_populates="user")
-    api_usage = relationship("APIUsage", back_populates="user")
-    api_tokens = relationship("APIToken", back_populates="user")
+    # Relationships (fully qualified to avoid multiple-class registry errors)
+    subscriptions = relationship(
+        "src.models.subscription.Subscription", back_populates="user"
+    )
+    api_calls = relationship("src.models.api_call.APICall", back_populates="user")
+    api_usage = relationship("src.models.api_call.APIUsage", back_populates="user")
+    api_tokens = relationship("src.models.subscription.APIToken", back_populates="user")
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
