@@ -24,8 +24,8 @@ class APICall(Base):
     response_time = Column(Integer)  # in milliseconds
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    user = relationship("User", back_populates="api_calls")
-    customer = relationship("Customer", back_populates="api_calls")
+    user = relationship("src.models.user.User", back_populates="api_calls")
+    customer = relationship("src.models.customer.Customer", back_populates="api_calls")
 
 
 class APIUsage(Base):
@@ -40,7 +40,7 @@ class APIUsage(Base):
     last_reset = Column(DateTime, default=datetime.utcnow)
     next_reset = Column(DateTime)
 
-    user = relationship("User", back_populates="api_usage")
+    user = relationship("src.models.user.User", back_populates="api_usage")
 
 
 # Pydantic models for API

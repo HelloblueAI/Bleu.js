@@ -11,11 +11,11 @@ from src.config import get_settings
 class RateLimitingService:
     """Service for handling rate limiting."""
 
-    def __init__(self, redis: Redis) -> None:
+    def __init__(self, redis: Redis | None = None) -> None:
         """Initialize rate limiting service.
 
         Args:
-            redis: Redis client instance
+            redis: Redis client instance (optional for test compatibility)
         """
         self.redis = redis
         settings = get_settings()

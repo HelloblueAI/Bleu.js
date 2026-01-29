@@ -7,7 +7,11 @@ import pytest
 from src.services.api_service import APIService
 from src.services.auth_service import AuthService
 from src.services.email_service import EmailService
-from src.services.model_service import ModelService
+
+try:
+    from src.services.model_service import ModelService
+except ImportError:
+    ModelService = None  # type: ignore[misc, assignment]
 from src.services.monitoring_service import MonitoringService
 from src.services.rate_limiting_service import RateLimitingService
 from src.services.redis_client import RedisClient
@@ -129,6 +133,9 @@ class TestEmailService:
         assert service is not None
 
 
+@pytest.mark.skipif(
+    ModelService is None, reason="ModelService requires xgboost (optional)"
+)
 class TestModelService:
     """Test ModelService class"""
 

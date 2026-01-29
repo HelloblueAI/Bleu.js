@@ -11,7 +11,7 @@ from src.schemas.user import UserCreate, UserResponse
 class UserService:
     """User service for managing user operations."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session | None = None):
         """Initialize user service.
 
         Args:

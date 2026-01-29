@@ -6,6 +6,20 @@ import tempfile
 from typing import Any
 
 
+class RegenerateScaler:
+    """Utility class for loading/saving training data (scaler regeneration)."""
+
+    @staticmethod
+    def load(data_dir: str) -> list[dict[str, Any]]:
+        """Load training data from directory."""
+        return load_training_data(data_dir)
+
+    @staticmethod
+    def save(data: list[dict[str, Any]], output_dir: str | None = None) -> str:
+        """Save training data to directory."""
+        return save_training_data(data, output_dir)
+
+
 def load_training_data(data_dir: str) -> list[dict[str, Any]]:
     """
     Load training data from JSON files in the specified directory.

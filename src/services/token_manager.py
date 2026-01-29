@@ -14,14 +14,14 @@ from src.services.user_service import UserService
 class TokenManager:
     """Service for managing authentication tokens."""
 
-    def __init__(self, db: Session) -> None:
+    def __init__(self, db: Session | None = None) -> None:
         """Initialize token manager.
 
         Args:
-            db: Database session
+            db: Database session (optional for test compatibility)
         """
         self.db = db
-        self.user_service = UserService(db)
+        self.user_service = UserService(db) if db is not None else None
         self.settings = get_settings()
 
     def create_access_token(

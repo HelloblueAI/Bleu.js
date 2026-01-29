@@ -6,6 +6,7 @@ import tempfile
 import numpy as np
 import pytest
 
+pytest.importorskip("optuna")
 from src.ml.enhanced_xgboost import EnhancedXGBoost, PerformanceConfig
 from src.ml.models.train import ModelTrainer
 from src.ml.optimize import HyperparameterOptimizer

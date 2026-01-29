@@ -1,8 +1,9 @@
 import os
 
-import boto3
 import httpx
 import pytest
+
+boto3 = pytest.importorskip("boto3")
 from dotenv import load_dotenv
 
 # Load test environment variables

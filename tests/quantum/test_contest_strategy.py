@@ -1,6 +1,8 @@
 """Test quantum contest strategy module."""
 
-import tensorflow as tf
+import pytest
+
+tf = pytest.importorskip("tensorflow")
 
 from src.quantum_py.optimization.contest_strategy import BleuQuantumContestOptimizer
 

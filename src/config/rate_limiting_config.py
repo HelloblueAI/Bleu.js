@@ -2,6 +2,16 @@
 
 from pydantic import BaseModel, ConfigDict, Field
 
+_default_rate_config: "RateLimitingConfig | None" = None
+
+
+def get_rate_limiting_config() -> "RateLimitingConfig":
+    """Return rate limiting config (singleton default)."""
+    global _default_rate_config
+    if _default_rate_config is None:
+        _default_rate_config = RateLimitingConfig()
+    return _default_rate_config
+
 
 class RateLimitingConfig(BaseModel):
     """Rate limiting configuration."""

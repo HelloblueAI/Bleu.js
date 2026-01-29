@@ -13,11 +13,11 @@ from src.utils.base_classes import BaseService
 class ModelService(BaseService):
     """Service for managing machine learning models."""
 
-    def __init__(self, model: BaseEstimator) -> None:
+    def __init__(self, model: BaseEstimator | None = None) -> None:
         """Initialize model service.
 
         Args:
-            model: Scikit-learn model
+            model: Scikit-learn model (optional for test compatibility)
         """
         self.model = model
         self.is_trained = False

@@ -21,9 +21,12 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     GPUtil = None
 import numpy as np
-import optuna
 import psutil
 
+try:
+    import optuna
+except ImportError:  # pragma: no cover - optional dependency
+    optuna = None
 try:
     import ray
 except ImportError:  # pragma: no cover - optional dependency
@@ -683,6 +686,10 @@ class EnhancedXGBoost:
 
             return np.mean(scores)
 
+        if optuna is None:
+            raise RuntimeError(
+                "optuna is required for hyperparameter tuning. Install with: pip install optuna"
+            )
         study = optuna.create_study(direction="maximize")
         study.optimize(objective, n_trials=n_trials)
 

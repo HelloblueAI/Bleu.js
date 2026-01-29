@@ -122,7 +122,12 @@ class SubscriptionService(BaseService):
 
     async def get_subscription_plans(self) -> list[dict]:
         """Get available subscription plans."""
-        return list(self.subscription_plans.values())
+        # Include expires_at for API compatibility (static plans: 1 year from now)
+        default_expires = datetime.now(timezone.utc) + timedelta(days=365)
+        return [
+            {**p, "expires_at": p.get("expires_at") or default_expires}
+            for p in self.subscription_plans.values()
+        ]
 
     async def get_subscription(self, user_id: str) -> dict | None:
         """Get user's subscription from database."""
@@ -219,6 +224,7 @@ class SubscriptionService(BaseService):
                 "tier": tier,
                 "status": subscription.status,
                 "message": f"Successfully upgraded to {tier} plan",
+                "expires_at": subscription.end_date,
             }
         except HTTPException:
             raise
@@ -244,8 +250,12 @@ class SubscriptionService(BaseService):
 
             return {
                 "id": str(subscription.id),
+                "tier": (
+                    subscription.plan.plan_type.value if subscription.plan else "basic"
+                ),
                 "status": subscription.status,
                 "message": "Subscription renewed successfully",
+                "expires_at": subscription.end_date,
             }
         except HTTPException:
             raise
@@ -261,7 +271,11 @@ class SubscriptionService(BaseService):
                 raise HTTPException(
                     status_code=404, detail=ERROR_MESSAGES["NO_SUBSCRIPTION"]
                 )
-
+            if not subscription.plan:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid subscription: no plan associated",
+                )
             if subscription.api_calls_used + amount > subscription.plan.api_calls_limit:
                 raise HTTPException(
                     status_code=429, detail=ERROR_MESSAGES["QUOTA_EXCEEDED"]
@@ -288,6 +302,8 @@ class SubscriptionService(BaseService):
                 str(user.id), self.db
             )
             if not subscription or subscription.status != "active":
+                return False
+            if not subscription.plan:
                 return False
 
             # Check usage limits
@@ -413,6 +429,8 @@ class SubscriptionService(BaseService):
         try:
             subscription = await self.get_user_subscription_static(user_id, db)
             if not subscription or subscription.status != "active":
+                return False
+            if not subscription.plan:
                 return False
 
             # Check if service is available in user's plan

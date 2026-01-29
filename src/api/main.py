@@ -29,7 +29,7 @@ except ImportError:
 
         API_VERSION = importlib.metadata.version("bleu-js")
     except Exception:
-        API_VERSION = "1.3.6"  # Fallback
+        API_VERSION = "1.3.21"  # Fallback
 
 app = FastAPI(
     title="Bleu.js API",
@@ -264,7 +264,7 @@ def _get_environment_info(start_time):
     return {
         "python_version": os.getenv("PYTHON_VERSION", "unknown"),
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "app_version": "1.2.1",
+        "app_version": "1.3.21",
         "uptime_seconds": int(time.time() - start_time),
     }
 
@@ -294,6 +294,13 @@ class SubscriptionPlan(BaseModel):
     expires_at: str
 
 
+def _format_expires_at(value):
+    """Format expires_at (datetime or None) to ISO string for API."""
+    if value is None:
+        return ""
+    return value.isoformat() if hasattr(value, "isoformat") else str(value)
+
+
 @app.get("/v1/subscriptions/plans", response_model=list[SubscriptionPlan])
 async def list_subscription_plans():
     """List available subscription plans."""
@@ -306,7 +313,7 @@ async def list_subscription_plans():
                 "price": plan["price"],
                 "features": plan["features"],
                 "status": plan["status"],
-                "expires_at": plan["expires_at"].isoformat(),
+                "expires_at": _format_expires_at(plan.get("expires_at")),
             }
             for plan in plans
         ]
@@ -325,10 +332,11 @@ async def get_subscription_usage(user_id: str = Header(..., alias=USER_ID_HEADER
     """Get current subscription usage."""
     try:
         usage = await subscription_service.get_subscription_usage(user_id)
+        reset_at = usage.get("reset_at")
         return {
             "requests": usage["requests"],
             "quota": usage["quota"],
-            "reset_at": usage["reset_at"].isoformat(),
+            "reset_at": _format_expires_at(reset_at),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -349,7 +357,7 @@ async def upgrade_subscription(
         result = await subscription_service.upgrade_subscription(user_id, upgrade.tier)
         return {
             "tier": result["tier"],
-            "expires_at": result["expires_at"].isoformat(),
+            "expires_at": _format_expires_at(result.get("expires_at")),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -361,8 +369,8 @@ async def renew_subscription(user_id: str = Header(..., alias=USER_ID_HEADER)):
     try:
         result = await subscription_service.renew_subscription(user_id)
         return {
-            "tier": result["tier"],
-            "expires_at": result["expires_at"].isoformat(),
+            "tier": result.get("tier", ""),
+            "expires_at": _format_expires_at(result.get("expires_at")),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

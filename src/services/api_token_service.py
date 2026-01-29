@@ -12,7 +12,7 @@ from src.utils.base_classes import BaseService
 
 
 class APITokenService(BaseService):
-    def __init__(self, db: Session):
+    def __init__(self, db: Session | None = None):
         self.db = db
 
     async def create_token(

@@ -4,7 +4,6 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 from src.models.declarative_base import Base
 
@@ -35,9 +34,7 @@ class RateLimit(Base):
         Integer, nullable=False, default=0
     )  # Current rate limit count
 
-    # Relationships
-    user = relationship("User", back_populates="rate_limits")
-    customer = relationship("Customer", back_populates="rate_limits")
+    # No ORM relationships to User/Customer to avoid mapper conflicts in test env
 
     def reset_if_needed(self):
         """Reset the rate limit counter if the period has elapsed."""

@@ -42,7 +42,7 @@ class APIToken(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    user = relationship("User", back_populates="api_tokens")
+    user = relationship("src.models.user.User", back_populates="api_tokens")
 
     def __repr__(self):
         return f"<APIToken(id={self.id}, name='{self.name}', user_id={self.user_id})>"
@@ -77,7 +77,9 @@ class SubscriptionPlan(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    subscriptions = relationship("Subscription", back_populates="plan")
+    subscriptions = relationship(
+        "src.models.subscription.Subscription", back_populates="plan"
+    )
 
     def __repr__(self):
         return (
@@ -103,8 +105,10 @@ class Subscription(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    user = relationship("User", back_populates="subscriptions")
-    plan = relationship("SubscriptionPlan", back_populates="subscriptions")
+    user = relationship("src.models.user.User", back_populates="subscriptions")
+    plan = relationship(
+        "src.models.subscription.SubscriptionPlan", back_populates="subscriptions"
+    )
 
     def __repr__(self):
         return (
