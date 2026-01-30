@@ -1,13 +1,14 @@
 # Bleu OS Docker Image - Production Ready
 # Optimized, secure container image for quantum/AI workloads
 # This is the main Dockerfile - for multi-stage builds, see Dockerfile.production
+# Base: Alpine 3.23.3+ for CVE fixes (openssl 3.3.6+, sqlite, curl, busybox, c-ares)
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
 ARG INSTALL_ML=true
 ARG INSTALL_JUPYTER=false
 
-FROM alpine:3.19
+FROM alpine:3.23
 
 # Metadata
 LABEL maintainer="HelloblueAI <support@helloblue.ai>"
@@ -18,9 +19,10 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 
 # Install base system and build dependencies (with security updates)
+# apk upgrade pulls fixed openssl 3.3.6+ (CVE-2025-15467, CVE-2025-69419/69420), sqlite, curl, busybox, c-ares
 RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
+    apk upgrade --no-cache && \
+    apk add --no-cache --upgrade \
         bash \
         curl \
         wget \
@@ -55,6 +57,13 @@ ENV PYTHONUNBUFFERED=1 \
 # Create directories with proper permissions
 RUN mkdir -p /opt/bleu-js /workspace /data /var/log/bleu-os /var/cache/bleu-os && \
     chown -R bleuos:bleuos /opt/bleu-js /workspace /data /var/log/bleu-os /var/cache/bleu-os
+
+# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
+    pip>=25.3 \
+    setuptools>=78.1.1 \
+    "urllib3>=2.6.3" \
+    "wheel>=0.46.3"
 
 # Install quantum computing libraries (if enabled)
 RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \

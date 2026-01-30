@@ -2,7 +2,8 @@
 # Optimized, secure, and production-grade container image
 
 # Stage 1: Builder - Install build dependencies
-FROM alpine:3.23 AS builder
+# Pin 3.23.3+ for CVE-2025-15467 (openssl 3.3.6), CVE-2025-31498 (c-ares), sqlite, curl, busybox
+FROM alpine:3.23.3 AS builder
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG PYTHON_VERSION=3.11
@@ -18,14 +19,15 @@ RUN apk update && \
     linux-headers \
     && rm -rf /var/cache/apk/*
 
-# Upgrade pip and setuptools to fixed versions (security updates)
+# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     pip>=25.3 \
     setuptools>=78.1.1 \
-    wheel
+    "urllib3>=2.6.3" \
+    "wheel>=0.46.3"
 
 # Stage 2: Runtime - Production image
-FROM alpine:3.23 AS runtime
+FROM alpine:3.23.3 AS runtime
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
@@ -40,7 +42,7 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
-LABEL org.opencontainers.image.base.name="alpine:3.23"
+LABEL org.opencontainers.image.base.name="alpine:3.23.3"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
@@ -87,11 +89,12 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/bleuos/.local/bin:$PATH" \
     PYTHONPATH="/opt/bleu-js:/workspace"
 
-# Upgrade pip and setuptools to fixed versions in runtime stage (security updates)
-# Upgrade system-wide to ensure Docker Scout detects the fixed versions
+# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     pip>=25.3 \
-    setuptools>=78.1.1
+    setuptools>=78.1.1 \
+    "urllib3>=2.6.3" \
+    "wheel>=0.46.3"
 
 # Switch to non-root user
 USER bleuos
