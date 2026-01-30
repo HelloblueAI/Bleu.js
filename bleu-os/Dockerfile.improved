@@ -2,8 +2,8 @@
 # Optimized container image for quantum/AI workloads
 # Multi-stage build for smaller size and better caching
 
-# Stage 1: Base system with build tools
-FROM alpine:3.19 AS builder
+# Stage 1: Base system with build tools (Alpine 3.23 for CVE fixes: openssl, sqlite, curl, busybox, c-ares)
+FROM alpine:3.23 AS builder
 
 # Build arguments for flexibility
 ARG BLEU_OS_VERSION=1.0.0
@@ -19,8 +19,10 @@ LABEL version="${BLEU_OS_VERSION}"
 LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 
-# Install build dependencies
-RUN apk add --no-cache \
+# Install build dependencies (apk upgrade for CVE fixes)
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache --upgrade \
     bash \
     curl \
     wget \
@@ -32,22 +34,25 @@ RUN apk add --no-cache \
     ca-certificates \
     && rm -rf /var/cache/apk/*
 
-# Upgrade pip and install build tools
+# Upgrade pip and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
-    pip \
-    setuptools \
-    wheel
+    pip>=25.3 \
+    setuptools>=78.1.1 \
+    "urllib3>=2.6.3" \
+    "wheel>=0.46.3"
 
 # Stage 2: Runtime image (smaller, production-ready)
-FROM alpine:3.19 AS runtime
+FROM alpine:3.23 AS runtime
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
 ARG INSTALL_ML=true
 ARG INSTALL_JUPYTER=true
 
-# Install only runtime dependencies
-RUN apk add --no-cache \
+# Install only runtime dependencies (apk upgrade for CVE fixes)
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache --upgrade \
     bash \
     curl \
     wget \
