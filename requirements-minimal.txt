@@ -31,7 +31,7 @@ scikit-learn==1.7.2
 scipy==1.15.3
 
 # Database and ORM
-sqlalchemy==2.0.45
+sqlalchemy==2.0.46
 # Updated to fix DoS vulnerability (Issues #302, #303)
 starlette>=0.48.0
 torch>=2.7.1
