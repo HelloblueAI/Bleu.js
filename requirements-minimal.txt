@@ -18,10 +18,11 @@ psycopg2-binary==2.9.11
 
 # Authentication and security
 pydantic==2.12.5
+# JWT: PyJWT (python-jose/ecdsa removed for CVE-2024-23342)
+PyJWT>=2.10.1
 
 # Utilities
 python-dotenv==1.2.1
-python-jose==3.5.0
 pyyaml==6.0.3
 
 # Quantum computing

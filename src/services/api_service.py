@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import aiohttp
+import jwt
 from fastapi import Depends, HTTPException
-from jose import JWTError, jwt
 from prometheus_client import Counter, Gauge, Histogram
 from sqlalchemy.orm import Session
 
@@ -106,7 +106,7 @@ class APIService(BaseService):
                 raise HTTPException(status_code=401, detail="User account is inactive")
 
             return user
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail="Invalid API key")
 
     async def check_rate_limit(self, user: User) -> bool:

@@ -4,7 +4,7 @@ types-hvac
 types-jwt
 types-passlib
 types-psutil
-types-python-jose
+# types for PyJWT (pyjwt has inline types)
 types-requests
 types-setuptools
 types-stripe

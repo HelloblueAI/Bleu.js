@@ -1,18 +1,35 @@
 # Building Docker Images with Supply Chain Attestations
 
 ## Problem
-Docker Scout reports "Missing supply chain attestation(s)" which reduces the health grade. Attestations (SBOM and Provenance) are required for supply chain security compliance.
+Docker Scout reports "Missing supply chain attestation(s)" which reduces the health grade (e.g. to C). Attestations (SBOM and Provenance) are required for supply chain security compliance and for a better Scout score.
 
 ## Solution
 
-### Option 1: Build and Push Directly (Recommended)
+### Recommended: Build and push with attestations (script)
 
-The easiest way to ensure attestations are attached is to build and push in one command:
+From the **Bleu.js repo root**, use the attestation script so the image is built with provenance + SBOM and pushed to Docker Hub in one step:
+
+```bash
+PUSH_DIRECTLY=true ./bleu-os/scripts/build-with-attestations.sh
+```
+
+This builds the **minimal** image by default, attaches attestations, and pushes `bleuos/bleu-os:minimal` and `bleuos/bleu-os:sha-<commit>`. Use this for releases and whenever you want Docker Scout to show a passing grade on attestations.
+
+**Production image (latest + main):** To fix the C grade on `latest` and `main`, build and push the production image with attestations (takes longer; includes quantum/ML):
+
+```bash
+PUSH_DIRECTLY=true VARIANT=production DOCKERFILE=bleu-os/Dockerfile.production ./bleu-os/scripts/build-with-attestations.sh
+```
+
+This pushes `bleuos/bleu-os:latest`, `bleuos/bleu-os:main`, and `bleuos/bleu-os:sha-<commit>` with attestations so Scout can raise their grade.
+
+### Option 2: Build and push with buildx (manual)
+
+If you prefer the raw `docker buildx` command:
 
 ```bash
 cd /path/to/Bleu.js
 
-# Build and push minimal image with attestations
 docker buildx build \
   --file bleu-os/Dockerfile.minimal \
   --tag bleuos/bleu-os:minimal \
@@ -26,17 +43,9 @@ docker buildx build \
 
 **Benefits:**
 - ✅ Attestations are automatically attached to the pushed image
-- ✅ No need to load locally
 - ✅ Meets Docker Scout requirements
 
-### Option 2: Use the Build Script
-
-```bash
-# Build and push with attestations
-PUSH_DIRECTLY=true ./bleu-os/scripts/build-with-attestations.sh
-```
-
-### Option 3: GitHub Actions (Automatic)
+### Option 3: GitHub Actions (automatic)
 
 The GitHub Actions workflow (`.github/workflows/docker-publish.yml`) already includes attestations:
 - `provenance: true`
@@ -69,11 +78,24 @@ These are OCI attestations attached to the image manifest and required for suppl
 
 ### BuildKit API Version Error
 
-If you see "client version 1.43 is too old", this means your Docker client/buildx has an API version mismatch with the daemon. **Attestations require buildx to work properly.**
+If you see **"client version 1.43 is too old. Minimum supported API version is 1.44"**, the script now sets `DOCKER_API_VERSION=1.44` by default so buildx can connect. Run:
 
-**Solutions:**
+```bash
+PUSH_DIRECTLY=true ./bleu-os/scripts/build-with-attestations.sh
+```
 
-1. **Use GitHub Actions CI/CD (Recommended)**
+If it still fails, set it explicitly before running:
+
+```bash
+export DOCKER_API_VERSION=1.44
+PUSH_DIRECTLY=true ./bleu-os/scripts/build-with-attestations.sh
+```
+
+Or upgrade your Docker client to a version that supports API 1.44+.
+
+**Other options:**
+
+1. **Use GitHub Actions CI/CD**
    - The CI/CD workflow automatically builds with attestations
    - Push your code to trigger the workflow
    - Images built via CI/CD will have attestations attached

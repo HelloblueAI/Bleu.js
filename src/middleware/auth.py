@@ -2,9 +2,9 @@
 
 from datetime import datetime, timedelta, timezone
 
+import jwt
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordBearer
-from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from src.config import get_settings
@@ -52,7 +52,7 @@ class AuthMiddleware:
                     detail=CREDENTIALS_ERROR_MESSAGE,
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=CREDENTIALS_ERROR_MESSAGE,
@@ -114,7 +114,7 @@ def get_current_user(
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-    except JWTError:
+    except jwt.InvalidTokenError:
         raise credentials_exception
 
     user_service = UserService(db)
@@ -142,7 +142,7 @@ def get_optional_current_user(
         user_id: str = payload.get("sub")
         if user_id is None:
             return None
-    except JWTError:
+    except jwt.InvalidTokenError:
         return None
 
     user_service = UserService(db)

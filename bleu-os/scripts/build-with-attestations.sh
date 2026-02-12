@@ -2,7 +2,10 @@
 set -euo pipefail
 
 # Build Bleu OS Docker Image with Supply Chain Attestations (SBOM & Provenance)
-# This script builds images with attestations to meet Docker Scout requirements
+# This script builds images with attestations to meet Docker Scout requirements.
+# Use DOCKER_API_VERSION=1.44 if your Docker client reports "1.43 is too old".
+
+export DOCKER_API_VERSION="${DOCKER_API_VERSION:-1.44}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -44,14 +47,14 @@ BUILDER_NAME="attestation-builder-$$"
 docker buildx create --use --name "${BUILDER_NAME}" 2>/dev/null || docker buildx use default || true
 docker buildx inspect --bootstrap > /dev/null 2>&1 || true
 
-# Determine tags
+# Determine tags (production -> latest + main; minimal -> minimal)
 TAG="${VARIANT}"
+EXTRA_TAGS=()
 if [[ "${VARIANT}" == "minimal" ]]; then
     TAG="minimal"
 elif [[ "${VARIANT}" == "production" ]]; then
     TAG="latest"
-else
-    TAG="${VARIANT}"
+    EXTRA_TAGS+=("main")
 fi
 
 log "Building ${IMAGE_NAME}:${TAG} with attestations..."
@@ -67,10 +70,11 @@ PUSH_DIRECTLY="${PUSH_DIRECTLY:-false}"
 if [[ "${PUSH_DIRECTLY}" == "true" ]]; then
     log_info "Building and pushing directly (attestations will be attached)..."
     # Build and push directly - attestations are automatically attached
+    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')")
+    for t in "${EXTRA_TAGS[@]}"; do TAGS+=("--tag" "${IMAGE_NAME}:${t}"); done
     docker buildx build \
         --file "${DOCKERFILE}" \
-        --tag "${IMAGE_NAME}:${TAG}" \
-        --tag "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')" \
+        "${TAGS[@]}" \
         --provenance=true \
         --sbom=true \
         --platform linux/amd64 \
@@ -82,12 +86,11 @@ if [[ "${PUSH_DIRECTLY}" == "true" ]]; then
     log_success "Pushed to Docker Hub with attestations!"
 else
     log_info "Building with attestations (local)..."
-    # Build locally with attestations
-    # Note: Attestations are best preserved when pushing directly
+    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')")
+    for t in "${EXTRA_TAGS[@]}"; do TAGS+=("--tag" "${IMAGE_NAME}:${t}"); done
     docker buildx build \
         --file "${DOCKERFILE}" \
-        --tag "${IMAGE_NAME}:${TAG}" \
-        --tag "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')" \
+        "${TAGS[@]}" \
         --provenance=true \
         --sbom=true \
         --platform linux/amd64 \
@@ -119,4 +122,5 @@ fi
 log ""
 log_success "To push to Docker Hub:"
 log_info "  docker push ${IMAGE_NAME}:${TAG}"
+for t in "${EXTRA_TAGS[@]}"; do log_info "  docker push ${IMAGE_NAME}:${t}"; done
 log_info "  docker push ${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')"

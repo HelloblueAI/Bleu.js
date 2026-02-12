@@ -9,9 +9,8 @@ ARG BLEU_OS_VERSION=1.0.0
 ARG PYTHON_VERSION=3.11
 
 # Install build tools (with security updates)
-# Use --upgrade flag to ensure all packages are at latest versions
 RUN apk update && \
-    apk upgrade --no-cache && \
+    apk upgrade --no-cache --available && \
     apk add --no-cache --upgrade \
     python3 \
     py3-pip \
@@ -47,10 +46,9 @@ LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
 # Install runtime dependencies (with security updates)
-# Use --upgrade flag to ensure all packages are at latest versions
-# Update ca-certificates first for secure package downloads
+# apk upgrade --available pulls expat>=2.7.4-r0 (CVE-2026-25210, CVE-2026-24515), newer curl when in repo
 RUN apk update && \
-    apk upgrade --no-cache && \
+    apk upgrade --no-cache --available && \
     apk add --no-cache --upgrade \
     ca-certificates \
     && apk add --no-cache --upgrade \
@@ -116,6 +114,7 @@ RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
 # Use version constraints from requirements.txt for security
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
+        "pillow>=12.1.1" \
         "scikit-learn>=1.7.1" \
         "pandas>=2.0.0" \
         matplotlib \
@@ -149,8 +148,10 @@ COPY --chown=bleuos:bleuos requirements.txt /opt/bleu-js/
 COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
 COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
 
+# Security: pin cryptography>=46.0.5 (CVE-2026-26007) before Bleu.js
 # Install Bleu.js with proper error handling
-RUN if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
+RUN pip3 install --user --no-cache-dir --break-system-packages "cryptography>=46.0.5" && \
+    if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
         pip3 install --user --no-cache-dir --break-system-packages -e /opt/bleu-js 2>/dev/null || \
         pip3 install --user --no-cache-dir --break-system-packages bleu-js 2>/dev/null || \
         echo "Bleu.js: Installation attempted"; \

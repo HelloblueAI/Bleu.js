@@ -5,16 +5,16 @@ from email.mime.text import MIMEText
 from typing import Any
 
 import httpx
+import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from src.config.settings import settings
 from src.database import get_db
 from src.models.subscription import Subscription, SubscriptionPlan
-from src.models.user import Token, User
+from src.models.user import User
 from src.schemas.user import UserCreate, UserResponse
 from src.utils.base_classes import BaseService
 
@@ -87,7 +87,7 @@ class AuthService(BaseService):
             ):
                 raise HTTPException(status_code=401, detail="Refresh token has expired")
             return payload
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail="Invalid refresh token")
 
     async def get_current_user(self, token: str | None = None) -> UserResponse:
@@ -104,7 +104,7 @@ class AuthService(BaseService):
             email: str | None = payload.get("sub")
             if email is None:
                 raise credentials_exception
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise credentials_exception
 
         user = self.db.query(User).filter(User.email == email).first()
@@ -178,7 +178,7 @@ class AuthService(BaseService):
                 db.commit()
                 return True
             return False
-        except JWTError:
+        except jwt.InvalidTokenError:
             return False
 
     async def authenticate_user(
