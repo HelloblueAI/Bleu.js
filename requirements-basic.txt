@@ -2,7 +2,7 @@
 # Minimal dependencies for core functionality
 
 aiohttp>=3.9.3
-alembic==1.18.1
+alembic==1.18.3
 aws-lambda-powertools>=2.30.0
 
 # AWS
