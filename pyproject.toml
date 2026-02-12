@@ -38,7 +38,7 @@ pydantic = {extras = ["email"], version = "^2.7.0"}
 urllib3 = ">=2.6.3"  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
 requests = "^2.32.4"
 cryptography = ">=46.0.5,<47.0.0"  # CVE-2026-26007 (subgroup validation); was 45.0.6 for OpenSSL
-setuptools = ">=78.1.1,<81.0.0"
+setuptools = ">=78.1.1,<83.0.0"
 
 # Database - Pinned versions
 sqlalchemy = "2.0.46"
