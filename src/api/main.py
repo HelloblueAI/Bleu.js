@@ -20,16 +20,10 @@ logger = logging.getLogger(__name__)
 # Get settings for configuration
 settings = get_settings()
 
-# Get version from centralized location
-try:
-    from src.bleujs import __version__ as API_VERSION
-except ImportError:
-    try:
-        import importlib.metadata
+# Get version from centralized location (see src/version.py)
+from src.version import get_version  # noqa: E402
 
-        API_VERSION = importlib.metadata.version("bleu-js")
-    except Exception:
-        API_VERSION = "1.3.21"  # Fallback
+API_VERSION = get_version()
 
 app = FastAPI(
     title="Bleu.js API",
@@ -216,20 +210,21 @@ async def _check_redis_health():
             socket_connect_timeout=5,
             socket_timeout=5,
         )
-
-        redis_ping = redis_client.ping()
-        if redis_ping:
-            return {
-                "status": "healthy",
-                "connection": "active",
-                "host": settings.REDIS_HOST,
-                "port": settings.REDIS_PORT,
-            }
-        else:
+        try:
+            redis_ping = redis_client.ping()
+            if redis_ping:
+                return {
+                    "status": "healthy",
+                    "connection": "active",
+                    "host": settings.REDIS_HOST,
+                    "port": settings.REDIS_PORT,
+                }
             return {
                 "status": "degraded",
                 "connection": "unresponsive",
             }
+        finally:
+            redis_client.close()
 
     except Exception as e:
         return {

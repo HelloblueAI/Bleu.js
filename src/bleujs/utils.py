@@ -4,6 +4,8 @@ Utility functions for Bleu.js
 
 import logging
 import sys
+
+
 def get_version() -> str:
     """Return the Bleu.js package version."""
     try:
@@ -15,7 +17,10 @@ def get_version() -> str:
             import importlib.metadata
 
             return importlib.metadata.version("bleu-js")
-        except Exception:
+        except Exception as e:
+            logging.getLogger(__name__).warning(
+                "Could not resolve bleu-js version: %s; using 0.0.0", e
+            )
             return "0.0.0"
 
 

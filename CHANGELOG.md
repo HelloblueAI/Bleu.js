@@ -16,9 +16,19 @@
 
 ## [v1.3.27] - 2026-02-12
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.3.26 to 1.3.27
-- See commit history for changes
+### Added
+- **Centralized version:** `src/version.py` with `get_version()`; used by main app, API, config, and health endpoints.
+- **Security:** `LICENSE` at repo root, `SECURITY.md` (secrets, reporting, deployment checklist).
+- **Docker / Dependabot:** `bleu-os/DEPENDABOT_DOCKER_BUILDS.md` for fixing Dependabot PRs that fail Docker builds.
+
+### Changed
+- **Circuit breaker** now raises `ServiceUnavailable` (returns 503) instead of generic `Exception`; handler added in error-handling middleware.
+- **Redis health check** closes the client in a `finally` block to avoid connection leaks.
+- **Exception handling:** narrower catches in `SyndromeMeasurer.measure()`; version fallback and request-body read log warnings/debug.
+- **Exports:** `ServiceUnavailable` and `RateLimitExceeded` re-exported from `src` for API use; `src.__version__` uses `get_version()`.
+
+### Documentation
+- README: **Version** and **Development** sections (get_version, run tests, exceptions, contributing link).
 
 
 ## [v1.3.26] - 2026-02-02

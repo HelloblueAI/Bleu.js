@@ -35,16 +35,10 @@ QUANTUM_CONFIG = ProcessorConfig(
     noise_model="depolarizing",
 )
 
-# Get version from centralized location
-try:
-    from src.bleujs import __version__ as BLEUJS_VERSION
-except ImportError:
-    try:
-        import importlib.metadata
+# Get version from centralized location (see src/version.py)
+from src.version import get_version  # noqa: E402
 
-        BLEUJS_VERSION = importlib.metadata.version("bleu-js")
-    except Exception:
-        BLEUJS_VERSION = "1.3.6"  # Fallback
+BLEUJS_VERSION = get_version()
 
 app = FastAPI(
     title="Bleu.js API",

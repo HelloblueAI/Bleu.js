@@ -2,10 +2,13 @@
 Syndrome Measurement for Quantum Error Correction
 """
 
+import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -198,5 +201,6 @@ class SyndromeMeasurer:
         try:
             n = getattr(circuit, "num_qubits", 3)
             return [0] * max(2, n - 1)
-        except Exception:
+        except (TypeError, ValueError, AttributeError) as e:
+            _logger.debug("SyndromeMeasurer.measure fallback: %s", e)
             return [0, 0]

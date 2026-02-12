@@ -6,11 +6,13 @@ from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from src.version import get_version
+
 # Create FastAPI application
 application = FastAPI(
     title="Bleu.js API",
     description="API for Bleu.js quantum computing services",
-    version="1.3.6",  # TODO: Read from centralized version
+    version=get_version(),
 )
 
 # CORS middleware configuration
@@ -37,7 +39,7 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now(timezone.utc),
-        "version": "1.0.0",
+        "version": get_version(),
     }
 
 
