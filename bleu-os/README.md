@@ -102,9 +102,16 @@ docker build -t bleu-os:latest -f Dockerfile.production .
 # Development
 docker build -t bleu-os:dev -f Dockerfile .
 
-# Minimal
+# Minimal (local only)
 docker build -t bleu-os:minimal -f Dockerfile.minimal .
 ```
+
+**Build and push with attestations (for Docker Scout / supply chain):**
+To get supply chain attestations (SBOM + provenance) and a better Scout health grade, build and push with:
+```bash
+PUSH_DIRECTLY=true ./bleu-os/scripts/build-with-attestations.sh
+```
+See [BUILD_WITH_ATTESTATIONS.md](BUILD_WITH_ATTESTATIONS.md).
 
 ### Install on Bare Metal
 

@@ -14,10 +14,7 @@ LABEL org.opencontainers.image.base.name="alpine:3.23"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
-# Install minimal dependencies (with security updates)
-# Update ca-certificates first for secure package downloads
-# Upgrade all packages to fix CVEs: CVE-2025-60876 (busybox)
-# Using Alpine 3.23 (recommended by Docker Scout) - removes 2 vulnerabilities
+# Install minimal dependencies; apk upgrade pulls expat>=2.7.4-r0 (CVE-2026-25210, CVE-2026-24515)
 RUN apk update && \
     apk upgrade --no-cache --available && \
     apk add --no-cache \
@@ -44,22 +41,24 @@ ENV PYTHONUNBUFFERED=1 \
     BLEU_OS_VERSION=${BLEU_OS_VERSION} \
     PATH="/home/bleuos/.local/bin:$PATH"
 
-# Install only Bleu.js (minimal)
-# Upgrade pip and setuptools for user as well to ensure latest versions
-# Note: python-jose[cryptography] uses cryptography library for crypto operations,
-# minimizing ecdsa usage (ecdsa is still installed as a dependency but less used)
+# Install Bleu.js from repo so dependency tree uses local pyproject.toml (no python-jose/ecdsa)
+# PyPI-published bleu-js still lists python-jose -> ecdsa (CVE-2024-23342); local install avoids it
 USER bleuos
 WORKDIR /home/bleuos
 
 RUN pip3 install --user --no-cache-dir --break-system-packages --upgrade \
     pip \
     setuptools \
-    wheel && \
-    pip3 install --user --no-cache-dir --break-system-packages \
-    bleu-js \
+    wheel
+
+# Copy only what's needed to install bleu-js from repo (no ecdsa)
+COPY --chown=bleuos:bleuos pyproject.toml setup.py README.md /opt/bleu-js/
+COPY --chown=bleuos:bleuos src/bleujs /opt/bleu-js/src/bleujs
+
+RUN pip3 install --user --no-cache-dir --break-system-packages \
+    "cryptography>=46.0.5" \
     "numpy>=2.2.6" && \
-    pip3 install --user --no-cache-dir --break-system-packages \
-    "python-jose[cryptography]>=3.3.0"
+    pip3 install --user --no-cache-dir --break-system-packages -e /opt/bleu-js
 
 # System config
 USER root

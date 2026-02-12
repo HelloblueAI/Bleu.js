@@ -37,7 +37,7 @@ pydantic = {extras = ["email"], version = "^2.7.0"}
 # Security - Fixed versions
 urllib3 = ">=2.6.3"  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
 requests = "^2.32.4"
-cryptography = ">=45.0.6,<47.0.0"  # Updated to fix OpenSSL vulnerability (Issue #299)
+cryptography = ">=46.0.5,<47.0.0"  # CVE-2026-26007 (subgroup validation); was 45.0.6 for OpenSSL
 setuptools = ">=78.1.1,<81.0.0"
 
 # Database - Pinned versions
@@ -60,7 +60,7 @@ pydantic-settings = "^2.10.1"
 pyjwt = "^2.10.1"
 prometheus-client = ">=0.23.1,<0.25.0"
 xgboost = "^3.0.2"
-python-jose = {extras = ["cryptography"], version = "^3.5.0"}  # Use cryptography backend to avoid ecdsa dependency
+# JWT: PyJWT only (python-jose removed to avoid ecdsa CVE-2024-23342; no upstream fix)
 passlib = "^1.7.4"
 redis = ">=6.2,<8.0"
 python-multipart = ">=0.0.20,<0.0.23"

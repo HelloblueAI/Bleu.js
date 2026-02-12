@@ -2,8 +2,8 @@
 
 from datetime import datetime, timedelta
 
+import jwt
 from fastapi import HTTPException, status
-from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from src.config import get_settings
@@ -97,7 +97,7 @@ class TokenManager:
                 algorithms=[self.settings.ALGORITHM],
             )
             return payload
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
@@ -171,7 +171,7 @@ class TokenManager:
 
             return self.create_tokens(user)
 
-        except JWTError:
+        except jwt.InvalidTokenError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
