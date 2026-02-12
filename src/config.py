@@ -46,16 +46,10 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 # API configuration
 API_V1_PREFIX = "/api/v1"
 PROJECT_NAME = "Bleu.js API"
-# Get version from centralized location
-try:
-    from src.bleujs import __version__ as VERSION
-except ImportError:
-    try:
-        import importlib.metadata
+# Get version from centralized location (see src/version.py)
+from src.version import get_version  # noqa: E402
 
-        VERSION = importlib.metadata.version("bleu-js")
-    except Exception:
-        VERSION = "1.3.6"  # Fallback
+VERSION = get_version()
 
 # Security configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")

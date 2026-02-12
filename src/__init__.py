@@ -17,8 +17,13 @@ warnings.filterwarnings(
     category=PydanticDeprecatedSince20,
 )
 
-# Get version from main package
-try:
-    from src.bleujs import __version__ as __version__
-except ImportError:
-    __version__ = "1.3.6"  # Fallback
+# Version and public exceptions (for API and middleware)
+from src.version import get_version  # noqa: E402
+
+__version__ = get_version()
+from src.middleware.error_handling import (  # noqa: E402
+    RateLimitExceeded,
+    ServiceUnavailable,
+)
+
+__all__ = ["__version__", "get_version", "RateLimitExceeded", "ServiceUnavailable"]

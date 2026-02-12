@@ -22,6 +22,18 @@ from src.config import get_settings
 logger = logging.getLogger(__name__)
 
 
+class RateLimitExceeded(Exception):
+    """Custom exception for rate limit exceeded."""
+
+    pass
+
+
+class ServiceUnavailable(Exception):
+    """Custom exception for service unavailable (e.g. circuit breaker open)."""
+
+    pass
+
+
 class CircuitBreaker:
     """Circuit breaker pattern implementation for external service calls."""
 
@@ -39,7 +51,9 @@ class CircuitBreaker:
                 self.state = "HALF_OPEN"
                 logger.info("Circuit breaker attempting reset to HALF_OPEN")
             else:
-                raise Exception("Circuit breaker is OPEN - service unavailable")
+                raise ServiceUnavailable(
+                    "Circuit breaker is OPEN - service unavailable"
+                )
 
         try:
             result = func(*args, **kwargs)
@@ -167,6 +181,8 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             return await self._handle_validation_error(exc, request_id)
         elif isinstance(exc, ValueError):
             return await self._handle_value_error(exc, request_id)
+        elif isinstance(exc, ServiceUnavailable):
+            return await self._handle_service_unavailable(exc, request_id)
         else:
             return await self._handle_generic_error(exc, request_id)
 
@@ -233,6 +249,25 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             headers={"X-Request-ID": request_id},
         )
 
+    async def _handle_service_unavailable(
+        self, exc: ServiceUnavailable, request_id: str
+    ) -> JSONResponse:
+        """Handle service unavailable (e.g. circuit breaker open)."""
+        error_response = {
+            "error": {
+                "type": "ServiceUnavailable",
+                "message": "Service temporarily unavailable",
+                "status_code": status.HTTP_503_SERVICE_UNAVAILABLE,
+                "request_id": request_id,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        }
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=error_response,
+            headers={"X-Request-ID": request_id},
+        )
+
     async def _handle_generic_error(
         self, exc: Exception, request_id: str
     ) -> JSONResponse:
@@ -264,7 +299,8 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
         try:
             body = await request.body()
             return body.decode() if body else None
-        except Exception:
+        except Exception as e:
+            logger.debug("Could not read request body: %s", e)
             return None
 
     def _get_client_ip(self, request: Request) -> str:
@@ -279,15 +315,3 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
         if service_name not in self.circuit_breakers:
             self.circuit_breakers[service_name] = CircuitBreaker()
         return self.circuit_breakers[service_name]
-
-
-class RateLimitExceeded(Exception):
-    """Custom exception for rate limit exceeded."""
-
-    pass
-
-
-class ServiceUnavailable(Exception):
-    """Custom exception for service unavailable."""
-
-    pass

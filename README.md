@@ -293,6 +293,11 @@ with open(model_path, 'rb') as f:
 - **[Dependency Management](./docs/DEPENDENCY_MANAGEMENT.md)** - Managing dependencies and resolving conflicts
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 
+### Version
+- **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
+- **In code:** use `from src.version import get_version` for API, health, or config. The main app and API use this for `/health` and FastAPI `version`.
+- **CLI:** `bleu version` or `python -c "from src.version import get_version; print(get_version())"`
+
 ### For Contributors
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
 - **[Contributor Guide](./docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
@@ -447,6 +452,12 @@ results = bleu.process(
 )
 ```
 
+
+### Development
+- **Run tests:** `pytest tests/ -q` (optional: `pip install pytest pytest-asyncio` for async tests)
+- **Version:** `from src.version import get_version`
+- **Raising/catching API exceptions:** `from src import ServiceUnavailable, RateLimitExceeded`
+- **How to contribute:** see [Contributing Guide](./docs/CONTRIBUTING.md)
 
 ### CI/CD Pipeline
 

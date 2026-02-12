@@ -166,6 +166,32 @@ class QuantumGPUManager:
                     "last_optimization": time.time(),
                 }
 
+    def _get_available_memory(self, device: int, is_quantum: bool = False) -> int:
+        """Available memory on device. Non-quantum cannot use reserved_quantum."""
+        if device not in self.device_stats:
+            return 0
+        stats = self.device_stats[device]
+        total = stats["total_memory"]
+        allocated = stats["allocated"]
+        cached = stats["cached"]
+        reserved_q = stats["reserved_quantum"]
+        if is_quantum:
+            return max(0, total - allocated - cached)
+        return max(0, total - reserved_q - allocated - cached)
+
+    def _select_best_device(self, size: int, is_quantum: bool = False) -> Optional[int]:
+        """Best device with enough free memory, preferring most available."""
+        best_device: Optional[int] = None
+        best_available = 0
+        for device in self.devices:
+            if device not in self.device_stats:
+                continue
+            available = self._get_available_memory(device, is_quantum)
+            if available >= size and available > best_available:
+                best_available = available
+                best_device = device
+        return best_device
+
     def allocate(
         self,
         size: int,
@@ -262,9 +288,20 @@ class QuantumGPUManager:
         del self.memory_blocks[handle]
 
         logger.debug(
-            f"Deallocated {memory_block.size} bytes on device {device} (handle: {handle})"
+            "Deallocated %s bytes on device %s (handle: %s)",
+            memory_block.size,
+            device,
+            handle,
         )
         return True
+
+    def free(self, handle: int) -> bool:
+        """Alias for deallocate for API compatibility."""
+        return self.deallocate(handle)
+
+    def _compact_memory(self, device: int) -> None:
+        """Compact memory on device to reduce fragmentation."""
+        self._optimize_memory_layout()
 
     def _should_perform_cleanup(self) -> bool:
         """Check if cleanup should be performed."""
@@ -314,7 +351,9 @@ class QuantumGPUManager:
 
             duration = time.time() - start_time
             logger.info(
-                f"Memory cleanup completed in {duration:.2f}s, freed {freed_memory} bytes"
+                "Memory cleanup completed in %.2fs, freed %s bytes",
+                duration,
+                freed_memory,
             )
 
         except Exception as e:
@@ -335,8 +374,9 @@ class QuantumGPUManager:
 
                         if fragmentation > self.max_fragmentation:
                             logger.info(
-                                f"High fragmentation detected on device {device}: "
-                                f"{fragmentation:.2%}"
+                                "High fragmentation on device %s: %.2f%%",
+                                device,
+                                fragmentation * 100,
                             )
                             self.metrics.record_fragmentation()
 
@@ -348,7 +388,9 @@ class QuantumGPUManager:
 
                 except Exception as e:
                     logger.error(
-                        f"Failed to optimize memory layout for device {device}: {str(e)}"
+                        "Failed to optimize memory layout for device %s: %s",
+                        device,
+                        e,
                     )
 
     def _try_free_memory(self, device: int, required_size: int) -> bool:
@@ -413,6 +455,34 @@ class QuantumGPUManager:
                 stats["devices"][f"device_{device}"] = device_stats
 
         return stats
+
+    def get_memory_info(self) -> Dict:
+        """Per-device memory info (total, allocated, cached, free, quantum_*)."""
+        info: Dict = {}
+        for device in self.devices:
+            if device not in self.device_stats:
+                continue
+            stats = self.device_stats[device]
+            total = stats["total_memory"]
+            allocated = stats["allocated"]
+            cached = stats["cached"]
+            reserved_q = stats["reserved_quantum"]
+            free = max(0, total - allocated - cached)
+            quantum_blocks = sum(
+                1
+                for h, b in self.memory_blocks.items()
+                if b.device == device and b.is_quantum
+            )
+            info[f"device_{device}"] = {
+                "total": total,
+                "allocated": allocated,
+                "cached": cached,
+                "free": free,
+                "fragmentation": stats["fragmentation"],
+                "quantum_reserved": reserved_q,
+                "quantum_blocks": quantum_blocks,
+            }
+        return info
 
     @contextmanager
     def memory_context(
