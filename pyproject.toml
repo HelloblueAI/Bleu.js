@@ -30,7 +30,7 @@ pandas = "^2.0.0"
 scikit-learn = "^1.2.2"
 
 # Web Framework - Pinned for stability
-fastapi = ">=0.116.1,<0.129.0"
+fastapi = ">=0.116.1,<0.130.0"
 uvicorn = "0.40.0"
 pydantic = {extras = ["email"], version = "^2.7.0"}
 
