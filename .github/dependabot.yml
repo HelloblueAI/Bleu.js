@@ -1,8 +1,9 @@
+# Dependabot: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 version: 2
 updates:
-  # Enable version updates for npm (JavaScript/TypeScript)
+  # npm (collaboration-tools only; no root package.json)
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/collaboration-tools"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -22,13 +23,7 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
-    # Auto-merge configuration (optional - requires branch protection)
-    # Uncomment if you want auto-merge for patch/minor updates
-    # ignore:
-    #   - dependency-name: "*"
-    #     update-types: ["version-update:semver-major"]
-
-  # Enable version updates for pip (Python)
+  # pip (Python: pyproject.toml + poetry.lock at /)
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -44,8 +39,18 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "torch"
+        # torch often fails in Dependabot (size/build); update manually when needed
+    groups:
+      python-patch-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
-  # Enable version updates for Docker
+  # Enable version updates for Docker (root)
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -59,7 +64,21 @@ updates:
       - "dependencies"
       - "docker"
 
-  # Enable version updates for GitHub Actions
+  # Enable version updates for Docker (bleu-os)
+  - package-ecosystem: "docker"
+    directory: "/bleu-os"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "helloblueai"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # github-actions (.github/workflows)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
