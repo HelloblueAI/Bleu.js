@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "bleu-js"
-version = "1.3.29"
+version = "1.3.33"
 description = "Advanced AI and Quantum Computing Framework"
 authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
@@ -31,7 +31,7 @@ scikit-learn = "^1.2.2"
 
 # Web Framework - Pinned for stability
 fastapi = ">=0.116.1,<0.132.0"
-uvicorn = "0.40.0"
+uvicorn = "0.41.0"
 pydantic = {extras = ["email"], version = "^2.7.0"}
 
 # Security - Fixed versions
@@ -42,7 +42,7 @@ setuptools = ">=78.1.1,<83.0.0"
 
 # Database - Pinned versions
 sqlalchemy = "2.0.46"
-alembic = "1.18.3"
+alembic = "1.18.4"
 psycopg2-binary = "2.9.11"
 
 # AWS
@@ -107,7 +107,7 @@ pytest = "^9.0.2"
 pytest-cov = ">=4,<8"
 pytest-asyncio = ">=0.21,<1.4"
 black = ">=25.1,<27.0"
-isort = ">=5,<8"
+isort = ">=5,<9"
 flake8 = "^4.0.0"
 mypy = ">=0.900,<1.20"
 pre-commit = ">=2,<5"

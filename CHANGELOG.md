@@ -1,5 +1,33 @@
 # Changelog
 
+## [v1.3.33] - 2026-02-23
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.3.32 to 1.3.33
+- See commit history for changes
+
+
+## [v1.3.32] - 2026-02-17
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.3.31 to 1.3.32
+- See commit history for changes
+
+
+## [v1.3.31] - 2026-02-16
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.3.30 to 1.3.31
+- See commit history for changes
+
+
+## [v1.3.30] - 2026-02-12
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.3.29 to 1.3.30
+- See commit history for changes
+
+
 ## [v1.3.29] - 2026-02-12
 
 ### 🎉 Automatic Release
