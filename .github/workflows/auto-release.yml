@@ -165,18 +165,16 @@ jobs:
           TAG="v$NEW_VERSION"
           OLD_VERSION="${{ steps.get-version.outputs.current }}"
 
-          # Fetch tags from remote to check if tag already exists
-          git fetch --tags origin || true
-
-          # Check if tag exists locally or remotely
-          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --tags origin "$TAG" | grep -q "$TAG"; then
-            echo "⚠️ Tag $TAG already exists (locally or remotely), skipping tag creation"
-          else
-            TAG_MSG="Release $TAG: Automatic version bump from $OLD_VERSION to $NEW_VERSION. All version files updated. Installation: pip install bleu-js==$NEW_VERSION"
-            git tag -a "$TAG" -m "$TAG_MSG"
-            git push origin "$TAG"
-            echo "✅ Created and pushed tag $TAG"
+          # Check if tag already exists on remote (exit 0 = exists, exit 2 = not found)
+          if git ls-remote --exit-code origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "⚠️ Tag $TAG already exists on remote, skipping tag creation and push"
+            exit 0
           fi
+
+          TAG_MSG="Release $TAG: Automatic version bump from $OLD_VERSION to $NEW_VERSION. All version files updated. Installation: pip install bleu-js==$NEW_VERSION"
+          git tag -a "$TAG" -m "$TAG_MSG"
+          git push origin "$TAG"
+          echo "✅ Created and pushed tag $TAG"
 
       - name: Summary
         run: |
