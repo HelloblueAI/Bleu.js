@@ -160,7 +160,7 @@ pip install 'bleu-js[all]'
    ```bash
    # Instead of full installation
    pip install 'bleu-js[all]'
-   
+
    # Install only core
    pip install bleu-js
    ```
@@ -413,6 +413,5 @@ Do you need quantum-enhanced AI/ML?
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1
-
+**Last Updated:** 2025-01-XX
+**Version:** 1.3.33

@@ -7,7 +7,6 @@ Clean, organized directory structure for easy navigation and maintenance.
 ```
 Bleu.js/
 ├── 📚 docs/               # All documentation
-│   ├── project-reports/   # Status reports, summaries
 │   ├── guides/            # How-to guides, instructions
 │   └── api/               # API documentation
 │
@@ -29,9 +28,8 @@ Bleu.js/
 │   └── quick_start.py     # Quick start examples
 │
 ├── 🎬 demos/              # Demo files
-│   ├── *.cast             # Terminal recordings
-│   ├── *.gif              # Demo GIFs
-│   └── *.svg              # Graphics
+│   ├── *.svg              # Demo graphics
+│   └── *.gif              # Demo GIFs
 │
 ├── 🔧 scripts/            # Utility scripts
 │   └── *.sh               # Shell scripts
@@ -52,14 +50,6 @@ All project documentation in one place:
 - `CONTRIBUTING.md` - Contribution guidelines
 - `LICENSE.md` - License information
 - `ROADMAP.md` - Future plans
-
-### `/project-reports/`
-Status reports and summaries:
-- Implementation reports
-- Security reports
-- Status updates
-- Final summaries
-- Audit reports
 
 ### `/guides/`
 Step-by-step instructions:
@@ -123,9 +113,8 @@ Working code examples:
 ## 🎬 Demos (`demos/`)
 
 Demonstration materials:
-- `*.cast` - Asciinema terminal recordings
-- `*.gif` - Animated demos
 - `*.svg` - Vector graphics
+- `*.gif` - Animated demos
 
 ## 🔧 Scripts (`scripts/`)
 
@@ -238,7 +227,6 @@ bash scripts/setup.sh
 
 ---
 
-**Last Updated:** October 2025  
-**Version:** 1.2.1  
+**Last Updated:** February 2025
+**Version:** 1.3.33
 **Organization:** Complete ✅
-

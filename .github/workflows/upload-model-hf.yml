@@ -1,0 +1,97 @@
+name: Upload Model to Hugging Face
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v1.0.0
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      model_name:
+        description: 'Model name'
+        required: true
+        default: 'bleu-xgboost-classifier'
+      organization:
+        description: 'Organization name'
+        required: true
+        default: 'helloblueai'
+      version:
+        description: 'Model version'
+        required: false
+
+jobs:
+  upload-model:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install huggingface-hub
+          pip install -r requirements.txt || true
+
+      - name: Verify model files exist
+        run: |
+          echo "Checking for model files..."
+          ls -lh backend/*.pkl backend/models/*.pkl 2>/dev/null || echo "No model files found"
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "latest")
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION"
+
+      - name: Upload to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          MODEL_NAME="${{ github.event.inputs.model_name || 'bleu-xgboost-classifier' }}"
+          ORG="${{ github.event.inputs.organization || 'helloblueai' }}"
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Add version to model name if not 'latest'
+          if [ "$VERSION" != "latest" ] && [ -n "$VERSION" ]; then
+            MODEL_NAME="${MODEL_NAME}-${VERSION}"
+          fi
+
+          echo "Uploading model: ${ORG}/${MODEL_NAME}"
+
+          python3 scripts/setup_hf_model_auto.py \
+            --organization "$ORG" \
+            --model-name "$MODEL_NAME"
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Model Release ${{ github.ref }}
+          body: |
+            Model uploaded to Hugging Face:
+            - Organization: ${{ github.event.inputs.organization || 'helloblueai' }}
+            - Model: ${{ github.event.inputs.model_name || 'bleu-xgboost-classifier' }}
+            - Version: ${{ steps.version.outputs.version }}
+
+            View model: https://huggingface.co/${{ github.event.inputs.organization || 'helloblueai' }}/${{ github.event.inputs.model_name || 'bleu-xgboost-classifier' }}
+          draft: false
+          prerelease: false
