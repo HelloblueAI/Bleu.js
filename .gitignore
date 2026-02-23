@@ -566,8 +566,7 @@ wheels/
 .installed.cfg
 *.egg
 
-# CI/CD
-.github/workflows/
+# CI/CD (keep .github/workflows/ tracked via ! rules at top)
 .gitlab-ci.yml
 .circleci/
 .travis.yml

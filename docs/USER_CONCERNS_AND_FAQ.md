@@ -61,7 +61,7 @@ Bleu.js is a relatively new project, and we're actively building our community.
 
 #### Maintenance Commitment
 
-- **Version:** 1.2.1 (latest stable)
+- **Version:** 1.3.33 (latest stable)
 - **Release Cycle:** Regular updates with security patches
 - **Python Support:** Python 3.10, 3.11, 3.12
 - **License:** MIT (open source)
@@ -321,7 +321,7 @@ Do you need quantum-enhanced AI/ML?
 
 ### Q: Is Bleu.js production-ready?
 
-**A:** Bleu.js v1.2.1 is stable and suitable for production use, but consider your specific requirements:
+**A:** Bleu.js v1.3.33 is stable and suitable for production use, but consider your specific requirements:
 - Core features: ✅ Production-ready
 - ML features: ✅ Production-ready
 - Quantum features: ⚠️ Best for research/development
@@ -355,7 +355,7 @@ pip install bleu-js  # Core only, no quantum dependencies
 
 ### Q: Does Bleu.js work with Python 3.12?
 
-**A:** Yes! Bleu.js 1.2.1 supports Python 3.10, 3.11, and 3.12.
+**A:** Yes! Bleu.js 1.3.33 supports Python 3.10, 3.11, and 3.12.
 
 ---
 
@@ -394,6 +394,5 @@ If you have questions or concerns, please reach out:
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1
-
+**Last Updated:** 2025-01-XX
+**Version:** 1.3.33

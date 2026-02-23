@@ -376,6 +376,5 @@ Before making your first contribution:
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1
-
+**Last Updated:** 2025-01-XX
+**Version:** 1.3.33

@@ -10,7 +10,7 @@ This document provides transparent information about Bleu.js community support, 
 
 ### Current Version
 
-- **Version:** 1.2.1
+- **Version:** 1.3.33
 - **Release Date:** 2025-01-XX
 - **Status:** ✅ **Active Maintenance**
 - **Python Support:** 3.10, 3.11, 3.12
@@ -205,7 +205,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 
 | Version | Status | Support Level |
 |---------|--------|---------------|
-| 1.2.1 | ✅ Current | Full support |
+| 1.3.33 | ✅ Current | Full support |
 | 1.2.0 | ⚠️ Previous | Security updates only |
 | 1.1.x | ❌ Deprecated | No support |
 
@@ -238,7 +238,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 
 ### Q: How often is Bleu.js updated?
 
-**A:** 
+**A:**
 - Security updates: As needed (typically within days)
 - Bug fixes: Monthly or as needed
 - Features: Every 2-3 months
@@ -246,7 +246,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 
 ### Q: What's the support timeline?
 
-**A:** 
+**A:**
 - Current version: Full support
 - Previous version: Security updates only
 - Older versions: No longer supported
@@ -270,7 +270,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 
 ### Q: Where can I find examples?
 
-**A:** 
+**A:**
 - [`examples/`](../examples/) directory
 - GitHub Discussions
 - Documentation guides
@@ -334,7 +334,6 @@ We understand that trust is built over time. We're working to:
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1  
+**Last Updated:** 2025-01-XX
+**Version:** 1.2.1
 **Status:** ✅ Active Maintenance
-

@@ -72,7 +72,7 @@ This document outlines actionable steps to grow the Bleu.js community and projec
 #### First PR Welcome Template
 
 ```markdown
-🎉 **Welcome to Bleu.js!** 
+🎉 **Welcome to Bleu.js!**
 
 Thank you for your first contribution! We're excited to have you join our community.
 
@@ -102,7 +102,7 @@ Thank you for your first contribution! We're excited to have you join our commun
 
 **Twitter/X:**
 ```
-🚀 Just contributed to @BleuJS! 
+🚀 Just contributed to @BleuJS!
 
 Working on quantum-enhanced AI is amazing. Check it out:
 https://github.com/HelloblueAI/Bleu.js
@@ -114,7 +114,7 @@ https://github.com/HelloblueAI/Bleu.js
 ```
 Excited to contribute to Bleu.js, a quantum-enhanced AI platform!
 
-Just made my first contribution and the community is incredibly welcoming. 
+Just made my first contribution and the community is incredibly welcoming.
 Great project for anyone interested in quantum computing and AI.
 
 #OpenSource #QuantumComputing #MachineLearning
@@ -124,7 +124,7 @@ Great project for anyone interested in quantum computing and AI.
 ```
 [P] Bleu.js - Quantum-Enhanced AI Platform (Open Source)
 
-Just discovered Bleu.js and made my first contribution! It's a Python 
+Just discovered Bleu.js and made my first contribution! It's a Python
 package that combines quantum computing with machine learning.
 
 Great for:
@@ -436,6 +436,5 @@ GitHub: https://github.com/HelloblueAI/Bleu.js
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1
-
+**Last Updated:** 2025-01-XX
+**Version:** 1.3.33

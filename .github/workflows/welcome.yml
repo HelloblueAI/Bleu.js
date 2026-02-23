@@ -1,0 +1,106 @@
+name: Welcome New Contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome First Issue
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const repo = context.repo;
+            const welcomeMessage = [
+              '👋 **Thanks for opening this issue!**',
+              '',
+              "We appreciate you taking the time to report this. This helps make Bleu.js better for everyone.",
+              '',
+              '**Next steps**',
+              "- We'll review this issue and add appropriate labels",
+              "- If it's a bug, we'll try to reproduce it",
+              "- If it's a feature, we'll discuss it with the community",
+              "- We'll keep you updated on progress",
+              '',
+              "**Want to help?** If you're interested in working on this, let us know! We can guide you through it.",
+              '',
+              '**Resources**',
+              `- [Contributor Guide](https://github.com/${repo.owner}/${repo.repo}/blob/main/docs/CONTRIBUTOR_GUIDE.md)`,
+              `- [Good First Issues](https://github.com/${repo.owner}/${repo.repo}/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)`,
+              '',
+              'Thanks again! 🙏'
+            ].join('\n');
+            return github.rest.issues.createComment({
+              issue_number: issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: welcomeMessage
+            });
+
+      - name: Welcome First PR
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+
+            // Check if this is their first PR (basic check)
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              creator: author
+            });
+
+            const isFirstPR = prs.length === 1;
+
+            if (isFirstPR) {
+              const repo = context.repo;
+              const welcomeMessage = [
+                '🎉 **Welcome to Bleu.js!**',
+                '',
+                "Thank you for your first contribution to Bleu.js! We're excited to have you join our community.",
+                '',
+                '**What happens next**',
+                "- We'll review your PR within 1-3 business days",
+                "- We may suggest improvements (don't worry, we'll help!)",
+                "- Once approved, your PR will be merged",
+                "- You'll be credited in our contributors list",
+                '',
+                `**Questions?** Feel free to ask in this PR or open a [Discussion](https://github.com/${repo.owner}/${repo.repo}/discussions).`,
+                '',
+                `**Keep contributing!** Check out more [good first issues](https://github.com/${repo.owner}/${repo.repo}/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) if you'd like to continue.`,
+                '',
+                '**Resources**',
+                `- [Contributor Guide](https://github.com/${repo.owner}/${repo.repo}/blob/main/docs/CONTRIBUTOR_GUIDE.md)`,
+                `- [Contributing Guide](https://github.com/${repo.owner}/${repo.repo}/blob/main/docs/CONTRIBUTING.md)`,
+                `- [Onboarding Guide](https://github.com/${repo.owner}/${repo.repo}/blob/main/docs/ONBOARDING.md)`,
+                '',
+                'Welcome aboard! 🚀'
+              ].join('\n');
+              return github.rest.issues.createComment({
+                issue_number: pr.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: welcomeMessage
+              });
+            }
+
+      - name: Add Needs Triage Label
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.payload.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['status: needs-triage']
+            });

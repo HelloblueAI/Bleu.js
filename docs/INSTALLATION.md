@@ -6,7 +6,7 @@
 
 ```bash
 # Install latest version
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.1
+pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 # Or install from source
 pip install git+https://github.com/HelloblueAI/Bleu.js.git
@@ -78,7 +78,7 @@ poetry --version  # Should be 1.0+
 
 ```bash
 # Install directly from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.1
+pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 # Verify installation
 python3 -c "import bleujs; print('✅ Bleu.js installed!')"

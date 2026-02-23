@@ -1,6 +1,6 @@
 ### Bleu.js - Quantum-Enhanced AI Platform
 
-> **Version 1.2.1** - Enterprise-grade AI/ML platform with quantum computing capabilities
+> **Version 1.3.33** - Enterprise-grade AI/ML platform with quantum computing capabilities
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 
 ```bash
 # Install from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git@v1.2.0
+pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 # Or clone and install
 git clone https://github.com/HelloblueAI/Bleu.js.git

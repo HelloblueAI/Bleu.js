@@ -389,16 +389,16 @@ import numpy as np
 class QuantumFeatureExtractor:
     """
     Extract quantum features from classical data.
-    
+
     Args:
         num_qubits: Number of qubits to use (default: 4)
         entanglement_type: Type of entanglement ("full", "linear", "circular")
-    
+
     Example:
         >>> extractor = QuantumFeatureExtractor(num_qubits=4)
         >>> features = extractor.extract(data)
     """
-    
+
     def __init__(
         self,
         num_qubits: int = 4,
@@ -407,7 +407,7 @@ class QuantumFeatureExtractor:
         """Initialize quantum feature extractor."""
         self.num_qubits = num_qubits
         self.entanglement_type = entanglement_type
-    
+
     def extract(
         self,
         data: Union[np.ndarray, List[float]],
@@ -415,14 +415,14 @@ class QuantumFeatureExtractor:
     ) -> np.ndarray:
         """
         Extract quantum features from input data.
-        
+
         Args:
             data: Input data array or list
             use_entanglement: Whether to use entanglement (default: True)
-        
+
         Returns:
             Extracted quantum features as numpy array
-        
+
         Raises:
             ValueError: If data is invalid
         """
@@ -454,7 +454,7 @@ from bleujs.quantum import QuantumFeatureExtractor
 
 class TestQuantumFeatureExtractor:
     """Test suite for QuantumFeatureExtractor."""
-    
+
     def test_extract_basic(self):
         """Test basic feature extraction."""
         extractor = QuantumFeatureExtractor(num_qubits=4)
@@ -462,14 +462,14 @@ class TestQuantumFeatureExtractor:
         features = extractor.extract(data)
         assert features.shape == (4,)
         assert np.all(features >= 0)
-    
+
     def test_extract_with_entanglement(self):
         """Test feature extraction with entanglement."""
         extractor = QuantumFeatureExtractor(num_qubits=4)
         data = np.array([1.0, 2.0, 3.0, 4.0])
         features = extractor.extract(data, use_entanglement=True)
         assert features.shape == (4,)
-    
+
     def test_extract_invalid_data(self):
         """Test error handling for invalid data."""
         extractor = QuantumFeatureExtractor()
@@ -531,24 +531,24 @@ def process_data(
 ) -> Dict[str, Any]:
     """
     Process input data with optional quantum enhancements.
-    
+
     This function processes input data and optionally applies
     quantum feature extraction for enhanced ML performance.
-    
+
     Args:
         input_data: Dictionary containing input data
         quantum_features: Enable quantum feature extraction
-    
+
     Returns:
         Dictionary with processed results containing:
         - status: Processing status ("success" or "error")
         - data: Processed data
         - metrics: Performance metrics
-    
+
     Raises:
         ValueError: If input_data is invalid
         QuantumFeatureError: If quantum processing fails
-    
+
     Example:
         >>> data = {"text": "Hello, world!"}
         >>> result = process_data(data, quantum_features=True)
@@ -694,5 +694,5 @@ Thank you for contributing to Bleu.js! Your contributions help make quantum-enha
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.2.1
+**Last Updated:** 2025-01-XX
+**Version:** 1.3.33
