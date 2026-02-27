@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Welcome First Issue
         if: github.event_name == 'issues' && github.event.action == 'opened'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const issue = context.payload.issue;
@@ -45,7 +45,7 @@ jobs:
 
       - name: Welcome First PR
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const pr = context.payload.pull_request;
@@ -95,7 +95,7 @@ jobs:
 
       - name: Add Needs Triage Label
         if: github.event_name == 'issues' && github.event.action == 'opened'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.addLabels({
