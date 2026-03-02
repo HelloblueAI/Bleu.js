@@ -30,7 +30,7 @@ pandas = "^2.0.0"
 scikit-learn = "^1.2.2"
 
 # Web Framework - Pinned for stability
-fastapi = ">=0.116.1,<0.132.0"
+fastapi = ">=0.116.1,<0.136.0"
 uvicorn = "0.41.0"
 pydantic = {extras = ["email"], version = "^2.7.0"}
 
@@ -41,7 +41,7 @@ cryptography = ">=46.0.5,<47.0.0"  # CVE-2026-26007 (subgroup validation); was 4
 setuptools = ">=78.1.1,<83.0.0"
 
 # Database - Pinned versions
-sqlalchemy = "2.0.46"
+sqlalchemy = "2.0.47"
 alembic = "1.18.4"
 psycopg2-binary = "2.9.11"
 
