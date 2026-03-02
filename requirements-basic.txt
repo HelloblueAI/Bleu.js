@@ -28,4 +28,4 @@ sqlalchemy==2.0.46
 
 # Security
 urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
-uvicorn==0.40.0
+uvicorn==0.41.0
