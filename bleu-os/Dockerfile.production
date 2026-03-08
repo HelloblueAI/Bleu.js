@@ -46,10 +46,12 @@ LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
 # Install runtime dependencies (with security updates)
-# apk upgrade --available pulls expat>=2.7.4-r0 (CVE-2026-25210, CVE-2026-24515), newer curl when in repo
+# apk upgrade pulls expat, curl, zlib 1.3.2+ (CVE-2026-22184 untgz, CRC32 DoS #111 #112)
 RUN apk update && \
     apk upgrade --no-cache --available && \
     apk add --no-cache --upgrade \
+    zlib \
+    zlib-dev \
     ca-certificates \
     && apk add --no-cache --upgrade \
     bash \

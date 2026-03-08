@@ -14,10 +14,11 @@ LABEL org.opencontainers.image.base.name="alpine:3.23"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
-# Install minimal dependencies; apk upgrade pulls expat>=2.7.4-r0 (CVE-2026-25210, CVE-2026-24515)
+# Install minimal dependencies; apk upgrade pulls expat, zlib 1.3.2+ (CVE-2026-22184, CRC32 DoS #111 #112)
 RUN apk update && \
     apk upgrade --no-cache --available && \
-    apk add --no-cache \
+    apk add --no-cache --upgrade \
+    zlib \
     ca-certificates \
     bash \
     python3 \

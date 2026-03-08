@@ -19,10 +19,12 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 
 # Install base system and build dependencies (with security updates)
-# apk upgrade pulls fixed openssl 3.3.6+ (CVE-2025-15467, CVE-2025-69419/69420), sqlite, curl, busybox, c-ares
+# apk upgrade pulls fixed openssl, sqlite, curl, busybox, c-ares; zlib 1.3.2+ (CVE-2026-22184, CRC32 DoS)
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
+        zlib \
+        zlib-dev \
         bash \
         curl \
         wget \
