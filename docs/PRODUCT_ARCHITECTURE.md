@@ -23,6 +23,8 @@
 
 Use **`src/main.py`** for the public product (dashboard + API). Use the others only if you have a specific deployment or internal need.
 
+**Stubs / optional modules:** Some modules (e.g. quantum, ML, automation) are optional or stubs; the product surface is the Cloud API, SDK, and CLI. Install extras `[api]`, `[ml]`, `[quantum]` as needed; see [INSTALLATION](INSTALLATION.md).
+
 ## Quantum & ML in the product
 
 - **Product:** The cloud API (bleujs.org) and SDK expose quantum-enhanced and ML capabilities as part of the paid offering (e.g. models, features). That is the shipped product.

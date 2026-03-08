@@ -1,5 +1,7 @@
 # Trivy security alerts – Bleu OS images
 
+**See also:** [SECURITY.md](../SECURITY.md) — known vulnerabilities and one-page fix checklist.
+
 This doc explains how we handle Trivy (and similar) security alerts for the **helloblueai/bleu-os** images.
 
 ## Which image is published

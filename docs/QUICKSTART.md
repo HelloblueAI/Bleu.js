@@ -6,13 +6,13 @@ Get up and running with Bleu.js in 5 minutes!
 
 ## 📦 Installation
 
-### Option 1: Core Package (Minimal, Fastest)
+### Option 1: Core + API + CLI (Default — Fastest)
 
 ```bash
 pip install bleu-js
 ```
 
-**Size:** ~50MB | **Install Time:** ~30 seconds
+**Small download** — API client and CLI only (no PyTorch/TensorFlow/Qiskit). Install in seconds.
 
 ### Option 2: With Machine Learning
 

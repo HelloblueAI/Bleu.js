@@ -208,7 +208,7 @@ class AsyncBleuAPIClient:
         response_data = await self._request(
             method="POST",
             endpoint="/api/v1/chat",
-            data=request.dict(exclude_none=True),
+            data=request.model_dump(exclude_none=True),
         )
 
         return ChatCompletionResponse(**response_data)
@@ -249,7 +249,7 @@ class AsyncBleuAPIClient:
         response_data = await self._request(
             method="POST",
             endpoint="/api/v1/generate",
-            data=request.dict(exclude_none=True),
+            data=request.model_dump(exclude_none=True),
         )
 
         return GenerationResponse(**response_data)
@@ -289,7 +289,7 @@ class AsyncBleuAPIClient:
         response_data = await self._request(
             method="POST",
             endpoint="/api/v1/embed",
-            data=request.dict(exclude_none=True),
+            data=request.model_dump(exclude_none=True),
         )
 
         return EmbeddingResponse(**response_data)

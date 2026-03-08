@@ -1,7 +1,9 @@
 # Dependabot: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 # Keep scan scope minimal to avoid hundreds of duplicate alerts.
 # Only root pip, collaboration-tools npm, root + bleu-os Docker, and GitHub Actions.
-# backend/ is not in the repo (see docs/DEPENDABOT_AND_DEPENDENCIES.md).
+# backend/ is NOT in this repo (see docs/DEPENDABOT_AND_DEPENDENCIES.md).
+# Do not add package-ecosystem entries for backend/ or other removed dirs.
+# To clear legacy ~1.5k alerts: run scripts/dismiss-backend-dependabot-alerts.sh
 version: 2
 updates:
   # npm: collaboration-tools only. Do not add other package.json dirs (e.g. backend).

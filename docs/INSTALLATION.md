@@ -1,16 +1,18 @@
 # 📦 Bleu.js Installation Guide
 
+**Environment:** For local or deployed runs, copy [`.env.example`](../.env.example) to `.env` in the repo root and set your secrets (see [SECURITY.md](../SECURITY.md)).
+
 ## 🚀 Quick Installation (Recommended)
 
 ### Using pip from PyPI (Simplest)
 
-```bash
-# Core package
-pip install bleu-js
+**Fast install** — minimal deps, API + CLI (small download):
 
-# With API client and CLI (recommended for bleujs.org API)
-pip install "bleu-js[api]"
+```bash
+pip install bleu-js
 ```
+
+Add extras only when needed: `[ml]`, `[quantum]`, `[deep]`, or `[all]` for the full stack.
 
 ### Using pip from Git
 
@@ -21,13 +23,16 @@ pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 ### Using Poetry (Recommended for Development)
 
+**What to use from now on:** If `poetry` fails on your machine, use Poetry via pipx: `pipx run poetry install --extras all`, etc. See [Poetry: what to use from now on](POETRY_FIX.md).
+
 ```bash
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
-# Install with Poetry
-poetry install
+# Install with all extras (needed for tests and running the app)
+poetry install --extras all
+# If poetry is broken: pipx run poetry install --no-interaction --extras all
 
 # Activate the environment
 poetry shell
@@ -133,7 +138,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # 4. Set up environment
-cp env.example .env
+cp .env.example .env
 # Edit .env with your production settings
 
 # 5. Initialize database
@@ -180,7 +185,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 
 ```bash
 # Copy template
-cp env.example .env
+cp .env.example .env
 
 # Edit with your secrets
 nano .env
@@ -306,7 +311,7 @@ poetry install --with dev
 poetry shell
 
 # Setup environment
-cp env.example .env
+cp .env.example .env
 # Edit .env with your settings
 
 # Initialize database
@@ -332,7 +337,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Configure for production
-cp env.example .env
+cp .env.example .env
 # Set production secrets and DATABASE_URL
 
 # Initialize database
@@ -436,7 +441,7 @@ pip install -r requirements.txt
 
 ```bash
 # Copy template
-cp env.example .env
+cp .env.example .env
 
 # Generate secrets
 python3 << 'EOF'
@@ -616,7 +621,7 @@ curl http://localhost:8000/health
 After successful installation:
 
 1. **Read Quick Start:** See `QUICK_START.md`
-2. **Configure:** Review `env.example` for all options
+2. **Configure:** Review [`.env.example`](../.env.example) for all options
 3. **Explore API:** Visit http://localhost:8000/docs
 4. **Run Tests:** `pytest --cov=src`
 5. **Read Docs:** Check `docs/` directory
@@ -685,7 +690,7 @@ python3 -c "import torch; print('GPU:', torch.cuda.is_available())"
 ### Documentation
 
 - **Quick Start:** `QUICK_START.md`
-- **Configuration:** `env.example`
+- **Configuration:** [`.env.example`](../.env.example)
 - **API Docs:** http://localhost:8000/docs
 
 ### Community

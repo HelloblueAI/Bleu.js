@@ -39,8 +39,8 @@ class SubscriptionUpdate(BaseModel):
 class SubscriptionInDB(SubscriptionBase):
     """Schema for subscription in database."""
 
-    id: int = Field(..., description="Subscription ID")
-    user_id: int = Field(..., description="User ID")
+    id: str = Field(..., description="Subscription ID")
+    user_id: str = Field(..., description="User ID (UUID)")
     stripe_subscription_id: str = Field(..., description="Stripe subscription ID")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")

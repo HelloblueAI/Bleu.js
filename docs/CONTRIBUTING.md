@@ -166,14 +166,18 @@ bleujs-env\Scripts\Activate.ps1
 
 #### 5. Install Dependencies
 
-```bash
-# Install in development mode with dev dependencies
-pip install -e ".[dev]"
+**What to use from now on:** If `poetry` fails (e.g. `PoetryCoreException` / `InvalidRequirement`), use Poetry via pipx: see [Poetry: what to use from now on](POETRY_FIX.md).
 
-# Or install specific extras
-pip install -e ".[dev,ml]"        # With ML features
-pip install -e ".[dev,quantum]"   # With quantum features
-pip install -e ".[dev,all]"      # Everything
+```bash
+# Recommended: use Poetry with all extras (needed for tests and running the app)
+poetry install --extras all
+
+# If poetry is broken, use pipx (same project root):
+# pipx run poetry install --no-interaction --extras all
+
+# Or with pip (minimal install first; add extras as needed)
+pip install -e .                  # API + CLI only
+pip install -e ".[all]"           # Full stack (ML, quantum, server)
 ```
 
 #### 6. Verify Installation

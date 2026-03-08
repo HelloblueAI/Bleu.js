@@ -30,9 +30,11 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 
 **Requirements:** Python 3.11+
 
+**Fast install (recommended)** — small download, API + CLI in seconds (like Fuse.js):
+
 ```bash
-# Core + API client & CLI (recommended)
-pip install "bleu-js[api]"
+pip install bleu-js
+# or: pip install "bleu-js[api]"   (same — API client + CLI)
 ```
 
 **Quick test (SDK):** Get an API key at [bleujs.org](https://bleujs.org), then:
@@ -45,9 +47,11 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 **Quick test (CLI):** `export BLEUJS_API_KEY=bleujs_sk_...` then `bleu chat "Hello"`.
 
-**What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing, optional `[ml]` (XGBoost, scikit-learn), `[quantum]` (Qiskit, PennyLane), and `[all]` for full features. See [QUICKSTART](docs/QUICKSTART.md) and [INSTALLATION](docs/INSTALLATION.md).
+**What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing. Add extras only when you need them: `pip install "bleu-js[ml]"` (XGBoost, scikit-learn), `bleu-js[quantum]` (Qiskit, PennyLane), `bleu-js[deep]` (PyTorch, TensorFlow), or `bleu-js[all]` for the full stack. **5-minute start:** [QUICKSTART](docs/QUICKSTART.md) — install → set API key → one SDK call + one CLI command.
 
-**More:** [Full installation guide](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md)
+**Local app:** Copy [`.env.example`](.env.example) to `.env` and set your secrets; see [SECURITY.md](SECURITY.md).
+
+**More:** [Full installation guide](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md) · [API contract](docs/API_CLIENT_GUIDE.md#api-contract)
 
 ## SDK – Cloud API
 
@@ -56,8 +60,8 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 ### Quick Start with SDK
 
 ```bash
-# Install with API client support
-pip install "bleu-js[api]"
+# Fast install (API client + CLI)
+pip install bleu-js
 ```
 
 ```python
@@ -109,8 +113,8 @@ Access Bleu.js from the terminal with the Bleu CLI.
 #### Installation
 
 ```bash
-# Install with API client support (includes CLI)
-pip install "bleu-js[api]"
+# Fast install (includes CLI)
+pip install bleu-js
 ```
 
 #### Quick Start
@@ -351,6 +355,7 @@ with open(model_path, 'rb') as f:
 
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
 - **[Contributor Guide](./docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
+- **[Poetry: what to use from now on](docs/POETRY_FIX.md)** - Use `pipx run poetry` if `poetry` is broken; commands and fixes
 - **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards
 
@@ -453,37 +458,23 @@ flowchart TB
 - **Automated Security**: AI-powered threat detection
 - **Self-Improving Models**: Continuous learning and adaptation
 
-### Installation Options
+### Installation options
 
-**Basic Installation (Recommended)**
+**Fast install (default)** — small download, API + CLI only (~seconds):
 
 ```bash
 pip install bleu-js
 ```
 
-**With API Client (for cloud API)**
+**Add only what you need:**
 
-```bash
-pip install "bleu-js[api]"
-```
-
-**With ML Features**
-
-```bash
-pip install "bleu-js[ml]"
-```
-
-**With Quantum Computing**
-
-```bash
-pip install "bleu-js[quantum]"
-```
-
-**Full Installation**
-
-```bash
-pip install "bleu-js[all]"
-```
+| Extra | Use case |
+|-------|----------|
+| `pip install "bleu-js[api]"` | Same as default (API + CLI) |
+| `pip install "bleu-js[ml]"` | Pandas, scikit-learn, XGBoost |
+| `pip install "bleu-js[quantum]"` | Qiskit, PennyLane |
+| `pip install "bleu-js[deep]"` | PyTorch, TensorFlow |
+| `pip install "bleu-js[all]"` | Full stack (ML + quantum + deep + server) |
 
 **Troubleshooting**
 If you encounter dependency conflicts, try:
@@ -914,6 +905,8 @@ Thank you to all contributors who help make Bleu.js better!
 **Want to be recognized?** Make a contribution and you'll be added to our contributors list!
 
 ## Development Setup
+
+**Poetry (what to use from now on):** This repo uses Poetry. If `poetry` fails with `PoetryCoreException` or `InvalidRequirement`, use Poetry via pipx for all commands: `pipx run poetry install --extras all`, `pipx run poetry lock`, `pipx run poetry run pytest`, etc. Full list and fixes: [Poetry: what to use from now on](docs/POETRY_FIX.md).
 
 ### Running the Development Server
 
