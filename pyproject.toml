@@ -65,8 +65,8 @@ passlib = "^1.7.4"
 redis = ">=6.2,<8.0"
 python-multipart = ">=0.0.20,<0.0.23"
 jinja2 = "^3.1.6"
-gputil = "^1.4.0"
 psutil = "^7.0.0"
+gputil = {version = "^1.4.0", optional = true}
 torch = "^2.7.1"
 shap = ">=0.48,<0.50"
 pennylane = "^0.42.1"
@@ -88,6 +88,7 @@ api = ["httpx", "pydantic"]
 ml = ["scikit-learn", "xgboost", "pandas"]
 quantum = ["qiskit", "qiskit-aer", "qiskit-algorithms", "pennylane"]
 deep = ["torch", "tensorflow"]
+gpu = ["gputil"]
 all = [
     "httpx",
     "pydantic",
@@ -100,6 +101,7 @@ all = [
     "pennylane",
     "torch",
     "tensorflow",
+    "gputil",
 ]
 
 [tool.poetry.group.dev.dependencies]
