@@ -6,6 +6,8 @@ Complete guide to using the Bleu.js API client to access the cloud API at bleujs
 
 ## 📦 Installation
 
+**Requirements:** Python 3.11+
+
 Install the API client feature:
 
 ```bash
@@ -13,6 +15,7 @@ pip install bleu-js[api]
 ```
 
 This installs:
+
 - `httpx>=0.24.0` - For HTTP requests with async support
 - `pydantic>=2.0.0` - For data validation
 
@@ -29,7 +32,7 @@ export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"
 Or pass it directly when creating the client:
 
 ```python
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 client = BleuAPIClient(api_key="bleujs_sk_...")
 ```
@@ -41,7 +44,7 @@ client = BleuAPIClient(api_key="bleujs_sk_...")
 ### Basic Chat Completion
 
 ```python
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 client = BleuAPIClient()
 
@@ -94,7 +97,7 @@ For asynchronous operations, use `AsyncBleuAPIClient`:
 
 ```python
 import asyncio
-from bleu_ai.api_client import AsyncBleuAPIClient
+from bleujs.api_client import AsyncBleuAPIClient
 
 async def main():
     async with AsyncBleuAPIClient() as client:
@@ -164,6 +167,7 @@ response = client.chat(
 ```
 
 **Parameters:**
+
 - `messages` (list) - Conversation history
 - `model` (str) - Model to use (default: "bleu-chat-v1")
 - `temperature` (float) - Sampling temperature 0-2 (default: 0.7)
@@ -171,6 +175,7 @@ response = client.chat(
 - `top_p` (float) - Nucleus sampling parameter (default: 1.0)
 
 **Response:**
+
 ```python
 {
     "id": "chat-123",
@@ -208,6 +213,7 @@ response = client.generate(
 ```
 
 **Parameters:**
+
 - `prompt` (str) - Text prompt
 - `model` (str) - Model to use (default: "bleu-gen-v1")
 - `temperature` (float) - Sampling temperature 0-2
@@ -217,6 +223,7 @@ response = client.generate(
 - `stop` (list) - Stop sequences (optional)
 
 **Response:**
+
 ```python
 {
     "id": "gen-123",
@@ -240,11 +247,13 @@ response = client.embed(
 ```
 
 **Parameters:**
+
 - `texts` (list) - List of texts to embed (max 100)
 - `model` (str) - Model to use (default: "bleu-embed-v1")
 - `encoding_format` (str) - "float" or "base64" (default: "float")
 
 **Response:**
+
 ```python
 {
     "object": "list",
@@ -266,6 +275,7 @@ models = client.list_models()
 ```
 
 **Response:**
+
 ```python
 [
     {
@@ -286,11 +296,11 @@ models = client.list_models()
 
 When implementing clients (e.g. the [API Playground](https://github.com/HelloblueAI/Bleu.js/blob/main/api_playground.html)) or backend routes, keep these consistent:
 
-| Endpoint | Request body | Response shape |
-|----------|--------------|-----------------|
-| **Chat** `POST /api/v1/chat` | `messages`, `model`, `temperature`, `max_tokens` | Prefer **OpenAI-style**: `choices: [{ message: { role, content } }]`. Some backends may return a flat `content`; clients should accept either `response.content` or `response.choices[0].message.content`. |
-| **Generate** `POST /api/v1/generate` | `prompt`, `model`, `temperature`, `max_tokens` | `text`, `id`, `model`, `usage`, `finish_reason`. |
-| **Embed** `POST /api/v1/embed` | **Request field**: use `input` (list of strings) for SDK/OpenAI-style compatibility. In-repo route uses `inputs`; align server and client so one convention is used. | `data: [{ embedding: number[], index }]`, `model`, `usage`. |
+| Endpoint                             | Request body                                                                                                                                                         | Response shape                                                                                                                                                                                             |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chat** `POST /api/v1/chat`         | `messages`, `model`, `temperature`, `max_tokens`                                                                                                                     | Prefer **OpenAI-style**: `choices: [{ message: { role, content } }]`. Some backends may return a flat `content`; clients should accept either `response.content` or `response.choices[0].message.content`. |
+| **Generate** `POST /api/v1/generate` | `prompt`, `model`, `temperature`, `max_tokens`                                                                                                                       | `text`, `id`, `model`, `usage`, `finish_reason`.                                                                                                                                                           |
+| **Embed** `POST /api/v1/embed`       | **Request field**: use `input` (list of strings) for SDK/OpenAI-style compatibility. In-repo route uses `inputs`; align server and client so one convention is used. | `data: [{ embedding: number[], index }]`, `model`, `usage`.                                                                                                                                                |
 
 - **Chat**: The Python client normalizes both shapes via `ChatCompletionResponse.content`. Keep backend either returning `choices` (OpenAI-style) or document that clients must support flat `content` as well.
 - **Embed**: If your API expects `inputs` (plural), the Python SDK and playground send `input`; update the API to accept `input` or document the difference for consumers.
@@ -302,7 +312,7 @@ When implementing clients (e.g. the [API Playground](https://github.com/Helloblu
 The client provides specific exception types for different errors:
 
 ```python
-from bleu_ai.api_client import (
+from bleujs.api_client import (
     BleuAPIError,           # Base exception
     AuthenticationError,    # 401 - Invalid API key
     RateLimitError,        # 429 - Rate limit exceeded
@@ -538,7 +548,7 @@ print(reply)
 ```python
 import pytest
 from unittest.mock import Mock, patch
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 @patch('httpx.Client.request')
 def test_chat(mock_request):
@@ -595,6 +605,7 @@ pip install bleu-js[api]
 ### "Invalid API key" Error
 
 Check that your API key is correctly set:
+
 ```bash
 echo $BLEUJS_API_KEY
 ```
@@ -602,6 +613,7 @@ echo $BLEUJS_API_KEY
 ### Rate Limit Errors
 
 Implement backoff logic:
+
 ```python
 client = BleuAPIClient(max_retries=5)
 ```
@@ -609,6 +621,7 @@ client = BleuAPIClient(max_retries=5)
 ### Timeout Errors
 
 Increase timeout:
+
 ```python
 client = BleuAPIClient(timeout=60.0)
 ```
@@ -622,12 +635,14 @@ Check your internet connection and firewall settings.
 ## 📝 Changelog
 
 ### v1.2.1 (November 2025)
+
 - ✅ Updated to match Bleu.js 1.2.1 packaging and version headers
 - ✅ Confirmed Python 3.12 / Pydantic v2 compatibility
 - ✅ API client now ships by default in every distribution
 - ✅ Documentation & examples refreshed with latest install commands
 
 ### v1.2.0 (October 2025)
+
 - ✅ Initial API client release
 - ✅ Sync and async support
 - ✅ Chat, generation, and embeddings

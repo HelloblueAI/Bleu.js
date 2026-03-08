@@ -2,30 +2,40 @@
 
 Get up and running with Bleu.js in 5 minutes!
 
+**Requirements:** Python 3.11+
+
 ## 📦 Installation
 
 ### Option 1: Core Package (Minimal, Fastest)
+
 ```bash
 pip install bleu-js
 ```
+
 **Size:** ~50MB | **Install Time:** ~30 seconds
 
 ### Option 2: With Machine Learning
+
 ```bash
 pip install 'bleu-js[ml]'
 ```
+
 **Includes:** XGBoost, scikit-learn, pandas
 
 ### Option 3: With Quantum Computing
+
 ```bash
 pip install 'bleu-js[quantum]'
 ```
+
 **Includes:** Qiskit, PennyLane for quantum features
 
 ### Option 4: Full Installation (All Features)
+
 ```bash
 pip install 'bleu-js[all]'
 ```
+
 **Includes:** All ML, quantum, and deep learning features
 
 ---
@@ -87,6 +97,7 @@ print(f"Quantum Enhanced: {result['quantum_enhanced']}")
 **Note:** Works with or without quantum libraries! Uses classical simulation if quantum libs not installed.
 
 **To get full quantum support:**
+
 ```bash
 pip install 'bleu-js[quantum]'
 ```
@@ -118,6 +129,7 @@ print(f"Accuracy: {metrics['accuracy']:.4f}")
 ```
 
 **Requires:**
+
 ```bash
 pip install 'bleu-js[ml]'
 ```
@@ -129,17 +141,20 @@ pip install 'bleu-js[ml]'
 We've included ready-to-run examples:
 
 ### Basic Example (No Extra Dependencies)
+
 ```bash
 python examples/quick_start.py
 ```
 
 ### Quantum Example
+
 ```bash
 pip install 'bleu-js[quantum]'  # Optional, works without it too
 python examples/quantum_example.py
 ```
 
 ### Machine Learning Example
+
 ```bash
 pip install 'bleu-js[ml]'
 python examples/ml_example.py
@@ -181,6 +196,7 @@ print(f"Using: {device}")  # 'cuda' if GPU available, else 'cpu'
 ## 🎓 Common Use Cases
 
 ### Use Case 1: Data Processing
+
 ```python
 from bleujs import BleuJS
 
@@ -189,6 +205,7 @@ result = bleu.process(your_data)
 ```
 
 ### Use Case 2: Quantum Feature Extraction
+
 ```python
 from bleujs.quantum import QuantumFeatureExtractor
 
@@ -197,6 +214,7 @@ quantum_features = extractor.extract(your_data)
 ```
 
 ### Use Case 3: ML Model Training
+
 ```python
 from bleujs.ml import HybridTrainer
 
@@ -205,6 +223,7 @@ model = trainer.train(X_train, y_train)
 ```
 
 ### Use Case 4: Computer Vision
+
 ```python
 from bleujs.ml import QuantumVisionModel
 
@@ -219,6 +238,7 @@ results = model.process(images)
 ### Problem: Import Error
 
 **Solution:**
+
 ```bash
 # Make sure you installed the package
 pip install bleu-js
@@ -230,6 +250,7 @@ pip show bleu-js
 ### Problem: Quantum features not working
 
 **Solution:**
+
 ```bash
 # Install quantum dependencies
 pip install 'bleu-js[quantum]'
@@ -243,6 +264,7 @@ pip install qiskit pennylane
 ### Problem: ML training fails
 
 **Solution:**
+
 ```bash
 # Install ML dependencies
 pip install 'bleu-js[ml]'
@@ -254,6 +276,7 @@ pip install scikit-learn xgboost pandas
 ### Problem: CUDA/GPU not detected
 
 **Solution:**
+
 ```python
 # Check your device
 from bleujs import get_device

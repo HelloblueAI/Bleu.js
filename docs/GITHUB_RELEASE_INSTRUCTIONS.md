@@ -3,15 +3,18 @@
 ## 🎯 Step-by-Step Instructions
 
 ### Step 1: Go to GitHub Releases Page
+
 1. Visit: https://github.com/HelloblueAI/Bleu.js/releases
 2. Click **"Draft a new release"** button
 
 ### Step 2: Fill in Release Information
 
 **Choose a tag:**
+
 - Select: `v1.2.1` (create it if it doesn’t exist yet)
 
 **Release title:**
+
 ```
 Bleu.js v1.2.1 – Python 3.12 Compatibility & API Client Packaging 🚀
 ```
@@ -19,7 +22,7 @@ Bleu.js v1.2.1 – Python 3.12 Compatibility & API Client Packaging 🚀
 **Description:**
 Copy the content from `docs/RELEASE_ANNOUNCEMENT_v1.2.1.md` or use this:
 
-```markdown
+````markdown
 ## 🎉 Python 3.12 Compatibility & Seamless Packaging
 
 Bleu.js 1.2.1 is a focused patch release that guarantees a smooth upgrade path for users on the latest Python toolchain while preserving the major wins from 1.2.0.
@@ -37,6 +40,7 @@ Bleu.js 1.2.1 is a focused patch release that guarantees a smooth upgrade path f
 ```bash
 pip install --upgrade 'bleu-js[api]'==1.2.1
 ```
+````
 
 ### 📚 Documentation
 
@@ -53,11 +57,13 @@ pip install --upgrade 'bleu-js[api]'==1.2.1
 ### 📥 Installation
 
 **New Installation:**
+
 ```bash
 pip install bleu-js==1.2.0
 ```
 
 **Upgrading from v1.1.x:**
+
 ```bash
 pip install --upgrade bleu-js==1.2.0
 ```
@@ -65,17 +71,20 @@ pip install --upgrade bleu-js==1.2.0
 ### 🔄 Migration Guide
 
 #### 1. Generate Secrets
+
 ```bash
 python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 #### 2. Create .env File
+
 ```bash
 cp env.example .env
 # Add your generated secrets
 ```
 
 #### 3. Update Configuration
+
 ```bash
 # Set in .env
 CORS_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
@@ -83,6 +92,7 @@ ALLOWED_HOSTS=yourdomain.com,api.yourdomain.com
 ```
 
 #### 4. Test
+
 ```bash
 python3 -c "from src.config import get_settings; print('✅ OK')"
 uvicorn src.api.main:app --reload
@@ -133,6 +143,7 @@ Thank you to all contributors and the community for their support!
 - **Security:** security@helloblue.ai
 
 **Star us on GitHub!** ⭐
+
 ```
 
 ### Step 3: Set as Latest Release
@@ -232,3 +243,4 @@ After announcing:
 ---
 
 **Ready to announce your amazing work to the world!** 🌟
+```

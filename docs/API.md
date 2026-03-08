@@ -11,12 +11,14 @@ curl -X GET 'https://api.bleujs.com/v1/endpoint' \
 ## 📦 Subscription Tiers
 
 ### Basic Plan ($29/month)
+
 - 100 API calls per month
 - Standard API access
 - Basic support via email
 - Rate limit: 10 requests/minute
 
 ### Enterprise Plan ($499/month)
+
 - 5000 API calls per month
 - Priority API access
 - 24/7 dedicated support
@@ -37,11 +39,13 @@ Authorization: Bearer YOUR_API_KEY
 ### Authentication Endpoints
 
 #### Generate API Key
+
 ```http
 POST /v1/auth/api-key
 ```
 
 #### Validate API Key
+
 ```http
 GET /v1/auth/validate
 ```
@@ -49,16 +53,19 @@ GET /v1/auth/validate
 ### Subscription Endpoints
 
 #### Get Available Plans
+
 ```http
 GET /v1/subscriptions/plans
 ```
 
 #### Subscribe to a Plan
+
 ```http
 POST /v1/subscriptions/subscribe
 ```
 
 #### Get Usage Statistics
+
 ```http
 GET /v1/subscriptions/usage
 ```
@@ -90,6 +97,7 @@ GET /v1/subscriptions/usage
 ## 📖 Code Examples
 
 ### Python
+
 ```python
 import requests
 
@@ -107,16 +115,17 @@ print(response.json())
 ```
 
 ### JavaScript
+
 ```javascript
-const API_KEY = 'your_api_key';
-const BASE_URL = 'https://api.bleujs.com/v1';
+const API_KEY = "your_api_key";
+const BASE_URL = "https://api.bleujs.com/v1";
 
 async function makeApiCall() {
   const response = await fetch(`${BASE_URL}/endpoint`, {
     headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json'
-    }
+      Authorization: `Bearer ${API_KEY}`,
+      "Content-Type": "application/json",
+    },
   });
   const data = await response.json();
   console.log(data);
@@ -133,6 +142,7 @@ async function makeApiCall() {
 ## 📝 Changelog
 
 ### v1.0.0 (2024-03-30)
+
 - Initial API release
 - Basic and Enterprise subscription tiers
 - Core API functionality

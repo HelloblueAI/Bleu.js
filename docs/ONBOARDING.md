@@ -95,17 +95,20 @@ git push origin docs/my-first-contribution
 ### Recommended Setup
 
 **IDE:**
+
 - VS Code (with Python extension)
 - PyCharm
 - Your favorite editor
 
 **Essential Extensions (VS Code):**
+
 - Python
 - Pylance
 - Black Formatter
 - isort
 
 **Git Tools:**
+
 - GitHub CLI (`gh`)
 - Git GUI (optional)
 
@@ -129,18 +132,21 @@ pre-commit install
 ### Week 1: Getting Familiar
 
 **Day 1-2: Setup**
+
 - [ ] Set up development environment
 - [ ] Run tests successfully
 - [ ] Explore codebase structure
 - [ ] Read documentation
 
 **Day 3-4: First Contribution**
+
 - [ ] Find a "good first issue"
 - [ ] Make a small change (typo, doc improvement)
 - [ ] Submit your first PR
 - [ ] Get it merged! 🎉
 
 **Day 5-7: Understanding**
+
 - [ ] Read source code
 - [ ] Understand test structure
 - [ ] Review merged PRs
@@ -149,6 +155,7 @@ pre-commit install
 ### Week 2: Building Skills
 
 **Focus Areas:**
+
 - [ ] Add unit tests
 - [ ] Fix small bugs
 - [ ] Improve documentation
@@ -157,6 +164,7 @@ pre-commit install
 ### Week 3+: Regular Contributions
 
 **You're now a contributor!**
+
 - [ ] Work on features
 - [ ] Fix bugs
 - [ ] Help newcomers
@@ -197,11 +205,13 @@ pre-commit install
 ### Good First Issues
 
 Look for these labels:
+
 - `good first issue` - Perfect for beginners
 - `help wanted` - Community help needed
 - `beginner-friendly` - Easy to get started
 
 **Where to Find:**
+
 - [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
 - Filter by labels
 - Sort by "newest" or "most commented"
@@ -209,24 +219,28 @@ Look for these labels:
 ### Types of Contributions
 
 **Documentation:**
+
 - Fix typos
 - Improve clarity
 - Add examples
 - Translate docs
 
 **Code:**
+
 - Fix bugs
 - Add features
 - Refactor code
 - Optimize performance
 
 **Testing:**
+
 - Add tests
 - Improve coverage
 - Fix failing tests
 - Add integration tests
 
 **Community:**
+
 - Answer questions
 - Review PRs
 - Help newcomers
@@ -239,9 +253,10 @@ Look for these labels:
 ### Issue: Tests Fail
 
 **Solution:**
+
 ```bash
 # Check Python version
-python --version  # Should be 3.10+
+python --version  # Should be 3.11+
 
 # Reinstall dependencies
 pip install -e ".[dev]" --force-reinstall
@@ -253,6 +268,7 @@ pytest --cache-clear
 ### Issue: Import Errors
 
 **Solution:**
+
 ```bash
 # Make sure you're in the project root
 cd /path/to/Bleu.js
@@ -267,6 +283,7 @@ python -c "from bleujs import BleuJS"
 ### Issue: Git Conflicts
 
 **Solution:**
+
 ```bash
 # Update your fork
 git fetch upstream
@@ -281,6 +298,7 @@ git rebase main
 ### Issue: Pre-commit Hooks Fail
 
 **Solution:**
+
 ```bash
 # Run formatters manually
 black src/

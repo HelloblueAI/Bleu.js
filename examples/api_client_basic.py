@@ -10,7 +10,7 @@ Setup:
     export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"
 """
 
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 # Initialize client (reads API key from BLEUJS_API_KEY env var)
 # Or pass directly: BleuAPIClient(api_key="bleujs_sk_...")

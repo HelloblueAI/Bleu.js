@@ -2,7 +2,7 @@
 
 > **Version 1.3.33** - Enterprise-grade AI/ML platform with quantum computing capabilities
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
 [![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
@@ -10,7 +10,10 @@
 ## 🚀 Quick Install
 
 ```bash
-# Install from GitHub
+# From PyPI (recommended)
+pip install "bleu-js[api]"
+
+# From GitHub
 pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 # Or clone and install
@@ -18,6 +21,8 @@ git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 poetry install
 ```
+
+**Requires Python 3.11+**
 
 **See full installation guide:** [INSTALLATION.md](./INSTALLATION.md)
 
@@ -36,6 +41,7 @@ poetry install
 ### Step-by-Step Installation Process
 
 **Step 1: Environment Setup**
+
 ```bash
 # Check current directory
 $ pwd
@@ -47,6 +53,7 @@ total 3608
 ```
 
 **Step 2: Python Environment**
+
 ```bash
 # Check Python version
 $ python3 --version
@@ -62,6 +69,7 @@ $ source bleujs-demo-env/bin/activate
 ```
 
 **Step 3: Installation Process**
+
 ```bash
 # Check pip version
 $ pip --version
@@ -80,6 +88,7 @@ Successfully installed bleu-js-1.1.9 fastapi-0.116.1 starlette-0.47.1
 ```
 
 **Step 4: Verification**
+
 ```bash
 # Verify installation
 $ pip list | grep -i bleu
@@ -89,12 +98,14 @@ bleujs                             1.1.9
 ```
 
 **Step 5: Explore Examples**
+
 ```bash
 $ ls examples/
 ci_cd_demo.py  mps_acceleration_demo.py  sample_usage.py
 ```
 
 **Step 6: Run a Sample**
+
 ```bash
 $ python3 examples/sample_usage.py
 🎉 Installation and verification complete! Bleu.js is ready to use.
@@ -103,6 +114,7 @@ $ python3 examples/sample_usage.py
 ---
 
 This real terminal session shows the actual installation process, including:
+
 - ✅ Real project structure and files
 - ✅ Actual Python version and environment setup
 - ✅ Real pip installation with progress bars
@@ -141,6 +153,7 @@ pie title Current vs Target Performance
 ```
 
 **Performance Breakdown:**
+
 - **Qubit Stability**: 0.9556/1.0 (95.6% of target)
 - **Quantum Advantage**: 1.95x/2.5x (78.0% of target)
 - **Energy Efficiency**: 95.56%/100% (95.6% of target)
@@ -192,27 +205,33 @@ pie title Current vs Target Performance
 ## Installation
 
 ### Basic Installation (Recommended)
+
 ```bash
 pip install bleu-js
 ```
 
 ### With ML Features
+
 ```bash
 pip install "bleu-js[ml]"
 ```
 
 ### With Quantum Computing
+
 ```bash
 pip install "bleu-js[quantum]"
 ```
 
 ### Full Installation
+
 ```bash
 pip install "bleu-js[all]"
 ```
 
 ### Troubleshooting
+
 If you encounter dependency conflicts, try:
+
 ```bash
 # Use virtual environment
 python3 -m venv bleujs-env
@@ -224,6 +243,7 @@ pip install "bleu-js[ml]" --constraint requirements-basic.txt
 ```
 
 ### Prerequisites
+
 - Python 3.11 or higher
 - Docker (optional, for containerized deployment)
 - CUDA-capable GPU (recommended for quantum computations)
@@ -342,6 +362,7 @@ When you run `act`, it reads in your GitHub Actions from `.github/workflows/` an
 ### Let's see it in action with a sample repo!
 
 #### Step 1: Install Act Tool
+
 ```bash
 # Install act tool for running GitHub Actions locally
 curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
@@ -351,6 +372,7 @@ act --version
 ```
 
 #### Step 2: Run the Complete CI/CD Pipeline
+
 ```bash
 # Run all workflows (equivalent to pushing to GitHub)
 act
@@ -366,6 +388,7 @@ act -v
 ```
 
 #### Step 3: Watch the Pipeline in Action
+
 ```bash
 # Run with detailed logging
 act -v --list
@@ -385,6 +408,7 @@ act -v --list
 ```
 
 #### Step 4: Explore the Workflow Structure
+
 ```bash
 # List all available workflows
 ls .github/workflows/
@@ -399,6 +423,7 @@ act -j security-scan
 ```
 
 #### Step 5: Debug and Development
+
 ```bash
 # Run in dry-run mode to see what would happen
 act --dryrun
@@ -418,6 +443,7 @@ act --env-file .env.local
 Here's what happens when you run `act` on this repository:
 
 #### 1. **Workflow Discovery**
+
 ```bash
 act --list
 # Output:
@@ -428,6 +454,7 @@ act --list
 ```
 
 #### 2. **Docker Image Preparation**
+
 ```bash
 # Act automatically pulls/builds required images:
 # - ubuntu-22.04 (for Python environment)
@@ -437,6 +464,7 @@ act --list
 ```
 
 #### 3. **Environment Setup**
+
 ```bash
 # Act configures the environment to match GitHub:
 # - Sets GITHUB_* environment variables
@@ -446,6 +474,7 @@ act --list
 ```
 
 #### 4. **Job Execution**
+
 ```bash
 # Act runs each job in sequence:
 # 1. Setup Python environment
@@ -459,6 +488,7 @@ act --list
 ```
 
 #### 5. **Artifact Collection**
+
 ```bash
 # Act collects and stores artifacts:
 # - Test results (JUnit XML)
@@ -471,6 +501,7 @@ act --list
 ### Advanced Usage Examples
 
 #### Run Specific Workflow with Custom Event
+
 ```bash
 # Simulate a pull request
 act pull_request --eventpath .github/events/pull_request.json
@@ -483,6 +514,7 @@ act push --eventpath .github/events/push_main.json
 ```
 
 #### Debug Workflow Issues
+
 ```bash
 # Run with shell access for debugging
 act -s GITHUB_TOKEN=your_token --shell
@@ -495,6 +527,7 @@ act --workflows .github/workflows/ci.yml --directory /path/to/repo
 ```
 
 #### Performance Optimization
+
 ```bash
 # Use local Docker images to speed up execution
 act --container-daemon-socket /var/run/docker.sock
@@ -542,6 +575,7 @@ When you run `act` on this Bleu.js repository, you'll see:
 Create custom event files to test different scenarios:
 
 #### `.github/events/push.json`
+
 ```json
 {
   "ref": "refs/heads/main",
@@ -553,12 +587,13 @@ Create custom event files to test different scenarios:
   },
   "pusher": {
     "name": "helloblueai",
-"email": "support@helloblue.ai"
+    "email": "support@helloblue.ai"
   }
 }
 ```
 
 #### `.github/events/pull_request.json`
+
 ```json
 {
   "action": "opened",
@@ -601,6 +636,7 @@ act --list
 ```
 
 #### Debug Mode
+
 ```bash
 # Run with maximum verbosity
 act -v --verbose
@@ -628,6 +664,7 @@ This comprehensive demonstration shows exactly how the `act` tool works with our
 ### Core Components
 
 #### BleuJS Class
+
 ```python
 class BleuJS:
     def __init__(
@@ -647,6 +684,7 @@ class BleuJS:
 ```
 
 #### Quantum Attention
+
 ```python
 class QuantumAttention:
     def __init__(
@@ -668,6 +706,7 @@ class QuantumAttention:
 ### Key Methods
 
 #### Process Data
+
 ```python
 def process(
     self,
@@ -691,6 +730,7 @@ def process(
 ## Examples
 
 ### Quantum Feature Extraction
+
 ```python
 from bleujs.quantum import QuantumFeatureExtractor
 
@@ -708,6 +748,7 @@ features = extractor.extract(
 ```
 
 ### Hybrid Model Training
+
 ```python
 from bleujs.ml import HybridTrainer
 
@@ -728,6 +769,7 @@ model = trainer.train(
 ## Docker Setup
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/Bleu.js.git
@@ -743,6 +785,7 @@ docker-compose up -d
 ```
 
 ### Available Services
+
 - **Backend API**: FastAPI server (port 4003)
   - Main API endpoint
   - RESTful interface
@@ -769,6 +812,7 @@ docker-compose up -d
   - Performance monitoring
 
 ### Service Dependencies
+
 ```mermaid
 graph LR
     A[Frontend] --> B[Backend API]
@@ -780,12 +824,14 @@ graph LR
 ```
 
 ### Health Check Endpoints
+
 - Backend API: `http://localhost:4003/health`
 - Core Engine: `http://localhost:6000/health`
 - Eggs Generator: `http://localhost:5000/health`
 - MongoDB Express: `http://localhost:8081/health`
 
 ### Development Mode
+
 ```bash
 # Start with live reload
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
@@ -798,6 +844,7 @@ docker-compose up -d --build <service-name>
 ```
 
 ### Production Mode
+
 ```bash
 # Start in production mode
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
@@ -807,7 +854,9 @@ docker-compose up -d --scale worker=3
 ```
 
 ### Environment Variables
+
 Create a `.env` file in the root directory:
+
 ```env
 MONGODB_URI=mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
 REDIS_HOST=redis
@@ -815,6 +864,7 @@ PORT=4003
 ```
 
 ### Common Commands
+
 ```bash
 # Stop all services
 docker-compose down
@@ -833,12 +883,15 @@ docker-compose run test
 ```
 
 ### Troubleshooting
+
 1. **Services not starting**: Check logs with `docker-compose logs`
 2. **Database connection issues**: Ensure MongoDB is running with `docker-compose ps`
 3. **Permission errors**: Make sure volumes have correct permissions
 
 ### Data Persistence
+
 Data is persisted in Docker volumes:
+
 - MongoDB data: `mongo-data` volume
 - Logs: `./logs` directory
 - Application data: `./data` directory
@@ -846,6 +899,7 @@ Data is persisted in Docker volumes:
 ## Performance Metrics
 
 ### Core Performance
+
 - Processing Speed: 10x faster than traditional AI with quantum acceleration
 - Accuracy: 93.6% in code analysis with continuous improvement
 - Security: Military-grade encryption with quantum resistance
@@ -858,6 +912,7 @@ Data is persisted in Docker volumes:
 - Training Speed: 5x faster than industry standard with distributed computing
 
 ### Global Impact
+
 - 3K+ Active Developers with growing community
 - 100,000+ Projects Analyzed with continuous learning
 - 100x Faster Processing with quantum acceleration
@@ -865,6 +920,7 @@ Data is persisted in Docker volumes:
 - 15+ Countries Served with global infrastructure
 
 ### Enterprise Features
+
 - All Core Features with priority access
 - Military-Grade Security with custom protocols
 - Custom Integration with dedicated engineers
@@ -876,6 +932,7 @@ Data is persisted in Docker volumes:
 ## Research & Innovation
 
 ### Quantum Computing Integration
+
 - Custom quantum algorithms for enhanced processing
 - Multi-Modal AI Processing with cross-domain learning
 - Advanced Security Protocols with continuous updates
@@ -890,6 +947,7 @@ Data is persisted in Docker volumes:
 ### Advanced AI Components
 
 #### LLaMA Model Integration
+
 ```bash
 # Debug mode with VSCode attachment
 python -m debugpy --listen 5678 --wait-for-client src/ml/models/foundation/llama.py
@@ -902,6 +960,7 @@ CUDA_VISIBLE_DEVICES=0 python src/ml/models/foundation/llama.py
 ```
 
 #### Expected Output
+
 ```python
 ✅ LLaMA Attention Output Shape: torch.Size([1, 512, 4096])
 ```
@@ -909,10 +968,12 @@ CUDA_VISIBLE_DEVICES=0 python src/ml/models/foundation/llama.py
 #### Performance Analysis
 
 ##### cProfile Summary
+
 - `torch.nn.linear` and `torch.matmul` are the heaviest operations
 - `apply_rotary_embedding` accounts for about 10ms per call
 
 ##### Top autograd Profiler Events
+
 ```
 top 15 events sorted by cpu_time_total
 ------------------  ------------  ------------  ------------  ------------  ------------  -----------
@@ -947,6 +1008,7 @@ The model achieves state-of-the-art performance on various computer vision tasks
 - Attribute Recognition: 94.7% accuracy
 
 #### Hybrid XGBoost-Quantum Model Results
+
 - **Accuracy**: 85-90% on test set
 - **ROC AUC**: 0.9+
 - **Training Time**: 2-3x faster than classical XGBoost with GPU acceleration
@@ -1114,6 +1176,7 @@ pie title System Performance Metrics
 ```
 
 **Performance Breakdown:**
+
 - **Speed**: 95% of target (excellent performance)
 - **Accuracy**: 93% of target (high precision)
 - **Efficiency**: 90% of target (optimized resource usage)
@@ -1335,6 +1398,7 @@ graph LR
 ```
 
 Types:
+
 - feat: New feature
 - fix: Bug fix
 - docs: Documentation
@@ -1370,6 +1434,7 @@ Types:
 Bleu.js has been submitted for consideration to several prestigious awards in recognition of its groundbreaking innovations in quantum computing and AI:
 
 #### Submitted Awards
+
 1. **ACM SIGAI Industry Award**
    - Submission Date: April 4, 2024
    - Contact: info@helloblue.ai
@@ -1406,6 +1471,7 @@ Bleu.js has been submitted for consideration to several prestigious awards in re
    - Status: Under Review
 
 #### Key Achievements
+
 - 1.95x speedup in processing
 - 99.9% accuracy in face recognition
 - 50% reduction in energy consumption
@@ -1413,6 +1479,7 @@ Bleu.js has been submitted for consideration to several prestigious awards in re
 - Real-time monitoring system
 
 #### Submission Process
+
 1. **Preparation**
    - Documentation compilation
    - Performance metrics validation
@@ -1439,30 +1506,36 @@ Bleu.js has been submitted for consideration to several prestigious awards in re
 #### Run Specific Case Studies
 
 1. **Medical Diagnosis Study**:
+
 ```bash
 python -m src.python.ml.benchmarking.cli --medical
 ```
 
 2. **Financial Forecasting Study**:
+
 ```bash
 python -m src.python.ml.benchmarking.cli --financial
 ```
 
 3. **Industrial Optimization Study**:
+
 ```bash
 python -m src.python.ml.benchmarking.cli --industrial
 ```
 
 #### Run All Case Studies
+
 ```bash
 python -m src.python.ml.benchmarking.cli --all
 ```
 
 #### Additional Options
+
 - `-v, --verbose`: Enable detailed logging
 - `-o, --output-dir`: Specify output directory for results (default: "results")
 
 ### Example Output
+
 ```bash
 # Running all case studies with verbose output
 python -m src.python.ml.benchmarking.cli --all -v -o my_results
@@ -1475,7 +1548,9 @@ python -m src.python.ml.benchmarking.cli --all -v -o my_results
 ```
 
 ### Results Analysis
+
 The benchmarking system provides:
+
 - Detailed performance metrics for classical and quantum approaches
 - Quantum advantage calculations
 - Training and inference time comparisons
@@ -1490,8 +1565,6 @@ The benchmarking system provides:
 - Strengthened TypeScript type definitions
 
 These improvements demonstrate our commitment to professional code quality standards, focus on performance and efficiency, strong TypeScript implementation, attention to memory management, and commitment to maintainable code.
-
-
 
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)

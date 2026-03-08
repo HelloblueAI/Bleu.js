@@ -2,13 +2,20 @@
 
 ## 🚀 Quick Installation (Recommended)
 
-### Using pip (Simplest)
+### Using pip from PyPI (Simplest)
 
 ```bash
-# Install latest version
-pip install git+https://github.com/HelloblueAI/Bleu.js.git
+# Core package
+pip install bleu-js
 
-# Or install from source
+# With API client and CLI (recommended for bleujs.org API)
+pip install "bleu-js[api]"
+```
+
+### Using pip from Git
+
+```bash
+# Install latest from GitHub
 pip install git+https://github.com/HelloblueAI/Bleu.js.git
 ```
 
@@ -45,11 +52,13 @@ pip install -r requirements.txt
 ## 📋 Prerequisites
 
 ### Required
-- **Python 3.10+** (3.10, 3.11, or 3.12)
+
+- **Python 3.11+** (3.11, 3.12, or 3.13)
 - **pip 21.0+**
 - **Git**
 
 ### Optional
+
 - **Poetry 1.0+** (for dependency management)
 - **PostgreSQL 12+** (for production database)
 - **Redis 6+** (for caching and rate limiting)
@@ -59,7 +68,7 @@ pip install -r requirements.txt
 
 ```bash
 # Check Python version
-python3 --version  # Should be 3.10+
+python3 --version  # Should be 3.11+
 
 # Check pip version
 pip3 --version  # Should be 21.0+
@@ -178,6 +187,7 @@ nano .env
 ```
 
 **Required Variables:**
+
 ```bash
 # Critical Security (REQUIRED)
 SECRET_KEY=your-generated-secret-key-here
@@ -258,6 +268,7 @@ curl http://localhost:8000/health
 ### Test 4: API Documentation
 
 Open in browser:
+
 - **Swagger UI:** http://localhost:8000/docs
 - **ReDoc:** http://localhost:8000/redoc
 
@@ -360,15 +371,12 @@ curl http://localhost:8000/health
 ## 🐍 Python Version Support
 
 | Python Version | Supported | Recommended |
-|----------------|-----------|-------------|
-| 3.8 | ⚠️ Legacy | No |
-| 3.9 | ⚠️ Legacy | No |
-| 3.10 | ✅ Yes | ✅ Yes |
-| 3.11 | ✅ Yes | ✅ Yes |
-| 3.12 | ✅ Yes | ✅ Yes |
-| 3.13 | ⏳ Coming | No |
+| -------------- | --------- | ----------- |
+| 3.11           | ✅ Yes    | ✅ Yes      |
+| 3.12           | ✅ Yes    | ✅ Yes      |
+| 3.13           | ✅ Yes    | Yes         |
 
-**Recommended:** Python 3.10 or 3.11
+**Recommended:** Python 3.11 or 3.12
 
 ---
 
@@ -379,7 +387,7 @@ curl http://localhost:8000/health
 ```bash
 # Install Python and dependencies
 sudo apt update
-sudo apt install python3.10 python3-pip python3-venv git
+sudo apt install python3.11 python3-pip python3-venv git
 
 # Install Bleu.js
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -393,7 +401,7 @@ pip install -r requirements.txt
 
 ```bash
 # Install Python (if not installed)
-brew install python@3.10
+brew install python@3.11
 
 # Install Bleu.js
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -525,7 +533,7 @@ echo "DATABASE_URL=postgresql://user:pass@localhost/bleujs" >> .env
 
 ```bash
 # Check Python version
-python3 --version  # Must be 3.10+
+python3 --version  # Must be 3.11+
 
 # Check environment variables
 python3 -c "from src.config import get_settings; print(get_settings())"
@@ -540,7 +548,7 @@ grep -E "SECRET_KEY|JWT_SECRET" .env
 
 After installation, verify:
 
-- [ ] Python 3.10+ installed
+- [ ] Python 3.11+ installed
 - [ ] Dependencies installed successfully
 - [ ] .env file created with secrets
 - [ ] Database initialized (if using PostgreSQL)
@@ -566,12 +574,12 @@ grep "\.env" .gitignore
 
 ## 📦 Installation Options Comparison
 
-| Method | Speed | Use Case | Difficulty |
-|--------|-------|----------|------------|
-| pip from GitHub | ⚡ Fast | Quick testing | ⭐ Easy |
-| Poetry | 🐢 Slower | Development | ⭐⭐ Medium |
-| pip from source | ⚡ Fast | Production | ⭐ Easy |
-| Docker | 🐢 Slower | Container deployment | ⭐⭐⭐ Advanced |
+| Method          | Speed     | Use Case             | Difficulty      |
+| --------------- | --------- | -------------------- | --------------- |
+| pip from GitHub | ⚡ Fast   | Quick testing        | ⭐ Easy         |
+| Poetry          | 🐢 Slower | Development          | ⭐⭐ Medium     |
+| pip from source | ⚡ Fast   | Production           | ⭐ Easy         |
+| Docker          | 🐢 Slower | Container deployment | ⭐⭐⭐ Advanced |
 
 ---
 
@@ -652,11 +660,13 @@ python3 -c "import torch; print('GPU:', torch.cuda.is_available())"
 ## 🌐 Where to Install
 
 ### Development
+
 - ✅ Your local machine
 - ✅ Development server
 - ✅ Virtual machine
 
 ### Production
+
 - ✅ AWS EC2, ECS, Lambda
 - ✅ Google Cloud Platform
 - ✅ Azure VMs
@@ -668,15 +678,18 @@ python3 -c "import torch; print('GPU:', torch.cuda.is_available())"
 ## 📞 Need Help?
 
 ### Installation Issues
+
 - **GitHub Issues:** https://github.com/HelloblueAI/Bleu.js/issues
 - **Discussions:** https://github.com/HelloblueAI/Bleu.js/discussions
 
 ### Documentation
+
 - **Quick Start:** `QUICK_START.md`
 - **Configuration:** `env.example`
 - **API Docs:** http://localhost:8000/docs
 
 ### Community
+
 - **Discord:** [Your Discord link]
 - **Slack:** [Your Slack link]
 - **Email:** support@helloblue.ai

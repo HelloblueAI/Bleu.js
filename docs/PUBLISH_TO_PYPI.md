@@ -39,6 +39,7 @@ rm -rf dist build bleu_js.egg-info src/bleu_js.egg-info
 ```
 
 **Expected Output:**
+
 ```
 Successfully built bleu-js-1.2.0.tar.gz and bleu_js-1.2.0-py3-none-any.whl
 ```
@@ -93,6 +94,7 @@ python3 -m twine upload dist/*
 ```
 
 **You'll be prompted for:**
+
 - Username: `__token__`
 - Password: Your PyPI API token (starts with `pypi-...`)
 
@@ -101,6 +103,7 @@ python3 -m twine upload dist/*
 Visit: https://pypi.org/project/bleu-js/
 
 Check that:
+
 - ✅ Version shows 1.2.0
 - ✅ README displays correctly
 - ✅ Dependencies are correct
@@ -145,6 +148,7 @@ rm -rf verify_env
 5. Copy the token (starts with `pypi-...`)
 
 Use with twine:
+
 ```bash
 python3 -m twine upload dist/*
 # Username: __token__
@@ -154,6 +158,7 @@ python3 -m twine upload dist/*
 ### Option 2: .pypirc File
 
 Create `~/.pypirc`:
+
 ```ini
 [pypi]
 username = __token__
@@ -165,6 +170,7 @@ password = pypi-your-testpypi-token-here
 ```
 
 Then:
+
 ```bash
 chmod 600 ~/.pypirc
 python3 -m twine upload dist/*
@@ -182,9 +188,10 @@ git push origin v1.2.1
 ```
 
 Then create release on GitHub with:
+
 - Title: "v1.2.1 – Python 3.12 Compatibility"
 - Description: Copy from MIGRATION_GUIDE.md
-- Attach: dist/*.tar.gz and dist/*.whl
+- Attach: dist/_.tar.gz and dist/_.whl
 
 ### 2. Update Documentation
 
@@ -196,6 +203,7 @@ Then create release on GitHub with:
 ### 3. Announce the Release
 
 **Twitter/X:**
+
 ```
 🎉 Bleu.js v1.2.1 is LIVE on PyPI!
 
@@ -211,6 +219,7 @@ pip install bleu-js
 ```
 
 **LinkedIn:**
+
 ```
 Excited to announce Bleu.js v1.2.1! 🚀
 
@@ -227,6 +236,7 @@ Try it: pip install bleu-js
 ```
 
 **Reddit (r/Python, r/MachineLearning):**
+
 ```
 Title: Bleu.js v1.2.1 – Python 3.12 Compatible & API Client Included
 
@@ -236,12 +246,14 @@ Body: See MIGRATION_GUIDE.md content
 ### 4. Monitor Installation
 
 Check stats at:
+
 - PyPI: https://pypistats.org/packages/bleu-js
 - GitHub: https://github.com/HelloblueAI/Bleu.js/graphs/traffic
 
 ### 5. Respond to Issues
 
 Monitor:
+
 - GitHub Issues: https://github.com/HelloblueAI/Bleu.js/issues
 - PyPI comments
 - Social media mentions
@@ -253,6 +265,7 @@ Monitor:
 ### Issue: "Could not find a version that satisfies the requirement"
 
 **Solution:**
+
 ```bash
 # Check if package uploaded successfully
 pip search bleu-js
@@ -265,6 +278,7 @@ pip install --no-cache-dir bleu-js
 ### Issue: "Filename has already been used"
 
 **Solution:**
+
 ```bash
 # Increment version number in setup.py and pyproject.toml
 # Rebuild and re-upload
@@ -273,6 +287,7 @@ pip install --no-cache-dir bleu-js
 ### Issue: "Invalid distribution file"
 
 **Solution:**
+
 ```bash
 # Clean and rebuild
 rm -rf dist/ build/ *.egg-info
@@ -282,6 +297,7 @@ python3 -m build
 ### Issue: "HTTPError: 403 Forbidden"
 
 **Solution:**
+
 - Check your PyPI API token is valid
 - Ensure you have permission to upload to bleu-js
 - Use `__token__` as username, not your PyPI username
@@ -293,18 +309,21 @@ python3 -m build
 After publishing, track:
 
 ### Day 1 (First 24 hours)
+
 - [ ] 10+ downloads
 - [ ] No critical issues reported
 - [ ] Examples work for users
 - [ ] Positive feedback
 
 ### Week 1 (First 7 days)
+
 - [ ] 100+ downloads
 - [ ] GitHub stars increase
 - [ ] Community engagement
 - [ ] Feature requests
 
 ### Month 1 (First 30 days)
+
 - [ ] 1,000+ downloads
 - [ ] Active user base
 - [ ] Documentation requests
@@ -346,6 +365,7 @@ git push origin v1.2.1
 ## 🎉 You're Ready!
 
 Your package is:
+
 - ✅ Feature-complete
 - ✅ Well-tested
 - ✅ Properly documented

@@ -11,78 +11,90 @@ This document provides detailed information about Bleu.js resource requirements 
 ### Minimum Requirements
 
 **For Core Features Only:**
+
 - **RAM:** 4GB
 - **Disk Space:** ~500MB (installation)
 - **CPU:** 2 cores
-- **Python:** 3.10, 3.11, or 3.12
+- **Python:** 3.11, 3.12, or 3.13
 - **Installation Time:** 2-5 minutes
 
 **For ML Features:**
+
 - **RAM:** 8GB
 - **Disk Space:** ~2GB (installation + dependencies)
 - **CPU:** 4 cores recommended
-- **Python:** 3.10, 3.11, or 3.12
+- **Python:** 3.11, 3.12, or 3.13
 - **Installation Time:** 5-10 minutes
 
 **For Quantum Features:**
+
 - **RAM:** 16GB
 - **Disk Space:** ~5GB (installation + dependencies)
 - **CPU:** 4+ cores recommended
 - **GPU:** CUDA-capable (optional, for acceleration)
-- **Python:** 3.10, 3.11, or 3.12
+- **Python:** 3.11, 3.12, or 3.13
 - **Installation Time:** 10-15 minutes
 
 **For Full Installation (All Features):**
+
 - **RAM:** 32GB+ recommended
 - **Disk Space:** ~10GB
 - **CPU:** 8+ cores recommended
 - **GPU:** CUDA-capable (highly recommended)
-- **Python:** 3.10, 3.11, or 3.12
+- **Python:** 3.11, 3.12, or 3.13
 - **Installation Time:** 15-20 minutes
 
 ---
 
 ## Resource Usage by Feature
 
-| Feature | RAM | Disk | Installation Time | Notes |
-|---------|-----|------|-------------------|-------|
-| **Core** | 4GB | 500MB | 2-5 min | Basic functionality |
-| **+ ML** | 8GB | 2GB | 5-10 min | Machine learning features |
-| **+ Quantum** | 16GB | 5GB | 10-15 min | Quantum computing features |
-| **Full** | 32GB | 10GB | 15-20 min | All features enabled |
+| Feature       | RAM  | Disk  | Installation Time | Notes                      |
+| ------------- | ---- | ----- | ----------------- | -------------------------- |
+| **Core**      | 4GB  | 500MB | 2-5 min           | Basic functionality        |
+| **+ ML**      | 8GB  | 2GB   | 5-10 min          | Machine learning features  |
+| **+ Quantum** | 16GB | 5GB   | 10-15 min         | Quantum computing features |
+| **Full**      | 32GB | 10GB  | 15-20 min         | All features enabled       |
 
 ---
 
 ## Installation Sizes
 
 ### Core Package
+
 ```bash
 pip install bleu-js
 ```
+
 - **Size:** ~500MB
 - **Dependencies:** numpy, requests, basic utilities
 - **Use Case:** Basic AI processing without ML/quantum
 
 ### With ML Features
+
 ```bash
 pip install 'bleu-js[ml]'
 ```
+
 - **Size:** ~2GB
 - **Additional:** scikit-learn, xgboost, pandas, torch
 - **Use Case:** Machine learning workflows
 
 ### With Quantum Features
+
 ```bash
 pip install 'bleu-js[quantum]'
 ```
+
 - **Size:** ~5GB
 - **Additional:** qiskit, pennylane, quantum simulators
 - **Use Case:** Quantum-enhanced AI/ML
 
 ### Full Installation
+
 ```bash
 pip install 'bleu-js[all]'
 ```
+
 - **Size:** ~10GB
 - **All Features:** Core + ML + Quantum + API + Monitoring
 - **Use Case:** Complete quantum-enhanced AI platform
@@ -94,16 +106,19 @@ pip install 'bleu-js[all]'
 ### Runtime Memory Requirements
 
 **Core Processing:**
+
 - Base: ~500MB
 - With data loading: ~1-2GB
 - With caching: ~2-4GB
 
 **ML Processing:**
+
 - Model loading: ~1-2GB
 - Training: ~4-8GB (depends on dataset)
 - Inference: ~1-2GB
 
 **Quantum Processing:**
+
 - Circuit simulation: ~2-4GB
 - State vector: ~4-8GB (depends on qubits)
 - Full quantum ML: ~8-16GB
@@ -111,6 +126,7 @@ pip install 'bleu-js[all]'
 ### Memory Optimization Tips
 
 1. **Use Batch Processing:**
+
    ```python
    # Process in smaller batches
    for batch in batches:
@@ -118,6 +134,7 @@ pip install 'bleu-js[all]'
    ```
 
 2. **Disable Unused Features:**
+
    ```python
    # Only enable what you need
    bleu = BleuJS(quantum_mode=False)  # Disable quantum if not needed
@@ -136,12 +153,14 @@ pip install 'bleu-js[all]'
 ### Installation Size Breakdown
 
 **Core Dependencies:**
+
 - numpy: ~50MB
 - requests: ~5MB
 - Basic utilities: ~10MB
 - **Total Core:** ~65MB
 
 **ML Dependencies:**
+
 - scikit-learn: ~15MB
 - xgboost: ~100MB
 - pandas: ~50MB
@@ -149,6 +168,7 @@ pip install 'bleu-js[all]'
 - **Total ML:** ~2.2GB
 
 **Quantum Dependencies:**
+
 - qiskit: ~200MB
 - pennylane: ~50MB
 - quantum simulators: ~500MB
@@ -157,6 +177,7 @@ pip install 'bleu-js[all]'
 ### Reducing Disk Usage
 
 1. **Install Only What You Need:**
+
    ```bash
    # Instead of full installation
    pip install 'bleu-js[all]'
@@ -166,6 +187,7 @@ pip install 'bleu-js[all]'
    ```
 
 2. **Use Virtual Environments:**
+
    ```bash
    # Isolate to avoid conflicts
    python -m venv bleujs-env
@@ -190,6 +212,7 @@ Bleu.js installation can slow down CI/CD pipelines, especially with full feature
 **Optimization Strategies:**
 
 1. **Use Caching:**
+
    ```yaml
    # GitHub Actions example
    - uses: actions/cache@v3
@@ -199,9 +222,10 @@ Bleu.js installation can slow down CI/CD pipelines, especially with full feature
    ```
 
 2. **Install Only Core:**
+
    ```yaml
    # For CI/CD, install minimal version
-   - run: pip install bleu-js  # Core only
+   - run: pip install bleu-js # Core only
    ```
 
 3. **Use Pre-built Images:**
@@ -214,14 +238,17 @@ Bleu.js installation can slow down CI/CD pipelines, especially with full feature
 ### Resource Limits
 
 **GitHub Actions:**
+
 - Free tier: 2GB RAM, 14GB disk
 - **Recommendation:** Use core installation only
 
 **GitLab CI:**
+
 - Default: 4GB RAM, 20GB disk
 - **Recommendation:** Can use ML features
 
 **Self-hosted:**
+
 - Depends on your infrastructure
 - **Recommendation:** Match your use case requirements
 
@@ -232,6 +259,7 @@ Bleu.js installation can slow down CI/CD pipelines, especially with full feature
 ### When to Use Bleu.js
 
 ✅ **Good Fit:**
+
 - Quantum-enhanced machine learning
 - Advanced AI research
 - Quantum computing experiments
@@ -242,6 +270,7 @@ Bleu.js installation can slow down CI/CD pipelines, especially with full feature
 ### When NOT to Use Bleu.js
 
 ❌ **Not Recommended For:**
+
 - Simple performance monitoring
 - Basic data processing
 - Simple API clients
@@ -272,12 +301,14 @@ Do you need quantum-enhanced AI/ML?
 ### For Performance Monitoring
 
 **Recommended:**
+
 - ✅ **psutil** - System and process monitoring
 - ✅ **Prometheus** - Metrics collection
 - ✅ **Grafana** - Visualization
 - ✅ **Existing monitoring tools** - Datadog, New Relic
 
 **Why Not Bleu.js:**
+
 - Overkill for simple monitoring
 - High resource requirements
 - Unnecessary complexity
@@ -285,12 +316,14 @@ Do you need quantum-enhanced AI/ML?
 ### For Machine Learning
 
 **Recommended:**
+
 - ✅ **scikit-learn** - Traditional ML
 - ✅ **xgboost** - Gradient boosting
 - ✅ **lightgbm** - Lighter alternative to xgboost
 - ✅ **TensorFlow/PyTorch** - Deep learning (use directly)
 
 **When to Use Bleu.js:**
+
 - Need quantum-enhanced ML
 - Research in quantum AI
 - Hybrid classical-quantum models
@@ -298,11 +331,13 @@ Do you need quantum-enhanced AI/ML?
 ### For Quantum Computing
 
 **Recommended:**
+
 - ✅ **Qiskit** - IBM quantum computing
 - ✅ **PennyLane** - Quantum ML
 - ✅ **Cirq** - Google quantum computing
 
 **When to Use Bleu.js:**
+
 - Need integration with ML workflows
 - Want quantum-enhanced AI features
 - Need hybrid classical-quantum systems
@@ -310,11 +345,13 @@ Do you need quantum-enhanced AI/ML?
 ### For Distributed Computing
 
 **Recommended:**
+
 - ✅ **Ray** - Distributed computing
 - ✅ **Dask** - Parallel computing
 - ✅ **Celery** - Task queue
 
 **When to Use Bleu.js:**
+
 - Need quantum-enhanced distributed computing
 - Want integrated ML + quantum + distributed
 
@@ -325,25 +362,28 @@ Do you need quantum-enhanced AI/ML?
 ### Installation Time
 
 | Installation Type | Time (Fast Network) | Time (Slow Network) |
-|-------------------|---------------------|---------------------|
-| Core Only | 2-3 minutes | 5-10 minutes |
-| + ML | 5-7 minutes | 10-15 minutes |
-| + Quantum | 10-12 minutes | 15-20 minutes |
-| Full | 15-18 minutes | 20-30 minutes |
+| ----------------- | ------------------- | ------------------- |
+| Core Only         | 2-3 minutes         | 5-10 minutes        |
+| + ML              | 5-7 minutes         | 10-15 minutes       |
+| + Quantum         | 10-12 minutes       | 15-20 minutes       |
+| Full              | 15-18 minutes       | 20-30 minutes       |
 
 ### Runtime Performance
 
 **Core Processing:**
+
 - Startup time: <1 second
 - Memory footprint: ~500MB
 - CPU usage: Low
 
 **ML Processing:**
+
 - Model loading: 1-5 seconds
 - Memory footprint: ~2-4GB
 - CPU usage: Medium-High
 
 **Quantum Processing:**
+
 - Circuit initialization: 2-10 seconds
 - Memory footprint: ~4-8GB
 - CPU/GPU usage: High
@@ -355,11 +395,13 @@ Do you need quantum-enhanced AI/ML?
 ### Out of Memory Errors
 
 **Symptoms:**
+
 - `MemoryError` exceptions
 - System slowdown
 - Process killed by OS
 
 **Solutions:**
+
 1. Reduce batch size
 2. Disable unused features
 3. Use smaller models
@@ -369,11 +411,13 @@ Do you need quantum-enhanced AI/ML?
 ### Slow Installation
 
 **Symptoms:**
+
 - Installation takes >30 minutes
 - Network timeouts
 - Dependency resolution issues
 
 **Solutions:**
+
 1. Use faster network connection
 2. Install only core features
 3. Use pip cache
@@ -383,10 +427,12 @@ Do you need quantum-enhanced AI/ML?
 ### Disk Space Issues
 
 **Symptoms:**
+
 - Installation fails with disk space error
 - System running out of space
 
 **Solutions:**
+
 1. Clean up old packages: `pip cache purge`
 2. Install only needed features
 3. Use external storage

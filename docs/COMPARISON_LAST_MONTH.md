@@ -7,15 +7,15 @@
 
 ## By the numbers
 
-| Metric | Then (1.3.26) | Now (1.3.55) | Change |
-|--------|----------------|--------------|--------|
-| **Version** | 1.3.26 | 1.3.55 | +29 patch releases |
-| **Commits (since baseline)** | — | ~100 | — |
-| **Files changed** | — | 343 | — |
-| **Lines added** | — | ~5,200 | — |
-| **Lines removed** | — | ~24,400 | **−19,200 net** |
-| **Files deleted** | — | 131 | Major cleanup |
-| **Files added** | — | 28 | New docs, tests, workflows |
+| Metric                       | Then (1.3.26) | Now (1.3.55) | Change                     |
+| ---------------------------- | ------------- | ------------ | -------------------------- |
+| **Version**                  | 1.3.26        | 1.3.55       | +29 patch releases         |
+| **Commits (since baseline)** | —             | ~100         | —                          |
+| **Files changed**            | —             | 343          | —                          |
+| **Lines added**              | —             | ~5,200       | —                          |
+| **Lines removed**            | —             | ~24,400      | **−19,200 net**            |
+| **Files deleted**            | —             | 131          | Major cleanup              |
+| **Files added**              | —             | 28           | New docs, tests, workflows |
 
 **Bottom line:** The repo is ~19k lines smaller, with clearer product focus and stronger security.
 

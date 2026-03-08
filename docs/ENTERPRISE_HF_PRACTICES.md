@@ -5,7 +5,9 @@ How big companies (Google, Meta, Microsoft, etc.) manage their Hugging Face mode
 ## 🔐 Security & Access Management
 
 ### 1. Token Management
+
 **What Big Companies Do:**
+
 - ✅ Use **secrets management systems** (AWS Secrets Manager, HashiCorp Vault, Azure Key Vault)
 - ✅ **Never commit tokens** to git repositories
 - ✅ Use **service accounts** with minimal permissions
@@ -14,6 +16,7 @@ How big companies (Google, Meta, Microsoft, etc.) manage their Hugging Face mode
 - ✅ Store tokens in CI/CD secrets, not `.env` files
 
 **Implementation:**
+
 ```bash
 # Use GitHub Secrets (for CI/CD)
 # Settings → Secrets → Actions → New repository secret
@@ -27,7 +30,9 @@ aws secretsmanager create-secret \
 ```
 
 ### 2. Organization Management
+
 **What Big Companies Do:**
+
 - ✅ Create **separate organizations** for different teams/projects
 - ✅ Use **role-based access control** (RBAC)
 - ✅ Implement **approval workflows** for model uploads
@@ -37,7 +42,9 @@ aws secretsmanager create-secret \
 ## 🚀 CI/CD & Automation
 
 ### 1. Automated Model Uploads
+
 **What Big Companies Do:**
+
 - ✅ Upload models automatically after training completes
 - ✅ Version models with git tags
 - ✅ Run automated tests before upload
@@ -45,13 +52,14 @@ aws secretsmanager create-secret \
 - ✅ Use GitHub Actions / GitLab CI / Jenkins
 
 **Example GitHub Actions Workflow:**
+
 ```yaml
 name: Upload Model to Hugging Face
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -63,7 +71,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -83,7 +91,9 @@ jobs:
 ```
 
 ### 2. Model Versioning
+
 **What Big Companies Do:**
+
 - ✅ Use **semantic versioning** (v1.0.0, v1.1.0, v2.0.0)
 - ✅ Tag releases in git
 - ✅ Create separate model repos for major versions
@@ -91,6 +101,7 @@ jobs:
 - ✅ Use model cards with version history
 
 **Implementation:**
+
 ```bash
 # Tag your model version
 git tag -a v1.0.0 -m "Initial model release"
@@ -104,7 +115,9 @@ python scripts/setup_hf_model_auto.py \
 ## 📊 Model Registry & Governance
 
 ### 1. Model Registry Structure
+
 **What Big Companies Do:**
+
 - ✅ Organize models by team/project/domain
 - ✅ Use naming conventions: `org-name/team-project-model-v1`
 - ✅ Maintain model catalogs
@@ -112,6 +125,7 @@ python scripts/setup_hf_model_auto.py \
 - ✅ Document model performance metrics
 
 **Example Structure:**
+
 ```
 helloblueai/
 ├── ml-team/
@@ -127,7 +141,9 @@ helloblueai/
 ```
 
 ### 2. Model Cards & Documentation
+
 **What Big Companies Do:**
+
 - ✅ **Mandatory model cards** for all models
 - ✅ Include performance metrics, limitations, biases
 - ✅ Document training data and methodology
@@ -137,7 +153,9 @@ helloblueai/
 ## 🔄 Model Lifecycle Management
 
 ### 1. Development → Staging → Production
+
 **What Big Companies Do:**
+
 - ✅ **Development**: Personal/team namespaces
 - ✅ **Staging**: Organization staging namespace
 - ✅ **Production**: Organization production namespace
@@ -145,6 +163,7 @@ helloblueai/
 - ✅ Implement **rollback procedures**
 
 **Implementation:**
+
 ```bash
 # Development
 python scripts/setup_hf_model_auto.py \
@@ -163,7 +182,9 @@ python scripts/setup_hf_model_auto.py \
 ```
 
 ### 2. Model Monitoring & Observability
+
 **What Big Companies Do:**
+
 - ✅ Track model performance in production
 - ✅ Monitor model usage and downloads
 - ✅ Set up alerts for model degradation
@@ -173,7 +194,9 @@ python scripts/setup_hf_model_auto.py \
 ## 🛡️ Compliance & Governance
 
 ### 1. Data Privacy & Compliance
+
 **What Big Companies Do:**
+
 - ✅ Document data sources and privacy compliance
 - ✅ Implement data retention policies
 - ✅ Use private repositories for sensitive models
@@ -181,7 +204,9 @@ python scripts/setup_hf_model_auto.py \
 - ✅ Maintain audit trails
 
 ### 2. Model Governance
+
 **What Big Companies Do:**
+
 - ✅ **Approval workflows** for model releases
 - ✅ **Code reviews** for model uploads
 - ✅ **Automated testing** before deployment
@@ -191,7 +216,9 @@ python scripts/setup_hf_model_auto.py \
 ## 📈 Scalability & Performance
 
 ### 1. Large Model Management
+
 **What Big Companies Do:**
+
 - ✅ Use **Git LFS** for large files (>100MB)
 - ✅ Implement **model compression** techniques
 - ✅ Use **model quantization** for deployment
@@ -199,6 +226,7 @@ python scripts/setup_hf_model_auto.py \
 - ✅ Use **CDN** for model distribution
 
 **Git LFS Setup:**
+
 ```bash
 # Install Git LFS
 git lfs install
@@ -214,7 +242,9 @@ git commit -m "Add Git LFS tracking"
 ```
 
 ### 2. Multi-Region Deployment
+
 **What Big Companies Do:**
+
 - ✅ Replicate models across regions
 - ✅ Use regional model endpoints
 - ✅ Implement failover mechanisms
@@ -223,14 +253,18 @@ git commit -m "Add Git LFS tracking"
 ## 🔧 Infrastructure & Tooling
 
 ### 1. Infrastructure as Code
+
 **What Big Companies Do:**
+
 - ✅ Use **Terraform** or **CloudFormation** for infrastructure
 - ✅ Automate repository creation
 - ✅ Version control infrastructure changes
 - ✅ Use **Infrastructure as Code** (IaC) principles
 
 ### 2. Monitoring & Alerting
+
 **What Big Companies Do:**
+
 - ✅ Set up **CloudWatch** / **Datadog** / **Prometheus** monitoring
 - ✅ Alert on model upload failures
 - ✅ Monitor model download metrics
@@ -239,6 +273,7 @@ git commit -m "Add Git LFS tracking"
 ## 📋 Best Practices Checklist
 
 ### Pre-Upload
+
 - [ ] Model passes all automated tests
 - [ ] Performance metrics meet benchmarks
 - [ ] Model card is complete and accurate
@@ -247,6 +282,7 @@ git commit -m "Add Git LFS tracking"
 - [ ] Documentation updated
 
 ### Upload Process
+
 - [ ] Use CI/CD pipeline (not manual uploads)
 - [ ] Version model appropriately
 - [ ] Tag git release
@@ -254,6 +290,7 @@ git commit -m "Add Git LFS tracking"
 - [ ] Verify upload success
 
 ### Post-Upload
+
 - [ ] Update model registry
 - [ ] Notify stakeholders
 - [ ] Monitor initial usage
@@ -263,6 +300,7 @@ git commit -m "Add Git LFS tracking"
 ## 🎯 Enterprise Setup for Bleu.js
 
 ### Recommended Structure:
+
 ```
 helloblueai/
 ├── bleu-xgboost-classifier-v1.0.0  # Versioned releases
@@ -273,6 +311,7 @@ helloblueai/
 ```
 
 ### Recommended Workflow:
+
 1. **Development**: Upload to personal namespace for testing
 2. **Staging**: Upload to `helloblueai-staging` for validation
 3. **Production**: Upload to `helloblueai` after approval

@@ -8,14 +8,14 @@ Bleu.js is a quantum-enhanced AI platform: cloud API, CLI, and Python SDK. This 
 
 ### Core Features Status
 
-| Category | Status | Notes |
-|----------|--------|-------|
-| Cloud API & SDK | ✅ Complete | REST API, sync/async clients, [bleujs.org](https://bleujs.org) |
-| Bleu CLI | ✅ Complete | `bleu chat`, `generate`, `embed`, `models`, config, health |
-| Quantum | ✅ In place | Teleportation, IBM runtime, quantum-enhanced features |
-| ML Pipeline | ✅ Complete | XGBoost, LLaMA, model management, hybrid training |
-| Development & docs | ✅ In place | Testing, API reference, [API Client Guide](API_CLIENT_GUIDE.md), [Open source standards](OPEN_SOURCE_STANDARDS.md) |
-| Backend | ✅ Separate repo | Node/Express backend in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend); see [BACKEND_REPO.md](BACKEND_REPO.md) |
+| Category           | Status           | Notes                                                                                                                             |
+| ------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Cloud API & SDK    | ✅ Complete      | REST API, sync/async clients, [bleujs.org](https://bleujs.org)                                                                    |
+| Bleu CLI           | ✅ Complete      | `bleu chat`, `generate`, `embed`, `models`, config, health                                                                        |
+| Quantum            | ✅ In place      | Teleportation, IBM runtime, quantum-enhanced features                                                                             |
+| ML Pipeline        | ✅ Complete      | XGBoost, LLaMA, model management, hybrid training                                                                                 |
+| Development & docs | ✅ In place      | Testing, API reference, [API Client Guide](API_CLIENT_GUIDE.md), [Open source standards](OPEN_SOURCE_STANDARDS.md)                |
+| Backend            | ✅ Separate repo | Node/Express backend in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend); see [BACKEND_REPO.md](BACKEND_REPO.md) |
 
 ### Recent additions (2025–2026)
 
@@ -54,9 +54,9 @@ Bleu.js is a quantum-enhanced AI platform: cloud API, CLI, and Python SDK. This 
 
 Releases follow [semantic versioning](https://semver.org/). Patch releases are automated; see [CHANGELOG.md](../CHANGELOG.md) for history.
 
-| Focus | Notes |
-|-------|-------|
-| Patch | Auto-bump on merge to main (see `.github/workflows/auto-release.yml`) |
+| Focus       | Notes                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------- |
+| Patch       | Auto-bump on merge to main (see `.github/workflows/auto-release.yml`)                  |
 | Minor/Major | Manual; update [CHANGELOG.md](../CHANGELOG.md) and version in `src/bleujs/__init__.py` |
 
 ## Contributing
@@ -75,4 +75,5 @@ We welcome contributions. See:
 - **Docs:** [README](../README.md) · [docs/](.)
 
 ---
-*Last updated: March 2026. Roadmap may change with community feedback and priorities.*
+
+_Last updated: March 2026. Roadmap may change with community feedback and priorities._

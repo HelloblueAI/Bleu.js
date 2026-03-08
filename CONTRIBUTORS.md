@@ -50,15 +50,19 @@ This file recognizes all contributors to the project.
 ## 🏆 Recognition Levels
 
 ### 🌱 First Contribution
+
 Welcome! You've made your first contribution to Bleu.js.
 
 ### 🌿 Regular Contributor
+
 You've made 3+ contributions. Thank you for your continued support!
 
 ### 🌳 Core Contributor
+
 You've made 10+ significant contributions. You're a key part of the project!
 
 ### ⭐ Maintainer
+
 You've been invited to help maintain the project. Thank you for your leadership!
 
 ---
@@ -95,4 +99,4 @@ We're always looking for more contributors! If you're interested:
 
 ---
 
-*Note: This file is manually maintained. To be added, make a contribution and submit a PR adding yourself to this file.*
+_Note: This file is manually maintained. To be added, make a contribution and submit a PR adding yourself to this file._

@@ -29,6 +29,7 @@ export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"
 ```
 
 Or add to your `~/.bashrc` or `~/.zshrc`:
+
 ```bash
 echo 'export BLEUJS_API_KEY="bleujs_sk_..."' >> ~/.bashrc
 source ~/.bashrc
@@ -41,7 +42,7 @@ source ~/.bashrc
 Create a file `test_chat.py`:
 
 ```python
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 # Create client
 client = BleuAPIClient()
@@ -59,6 +60,7 @@ client.close()
 ```
 
 Run it:
+
 ```bash
 python test_chat.py
 ```
@@ -115,7 +117,7 @@ with BleuAPIClient() as client:
 ### Handle Errors
 
 ```python
-from bleu_ai.api_client import AuthenticationError, RateLimitError
+from bleujs.api_client import AuthenticationError, RateLimitError
 
 try:
     response = client.chat([...])
@@ -142,7 +144,7 @@ For async applications:
 
 ```python
 import asyncio
-from bleu_ai.api_client import AsyncBleuAPIClient
+from bleujs.api_client import AsyncBleuAPIClient
 
 async def main():
     async with AsyncBleuAPIClient() as client:

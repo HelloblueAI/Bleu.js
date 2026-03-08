@@ -1,6 +1,7 @@
 # Bleu.js Technical Documentation
 
 ## Table of Contents
+
 1. [Architecture Overview](#architecture-overview)
 2. [Quantum Computing Integration](#quantum-computing-integration)
 3. [Machine Learning Capabilities](#machine-learning-capabilities)
@@ -12,6 +13,7 @@
 ## Architecture Overview
 
 ### System Components
+
 - **Frontend**: Next.js application with TypeScript
 - **Backend**: Python-based API server
 - **Quantum Processing**: Qiskit-based quantum computing integration
@@ -19,6 +21,7 @@
 - **Database**: PostgreSQL with quantum-optimized queries
 
 ### Technology Stack
+
 - **Frontend**: Next.js, TypeScript, TailwindCSS
 - **Backend**: Python, FastAPI
 - **Quantum**: Qiskit, PennyLane
@@ -28,6 +31,7 @@
 ## Quantum Computing Integration
 
 ### Quantum Feature Processing
+
 ```python
 class QuantumFeatureProcessor:
     """Enhanced quantum feature processor with advanced capabilities."""
@@ -39,6 +43,7 @@ class QuantumFeatureProcessor:
 ```
 
 ### Key Features
+
 - Quantum-enhanced feature selection
 - Quantum dimensionality reduction
 - Quantum state preparation
@@ -46,6 +51,7 @@ class QuantumFeatureProcessor:
 - Adaptive quantum circuits
 
 ### Configuration Options
+
 ```python
 @dataclass
 class QuantumFeatureConfig:
@@ -60,6 +66,7 @@ class QuantumFeatureConfig:
 ## Machine Learning Capabilities
 
 ### Enhanced XGBoost
+
 ```python
 class EnhancedXGBoost:
     """Enhanced XGBoost model with quantum computing capabilities"""
@@ -70,6 +77,7 @@ class EnhancedXGBoost:
 ```
 
 ### Features
+
 - Quantum-enhanced feature processing
 - Advanced model explainability
 - Adaptive learning rates
@@ -77,6 +85,7 @@ class EnhancedXGBoost:
 - Multi-scale feature fusion
 
 ### Model Training
+
 ```python
 async def train(self, features: np.ndarray, labels: np.ndarray):
     # Process features with quantum enhancement
@@ -93,17 +102,20 @@ async def train(self, features: np.ndarray, labels: np.ndarray):
 ## API Architecture
 
 ### Endpoints
+
 - `/v1/auth/*` - Authentication endpoints
 - `/v1/subscriptions/*` - Subscription management
 - `/v1/quantum/*` - Quantum processing endpoints
 - `/v1/ml/*` - Machine learning endpoints
 
 ### Rate Limiting
+
 - Basic Plan: 10 requests/minute
 - Enterprise Plan: 100 requests/minute
 - Custom limits for enterprise customers
 
 ### Authentication
+
 ```python
 @router.post("/auth/api-key")
 async def generate_api_key(
@@ -117,12 +129,14 @@ async def generate_api_key(
 ## Security Implementation
 
 ### Data Protection
+
 - End-to-end encryption
 - Quantum-resistant cryptography
 - Differential privacy
 - Secure key management
 
 ### Access Control
+
 ```python
 class SecurityConfig:
     differential_privacy: bool = True
@@ -134,12 +148,14 @@ class SecurityConfig:
 ## Performance Optimization
 
 ### Quantum Optimization
+
 - Circuit optimization
 - Error mitigation
 - Resource allocation
 - Parallel processing
 
 ### Caching Strategy
+
 - Quantum state caching
 - Feature cache
 - Model cache
@@ -148,13 +164,15 @@ class SecurityConfig:
 ## Deployment Guide
 
 ### Prerequisites
-- Python 3.8+
+
+- Python 3.11+
 - Node.js 18+
 - Docker
 - Kubernetes cluster
 - Quantum computing access
 
 ### Environment Variables
+
 ```bash
 # Core Configuration
 VITE_APP_NAME="Bleu.js"
@@ -173,6 +191,7 @@ ML_NUM_EPOCHS=1000
 ```
 
 ### Deployment Steps
+
 1. Set up environment variables
 2. Build frontend application
 3. Deploy backend services
@@ -181,6 +200,7 @@ ML_NUM_EPOCHS=1000
 6. Set up monitoring
 
 ### Monitoring
+
 - Performance metrics
 - Quantum circuit metrics
 - API usage statistics
@@ -190,11 +210,13 @@ ML_NUM_EPOCHS=1000
 ## Support and Resources
 
 ### Documentation
+
 - API Documentation: `/docs/API.md`
 - Research Papers: `/docs/academic/`
 - Architecture Details: `/docs/python-architecture/`
 
 ### Contact
+
 - Technical Support: tech@bleujs.com
 - Enterprise Support: enterprise@bleujs.com
 - Documentation: docs.bleujs.com

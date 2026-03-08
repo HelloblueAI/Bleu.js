@@ -57,11 +57,13 @@ pip install pip-audit safety
 **Safety CLI quickstart (for future reference):** Safety may prompt you to log in. One-time setup:
 
 1. **Install Safety CLI 3**
+
    ```bash
    pip install -U safety
    ```
 
 2. **Authenticate** (once per machine)
+
    ```bash
    safety auth login
    ```
