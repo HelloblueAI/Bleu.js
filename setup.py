@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="bleu-js",
-    version="1.3.58",
+    version="1.4.0",
     author="Bleujs Team",
     author_email="support@helloblue.ai",
     description=(
