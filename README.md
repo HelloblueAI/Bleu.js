@@ -262,6 +262,7 @@ with open(model_path, 'rb') as f:
 ### Important Documentation
 
 **For users**
+- **[Security policy & reporting](SECURITY.md)** - No secrets in repo; how to report vulnerabilities; deployment checklist
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
 - **[API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
 - **[Resource Requirements](./docs/RESOURCE_REQUIREMENTS.md)** - System requirements and use case guidance
@@ -756,12 +757,12 @@ graph LR
 
 ## Contributing
 
-We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or helping others, your contributions make Bleu.js better.
+We welcome contributions. New to the repo? **[Start with a good first issue](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)** or fix a typo, add a test, or improve docs.
 
 ### Quick Links
 
 - **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete guide for contributors
-- **[Contributor Guide](docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
+- **[Contributor Guide](docs/CONTRIBUTOR_GUIDE.md)** - Quick start (5 min)
 - **[Onboarding Guide](docs/ONBOARDING.md)** - Get started in 10 minutes
 - **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community standards
 
@@ -782,8 +783,8 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
    - [Contributing Guide](docs/CONTRIBUTING.md) - Full details
 
 2. **Find something to work on:**
-   - Look for `good first issue` labels
-   - Check [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
+   - [Good first issues](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+   - [All issues](https://github.com/HelloblueAI/Bleu.js/issues)
 
 3. **Make your first contribution:**
    - Fix a typo
