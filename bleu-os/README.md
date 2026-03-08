@@ -8,7 +8,7 @@
 
 ## 🚀 Overview
 
-Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads. Built on a minimal, secure base, it provides:
+Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads. **Published images (`latest`, `minimal`) use Debian bookworm-slim** for a single, CVE-clean base; other Dockerfiles in this dir (e.g. `Dockerfile`, `Dockerfile.improved`) are Alpine-based and optional. Built on a minimal, secure base, it provides:
 
 - **Quantum Hardware Optimization**: Direct access and optimization for quantum processors
 - **AI/ML Acceleration**: Pre-configured for TensorFlow, PyTorch, XGBoost with GPU/TPU support
@@ -70,13 +70,13 @@ docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
 docker run -it --rm --gpus all ghcr.io/helloblueai/bleu-os:latest
 ```
 
-**Available image variants:**
+**Available image variants (both Debian-based; no Alpine busybox/curl CVEs):**
 ```bash
 # Production (full-featured, ~2.8GB)
 docker pull ghcr.io/helloblueai/bleu-os:latest
 docker pull ghcr.io/helloblueai/bleu-os:1.0.0
 
-# Minimal (lightweight, ~200MB)
+# Minimal (lightweight)
 docker pull ghcr.io/helloblueai/bleu-os:minimal
 ```
 

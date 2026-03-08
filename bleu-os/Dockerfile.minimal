@@ -1,7 +1,7 @@
 # Bleu OS Docker Image - Minimal Version
-# Lightweight version with only essential components
+# Debian base: same as production for consistency and no Alpine busybox/curl CVEs
 
-FROM alpine:3.23
+FROM debian:bookworm-slim
 
 ARG BLEU_OS_VERSION=1.0.0
 
@@ -10,59 +10,50 @@ LABEL description="Bleu OS - Minimal Quantum-Enhanced AI Operating System"
 LABEL version="${BLEU_OS_VERSION}"
 LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.base.name="alpine:3.23"
+LABEL org.opencontainers.image.base.name="debian:bookworm-slim"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
-# Install minimal dependencies; apk upgrade pulls expat, zlib 1.3.2+, curl if present (CVE-2025-14017, -13034, -14524, -14819, -15079, -15224)
-RUN apk update && \
-    apk upgrade --no-cache --available && \
-    apk add --no-cache --upgrade \
-    zlib \
+# Minimal dependencies (Debian = no busybox, no curl CVEs)
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
     ca-certificates \
     bash \
     python3 \
-    py3-pip \
-    && rm -rf /var/cache/apk/* \
-    && update-ca-certificates
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
+# Fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     pip>=25.3 \
     setuptools>=78.1.1 \
     "urllib3>=2.6.3" \
     "wheel>=0.46.3"
 
-# Create non-root user
-RUN addgroup -g 1000 bleuos && \
-    adduser -D -u 1000 -G bleuos bleuos
+# Non-root user
+RUN groupadd -g 1000 bleuos && \
+    useradd -m -u 1000 -g bleuos -s /bin/bash bleuos
 
-# Set environment
 ENV PYTHONUNBUFFERED=1 \
     BLEU_OS_VERSION=${BLEU_OS_VERSION} \
     PATH="/home/bleuos/.local/bin:$PATH"
 
-# Install Bleu.js (from PyPI); then remove ecdsa/python-jose to fix CVE-2024-23342 (no Alpine wheel for full repo install)
 USER bleuos
 WORKDIR /home/bleuos
 
-RUN pip3 install --user --no-cache-dir --break-system-packages --upgrade \
-    pip \
-    setuptools \
-    wheel && \
+# Install Bleu.js with security pins (no ecdsa/python-jose)
+RUN pip3 install --user --no-cache-dir --break-system-packages \
+    "cryptography>=46.0.5" "urllib3>=2.6.3" "pillow>=12.1.1" && \
     pip3 install --user --no-cache-dir --break-system-packages \
-    "cryptography>=46.0.5" \
-    bleu-js \
-    "numpy>=2.2.6" && \
+    bleu-js "numpy>=2.2.6" && \
     pip3 uninstall -y --break-system-packages ecdsa python-jose 2>/dev/null || true
 
-# System config
 USER root
 COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
 COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/init-bleu-os.sh
-
-RUN mkdir -p /workspace && chown -R bleuos:bleuos /workspace
+RUN chmod +x /usr/local/bin/init-bleu-os.sh && \
+    mkdir -p /workspace && chown -R bleuos:bleuos /workspace
 
 USER bleuos
 WORKDIR /workspace
