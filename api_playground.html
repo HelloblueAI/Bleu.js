@@ -229,6 +229,8 @@
     </div>
 
     <script>
+        // API contract: Chat can return flat `content` or OpenAI-style `choices[0].message.content`.
+        // See docs/API_CLIENT_GUIDE.md "API contract and response shapes".
         const BASE_URL = 'https://bleujs.org';
 
         function getApiKey() {
@@ -286,10 +288,9 @@
                     return { error: text || 'Empty response' };
                 }
                 if (!res.ok) {
-                    return {
-                        error: data.detail || data.message || res.status + ' ' + res.statusText,
-                        status: res.status
-                    };
+                    var errMsg = data.detail || data.message || res.status + ' ' + res.statusText;
+                    if (Array.isArray(errMsg)) errMsg = errMsg.map(function (x) { return x.msg || x.message || JSON.stringify(x); }).join('; ');
+                    return { error: errMsg, status: res.status };
                 }
                 return data;
             } catch (e) {
@@ -319,8 +320,12 @@
                 setResponse('responseChat', 'Error: ' + out.error, true);
                 return;
             }
-            const content = out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content;
-            setResponse('responseChat', content != null ? content : JSON.stringify(out, null, 2), false);
+            var content = out.content;
+            if (content == null && out.choices && out.choices[0]) {
+                var msg = out.choices[0].message || out.choices[0];
+                content = (msg && msg.content) || (msg && msg.text);
+            }
+            setResponse('responseChat', content != null && content !== '' ? content : JSON.stringify(out, null, 2), false);
         });
 
         document.getElementById('btnGenerate').addEventListener('click', async function () {

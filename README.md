@@ -263,7 +263,7 @@ flowchart LR
 
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
-### 🤗 Pre-trained Models
+### [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Models-yellow?style=flat-square&logo=huggingface)](https://huggingface.co/helloblueai) Pre-trained Models
 
 We provide pre-trained models on [Hugging Face](https://huggingface.co/helloblueai) for easy integration:
 
