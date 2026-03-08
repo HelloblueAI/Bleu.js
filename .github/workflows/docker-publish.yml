@@ -106,7 +106,7 @@ jobs:
 
       - name: Extract metadata for GHCR
         id: meta-ghcr
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # Use lowercase image name to avoid Docker registry naming issues
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -122,7 +122,7 @@ jobs:
       - name: Extract metadata for Docker Hub
         id: meta-dockerhub
         if: github.event_name != 'pull_request' && steps.check-dockerhub.outputs.dockerhub_enabled == 'true'
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.DOCKERHUB_IMAGE_NAME }}
           tags: |
