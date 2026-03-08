@@ -193,8 +193,10 @@ class SecurityManager:
 
     def verify_csrf_token(self, token: str) -> bool:
         """Verify CSRF token (HMAC with 2-minute window to allow clock skew)."""
-        if not token or len(token) != 64 or not all(
-            c in "0123456789abcdef" for c in token.lower()
+        if (
+            not token
+            or len(token) != 64
+            or not all(c in "0123456789abcdef" for c in token.lower())
         ):
             return False
         now = int(time.time())

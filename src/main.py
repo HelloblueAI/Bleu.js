@@ -64,6 +64,7 @@ app.add_middleware(
 # CSRF protection (optional; enable for browser form submissions)
 if getattr(settings, "ENABLE_CSRF_PROTECTION", False):
     from src.middleware.csrf import setup_csrf_protection
+
     setup_csrf_protection(app, secret_key=getattr(settings, "SECRET_KEY", None))
 
 

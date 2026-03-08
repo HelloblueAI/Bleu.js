@@ -27,4 +27,3 @@ python3 scripts/setup_hf_model_auto.py --token "$TOKEN"
 echo ""
 echo "✅ Done! Visit your model at:"
 echo "   https://huggingface.co/helloblueai/bleu-xgboost-classifier"
-

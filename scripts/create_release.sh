@@ -52,4 +52,3 @@ echo "- Issues: https://github.com/$REPO/issues"
 echo "- Discussions: https://github.com/$REPO/discussions"
 echo ""
 echo "🌟 Your release is live! Great work!"
-

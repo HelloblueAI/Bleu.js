@@ -29,11 +29,11 @@ Perfect for quantum-enhanced ML research and development.
 ```
 🌟 Want to contribute to open source?
 
-Bleu.js is looking for contributors! We have many "good first issue" 
+Bleu.js is looking for contributors! We have many "good first issue"
 labels perfect for beginners.
 
 ✅ Fix bugs
-✅ Add features  
+✅ Add features
 ✅ Improve docs
 ✅ Help others
 
@@ -60,7 +60,7 @@ Try it: pip install bleu-js
 ```
 🎉 Bleu.js community is growing!
 
-We just hit [X] contributors and [Y] stars! 
+We just hit [X] contributors and [Y] stars!
 
 Thank you to everyone making this project better.
 
@@ -78,7 +78,7 @@ https://github.com/HelloblueAI/Bleu.js/issues
 ```
 🚀 Excited to share Bleu.js v1.2.1 - A Quantum-Enhanced AI Platform
 
-Bleu.js combines the power of quantum computing with machine learning, 
+Bleu.js combines the power of quantum computing with machine learning,
 providing enhanced capabilities for AI research and development.
 
 Key Features:
@@ -104,7 +104,7 @@ Open source and actively maintained. Contributions welcome!
 ```
 🌟 My Journey Contributing to Bleu.js
 
-I recently made my first open source contribution to Bleu.js, a 
+I recently made my first open source contribution to Bleu.js, a
 quantum-enhanced AI platform. The experience was incredible!
 
 What I learned:
@@ -113,8 +113,8 @@ What I learned:
 ✅ Working with a welcoming community
 ✅ Building real-world AI applications
 
-The maintainers were incredibly helpful, and I learned so much. 
-If you're interested in quantum computing or AI, I highly 
+The maintainers were incredibly helpful, and I learned so much.
+If you're interested in quantum computing or AI, I highly
 recommend checking it out!
 
 #OpenSource #QuantumComputing #MachineLearning #Contributing
@@ -128,8 +128,8 @@ recommend checking it out!
 ```
 [P] Bleu.js - Quantum-Enhanced AI Platform (Open Source)
 
-I've been working on Bleu.js, a Python package that combines 
-quantum computing with machine learning. It's now open source 
+I've been working on Bleu.js, a Python package that combines
+quantum computing with machine learning. It's now open source
 and looking for contributors!
 
 What it does:
@@ -151,7 +151,7 @@ Perfect for:
 
 GitHub: https://github.com/HelloblueAI/Bleu.js
 
-We have many "good first issue" labels for beginners. 
+We have many "good first issue" labels for beginners.
 Contributions welcome!
 
 Questions? Ask away!
@@ -161,7 +161,7 @@ Questions? Ask away!
 ```
 [P] Bleu.js - Quantum-Enhanced ML Platform
 
-Bleu.js combines quantum computing with machine learning, 
+Bleu.js combines quantum computing with machine learning,
 providing quantum-enhanced features for ML workflows.
 
 Key Features:
@@ -278,8 +278,8 @@ Would love feedback from the ML community!
 ```
 FOR IMMEDIATE RELEASE
 
-[Date] - Bleu.js, the open-source quantum-enhanced AI platform, 
-announces the release of version 1.2.1 with significant 
+[Date] - Bleu.js, the open-source quantum-enhanced AI platform,
+announces the release of version 1.2.1 with significant
 improvements and new features.
 
 Key Highlights:
@@ -289,11 +289,11 @@ Key Highlights:
 • Security enhancements
 
 About Bleu.js:
-Bleu.js is an open-source platform that combines quantum 
-computing with machine learning, providing enhanced capabilities 
+Bleu.js is an open-source platform that combines quantum
+computing with machine learning, providing enhanced capabilities
 for AI research and development.
 
-The project has [X] contributors and [Y] GitHub stars, with 
+The project has [X] contributors and [Y] GitHub stars, with
 active development and a growing community.
 
 For more information:
@@ -420,9 +420,9 @@ The Bleu.js Team
 
 **100 Stars:**
 ```
-🎉 We just hit 100 stars! 
+🎉 We just hit 100 stars!
 
-Thank you to everyone who has shown interest in Bleu.js. 
+Thank you to everyone who has shown interest in Bleu.js.
 Your support means the world to us!
 
 Let's keep growing together! 🚀
@@ -432,9 +432,9 @@ Let's keep growing together! 🚀
 
 **50 Contributors:**
 ```
-🌟 50 Contributors! 
+🌟 50 Contributors!
 
-We're thrilled to have 50 amazing contributors helping 
+We're thrilled to have 50 amazing contributors helping
 build Bleu.js. Thank you all for your dedication!
 
 Every contribution matters. 🙏
@@ -457,4 +457,3 @@ Every contribution matters. 🙏
 ---
 
 **Last Updated:** 2025-01-XX
-

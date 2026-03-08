@@ -48,19 +48,19 @@ This guide helps maintainers and contributors understand and use issue labels ef
   - Small, well-defined tasks
   - Clear requirements
   - Good documentation exists
-  
+
 - `help wanted` - Community help needed
   - Open to anyone
   - Not necessarily easy
-  
+
 - `beginner-friendly` - Easy to get started
   - Similar to "good first issue"
   - May require some setup
-  
+
 - `intermediate` - Requires some experience
   - Need to understand codebase
   - May require domain knowledge
-  
+
 - `advanced` - Complex tasks
   - Requires deep understanding
   - May need architecture changes
@@ -231,4 +231,3 @@ Track these metrics:
 ---
 
 **Last Updated:** 2025-01-XX
-

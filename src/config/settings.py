@@ -133,9 +133,7 @@ class Settings(BaseSettings):
         default="dev-encryption-key-change-in-production-12345", alias="ENCRYPTION_KEY"
     )
     ENABLE_SECURITY: bool = Field(default=True, alias="ENABLE_SECURITY")
-    ENABLE_CSRF_PROTECTION: bool = Field(
-        default=False, alias="ENABLE_CSRF_PROTECTION"
-    )
+    ENABLE_CSRF_PROTECTION: bool = Field(default=False, alias="ENABLE_CSRF_PROTECTION")
 
     @field_validator("SECRET_KEY", "JWT_SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY")
     @classmethod

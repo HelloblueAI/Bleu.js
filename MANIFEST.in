@@ -23,4 +23,3 @@ global-exclude *.py[co]
 global-exclude .DS_Store
 global-exclude *.so
 global-exclude *.dylib
-

@@ -139,10 +139,10 @@ Quick checklist to start growing Bleu.js immediately.
 2. **Post on Twitter/X**
    ```
    🚀 Just open-sourced Bleu.js - Quantum-Enhanced AI Platform!
-   
+
    Looking for contributors. Check out our good first issues:
    https://github.com/HelloblueAI/Bleu.js
-   
+
    #OpenSource #QuantumComputing #AI
    ```
 
@@ -298,6 +298,5 @@ Use this section to track your progress:
 
 ---
 
-**Last Updated:** 2025-01-XX  
+**Last Updated:** 2025-01-XX
 **Next Review:** Weekly
-

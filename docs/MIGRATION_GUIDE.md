@@ -1,6 +1,6 @@
 # 🔄 Bleu.js v1.2.0 Migration Guide
 
-**From:** v1.1.x (any previous version)  
+**From:** v1.1.x (any previous version)
 **To:** v1.2.0 (current version)
 
 ---
@@ -552,4 +552,3 @@ This is the version Bleu.js was always meant to be:
 **Questions?** Open an issue or contact support@helloblue.ai
 
 **Made with ❤️ by the Bleu.js Team**
-

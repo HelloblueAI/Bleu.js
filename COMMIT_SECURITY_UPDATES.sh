@@ -69,4 +69,3 @@ echo ""
 echo "Or push manually:"
 echo "   git push origin security/update-dependencies-2025"
 echo ""
-

@@ -15,6 +15,7 @@ print("=" * 60)
 print("\n📦 Step 1: Importing Bleu.js...")
 try:
     from bleujs import BleuJS, __version__
+
     print(f"✅ Successfully imported Bleu.js v{__version__}")
 except ImportError as e:
     print(f"❌ Error: {e}")
@@ -28,10 +29,7 @@ print(f"✅ Created: {bleu}")
 
 # Step 3: Process simple data
 print("\n🔄 Step 3: Processing data...")
-data = {
-    'data': [1, 2, 3, 4, 5],
-    'name': 'test_data'
-}
+data = {"data": [1, 2, 3, 4, 5], "name": "test_data"}
 
 result = bleu.process(data)
 
@@ -41,7 +39,7 @@ print(f"   Status: {result['status']}")
 print(f"   Device: {result['device']}")
 print(f"   Version: {result['version']}")
 
-if 'shape' in result:
+if "shape" in result:
     print(f"   Shape: {result['shape']}")
 
 # Step 4: Process with numpy array
@@ -59,7 +57,7 @@ print(f"   Dtype: {result2.get('dtype', 'N/A')}")
 print("\n🎯 Step 5: Checking available features...")
 from bleujs import check_dependencies
 
-core_deps = check_dependencies('core')
+core_deps = check_dependencies("core")
 print("   Core dependencies:")
 for dep, status in core_deps.items():
     emoji = "✅" if status == "installed" else "❌"
@@ -83,4 +81,3 @@ print("   3. Install all features: pip install 'bleu-js[all]'")
 print("\n📖 Documentation: https://github.com/HelloblueAI/Bleu.js")
 print("🐛 Issues: https://github.com/HelloblueAI/Bleu.js/issues")
 print("\n✨ Enjoy using Bleu.js! ✨")
-

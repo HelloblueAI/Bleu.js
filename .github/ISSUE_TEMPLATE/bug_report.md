@@ -53,4 +53,3 @@ If you have ideas on how to fix this, please share them here.
 ---
 
 **Thank you for reporting this bug!** 🎉
-

@@ -186,7 +186,7 @@ WHAT'S NEW
 - Secret validation and protection
 - HTTP Host attack prevention
 
-⚡ PERFORMANCE OPTIMIZATIONS  
+⚡ PERFORMANCE OPTIMIZATIONS
 - Enhanced GPU memory manager
 - 30% better memory utilization
 - Automatic memory cleanup
@@ -474,4 +474,3 @@ Try it now: https://github.com/HelloblueAI/Bleu.js
 ---
 
 **Choose the template that fits your audience and customize as needed!**
-

@@ -61,7 +61,8 @@ def run_teleportation_on_ibm(
         )
 
     from qiskit import transpile
-    from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+    from qiskit_ibm_runtime import QiskitRuntimeService
+    from qiskit_ibm_runtime import SamplerV2 as Sampler
 
     from .teleportation import build_teleportation_circuit
 

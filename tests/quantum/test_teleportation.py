@@ -3,7 +3,9 @@
 import pytest
 
 qiskit = pytest.importorskip("qiskit")
-aer = pytest.importorskip("qiskit_aer", reason="qiskit-aer required for teleportation tests")
+aer = pytest.importorskip(
+    "qiskit_aer", reason="qiskit-aer required for teleportation tests"
+)
 
 
 def test_build_teleportation_circuit():

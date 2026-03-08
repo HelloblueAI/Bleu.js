@@ -59,20 +59,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install huggingface-hub
           pip install -r requirements.txt
-      
+
       - name: Train model
         run: python backend/train_xgboost.py
-      
+
       - name: Upload to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -292,4 +292,3 @@ helloblueai/
 - [Hugging Face Best Practices](https://huggingface.co/docs/hub/best-practices)
 - [MLOps Best Practices](https://ml-ops.org/)
 - [Model Governance Framework](https://www.mlflow.org/docs/latest/model-registry.html)
-

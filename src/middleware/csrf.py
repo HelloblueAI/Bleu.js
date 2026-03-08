@@ -7,7 +7,6 @@ from typing import Any, Optional
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-
 CSRF_COOKIE_NAME = "csrf_token"
 CSRF_HEADER_NAME = "X-CSRF-Token"
 SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})

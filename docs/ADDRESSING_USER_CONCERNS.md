@@ -222,6 +222,5 @@ We welcome feedback on these documents:
 
 ---
 
-**Last Updated:** 2025-01-XX  
+**Last Updated:** 2025-01-XX
 **Version:** 1.2.1
-

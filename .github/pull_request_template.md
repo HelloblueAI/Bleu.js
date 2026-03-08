@@ -63,4 +63,3 @@ Closes #<!-- issue number -->
 ---
 
 **Thank you for contributing to Bleu.js!** 🚀
-

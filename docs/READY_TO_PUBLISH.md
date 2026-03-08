@@ -349,7 +349,6 @@ This package is now:
 
 **Questions?** Check `PUBLISH_TO_PYPI.md` for detailed steps
 
-**Ready?** Run the command above! 
+**Ready?** Run the command above!
 
 **Made with ❤️ and lots of coffee** ☕
-

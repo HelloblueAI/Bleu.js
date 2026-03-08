@@ -165,4 +165,3 @@ For questions or issues, please contact:
 ## Acknowledgments
 
 This model is part of the Bleu.js project, which combines classical machine learning with quantum computing capabilities.
-

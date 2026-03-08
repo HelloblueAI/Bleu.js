@@ -74,12 +74,12 @@ Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to con
 
 ## Summary order
 
-1. **ROADMAP + ROADMAP links** (accuracy and trust).  
-2. **Dependabot alert cleanup** (Security tab reflects reality).  
-3. **One security-hardening note** (SECURITY.md or README).  
-4. **Auto-release rules + CHANGELOG curation** (clearer releases).  
-5. **Tests in CI + optional coverage** (quality signal).  
-6. **Backend repo CI + README** (parity).  
+1. **ROADMAP + ROADMAP links** (accuracy and trust).
+2. **Dependabot alert cleanup** (Security tab reflects reality).
+3. **One security-hardening note** (SECURITY.md or README).
+4. **Auto-release rules + CHANGELOG curation** (clearer releases).
+5. **Tests in CI + optional coverage** (quality signal).
+6. **Backend repo CI + README** (parity).
 7. **Good first issues + single “start here” link** (contributor experience).
 
 Use this as a living checklist; tick items as you go and add new ones as the project evolves.

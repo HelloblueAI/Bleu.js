@@ -504,10 +504,8 @@ client = BleuAPIClient(
 
 ---
 
-**Last Updated:** October 29, 2025  
-**Version:** 1.2.1  
+**Last Updated:** October 29, 2025
+**Version:** 1.2.1
 **Status:** ✅ Ready for Users!
 
 ---
-
-

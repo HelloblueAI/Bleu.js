@@ -115,9 +115,9 @@ async with AsyncBleuAPIClient() as client:
         client.chat([{"role": "user", "content": f"Tell me about {topic}"}])
         for topic in ["Python", "JavaScript", "Rust"]
     ]
-    
+
     responses = await asyncio.gather(*tasks)
-    
+
     for response in responses:
         print(response.content)
 ```
@@ -402,7 +402,7 @@ def safe_api_call(client, func, *args, **kwargs):
 class UsageTracker:
     def __init__(self):
         self.total_tokens = 0
-    
+
     def track(self, response):
         if hasattr(response, 'usage') and response.usage:
             self.total_tokens += response.usage.get('total_tokens', 0)
@@ -513,10 +513,10 @@ class Conversation:
     def __init__(self, client):
         self.client = client
         self.messages = []
-    
+
     def add_message(self, role, content):
         self.messages.append({"role": role, "content": content})
-    
+
     def send(self):
         response = self.client.chat(self.messages)
         self.add_message("assistant", response.content)
@@ -552,10 +552,10 @@ def test_chat(mock_request):
             }]
         }
     )
-    
+
     client = BleuAPIClient(api_key="test_key")
     response = client.chat([{"role": "user", "content": "Hello"}])
-    
+
     assert response.content == "Hi"
 ```
 
@@ -565,11 +565,11 @@ def test_chat(mock_request):
 def test_real_api():
     """Test against real API (requires valid API key)"""
     client = BleuAPIClient()
-    
+
     response = client.chat([
         {"role": "user", "content": "Say 'test'"}
     ])
-    
+
     assert "test" in response.content.lower()
 ```
 
@@ -639,4 +639,3 @@ Check your internet connection and firewall settings.
 ---
 
 **Happy coding with Bleu.js! 🚀**
-

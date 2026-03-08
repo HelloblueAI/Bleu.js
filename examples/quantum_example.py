@@ -18,12 +18,14 @@ print("=" * 60)
 # Import BleuJS
 print("\n📦 Importing Bleu.js...")
 from bleujs import BleuJS, __version__
+
 print(f"✅ Bleu.js v{__version__} imported")
 
 # Try to import quantum features
 print("\n🔬 Loading quantum features...")
 try:
-    from bleujs.quantum import QuantumFeatureExtractor, QuantumAttention
+    from bleujs.quantum import QuantumAttention, QuantumFeatureExtractor
+
     quantum_available = True
     print("✅ Quantum features available")
 except ImportError:
@@ -58,28 +60,28 @@ print(f"   Device: {result['device']}")
 # If quantum features are available, demonstrate them directly
 if quantum_available:
     print("\n🔬 Demonstrating QuantumFeatureExtractor...")
-    
+
     extractor = QuantumFeatureExtractor(num_qubits=4, entanglement_type="full")
     print(f"✅ Created quantum extractor with 4 qubits")
-    
+
     # Extract quantum features
     sample_data = np.random.randn(5, 8)
     quantum_features = extractor.extract(sample_data, use_entanglement=True)
-    
+
     print(f"✅ Extracted quantum features")
     print(f"   Input shape: {sample_data.shape}")
     print(f"   Output shape: {quantum_features.shape}")
     print(f"   Feature values (first 5): {quantum_features[:5]}")
-    
+
     # Demonstrate quantum attention
     print("\n🧠 Demonstrating QuantumAttention...")
-    
+
     attention = QuantumAttention(num_heads=8, dim=512)
     print(f"✅ Created quantum attention (8 heads, dim=512)")
-    
+
     text_data = ["Quantum computing", "Artificial intelligence", "Machine learning"]
     attention_output = attention.process(text_data, quantum_enhanced=True)
-    
+
     print(f"✅ Applied quantum attention")
     print(f"   Output shape: {attention_output.shape}")
 
@@ -98,4 +100,3 @@ print("   ✅ Bleu.js works even without quantum libraries")
 print("   ✅ Classical simulation provides quantum-inspired features")
 print("   ✅ Install quantum libs for true quantum computing")
 print("\n📚 Learn more: https://github.com/HelloblueAI/Bleu.js")
-

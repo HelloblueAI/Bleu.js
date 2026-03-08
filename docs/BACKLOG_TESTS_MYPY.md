@@ -31,4 +31,3 @@ Even though Bleu.js 1.2.1 is production-ready, the legacy test suite and strict 
 4. Add CI job that runs the “supported” subset so future patches stay green.
 
 Maintaining this list keeps us honest about the follow-up work while letting users enjoy the benefits of the new release today.
-

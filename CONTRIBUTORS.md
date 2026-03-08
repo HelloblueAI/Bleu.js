@@ -90,10 +90,9 @@ We're always looking for more contributors! If you're interested:
 
 ---
 
-**Last Updated:** 2025-01-XX  
+**Last Updated:** 2025-01-XX
 **Auto-updated:** Contributors are automatically recognized by GitHub
 
 ---
 
 *Note: This file is manually maintained. To be added, make a contribution and submit a PR adding yourself to this file.*
-
