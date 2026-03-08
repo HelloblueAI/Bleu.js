@@ -21,6 +21,8 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Status:** Beta. [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md)
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist.
 
+**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](docs/CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md).
+
 ## SDK – Cloud API
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
@@ -300,6 +302,8 @@ with open(model_path, 'rb') as f:
 - **[Resource Requirements](./docs/RESOURCE_REQUIREMENTS.md)** - System requirements and use case guidance
 - **[Dependency Management](./docs/DEPENDENCY_MANAGEMENT.md)** - Managing dependencies and resolving conflicts
 - **[Dependabot and dependency security](./docs/DEPENDABOT_AND_DEPENDENCIES.md)** - Why we keep scan scope minimal; do not re-add backend
+- **[Backend repo](docs/BACKEND_REPO.md)** - Node/Express backend lives in a separate repo; export script and setup
+- **[Open source standards](docs/OPEN_SOURCE_STANDARDS.md)** - How we run the repo (security, deps, API contract, community)
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 
 ### Version

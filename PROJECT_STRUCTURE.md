@@ -1,6 +1,6 @@
 # Bleu.js Project Structure
 
-Clean, organized directory structure for easy navigation and maintenance.
+Clean, organized directory structure for easy navigation and maintenance. Same pattern as Node.js and API-first companies: **this repo = the product** (SDK, CLI, docs); the Node/Express backend lives in a [separate repo](docs/BACKEND_REPO.md).
 
 ## 📁 Directory Layout
 
