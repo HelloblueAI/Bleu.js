@@ -21,7 +21,7 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Status:** Beta. [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md)
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist.
 
-**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](docs/CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md).
+**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md).
 
 ## SDK – Cloud API
 

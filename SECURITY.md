@@ -23,6 +23,58 @@ We will acknowledge and work on the report and coordinate disclosure.
 
 We keep the repo's dependency surface small so Dependabot and security alerts stay manageable. The `backend/` directory is not in the repo (see [docs/DEPENDABOT_AND_DEPENDENCIES.md](docs/DEPENDABOT_AND_DEPENDENCIES.md)). Do not re-add backend or new app manifests without reading that doc.
 
+## Check security locally
+
+Run dependency and (optional) image checks from the repo root:
+
+```bash
+./scripts/check-security.sh
+```
+
+This runs **pip-audit** (Python), **safety** (Python, if installed), and optionally **Trivy** on the Bleu OS image if Trivy is installed. For Dependabot and code-scanning alerts, use **GitHub → Security → Dependabot / Code scanning**.
+
+**Easiest (no Poetry, works in Fish and Bash):** install [pipx](https://pypa.github.io/pipx/) then:
+
+```bash
+sudo apt install pipx    # or: pip install pipx
+pipx ensurepath         # add to PATH (log out/in or restart terminal if needed)
+pipx install pip-audit safety
+./scripts/check-security.sh
+```
+
+The script will also try `pipx run pip-audit` / `pipx run safety` if the tools are not in PATH but pipx is installed.
+
+**Alternative (venv):** On Debian/Ubuntu/Pop, ensure venv support and use Bash for activation:
+
+```bash
+sudo apt install python3-venv
+python3 -m venv .venv
+source .venv/bin/activate   # Bash/zsh (Fish: source .venv/bin/activate.fish)
+pip install pip-audit safety
+./scripts/check-security.sh
+```
+
+**Safety CLI quickstart (for future reference):** Safety may prompt you to log in. One-time setup:
+
+1. **Install Safety CLI 3**
+   ```bash
+   pip install -U safety
+   ```
+
+2. **Authenticate** (once per machine)
+   ```bash
+   safety auth login
+   ```
+
+3. **Scan** from the repo root — either run Safety directly or the full security script:
+   ```bash
+   safety scan
+   # or run all checks (pip-audit + safety + optional Trivy):
+   ./scripts/check-security.sh
+   ```
+
+For CI / non-interactive use, set `SAFETY_API_KEY` (see [Safety docs](https://docs.safetycli.com/)).
+
 ## Deployment checklist
 
 When deploying Bleu.js:

@@ -46,7 +46,7 @@ print_status $? "Security scan (bandit)"
 
 # 5. Dependency Security
 echo -e "\n${YELLOW}🔒 Checking dependencies...${NC}"
-safety check 2>/dev/null
+safety scan 2>/dev/null
 print_status $? "Dependency security (safety)"
 
 # 6. Python Tests

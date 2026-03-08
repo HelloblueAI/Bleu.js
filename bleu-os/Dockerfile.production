@@ -44,6 +44,7 @@ LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
 # Install runtime dependencies (Debian: no busybox, no CVE-2025-60876)
+# Explicit upgrade of zlib/sqlite/python to get security fixes (Trivy: zlib, sqlite, cpython CVEs)
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -51,10 +52,12 @@ RUN apt-get update && apt-get upgrade -y && \
     python3 \
     python3-pip \
     python3-venv \
-    build-essential \
     python3-dev \
+    build-essential \
     tzdata \
     libstdc++6 \
+    zlib1g \
+    libsqlite3-0 \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g 1000 bleuos \
     && useradd -m -u 1000 -g bleuos -s /bin/bash bleuos

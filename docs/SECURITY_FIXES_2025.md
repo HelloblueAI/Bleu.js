@@ -271,12 +271,50 @@ python -c "from bleujs import BleuJS; print('OK')"
 
 ---
 
+## Safety CLI scan (March 2026)
+
+After running `./scripts/check-security.sh` with Safety authenticated, the following updates were applied where a fix exists:
+
+| Package | Change | Note |
+|---------|--------|------|
+| aiohttp | ^3.12.14 → ^3.13.3 | 8 vulns fixed |
+| python-multipart | ≥0.0.20 → ≥0.0.22 | CVE-2026-24486 path traversal |
+| torch | ^2.7.1 → ^2.8.0 | CVE-2025-3730 (disputed) |
+| starlette | ≥0.48.0 → ≥0.49.1 | CVE-2025-62727 DoS (in requirements.txt) |
+| cryptography | already ≥46.0.5 | CVE-2026-26007 |
+| pillow | already ≥12.1.1 | CVE-2026-25990 |
+
+**No known fix (accepted / transitive):** ecdsa (pulled in by python-jose; no fix yet), ray (4 vulns; required for distributed ML). **Transitive** (keras, protobuf from tensorflow): update when upgrading those stacks.
+
+**Apply fixes (regenerate lockfile):** From repo root run:
+
+**Option A – with Poetry** (recommended so `poetry.lock` stays in sync):
+```bash
+# Prefer pipx so one Poetry is used (avoids apt + ~/.local version clash):
+#   pipx install poetry
+# If you use apt (python3-poetry) and get ImportError from poetry.core, remove user poetry:
+#   pip uninstall poetry-core poetry -y   then use the apt poetry only.
+poetry update aiohttp cryptography filelock starlette werkzeug pyasn1 virtualenv pillow python-multipart torch
+# or update everything: poetry update
+poetry install
+```
+
+**Option B – without Poetry** (upgrades only your current venv; `poetry.lock` unchanged):
+```bash
+source .venv/bin/activate   # or: . .venv/bin/activate   (Fish: source .venv/bin/activate.fish)
+pip install -U "aiohttp>=3.13.3" "cryptography>=46.0.5" "filelock>=3.20.3" "starlette>=0.49.1" "werkzeug>=3.1.6" "pyasn1>=0.6.2" "virtualenv>=20.36.1" "pillow>=12.1.1" "python-multipart>=0.0.22" "torch>=2.8.0"
+```
+
+Then re-run `./scripts/check-security.sh`.
+
+---
+
 ## 🔄 Ongoing Maintenance
 
 ### Weekly
 - Check GitHub Security Advisories
 - Review dependency updates
-- Run `pip-audit` or `safety check`
+- Run **`./scripts/check-security.sh`** (runs pip-audit, optional safety, optional Trivy) or manually: `pip-audit`, `safety scan`
 
 ### Monthly
 - Full dependency audit
