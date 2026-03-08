@@ -27,19 +27,11 @@ class UserService:
     async def create_user(self, user: UserCreate) -> UserResponse:
         """Create a new user.
 
-        Args:
-            user: User creation data
-
-        Returns:
-            Created user response
+        Product registration uses AuthService.create_user (subscription + hashing).
+        This method is for compatibility; prefer AuthService.create_user for signup.
         """
-        # Stub implementation
-        return UserResponse(
-            id="stub-id",
-            email=user.email,
-            is_active=True,
-            created_at=None,
-            updated_at=None,
+        raise NotImplementedError(
+            "Use AuthService.create_user for registration (subscription + password hashing)."
         )
 
     def get_user(self, user_id: str) -> Optional[User]:
@@ -76,45 +68,54 @@ class UserService:
         Returns:
             User response or None
         """
-        # Stub implementation
-        return None
+        if not self.db:
+            return None
+        user = self.db.query(User).filter(User.email == email).first()
+        return _user_to_response(user) if user else None
 
     async def update_user(
         self, user_id: str, user_data: Dict[str, Any]
     ) -> Optional[UserResponse]:
-        """Update user.
-
-        Args:
-            user_id: User ID
-            user_data: User data to update
-
-        Returns:
-            Updated user response or None
-        """
-        # Stub implementation
-        return None
+        """Update user by ID. Only updates allowed attributes (no raw password)."""
+        if not self.db:
+            return None
+        user = self.get_user(user_id)
+        if not user:
+            return None
+        allowed = {
+            "email",
+            "username",
+            "full_name",
+            "is_active",
+            "bio",
+            "location",
+            "website",
+            "twitter_handle",
+            "github_username",
+            "linkedin_url",
+            "profile_picture",
+        }
+        for key, value in user_data.items():
+            if key in allowed and hasattr(user, key):
+                setattr(user, key, value)
+        self.db.commit()
+        self.db.refresh(user)
+        return _user_to_response(user)
 
     async def delete_user(self, user_id: str) -> bool:
-        """Delete user.
-
-        Args:
-            user_id: User ID
-
-        Returns:
-            True if deleted, False otherwise
-        """
-        # Stub implementation
+        """Delete user by ID. Returns True if deleted, False if not found."""
+        if not self.db:
+            return False
+        user = self.get_user(user_id)
+        if not user:
+            return False
+        self.db.delete(user)
+        self.db.commit()
         return True
 
     async def list_users(self, skip: int = 0, limit: int = 100) -> List[UserResponse]:
-        """List users.
-
-        Args:
-            skip: Number of users to skip
-            limit: Maximum number of users to return
-
-        Returns:
-            List of user responses
-        """
-        # Stub implementation
-        return []
+        """List users with pagination."""
+        if not self.db:
+            return []
+        users = self.db.query(User).offset(skip).limit(limit).all()
+        return [_user_to_response(u) for u in users]
