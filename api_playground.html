@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bleu.js – API Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface-alt: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #00d4aa;
+            --accent-dim: #00d4aa33;
+            --success: #3fb950;
+            --error: #f85149;
+            --info: #58a6ff;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 0 6px 0;
+            background: linear-gradient(135deg, var(--accent), #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+        .api-key-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .api-key-row label { font-size: 0.9rem; color: var(--text-muted); min-width: 80px; }
+        .api-key-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        .api-key-row input::placeholder { color: var(--text-muted); }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .tabs button {
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 10px 18px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-bottom: -1px;
+            border-radius: 8px 8px 0 0;
+        }
+        .tabs button:hover { color: var(--text); }
+        .tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .field textarea, .field input[type="text"], .field input[type="number"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+        .field textarea { min-height: 100px; resize: vertical; }
+        .field-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .field-row .field { flex: 1; min-width: 120px; }
+        .btn {
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        .btn-primary:hover { box-shadow: 0 4px 14px var(--accent-dim); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .response-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: var(--radius);
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            min-height: 60px;
+        }
+        .response-box.loading { color: var(--text-muted); }
+        .response-box.error { border-color: var(--error); color: var(--error); }
+        .response-box.success { border-color: var(--success); }
+        .footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Bleu.js API Playground</h1>
+            <p>Try the cloud API: chat, generate, embed. Get your key at <a href="https://bleujs.org" target="_blank" rel="noopener" style="color: var(--accent);">bleujs.org</a>.</p>
+        </header>
+
+        <div class="api-key-row">
+            <label for="apiKey">API Key</label>
+            <input type="password" id="apiKey" placeholder="bleujs_sk_..." autocomplete="off" />
+        </div>
+
+        <div class="tabs" role="tablist">
+            <button type="button" role="tab" aria-selected="true" data-tab="chat" class="active">Chat</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="generate">Generate</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="embed">Embed</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="models">Models</button>
+        </div>
+
+        <div id="panel-chat" class="panel active" role="tabpanel">
+            <div class="field">
+                <label for="chatUser">User message</label>
+                <textarea id="chatUser" placeholder="e.g. What is quantum computing?"></textarea>
+            </div>
+            <div class="field">
+                <label for="chatSystem">System message (optional)</label>
+                <input type="text" id="chatSystem" placeholder="e.g. You are a helpful assistant." />
+            </div>
+            <button type="button" class="btn btn-primary" id="btnChat">Send</button>
+            <div id="responseChat" class="response-box" aria-live="polite"></div>
+        </div>
+
+        <div id="panel-generate" class="panel" role="tabpanel">
+            <div class="field">
+                <label for="genPrompt">Prompt</label>
+                <textarea id="genPrompt" placeholder="e.g. Write a haiku about AI."></textarea>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="genTemp">Temperature (0–2)</label>
+                    <input type="number" id="genTemp" value="0.7" min="0" max="2" step="0.1" />
+                </div>
+                <div class="field">
+                    <label for="genMaxTokens">Max tokens</label>
+                    <input type="number" id="genMaxTokens" value="256" min="1" max="4096" />
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnGenerate">Generate</button>
+            <div id="responseGenerate" class="response-box" aria-live="polite"></div>
+        </div>
+
+        <div id="panel-embed" class="panel" role="tabpanel">
+            <div class="field">
+                <label for="embedTexts">Texts (one per line, max 100)</label>
+                <textarea id="embedTexts" placeholder="First text to embed&#10;Second text to embed"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnEmbed">Embed</button>
+            <div id="responseEmbed" class="response-box" aria-live="polite"></div>
+        </div>
+
+        <div id="panel-models" class="panel" role="tabpanel">
+            <button type="button" class="btn btn-primary" id="btnModels">List models</button>
+            <div id="responseModels" class="response-box" aria-live="polite"></div>
+        </div>
+
+        <footer class="footer">
+            <a href="https://bleujs.org" target="_blank" rel="noopener">bleujs.org</a> ·
+            <a href="https://github.com/HelloblueAI/Bleu.js" target="_blank" rel="noopener">GitHub</a> ·
+            <a href="./docs/API_CLIENT_GUIDE.md">API docs</a>
+        </footer>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://bleujs.org';
+
+        function getApiKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (!key) {
+                return null;
+            }
+            return key;
+        }
+
+        function getHeaders() {
+            const key = getApiKey();
+            if (!key) {
+                return null;
+            }
+            return {
+                'Authorization': 'Bearer ' + key,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function setResponse(elId, content, isError) {
+            const el = document.getElementById(elId);
+            el.textContent = content;
+            el.classList.remove('loading', 'error', 'success');
+            if (isError) el.classList.add('error');
+            else el.classList.add('success');
+        }
+
+        function setLoading(elId, on) {
+            const el = document.getElementById(elId);
+            el.classList.toggle('loading', on);
+            if (on) {
+                el.textContent = 'Loading…';
+                el.classList.remove('error', 'success');
+            }
+        }
+
+        async function request(method, endpoint, body) {
+            const headers = getHeaders();
+            if (!headers) {
+                return { error: 'Please enter your API key.' };
+            }
+            const opts = { method, headers };
+            if (body && (method === 'POST' || method === 'PUT')) {
+                opts.body = JSON.stringify(body);
+            }
+            try {
+                const res = await fetch(BASE_URL + endpoint, opts);
+                const text = await res.text();
+                let data;
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch (_) {
+                    return { error: text || 'Empty response' };
+                }
+                if (!res.ok) {
+                    return {
+                        error: data.detail || data.message || res.status + ' ' + res.statusText,
+                        status: res.status
+                    };
+                }
+                return data;
+            } catch (e) {
+                return { error: e.message || 'Network error. If you see CORS errors, open this page from bleujs.org or a host that is allowed by the API.' };
+            }
+        }
+
+        document.getElementById('btnChat').addEventListener('click', async function () {
+            const userMsg = document.getElementById('chatUser').value.trim();
+            if (!userMsg) {
+                setResponse('responseChat', 'Enter a user message.', true);
+                return;
+            }
+            const systemMsg = document.getElementById('chatSystem').value.trim();
+            const messages = [];
+            if (systemMsg) messages.push({ role: 'system', content: systemMsg });
+            messages.push({ role: 'user', content: userMsg });
+
+            setLoading('responseChat', true);
+            const out = await request('POST', '/api/v1/chat', {
+                messages: messages,
+                model: 'bleu-chat-v1',
+                temperature: 0.7
+            });
+            setLoading('responseChat', false);
+            if (out.error) {
+                setResponse('responseChat', 'Error: ' + out.error, true);
+                return;
+            }
+            const content = out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content;
+            setResponse('responseChat', content != null ? content : JSON.stringify(out, null, 2), false);
+        });
+
+        document.getElementById('btnGenerate').addEventListener('click', async function () {
+            const prompt = document.getElementById('genPrompt').value.trim();
+            if (!prompt) {
+                setResponse('responseGenerate', 'Enter a prompt.', true);
+                return;
+            }
+            const temp = parseFloat(document.getElementById('genTemp').value) || 0.7;
+            const maxTokens = parseInt(document.getElementById('genMaxTokens').value, 10) || 256;
+
+            setLoading('responseGenerate', true);
+            const out = await request('POST', '/api/v1/generate', {
+                prompt: prompt,
+                model: 'bleu-gen-v1',
+                temperature: temp,
+                max_tokens: maxTokens
+            });
+            setLoading('responseGenerate', false);
+            if (out.error) {
+                setResponse('responseGenerate', 'Error: ' + out.error, true);
+                return;
+            }
+            setResponse('responseGenerate', out.text != null ? out.text : JSON.stringify(out, null, 2), false);
+        });
+
+        document.getElementById('btnEmbed').addEventListener('click', async function () {
+            const raw = document.getElementById('embedTexts').value.trim();
+            const texts = raw.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+            if (!texts.length) {
+                setResponse('responseEmbed', 'Enter at least one text (one per line).', true);
+                return;
+            }
+            if (texts.length > 100) {
+                setResponse('responseEmbed', 'Maximum 100 texts per request.', true);
+                return;
+            }
+
+            setLoading('responseEmbed', true);
+            const out = await request('POST', '/api/v1/embed', {
+                input: texts,
+                model: 'bleu-embed-v1'
+            });
+            setLoading('responseEmbed', false);
+            if (out.error) {
+                setResponse('responseEmbed', 'Error: ' + out.error, true);
+                return;
+            }
+            const data = out.data || [];
+            let msg = data.length + ' embedding(s).';
+            if (data[0] && Array.isArray(data[0].embedding)) {
+                msg += ' Dimension: ' + data[0].embedding.length;
+            }
+            msg += '\n\n' + JSON.stringify(out, null, 2).slice(0, 1200);
+            if (JSON.stringify(out).length > 1200) msg += '…';
+            setResponse('responseEmbed', msg, false);
+        });
+
+        document.getElementById('btnModels').addEventListener('click', async function () {
+            setLoading('responseModels', true);
+            const out = await request('GET', '/api/v1/models');
+            setLoading('responseModels', false);
+            if (out.error) {
+                setResponse('responseModels', 'Error: ' + out.error, true);
+                return;
+            }
+            const list = out.data || [];
+            const lines = list.map(function (m) {
+                return (m.id || m) + (m.description ? ' – ' + m.description : '');
+            });
+            setResponse('responseModels', lines.length ? lines.join('\n') : JSON.stringify(out, null, 2), false);
+        });
+
+        document.querySelectorAll('.tabs button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const tab = btn.getAttribute('data-tab');
+                document.querySelectorAll('.tabs button').forEach(function (b) {
+                    b.classList.toggle('active', b.getAttribute('data-tab') === tab);
+                    b.setAttribute('aria-selected', b.getAttribute('data-tab') === tab);
+                });
+                document.querySelectorAll('.panel').forEach(function (p) {
+                    p.classList.toggle('active', p.id === 'panel-' + tab);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

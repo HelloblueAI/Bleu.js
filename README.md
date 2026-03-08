@@ -8,6 +8,9 @@ Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https
   <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
     <img src="https://img.shields.io/badge/Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
   </a>
+  <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/api_playground.html" target="_blank">
+    <img src="https://img.shields.io/badge/API%20Playground-green?style=for-the-badge&logo=github" alt="API Playground" />
+  </a>
 </div>
 
 
