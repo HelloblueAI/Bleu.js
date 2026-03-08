@@ -36,7 +36,6 @@ class TestEnhancedXGBoost:
         assert hasattr(model, "fit")
         assert hasattr(model, "predict")
 
-    @pytest.mark.skip(reason="XGBoost TrainingCallback API issue")
     def test_fit_model(self):
         """Test model fitting."""
         model = EnhancedXGBoost()
@@ -44,7 +43,6 @@ class TestEnhancedXGBoost:
         model.fit(X, y)
         assert hasattr(model, "model")
 
-    @pytest.mark.skip(reason="XGBoost TrainingCallback API issue")
     def test_predict(self):
         """Test model prediction."""
         model = EnhancedXGBoost()
@@ -53,7 +51,6 @@ class TestEnhancedXGBoost:
         predictions = model.predict(X)
         assert len(predictions) == len(y)
 
-    @pytest.mark.skip(reason="XGBoost TrainingCallback API issue")
     def test_predict_proba(self):
         """Test probability prediction."""
         model = EnhancedXGBoost()
@@ -62,7 +59,6 @@ class TestEnhancedXGBoost:
         probabilities = model.predict_proba(X)
         assert probabilities.shape[1] == 2  # Binary classification
 
-    @pytest.mark.skip(reason="XGBoost TrainingCallback API issue")
     def test_feature_importance(self):
         """Test feature importance calculation."""
         model = EnhancedXGBoost()
@@ -71,7 +67,6 @@ class TestEnhancedXGBoost:
         importance = model.get_feature_importance()
         assert isinstance(importance, dict)
 
-    @pytest.mark.skip(reason="XGBoost TrainingCallback API issue")
     def test_quantum_optimization(self):
         """Test quantum optimization."""
         quantum_config = QuantumFeatureConfig(n_qubits=4)
@@ -79,6 +74,23 @@ class TestEnhancedXGBoost:
         X, y = make_classification(n_samples=100, n_features=10, random_state=42)
         model.fit(X, y)
         assert model is not None
+
+    def test_save_load_roundtrip(self, tmp_path):
+        """Test save_model and load_model round-trip (plain, no encryption)."""
+        # Use random_state so quantum feature step is deterministic and predictions match
+        quantum_config = QuantumFeatureConfig(n_qubits=4, random_state=42)
+        model = EnhancedXGBoost(quantum_config=quantum_config)
+        X, y = make_classification(n_samples=100, n_features=10, random_state=42)
+        model.fit(X, y)
+        path = str(tmp_path / "model.xgb")
+        model.save_model(path)
+        assert (tmp_path / "model.xgb").exists()
+        assert (tmp_path / "model.xgb.meta").exists()
+        loaded = EnhancedXGBoost(quantum_config=quantum_config)
+        loaded.load_model(path)
+        np.testing.assert_array_almost_equal(model.predict(X), loaded.predict(X))
+        assert loaded.feature_importance is not None
+        assert len(loaded.training_history) == len(model.training_history)
 
 
 class TestModelFactory:

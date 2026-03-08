@@ -27,6 +27,7 @@ We will acknowledge and work on the report and coordinate disclosure.
 | **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **~1.5k legacy alerts from old backend:** run `./scripts/dismiss-backend-dependabot-alerts.sh` (see [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss)). |
 | **Docker / Bleu OS** | Base image and system packages | Production image: [bleu-os/Dockerfile.production](bleu-os/Dockerfile.production) (Debian). Status: [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md), [.github/DOCKER_SCOUT_VULNERABILITIES.md](.github/DOCKER_SCOUT_VULNERABILITIES.md). Kernel CVEs = host; patch the host or dismiss. |
 | **Trivy / Docker Scout** | Container image vulns | CI runs Trivy on images. Unfixable base vulns (c-ares, sqlite, xz, etc.) are documented; rebuild when Alpine/Debian release patches. |
+| **Known transitive (lockfile)** | protobuf 5.x (CVE-2026-0994), ray 2.x (multiple CVEs, no fix yet) | Run `./scripts/check-security.sh`. Protobuf: upgrade when TensorFlow/grpcio support protobuf 6+. Ray: optional extra; track upstream for fixes. |
 
 **One-page fix checklist:**
 
@@ -100,7 +101,7 @@ When deploying Bleu.js:
 1. Set all secrets via environment variables or a secrets manager (e.g. AWS Secrets Manager). Do not rely on default values for `JWT_SECRET_KEY`, `SECRET_KEY`, DB passwords, or API keys. **No dev defaults in production.**
 2. Use HTTPS and restrict CORS/CSRF as needed.
 3. Keep dependencies updated (e.g. Dependabot, `pip install -U`, security scans).
-4. **Before release:** Run `./scripts/check-security.sh` (pip-audit, safety, optional Trivy).
+4. **Before release:** Run `./scripts/check-security.sh` (pip-audit, safety, optional Trivy). Full steps: [Release checklist](docs/RELEASE_CHECKLIST.md).
 
 ## Recent security hardening
 

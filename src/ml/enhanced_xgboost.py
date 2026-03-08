@@ -72,6 +72,7 @@ class QuantumFeatureConfig:
     backend: str = "qiskit"
     optimization_level: int = 3
     version: str = "1.1.4"
+    random_state: Optional[int] = None  # set for reproducible quantum transformation
 
     def __post_init__(self):
         """Validate configuration after initialization."""
@@ -231,19 +232,21 @@ class QuantumFeatureProcessor(BaseProcessor):
             raise QuantumOperationError(f"Feature resizing failed: {str(e)}")
 
     def _apply_quantum_transformation(self, features: np.ndarray) -> np.ndarray:
-        """Apply quantum transformation to features."""
+        """Apply quantum transformation to features. Deterministic when config.random_state is set."""
         try:
-            # Simulate quantum measurement
+            seed = getattr(self.config, "random_state", None)
+            rng = np.random.default_rng(seed) if seed is not None else None
+            # Simulate quantum measurement (deterministic if random_state set)
             enhanced_features = np.zeros_like(features)
-
             for i in range(features.shape[0]):
                 for j in range(features.shape[1]):
-                    # Apply quantum noise and enhancement
-                    quantum_factor = np.random.normal(1.0, 0.1)
+                    quantum_factor = (
+                        float(rng.normal(1.0, 0.1))
+                        if rng is not None
+                        else float(np.random.normal(1.0, 0.1))
+                    )
                     enhanced_features[i, j] = features[i, j] * quantum_factor
-
             return enhanced_features
-
         except Exception as e:
             logger.error(f"Quantum transformation failed: {str(e)}")
             raise QuantumOperationError(f"Quantum transformation failed: {str(e)}")
@@ -340,9 +343,11 @@ class PerformanceOptimizer:
         self.optimization_history: list[dict[str, Any]] = []
 
     def optimize_batch_size(
-        self, model: xgb.XGBClassifier, features: np.ndarray
+        self,
+        model: xgb.XGBClassifier | None,
+        features: np.ndarray,
     ) -> int:
-        """Dynamically optimize batch size based on system resources"""
+        """Dynamically optimize batch size based on system resources (model optional)."""
         available_memory = psutil.virtual_memory().available
         gpu_memory = self._get_gpu_memory() if self.config.use_gpu else 0
 
@@ -418,6 +423,23 @@ class ResourceMonitor:
         return metrics
 
 
+class _TrainingHistoryCallback(xgb.callback.TrainingCallback):
+    """XGBoost 2.x callback to record training history (after_iteration API)."""
+
+    def __init__(self, enhanced_xgb: "EnhancedXGBoost"):
+        self.enhanced_xgb = enhanced_xgb
+
+    def after_iteration(
+        self,
+        model: xgb.XGBClassifier,
+        epoch: int,
+        evals_log: dict,
+    ) -> bool:
+        """Record metrics after each boosting iteration. Return False to continue."""
+        self.enhanced_xgb._on_training_iteration(model, epoch, evals_log)
+        return False  # do not stop training
+
+
 class EnhancedXGBoost:
     """Revolutionary Enhanced XGBoost Implementation"""
 
@@ -426,6 +448,7 @@ class EnhancedXGBoost:
         quantum_config: QuantumFeatureConfig | None = None,
         security_config: SecurityConfig | None = None,
         performance_config: PerformanceConfig | None = None,
+        enable_ray: bool | None = None,
     ):
         self.quantum_config = quantum_config or QuantumFeatureConfig()
         self.security_config = security_config or SecurityConfig()
@@ -441,12 +464,20 @@ class EnhancedXGBoost:
         self.training_history: list[dict[str, Any]] = []
         self.validation_history: list[dict[str, Any]] = []
 
-        # Initialize Ray for distributed training when available
-        if ray is not None:
-            if not ray.is_initialized():
+        # Ray: optional; default True unless BLEUJS_DISABLE_RAY=1
+        if enable_ray is None:
+            enable_ray = os.environ.get("BLEUJS_DISABLE_RAY", "").lower() not in (
+                "1",
+                "true",
+                "yes",
+            )
+        if enable_ray and ray is not None and not ray.is_initialized():
+            try:
                 ray.init(ignore_reinit_error=True)
-        else:  # pragma: no cover - optional path
-            logger.info("Ray not available; distributed training disabled")
+            except Exception as e:  # pragma: no cover
+                logger.warning(f"Ray init skipped: {e}")
+        elif not enable_ray:
+            logger.debug("Ray disabled (enable_ray=False or BLEUJS_DISABLE_RAY)")
 
     def fit(
         self,
@@ -460,39 +491,54 @@ class EnhancedXGBoost:
             # Process features with quantum enhancement
             features_processed = self.quantum_processor.process_features(features)
 
-            # Optimize batch size and workers
-            self.performance_optimizer.optimize_batch_size(
-                self.model, features_processed
-            )
+            # Optimize batch size and workers (model not yet created)
+            self.performance_optimizer.optimize_batch_size(None, features_processed)
             self.performance_optimizer.optimize_num_workers()
 
             # Initialize XGBoost model with optimized parameters
-            self.model = xgb.XGBClassifier(
-                n_estimators=kwargs.get("n_estimators", 100),
-                learning_rate=kwargs.get("learning_rate", 0.1),
-                max_depth=kwargs.get("max_depth", 6),
-                min_child_weight=kwargs.get("min_child_weight", 1),
-                subsample=kwargs.get("subsample", 0.8),
-                colsample_bytree=kwargs.get("colsample_bytree", 0.8),
-                objective=kwargs.get("objective", "binary:logistic"),
-                tree_method=("hist" if self.performance_config.use_gpu else "auto"),
-                gpu_id=0 if self.performance_config.use_gpu else None,
-                **kwargs,
-            )
+            fit_kwargs = {
+                k: v
+                for k, v in kwargs.items()
+                if k
+                not in {
+                    "n_estimators",
+                    "learning_rate",
+                    "max_depth",
+                    "min_child_weight",
+                    "subsample",
+                    "colsample_bytree",
+                    "objective",
+                    "eval_metric",
+                }
+            }
+            # Training callback for logging (XGBoost 2.x: subclass TrainingCallback)
+            callback = _TrainingHistoryCallback(self)
+            # Early stopping requires eval_set; omit when no validation data provided
+            use_early_stopping = eval_set is not None and len(eval_set) > 0
+            model_kw: dict[str, Any] = {
+                "n_estimators": kwargs.get("n_estimators", 100),
+                "learning_rate": kwargs.get("learning_rate", 0.1),
+                "max_depth": kwargs.get("max_depth", 6),
+                "min_child_weight": kwargs.get("min_child_weight", 1),
+                "subsample": kwargs.get("subsample", 0.8),
+                "colsample_bytree": kwargs.get("colsample_bytree", 0.8),
+                "objective": kwargs.get("objective", "binary:logistic"),
+                "tree_method": "hist" if self.performance_config.use_gpu else "auto",
+                "gpu_id": 0 if self.performance_config.use_gpu else None,
+                "eval_metric": kwargs.get("eval_metric", ["logloss", "auc"]),
+                "callbacks": [callback],
+                **fit_kwargs,
+            }
+            if use_early_stopping:
+                model_kw["early_stopping_rounds"] = 10
+            self.model = xgb.XGBClassifier(**model_kw)
 
-            # Train model with distributed processing
+            # Train model (sklearn API: only X, y, eval_set, verbose in fit())
             self.model.fit(
                 features_processed,
                 y,
                 eval_set=eval_set,
-                eval_metric=["logloss", "auc"],
-                early_stopping_rounds=10,
                 verbose=True,
-                callbacks=[
-                    xgb.callback.TrainingCallback(
-                        lambda env, model=self: model._on_training_iteration(env)
-                    )
-                ],
             )
 
             # Calculate feature importance
@@ -555,21 +601,37 @@ class EnhancedXGBoost:
             raise
 
     def save_model(self, path: str):
-        """Save the model to disk."""
+        """Save the model to disk. Writes path (model bytes) and path.meta (JSON)."""
         try:
             if self.model is None:
                 raise ValueError("No model to save. Call fit() first.")
 
-            # Save raw model data
-            model_data = self.model.save_raw()
-
+            # Save raw model data (from internal booster; sklearn API uses get_booster())
+            raw_model_data = bytes(self.model.get_booster().save_raw())
+            model_data = raw_model_data
             # Encrypt if configured
             if self.security_config and self.security_config.encryption_key:
-                model_data = self.security_manager.encrypt_model(model_data)
+                model_data = self.security_manager.encrypt_model(raw_model_data)
 
-            # Save to disk
             with open(path, "wb") as f:
                 f.write(model_data)
+
+            # Always write .meta so load_model can round-trip; sign raw bytes for verify
+            metadata = {
+                "feature_importance": (
+                    self.feature_importance.tolist()
+                    if self.feature_importance is not None
+                    else []
+                ),
+                "training_history": self.training_history,
+                "validation_history": self.validation_history,
+            }
+            if self.security_config and self.security_config.tamper_detection:
+                metadata["signature"] = self.security_manager.generate_signature(
+                    raw_model_data
+                )
+            with open(f"{path}.meta", "w") as f:
+                json.dump(metadata, f, default=str)
 
             logger.info(f"Model saved to {path}")
         except Exception as e:
@@ -577,55 +639,67 @@ class EnhancedXGBoost:
             raise
 
     def load_model(self, path: str):
-        """Load model with security verification"""
+        """Load model from disk. Supports encrypted or plain bytes; .meta optional."""
         try:
-            # Load encrypted model data
             with open(path, "rb") as f:
-                encrypted_data = f.read()
+                data = f.read()
 
-            # Load metadata
-            with open(f"{path}.meta") as f:
-                metadata = json.load(f)
+            # Decrypt only when encryption key is configured
+            if self.security_config and self.security_config.encryption_key:
+                model_data = self.security_manager.decrypt_model(data)
+            else:
+                model_data = data
 
-            # Decrypt model data
-            model_data = self.security_manager.decrypt_model(encrypted_data)
+            metadata = {}
+            meta_path = f"{path}.meta"
+            if os.path.isfile(meta_path):
+                with open(meta_path) as f:
+                    metadata = json.load(f)
+                if metadata.get("signature") and self.security_config.tamper_detection:
+                    if not self.security_manager.verify_signature(
+                        model_data, metadata["signature"]
+                    ):
+                        raise ValueError("Model signature verification failed")
+            else:
+                metadata = {
+                    "feature_importance": [],
+                    "training_history": [],
+                    "validation_history": [],
+                }
 
-            # Verify signature
-            if not self.security_manager.verify_signature(
-                model_data, metadata["signature"]
-            ):
-                raise ValueError("Model signature verification failed")
-
-            # Load model
             self.model = xgb.XGBClassifier()
-            self.model.load_raw(model_data)
-
-            # Restore metadata
-            self.feature_importance = np.array(metadata["feature_importance"])
-            self.training_history = metadata["training_history"]
-            self.validation_history = metadata["validation_history"]
+            # load_model expects bytearray from save_raw(), not raw bytes path
+            self.model.load_model(bytearray(model_data))
+            self.feature_importance = (
+                np.array(metadata["feature_importance"])
+                if metadata.get("feature_importance")
+                else None
+            )
+            self.training_history = metadata.get("training_history", [])
+            self.validation_history = metadata.get("validation_history", [])
 
             logger.info(f"Model loaded successfully from {path}")
-
         except Exception as e:
             logger.error(f"Error loading model: {str(e)}")
             raise
 
-    def _on_training_iteration(self, env):
-        """Callback for training iteration"""
-        iteration = env.iteration
-        evaluation_result_list = env.evaluation_result_list
-
-        # Record metrics
+    def _on_training_iteration(
+        self,
+        model: xgb.XGBClassifier,
+        epoch: int,
+        evals_log: dict,
+    ) -> None:
+        """Record metrics after each boosting iteration (XGBoost 2.x callback API)."""
         metrics = {
-            "iteration": iteration,
+            "iteration": epoch,
             "timestamp": datetime.now().isoformat(),
             "system_metrics": self.resource_monitor.get_system_metrics(),
         }
-
-        for item in evaluation_result_list:
-            metrics[item[0]] = item[1]
-
+        # evals_log: {"validation_0": {"logloss": [0.5, 0.4], "auc": [0.8, 0.85]}, ...}
+        for data_name, series in evals_log.items():
+            for metric_name, values in series.items():
+                if values:
+                    metrics[f"{data_name}_{metric_name}"] = values[-1]
         self.training_history.append(metrics)
 
     def _validate_model(self, _y, _model):
@@ -657,12 +731,14 @@ class EnhancedXGBoost:
         def objective(trial):
             param = {
                 "max_depth": trial.suggest_int("max_depth", 3, 9),
-                "learning_rate": trial.suggest_loguniform("learning_rate", 0.01, 1.0),
+                "learning_rate": trial.suggest_float(
+                    "learning_rate", 0.01, 1.0, log=True
+                ),
                 "n_estimators": trial.suggest_int("n_estimators", 50, 300),
                 "min_child_weight": trial.suggest_int("min_child_weight", 1, 7),
-                "subsample": trial.suggest_uniform("subsample", 0.6, 0.9),
-                "colsample_bytree": trial.suggest_uniform("colsample_bytree", 0.6, 0.9),
-                "gamma": trial.suggest_loguniform("gamma", 1e-8, 1.0),
+                "subsample": trial.suggest_float("subsample", 0.6, 0.9),
+                "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 0.9),
+                "gamma": trial.suggest_float("gamma", 1e-8, 1.0, log=True),
             }
 
             # Use quantum-enhanced feature processing

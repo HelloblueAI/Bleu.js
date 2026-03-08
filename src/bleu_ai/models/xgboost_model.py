@@ -93,9 +93,12 @@ class XGBoostModel:
             raise
 
     def _initialize_base_components(self):
-        """Initialize base model components."""
+        """Initialize base model components (XGBoost 2.x: eval_metric on constructor)."""
         if self.model is None:
-            self.model = xgb.XGBClassifier(**self.config)
+            config = dict(self.config)
+            if "eval_metric" not in config:
+                config.setdefault("eval_metric", ["logloss", "auc"])
+            self.model = xgb.XGBClassifier(**config)
         if self.scaler is None:
             self.scaler = StandardScaler()
 
@@ -200,7 +203,7 @@ class XGBoostModel:
             if self.use_quantum and self.quantum_processor is not None:
                 features_scaled = self.quantum_processor.enhance_input(features_scaled)
 
-            # Train model
+            # Train model (sklearn API: no eval_metric in fit())
             self.model.fit(
                 features_scaled,
                 targets,
