@@ -2,6 +2,17 @@
 
 Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https://bleujs.org)
 
+![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
+
+<div align="left">
+  <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
+    <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
+  </a>
+</div>
+
+
+Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
+
 ## SDK – Cloud API
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
@@ -280,17 +291,7 @@ with open(model_path, 'rb') as f:
 - **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards
 
-![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
-<div align="left">
-  <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
-    <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
-  </a>
-</div>
-
-
-
-Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
 
 ## Quantum-Enhanced Vision System Achievements
 
