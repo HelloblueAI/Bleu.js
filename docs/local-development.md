@@ -45,7 +45,7 @@ mypy src/ --exclude=src/quantum_py/bleujs-env-3.12/
 bandit -r src/ --exclude=src/quantum_py/bleujs-env-3.12/
 
 # Dependency vulnerabilities
-safety check
+safety scan
 
 # SAST scan (if semgrep installed)
 semgrep ci --config auto

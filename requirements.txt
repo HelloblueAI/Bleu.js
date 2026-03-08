@@ -1,4 +1,4 @@
-aiohttp>=3.12.14
+aiohttp>=3.13.3
 alembic>=1.13.1
 bandit>=1.8.6
 black>=23.0.0
@@ -34,7 +34,7 @@ pytest-asyncio>=1.1.0
 pytest-cov>=6.2.1
 python-dateutil>=2.9.0.post0
 python-dotenv>=1.1.1
-python-multipart>=0.0.6
+python-multipart>=0.0.22
 
 # Quantum computing
 qiskit>=2.1.1
@@ -46,8 +46,8 @@ rich>=14.1.0
 safety>=3.6.0
 scikit-learn>=1.7.1
 sqlalchemy>=2.0.42
-# Updated to fix DoS vulnerability (Issues #302, #303)
-starlette>=0.48.0
+# Updated to fix DoS vulnerability CVE-2025-62727 (Issues #302, #303)
+starlette>=0.49.1
 tensorflow>=2.19.0
 torch>=2.8.0
 # Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)

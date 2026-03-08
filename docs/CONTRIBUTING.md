@@ -28,7 +28,7 @@ Thank you for your interest in contributing to Bleu.js! We're excited to have yo
 
 ## 📜 Code of Conduct
 
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). We are committed to providing a welcoming and inclusive environment for all contributors.
+By participating in this project, you agree to abide by our [Code of Conduct](../CODE_OF_CONDUCT.md). We are committed to providing a welcoming and inclusive environment for all contributors.
 
 **Key Principles:**
 - Be respectful and inclusive

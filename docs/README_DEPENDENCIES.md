@@ -221,7 +221,7 @@ pip check
 bandit -r src/
 
 # Known vulnerability scanning
-safety check
+safety scan
 ```
 
 ### 3. Dependency Auditing
