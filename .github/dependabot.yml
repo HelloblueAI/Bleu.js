@@ -1,7 +1,10 @@
 # Dependabot: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+# Keep scan scope minimal to avoid hundreds of duplicate alerts.
+# Only root pip, collaboration-tools npm, root + bleu-os Docker, and GitHub Actions.
+# backend/ is not in the repo (see docs/DEPENDABOT_AND_DEPENDENCIES.md).
 version: 2
 updates:
-  # npm (collaboration-tools only; no root package.json)
+  # npm: collaboration-tools only. Do not add other package.json dirs (e.g. backend).
   - package-ecosystem: "npm"
     directory: "/collaboration-tools"
     schedule:
