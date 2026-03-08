@@ -1,96 +1,85 @@
-# 🎯 What's Next – Bleu.js v1.2.1
+# What's next: push the repo better than ever
 
-Bleu.js 1.2.1 is now live, certified on Python 3.12, and shipping the cloud API client in every distribution. Use this page as your checklist for the final go-live tasks and post-release follow-up.
-
----
-
-## ✅ Completed
-- Version bump: **1.2.0 → 1.2.1** across `pyproject`, `setup.py`, and package modules
-- Rebuilt distributions (`sdist`, `wheel`) and passed `twine check`
-- Published to PyPI with API token (verified via `pip install --no-cache-dir bleu-js==1.2.1`)
-- Documentation & changelog refreshed, including CEO communications and quick starts
-- Announcement templates updated for 1.2.1 (Slack, email, blog, social posts)
-- Backlog for legacy tests & mypy debt captured in `docs/BACKLOG_TESTS_MYPY.md`
-
-Current status:
-- **Repo:** https://github.com/HelloblueAI/Bleu.js  
-- **Latest Version:** 1.2.1  
-- **Security Score:** 9.5/10 🔒  
-- **Package Health:** Production Ready ✅  
+Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to contribute to—building on the recent security fixes, backend split, and OSS standards.
 
 ---
 
-## 📣 Announce the Release
+## 1. Quick wins (this week)
 
-### GitHub Release (Manual)
-1. Visit https://github.com/HelloblueAI/Bleu.js/releases/new  
-2. Tag: `v1.2.1`  
-3. Title: `Bleu.js v1.2.1 – Python 3.12 Compatibility & API Client Packaging`  
-4. Description: Paste from `docs/RELEASE_ANNOUNCEMENT_v1.2.1.md`  
-5. Publish 🎉  
-(Update `scripts/create_release.sh` later to reference 1.2.1 automatically.)
-
-### Social & Email Templates
-- **Twitter/X, LinkedIn, Email, Slack snippets:** `docs/ANNOUNCEMENT_TEMPLATES.md`
-- **CEO email & short summary:** `EMAIL_TO_CEO.txt`, `EMAIL_TO_CEO_SHORT.txt`
-
-Suggested tweet:
-```
-🚀 Bleu.js v1.2.1 is live!
-✅ Python 3.12 ready
-✅ Pydantic v2 migration complete
-✅ API client ships automatically
-✅ Optional GPU/Ray deps truly optional
-
-pip install --upgrade bleu-js==1.2.1
-```
+| Action | Why |
+|--------|-----|
+| **Refresh [ROADMAP.md](ROADMAP.md)** | Still says v1.1.8, Q1 2024, and "yourusername". Update to current version (e.g. 1.3.x), real status (quantum, CLI, API playground, backend split), and correct GitHub/Discord links. |
+| **Bulk-dismiss obsolete Dependabot alerts** | Per [DEPENDABOT_AND_DEPENDENCIES.md](DEPENDABOT_AND_DEPENDENCIES.md), dismiss alerts for `backend/` and removed manifests so the Security tab reflects only root pip, collaboration-tools npm, Docker, Actions. |
+| **Add a short “Recent security hardening” note** | In [SECURITY.md](../SECURITY.md) or a one-line in README: mention auth/JWT fix, CSRF option, secret validation, no DB URL logging, CORS/CSP tightening (link to CHANGELOG or a small `docs/SECURITY_HARDENING.md` if you add it). |
 
 ---
 
-## 🌐 Website & Collateral
-- Update https://bleujs.org with 1.2.1 copy (Python 3.12 compatibility, API client included).
-- Replace installation snippets with `pip install --upgrade 'bleu-js[api]'==1.2.1`.
-- Refresh any marketing decks or PDFs that still mention 1.2.0.
+## 2. Release & changelog quality
 
-Relevant docs:
-- `docs/INSTALLATION_FOR_USERS.md`
-- `COMPLETE_USER_GUIDE.md`
-- `FINAL_ALIGNMENT_STATUS.md`
+| Action | Why |
+|--------|-----|
+| **Tighten when auto-release runs** | Right now any push to `main` (excluding docs) bumps version and creates a release. Consider: only bump on version-file change, or when a label/tag is pushed, so CHANGELOG isn’t mostly “Automatic Release” entries. |
+| **Curate CHANGELOG for notable releases** | For minor/major (or “highlight” releases), add 2–3 bullet points so users see what actually changed. Keep auto-bump for patch; hand-edit for minor/major. |
+| **Single source of version** | Ensure `src/version.py`, `pyproject.toml`, `setup.py`, and CHANGELOG header stay in sync (script or CI check). |
 
 ---
 
-## 📊 Monitor Adoption
-- **PyPI Downloads:** https://pypistats.org/packages/bleu-js  
-- **GitHub Traffic:** https://github.com/HelloblueAI/Bleu.js/graphs/traffic  
-- **Support Channels:** Discord, GitHub issues, email feedback  
+## 3. Documentation & discoverability
 
-Look for:
-- Download spike for 1.2.1
-- Upgrade feedback / issues
-- Social engagement on announcement posts
+| Action | Why |
+|--------|-----|
+| **Fix ROADMAP links** | Replace placeholder “yourusername”, “your-server”, “docs.bleu.js” with real repo/discussions/docs links. |
+| **“Getting started” path** | One doc or README section: “5-minute start” (install → set API key → one SDK call + one CLI command). Already partly in README; make it unmissable. |
+| **API contract in one place** | [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) is the contract; link it from README, CONTRIBUTING, and OPEN_SOURCE_STANDARDS so backend and clients stay aligned. |
 
 ---
 
-## 🧹 Engineering Follow-Up
-Track remaining technical debt and decide ownership:
-- Legacy mega-tests & mypy errors → `docs/BACKLOG_TESTS_MYPY.md`
-- Update automation scripts (`scripts/create_release.sh`, CI configs) for 1.2.1
-- Consider filing GitHub issues for each backlog bucket (tests, typing, optional extras)
+## 4. CI & quality
 
-Recommended near-term tasks:
-1. Classify legacy test directories into fix / archive / delete.
-2. Add mypy excludes or per-module ignores for archived code.
-3. Prepare roadmap grooming for 1.2.2 / 1.3.0 once backlog decisions are made.
+| Action | Why |
+|--------|-----|
+| **Run tests in main.yml** | If not already: run pytest (or your test suite) on every PR/push to main so “Tests Passing” badge is meaningful. |
+| **Optional: coverage gate** | Fail or warn if coverage drops below a threshold (e.g. 70%) so new code doesn’t shrink coverage. |
+| **Backend repo parity** | In [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend): add a minimal CI (lint + test), README, and SECURITY.md so both repos feel production-ready. |
 
 ---
 
-## 📌 Quick Links
-- Release announcement: `docs/RELEASE_ANNOUNCEMENT_v1.2.1.md`
-- Announcement templates: `docs/ANNOUNCEMENT_TEMPLATES.md`
-- Installation guide: `docs/INSTALLATION_FOR_USERS.md`
-- Publish checklist: `docs/PUBLISH_TO_PYPI.md`
-- Backlog plan: `docs/BACKLOG_TESTS_MYPY.md`
+## 5. Community & contribution
+
+| Action | Why |
+|--------|-----|
+| **Good first issues** | Keep 3–5 “good first issue” labels so new contributors can find a clear entry point. |
+| **PR template** | Remind “run tests / security script” and “no secrets” in the PR template so every PR is checked. |
+| **One “Contributing” path** | Root CONTRIBUTING → full guide in docs is good; add one sentence: “New? Start with [Contributor guide](docs/CONTRIBUTOR_GUIDE.md) or a [good first issue](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22good+first+issue%22).” |
 
 ---
 
-**You’re ready to broadcast Bleu.js v1.2.1 to the world.** Let’s make sure every user hears about the smoother upgrade path! 📣
+## 6. Security & compliance (ongoing)
+
+| Action | Why |
+|--------|-----|
+| **Keep security script in the loop** | Every few months run `./scripts/check-security.sh` before a release; document in SECURITY.md or release checklist. |
+| **Production checklist** | In SECURITY.md, keep a short “Production deploy” list: env secrets, no dev defaults, CSRF if using browser forms, CORS origins, DB password set. |
+| **No re-adding backend** | Reminder in CONTRIBUTING or DEPENDABOT doc: do not re-add `backend/` to this repo; use the separate backend repo. |
+
+---
+
+## 7. Optional polish
+
+- **Badges:** Add a “Security” or “Safety” badge if you run Safety Scan in CI and make the results visible.
+- **Discord/community link:** If you have a real Discord/slack, put it in README and SUPPORT.md and fix ROADMAP.
+- **Release notes on GitHub:** For minor/major releases, write 2–3 sentences in the GitHub release description so the repo feels maintained.
+
+---
+
+## Summary order
+
+1. **ROADMAP + ROADMAP links** (accuracy and trust).  
+2. **Dependabot alert cleanup** (Security tab reflects reality).  
+3. **One security-hardening note** (SECURITY.md or README).  
+4. **Auto-release rules + CHANGELOG curation** (clearer releases).  
+5. **Tests in CI + optional coverage** (quality signal).  
+6. **Backend repo CI + README** (parity).  
+7. **Good first issues + single “start here” link** (contributor experience).
+
+Use this as a living checklist; tick items as you go and add new ones as the project evolves.

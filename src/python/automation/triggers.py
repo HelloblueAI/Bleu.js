@@ -139,7 +139,11 @@ class ScheduledTrigger:
 
 
 class DatabaseTrigger:
-    """Database change event trigger."""
+    """Database change event trigger.
+
+    Security: ``query`` must be a fixed string from trusted config/code only.
+    Never build ``query`` from user or external input to avoid SQL injection.
+    """
 
     def __init__(
         self,

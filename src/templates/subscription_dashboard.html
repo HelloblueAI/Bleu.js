@@ -219,6 +219,13 @@
             }
         }
 
+        function escapeHtml(s) {
+            if (s == null) return '';
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
         // Update current plan display
         function updateCurrentPlan(subscription) {
             const currentPlanDiv = document.getElementById('currentPlan');
@@ -226,10 +233,10 @@
 
             currentPlanDiv.innerHTML = `
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
-                    <h3 class="text-xl font-bold mb-2">${plan.name}</h3>
+                    <h3 class="text-xl font-bold mb-2">${escapeHtml(plan.name)}</h3>
                     <p class="text-blue-100 mb-4">${plan.features.core_ai_model_access ? 'Core AI Model Access' : 'Advanced AI Models'}</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold">$${(plan.price / 100).toFixed(2)}</span>
+                        <span class="text-2xl font-bold">$${escapeHtml(String((plan.price / 100).toFixed(2)))}</span>
                         <span class="text-sm">/month</span>
                     </div>
                 </div>
@@ -241,7 +248,7 @@
                             .map(([key]) => `
                                 <li class="flex items-center text-gray-600">
                                     <i class="fas fa-check text-green-500 mr-2"></i>
-                                    ${key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                    ${escapeHtml(key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
                                 </li>
                             `).join('')}
                     </ul>
@@ -261,10 +268,10 @@
             const availablePlansDiv = document.getElementById('availablePlans');
             availablePlansDiv.innerHTML = plans.map(plan => `
                 <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow duration-200">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">${plan.name}</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${escapeHtml(plan.name)}</h3>
                     <p class="text-gray-600 mb-4">${plan.features.core_ai_model_access ? 'Core AI Model Access' : 'Advanced AI Models'}</p>
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-2xl font-bold">$${(plan.price / 100).toFixed(2)}</span>
+                        <span class="text-2xl font-bold">$${escapeHtml(String((plan.price / 100).toFixed(2)))}</span>
                         <span class="text-sm text-gray-600">/month</span>
                     </div>
                     <ul class="space-y-2 mb-6">
@@ -273,11 +280,11 @@
                             .map(([key]) => `
                                 <li class="flex items-center text-gray-600">
                                     <i class="fas fa-check text-green-500 mr-2"></i>
-                                    ${key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                    ${escapeHtml(key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))}
                                 </li>
                             `).join('')}
                     </ul>
-                    <button onclick="subscribe('${plan.plan_type}')"
+                    <button data-plan-type="${escapeHtml(plan.plan_type)}" onclick="subscribe(this.getAttribute('data-plan-type'))"
                             class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                         Subscribe Now
                     </button>
@@ -336,15 +343,15 @@
                 <div class="border rounded-lg p-4">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="font-medium">${token.name}</h4>
-                            <p class="text-sm text-gray-500">Created: ${new Date(token.created_at).toLocaleDateString()}</p>
-                            ${token.expires_at ? `<p class="text-sm text-gray-500">Expires: ${new Date(token.expires_at).toLocaleDateString()}</p>` : ''}
+                            <h4 class="font-medium">${escapeHtml(token.name)}</h4>
+                            <p class="text-sm text-gray-500">Created: ${escapeHtml(new Date(token.created_at).toLocaleDateString())}</p>
+                            ${token.expires_at ? `<p class="text-sm text-gray-500">Expires: ${escapeHtml(new Date(token.expires_at).toLocaleDateString())}</p>` : ''}
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="copyToken('${token.token}')" class="text-blue-600 hover:text-blue-800">
+                            <button data-token="${escapeHtml(token.token)}" onclick="copyToken(this.getAttribute('data-token'))" class="text-blue-600 hover:text-blue-800">
                                 Copy
                             </button>
-                            <button onclick="rotateToken('${token.id}')" class="text-yellow-600 hover:text-yellow-800">
+                            <button data-token-id="${escapeHtml(String(token.id))}" onclick="rotateToken(this.getAttribute('data-token-id'))" class="text-yellow-600 hover:text-yellow-800">
                                 Rotate
                             </button>
                             <button onclick="revokeToken('${token.id}')" class="text-red-600 hover:text-red-800">

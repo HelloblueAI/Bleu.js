@@ -22,6 +22,23 @@ This doc explains how we keep Dependabot and security alerts under control so we
 - **Do not** add a new top-level app (e.g. another Node or Python app) with its own `package.json` or `requirements.txt` inside this repo if you want to avoid a new wave of alerts. Prefer a **separate repository** for that app, or use the existing ecosystems (root pip, collaboration-tools npm) only.
 - If you must add a manifest, add it under a directory that is **not** in the default Dependabot scan (we only have pip at `/`, npm at `/collaboration-tools`). Prefer consolidating into root `pyproject.toml` or the existing npm app instead of new directories.
 
+## Why the alert count still shows ~1.5k
+
+- **Those are old open alerts.** When we stopped tracking `backend/`, we stopped *new* alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files. So the 1.5k are **legacy** alerts that were opened when backend was still in the repo.
+- **To see what we actually have now:** You have to **dismiss** the obsolete ones. Then only alerts for the *current* scan scope (root pip, collaboration-tools npm, Docker, Actions) will remain.
+
+## How to see the real current number
+
+1. Go to **Security → Dependabot** (or **Dependency graph**) for this repo.
+2. **Filter or sort** by dependency/package or path if the UI allows (e.g. focus on `pyproject.toml`, `collaboration-tools/package.json`).
+3. **Bulk-dismiss** alerts that refer to:
+   - `backend/` paths,
+   - packages that only existed in backend (e.g. backend-only npm deps),
+   - or any manifest that no longer exists in the repo.
+4. Use the **“Dismiss”** reason like *“No longer used”* or *“Removed from repo”* so the count drops to the alerts that actually apply to the current codebase.
+
+After that, the number you see will reflect only root pip, collaboration-tools npm, Docker, and Actions — typically dozens, not thousands.
+
 ## Where to look
 
 - **Security alerts:** [GitHub Security tab](https://github.com/HelloblueAI/Bleu.js/security/dependabot) — triage and fix from here.

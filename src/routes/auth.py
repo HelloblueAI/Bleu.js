@@ -33,7 +33,7 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = auth_service.create_access_token(data={"sub": user.email})
+    access_token = auth_service.create_access_token(data={"sub": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -48,5 +48,6 @@ async def refresh_token(token: str, db: Session = Depends(get_db)):
     """Refresh access token."""
     auth_service = AuthService(db)
     payload = await auth_service.verify_refresh_token(token)
+    # sub is user id (UUID string) for access/refresh tokens
     access_token = auth_service.create_access_token(data={"sub": payload["sub"]})
     return {"access_token": access_token, "token_type": "bearer"}

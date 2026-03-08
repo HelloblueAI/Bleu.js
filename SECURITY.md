@@ -82,3 +82,18 @@ When deploying Bleu.js:
 1. Set all secrets via environment variables or a secrets manager (e.g. AWS Secrets Manager). Do not rely on default values for `JWT_SECRET_KEY`, `SECRET_KEY`, DB passwords, or API keys.
 2. Use HTTPS and restrict CORS as needed.
 3. Keep dependencies updated (e.g. Dependabot, `pip install -U`, security scans).
+
+## Recent security hardening
+
+The codebase has been hardened with:
+
+- **Auth:** JWT `sub` claim uses user id (UUID); UserService and middleware aligned; no weak or empty secret in production.
+- **Secrets:** Production/staging reject default or weak `SECRET_KEY`/`JWT_SECRET_KEY`; Python backend requires a non-empty secret when not in dev.
+- **CSRF:** Optional double-submit cookie protection (`ENABLE_CSRF_PROTECTION`); `GET /api/v1/csrf-token` and `X-CSRF-Token` header for state-changing requests when enabled.
+- **Sensitive data:** Database URL is no longer logged (no credential fragments); default DB password is not allowed in production.
+- **CORS & CSP:** Python backend no longer uses `allow_origins=["*"]` with credentials; CSP tightened (no `unsafe-inline`/`unsafe-eval` for scripts where possible).
+- **XSS:** Dashboard and subscription templates escape API-sourced data when using `innerHTML`.
+- **Errors:** 422 validation responses return a generic message instead of raw validation details.
+- **JWT stack:** Python backend auth uses PyJWT instead of python-jose.
+
+See [CHANGELOG.md](CHANGELOG.md) for release-specific notes.

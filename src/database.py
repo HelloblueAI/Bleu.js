@@ -23,7 +23,7 @@ def get_database_url() -> str:
         # First try environment variable (highest priority)
         env_db_url = os.getenv("DATABASE_URL")
         if env_db_url:
-            logger.info(f"Using DATABASE_URL from environment: {env_db_url[:50]}...")
+            logger.info("Using DATABASE_URL from environment")
             return env_db_url
 
         # Try to get from Settings if available (but only if no env var)
@@ -32,9 +32,7 @@ def get_database_url() -> str:
 
             settings = get_settings()
             if hasattr(settings, "DATABASE_URL") and settings.DATABASE_URL:
-                logger.info(
-                    f"Using DATABASE_URL from settings: {settings.DATABASE_URL[:50]}..."
-                )
+                logger.info("Using DATABASE_URL from settings")
                 return settings.DATABASE_URL
         except Exception:
             pass  # Settings might not be available yet

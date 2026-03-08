@@ -141,7 +141,10 @@ class ErrorHandler:
 
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content={"error": "Validation error", "message": str(exc)},
+            content={
+                "error": "Validation error",
+                "message": "Request validation failed. Check request body and parameters.",
+            },
         )
 
     def handle_server_error(self, request: Request, exc: Exception) -> JSONResponse:

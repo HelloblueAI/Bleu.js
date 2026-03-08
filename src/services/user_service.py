@@ -8,6 +8,11 @@ from src.models.user import User
 from src.schemas.user import UserCreate, UserResponse
 
 
+def _user_to_response(user: User) -> UserResponse:
+    """Map User ORM model to UserResponse."""
+    return UserResponse.model_validate(user.to_dict())
+
+
 class UserService:
     """User service for managing user operations."""
 
@@ -37,6 +42,19 @@ class UserService:
             updated_at=None,
         )
 
+    def get_user(self, user_id: str) -> Optional[User]:
+        """Get User ORM model by ID (for auth middleware and token manager).
+
+        Args:
+            user_id: User ID (UUID string)
+
+        Returns:
+            User or None
+        """
+        if not self.db:
+            return None
+        return self.db.query(User).filter(User.id == user_id).first()
+
     async def get_user_by_id(self, user_id: str) -> Optional[UserResponse]:
         """Get user by ID.
 
@@ -46,8 +64,8 @@ class UserService:
         Returns:
             User response or None
         """
-        # Stub implementation
-        return None
+        user = self.get_user(user_id)
+        return _user_to_response(user) if user else None
 
     async def get_user_by_email(self, email: str) -> Optional[UserResponse]:
         """Get user by email.

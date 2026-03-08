@@ -101,13 +101,13 @@ class AuthService(BaseService):
             if not token:
                 raise credentials_exception
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            email: str | None = payload.get("sub")
-            if email is None:
+            user_id: str | None = payload.get("sub")
+            if user_id is None:
                 raise credentials_exception
         except jwt.InvalidTokenError:
             raise credentials_exception
 
-        user = self.db.query(User).filter(User.email == email).first()
+        user = self.db.query(User).filter(User.id == user_id).first()
         if user is None:
             raise credentials_exception
 

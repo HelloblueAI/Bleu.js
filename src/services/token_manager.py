@@ -161,7 +161,7 @@ class TokenManager:
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            user = self.user_service.get_user(int(user_id))
+            user = self.user_service.get_user(user_id)
             if not user:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -199,7 +199,7 @@ class TokenManager:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        user = self.user_service.get_user(int(user_id))
+        user = self.user_service.get_user(user_id)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

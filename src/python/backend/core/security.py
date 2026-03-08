@@ -192,17 +192,38 @@ class SecurityManager:
         ).hexdigest()
 
     def verify_csrf_token(self, token: str) -> bool:
-        """Verify CSRF token."""
-        return bool(token and len(token) == 64)
+        """Verify CSRF token (HMAC with 2-minute window to allow clock skew)."""
+        if not token or len(token) != 64 or not all(
+            c in "0123456789abcdef" for c in token.lower()
+        ):
+            return False
+        now = int(time.time())
+        for offset in (0, -60):
+            expected = hmac.new(
+                self.config.secret_key.encode(),
+                str(now + offset).encode(),
+                hashlib.sha256,
+            ).hexdigest()
+            if hmac.compare_digest(token, expected):
+                return True
+        return False
 
 
 def initialize_security_manager():
     """Initialize the security manager with configuration from environment variables."""
     allowed_ips_str = os.getenv("ALLOWED_IPS", "10.0.0.0/8,192.168.0.0/16")
     blocked_ips_str = os.getenv("BLOCKED_IPS", "")
+    secret = os.getenv("SECRET_KEY", "").strip()
+    if not secret and os.getenv("ENV_NAME", "development").lower() in (
+        "production",
+        "staging",
+    ):
+        raise ValueError("SECRET_KEY must be set in production/staging")
+    if not secret:
+        secret = "dev-secret-key-change-in-production-12345"
     security_manager = SecurityManager(
         SecurityConfig(
-            secret_key=os.getenv("SECRET_KEY", ""),  # Must be set in environment
+            secret_key=secret,
             rate_limit=RateLimitConfig(),
             allowed_ips=allowed_ips_str.split(",") if allowed_ips_str else [],
             blocked_ips=blocked_ips_str.split(",") if blocked_ips_str else [],
