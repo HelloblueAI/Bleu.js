@@ -5,6 +5,7 @@
 # ============================================================================
 # Stage 1: Builder - All build tools and compilation happen here
 # Alpine 3.23 for CVE fixes: openssl 3.3.6+, sqlite, curl, busybox, c-ares
+# curl: CVE-2025-14017, CVE-2025-13034, CVE-2025-14524, CVE-2025-14819, CVE-2025-15079, CVE-2025-15224 (<=8.17.0-r1)
 # ============================================================================
 FROM alpine:3.23 AS builder
 
@@ -96,11 +97,11 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Install ONLY runtime dependencies (NO build tools!) (apk upgrade for CVE fixes)
+# curl omitted: CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23)
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
     bash \
-    curl \
     python3 \
     py3-pip \
     ca-certificates \

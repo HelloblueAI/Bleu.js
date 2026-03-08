@@ -19,14 +19,14 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 
 # Install base system and build dependencies (with security updates)
-# apk upgrade pulls fixed openssl, sqlite, curl, busybox, c-ares; zlib 1.3.2+ (CVE-2026-22184, CRC32 DoS)
+# apk upgrade pulls fixed openssl, sqlite, busybox, c-ares; zlib 1.3.2+ (CVE-2026-22184, CRC32 DoS)
+# curl/wget omitted to avoid CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23); add in Dockerfile if needed
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
         zlib \
         zlib-dev \
         bash \
-        curl \
         wget \
         git \
         python3 \

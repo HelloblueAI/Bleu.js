@@ -32,10 +32,10 @@ fi
 # Apply system optimizations
 log "Applying system optimizations..."
 
-# CPU Governor
-if [[ -n "${cpu_governor:-}" ]]; then
+# CPU Governor (skip in containers: cpufreq is typically read-only or unavailable)
+if [[ -n "${cpu_governor:-}" ]] && [[ ! -f /.dockerenv ]] && [[ ! -f /run/.containerenv ]]; then
     for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
-        if [[ -f "$cpu" ]]; then
+        if [[ -f "$cpu" ]] && [[ -w "$cpu" ]]; then
             echo "${cpu_governor}" > "$cpu" 2>/dev/null || true
         fi
     done

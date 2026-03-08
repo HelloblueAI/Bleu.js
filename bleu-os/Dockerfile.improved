@@ -3,6 +3,7 @@
 # Multi-stage build for smaller size and better caching
 
 # Stage 1: Base system with build tools (Alpine 3.23 for CVE fixes: openssl, sqlite, curl, busybox, c-ares)
+# curl: CVE-2025-14017, CVE-2025-13034, CVE-2025-14524, CVE-2025-14819, CVE-2025-15079, CVE-2025-15224 (<=8.17.0-r1)
 FROM alpine:3.23 AS builder
 
 # Build arguments for flexibility
@@ -19,7 +20,7 @@ LABEL version="${BLEU_OS_VERSION}"
 LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 
-# Install build dependencies (apk upgrade for CVE fixes)
+# Install build dependencies (apk upgrade for CVE fixes; curl CVEs above)
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
@@ -50,11 +51,11 @@ ARG INSTALL_ML=true
 ARG INSTALL_JUPYTER=true
 
 # Install only runtime dependencies (apk upgrade for CVE fixes)
+# curl omitted from runtime: CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23)
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
     bash \
-    curl \
     wget \
     git \
     python3 \
