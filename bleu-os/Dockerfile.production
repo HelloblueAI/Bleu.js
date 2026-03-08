@@ -150,9 +150,10 @@ COPY --chown=bleuos:bleuos requirements.txt /opt/bleu-js/
 COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
 COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
 
-# Security: pin cryptography>=46.0.5 (CVE-2026-26007) before Bleu.js
+# Security: pin cryptography (CVE-2026-26007), urllib3 (CVE-2026-21441), pillow (CVE-2026-25990) before Bleu.js
 # Install Bleu.js with proper error handling
-RUN pip3 install --user --no-cache-dir --break-system-packages "cryptography>=46.0.5" && \
+RUN pip3 install --user --no-cache-dir --break-system-packages \
+    "cryptography>=46.0.5" "urllib3>=2.6.3" "pillow>=12.1.1" && \
     if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
         pip3 install --user --no-cache-dir --break-system-packages -e /opt/bleu-js 2>/dev/null || \
         pip3 install --user --no-cache-dir --break-system-packages bleu-js 2>/dev/null || \
