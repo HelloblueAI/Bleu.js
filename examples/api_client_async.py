@@ -12,7 +12,7 @@ Setup:
 
 import asyncio
 
-from bleu_ai.api_client import AsyncBleuAPIClient
+from bleujs.api_client import AsyncBleuAPIClient
 
 
 async def main():

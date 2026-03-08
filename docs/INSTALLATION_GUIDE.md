@@ -2,7 +2,7 @@
 
 ## 📋 System Requirements
 
-- **Python**: 3.10 or higher
+- **Python**: 3.11 or higher
 - **RAM**: 4GB minimum (8GB recommended)
 - **Storage**: 2GB free space
 - **OS**: Linux, macOS, or Windows
@@ -17,6 +17,7 @@ pip install bleu-js
 ```
 
 **What's included:**
+
 - ✅ Core AI/ML functionality
 - ✅ Web framework (FastAPI)
 - ✅ Security features
@@ -31,6 +32,7 @@ pip install "bleu-js[ml]"
 ```
 
 **Additional features:**
+
 - ✅ TensorFlow 2.16+
 - ✅ PyTorch 2.2+
 - ✅ Transformers 4.37+
@@ -43,6 +45,7 @@ pip install "bleu-js[quantum]"
 ```
 
 **Additional features:**
+
 - ✅ Qiskit 0.44+
 - ✅ Cirq 1.2+
 - ✅ PennyLane 0.32+
@@ -56,6 +59,7 @@ pip install "bleu-js[all]"
 ```
 
 **Includes everything:**
+
 - ✅ All ML features
 - ✅ All quantum features
 - ✅ Development tools
@@ -77,12 +81,14 @@ pip install -e ".[dev]"
 #### **1. Dependency Resolution Errors**
 
 **Problem:**
+
 ```
 error: resolution-too-deep
 × Dependency resolution exceeded maximum depth
 ```
 
 **Solution:**
+
 ```bash
 # Install with constraints
 pip install "bleu-js[ml]" --constraint requirements-basic.txt
@@ -96,11 +102,13 @@ pip install bleu-js
 #### **2. NumPy Version Conflicts**
 
 **Problem:**
+
 ```
 numpy version conflicts with quantum libraries
 ```
 
 **Solution:**
+
 ```bash
 # Install with specific NumPy version
 pip install "numpy>=1.24.3,<2.0.0"
@@ -110,11 +118,13 @@ pip install "bleu-js[quantum]"
 #### **3. Memory Issues**
 
 **Problem:**
+
 ```
 Out of memory errors during installation
 ```
 
 **Solution:**
+
 ```bash
 # Install with reduced memory usage
 pip install --no-cache-dir bleu-js
@@ -127,11 +137,13 @@ pip install -r requirements-basic.txt
 #### **4. GPU Compatibility**
 
 **Problem:**
+
 ```
 CUDA/GPU compatibility issues
 ```
 
 **Solution:**
+
 ```bash
 # Install CPU-only versions
 pip install "tensorflow-cpu>=2.16.2"
@@ -177,6 +189,7 @@ print(f"Cirq version: {cirq.__version__}")
 ## 📦 Package Structure
 
 ### **Core Package (`bleu-js`)**
+
 - Web framework (FastAPI)
 - Database integration
 - Security features
@@ -184,24 +197,28 @@ print(f"Cirq version: {cirq.__version__}")
 - Basic utilities
 
 ### **ML Package (`bleu-js[ml]`)**
+
 - TensorFlow integration
 - PyTorch support
 - Transformers library
 - Scikit-learn utilities
 
 ### **Quantum Package (`bleu-js[quantum]`)**
+
 - Qiskit quantum computing
 - Cirq quantum circuits
 - PennyLane quantum ML
 - Quantum optimization
 
 ### **Development Package (`bleu-js[dev]`)**
+
 - Testing tools (pytest)
 - Code formatting (black)
 - Linting (flake8)
 - Type checking (mypy)
 
 ### **Monitoring Package (`bleu-js[monitoring]`)**
+
 - Prometheus metrics
 - OpenTelemetry tracing
 - Structured logging

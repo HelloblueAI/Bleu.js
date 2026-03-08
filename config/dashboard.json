@@ -8,7 +8,12 @@
       "height": 6,
       "properties": {
         "metrics": [
-          ["AWS/ElasticBeanstalk", "CPUUtilization", "EnvironmentName", "${EnvironmentName}"],
+          [
+            "AWS/ElasticBeanstalk",
+            "CPUUtilization",
+            "EnvironmentName",
+            "${EnvironmentName}"
+          ],
           [".", "LoadAverage", ".", "."],
           [".", "RootFilesystemUtilization", ".", "."]
         ],
@@ -28,7 +33,12 @@
       "height": 6,
       "properties": {
         "metrics": [
-          ["AWS/ElasticBeanstalk", "ApplicationRequests2xx", "EnvironmentName", "${EnvironmentName}"],
+          [
+            "AWS/ElasticBeanstalk",
+            "ApplicationRequests2xx",
+            "EnvironmentName",
+            "${EnvironmentName}"
+          ],
           [".", "ApplicationRequests3xx", ".", "."],
           [".", "ApplicationRequests4xx", ".", "."],
           [".", "ApplicationRequests5xx", ".", "."]
@@ -49,7 +59,12 @@
       "height": 6,
       "properties": {
         "metrics": [
-          ["AWS/ElasticBeanstalk", "Latency", "EnvironmentName", "${EnvironmentName}"],
+          [
+            "AWS/ElasticBeanstalk",
+            "Latency",
+            "EnvironmentName",
+            "${EnvironmentName}"
+          ],
           [".", "RequestCount", ".", "."]
         ],
         "view": "timeSeries",
@@ -68,7 +83,12 @@
       "height": 6,
       "properties": {
         "metrics": [
-          ["AWS/ElasticBeanstalk", "InstanceHealth", "EnvironmentName", "${EnvironmentName}"],
+          [
+            "AWS/ElasticBeanstalk",
+            "InstanceHealth",
+            "EnvironmentName",
+            "${EnvironmentName}"
+          ],
           [".", "EnvironmentHealth", ".", "."]
         ],
         "view": "timeSeries",

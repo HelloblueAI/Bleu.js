@@ -1,33 +1,33 @@
 ---
 license: mit
 tags:
-- machine-learning
-- xgboost
-- quantum-enhanced
-- bleu-js
-- classification
-- gradient-boosting
+  - machine-learning
+  - xgboost
+  - quantum-enhanced
+  - bleu-js
+  - classification
+  - gradient-boosting
 datasets:
-- custom
+  - custom
 metrics:
-- accuracy
-- f1-score
-- roc-auc
+  - accuracy
+  - f1-score
+  - roc-auc
 model-index:
-- name: bleu-xgboost-classifier
-  results:
-  - task:
-      type: classification
-    dataset:
-      name: Custom Dataset
-      type: custom
-    metrics:
-    - type: accuracy
-      value: TBD
-    - type: f1-score
-      value: TBD
-    - type: roc-auc
-      value: TBD
+  - name: bleu-xgboost-classifier
+    results:
+      - task:
+          type: classification
+        dataset:
+          name: Custom Dataset
+          type: custom
+        metrics:
+          - type: accuracy
+            value: TBD
+          - type: f1-score
+            value: TBD
+          - type: roc-auc
+            value: TBD
 ---
 
 # Bleu.js XGBoost Classifier
@@ -39,6 +39,7 @@ This is an XGBoost classification model from the Bleu.js quantum-enhanced AI pla
 ## Model Details
 
 ### Model Type
+
 - **Architecture**: XGBoost Classifier
 - **Framework**: XGBoost with quantum-enhanced features
 - **Task**: Binary Classification
@@ -47,11 +48,13 @@ This is an XGBoost classification model from the Bleu.js quantum-enhanced AI pla
 ### Training Details
 
 #### Training Data
+
 - **Dataset**: Custom training dataset
 - **Training Script**: `backend/train_xgboost.py`
 - **Data Split**: 80% training, 20% validation
 
 #### Hyperparameters
+
 - `max_depth`: 6
 - `learning_rate`: 0.1
 - `n_estimators`: 100
@@ -60,6 +63,7 @@ This is an XGBoost classification model from the Bleu.js quantum-enhanced AI pla
 - `early_stopping_rounds`: 10
 
 #### Preprocessing
+
 - Feature scaling with StandardScaler
 - Quantum-enhanced feature extraction (optional)
 - Data normalization
@@ -207,6 +211,7 @@ print(f"Quantum Advantage: {results['performance_metrics']['quantum_advantage']}
 ## Model Performance
 
 Performance metrics will be updated after evaluation. The model uses:
+
 - Early stopping to prevent overfitting
 - Cross-validation for robust evaluation
 - Quantum-enhanced features for improved accuracy
@@ -221,6 +226,7 @@ Performance metrics will be updated after evaluation. The model uses:
 ## Training Information
 
 ### Training Script
+
 The model is trained using `backend/train_xgboost.py`:
 
 ```python
@@ -234,6 +240,7 @@ params = {
 ```
 
 ### Evaluation
+
 - Validation set: 20% of training data
 - Early stopping: 10 rounds
 - Evaluation metric: Log loss (default)
@@ -259,6 +266,7 @@ This model is released under the MIT License. See the LICENSE file for more deta
 ## Contact
 
 For questions or issues, please contact:
+
 - **Email**: support@helloblue.ai
 - **GitHub**: https://github.com/HelloblueAI/Bleu.js
 - **Organization**: https://huggingface.co/helloblueai

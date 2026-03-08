@@ -9,7 +9,7 @@ import sys
 def get_version() -> str:
     """Return the Bleu.js package version."""
     try:
-        from src.bleujs import __version__
+        from .. import __version__
 
         return __version__
     except ImportError:

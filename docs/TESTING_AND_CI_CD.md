@@ -5,11 +5,13 @@ This document describes the comprehensive testing setup and CI/CD pipeline for t
 ## 🧪 Test Coverage
 
 ### Current Status
+
 - **Overall Coverage**: 34%
 - **Target Coverage**: 80% (SonarCloud requirement)
 - **Test Framework**: pytest with coverage reporting
 
 ### Coverage Reports
+
 - **Terminal**: Real-time coverage during test execution
 - **HTML**: Detailed coverage report in `htmlcov/index.html`
 - **XML**: Coverage data for SonarCloud integration
@@ -17,6 +19,7 @@ This document describes the comprehensive testing setup and CI/CD pipeline for t
 ## 🚀 Running Tests
 
 ### Quick Test Run
+
 ```bash
 # Run all tests with coverage
 poetry run pytest --cov=src --cov-report=term-missing --cov-report=html --cov-report=xml
@@ -29,6 +32,7 @@ poetry run pytest -v
 ```
 
 ### Comprehensive Test Suite
+
 ```bash
 # Use the automated test script
 ./scripts/run_tests_with_coverage.sh
@@ -37,18 +41,21 @@ poetry run pytest -v
 ### Test Categories
 
 #### 1. ML Modules (`tests/test_ml_modules.py`)
+
 - **ModelFactory**: Tests for ML model creation and configuration
 - **PerformanceMetrics**: Tests for ML performance evaluation
 - **QuantumAwareScheduler**: Tests for quantum-aware learning rate optimization
 - **QuantumGPUManager**: Tests for quantum GPU memory management
 
 #### 2. Quantum Core (`tests/test_quantum_core.py`)
+
 - **QuantumCircuit**: Tests for quantum circuit operations
 - **QuantumGate**: Tests for quantum gate implementations
 - **QuantumState**: Tests for quantum state management
 - **QuantumProcessor**: Tests for quantum processing operations
 
 #### 3. Services (`tests/test_services.py`)
+
 - **APIService**: Tests for API interactions
 - **AuthService**: Tests for authentication and authorization
 - **EmailService**: Tests for email functionality
@@ -58,6 +65,7 @@ poetry run pytest -v
 ## 🔍 SonarCloud Integration
 
 ### Configuration
+
 The project is configured for SonarCloud with the following settings:
 
 ```properties
@@ -77,6 +85,7 @@ sonar.coverage.newCodeMinimum=80
 ```
 
 ### Quality Gate Requirements
+
 - **Coverage on New Code**: 80% minimum
 - **Coverage on Overall Code**: 80% minimum
 - **Code Smells**: < 5
@@ -86,6 +95,7 @@ sonar.coverage.newCodeMinimum=80
 ## 🔄 CI/CD Pipeline
 
 ### GitHub Actions Workflow
+
 The CI/CD pipeline includes:
 
 1. **Test Job**: Runs all tests with coverage reporting
@@ -94,6 +104,7 @@ The CI/CD pipeline includes:
 4. **PR Comments**: Automatically comments on PRs with SonarCloud results
 
 ### Pipeline Steps
+
 ```yaml
 # .github/workflows/ci-cd.yml
 - name: Run Tests with Coverage
@@ -110,6 +121,7 @@ The CI/CD pipeline includes:
 ## 📊 Coverage Analysis
 
 ### Current Coverage Breakdown
+
 - **ML Modules**: 74% (PerformanceMetrics)
 - **Quantum Core**: 30-52% (varies by module)
 - **Services**: 25-91% (varies by service)
@@ -118,22 +130,26 @@ The CI/CD pipeline includes:
 ### Coverage Improvement Strategy
 
 #### 1. High Priority (Target: 80%+)
+
 - **Services**: Focus on auth, API, and monitoring services
 - **ML Core**: Enhanced XGBoost and optimization modules
 - **Quantum Core**: Circuit and processor implementations
 
 #### 2. Medium Priority (Target: 60%+)
+
 - **Routes**: API endpoint testing
 - **Models**: Database model testing
 - **Utils**: Utility function testing
 
 #### 3. Low Priority (Target: 40%+)
+
 - **Examples**: Demo and example code
 - **Documentation**: Documentation-related code
 
 ## 🛠️ Test Development
 
 ### Adding New Tests
+
 1. **Create test file**: `tests/test_module_name.py`
 2. **Import modules**: Import the modules you want to test
 3. **Write test classes**: Create test classes for each major component
@@ -141,6 +157,7 @@ The CI/CD pipeline includes:
 5. **Run tests**: Use `poetry run pytest tests/test_module_name.py`
 
 ### Test Best Practices
+
 - **Use descriptive names**: Test method names should describe what they test
 - **Mock external dependencies**: Use `unittest.mock` for external services
 - **Test edge cases**: Include tests for error conditions and edge cases
@@ -148,6 +165,7 @@ The CI/CD pipeline includes:
 - **Use fixtures**: Share common test setup using pytest fixtures
 
 ### Example Test Structure
+
 ```python
 import pytest
 from unittest.mock import Mock, patch
@@ -174,12 +192,14 @@ class TestClassToTest:
 ### Common Issues
 
 #### 1. Import Errors
+
 ```bash
 # Solution: Check module paths and imports
 poetry run python -c "import src.module"
 ```
 
 #### 2. Coverage Not Generated
+
 ```bash
 # Solution: Ensure coverage is properly configured
 poetry run coverage run -m pytest
@@ -187,6 +207,7 @@ poetry run coverage report
 ```
 
 #### 3. SonarCloud Integration Issues
+
 ```bash
 # Solution: Check SonarCloud configuration
 cat sonar-project.properties
@@ -194,12 +215,14 @@ cat sonar-project.properties
 ```
 
 #### 4. Test Failures
+
 ```bash
 # Solution: Run tests with verbose output
 poetry run pytest -v --tb=short
 ```
 
 ### Debugging Tests
+
 ```bash
 # Run specific test with debug output
 poetry run pytest tests/test_file.py::TestClass::test_method -v -s
@@ -211,17 +234,20 @@ poetry run pytest --cov=src.specific_module tests/
 ## 📈 Monitoring and Reporting
 
 ### Coverage Reports
+
 - **HTML Report**: `htmlcov/index.html` - Detailed coverage with line-by-line analysis
 - **XML Report**: `coverage.xml` - Machine-readable format for CI/CD
 - **Terminal Report**: Real-time coverage during test execution
 
 ### SonarCloud Dashboard
+
 - **Quality Gate**: Overall project health status
 - **Coverage Trends**: Historical coverage data
 - **Code Smells**: Code quality issues
 - **Security Hotspots**: Security-related issues
 
 ### Continuous Monitoring
+
 - **PR Checks**: Automatic quality gate checks on pull requests
 - **Coverage Alerts**: Notifications when coverage drops
 - **Quality Reports**: Regular quality assessment reports
@@ -229,12 +255,14 @@ poetry run pytest --cov=src.specific_module tests/
 ## 🎯 Next Steps
 
 ### Immediate Actions
+
 1. **Push Changes**: Commit and push all changes to trigger CI/CD
 2. **Check SonarCloud**: Verify quality gate status in SonarCloud dashboard
 3. **Review Coverage**: Analyze coverage reports to identify gaps
 4. **Add More Tests**: Focus on modules with low coverage
 
 ### Long-term Goals
+
 1. **Achieve 80% Coverage**: Target all critical modules
 2. **Maintain Quality**: Keep code quality high with regular testing
 3. **Automate Everything**: Full CI/CD automation

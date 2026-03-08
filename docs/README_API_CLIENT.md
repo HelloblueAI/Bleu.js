@@ -17,7 +17,7 @@ pip install bleu-js[api]
 ### Use
 
 ```python
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 client = BleuAPIClient(api_key="bleujs_sk_...")
 
@@ -62,12 +62,12 @@ print(response.embeddings)
 
 ## 🔌 API Endpoints
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/chat` | POST | Chat completions |
-| `/api/v1/generate` | POST | Text generation |
-| `/api/v1/embed` | POST | Text embeddings |
-| `/api/v1/models` | GET | List models |
+| Endpoint           | Method | Purpose          |
+| ------------------ | ------ | ---------------- |
+| `/api/v1/chat`     | POST   | Chat completions |
+| `/api/v1/generate` | POST   | Text generation  |
+| `/api/v1/embed`    | POST   | Text embeddings  |
+| `/api/v1/models`   | GET    | List models      |
 
 **Base URL:** `https://bleujs.org`
 
@@ -78,7 +78,7 @@ print(response.embeddings)
 ### Synchronous
 
 ```python
-from bleu_ai.api_client import BleuAPIClient
+from bleujs.api_client import BleuAPIClient
 
 with BleuAPIClient() as client:
     response = client.chat([
@@ -91,7 +91,7 @@ with BleuAPIClient() as client:
 
 ```python
 import asyncio
-from bleu_ai.api_client import AsyncBleuAPIClient
+from bleujs.api_client import AsyncBleuAPIClient
 
 async def main():
     async with AsyncBleuAPIClient() as client:
@@ -106,7 +106,7 @@ asyncio.run(main())
 ### Error Handling
 
 ```python
-from bleu_ai.api_client import (
+from bleujs.api_client import (
     BleuAPIClient,
     AuthenticationError,
     RateLimitError
@@ -167,6 +167,7 @@ client = BleuAPIClient(
 ## 📦 Dependencies
 
 The API client requires:
+
 - `httpx>=0.24.0` - HTTP client with async support
 - `pydantic>=2.0.0` - Data validation
 
@@ -184,7 +185,7 @@ pip install bleu-js[api,dev]
 pytest tests/test_api_client.py -v
 
 # With coverage
-pytest tests/test_api_client.py --cov=bleu_ai.api_client
+pytest tests/test_api_client.py --cov=bleujs.api_client
 ```
 
 ---
@@ -202,11 +203,13 @@ See the complete guides:
 ## 🎓 Learn More
 
 ### Examples
+
 - `examples/api_client_basic.py` - Basic usage
 - `examples/api_client_async.py` - Async patterns
 - `examples/api_client_advanced.py` - Advanced features
 
 ### Resources
+
 - **Website:** https://bleujs.org
 - **GitHub:** https://github.com/HelloblueAI/Bleu.js
 - **Support:** support@helloblue.ai
@@ -216,22 +219,27 @@ See the complete guides:
 ## 🐛 Troubleshooting
 
 ### "httpx is required"
+
 ```bash
 pip install bleu-js[api]
 ```
 
 ### "Invalid API key"
+
 Check your environment variable:
+
 ```bash
 echo $BLEUJS_API_KEY
 ```
 
 ### Rate Limits
+
 ```python
 client = BleuAPIClient(max_retries=5)
 ```
 
 ### Timeouts
+
 ```python
 client = BleuAPIClient(timeout=120.0)
 ```
@@ -241,6 +249,7 @@ client = BleuAPIClient(timeout=120.0)
 ## 🎉 What's New in v1.2.0
 
 ✨ **NEW: API Client**
+
 - Sync and async clients
 - Full error handling
 - Automatic retries

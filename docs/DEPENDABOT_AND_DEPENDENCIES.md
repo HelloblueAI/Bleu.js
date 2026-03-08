@@ -24,8 +24,8 @@ This doc explains how we keep Dependabot and security alerts under control so we
 
 ## Why the alert count still shows ~1.5k
 
-- **Those are old open alerts.** When we stopped tracking `backend/`, we stopped *new* alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files. So the 1.5k are **legacy** alerts that were opened when backend was still in the repo.
-- **To see what we actually have now:** You have to **dismiss** the obsolete ones. Then only alerts for the *current* scan scope (root pip, collaboration-tools npm, Docker, Actions) will remain.
+- **Those are old open alerts.** When we stopped tracking `backend/`, we stopped _new_ alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files. So the 1.5k are **legacy** alerts that were opened when backend was still in the repo.
+- **To see what we actually have now:** You have to **dismiss** the obsolete ones. Then only alerts for the _current_ scan scope (root pip, collaboration-tools npm, Docker, Actions) will remain.
 
 ## How to see the real current number
 
@@ -35,7 +35,7 @@ This doc explains how we keep Dependabot and security alerts under control so we
    - `backend/` paths,
    - packages that only existed in backend (e.g. backend-only npm deps),
    - or any manifest that no longer exists in the repo.
-4. Use the **“Dismiss”** reason like *“No longer used”* or *“Removed from repo”* so the count drops to the alerts that actually apply to the current codebase.
+4. Use the **“Dismiss”** reason like _“No longer used”_ or _“Removed from repo”_ so the count drops to the alerts that actually apply to the current codebase.
 
 After that, the number you see will reflect only root pip, collaboration-tools npm, Docker, and Actions — typically dozens, not thousands.
 

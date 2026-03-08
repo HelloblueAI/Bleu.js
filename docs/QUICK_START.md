@@ -3,6 +3,7 @@
 ## ⚡ Get Running in 5 Minutes
 
 ### Step 1: Generate Secrets (1 min)
+
 ```bash
 # Generate all required secrets at once
 python3 << 'EOF'
@@ -17,6 +18,7 @@ EOF
 ```
 
 ### Step 2: Create .env File (1 min)
+
 ```bash
 # Copy the secrets above and create .env
 cat > .env << 'EOF'
@@ -40,21 +42,25 @@ EOF
 ```
 
 ### Step 3: Install Dependencies (2 min)
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Step 4: Initialize Database (30 sec)
+
 ```bash
 alembic upgrade head
 ```
 
 ### Step 5: Start Application (30 sec)
+
 ```bash
 uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Step 6: Test It! (30 sec)
+
 ```bash
 # In another terminal
 curl http://localhost:8000/health | jq
@@ -93,17 +99,20 @@ curl http://localhost:8000/health | jq
 ## 🆘 Troubleshooting
 
 **Port already in use?**
+
 ```bash
 uvicorn src.api.main:app --reload --port 8001
 ```
 
 **Dependencies not installing?**
+
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt --no-cache-dir
 ```
 
 **Database errors?**
+
 ```bash
 rm bleujs.db  # Reset SQLite database
 alembic upgrade head

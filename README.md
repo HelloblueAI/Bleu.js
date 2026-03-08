@@ -2,6 +2,10 @@
 
 Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https://bleujs.org)
 
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
+[![Status: Beta](https://img.shields.io/badge/Status-Beta-yellow.svg)]()
+
 ![Bleu.js Demo](https://github.com/HelloblueAI/Bleu.js/assets/81389644/ddfc34a4-a992-441c-9cf4-c5feeeb43568)
 
 <div align="left">
@@ -13,7 +17,6 @@ Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https
   </a>
 </div>
 
-
 Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
 
 - **Who it's for:** ML engineers, researchers, and developers building quantum-enhanced AI, cloud APIs, or CLI tools.
@@ -22,6 +25,29 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist.
 
 **Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org).
+
+### Install & first run
+
+**Requirements:** Python 3.11+
+
+```bash
+# Core + API client & CLI (recommended)
+pip install "bleu-js[api]"
+```
+
+**Quick test (SDK):** Get an API key at [bleujs.org](https://bleujs.org), then:
+
+```python
+from bleujs.api_client import BleuAPIClient
+c = BleuAPIClient(api_key="bleujs_sk_...")
+print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
+```
+
+**Quick test (CLI):** `export BLEUJS_API_KEY=bleujs_sk_...` then `bleu chat "Hello"`.
+
+**What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing, optional `[ml]` (XGBoost, scikit-learn), `[quantum]` (Qiskit, PennyLane), and `[all]` for full features. See [QUICKSTART](docs/QUICKSTART.md) and [INSTALLATION](docs/INSTALLATION.md).
+
+**More:** [Full installation guide](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md)
 
 ## SDK – Cloud API
 
@@ -125,6 +151,7 @@ bleu config get api-key
 #### Commands
 
 **Chat Completions**
+
 ```bash
 # Simple chat
 bleu chat "Explain quantum computing"
@@ -140,6 +167,7 @@ bleu chat "Hello" --json
 ```
 
 **Text Generation**
+
 ```bash
 # Generate text
 bleu generate "Once upon a time"
@@ -152,6 +180,7 @@ bleu generate --file prompt.txt
 ```
 
 **Embeddings**
+
 ```bash
 # Embed multiple texts
 bleu embed "text1" "text2" "text3"
@@ -164,6 +193,7 @@ bleu embed "Hello world" --json
 ```
 
 **Model Management**
+
 ```bash
 # List all models
 bleu models list
@@ -176,6 +206,7 @@ bleu models list --json
 ```
 
 **Utilities**
+
 ```bash
 # Check API health
 bleu health
@@ -191,6 +222,7 @@ bleu chat --help
 #### Advanced Usage
 
 **Piping and Input**
+
 ```bash
 # Pipe input
 echo "Hello world" | bleu chat
@@ -200,6 +232,7 @@ bleu generate < prompt.txt
 ```
 
 **JSON Output**
+
 ```bash
 # Get structured output
 bleu chat "Hello" --json | jq '.content'
@@ -207,6 +240,7 @@ bleu models list --json | jq '.[].id'
 ```
 
 **Environment Variables**
+
 ```bash
 # Use environment variable instead of config
 export BLEUJS_API_KEY=bleujs_sk_...
@@ -296,6 +330,7 @@ with open(model_path, 'rb') as f:
 ### Important Documentation
 
 **For users**
+
 - **[Security policy & reporting](SECURITY.md)** - No secrets in repo; how to report vulnerabilities; deployment checklist
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
 - **[API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
@@ -307,23 +342,23 @@ with open(model_path, 'rb') as f:
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 
 ### Version
+
 - **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
 - **Installed package:** `from bleujs import __version__` or `bleu version`
 - **In-repo / API:** `from src.version import get_version` (used by the main app, `/health`, and FastAPI)
 
 ### For Contributors
+
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
 - **[Contributor Guide](./docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
 - **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards
 
-
-
 ## Quantum-Enhanced Vision System Achievements
 
 ### State-of-the-Art Performance Metrics
 
-*Vision/quantum benchmarks (specific workloads):*
+_Vision/quantum benchmarks (specific workloads):_
 
 - **Detection Accuracy**: 18.90% confidence with 2.82% uncertainty
 - **Processing Speed**: 23.73ms inference time
@@ -345,6 +380,7 @@ pie title Current vs Target Performance
 ```
 
 **Performance Breakdown:**
+
 - **Qubit Stability**: 0.9556/1.0 (95.6% of target)
 - **Quantum Advantage**: 1.95x/2.5x (78.0% of target)
 - **Energy Efficiency**: 95.56%/100% (95.6% of target)
@@ -420,32 +456,38 @@ flowchart TB
 ### Installation Options
 
 **Basic Installation (Recommended)**
+
 ```bash
 pip install bleu-js
 ```
 
 **With API Client (for cloud API)**
+
 ```bash
 pip install "bleu-js[api]"
 ```
 
 **With ML Features**
+
 ```bash
 pip install "bleu-js[ml]"
 ```
 
 **With Quantum Computing**
+
 ```bash
 pip install "bleu-js[quantum]"
 ```
 
 **Full Installation**
+
 ```bash
 pip install "bleu-js[all]"
 ```
 
 **Troubleshooting**
 If you encounter dependency conflicts, try:
+
 ```bash
 # Use virtual environment
 python3 -m venv bleujs-env
@@ -454,7 +496,8 @@ pip install bleu-js
 ```
 
 **Prerequisites**
-- Python 3.8+ (3.10+ recommended)
+
+- Python 3.11+ (see [Installation](docs/INSTALLATION.md))
 - Docker (optional, for containerized deployment)
 - CUDA-capable GPU (optional, for quantum/ML workloads)
 - 16GB+ RAM (recommended)
@@ -479,14 +522,15 @@ results = bleu.process(
 )
 ```
 
-
 ### Development
+
 - **Run tests:** `pytest tests/ -q` (optional: `pip install pytest pytest-asyncio` for async tests)
 - **Version:** `from src.version import get_version`
 - **Raising/catching API exceptions:** `from src import ServiceUnavailable, RateLimitExceeded`
 - **How to contribute:** see [Contributing Guide](./docs/CONTRIBUTING.md)
 
 ### Reliability
+
 - When dependencies are unavailable, the API returns **503 Service Unavailable** (circuit breaker). Use `ServiceUnavailable` and `RateLimitExceeded` from `bleujs` (or `src`) for error handling.
 
 ### CI/CD Pipeline
@@ -509,6 +553,7 @@ For complete API documentation, see [API Reference](./docs/API_REFERENCE.md).
 ## Examples
 
 ### Quantum Feature Extraction
+
 ```python
 from bleujs.quantum import QuantumFeatureExtractor
 
@@ -526,6 +571,7 @@ features = extractor.extract(
 ```
 
 ### Quantum Teleportation
+
 Run the standard three-qubit teleportation protocol (simulator or IBM Quantum). See [docs/QUANTUM_TELEPORTATION.md](docs/QUANTUM_TELEPORTATION.md) for research notes and citations (Bennett et al. 1993).
 
 **To run it after cloning:** install with the quantum extra, then use the CLI or Python API. For real IBM hardware, add the `ibm` extra and set `QISKIT_IBM_TOKEN`.
@@ -549,6 +595,7 @@ bleu quantum teleport --ibm --shots 1024   # IBM Quantum (set QISKIT_IBM_TOKEN)
 ```
 
 ### Hybrid Model Training
+
 ```python
 from bleujs.ml import HybridTrainer
 
@@ -569,6 +616,7 @@ model = trainer.train(
 ## Docker Setup
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
@@ -584,6 +632,7 @@ docker-compose up -d
 ```
 
 ### Available Services
+
 - **Backend API**: FastAPI server (port 4003)
   - Main API endpoint
   - RESTful interface
@@ -610,6 +659,7 @@ docker-compose up -d
   - Performance monitoring
 
 ### Service Dependencies
+
 ```mermaid
 graph LR
     A[Frontend] --> B[Backend API]
@@ -621,12 +671,14 @@ graph LR
 ```
 
 ### Health Check Endpoints
+
 - Backend API: `http://localhost:4003/health`
 - Core Engine: `http://localhost:6000/health`
 - Eggs Generator: `http://localhost:5000/health`
 - MongoDB Express: `http://localhost:8081/health`
 
 ### Development Mode
+
 ```bash
 # Start with live reload
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
@@ -639,6 +691,7 @@ docker-compose up -d --build <service-name>
 ```
 
 ### Production Mode
+
 ```bash
 # Start in production mode
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
@@ -648,7 +701,9 @@ docker-compose up -d --scale worker=3
 ```
 
 ### Environment Variables
+
 Create a `.env` file in the root directory:
+
 ```env
 MONGODB_URI=mongodb://admin:pass@mongo:27017/bleujs?authSource=admin
 REDIS_HOST=redis
@@ -656,6 +711,7 @@ PORT=4003
 ```
 
 ### Common Commands
+
 ```bash
 # Stop all services
 docker-compose down
@@ -674,22 +730,26 @@ docker-compose run test
 ```
 
 ### Troubleshooting
+
 1. **Services not starting**: Check logs with `docker-compose logs`
 2. **Database connection issues**: Ensure MongoDB is running with `docker-compose ps`
 3. **Permission errors**: Make sure volumes have correct permissions
-4. **After OS upgrade (e.g. Pop!_OS)** / **"permission denied" on Docker**: Add your user to the `docker` group once: `sudo usermod -aG docker $USER`, then log out and back in (or run `newgrp docker`). See [docs/DOCKER_AFTER_OS_UPGRADE.md](docs/DOCKER_AFTER_OS_UPGRADE.md). Run `./scripts/docker-verify-and-run.sh` to verify Docker and optionally start the stack.
+4. **After OS upgrade (e.g. Pop!\_OS)** / **"permission denied" on Docker**: Add your user to the `docker` group once: `sudo usermod -aG docker $USER`, then log out and back in (or run `newgrp docker`). See [docs/DOCKER_AFTER_OS_UPGRADE.md](docs/DOCKER_AFTER_OS_UPGRADE.md). Run `./scripts/docker-verify-and-run.sh` to verify Docker and optionally start the stack.
 
 ### Data Persistence
+
 Data is persisted in Docker volumes:
+
 - MongoDB data: `mongo-data` volume
 - Logs: `./logs` directory
 - Application data: `./data` directory
 
 ## Performance Metrics
 
-*Targets and benchmarks; actual results depend on workload and environment.*
+_Targets and benchmarks; actual results depend on workload and environment._
 
 ### Core Performance
+
 - Processing Speed: up to 10x faster than traditional AI with quantum acceleration
 - Accuracy: up to 93.6% in code-analysis workloads with continuous improvement
 - Security: Military-grade encryption with quantum resistance
@@ -702,6 +762,7 @@ Data is persisted in Docker volumes:
 - Training Speed: 5x faster than industry standard with distributed computing
 
 ### Global Impact
+
 - 3K+ Active Developers with growing community
 - 100,000+ Projects Analyzed with continuous learning
 - 100x Faster Processing with quantum acceleration
@@ -709,6 +770,7 @@ Data is persisted in Docker volumes:
 - 15+ Countries Served with global infrastructure
 
 ### Enterprise Features
+
 - All Core Features with priority access
 - Military-Grade Security with custom protocols
 - Custom Integration with dedicated engineers
@@ -716,7 +778,6 @@ Data is persisted in Docker volumes:
 - SLA Guarantees with financial backing
 - Custom Training with specialized curriculum
 - White-label Options with branding control
-
 
 ## System Architecture
 
@@ -805,7 +866,6 @@ graph LR
     P --> O
 ```
 
-
 ## Contributing
 
 We welcome contributions. New to the repo? **[Start with a good first issue](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)** or fix a typo, add a test, or improve docs.
@@ -819,13 +879,13 @@ We welcome contributions. New to the repo? **[Start with a good first issue](htt
 
 ### Ways to Contribute
 
--  **Report bugs** - Help us find and fix issues
--  **Suggest features** - Share your ideas
--  **Improve documentation** - Make docs better for everyone
--  **Add tests** - Improve test coverage
--  **Write code** - Fix bugs, add features
--  **Help others** - Answer questions in Discussions
--  **Review PRs** - Help review pull requests
+- **Report bugs** - Help us find and fix issues
+- **Suggest features** - Share your ideas
+- **Improve documentation** - Make docs better for everyone
+- **Add tests** - Improve test coverage
+- **Write code** - Fix bugs, add features
+- **Help others** - Answer questions in Discussions
+- **Review PRs** - Help review pull requests
 
 ### Getting Started
 
@@ -870,17 +930,18 @@ DATABASE_URL="sqlite:///./bleujs.db" python -m uvicorn src.main:app --reload --p
 ```
 
 **What Works Out of the Box:**
+
 - SQLite database (no PostgreSQL required for development)
 - Development secret keys (auto-generated defaults)
 - All core features functional
 - API documentation at http://localhost:8002/docs
 
 **For Production:**
+
 - Set proper `SECRET_KEY`, `JWT_SECRET_KEY`, `JWT_SECRET`, and `ENCRYPTION_KEY` in environment variables
 - Use PostgreSQL for production: `DATABASE_URL=postgresql://user:pass@host:port/dbname`
 
 For complete development setup instructions, see [Contributing Guide](./docs/CONTRIBUTING.md).
-
 
 ## Bleu OS – Quantum-Enhanced Operating System
 
@@ -891,39 +952,44 @@ Linux distribution optimized for quantum computing and AI workloads.
 Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads, with native Bleu.js integration.
 
 **Key Features:**
--  **2x faster** quantum circuit execution
--  **1.5x faster** ML training
--  **3.75x faster** boot time
--  Quantum-resistant security
--  Zero-config Bleu.js integration
+
+- **2x faster** quantum circuit execution
+- **1.5x faster** ML training
+- **3.75x faster** boot time
+- Quantum-resistant security
+- Zero-config Bleu.js integration
 
 ### Get Bleu OS Now
 
 **Docker (Recommended - 5 minutes):**
+
 ```bash
 docker pull bleuos/bleu-os:latest
 docker run -it --gpus all bleuos/bleu-os:latest
 ```
 
 **Download ISO:**
+
 - Visit [GitHub Releases](https://github.com/HelloblueAI/Bleu.js/releases)
 - Download `bleu-os-1.0.0-x86_64.iso`
 - Create bootable USB and install
 
 **Cloud Deployment:**
+
 - **AWS:** Search "Bleu OS" in Marketplace
 - **GCP:** Available in GCP Marketplace
 - **Azure:** Available in Azure Marketplace
 
 **Learn more:**
+
 - [User Guide](./bleu-os/USER_GUIDE.md) - How to use Bleu OS
 - [How Users Get It](./bleu-os/HOW_USERS_GET_IT.md) - All distribution methods
 - [Quick Start](./bleu-os/QUICKSTART.md) - Get started in 5 minutes
 
-
 ## Additional Resources
 
 ### Documentation
+
 - **[Roadmap](./docs/ROADMAP.md)** - Development plans and future features
 - **[Changelog](./docs/CHANGELOG.md)** - Version history and release notes
 - **[Product architecture](docs/PRODUCT_ARCHITECTURE.md)** - One product app, what runs at bleujs.org
@@ -931,22 +997,24 @@ docker run -it --gpus all bleuos/bleu-os:latest
 - **[Bleu OS Documentation](./bleu-os/README.md)** - Operating system documentation
 
 ### Community & Support
+
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Common questions and answers
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - How to contribute to the project
 - **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
 
 ### Quick Links
+
 - **GitHub Repository**: [HelloblueAI/Bleu.js](https://github.com/HelloblueAI/Bleu.js)
 - **Hugging Face Models**: [helloblueai/bleu-xgboost-classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier)
 - **Issues**: [Report a Bug](https://github.com/HelloblueAI/Bleu.js/issues)
 - **Discussions**: [Join the Discussion](https://github.com/HelloblueAI/Bleu.js/discussions)
 
 ### Contact & Support
+
 - **General Support**: support@helloblue.ai
 - **Security Issues**: security@helloblue.ai (do NOT use public issues)
 - **Commercial Inquiries**: support@helloblue.ai
-
 
 ---
 

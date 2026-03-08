@@ -4,9 +4,9 @@ The Node/Express backend (inference, ML API, services) is **not** in this repo. 
 
 ## Why a separate repo
 
-| This repo | Backend repo |
-|-----------|--------------|
-| Python SDK, CLI, docs, demos, Bleu OS | Node/Express API and services |
+| This repo                                         | Backend repo                                 |
+| ------------------------------------------------- | -------------------------------------------- |
+| Python SDK, CLI, docs, demos, Bleu OS             | Node/Express API and services                |
 | Single dependency surface, clear Dependabot scope | Its own dependencies, releases, and security |
 
 ## Where is the backend?

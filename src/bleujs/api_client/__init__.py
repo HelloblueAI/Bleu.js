@@ -5,7 +5,7 @@ This module provides both synchronous and asynchronous clients for
 interacting with the Bleu.js cloud API.
 
 Usage:
-    from bleu_ai.api_client import BleuAPIClient
+    from bleujs.api_client import BleuAPIClient
 
     client = BleuAPIClient(api_key="bleujs_sk_...")
     response = client.chat([{"role": "user", "content": "Hello!"}])

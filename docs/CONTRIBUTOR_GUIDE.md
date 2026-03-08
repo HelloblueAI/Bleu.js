@@ -7,6 +7,7 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 ### 1. Find Something to Work On
 
 **Good First Issues:**
+
 - 🔍 Look for issues labeled `good first issue` or `help wanted`
 - 📝 Fix typos in documentation
 - 🧪 Add missing tests
@@ -14,6 +15,7 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 - 🐛 Fix small bugs
 
 **Where to Look:**
+
 - [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
 - Filter by: `good first issue`, `help wanted`, `beginner-friendly`
 
@@ -42,6 +44,7 @@ pip install -e ".[dev]"
 ### 4. Make a Small Change
 
 **Example: Fix a Typo**
+
 ```bash
 # Find a typo in docs/
 # Fix it

@@ -123,6 +123,7 @@ api.upload_file(
 A model card (README.md) is essential for documenting your model. Use the template provided:
 
 1. Copy the template:
+
    ```bash
    cp scripts/hf_model_card_template.md README.md
    ```
@@ -250,6 +251,7 @@ huggingface-cli login
 ### Upload Errors
 
 - **File too large**: Use Git LFS for large files
+
   ```bash
   git lfs install
   git lfs track "*.pkl"
@@ -308,6 +310,7 @@ Add to your GitHub Actions workflow:
 ## Support
 
 For issues or questions:
+
 - Email: support@helloblue.ai
 - GitHub: https://github.com/HelloblueAI/Bleu.js/issues
 - Hugging Face: https://huggingface.co/helloblueai

@@ -13,22 +13,25 @@ This document provides transparent information about Bleu.js community support, 
 - **Version:** 1.3.33
 - **Release Date:** 2025-01-XX
 - **Status:** ✅ **Active Maintenance**
-- **Python Support:** 3.10, 3.11, 3.12
+- **Python Support:** 3.11, 3.12, 3.13
 
 ### Maintenance Commitment
 
 ✅ **Active Development:**
+
 - Regular security updates
 - Bug fixes as reported
 - Feature enhancements
 - Documentation improvements
 
 ✅ **Release Cycle:**
+
 - **Patch Releases:** As needed (security fixes, critical bugs)
 - **Minor Releases:** Every 2-3 months (new features, improvements)
 - **Major Releases:** As needed (breaking changes, major features)
 
 ✅ **Support Timeline:**
+
 - Current version: Full support
 - Previous version (1.2.0): Security updates only
 - Older versions: No longer supported
@@ -40,6 +43,7 @@ This document provides transparent information about Bleu.js community support, 
 ### Current State
 
 ⚠️ **Early Stage Project:**
+
 - Bleu.js is a relatively new project
 - Community is growing
 - Active development and maintenance
@@ -56,6 +60,7 @@ This document provides transparent information about Bleu.js community support, 
 ### Community Growth
 
 We're actively working to build our community:
+
 - ✅ GitHub repository with open issues
 - ✅ Documentation improvements
 - ✅ Example code and tutorials
@@ -70,6 +75,7 @@ We're actively working to build our community:
 ### Support Channels
 
 #### 1. GitHub Issues
+
 **Best for:** Bug reports, feature requests, technical questions
 
 - **URL:** https://github.com/HelloblueAI/Bleu.js/issues
@@ -81,6 +87,7 @@ We're actively working to build our community:
   - Environment details (Python version, OS, etc.)
 
 #### 2. Email Support
+
 **Best for:** Direct questions, commercial inquiries
 
 - **Email:** support@helloblue.ai
@@ -92,6 +99,7 @@ We're actively working to build our community:
   - Partnership opportunities
 
 #### 3. GitHub Discussions
+
 **Best for:** Community questions, discussions, sharing examples
 
 - **URL:** https://github.com/HelloblueAI/Bleu.js/discussions
@@ -102,6 +110,7 @@ We're actively working to build our community:
   - Community collaboration
 
 #### 4. Documentation
+
 **Best for:** Learning how to use Bleu.js
 
 - **Quick Start:** [`docs/QUICKSTART.md`](./QUICKSTART.md)
@@ -118,6 +127,7 @@ We're actively working to build our community:
 We welcome contributions! Here's how you can help:
 
 #### 1. Report Bugs
+
 - Open a GitHub issue with:
   - Clear description
   - Steps to reproduce
@@ -125,12 +135,14 @@ We welcome contributions! Here's how you can help:
   - Environment details
 
 #### 2. Suggest Features
+
 - Open a GitHub issue with:
   - Feature description
   - Use case
   - Potential implementation (if you have ideas)
 
 #### 3. Submit Code
+
 - Fork the repository
 - Create a feature branch
 - Make your changes
@@ -138,12 +150,14 @@ We welcome contributions! Here's how you can help:
 - See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for guidelines
 
 #### 4. Improve Documentation
+
 - Fix typos or errors
 - Add examples
 - Improve clarity
 - Submit via pull request
 
 #### 5. Share Examples
+
 - Share your use cases
 - Write tutorials
 - Create example code
@@ -152,6 +166,7 @@ We welcome contributions! Here's how you can help:
 ### Contribution Guidelines
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
+
 - Code style
 - Testing requirements
 - Pull request process
@@ -203,11 +218,11 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 
 ### Version Support
 
-| Version | Status | Support Level |
-|---------|--------|---------------|
-| 1.3.33 | ✅ Current | Full support |
-| 1.2.0 | ⚠️ Previous | Security updates only |
-| 1.1.x | ❌ Deprecated | No support |
+| Version | Status        | Support Level         |
+| ------- | ------------- | --------------------- |
+| 1.3.33  | ✅ Current    | Full support          |
+| 1.2.0   | ⚠️ Previous   | Security updates only |
+| 1.1.x   | ❌ Deprecated | No support            |
 
 ---
 
@@ -239,6 +254,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Q: How often is Bleu.js updated?
 
 **A:**
+
 - Security updates: As needed (typically within days)
 - Bug fixes: Monthly or as needed
 - Features: Every 2-3 months
@@ -247,6 +263,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Q: What's the support timeline?
 
 **A:**
+
 - Current version: Full support
 - Previous version: Security updates only
 - Older versions: No longer supported
@@ -254,6 +271,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Q: Can I get commercial support?
 
 **A:** Yes! Contact support@helloblue.ai for commercial support options, including:
+
 - Priority support
 - Custom development
 - Training and consulting
@@ -262,6 +280,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Q: How can I contribute?
 
 **A:** See the [Contributing](#contributing) section above. We welcome:
+
 - Bug reports
 - Feature suggestions
 - Code contributions
@@ -271,6 +290,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Q: Where can I find examples?
 
 **A:**
+
 - [`examples/`](../examples/) directory
 - GitHub Discussions
 - Documentation guides
@@ -289,15 +309,18 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ## Contact Information
 
 ### General Support
+
 - **Email:** support@helloblue.ai
 - **GitHub Issues:** https://github.com/HelloblueAI/Bleu.js/issues
 - **GitHub Discussions:** https://github.com/HelloblueAI/Bleu.js/discussions
 
 ### Security Issues
+
 - **Email:** security@helloblue.ai
 - **Do NOT** use public GitHub issues for security reports
 
 ### Commercial Inquiries
+
 - **Email:** support@helloblue.ai
 - **Subject:** Commercial Inquiry
 
@@ -308,6 +331,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for detailed guidelines on:
 ### Our Commitment
 
 We're committed to:
+
 - ✅ Transparent development process
 - ✅ Regular updates and maintenance
 - ✅ Responsive support
@@ -317,6 +341,7 @@ We're committed to:
 ### Building Trust
 
 We understand that trust is built over time. We're working to:
+
 - Provide comprehensive documentation
 - Respond promptly to issues
 - Maintain active development

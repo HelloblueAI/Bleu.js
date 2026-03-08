@@ -18,12 +18,12 @@ The implementation follows the canonical construction from:
 
 > **Bennett, C. H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A., & Wootters, W. K. (1993).**
 > Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels.
-> *Physical Review Letters*, **70**(13), 1895–1899.
+> _Physical Review Letters_, **70**(13), 1895–1899.
 
 For papers or reports that use Bleu.js teleportation, you can cite:
 
 - **Software:** Bleu.js (quantum-enhanced AI platform), https://github.com/HelloblueAI/Bleu.js
-- **Protocol:** Bennett et al. (1993), *Phys. Rev. Lett.* 70, 1895
+- **Protocol:** Bennett et al. (1993), _Phys. Rev. Lett._ 70, 1895
 
 ## Circuit layout (Bleu.js / IBM)
 

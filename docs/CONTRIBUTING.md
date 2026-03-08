@@ -31,6 +31,7 @@ Thank you for your interest in contributing to Bleu.js! We're excited to have yo
 By participating in this project, you agree to abide by our [Code of Conduct](../CODE_OF_CONDUCT.md). We are committed to providing a welcoming and inclusive environment for all contributors.
 
 **Key Principles:**
+
 - Be respectful and inclusive
 - Welcome newcomers and help them learn
 - Focus on constructive feedback
@@ -61,45 +62,53 @@ By participating in this project, you agree to abide by our [Code of Conduct](..
 You don't need to write code to contribute! Here are many ways to help:
 
 ### 🐛 Bug Reports
+
 - Found a bug? [Open an issue](../../issues/new?template=bug_report.md)
 - Include steps to reproduce
 - Add error messages and environment details
 
 ### ✨ Feature Requests
+
 - Have an idea? [Open an issue](../../issues/new?template=feature_request.md)
 - Describe the use case
 - Explain the benefits
 
 ### 📝 Documentation
+
 - Fix typos or errors
 - Improve clarity
 - Add examples
 - Translate documentation
 
 ### 🧪 Testing
+
 - Write tests for new features
 - Improve test coverage
 - Report test failures
 - Add integration tests
 
 ### 🎨 Code Contributions
+
 - Fix bugs
 - Implement features
 - Refactor code
 - Optimize performance
 
 ### 💬 Community Support
+
 - Answer questions in Discussions
 - Help newcomers
 - Share use cases
 - Write tutorials
 
 ### 🔍 Code Review
+
 - Review pull requests
 - Provide constructive feedback
 - Suggest improvements
 
 ### 📢 Promotion
+
 - Star the repository ⭐
 - Share on social media
 - Write blog posts
@@ -111,7 +120,7 @@ You don't need to write code to contribute! Here are many ways to help:
 
 ### Prerequisites
 
-- **Python:** 3.8+ (3.10+ recommended)
+- **Python:** 3.11+
 - **Git:** Latest version
 - **IDE:** VS Code, PyCharm, or your favorite editor
 - **Docker:** (Optional, for containerized development)
@@ -219,6 +228,7 @@ git checkout -b test/your-test-update
 ```
 
 **Branch Naming:**
+
 - `feature/` - New features
 - `fix/` - Bug fixes
 - `docs/` - Documentation
@@ -271,6 +281,7 @@ Closes #123
 ```
 
 **Types:**
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation
@@ -281,6 +292,7 @@ Closes #123
 - `perf:` - Performance improvements
 
 **Examples:**
+
 ```bash
 feat(quantum): add quantum state monitoring
 
@@ -347,6 +359,7 @@ git push origin feature/your-feature-name
 ### PR Review Criteria
 
 We review PRs for:
+
 - ✅ Code quality and style
 - ✅ Test coverage
 - ✅ Documentation updates
@@ -617,6 +630,7 @@ Looking for your first contribution? Check these out:
 ### Contributors
 
 All contributors are recognized in:
+
 - **README.md** - Contributors section
 - **Release notes** - For each release
 - **GitHub contributors** - Automatic recognition
@@ -631,6 +645,7 @@ All contributors are recognized in:
 ### Hall of Fame
 
 We maintain a contributors list recognizing:
+
 - Code contributions
 - Documentation improvements
 - Bug reports

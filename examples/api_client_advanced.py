@@ -13,7 +13,7 @@ Setup:
 
 import time
 
-from bleu_ai.api_client import (
+from bleujs.api_client import (
     APIError,
     AuthenticationError,
     BleuAPIClient,

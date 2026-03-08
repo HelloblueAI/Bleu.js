@@ -5,6 +5,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
 ## Core Features
 
 ### Machine Learning Integration
+
 - **Ensemble Learning**:
   - XGBoost for high-performance gradient boosting
   - LightGBM for efficient large-scale prediction
@@ -15,6 +16,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
   - Advanced data augmentation techniques
 
 ### Quantum Computing Integration
+
 - **Quantum Fusion**: Advanced quantum circuit optimization for ML acceleration
 - **Quantum Attention Mechanism**: Quantum-inspired attention layers for enhanced feature detection
 - **Quantum Loss Functions**: Novel quantum-based loss functions for better model convergence
@@ -22,6 +24,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
 - **Quantum Feature Engineering**: Enhanced feature extraction using quantum algorithms
 
 ### Computer Vision Capabilities
+
 - **Advanced Image Processing**:
   - State-of-the-art preprocessing and enhancement
   - Multi-scale feature extraction
@@ -40,6 +43,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
   - Time series pattern analysis
 
 ### System Architecture
+
 - **High Performance**:
   - Optimized for classical, quantum, and hybrid hardware
   - GPU acceleration (CUDA, ROCm)
@@ -60,6 +64,7 @@ BleuJS is a cutting-edge Machine Learning and Computer Vision System that combin
 ## Machine Learning Models
 
 ### Classical ML
+
 ```python
 from bleujs.ml import XGBoostModel, LightGBMModel
 from bleujs.preprocessing import QuantumFeatureExtractor
@@ -84,6 +89,7 @@ model.fit(features, y_train)
 ```
 
 ### Quantum-Enhanced Vision
+
 ```python
 from bleujs import QuantumVision
 from bleujs.models import QuantumFusion, XGBoostEnsemble
@@ -114,6 +120,7 @@ print(f"Processing Time: {analysis.processing_time}ms")
 ```
 
 ### Performance Metrics
+
 - **Quantum Advantage**:
   - Up to 10x faster processing for complex images
   - 30% higher accuracy in feature detection
@@ -130,11 +137,13 @@ print(f"Processing Time: {analysis.processing_time}ms")
 ## Installation
 
 ### Python Package
+
 ```bash
 pip install bleujs
 ```
 
 ### JavaScript/Node.js Package
+
 ```bash
 npm install bleujs
 ```
@@ -142,6 +151,7 @@ npm install bleujs
 ## Quick Start Guide
 
 ### Python Example
+
 ```python
 from bleujs import QuantumVision
 from bleujs.models import QuantumFusion
@@ -167,20 +177,21 @@ print(f"Quantum advantage: {analysis.quantum_speedup}x")
 ```
 
 ### JavaScript Example
+
 ```javascript
-import { QuantumVision } from 'bleujs';
+import { QuantumVision } from "bleujs";
 
 const qv = new QuantumVision({
-  modelType: 'fusion',
-  quantumBackend: 'aer_simulator',
-  numQubits: 4
+  modelType: "fusion",
+  quantumBackend: "aer_simulator",
+  numQubits: 4,
 });
 
 async function processImage() {
   const result = await qv.processImage({
-    path: 'path/to/image.jpg',
-    enhancementLevel: 'high',
-    useQuantumAttention: true
+    path: "path/to/image.jpg",
+    enhancementLevel: "high",
+    useQuantumAttention: true,
   });
 
   console.log(`Detection confidence: ${result.confidence}`);
@@ -191,12 +202,14 @@ async function processImage() {
 ## Key Components
 
 ### Quantum Vision Models
+
 - **QuantumFusion**: Combines classical CNN with quantum circuits
 - **QuantumAttention**: Quantum-inspired attention mechanism
 - **QuantumLoss**: Advanced quantum loss functions
 - **VisionProcessor**: High-performance image processing pipeline
 
 ### Performance Metrics
+
 - Up to 10x faster processing for complex images
 - 30% higher accuracy in feature detection
 - Reduced memory footprint compared to classical methods
@@ -229,13 +242,15 @@ async function processImage() {
 Current version: 1.1.3
 
 ### Compatibility
-- Python: >=3.10.0, <3.12.0
+
+- Python: >=3.11.0, <3.14.0
 - Node.js: >=18.0.0
 - Quantum Backends: Qiskit, Cirq, PennyLane
 - GPU Support: CUDA 11.x, ROCm 5.x
 
 ## Resources
-- [GitHub Repository](https://github.com/yourusername/bleujs)
+
+- [GitHub Repository](https://github.com/HelloblueAI/Bleu.js)
 - [API Documentation](https://bleujs.org/api)
 - [Examples Gallery](https://bleujs.org/examples)
 - [Performance Benchmarks](https://bleujs.org/benchmarks)

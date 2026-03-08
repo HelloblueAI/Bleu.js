@@ -36,6 +36,7 @@ We recognize that comprehensive documentation is essential. Here's what's availa
 - ✅ Interactive documentation
 
 **How to Access Documentation:**
+
 - GitHub: https://github.com/HelloblueAI/Bleu.js/tree/main/docs
 - Website: https://bleujs.org/docs (coming soon)
 
@@ -63,7 +64,7 @@ Bleu.js is a relatively new project, and we're actively building our community.
 
 - **Version:** 1.3.33 (latest stable)
 - **Release Cycle:** Regular updates with security patches
-- **Python Support:** Python 3.10, 3.11, 3.12
+- **Python Support:** Python 3.11, 3.12, 3.13
 - **License:** MIT (open source)
 
 #### How to Get Support
@@ -90,6 +91,7 @@ We understand that strict version pinning can cause conflicts. Here's our approa
 #### Current Dependency Strategy
 
 **Core Dependencies (Flexible):**
+
 ```toml
 numpy = "^1.24.3,<2.0.0"  # Flexible range
 pandas = "^2.0.0"          # Flexible range
@@ -97,6 +99,7 @@ scikit-learn = "^1.2.2"    # Flexible range
 ```
 
 **Pinned Dependencies (For Stability):**
+
 ```toml
 sqlalchemy = "2.0.23"      # Pinned for compatibility
 alembic = "1.13.1"         # Pinned for compatibility
@@ -111,6 +114,7 @@ alembic = "1.13.1"         # Pinned for compatibility
 #### Solutions for Dependency Conflicts
 
 **Option 1: Use Optional Dependencies**
+
 ```bash
 # Install only core features
 pip install bleu-js
@@ -122,6 +126,7 @@ pip install 'bleu-js[api]'       # API client only
 ```
 
 **Option 2: Use Virtual Environments**
+
 ```bash
 # Isolate Bleu.js dependencies
 python -m venv bleujs-env
@@ -130,6 +135,7 @@ pip install bleu-js
 ```
 
 **Option 3: Override Versions (Advanced)**
+
 ```bash
 # Install with version overrides
 pip install bleu-js --no-deps
@@ -144,6 +150,7 @@ See [`docs/DEPENDENCY_MANAGEMENT.md`](./DEPENDENCY_MANAGEMENT.md) for detailed g
 #### Reporting Conflicts
 
 If you encounter dependency conflicts:
+
 1. Open a GitHub issue with your `requirements.txt`
 2. Include error messages
 3. We'll work to resolve compatibility issues
@@ -161,18 +168,21 @@ Bleu.js is designed for advanced AI/ML workloads, which naturally require more r
 #### Resource Requirements
 
 **Minimum Requirements:**
+
 - **RAM:** 4GB (for basic usage)
 - **Disk Space:** ~2GB (installation + dependencies)
 - **CPU:** 2 cores
-- **Python:** 3.10+
+- **Python:** 3.11+
 
 **Recommended Requirements:**
+
 - **RAM:** 16GB+ (for ML/quantum features)
 - **Disk Space:** ~5GB (with all features)
 - **CPU:** 4+ cores
 - **GPU:** CUDA-capable (optional, for quantum acceleration)
 
 **Full Installation (All Features):**
+
 - **RAM:** 32GB+ recommended
 - **Disk Space:** ~10GB
 - **GPU:** Recommended for quantum features
@@ -186,6 +196,7 @@ Bleu.js is designed for advanced AI/ML workloads, which naturally require more r
 #### Optimizing Resource Usage
 
 **1. Install Only What You Need**
+
 ```bash
 # Minimal installation
 pip install bleu-js  # Core only (~500MB)
@@ -196,10 +207,12 @@ pip install 'bleu-js[quantum]'  # +Quantum (~3GB)
 ```
 
 **2. Use Lightweight Alternatives**
+
 - For simple tasks, consider using only the core features
 - Quantum features are optional and can be skipped if not needed
 
 **3. CI/CD Optimization**
+
 ```yaml
 # Example: GitHub Actions with caching
 - uses: actions/cache@v3
@@ -210,12 +223,12 @@ pip install 'bleu-js[quantum]'  # +Quantum (~3GB)
 
 #### Resource Usage by Feature
 
-| Feature | RAM | Disk | Installation Time |
-|---------|-----|------|-------------------|
-| Core | 4GB | 500MB | 2-5 min |
-| + ML | 8GB | 2GB | 5-10 min |
-| + Quantum | 16GB | 5GB | 10-15 min |
-| Full | 32GB | 10GB | 15-20 min |
+| Feature   | RAM  | Disk  | Installation Time |
+| --------- | ---- | ----- | ----------------- |
+| Core      | 4GB  | 500MB | 2-5 min           |
+| + ML      | 8GB  | 2GB   | 5-10 min          |
+| + Quantum | 16GB | 5GB   | 10-15 min         |
+| Full      | 32GB | 10GB  | 15-20 min         |
 
 See [`docs/ai/optimization/RESOURCE_USAGE.md`](./ai/optimization/RESOURCE_USAGE.md) for detailed optimization guides.
 
@@ -232,6 +245,7 @@ Bleu.js is designed for **quantum-enhanced AI/ML applications**. It may not be t
 #### When to Use Bleu.js
 
 ✅ **Good Fit:**
+
 - Quantum-enhanced machine learning
 - Advanced AI research
 - Quantum computing experiments
@@ -240,6 +254,7 @@ Bleu.js is designed for **quantum-enhanced AI/ML applications**. It may not be t
 - Applications requiring quantum features
 
 ❌ **Not Recommended For:**
+
 - Simple performance monitoring
 - Basic data processing
 - Simple API clients
@@ -249,6 +264,7 @@ Bleu.js is designed for **quantum-enhanced AI/ML applications**. It may not be t
 #### Alternative Recommendations
 
 **For Performance Monitoring:**
+
 ```python
 # Use lightweight alternatives
 import psutil  # System monitoring
@@ -261,6 +277,7 @@ import time    # Performance timing
 ```
 
 **For Simple ML Tasks:**
+
 ```python
 # Use scikit-learn directly
 from sklearn.ensemble import RandomForestClassifier
@@ -271,6 +288,7 @@ import xgboost as xgb
 ```
 
 **For Quantum Computing:**
+
 ```python
 # Use Qiskit or PennyLane directly
 from qiskit import QuantumCircuit
@@ -279,6 +297,7 @@ import pennylane as qml
 ```
 
 **For Distributed Computing:**
+
 ```python
 # Use Ray or Dask directly
 import ray
@@ -304,12 +323,14 @@ Do you need quantum-enhanced AI/ML?
 #### Use Case Examples
 
 **✅ Good Use Cases:**
+
 1. Quantum-enhanced computer vision
 2. Hybrid classical-quantum ML models
 3. Research in quantum AI
 4. Advanced ML with quantum acceleration
 
 **❌ Not Recommended:**
+
 1. Simple API monitoring
 2. Basic data analysis
 3. Simple web applications
@@ -322,6 +343,7 @@ Do you need quantum-enhanced AI/ML?
 ### Q: Is Bleu.js production-ready?
 
 **A:** Bleu.js v1.3.33 is stable and suitable for production use, but consider your specific requirements:
+
 - Core features: ✅ Production-ready
 - ML features: ✅ Production-ready
 - Quantum features: ⚠️ Best for research/development
@@ -329,6 +351,7 @@ Do you need quantum-enhanced AI/ML?
 ### Q: Can I use Bleu.js without quantum features?
 
 **A:** Yes! Install the core package:
+
 ```bash
 pip install bleu-js  # Core only, no quantum dependencies
 ```
@@ -355,23 +378,26 @@ pip install bleu-js  # Core only, no quantum dependencies
 
 ### Q: Does Bleu.js work with Python 3.12?
 
-**A:** Yes! Bleu.js 1.3.33 supports Python 3.10, 3.11, and 3.12.
+**A:** Yes! Bleu.js supports Python 3.11, 3.12, and 3.13.
 
 ---
 
 ## 7. Getting Help
 
 ### Documentation
+
 - Start with [`QUICKSTART.md`](./QUICKSTART.md)
 - Check [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
 - Review examples in [`examples/`](../examples/)
 
 ### Support Channels
+
 - **GitHub Issues:** Bug reports and feature requests
 - **Email:** support@helloblue.ai
 - **GitHub Discussions:** Questions and community discussion
 
 ### Community
+
 - Star us on GitHub: https://github.com/HelloblueAI/Bleu.js
 - Contribute: See [`CONTRIBUTING.md`](./CONTRIBUTING.md)
 - Report issues: https://github.com/HelloblueAI/Bleu.js/issues
@@ -389,6 +415,7 @@ Bleu.js is a powerful framework for quantum-enhanced AI/ML applications. However
 5. **Check documentation** - Review guides and examples before starting
 
 If you have questions or concerns, please reach out:
+
 - GitHub Issues: https://github.com/HelloblueAI/Bleu.js/issues
 - Email: support@helloblue.ai
 
