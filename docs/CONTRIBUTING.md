@@ -111,7 +111,7 @@ You don't need to write code to contribute! Here are many ways to help:
 
 ### Prerequisites
 
-- **Python:** 3.10, 3.11, or 3.12
+- **Python:** 3.8+ (3.10+ recommended)
 - **Git:** Latest version
 - **IDE:** VS Code, PyCharm, or your favorite editor
 - **Docker:** (Optional, for containerized development)
