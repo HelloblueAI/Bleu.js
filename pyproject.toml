@@ -43,7 +43,7 @@ scikit-learn = {version = "^1.2.2", optional = true}
 xgboost = {version = "^3.0.2", optional = true}
 
 # Optional: Quantum (qiskit, pennylane)
-pennylane = {version = "^0.42.1", optional = true}
+pennylane = {version = ">=0.42.1,<0.45.0", optional = true}
 qiskit = {version = "^2.1.1", optional = true}
 qiskit-algorithms = {version = ">=0.3,<0.5", optional = true}
 qiskit-aer = {version = "^0.17.1", optional = true}
