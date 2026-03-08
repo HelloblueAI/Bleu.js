@@ -19,6 +19,10 @@ If you find a security issue, please report it responsibly:
 
 We will acknowledge and work on the report and coordinate disclosure.
 
+## Dependency alerts and Dependabot
+
+We keep the repo's dependency surface small so Dependabot and security alerts stay manageable. The `backend/` directory is not in the repo (see [docs/DEPENDABOT_AND_DEPENDENCIES.md](docs/DEPENDABOT_AND_DEPENDENCIES.md)). Do not re-add backend or new app manifests without reading that doc.
+
 ## Deployment checklist
 
 When deploying Bleu.js:

@@ -299,6 +299,7 @@ with open(model_path, 'rb') as f:
 - **[API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
 - **[Resource Requirements](./docs/RESOURCE_REQUIREMENTS.md)** - System requirements and use case guidance
 - **[Dependency Management](./docs/DEPENDENCY_MANAGEMENT.md)** - Managing dependencies and resolving conflicts
+- **[Dependabot and dependency security](./docs/DEPENDABOT_AND_DEPENDENCIES.md)** - Why we keep scan scope minimal; do not re-add backend
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 
 ### Version
