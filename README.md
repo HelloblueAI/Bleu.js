@@ -245,6 +245,19 @@ pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git
 
 **What's new:** Comprehensive Bleu CLI (`bleu chat`, `bleu generate`, `bleu embed`, `bleu models`, etc.), SDK improvements, and more. See [CHANGELOG.md](./CHANGELOG.md) for full details.
 
+**Get started at a glance:**
+
+```mermaid
+flowchart LR
+    A[pip install bleu-js] --> B{Use case?}
+    B -->|Cloud API & CLI| C["pip install 'bleu-js[api]'"]
+    B -->|Quantum & teleport| D["pip install 'bleu-js[quantum]'"]
+    B -->|ML / XGBoost| E["pip install 'bleu-js[ml]'"]
+    C --> F[bleu chat / SDK]
+    D --> G[bleu quantum teleport]
+    E --> H[BleuJS + HybridTrainer]
+```
+
 > **Note:** Bleu.js is an advanced Python package for quantum-enhanced computer vision and AI. Node.js subprojects (plugins/tools) are experimental and not part of the official PyPI release. For the latest stable version, use the Python package from GitHub.
 
 ### 🤗 Pre-trained Models
@@ -355,6 +368,30 @@ pie title Current vs Target Performance
   - System recovery mechanisms
 
 ## Key Features
+
+**Platform overview:**
+
+```mermaid
+flowchart TB
+    subgraph Users
+        U1[CLI]
+        U2[Python SDK]
+        U3[Cloud API]
+    end
+    subgraph Bleu["Bleu.js core"]
+        Q[Quantum]
+        M[ML pipeline]
+        A[API client]
+    end
+    U1 --> A
+    U2 --> Q
+    U2 --> M
+    U2 --> A
+    U3 --> A
+    Q --> T[Teleportation]
+    Q --> F[Feature extraction]
+    M --> X[XGBoost / Hybrid]
+```
 
 - **Quantum Computing Integration**: Advanced quantum algorithms for enhanced processing
 - **Multi-Modal AI Processing**: Cross-domain learning capabilities
