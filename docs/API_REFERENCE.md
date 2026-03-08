@@ -592,7 +592,7 @@ def process(
 - **Quick Start:** [`QUICKSTART.md`](./QUICKSTART.md)
 - **API Client Guide:** [`API_CLIENT_GUIDE.md`](./API_CLIENT_GUIDE.md)
 - **Examples:** [`../examples/`](../examples/)
-- **User Guide:** [`../COMPLETE_USER_GUIDE.md`](../COMPLETE_USER_GUIDE.md)
+- **User guide:** [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
 
 ---
 

@@ -645,7 +645,7 @@ We maintain a contributors list recognizing:
 
 - **[Quick Start Guide](QUICKSTART.md)** - Get started quickly
 - **[API Reference](API_REFERENCE.md)** - Complete API docs
-- **[Project Structure](../PROJECT_STRUCTURE.md)** - Understand the codebase
+- **[Product architecture](PRODUCT_ARCHITECTURE.md)** - Understand the codebase and product app
 - **[Development Guide](local-development.md)** - Local development setup
 
 ### External Resources

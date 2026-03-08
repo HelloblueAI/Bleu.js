@@ -2,13 +2,15 @@
 
 Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to contribute to—building on the recent security fixes, backend split, and OSS standards.
 
+**Done:** [Product architecture](PRODUCT_ARCHITECTURE.md) added; duplicate/one-off docs moved to [docs/archive/](archive/); coverage-only tests moved to [tests/archive/](archive/); root `main.py` and `src/python/backend` marked as non-product; [README](../README.md) and doc links updated.
+
 ---
 
 ## 1. Quick wins (this week)
 
 | Action | Why |
 |--------|-----|
-| **Refresh [ROADMAP.md](ROADMAP.md)** | Still says v1.1.8, Q1 2024, and "yourusername". Update to current version (e.g. 1.3.x), real status (quantum, CLI, API playground, backend split), and correct GitHub/Discord links. |
+| **ROADMAP** | Already refreshed (v1.3.x, real links). Keep it updated. |
 | **Bulk-dismiss obsolete Dependabot alerts** | Per [DEPENDABOT_AND_DEPENDENCIES.md](DEPENDABOT_AND_DEPENDENCIES.md), dismiss alerts for `backend/` and removed manifests so the Security tab reflects only root pip, collaboration-tools npm, Docker, Actions. |
 | **Add a short “Recent security hardening” note** | In [SECURITY.md](../SECURITY.md) or a one-line in README: mention auth/JWT fix, CSRF option, secret validation, no DB URL logging, CORS/CSP tightening (link to CHANGELOG or a small `docs/SECURITY_HARDENING.md` if you add it). |
 

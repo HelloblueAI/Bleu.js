@@ -1,5 +1,7 @@
 """
-Main FastAPI application for the Bleu.js backend.
+Internal/ML FastAPI backend (different stack from product app).
+
+Product app for bleujs.org is src.main.app. See docs/PRODUCT_ARCHITECTURE.md.
 """
 
 import logging

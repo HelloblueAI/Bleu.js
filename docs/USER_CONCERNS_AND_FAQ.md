@@ -20,7 +20,7 @@ We recognize that comprehensive documentation is essential. Here's what's availa
 - **Installation Guide:** [`docs/INSTALLATION_FOR_USERS.md`](./INSTALLATION_FOR_USERS.md)
 - **API Client Guide:** [`docs/API_CLIENT_GUIDE.md`](./API_CLIENT_GUIDE.md)
 - **Migration Guide:** [`docs/MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md)
-- **Complete User Guide:** [`../COMPLETE_USER_GUIDE.md`](../COMPLETE_USER_GUIDE.md)
+- **User guide:** [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
 
 #### API Reference
 
@@ -363,7 +363,7 @@ pip install bleu-js  # Core only, no quantum dependencies
 
 ### Documentation
 - Start with [`QUICKSTART.md`](./QUICKSTART.md)
-- Check [`COMPLETE_USER_GUIDE.md`](../COMPLETE_USER_GUIDE.md)
+- Check [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
 - Review examples in [`examples/`](../examples/)
 
 ### Support Channels
