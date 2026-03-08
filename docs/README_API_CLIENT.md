@@ -40,15 +40,15 @@ print(response.embeddings)
 
 ## 🌟 Features
 
-✅ **Chat Completion** - Conversational AI  
-✅ **Text Generation** - Creative content  
-✅ **Embeddings** - Semantic vectors  
-✅ **Model Listing** - Available models  
-✅ **Sync & Async** - Choose your style  
-✅ **Error Handling** - Comprehensive exceptions  
-✅ **Auto Retry** - Exponential backoff  
-✅ **Type Safe** - Full type hints  
-✅ **Well Tested** - 95%+ coverage  
+✅ **Chat Completion** - Conversational AI
+✅ **Text Generation** - Creative content
+✅ **Embeddings** - Semantic vectors
+✅ **Model Listing** - Available models
+✅ **Sync & Async** - Choose your style
+✅ **Error Handling** - Comprehensive exceptions
+✅ **Auto Retry** - Exponential backoff
+✅ **Type Safe** - Full type hints
+✅ **Well Tested** - 95%+ coverage
 
 ---
 
@@ -281,4 +281,3 @@ MIT License - See [LICENSE.md](LICENSE.md) for details
 ```bash
 pip install bleu-js[api]
 ```
-

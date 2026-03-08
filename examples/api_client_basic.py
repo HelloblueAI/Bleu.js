@@ -27,14 +27,16 @@ print("\n📱 EXAMPLE 1: Chat Completion")
 print("-" * 70)
 
 try:
-    response = client.chat([
-        {"role": "system", "content": "You are a helpful AI assistant."},
-        {"role": "user", "content": "What is quantum computing?"}
-    ])
-    
+    response = client.chat(
+        [
+            {"role": "system", "content": "You are a helpful AI assistant."},
+            {"role": "user", "content": "What is quantum computing?"},
+        ]
+    )
+
     print(f"Model: {response.model}")
     print(f"Response: {response.content}")
-    
+
     if response.usage:
         print(f"Tokens used: {response.usage.get('total_tokens', 'N/A')}")
 except Exception as e:
@@ -50,9 +52,9 @@ try:
     response = client.generate(
         prompt="Write a haiku about artificial intelligence:",
         temperature=0.8,
-        max_tokens=50
+        max_tokens=50,
     )
-    
+
     print(f"Generated text:\n{response.text}")
     print(f"Finish reason: {response.finish_reason}")
 except Exception as e:
@@ -68,11 +70,11 @@ try:
     texts = [
         "Quantum computing uses quantum mechanics",
         "Machine learning is a subset of AI",
-        "Neural networks mimic the human brain"
+        "Neural networks mimic the human brain",
     ]
-    
+
     response = client.embed(texts)
-    
+
     print(f"Embedded {len(response.embeddings)} texts")
     print(f"Embedding dimension: {len(response.embeddings[0])}")
     print(f"First embedding (first 5 dims): {response.embeddings[0][:5]}")
@@ -87,7 +89,7 @@ print("-" * 70)
 
 try:
     models = client.list_models()
-    
+
     print(f"Found {len(models)} models:\n")
     for model in models:
         print(f"  • {model.id}")
@@ -107,4 +109,3 @@ client.close()
 print("=" * 70)
 print("✅ Examples complete!")
 print("=" * 70)
-

@@ -346,8 +346,7 @@ uvicorn src.api.main:app --reload
 
 ---
 
-**Release Date:** January 12, 2025  
-**Version:** 1.2.0  
-**Status:** Production Ready  
+**Release Date:** January 12, 2025
+**Version:** 1.2.0
+**Status:** Production Ready
 **License:** MIT
-

@@ -16,12 +16,12 @@ This doc explains how we handle Trivy (and similar) security alerts for the **he
 
 ## Alerts that may still appear
 
-1. **jackson-core (ray_dist.jar)**  
-   The **ray** Python package bundles `ray_dist.jar`, which can contain an older **jackson-core**. Trivy may report a “Number Length Constraint Bypass” / DoS for that JAR.  
-   - **Mitigation:** Upgrade **ray** when a release bundles a fixed jackson (check [ray releases](https://github.com/ray-project/ray/releases) and release notes). We currently pin `ray>=2.9.0` in pyproject.toml; bump the minimum when upstream fixes the bundle.  
+1. **jackson-core (ray_dist.jar)**
+   The **ray** Python package bundles `ray_dist.jar`, which can contain an older **jackson-core**. Trivy may report a “Number Length Constraint Bypass” / DoS for that JAR.
+   - **Mitigation:** Upgrade **ray** when a release bundles a fixed jackson (check [ray releases](https://github.com/ray-project/ray/releases) and release notes). We currently pin `ray>=2.9.0` in pyproject.toml; bump the minimum when upstream fixes the bundle.
    - **Risk:** DoS in a parser; the JAR is used by Ray at runtime. Prefer upgrading ray over removing it if you need it.
 
-2. **Alpine-only alerts**  
+2. **Alpine-only alerts**
    If Trivy still reports **zlib**, **sqlite**, or **cpython** in **helloblueai/bleu-os**, check that the scanned image is actually the **production** image (Debian), not an old or Alpine build. Rebuild and push `bleu-os/Dockerfile.production` as `:latest`, then rescan.
 
 ## Rebuild and rescan

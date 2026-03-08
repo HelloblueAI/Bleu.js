@@ -625,7 +625,11 @@ def quantum_teleport(
         click.echo(qc.draw())
     out = run_teleportation_simulator(theta=theta, shots=shots)
     if output_json:
-        click.echo(json.dumps({"theta": theta, "shots": shots, "counts": out["counts"]}, indent=2))
+        click.echo(
+            json.dumps(
+                {"theta": theta, "shots": shots, "counts": out["counts"]}, indent=2
+            )
+        )
     else:
         click.echo(f"✅ Teleportation (theta={theta}, shots={shots})")
         click.echo(f"   Counts: {out['counts']}")

@@ -343,4 +343,3 @@ Bleu.js v1.2.0 is now:
 **From broken to perfect in one release!** ✨
 
 🎊 **CONGRATULATIONS!** 🎊
-

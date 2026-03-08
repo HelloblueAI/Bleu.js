@@ -14,9 +14,9 @@ sudo usermod -aG docker "$USER"
 
 **Then either:**
 
-- **Option A:** Log out and log back in (or reboot), or  
-- **Option B:** In the same terminal, run:  
-  `newgrp docker`  
+- **Option A:** Log out and log back in (or reboot), or
+- **Option B:** In the same terminal, run:
+  `newgrp docker`
   (only that terminal will have the new group until you log out/in)
 
 **Check:**
@@ -44,24 +44,24 @@ docker compose ps
 
 ## 3. Quick health check
 
-- **Frontend:** http://localhost:3000  
-- **Backend API:** http://localhost:4003  
-- **Mongo Express:** http://localhost:8081  
-- **Backend health:** http://localhost:4003/health  
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:4003
+- **Mongo Express:** http://localhost:8081
+- **Backend health:** http://localhost:4003/health
 
 ## 4. If something fails
 
-- **Permission denied on docker.sock**  
+- **Permission denied on docker.sock**
   You’re not in the `docker` group yet. Do step 1 again, then log out and back in (or `newgrp docker` in a new terminal).
 
-- **Containers exit or won’t start**  
-  Check logs:  
+- **Containers exit or won’t start**
+  Check logs:
   `docker compose logs -f`
 
-- **Port already in use**  
+- **Port already in use**
   Stop other things using 3000, 4003, 6000, 8081, 27017, 6379, or change ports in `docker-compose.yml`.
 
-- **Build errors**  
-  Rebuild from scratch:  
-  `docker compose build --no-cache`  
+- **Build errors**
+  Rebuild from scratch:
+  `docker compose build --no-cache`
   then `docker compose up -d`.

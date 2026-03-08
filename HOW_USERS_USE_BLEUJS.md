@@ -236,7 +236,5 @@ result = bleu.process("data")
 
 **Everything users need is READY and WORKING!** 🎉
 
-**Last Updated:** October 29, 2025  
+**Last Updated:** October 29, 2025
 **Status:** ✅ PRODUCTION-READY
-
-

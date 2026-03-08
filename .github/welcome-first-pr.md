@@ -7,7 +7,7 @@ Templates for welcoming new contributors and responding to first PRs.
 ## 🎉 First PR Welcome
 
 ```markdown
-🎉 **Welcome to Bleu.js!** 
+🎉 **Welcome to Bleu.js!**
 
 Thank you for your first contribution to Bleu.js! We're excited to have you join our community.
 
@@ -114,7 +114,7 @@ Looking forward to your updates! 🚀
 ## 🎯 PR Approved Template
 
 ```markdown
-✅ **Approved!** 
+✅ **Approved!**
 
 Great work on this PR! Your contribution looks good and is ready to merge.
 
@@ -182,4 +182,3 @@ Keep contributing! 🚀
 ---
 
 **Last Updated:** 2025-01-XX
-

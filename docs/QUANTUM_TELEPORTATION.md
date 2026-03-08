@@ -6,9 +6,9 @@ Bleu.js implements the **standard three-qubit quantum teleportation protocol** a
 
 Quantum teleportation transfers an **unknown qubit state** from one place to another using:
 
-1. **Entanglement** — a shared Bell pair between sender and receiver  
-2. **Classical communication** — two classical bits from a Bell measurement  
-3. **Conditional corrections** — Pauli X/Z on the receiver qubit depending on those bits  
+1. **Entanglement** — a shared Bell pair between sender and receiver
+2. **Classical communication** — two classical bits from a Bell measurement
+3. **Conditional corrections** — Pauli X/Z on the receiver qubit depending on those bits
 
 The protocol does **not** teleport matter or objects; it teleports **quantum information** (the qubit state). The original qubit is destroyed in the process (no-cloning).
 
@@ -16,22 +16,22 @@ The protocol does **not** teleport matter or objects; it teleports **quantum inf
 
 The implementation follows the canonical construction from:
 
-> **Bennett, C. H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A., & Wootters, W. K. (1993).**  
-> Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels.  
+> **Bennett, C. H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A., & Wootters, W. K. (1993).**
+> Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels.
 > *Physical Review Letters*, **70**(13), 1895–1899.
 
 For papers or reports that use Bleu.js teleportation, you can cite:
 
-- **Software:** Bleu.js (quantum-enhanced AI platform), https://github.com/HelloblueAI/Bleu.js  
-- **Protocol:** Bennett et al. (1993), *Phys. Rev. Lett.* 70, 1895  
+- **Software:** Bleu.js (quantum-enhanced AI platform), https://github.com/HelloblueAI/Bleu.js
+- **Protocol:** Bennett et al. (1993), *Phys. Rev. Lett.* 70, 1895
 
 ## Circuit layout (Bleu.js / IBM)
 
-- **q0:** Source qubit — state to teleport is prepared as Ry(θ)|0⟩  
-- **q1, q2:** Bell pair (q1 at sender, q2 at receiver)  
-- Bell measurement on q0, q1 → two classical bits  
-- Classical feed-forward: apply X on q2 if bit1=1, Z on q2 if bit0=1  
-- Final measurement on q2 gives the teleported state outcome  
+- **q0:** Source qubit — state to teleport is prepared as Ry(θ)|0⟩
+- **q1, q2:** Bell pair (q1 at sender, q2 at receiver)
+- Bell measurement on q0, q1 → two classical bits
+- Classical feed-forward: apply X on q2 if bit1=1, Z on q2 if bit0=1
+- Final measurement on q2 gives the teleported state outcome
 
 The circuit uses **dynamic circuits** (measurement-conditioned gates) and is compatible with Qiskit Aer and IBM Quantum backends that support them.
 
@@ -112,6 +112,6 @@ bleu quantum teleport --ibm --shots 1024
 
 ## Links
 
-- **Bleu.js:** https://bleujs.org  
-- **GitHub:** https://github.com/HelloblueAI/Bleu.js  
-- **IBM Quantum:** https://quantum.ibm.com  
+- **Bleu.js:** https://bleujs.org
+- **GitHub:** https://github.com/HelloblueAI/Bleu.js
+- **IBM Quantum:** https://quantum.ibm.com

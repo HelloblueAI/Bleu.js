@@ -179,4 +179,3 @@ asyncio.run(main())
 You now have everything you need to use the Bleu.js API!
 
 **Happy building! 🚀**
-

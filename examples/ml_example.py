@@ -19,11 +19,12 @@ print("=" * 60)
 # Import BleuJS
 print("\n📦 Importing Bleu.js...")
 from bleujs import BleuJS, __version__, check_dependencies
+
 print(f"✅ Bleu.js v{__version__} imported")
 
 # Check ML dependencies
 print("\n🔍 Checking ML dependencies...")
-ml_deps = check_dependencies('ml')
+ml_deps = check_dependencies("ml")
 for dep, status in ml_deps.items():
     emoji = "✅" if status == "installed" else "❌"
     print(f"   {emoji} {dep}: {status}")
@@ -32,6 +33,7 @@ for dep, status in ml_deps.items():
 print("\n🤖 Loading ML features...")
 try:
     from bleujs.ml import HybridTrainer, QuantumVisionModel
+
     ml_available = True
     print("✅ ML features available")
 except ImportError:
@@ -67,13 +69,13 @@ print(f"   Testing: {len(X_test)} samples")
 if ml_available:
     # Train hybrid model
     print("\n🏋️  Training hybrid model...")
-    
+
     trainer = HybridTrainer(
-        model_type='xgboost',
-        quantum_components=False  # Set to True for quantum features
+        model_type="xgboost",
+        quantum_components=False,  # Set to True for quantum features
     )
     print(f"✅ Created trainer: {trainer.model_type}")
-    
+
     # Train the model
     print("\n⚡ Training in progress...")
     model = trainer.train(
@@ -83,32 +85,29 @@ if ml_available:
         quantum_features=False,  # Set to True with quantum installed
     )
     print("✅ Training complete!")
-    
+
     # Evaluate model
     print("\n📊 Evaluating model...")
     metrics = trainer.evaluate(model, X_test, y_test)
-    
+
     print("✅ Evaluation complete!")
     print(f"\n📈 Performance Metrics:")
     print(f"   Accuracy: {metrics.get('accuracy', 0):.4f}")
     print(f"   F1 Score: {metrics.get('f1_score', 0):.4f}")
     print(f"   Test Samples: {metrics.get('test_samples', 0)}")
-    
+
     # Demonstrate vision model
     print("\n👁️  Testing QuantumVisionModel...")
-    
-    vision_model = QuantumVisionModel(
-        model_type='resnet',
-        quantum_enhanced=False
-    )
+
+    vision_model = QuantumVisionModel(model_type="resnet", quantum_enhanced=False)
     print(f"✅ Created vision model: {vision_model.model_type}")
-    
+
     # Generate sample images
     sample_images = np.random.rand(10, 224, 224, 3)
     vision_results = vision_model.process(sample_images)
-    
+
     print(f"✅ Processed {vision_results['num_images']} images")
-    
+
     # Analyze results
     analysis = vision_model.analyze(vision_results, detailed=True)
     print(f"✅ Analysis confidence: {analysis['confidence']:.2f}")
@@ -118,7 +117,7 @@ else:
     print("   pip install scikit-learn xgboost pandas")
     print("\n   Or use shorthand:")
     print("   pip install 'bleu-js[ml]'")
-    
+
     print("\n⚙️  Using simple fallback model...")
     # Simple demonstration with basic BleuJS
     bleu = BleuJS()
@@ -139,4 +138,3 @@ print("   • Set quantum_components=True for quantum enhancement")
 print("   • Install with 'bleu-js[ml,quantum]' for full features")
 print("   • Try different model_types: 'xgboost', 'neural', 'hybrid'")
 print("\n📚 Learn more: https://github.com/HelloblueAI/Bleu.js")
-

@@ -1,28 +1,29 @@
 """Ultimate coverage boost tests to get coverage above 80%."""
 
+
 # Test every single function and class to maximize coverage
 def test_ultimate_import_coverage_1():
     """Ultimate import coverage test 1."""
     # Import everything possible
     import src
+    import src.api
+    import src.benchmarks
+    import src.bleujs
     import src.config
     import src.constants
     import src.database
     import src.main
-    import src.services
-    import src.models
-    import src.schemas
-    import src.routes
     import src.middleware
-    import src.utils
-    import src.quantum
     import src.ml
-    import src.benchmarks
+    import src.models
+    import src.quantum
     import src.quantum_py
-    import src.api
-    import src.bleujs
+    import src.routes
+    import src.schemas
     import src.security
-    
+    import src.services
+    import src.utils
+
     assert True
 
 
@@ -30,12 +31,12 @@ def test_ultimate_import_coverage_2():
     """Ultimate import coverage test 2."""
     # Import all config modules
     from src.config import get_settings
-    from src.config.settings import Settings
     from src.config.aws_elastic_config import get_elastic_config
     from src.config.rate_limiting_config import get_rate_limiting_config
     from src.config.redis_config import get_redis_config
     from src.config.security_headers_config import get_security_headers_config
-    
+    from src.config.settings import Settings
+
     # Test all functions
     settings = get_settings()
     settings_obj = Settings()
@@ -43,8 +44,17 @@ def test_ultimate_import_coverage_2():
     rate_config = get_rate_limiting_config()
     redis_config = get_redis_config()
     security_config = get_security_headers_config()
-    
-    assert all([settings, settings_obj, elastic_config, rate_config, redis_config, security_config])
+
+    assert all(
+        [
+            settings,
+            settings_obj,
+            elastic_config,
+            rate_config,
+            redis_config,
+            security_config,
+        ]
+    )
 
 
 def test_ultimate_import_coverage_3():
@@ -62,15 +72,23 @@ def test_ultimate_import_coverage_3():
     from src.services.subscription_service import SubscriptionService
     from src.services.token_manager import TokenManager
     from src.services.user_service import UserService
-    
+
     # Instantiate all services
     services = [
-        APIService(), APITokenService(), AuthService(), EmailService(),
-        ModelService(), MonitoringService(), RateLimitingService(),
-        RedisClient(), SecretsManager(), SubscriptionService(),
-        TokenManager(), UserService()
+        APIService(),
+        APITokenService(),
+        AuthService(),
+        EmailService(),
+        ModelService(),
+        MonitoringService(),
+        RateLimitingService(),
+        RedisClient(),
+        SecretsManager(),
+        SubscriptionService(),
+        TokenManager(),
+        UserService(),
     ]
-    
+
     assert all(services)
 
 
@@ -83,7 +101,7 @@ def test_ultimate_import_coverage_4():
     from src.models.subscription import Subscription
     from src.models.subscription_plan import SubscriptionPlan
     from src.models.user import User
-    
+
     # Test all models
     models = [APICall, Base, Customer, Subscription, SubscriptionPlan, User]
     assert all(models)
@@ -96,11 +114,18 @@ def test_ultimate_import_coverage_5():
     from src.schemas.customer import CustomerCreate, CustomerResponse
     from src.schemas.subscription import SubscriptionCreate, SubscriptionResponse
     from src.schemas.user import UserCreate, UserResponse
-    
+
     # Test all schemas
     schemas = [
-        Token, TokenData, UserLogin, CustomerCreate, CustomerResponse,
-        SubscriptionCreate, SubscriptionResponse, UserCreate, UserResponse
+        Token,
+        TokenData,
+        UserLogin,
+        CustomerCreate,
+        CustomerResponse,
+        SubscriptionCreate,
+        SubscriptionResponse,
+        UserCreate,
+        UserResponse,
     ]
     assert all(schemas)
 
@@ -111,7 +136,7 @@ def test_ultimate_import_coverage_6():
     from src.routes.api_tokens import router as api_tokens_router
     from src.routes.auth import router as auth_router
     from src.routes.subscription import router as subscription_router
-    
+
     # Test all routers
     routers = [api_tokens_router, auth_router, subscription_router]
     assert all(routers)
@@ -126,11 +151,15 @@ def test_ultimate_import_coverage_7():
     from src.middleware.error_handling import ErrorHandlingMiddleware
     from src.middleware.rate_limit import RateLimitMiddleware
     from src.middleware.security_headers import SecurityHeadersMiddleware
-    
+
     # Test all middleware
     middleware = [
-        AuthMiddleware, CORSMiddleware, CSRFMiddleware,
-        ErrorHandlingMiddleware, RateLimitMiddleware, SecurityHeadersMiddleware
+        AuthMiddleware,
+        CORSMiddleware,
+        CSRFMiddleware,
+        ErrorHandlingMiddleware,
+        RateLimitMiddleware,
+        SecurityHeadersMiddleware,
     ]
     assert all(middleware)
 
@@ -141,7 +170,7 @@ def test_ultimate_import_coverage_8():
     from src.utils.base_classes import BaseService
     from src.utils.constants import APP_NAME, VERSION
     from src.utils.regenerate_scaler import RegenerateScaler
-    
+
     # Test all utils
     assert BaseService is not None
     assert APP_NAME is not None
@@ -153,16 +182,22 @@ def test_ultimate_import_coverage_9():
     """Ultimate import coverage test 9."""
     # Import all quantum modules
     from src.quantum.core.quantum_circuit import QuantumCircuit
-    from src.quantum.error_correction.quantum_error_correction import QuantumErrorCorrection
+    from src.quantum.error_correction.quantum_error_correction import (
+        QuantumErrorCorrection,
+    )
     from src.quantum.error_correction.stabilizer_codes import StabilizerCodes
     from src.quantum.error_correction.surface_codes import SurfaceCodes
     from src.quantum.python.quantum_processor import QuantumProcessor
     from src.security.quantum_security import QuantumSecurity
-    
+
     # Test all quantum modules
     quantum_modules = [
-        QuantumCircuit, QuantumErrorCorrection, StabilizerCodes,
-        SurfaceCodes, QuantumProcessor, QuantumSecurity
+        QuantumCircuit,
+        QuantumErrorCorrection,
+        StabilizerCodes,
+        SurfaceCodes,
+        QuantumProcessor,
+        QuantumSecurity,
     ]
     assert all(quantum_modules)
 
@@ -179,12 +214,18 @@ def test_ultimate_import_coverage_10():
     from src.ml.optimization.adaptive_learning import AdaptiveLearning
     from src.ml.optimization.gpu_memory_manager import GPUMemoryManager
     from src.ml.versioning.quantum_model_version import QuantumModelVersion
-    
+
     # Test all ML modules
     ml_modules = [
-        EnhancedXGBoost, MLModelFactory, QuantumInteractionDetector,
-        MetricsCalculator, ModelEvaluator, ModelTrainer, AdaptiveLearning,
-        GPUMemoryManager, QuantumModelVersion
+        EnhancedXGBoost,
+        MLModelFactory,
+        QuantumInteractionDetector,
+        MetricsCalculator,
+        ModelEvaluator,
+        ModelTrainer,
+        AdaptiveLearning,
+        GPUMemoryManager,
+        QuantumModelVersion,
     ]
     assert all(ml_modules)
 
@@ -193,7 +234,7 @@ def test_ultimate_import_coverage_11():
     """Ultimate import coverage test 11."""
     # Import all benchmarks
     from src.benchmarks.performance_benchmark import PerformanceBenchmark
-    
+
     # Test benchmarks
     assert PerformanceBenchmark is not None
 
@@ -201,15 +242,19 @@ def test_ultimate_import_coverage_11():
 def test_ultimate_import_coverage_12():
     """Ultimate import coverage test 12."""
     # Import all quantum_py modules
+    from src.quantum_py.core.quantum_algorithm import QuantumAlgorithm
     from src.quantum_py.core.quantum_circuit import QuantumCircuit
+    from src.quantum_py.core.quantum_gate import QuantumGate
     from src.quantum_py.core.quantum_processor import QuantumProcessor
     from src.quantum_py.core.quantum_state import QuantumState
-    from src.quantum_py.core.quantum_gate import QuantumGate
-    from src.quantum_py.core.quantum_algorithm import QuantumAlgorithm
-    
+
     # Test all quantum_py modules
     quantum_py_modules = [
-        QuantumCircuit, QuantumProcessor, QuantumState, QuantumGate, QuantumAlgorithm
+        QuantumCircuit,
+        QuantumProcessor,
+        QuantumState,
+        QuantumGate,
+        QuantumAlgorithm,
     ]
     assert all(quantum_py_modules)
 
@@ -217,10 +262,10 @@ def test_ultimate_import_coverage_12():
 def test_ultimate_import_coverage_13():
     """Ultimate import coverage test 13."""
     # Import all main modules
-    from src.main import app
-    from src.api.main import create_app
     from src.api.application import Application
-    
+    from src.api.main import create_app
+    from src.main import app
+
     # Test all main modules
     main_modules = [app, create_app, Application]
     assert all(main_modules)
@@ -229,9 +274,9 @@ def test_ultimate_import_coverage_13():
 def test_ultimate_import_coverage_14():
     """Ultimate import coverage test 14."""
     # Import all database modules
-    from src.database import get_db, engine, Base
+    from src.database import Base, engine, get_db
     from src.db_config import get_database_url
-    
+
     # Test all database modules
     assert get_db is not None
     assert engine is not None
@@ -244,7 +289,7 @@ def test_ultimate_import_coverage_15():
     # Import all bleujs modules
     from src.bleujs.cli import main
     from src.bleujs.utils import get_version
-    
+
     # Test all bleujs modules
     assert main is not None
     assert get_version is not None
@@ -523,7 +568,7 @@ def test_ultimate_coverage_boost_54():
 
 def test_ultimate_coverage_boost_55():
     """Ultimate coverage boost test 55."""
-    assert 2 ** 3 == 8
+    assert 2**3 == 8
 
 
 def test_ultimate_coverage_boost_56():
@@ -748,4 +793,4 @@ def test_ultimate_coverage_boost_99():
 
 def test_ultimate_coverage_boost_100():
     """Ultimate coverage boost test 100."""
-    assert "test".zfill(6) == "00test" 
+    assert "test".zfill(6) == "00test"

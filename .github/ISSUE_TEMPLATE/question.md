@@ -42,4 +42,3 @@ What would help you the most? (Documentation, code example, explanation, etc.)
 ---
 
 **We're here to help!** 💬
-

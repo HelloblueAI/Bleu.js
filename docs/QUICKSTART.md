@@ -297,4 +297,3 @@ bleu = BleuJS(device='cpu')
 **✨ Enjoy using Bleu.js! ✨**
 
 Made with ❤️ by [Helloblue AI](https://github.com/HelloblueAI)
-

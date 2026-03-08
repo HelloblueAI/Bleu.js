@@ -43,11 +43,11 @@ pip install --upgrade 'bleu-js[api]'==1.2.1
 ## 📣 Suggested Announcement Copy
 
 **Long form (LinkedIn / Blog)**
-> 🚀 Bleu.js v1.2.1 is live!  
-> • Certified Python 3.12 compatibility  
-> • Pydantic v2 migration complete – no more deprecation warnings  
-> • API client ships with every install, zero manual steps  
-> • Docs and quick starts refreshed for a frictionless upgrade  
+> 🚀 Bleu.js v1.2.1 is live!
+> • Certified Python 3.12 compatibility
+> • Pydantic v2 migration complete – no more deprecation warnings
+> • API client ships with every install, zero manual steps
+> • Docs and quick starts refreshed for a frictionless upgrade
 > Upgrade now: `pip install --upgrade bleu-js==1.2.1`
 
 **Tweet / Short message**
@@ -62,4 +62,3 @@ pip install --upgrade 'bleu-js[api]'==1.2.1
 - Ship simplified SDK wrapper proposed in the user guide once backend parity is finalized.
 
 Let the team know once you’ve announced the release so we can monitor adoption metrics and user feedback!
-
