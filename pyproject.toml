@@ -15,15 +15,15 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Quantum Computing",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.11,<3.14"  # 3.11+ for keras 3.13; <3.14 for torch 2.8+ triton
 # Core AI/ML - Fixed versions for compatibility
 numpy = "^2.2.6"
 pandas = "^2.0.0"
@@ -68,7 +68,7 @@ python-multipart = ">=0.0.22,<0.0.23"  # CVE-2026-24486 path traversal
 jinja2 = "^3.1.6"
 psutil = "^7.0.0"
 gputil = {version = "^1.4.0", optional = true}
-torch = "^2.7.1"  # 2.8+ needs triton/Python<3.14; CVE-2025-3730 disputed
+torch = "^2.8.0"  # CVE-2025-3730 (disputed); requires Python <3.14 for triton
 shap = ">=0.48,<0.50"
 pennylane = "^0.42.1"
 qiskit = "^2.1.1"
@@ -79,6 +79,7 @@ opentelemetry-sdk = "^1.35.0"
 ray = ">=2.9.0"
 qiskit-aer = "^0.17.1"
 tensorflow = "^2.19.0"
+keras = ">=3.13.2"  # Safety: 4 vulns fixed (standalone keras)
 # Imaging - CVE-2026-25990 (Pillow PSD out-of-bounds write)
 pillow = ">=12.1.1"
 # Build tooling - patched CVE-2026-24049 (privilege escalation via malicious wheel unpack)

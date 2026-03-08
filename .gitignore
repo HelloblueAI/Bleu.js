@@ -461,6 +461,8 @@ tsconfig.tsbuildinfo
 docs/_build/
 site/
 .docusaurus/
+# Internal only (do not publish)
+docs/CHANGES_SINCE_LAST_WEEK.md
 
 # Quantum computing specific
 .quantum-cache/
@@ -1010,5 +1012,15 @@ ENV/
 # Security scan artifacts
 bandit-report.json
 safety-report.json
+pip-audit-report.json
+trivy-results.sarif
+*.sarif
 **/DOCKERHUB_CREDENTIALS.local.md
 **/*.local.md
+
+# Linter / formatter caches
+.ruff_cache/
+.mypy_cache/
+
+# Local venvs (any ad-hoc names)
+security-update-env/
