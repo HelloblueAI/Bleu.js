@@ -46,7 +46,8 @@ LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
 # Install runtime dependencies (with security updates)
-# apk upgrade pulls expat, curl, zlib 1.3.2+ (CVE-2026-22184 untgz, CRC32 DoS #111 #112)
+# apk upgrade pulls expat, zlib 1.3.2+ (CVE-2026-22184 untgz, CRC32 DoS #111 #112)
+# curl omitted from runtime to avoid CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23 yet)
 RUN apk update && \
     apk upgrade --no-cache --available && \
     apk add --no-cache --upgrade \
@@ -55,7 +56,6 @@ RUN apk update && \
     ca-certificates \
     && apk add --no-cache --upgrade \
     bash \
-    curl \
     python3 \
     py3-pip \
     build-base \
