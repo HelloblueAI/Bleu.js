@@ -282,6 +282,21 @@ models = client.list_models()
 
 ---
 
+## API contract and response shapes
+
+When implementing clients (e.g. the [API Playground](https://github.com/HelloblueAI/Bleu.js/blob/main/api_playground.html)) or backend routes, keep these consistent:
+
+| Endpoint | Request body | Response shape |
+|----------|--------------|-----------------|
+| **Chat** `POST /api/v1/chat` | `messages`, `model`, `temperature`, `max_tokens` | Prefer **OpenAI-style**: `choices: [{ message: { role, content } }]`. Some backends may return a flat `content`; clients should accept either `response.content` or `response.choices[0].message.content`. |
+| **Generate** `POST /api/v1/generate` | `prompt`, `model`, `temperature`, `max_tokens` | `text`, `id`, `model`, `usage`, `finish_reason`. |
+| **Embed** `POST /api/v1/embed` | **Request field**: use `input` (list of strings) for SDK/OpenAI-style compatibility. In-repo route uses `inputs`; align server and client so one convention is used. | `data: [{ embedding: number[], index }]`, `model`, `usage`. |
+
+- **Chat**: The Python client normalizes both shapes via `ChatCompletionResponse.content`. Keep backend either returning `choices` (OpenAI-style) or document that clients must support flat `content` as well.
+- **Embed**: If your API expects `inputs` (plural), the Python SDK and playground send `input`; update the API to accept `input` or document the difference for consumers.
+
+---
+
 ## ⚠️ Error Handling
 
 The client provides specific exception types for different errors:

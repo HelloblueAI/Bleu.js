@@ -67,6 +67,8 @@ class HealthcareSystem:
     def _interpret_prediction(self, prediction: np.ndarray) -> str:
         """Interpret model prediction into diagnosis"""
         # Implement diagnosis interpretation logic
+        if prediction is None or len(prediction) == 0:
+            return "Unknown"
         return "Normal" if prediction[0] > 0.5 else "Abnormal"
 
     def get_performance_metrics(self) -> Dict[str, float]:
