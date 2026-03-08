@@ -70,14 +70,6 @@
             gap: 8px;
             border-bottom: 1px solid var(--border);
         }
-        .terminal-bar span {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .terminal-bar .red { background: #ff5f56; }
-        .terminal-bar .yellow { background: #ffbd2e; }
-        .terminal-bar .green { background: #27c93f; }
         .terminal-bar .title {
             flex: 1;
             text-align: center;
@@ -89,6 +81,7 @@
             min-height: 320px;
             max-height: 420px;
             overflow-y: auto;
+            scroll-behavior: smooth;
             font-family: 'JetBrains Mono', 'SF Mono', monospace;
             font-size: 0.85rem;
             line-height: 1.6;
@@ -151,6 +144,38 @@
             text-decoration: none;
         }
         .footer a:hover { text-decoration: underline; }
+        @media (prefers-reduced-motion: reduce) {
+            .cursor { animation: none; opacity: 1; }
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn:disabled:hover { box-shadow: none; }
+        .copy-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .copy-hint:hover { color: var(--accent); }
+        .copy-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .copy-toast.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -162,25 +187,26 @@
 
         <div class="terminal">
             <div class="terminal-bar">
-                <span class="red"></span><span class="yellow"></span><span class="green"></span>
                 <span class="title">Installation demo</span>
             </div>
-            <div class="terminal-body" id="demo">
+            <div class="terminal-body" id="demo" role="log" aria-live="polite" aria-label="Installation demo output">
                 <div class="line output">Click "Start demo" to run the installation sequence.</div>
             </div>
         </div>
 
         <div class="controls">
-            <button class="btn btn-primary" onclick="startDemo()">▶ Start demo</button>
+            <button class="btn btn-primary" id="startBtn" onclick="startDemo()">▶ Start demo</button>
             <button class="btn btn-secondary" onclick="resetDemo()">↻ Reset</button>
-            <button class="btn btn-secondary" onclick="toggleSpeed()">⚡ Speed</button>
+            <button class="btn btn-secondary" id="speedBtn" onclick="toggleSpeed()" aria-pressed="false" aria-label="Playback speed">⚡ 1×</button>
         </div>
 
         <footer class="footer">
             <a href="https://github.com/HelloblueAI/Bleu.js" target="_blank" rel="noopener">GitHub</a> ·
             <a href="https://bleujs.org" target="_blank" rel="noopener">bleujs.org</a> ·
-            <code style="color: var(--text-muted);">pip install bleu-js</code>
+            <code id="pipCmd" class="copy-hint" style="color: var(--text-muted);" title="Click to copy">pip install bleu-js</code>
+            <span style="display:block;margin-top:4px;opacity:0.7;">Enter — start · R — reset</span>
         </footer>
+        <div class="copy-toast" id="copyToast" aria-live="polite">Copied to clipboard</div>
     </div>
 
     <script>
@@ -222,9 +248,14 @@
             demo.scrollTop = demo.scrollHeight;
         }
 
+        const startBtn = document.getElementById('startBtn');
+        const speedBtn = document.getElementById('speedBtn');
+
         function startDemo() {
             if (isPlaying) return;
             isPlaying = true;
+            startBtn.disabled = true;
+            startBtn.textContent = 'Playing…';
             currentStep = 0;
             document.getElementById('demo').innerHTML = '';
 
@@ -235,6 +266,8 @@
                     setTimeout(playStep, speed);
                 } else {
                     isPlaying = false;
+                    startBtn.disabled = false;
+                    startBtn.textContent = '▶ Start demo';
                 }
             }
             playStep();
@@ -243,12 +276,31 @@
         function resetDemo() {
             isPlaying = false;
             currentStep = 0;
+            startBtn.disabled = false;
+            startBtn.textContent = '▶ Start demo';
             document.getElementById('demo').innerHTML = '<div class="line output">Click "Start demo" to run the installation sequence.</div>';
         }
 
         function toggleSpeed() {
             speed = speed === 90 ? 45 : 90;
+            const fast = speed === 45;
+            speedBtn.textContent = fast ? '⚡ 2×' : '⚡ 1×';
+            speedBtn.setAttribute('aria-pressed', fast);
         }
+
+        document.getElementById('pipCmd').addEventListener('click', function () {
+            navigator.clipboard.writeText('pip install bleu-js').then(function () {
+                var toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(function () { toast.classList.remove('show'); }, 1500);
+            });
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.target.closest('button') || e.target.id === 'pipCmd') return;
+            if (e.key === 'Enter' && !isPlaying) { startDemo(); e.preventDefault(); }
+            if (e.key === 'r' || e.key === 'R') { resetDemo(); }
+        });
     </script>
 </body>
 </html>

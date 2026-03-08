@@ -1,22 +1,20 @@
 # Bleu OS Docker Image - Production Ready
+# Debian base: avoids Alpine busybox CVE-2025-60876 (no fix in Alpine 3.23 yet)
 # Optimized, secure, and production-grade container image
 
 # Stage 1: Builder - Install build dependencies
-# Pin 3.23.3+ for CVE-2025-15467 (openssl 3.3.6), CVE-2025-31498 (c-ares), sqlite, curl, busybox
-FROM alpine:3.23.3 AS builder
+FROM debian:bookworm-slim AS builder
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG PYTHON_VERSION=3.11
 
-# Install build tools (with security updates)
-RUN apk update && \
-    apk upgrade --no-cache --available && \
-    apk add --no-cache --upgrade \
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
     python3 \
-    py3-pip \
-    build-base \
-    linux-headers \
-    && rm -rf /var/cache/apk/*
+    python3-pip \
+    python3-venv \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
@@ -25,8 +23,8 @@ RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
     "urllib3>=2.6.3" \
     "wheel>=0.46.3"
 
-# Stage 2: Runtime - Production image
-FROM alpine:3.23.3 AS runtime
+# Stage 2: Runtime - Production image (Debian = no Alpine busybox CVE-2025-60876)
+FROM debian:bookworm-slim AS runtime
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
@@ -41,38 +39,25 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
-LABEL org.opencontainers.image.base.name="alpine:3.23.3"
+LABEL org.opencontainers.image.base.name="debian:bookworm-slim"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
-# Install runtime dependencies (with security updates)
-# apk upgrade pulls expat, zlib 1.3.2+ (CVE-2026-22184 untgz, CRC32 DoS #111 #112)
-# curl omitted from runtime to avoid CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23 yet)
-RUN apk update && \
-    apk upgrade --no-cache --available && \
-    apk add --no-cache --upgrade \
-    zlib \
-    zlib-dev \
+# Install runtime dependencies (Debian: no busybox, no CVE-2025-60876)
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
     ca-certificates \
-    && apk add --no-cache --upgrade \
     bash \
     python3 \
-    py3-pip \
-    build-base \
-    linux-headers \
-    gcc \
-    g++ \
-    make \
-    cmake \
-    musl-dev \
+    python3-pip \
+    python3-venv \
+    build-essential \
     python3-dev \
     tzdata \
-    libstdc++ \
-    libgcc \
-    && rm -rf /var/cache/apk/* \
-    && update-ca-certificates \
-    && addgroup -g 1000 bleuos \
-    && adduser -D -u 1000 -G bleuos bleuos
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -g 1000 bleuos \
+    && useradd -m -u 1000 -g bleuos -s /bin/bash bleuos
 
 # Security: Create non-root user and set permissions
 RUN mkdir -p /opt/bleu-js /workspace /data \
@@ -101,7 +86,6 @@ USER bleuos
 WORKDIR /home/bleuos
 
 # Install quantum libraries (if enabled)
-# Install with version constraints for security
 RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
         pip3 install --user --no-cache-dir --break-system-packages "qiskit>=2.1.1" || echo "Qiskit install failed, continuing..."; \
         pip3 install --user --no-cache-dir --break-system-packages "cirq>=1.2.0" || echo "Cirq install failed, continuing..."; \
@@ -110,10 +94,7 @@ RUN if [ "$INSTALL_QUANTUM" = "true" ]; then \
     echo "Quantum libraries installation attempted"; \
     fi
 
-# Install ML libraries (if enabled)
-# Note: PyTorch and TensorFlow don't have Alpine wheels, so we install alternatives
-# Note: XGBoost must be compiled from source on Alpine (takes 10-20+ minutes)
-# Use version constraints from requirements.txt for security
+# Install ML libraries (if enabled) - Debian has glibc so TensorFlow/PyTorch wheels work
 RUN if [ "$INSTALL_ML" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
         "pillow>=12.1.1" \
@@ -121,27 +102,18 @@ RUN if [ "$INSTALL_ML" = "true" ]; then \
         "pandas>=2.0.0" \
         matplotlib \
         "numpy>=2.2.6" \
-        scipy; \
-    # XGBoost: Compiles from source on Alpine (slow but works) \
-    echo "Installing XGBoost (this will take 10-20+ minutes on Alpine)..."; \
+        scipy \
+        "xgboost>=3.0.3" || echo "XGBoost install failed, continuing..."; \
     pip3 install --user --no-cache-dir --break-system-packages \
-        "xgboost>=3.0.3" || echo "XGBoost install failed or taking too long, continuing..."; \
-    # Try to install PyTorch CPU-only (may fail on Alpine, that's OK) \
-    # Update to 2.8.0 to fix CVE-2025-3730 and CVE-2025-2953 \
-    pip3 install --user --no-cache-dir --break-system-packages \
-        --index-url https://download.pytorch.org/whl/cpu \
-        "torch>=2.8.0" "torchvision>=0.19.0" "torchaudio>=2.8.0" 2>/dev/null || echo "PyTorch not available for Alpine, skipping..."; \
-    # TensorFlow also doesn't work on Alpine, skip it \
-    echo "Note: TensorFlow requires glibc (not available on Alpine)"; \
+        "torch>=2.8.0" "torchvision>=0.19.0" "torchaudio>=2.8.0" 2>/dev/null || echo "PyTorch optional, skipping..."; \
+    pip3 install --user --no-cache-dir --break-system-packages "tensorflow>=2.19.0" 2>/dev/null || echo "TensorFlow optional, skipping..."; \
     fi
 
 # Install Jupyter (if enabled)
 RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
     pip3 install --user --no-cache-dir --break-system-packages \
-        jupyter \
-        jupyterlab \
-        ipywidgets \
-    ; fi
+        jupyter jupyterlab ipywidgets; \
+    fi
 
 # Install Bleu.js
 WORKDIR /opt/bleu-js
@@ -151,7 +123,6 @@ COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
 COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
 
 # Security: pin cryptography (CVE-2026-26007), urllib3 (CVE-2026-21441), pillow (CVE-2026-25990) before Bleu.js
-# Install Bleu.js with proper error handling
 RUN pip3 install --user --no-cache-dir --break-system-packages \
     "cryptography>=46.0.5" "urllib3>=2.6.3" "pillow>=12.1.1" && \
     if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
@@ -166,26 +137,20 @@ RUN pip3 install --user --no-cache-dir --break-system-packages \
 # System configuration (as root, then switch back)
 USER root
 
-# Copy configuration files
 COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
 COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init-bleu-os.sh
 
-# Create system directories with proper permissions
 RUN mkdir -p /var/log/bleu-os /var/cache/bleu-os \
     && chown -R bleuos:bleuos /var/log/bleu-os /var/cache/bleu-os
 
-# Switch back to non-root user
 USER bleuos
 WORKDIR /workspace
 
-# Health check - verify Bleu.js is working
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD python3 -c "import bleujs; import sys; sys.exit(0)" || exit 1
 
-# Expose ports
 EXPOSE 8888 9090 8000
 
-# Initialize Bleu OS on startup
 ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
 CMD ["bash"]
