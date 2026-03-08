@@ -284,7 +284,9 @@ After running `./scripts/check-security.sh` with Safety authenticated, the follo
 | cryptography | already ≥46.0.5 | CVE-2026-26007 |
 | pillow | already ≥12.1.1 | CVE-2026-25990 |
 
-**No known fix (accepted / transitive):** ecdsa (pulled in by python-jose; no fix yet), ray (4 vulns; required for distributed ML). **Transitive** (keras, protobuf from tensorflow): update when upgrading those stacks.
+**Fixed in this round:** keras (standalone) pinned to >=3.13.2; torch ^2.8.0 with Python >=3.11,<3.14 for triton compat.
+
+**No known fix (accepted):** ray (4 vulns; required for distributed ML; no fix yet). **protobuf** (CVE-2026-0994): TensorFlow 2.19/2.20 is incompatible with protobuf 6.x; keep 5.x until TF supports 6.
 
 **Apply fixes (regenerate lockfile):** From repo root run:
 
