@@ -103,17 +103,21 @@ class PerformanceBenchmark:
     def _calculate_statistical_significance(
         self, values: List[float], baseline: List[float]
     ) -> float:
-        """Calculate statistical significance of improvement"""
+        """Calculate statistical significance of improvement (p-value).
+        Returns 1.0 when the test is undefined (e.g. zero variance / identical samples).
+        """
         try:
             if self.config.statistical_test == "t-test":
                 _, p_value = stats.ttest_ind(values, baseline)
-                return p_value
             elif self.config.statistical_test == "wilcoxon":
                 _, p_value = stats.wilcoxon(values, baseline)
-                return p_value
-            return 1.0
+            else:
+                return 1.0
+            # Degenerate case (zero variance, identical samples) can yield NaN
+            if p_value is None or (isinstance(p_value, float) and np.isnan(p_value)):
+                return 1.0
+            return float(p_value)
         except (ValueError, RuntimeWarning):
-            # Return a default value if statistical test fails
             return 0.5
 
     def benchmark_face_recognition(self, model, test_data) -> BenchmarkResult:

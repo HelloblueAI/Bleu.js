@@ -48,7 +48,9 @@ Closes #<!-- issue number -->
 - [ ] I have updated the documentation accordingly
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
+- [ ] New and existing unit tests pass locally with my changes (`pytest` or project test command)
+- [ ] I have run `./scripts/check-security.sh` (or noted why it's not applicable)
+- [ ] No secrets or credentials in code or commits
 - [ ] Any dependent changes have been merged and published
 - [ ] I have updated CHANGELOG.md (if applicable)
 

@@ -19,6 +19,22 @@ If you find a security issue, please report it responsibly:
 
 We will acknowledge and work on the report and coordinate disclosure.
 
+## Known vulnerabilities and how we track them
+
+| Source | What we track | Where to look / fix |
+|--------|----------------|---------------------|
+| **Python (app)** | CVEs in `pyproject.toml` deps | Run `./scripts/check-security.sh`; CI runs pip-audit + Safety. Pins are in [pyproject.toml](pyproject.toml) with CVE comments. |
+| **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **~1.5k legacy alerts from old backend:** run `./scripts/dismiss-backend-dependabot-alerts.sh` (see [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss)). |
+| **Docker / Bleu OS** | Base image and system packages | Production image: [bleu-os/Dockerfile.production](bleu-os/Dockerfile.production) (Debian). Status: [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md), [.github/DOCKER_SCOUT_VULNERABILITIES.md](.github/DOCKER_SCOUT_VULNERABILITIES.md). Kernel CVEs = host; patch the host or dismiss. |
+| **Trivy / Docker Scout** | Container image vulns | CI runs Trivy on images. Unfixable base vulns (c-ares, sqlite, xz, etc.) are documented; rebuild when Alpine/Debian release patches. |
+
+**One-page fix checklist:**
+
+1. **Local:** `./scripts/check-security.sh` (pip-audit, safety, optional Trivy). Fix any reported Python vulns by bumping versions in `pyproject.toml` and re-running.
+2. **GitHub Security tab:** Open [Dependabot alerts](https://github.com/HelloblueAI/Bleu.js/security/dependabot). Fix or dismiss each alert; for legacy `backend/` alerts, [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss).
+3. **CI:** The main workflow runs Safety, Bandit, and pip-audit and uploads reports. Resolve any failures by updating dependencies or addressing code findings.
+4. **Containers:** Rebuild Bleu OS images after base image or dependency updates; rescan with Trivy. Kernel alerts: patch host or dismiss as “Not fixable in image.”
+
 ## Dependency alerts and Dependabot
 
 We keep the repo's dependency surface small so Dependabot and security alerts stay manageable. The `backend/` directory is not in the repo (see [docs/DEPENDABOT_AND_DEPENDENCIES.md](docs/DEPENDABOT_AND_DEPENDENCIES.md)). Do not re-add backend or new app manifests without reading that doc.
@@ -81,9 +97,10 @@ For CI / non-interactive use, set `SAFETY_API_KEY` (see [Safety docs](https://do
 
 When deploying Bleu.js:
 
-1. Set all secrets via environment variables or a secrets manager (e.g. AWS Secrets Manager). Do not rely on default values for `JWT_SECRET_KEY`, `SECRET_KEY`, DB passwords, or API keys.
-2. Use HTTPS and restrict CORS as needed.
+1. Set all secrets via environment variables or a secrets manager (e.g. AWS Secrets Manager). Do not rely on default values for `JWT_SECRET_KEY`, `SECRET_KEY`, DB passwords, or API keys. **No dev defaults in production.**
+2. Use HTTPS and restrict CORS/CSRF as needed.
 3. Keep dependencies updated (e.g. Dependabot, `pip install -U`, security scans).
+4. **Before release:** Run `./scripts/check-security.sh` (pip-audit, safety, optional Trivy).
 
 ## Recent security hardening
 

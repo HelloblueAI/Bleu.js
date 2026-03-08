@@ -1,5 +1,7 @@
 # Docker Scout Vulnerability Analysis
 
+**See also:** [SECURITY.md](../SECURITY.md) — known vulnerabilities table and one-page fix checklist. For production image (Debian), see [bleu-os/TRIVY_ALERTS.md](../bleu-os/TRIVY_ALERTS.md).
+
 ## Current Status
 
 **Date:** 2025-12-10

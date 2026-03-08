@@ -17,6 +17,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from src.config.rate_limiting_config import RateLimitingConfig
 from src.config.redis_config import RedisConfig
 from src.config.security_headers_config import SecurityHeadersConfig
+from src.version import get_version
 
 
 class SQLiteURL(AnyUrl):
@@ -38,7 +39,7 @@ class Settings(BaseSettings):
 
     # Application settings
     APP_NAME: str = "Bleu.js"
-    APP_VERSION: str = "1.3.21"
+    APP_VERSION: str = Field(default_factory=get_version, alias="APP_VERSION")
     DEBUG: bool = Field(default=False, alias="DEBUG")
     TESTING: bool = Field(default=False, alias="TESTING")
     ENV_NAME: str = Field(default="development", alias="ENV_NAME")
@@ -61,7 +62,7 @@ class Settings(BaseSettings):
     APP_DEBUG: bool = Field(default=False, alias="APP_DEBUG")
     APP_URL: str = Field(default="http://localhost:3000", alias="APP_URL")
     APP_PORT: int = Field(default=3000, alias="APP_PORT")
-    VERSION: str = "1.3.21"
+    VERSION: str = Field(default_factory=get_version, alias="VERSION")
     API_VERSION: str = "v1"
     API_PREFIX: str = "/api"
 

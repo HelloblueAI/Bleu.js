@@ -23,93 +23,155 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.14"  # 3.11+ for keras 3.13; <3.14 for torch 2.8+ triton
-# Core AI/ML - Fixed versions for compatibility
+python = ">=3.11,<3.14"
+# ---------------------------------------------------------------------------
+# Minimal default: fast install for API + CLI (like Fuse.js – quick to start)
+# Add [ml], [quantum], [deep], [server], or [all] for more.
+# ---------------------------------------------------------------------------
 numpy = "^2.2.6"
-pandas = "^2.0.0"
-scikit-learn = "^1.2.2"
-
-# Web Framework - Pinned for stability
-fastapi = ">=0.116.1,<0.136.0"
-uvicorn = "0.41.0"
-pydantic = {extras = ["email"], version = "^2.7.0"}
-starlette = ">=0.49.1"  # CVE-2025-62727 DoS (Range header)
-
-# Security - Fixed versions
-urllib3 = ">=2.6.3"  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
-requests = "^2.32.4"
-cryptography = ">=46.0.5,<47.0.0"  # CVE-2026-26007 (subgroup validation); was 45.0.6 for OpenSSL
-setuptools = ">=78.1.1,<83.0.0"
-
-# Database - Pinned versions
-sqlalchemy = "2.0.48"
-alembic = "1.18.4"
-psycopg2-binary = "2.9.11"
-
-# AWS
-boto3 = "^1.24.0"
-
-# Utilities
-python-dotenv = ">=0.21,<1.3"
 click = "^8.2.1"
 httpx = "^0.28.1"
-aiohttp = "^3.13.3"  # Safety: 8 vulns fixed in 3.13.x
-aiofiles = ">=24.1,<26.0"
-h11 = "0.16.0"
-sparse = "^0.17.0"
-pydantic-settings = "^2.10.1"
-pyjwt = "^2.10.1"
-prometheus-client = ">=0.23.1,<0.25.0"
-xgboost = "^3.0.2"
-# JWT: PyJWT only (python-jose removed to avoid ecdsa CVE-2024-23342; no upstream fix)
-passlib = "^1.7.4"
-redis = ">=6.2,<8.0"
-python-multipart = ">=0.0.22,<0.0.23"  # CVE-2026-24486 path traversal
-jinja2 = "^3.1.6"
-psutil = "^7.0.0"
+pydantic = {extras = ["email"], version = "^2.7.0"}
+requests = "^2.32.4"
+urllib3 = ">=2.6.3"  # CVE-2026-21441
+setuptools = ">=78.1.1,<83.0.0"
+python-dotenv = ">=0.21,<1.3"
+
+# Optional: ML (pandas, scikit-learn, xgboost)
+pandas = {version = "^2.0.0", optional = true}
+scikit-learn = {version = "^1.2.2", optional = true}
+xgboost = {version = "^3.0.2", optional = true}
+
+# Optional: Quantum (qiskit, pennylane)
+pennylane = {version = "^0.42.1", optional = true}
+qiskit = {version = "^2.1.1", optional = true}
+qiskit-algorithms = {version = ">=0.3,<0.5", optional = true}
+qiskit-aer = {version = "^0.17.1", optional = true}
+
+# Optional: Deep learning (torch, tensorflow)
+torch = {version = "^2.8.0", optional = true}
+tensorflow = {version = "^2.19.0", optional = true}
+keras = {version = ">=3.13.2", optional = true}
+shap = {version = ">=0.48,<0.50", optional = true}
+
+# Optional: Server (FastAPI app – for self-hosting or running src/main.py)
+fastapi = {version = ">=0.116.1,<0.136.0", optional = true}
+uvicorn = {version = "0.41.0", optional = true}
+starlette = {version = ">=0.49.1", optional = true}
+pydantic-settings = {version = "^2.10.1", optional = true}
+jinja2 = {version = "^3.1.6", optional = true}
+sqlalchemy = {version = "2.0.48", optional = true}
+alembic = {version = "1.18.4", optional = true}
+psycopg2-binary = {version = "2.9.11", optional = true}
+boto3 = {version = "^1.24.0", optional = true}
+aiohttp = {version = "^3.13.3", optional = true}
+aiofiles = {version = ">=24.1,<26.0", optional = true}
+h11 = {version = "0.16.0", optional = true}
+pyjwt = {version = "^2.10.1", optional = true}
+passlib = {version = "^1.7.4", optional = true}
+redis = {version = ">=6.2,<8.0", optional = true}
+python-multipart = {version = ">=0.0.22,<0.0.23", optional = true}
+prometheus-client = {version = ">=0.23.1,<0.25.0", optional = true}
+cryptography = {version = ">=46.0.5,<47.0.0", optional = true}
+sparse = {version = "^0.17.0", optional = true}
+psutil = {version = "^7.0.0", optional = true}
+filelock = {version = ">=3.20.3", optional = true}
+werkzeug = {version = ">=3.1.6", optional = true}
+pyasn1 = {version = ">=0.6.2", optional = true}
+pillow = {version = ">=12.1.1", optional = true}
+wheel = {version = ">=0.46.3,<1.0", optional = true}
+optuna = {version = "^4.4.0", optional = true}
+opentelemetry-api = {version = "^1.35.0", optional = true}
+opentelemetry-sdk = {version = "^1.35.0", optional = true}
+ray = {version = ">=2.9.0", optional = true}
+
 gputil = {version = "^1.4.0", optional = true}
-torch = "^2.8.0"  # CVE-2025-3730 (disputed); requires Python <3.14 for triton
-shap = ">=0.48,<0.50"
-pennylane = "^0.42.1"
-qiskit = "^2.1.1"
-qiskit-algorithms = ">=0.3,<0.5"
-optuna = "^4.4.0"
-opentelemetry-api = "^1.35.0"
-opentelemetry-sdk = "^1.35.0"
-ray = ">=2.9.0"
-qiskit-aer = "^0.17.1"
-tensorflow = "^2.19.0"
-keras = ">=3.13.2"  # Safety: 4 vulns fixed (standalone keras)
-# Imaging - CVE-2026-25990 (Pillow PSD out-of-bounds write)
-pillow = ">=12.1.1"
-# Build tooling - patched CVE-2026-24049 (privilege escalation via malicious wheel unpack)
-wheel = ">=0.46.3,<1.0"
-# Transitive security pins (Safety scan)
-filelock = ">=3.20.3"   # 3 vulns fixed
-werkzeug = ">=3.1.6"   # 3 vulns fixed
-pyasn1 = ">=0.6.2"      # CVE-2026-23490 DoS
-# ecdsa removed - not used in source code and has unfixed Minerva timing attack vulnerability (Issue #295)
-# Use cryptography library for ECDSA operations if needed
 
 [tool.poetry.extras]
-api = ["httpx", "pydantic"]
-ml = ["scikit-learn", "xgboost", "pandas"]
+# [api] = same as default (backward compat; no extra deps)
+api = []
+# ML stack
+ml = ["pandas", "scikit-learn", "xgboost"]
+# Quantum stack
 quantum = ["qiskit", "qiskit-aer", "qiskit-algorithms", "pennylane"]
-deep = ["torch", "tensorflow"]
+# Deep learning
+deep = ["torch", "tensorflow", "keras", "shap"]
+# Run the FastAPI app (self-host / dev)
+server = [
+    "fastapi",
+    "uvicorn",
+    "starlette",
+    "pydantic-settings",
+    "jinja2",
+    "sqlalchemy",
+    "alembic",
+    "psycopg2-binary",
+    "boto3",
+    "aiohttp",
+    "aiofiles",
+    "h11",
+    "pyjwt",
+    "passlib",
+    "redis",
+    "python-multipart",
+    "prometheus-client",
+    "cryptography",
+    "sparse",
+    "psutil",
+    "filelock",
+    "werkzeug",
+    "pyasn1",
+    "pillow",
+    "wheel",
+    "optuna",
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "ray",
+]
 gpu = ["gputil"]
+# Full stack (ML + quantum + deep + server + gpu)
 all = [
-    "httpx",
-    "pydantic",
+    "pandas",
     "scikit-learn",
     "xgboost",
-    "pandas",
     "qiskit",
     "qiskit-aer",
     "qiskit-algorithms",
     "pennylane",
     "torch",
     "tensorflow",
+    "keras",
+    "shap",
     "gputil",
+    "fastapi",
+    "uvicorn",
+    "starlette",
+    "pydantic-settings",
+    "jinja2",
+    "sqlalchemy",
+    "alembic",
+    "psycopg2-binary",
+    "boto3",
+    "aiohttp",
+    "aiofiles",
+    "h11",
+    "pyjwt",
+    "passlib",
+    "redis",
+    "python-multipart",
+    "prometheus-client",
+    "cryptography",
+    "sparse",
+    "psutil",
+    "filelock",
+    "werkzeug",
+    "pyasn1",
+    "pillow",
+    "wheel",
+    "optuna",
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "ray",
 ]
 
 [tool.poetry.group.dev.dependencies]
@@ -125,7 +187,7 @@ ruff = ">=0.14.8,<0.16.0"
 bandit = "^1.7.0"
 types-pyyaml = "^6.0.12.20250516"
 types-aiofiles = "^25.1.0.20251011"
-virtualenv = ">=20.36.1"  # CVE-2026-22702 race condition
+virtualenv = ">=20.36.1"
 
 [tool.poetry.scripts]
 bleu = "bleujs.cli:main"
@@ -138,7 +200,6 @@ target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  # directories
   \.eggs
   | \.git
   | \.hg
@@ -216,18 +277,10 @@ line-length = 88
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "UP", # pyupgrade
+    "E", "W", "F", "I", "B", "C4", "UP",
 ]
 ignore = [
-    "E501",  # line too long, handled by black
-    "B008",  # do not perform function calls in argument defaults
-    "C901",  # too complex
+    "E501", "B008", "C901",
 ]
 
 [tool.ruff.lint.per-file-ignores]

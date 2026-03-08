@@ -9,7 +9,7 @@ This doc explains how we keep Dependabot and security alerts under control so we
 
 ## What we do
 
-1. **Backend is not in the repo.** The `backend/` directory is in `.gitignore` and is **not** tracked. That avoids npm and pip manifests under `backend/` from being scanned. The canonical place for the backend is a **separate repo**—see [Backend repo](BACKEND_REPO.md). You can export it once with `scripts/export-backend-repo.sh`.
+1. **Backend is not in the repo.** The `backend/` directory is in `.gitignore` and is **not** tracked. **Do not re-add `backend/` to this repo;** use the [separate backend repo](BACKEND_REPO.md) for the Node/Express backend. That avoids npm and pip manifests under `backend/` from being scanned. The canonical place for the backend is a **separate repo**—see [Backend repo](BACKEND_REPO.md). You can export it once with `scripts/export-backend-repo.sh`.
 2. **Only these are scanned for updates:**
    - **Pip:** Root only (`/`) — `pyproject.toml` (and lockfile if present). Other `requirements*.txt` in the repo are for CI or reference; we don't add extra pip scan directories.
    - **npm:** `collaboration-tools/` only. No root or other `package.json` in the repo.
@@ -26,6 +26,41 @@ This doc explains how we keep Dependabot and security alerts under control so we
 
 - **Those are old open alerts.** When we stopped tracking `backend/`, we stopped _new_ alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files. So the 1.5k are **legacy** alerts that were opened when backend was still in the repo.
 - **To see what we actually have now:** You have to **dismiss** the obsolete ones. Then only alerts for the _current_ scan scope (root pip, collaboration-tools npm, Docker, Actions) will remain.
+
+## Fix the Security tab (bulk-dismiss)
+
+The **~1.5k alerts** are legacy from when `backend/` was tracked. GitHub does not auto-close them when files are removed. You can clear them in one of two ways:
+
+### Option A: Run the script (recommended)
+
+From the repo root, with [gh CLI](https://cli.github.com/) installed and authenticated (`gh auth login` with `repo` or `security_events` scope):
+
+```bash
+# See how many alerts would be dismissed (backend-related only)
+./scripts/dismiss-backend-dependabot-alerts.sh --dry-run
+
+# Dismiss all alerts whose manifest path contains "backend"
+./scripts/dismiss-backend-dependabot-alerts.sh
+
+# Optional: dismiss any other open alerts outside current scope (root, collaboration-tools, bleu-os, .github)
+./scripts/dismiss-backend-dependabot-alerts.sh --dismiss-all-legacy
+```
+
+The script uses the GitHub API to list open Dependabot alerts and PATCH each matching one with reason **"No longer used"** and a short comment. After running, the Security tab count should drop to alerts that apply only to current manifests.
+
+### Option B: Manual in the GitHub UI
+
+1. Go to **[Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot)** for this repo.
+2. Use **Open** or **All** and the filters to find alerts that reference:
+   - **Manifest path** or **Scope** containing `backend/`,
+   - **Package** names that only existed in the old backend (e.g. backend-only npm packages),
+   - Any **manifest file** that no longer exists in the repo.
+3. Select those alerts (checkbox or Select all in a filtered view). Use **Dismiss** (or bulk action) and choose:
+   - **Reason:** "No longer used" or "Removed from repo"
+   - **Comment (optional):** e.g. "Manifest removed; backend is in separate repo."
+4. Repeat until the list only shows alerts for **root** `pyproject.toml`, **collaboration-tools/** npm, **Docker** (root + bleu-os), and **GitHub Actions**.
+
+After that, the count will reflect only current scope (typically dozens, not thousands). Fix or dismiss remaining alerts as usual.
 
 ## How to see the real current number
 

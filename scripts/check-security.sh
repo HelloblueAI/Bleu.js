@@ -71,5 +71,5 @@ fi
 echo ""
 
 echo "=== Done ==="
-echo "For Dependabot and Trivy alerts in this repo: GitHub → Security → Dependabot / Code scanning."
-echo "Kernel alerts cannot be fixed in the image; patch the host or dismiss. See bleu-os/TRIVY_ALERTS.md."
+echo "For Dependabot and Trivy alerts: GitHub → Security → Dependabot / Code scanning."
+echo "One-page fix checklist and known vulns: see SECURITY.md in the repo root."

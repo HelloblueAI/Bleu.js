@@ -138,8 +138,8 @@ jobs:
         run: |
           set -e
           for i in 1 2 3; do
-            echo "Attempt $i: poetry install --no-interaction --no-root --with dev"
-            if poetry install --no-interaction --no-root --with dev; then
+            echo "Attempt $i: poetry install --no-interaction --no-root --extras all --with dev"
+            if poetry install --no-interaction --no-root --extras all --with dev; then
               echo "✅ Poetry install succeeded on attempt $i"
               break
             fi
@@ -185,9 +185,32 @@ jobs:
           fi
 
       - name: Run pip-audit
+        id: pip-audit
         run: |
           poetry run pip install pip-audit
           poetry run pip-audit --format json --output pip-audit-report.json || true
+          # Count vulns (pip-audit JSON may use .vulnerabilities or .result)
+          if [ -f pip-audit-report.json ]; then
+            COUNT=$(jq '[.vulnerabilities[]?] | length // ([.result[][]?] | length) // 0' pip-audit-report.json 2>/dev/null || echo "0")
+            echo "pip_audit_count=$COUNT" >> $GITHUB_OUTPUT
+          else
+            echo "pip_audit_count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set security check output
+        id: security-check
+        if: always()
+        run: |
+          SAFETY_CRITICAL="${{ steps.vuln-check.outputs.critical || '0' }}"
+          SAFETY_TOTAL="${{ steps.vuln-check.outputs.count || '0' }}"
+          PIP_AUDIT_COUNT="${{ steps.pip-audit.outputs.pip_audit_count || '0' }}"
+          echo "status=passed" >> $GITHUB_OUTPUT
+          echo "vulnerabilities=Safety:$SAFETY_TOTAL (critical:$SAFETY_CRITICAL) | pip-audit:$PIP_AUDIT_COUNT" >> $GITHUB_OUTPUT
+          if [ "$SAFETY_CRITICAL" != "0" ] || [ "$PIP_AUDIT_COUNT" != "0" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "::error::Security: $SAFETY_CRITICAL critical (Safety), $PIP_AUDIT_COUNT vulns (pip-audit). Fix deps or triage in Security tab."
+            exit 1
+          fi
 
       - name: Upload security reports
         uses: actions/upload-artifact@v7
@@ -245,7 +268,7 @@ jobs:
           poetry config virtualenvs.in-project true
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
+        run: poetry install --no-interaction --no-root --extras all
 
       - name: Run linting tools
         run: |
@@ -316,8 +339,8 @@ jobs:
         run: |
           set -e
           for i in 1 2 3; do
-            echo "Attempt $i: poetry install --no-interaction --no-root --with dev,quantum,monitoring"
-            if poetry install --no-interaction --no-root --with dev,quantum,monitoring; then
+            echo "Attempt $i: poetry install --no-interaction --no-root --extras all --with dev"
+            if poetry install --no-interaction --no-root --extras all --with dev; then
               echo "✅ Poetry install (with quantum/monitoring) succeeded on attempt $i"
               break
             fi
@@ -395,7 +418,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install poetry==${{ env.POETRY_VERSION }}
-          poetry install --no-interaction
+          poetry install --no-interaction --extras all
 
       - name: Download coverage reports
         uses: actions/download-artifact@v8
