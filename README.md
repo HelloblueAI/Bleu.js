@@ -16,6 +16,11 @@ Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https
 
 Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
 
+- **Who it's for:** ML engineers, researchers, and developers building quantum-enhanced AI, cloud APIs, or CLI tools.
+- **Security & data:** API keys and secrets are not stored in the repo. For reporting vulnerabilities and deployment checklist, see [SECURITY.md](SECURITY.md).
+- **Status:** Beta. [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md)
+- **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist.
+
 ## SDK – Cloud API
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**

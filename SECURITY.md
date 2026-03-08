@@ -1,5 +1,9 @@
 # Security
 
+## API keys and data
+
+API keys (e.g. `BLEUJS_API_KEY`, `bleujs_sk_...`) are used only for authentication against the Bleu.js API. Do not commit them; use environment variables or a secrets manager. The service does not store your API key in plain text in the repo. For production, set all secrets via env and follow the deployment checklist below.
+
 ## Safe for open-source publication
 
 - **No secrets in the repo:** Passwords, API keys, and tokens are not committed. The app reads them from environment variables (see `.env.example` for placeholders).
