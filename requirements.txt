@@ -5,8 +5,8 @@ black>=23.0.0
 cirq>=1.2.0
 click>=8.2.1
 
-# Security and monitoring
-cryptography>=43.0.0
+# Security and monitoring (CVE-2026-26007; align with pyproject.toml)
+cryptography>=46.0.5
 # Use alternative to ray for distributed computing
 dask[complete]>=2024.1.0
 # Core dependencies

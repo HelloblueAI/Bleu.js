@@ -171,11 +171,12 @@ cryptography = "^45.0.6"
 
 | Package | Current | Secure | Status |
 |---------|---------|--------|--------|
-| starlette | 0.47.2 | >= 0.48.0 | ⚠️ Needs update |
-| ecdsa | 0.19.1 | >= 0.20.0 | ⚠️ Needs update |
-| transformers | 4.55.0 | >= 4.60.0 | ⚠️ Needs update |
-| cryptography | 43.0.0 (pyproject) | >= 45.0.6 | ⚠️ Needs update |
-| cryptography | 45.0.6 (requirements-secure) | >= 45.0.6 | ✅ Secure |
+| starlette | 0.48.0+ (requirements) | >= 0.48.0 | ✅ Updated |
+| ecdsa | — | — | ✅ Removed (use cryptography; Minerva CVE) |
+| transformers | 4.55.0+ (requirements) | >= 4.55.0 | ✅ Updated |
+| cryptography | 46.0.5+ (pyproject) | >= 45.0.6 | ✅ Updated |
+
+**Note:** ecdsa was removed from the project (see pyproject.toml). Starlette, transformers, and cryptography are pinned to secure versions in pyproject.toml and requirements files.
 
 ---
 

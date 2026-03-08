@@ -6,7 +6,7 @@ Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https
 
 <div align="left">
   <a href="https://htmlpreview.github.io/?https://github.com/HelloblueAI/Bleu.js/blob/main/simple_animated_demo.html" target="_blank">
-    <img src="https://img.shields.io/badge/🚀-Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
+    <img src="https://img.shields.io/badge/Try%20Live%20Demo-blue?style=for-the-badge&logo=github" alt="Live Demo" />
   </a>
 </div>
 
@@ -66,7 +66,7 @@ async def main():
 asyncio.run(main())
 ```
 
-### 🖥️ Bleu CLI - Command Line Interface
+### Bleu CLI – Command Line Interface
 
 Access Bleu.js from the terminal with the Bleu CLI.
 
@@ -114,7 +114,7 @@ bleu config get api-key
 
 #### Commands
 
-**💬 Chat Completions**
+**Chat Completions**
 ```bash
 # Simple chat
 bleu chat "Explain quantum computing"
@@ -129,7 +129,7 @@ bleu chat --file prompt.txt
 bleu chat "Hello" --json
 ```
 
-**✨ Text Generation**
+**Text Generation**
 ```bash
 # Generate text
 bleu generate "Once upon a time"
@@ -141,7 +141,7 @@ bleu generate "Write a haiku" --temperature 0.8 --max-tokens 100
 bleu generate --file prompt.txt
 ```
 
-**🔢 Embeddings**
+**Embeddings**
 ```bash
 # Embed multiple texts
 bleu embed "text1" "text2" "text3"
@@ -153,7 +153,7 @@ bleu embed --file text1.txt --file text2.txt
 bleu embed "Hello world" --json
 ```
 
-**📋 Model Management**
+**Model Management**
 ```bash
 # List all models
 bleu models list
@@ -165,7 +165,7 @@ bleu models info bleu-chat-v1
 bleu models list --json
 ```
 
-**⚙️ Utilities**
+**Utilities**
 ```bash
 # Check API health
 bleu health
@@ -205,14 +205,14 @@ bleu chat "Hello"
 
 #### CLI Features
 
-- ✅ **Easy Configuration** - Simple API key management
-- ✅ **Multiple Input Methods** - Arguments, files, or stdin
-- ✅ **JSON Support** - Structured output for automation
-- ✅ **Error Handling** - Clear error messages and suggestions
-- ✅ **Model Management** - List and inspect available models
-- ✅ **Health Checks** - Verify API connectivity
+- **Easy Configuration** – Simple API key management
+- **Multiple Input Methods** – Arguments, files, or stdin
+- **JSON Support** – Structured output for automation
+- **Error Handling** – Clear error messages and suggestions
+- **Model Management** – List and inspect available models
+- **Health Checks** – Verify API connectivity
 
-**📖 [Complete CLI Documentation](./docs/API_CLIENT_GUIDE.md#cli-usage)** | **🔑 [Get API Key](https://bleujs.org)**
+**[Complete CLI Documentation](./docs/API_CLIENT_GUIDE.md#cli-usage)** | **[Get API Key](https://bleujs.org)**
 
 ---
 
@@ -262,7 +262,7 @@ flowchart LR
 
 ### 🤗 Pre-trained Models
 
-We provide pre-trained models on Hugging Face for easy integration:
+We provide pre-trained models on [Hugging Face](https://huggingface.co/helloblueai) for easy integration:
 
 - **[Bleu.js XGBoost Classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier)** - Quantum-enhanced XGBoost classification model
   - Ready-to-use XGBoost model with quantum-enhanced features
@@ -857,10 +857,10 @@ DATABASE_URL="sqlite:///./bleujs.db" python -m uvicorn src.main:app --reload --p
 ```
 
 **What Works Out of the Box:**
-- ✅ SQLite database (no PostgreSQL required for development)
-- ✅ Development secret keys (auto-generated defaults)
-- ✅ All core features functional
-- ✅ API documentation at http://localhost:8002/docs
+- SQLite database (no PostgreSQL required for development)
+- Development secret keys (auto-generated defaults)
+- All core features functional
+- API documentation at http://localhost:8002/docs
 
 **For Production:**
 - Set proper `SECRET_KEY`, `JWT_SECRET_KEY`, `JWT_SECRET`, and `ENCRYPTION_KEY` in environment variables
@@ -869,7 +869,7 @@ DATABASE_URL="sqlite:///./bleujs.db" python -m uvicorn src.main:app --reload --p
 For complete development setup instructions, see [Contributing Guide](./docs/CONTRIBUTING.md).
 
 
-## 🖥️ Bleu OS - Quantum-Enhanced Operating System
+## Bleu OS – Quantum-Enhanced Operating System
 
 Linux distribution optimized for quantum computing and AI workloads.
 
@@ -884,7 +884,7 @@ Bleu OS is a specialized Linux distribution designed from the ground up for quan
 -  Quantum-resistant security
 -  Zero-config Bleu.js integration
 
-### 🐳 Get Bleu OS Now!
+### Get Bleu OS Now
 
 **Docker (Recommended - 5 minutes):**
 ```bash
@@ -943,7 +943,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![version](https://img.shields.io/badge/version-1.3.39-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![version](https://img.shields.io/badge/version-1.3.45-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
