@@ -5,6 +5,7 @@ distributed training, and advanced optimization techniques.
 """
 
 import logging
+import os
 import pickle
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -160,9 +161,15 @@ class AdvancedModelTrainer:
         self.quantum_processor: Optional[QuantumProcessor] = None
         self.initialized = False
 
-        # Initialize Ray for distributed training
-        if not ray.is_initialized():
-            ray.init(ignore_reinit_error=True)
+        # Ray: optional; skip if BLEUJS_DISABLE_RAY=1 or config enable_ray=False
+        enable_ray = self.config.get("enable_ray", True)
+        if os.environ.get("BLEUJS_DISABLE_RAY", "").lower() in ("1", "true", "yes"):
+            enable_ray = False
+        if enable_ray and not ray.is_initialized():
+            try:
+                ray.init(ignore_reinit_error=True)
+            except Exception as e:
+                logger.warning("Ray init skipped: %s", e)
 
     async def preprocess_features(self, features: np.ndarray) -> np.ndarray:
         """Preprocess features for training."""
@@ -207,17 +214,21 @@ class AdvancedModelTrainer:
             features_train_processed = await self.preprocess_features(features_train)
             features_val_processed = await self.preprocess_features(features_val)
 
-            # Initialize model if not already done
+            # Initialize model if not already done (XGBoost 2.x: eval_metric on constructor)
             if self.model is None:
-                self.model = xgb.XGBClassifier(**self.config.get("model_params", {}))
+                model_params = dict(self.config.get("model_params", {}))
+                if "eval_metric" not in model_params:
+                    model_params["eval_metric"] = self.eval_metric
+                self.model = xgb.XGBClassifier(**model_params)
 
-            # Train model
+            # Train model (sklearn API: no eval_metric in fit())
+            fit_params = self.config.get("fit_params", {})
+            fit_params.pop("eval_metric", None)
             self.model.fit(
                 features_train_processed,
                 labels_train,
                 eval_set=[(features_val_processed, labels_val)],
-                eval_metric=self.eval_metric,
-                **self.config.get("fit_params", {}),
+                **fit_params,
             )
 
             # Get evaluation results
@@ -253,12 +264,12 @@ class AdvancedModelTrainer:
             return predictions
 
     async def save_model(self, path: str) -> bool:
-        """Save the trained model to disk"""
+        """Save the trained model to disk (XGBoost native format via save_model)."""
         if not self.model:
             raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
 
-        # Save model
-        self.model.save_raw(path)
+        # Save model (sklearn API: save_model(path); avoid save_raw on classifier)
+        self.model.save_model(path)
 
         # Save processors
         processors = {
@@ -273,13 +284,10 @@ class AdvancedModelTrainer:
         return True
 
     async def load_model(self, path: str) -> bool:
-        """Load a trained model from disk"""
-        if not self.model:
-            raise ValueError(MODEL_NOT_INITIALIZED_ERROR)
-
-        # Load model
+        """Load a trained model from disk (path to native format file)."""
+        # Load model (sklearn API: load_model(path))
         self.model = xgb.XGBClassifier()
-        self.model.load_raw(path)
+        self.model.load_model(path)
 
         async with aiofiles.open(f"{path}_processors.pkl", "rb") as f:
             data = await f.read()

@@ -57,7 +57,7 @@ def test_services_imports():
     monitoring_service = MonitoringService()
     assert monitoring_service is not None
 
-    rate_limiting_service = RateLimitingService(redis_client=mock_db)
+    rate_limiting_service = RateLimitingService(redis=mock_db)
     assert rate_limiting_service is not None
 
     redis_client = RedisClient()
@@ -130,14 +130,15 @@ def test_middleware_imports():
     """Test that middleware modules can be imported."""
     from src.middleware.cors import CORSMiddleware
     from src.middleware.csrf import CSRFMiddleware
-    from src.middleware.error_handler import ErrorHandlerMiddleware
+    from src.middleware.error_handler import ErrorHandler, setup_error_handling
     from src.middleware.rate_limiting import RateLimitingMiddleware
     from src.middleware.security_headers import SecurityHeadersMiddleware
 
-    # Test that middleware classes exist
+    # Test that middleware classes / functions exist
     assert CORSMiddleware is not None
     assert CSRFMiddleware is not None
-    assert ErrorHandlerMiddleware is not None
+    assert ErrorHandler is not None
+    assert setup_error_handling is not None
     assert RateLimitingMiddleware is not None
     assert SecurityHeadersMiddleware is not None
 
@@ -145,12 +146,13 @@ def test_middleware_imports():
 def test_utils_imports():
     """Test that utility modules can be imported."""
     from src.utils.base_classes import BaseModel, BaseService
-    from src.utils.constants import Constants
+    from src.utils.constants import APP_NAME, VERSION
 
-    # Test that utility classes exist
+    # Test that utility classes and constants exist
     assert BaseService is not None
     assert BaseModel is not None
-    assert Constants is not None
+    assert APP_NAME is not None
+    assert VERSION is not None
 
 
 def test_quantum_imports():
@@ -158,32 +160,32 @@ def test_quantum_imports():
     from src.quantum.core.quantum_circuit import QuantumCircuit
     from src.quantum.error_correction.recovery import ErrorRecovery
     from src.quantum.error_correction.stabilizer import StabilizerCode
-    from src.quantum.error_correction.syndrome import SyndromeDecoder
+    from src.quantum.error_correction.syndrome import SyndromeDetector
 
     # Test that quantum classes exist
     assert QuantumCircuit is not None
     assert ErrorRecovery is not None
     assert StabilizerCode is not None
-    assert SyndromeDecoder is not None
+    assert SyndromeDetector is not None
 
 
 def test_ml_imports():
     """Test that ML modules can be imported."""
     from src.ml.enhanced_xgboost import EnhancedXGBoost
     from src.ml.factory import ModelFactory
-    from src.ml.metrics import MetricsCalculator
+    from src.ml.metrics import PerformanceMetrics
     from src.ml.models.train import ModelTrainer
-    from src.ml.optimization.adaptive_learning import AdaptiveLearning
-    from src.ml.optimization.gpu_memory_manager import GPUMemoryManager
+    from src.ml.optimization.adaptive_learning import QuantumAwareScheduler
+    from src.ml.optimization.gpu_memory_manager import QuantumGPUManager
     from src.ml.pipeline import MLPipeline
 
     # Test that ML classes exist
     assert EnhancedXGBoost is not None
     assert ModelFactory is not None
-    assert MetricsCalculator is not None
+    assert PerformanceMetrics is not None
     assert ModelTrainer is not None
-    assert AdaptiveLearning is not None
-    assert GPUMemoryManager is not None
+    assert QuantumAwareScheduler is not None
+    assert QuantumGPUManager is not None
     assert MLPipeline is not None
 
 
