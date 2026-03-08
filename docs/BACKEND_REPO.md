@@ -12,7 +12,7 @@ The Node/Express backend (inference, ML API, services) is **not** in this repo. 
 ## Where is the backend?
 
 - **Locally:** If you had a clone before we stopped tracking `backend/`, the folder `backend/` still exists on disk (`.gitignore`). Use it as the source for the new repo.
-- **Canonical:** Create e.g. `HelloblueAI/Bleu.js-backend` and push the backend there. Use the export script below once to prepare the contents.
+- **Canonical:** [HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) — backend lives here. Use the export script below to refresh from local `backend/` if needed.
 
 ## One-time setup: create the backend repo
 
@@ -32,16 +32,16 @@ cd ../Bleu.js-backend-export
 git init
 git add .
 git commit -m "Initial commit: Bleu.js backend (exported from main repo)"
-git remote add origin git@github.com:HelloblueAI/Bleu.js-backend.git
+git remote add origin git@github.com:HelloblueAI/Bleujs.-backend.git
 git branch -M main
 git push -u origin main
 ```
 
-Create the empty repo on GitHub first (no README, no .gitignore).
+If you create a new repo, use the same remote URL; existing repo: [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend).
 
 ### Option B: Manual
 
-1. Create a new repo, e.g. `HelloblueAI/Bleu.js-backend`.
+1. Or create a new repo (e.g. `HelloblueAI/Bleujs.-backend` already exists).
 2. Copy your local `Bleu.js/backend/` into the new clone (exclude `node_modules/`, `.env`, secrets).
 3. Add README and `.gitignore` in the new repo.
 4. Commit and push.
@@ -50,7 +50,7 @@ Create the empty repo on GitHub first (no README, no .gitignore).
 
 - **CI/CD:** Add GitHub Actions in the backend repo for test, lint, deploy.
 - **Deploy:** Point bleujs.org API at the backend repo’s main branch or releases.
-- **Link:** In this repo we reference the backend once; update the URL when the repo is created.
+- **Link:** Backend repo: [github.com/HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend).
 
 ## Do not re-add backend here
 
