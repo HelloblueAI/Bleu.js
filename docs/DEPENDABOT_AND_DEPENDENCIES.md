@@ -42,8 +42,12 @@ From the repo root, with [gh CLI](https://cli.github.com/) installed and authent
 # Dismiss all alerts whose manifest path contains "backend"
 ./scripts/dismiss-backend-dependabot-alerts.sh
 
-# Optional: dismiss any other open alerts outside current scope (root, collaboration-tools, bleu-os, .github)
+# Optional: dismiss any other open alerts outside current scope
 ./scripts/dismiss-backend-dependabot-alerts.sh --dismiss-all-legacy
+
+# Dismiss every open Dependabot alert at once (clears Security tab)
+./scripts/dismiss-backend-dependabot-alerts.sh --dismiss-all --dry-run   # preview
+./scripts/dismiss-backend-dependabot-alerts.sh --dismiss-all            # run
 ```
 
 The script uses the GitHub API to list open Dependabot alerts and PATCH each matching one with reason **"No longer used"** and a short comment. After running, the Security tab count should drop to alerts that apply only to current manifests.

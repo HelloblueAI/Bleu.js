@@ -8,13 +8,14 @@ COMMENT="Manifest removed; backend is in separate repo. See docs/DEPENDABOT_AND_
 REASON="not_used"
 DRY_RUN=false
 DISMISS_ALL_LEGACY=false
+DISMISS_ALL=false
 
 usage() {
-  echo "Usage: $0 [--dry-run] [--dismiss-all-legacy]"
+  echo "Usage: $0 [--dry-run] [--dismiss-all-legacy] [--dismiss-all]"
   echo ""
   echo "  --dry-run           Only list matching alerts; do not dismiss."
-  echo "  --dismiss-all-legacy Dismiss any open alert whose manifest path is not in"
-  echo "                      current scope (/, collaboration-tools/, bleu-os/, .github/)."
+  echo "  --dismiss-all-legacy Dismiss alerts whose manifest is not in current scope."
+  echo "  --dismiss-all       Dismiss every open Dependabot alert (use to clear all at once)."
   echo "                      Default: only dismiss when path contains 'backend'."
   echo ""
   echo "Requires: gh auth login (with repo or security_events scope)."
@@ -24,10 +25,11 @@ usage() {
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --dry-run)           DRY_RUN=true; shift ;;
+    --dry-run)            DRY_RUN=true; shift ;;
     --dismiss-all-legacy) DISMISS_ALL_LEGACY=true; shift ;;
-    -h|--help)           usage ;;
-    *)                   echo "Unknown option: $1"; usage ;;
+    --dismiss-all)        DISMISS_ALL=true; shift ;;
+    -h|--help)            usage ;;
+    *)                    echo "Unknown option: $1"; usage ;;
   esac
 done
 
@@ -70,34 +72,41 @@ if [ -z "$ALERTS_JSON" ] || [ "$ALERTS_JSON" = "[]" ]; then
   exit 0
 fi
 
-# Filter: backend in manifest_path, or (if --dismiss-all-legacy) path not in current scope
-# Current scope: collaboration-tools/, bleu-os/, .github/, pyproject.toml, Dockerfile, package.json, etc.
-if [ "$DISMISS_ALL_LEGACY" = true ]; then
-  TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
-    .[] | select(.dependency.manifest_path != null) |
-    select(
-      (.dependency.manifest_path | ascii_downcase | test("backend")) or
-      ((.dependency.manifest_path | ascii_downcase | test("^collaboration-tools/|^bleu-os/|^\\.github/|^pyproject\\.toml|^poetry\\.lock|^pipfile|^requirements|^dockerfile|package\\.json")) | not)
-    ) | .number | tostring
-  ')
+# Filter: --dismiss-all = every open alert; else backend or legacy
+if [ "$DISMISS_ALL" = true ]; then
+  TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '.[] | .number | tostring')
+  COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
+  echo "Found $COUNT open alert(s) to dismiss (all)."
+  [ "$COUNT" -eq 0 ] && exit 0
+  COMMENT="Bulk dismiss of open alerts. See docs/DEPENDABOT_AND_DEPENDENCIES.md"
 else
-  TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
-    .[] | select(.dependency.manifest_path != null) |
-    select(.dependency.manifest_path | ascii_downcase | test("backend")) |
-    .number | tostring
-  ')
-fi
-
-COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
-if [ "$COUNT" -eq 0 ]; then
-  echo "No matching legacy alerts to dismiss (backend in path)."
-  if [ "$DISMISS_ALL_LEGACY" = false ]; then
-    echo "Tip: try --dismiss-all-legacy to dismiss alerts outside current scope."
+  # Current scope: collaboration-tools/, bleu-os/, .github/, pyproject.toml, Dockerfile, package.json, etc.
+  if [ "$DISMISS_ALL_LEGACY" = true ]; then
+    TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
+      .[] | select(.dependency.manifest_path != null) |
+      select(
+        (.dependency.manifest_path | ascii_downcase | test("backend")) or
+        ((.dependency.manifest_path | ascii_downcase | test("^collaboration-tools/|^bleu-os/|^\\.github/|^pyproject\\.toml|^poetry\\.lock|^pipfile|^requirements|^dockerfile|package\\.json")) | not)
+      ) | .number | tostring
+    ')
+  else
+    TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
+      .[] | select(.dependency.manifest_path != null) |
+      select(.dependency.manifest_path | ascii_downcase | test("backend")) |
+      .number | tostring
+    ')
   fi
-  exit 0
-fi
 
-echo "Found $COUNT alert(s) to dismiss (manifest path contains 'backend' or legacy path)."
+  COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
+  if [ "$COUNT" -eq 0 ]; then
+    echo "No matching legacy alerts to dismiss (backend in path)."
+    if [ "$DISMISS_ALL_LEGACY" = false ] && [ "$DISMISS_ALL" = false ]; then
+      echo "Tip: try --dismiss-all-legacy or --dismiss-all to dismiss more."
+    fi
+    exit 0
+  fi
+  echo "Found $COUNT alert(s) to dismiss (manifest path contains 'backend' or legacy path)."
+fi
 if [ "$DRY_RUN" = true ]; then
   echo "Dry run: would dismiss alert numbers:"
   echo "$TO_DISMISS" | head -20
