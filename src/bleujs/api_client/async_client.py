@@ -327,8 +327,5 @@ class AsyncBleuAPIClient:
         await self.close()
 
     def __del__(self):
-        """Cleanup on deletion"""
-        try:
-            asyncio.create_task(self.close())
-        except Exception:
-            pass
+        """Cleanup on deletion. Use 'async with AsyncBleuAPIClient(...) as client' when possible so aclose() runs reliably; __del__ cannot safely run async code."""
+        pass

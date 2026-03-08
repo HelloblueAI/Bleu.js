@@ -157,7 +157,7 @@ class DistributedTrainingManager:
             if self.backend == "torch" and dist.is_initialized():
                 dist.destroy_process_group()
             if self.client is not None:
-                await self.client.close()
+                self.client.close()
             if self.cluster is not None:
                 self.cluster.close()
 
