@@ -47,10 +47,8 @@ pytest-watch>=4.2.0
 
 # Configuration
 python-dotenv>=1.0.1
-python-jose[cryptography]>=3.3.0
 
-# Security
-python-jose[cryptography]>=3.3.0
+# Security (JWT via PyJWT; python-jose removed)
 python-json-logger>=2.0.7
 python-multipart>=0.0.9
 python-multipart>=0.0.9

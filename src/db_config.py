@@ -4,13 +4,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+_ENV = os.getenv("ENV_NAME", "development").lower()
+_DEFAULT_PASSWORD = "your_secure_db_password"
+if _ENV in ("production", "staging") and os.getenv("DB_PASSWORD", "").strip() == "":
+    raise ValueError("DB_PASSWORD must be set in production/staging")
+
 # Database configuration
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "your-rds-endpoint"),  # Using RDS endpoint
+    "host": os.getenv("DB_HOST", "your-rds-endpoint"),
     "port": os.getenv("DB_PORT", "5432"),
     "database": os.getenv("DB_NAME", "bleu_js"),
     "user": os.getenv("DB_USER", "postgres"),
-    "password": os.getenv("DB_PASSWORD", "your_secure_db_password"),
+    "password": os.getenv("DB_PASSWORD", _DEFAULT_PASSWORD),
 }
 
 # Create database URL

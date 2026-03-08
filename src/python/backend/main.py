@@ -55,11 +55,18 @@ app = FastAPI(
     version="1.2.2",
 )
 
-# Configure CORS
+# Configure CORS (allow_credentials=True requires specific origins, not "*")
+try:
+    _config = settings.get_config()
+    _origins = getattr(_config.api, "cors_origins", ["http://localhost:3000"])
+    _allow_creds = _origins != ["*"] and ("*" not in _origins)
+except Exception:
+    _origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    _allow_creds = True
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
-    allow_credentials=True,
+    allow_origins=_origins,
+    allow_credentials=_allow_creds,
     allow_methods=["*"],
     allow_headers=["*"],
 )

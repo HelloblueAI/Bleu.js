@@ -228,6 +228,14 @@
             }
         });
 
+        // Escape HTML to prevent XSS when inserting API data into innerHTML
+        function escapeHtml(s) {
+            if (s == null) return '';
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
         // Get usage data from server-side template
         const usageData = {{ usage_data | tojson | safe }};
 
@@ -352,9 +360,9 @@
                         <div class="p-3 rounded-full bg-${feature.color}-100">
                             <i class="fas fa-${feature.icon} text-${feature.color}-600"></i>
                         </div>
-                        <h3 class="ml-4 text-lg font-semibold text-gray-900">${feature.title}</h3>
+                        <h3 class="ml-4 text-lg font-semibold text-gray-900">${escapeHtml(feature.title)}</h3>
                     </div>
-                    <p class="text-gray-600">${feature.description}</p>
+                    <p class="text-gray-600">${escapeHtml(feature.description)}</p>
                 </div>
             `).join('');
         }
@@ -381,8 +389,8 @@
                         <i class="fas fa-${getActivityIcon(item.type)} text-gray-600"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-gray-900">${item.description}</p>
-                        <p class="text-sm text-gray-500">${item.time}</p>
+                        <p class="text-gray-900">${escapeHtml(item.description)}</p>
+                        <p class="text-sm text-gray-500">${escapeHtml(item.time)}</p>
                     </div>
                 </div>
             `).join('');

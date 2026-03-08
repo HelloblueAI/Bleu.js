@@ -3,7 +3,15 @@
 import os
 from typing import List
 
-from pydantic import AnyUrl, EmailStr, Field, RedisDsn, SecretStr, field_validator
+from pydantic import (
+    AnyUrl,
+    EmailStr,
+    Field,
+    RedisDsn,
+    SecretStr,
+    field_validator,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.config.rate_limiting_config import RateLimitingConfig
@@ -125,22 +133,44 @@ class Settings(BaseSettings):
         default="dev-encryption-key-change-in-production-12345", alias="ENCRYPTION_KEY"
     )
     ENABLE_SECURITY: bool = Field(default=True, alias="ENABLE_SECURITY")
+    ENABLE_CSRF_PROTECTION: bool = Field(
+        default=False, alias="ENABLE_CSRF_PROTECTION"
+    )
 
     @field_validator("SECRET_KEY", "JWT_SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY")
     @classmethod
     def validate_secrets(cls, v: str) -> str:
-        """Validate that secrets are properly set and secure."""
-        if not v or v in [
-            "test_jwt_secret_key",
-            "dev_jwt_secret_key_123",
-            "dev_encryption_key_123",
-        ]:
+        """Validate that secrets are non-empty and minimum length."""
+        if not v or not v.strip():
             raise ValueError(
                 "Security keys must be properly set via environment variables"
             )
         if len(v) < 32:
             raise ValueError("Security keys must be at least 32 characters long")
         return v
+
+    @model_validator(mode="after")
+    def reject_weak_secrets_in_production(self):
+        """In production/staging, reject default or weak secret values."""
+        weak_secrets = [
+            "dev-secret-key-change-in-production-12345",
+            "dev-jwt-secret-key-change-in-production-12345",
+            "dev-jwt-secret-change-in-production-12345",
+            "dev-encryption-key-change-in-production-12345",
+            "test_jwt_secret_key",
+            "dev_jwt_secret_key_123",
+            "dev_encryption_key_123",
+        ]
+        if self.ENV_NAME.lower() in ("production", "staging"):
+            if self.SECRET_KEY in weak_secrets:
+                raise ValueError(
+                    "SECRET_KEY must be set to a strong value in production"
+                )
+            if self.JWT_SECRET_KEY in weak_secrets:
+                raise ValueError(
+                    "JWT_SECRET_KEY must be set to a strong value in production"
+                )
+        return self
 
     @field_validator("ALLOWED_HOSTS", mode="before")
     @classmethod

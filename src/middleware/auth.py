@@ -59,7 +59,7 @@ class AuthMiddleware:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        user = self.user_service.get_user(int(user_id))
+        user = self.user_service.get_user(user_id)
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -118,7 +118,7 @@ def get_current_user(
         raise credentials_exception
 
     user_service = UserService(db)
-    user = user_service.get_user(int(user_id))
+    user = user_service.get_user(user_id)
     if user is None:
         raise credentials_exception
     return user
@@ -146,5 +146,5 @@ def get_optional_current_user(
         return None
 
     user_service = UserService(db)
-    user = user_service.get_user(int(user_id))
+    user = user_service.get_user(user_id)
     return user
