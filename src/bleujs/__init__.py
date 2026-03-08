@@ -61,12 +61,25 @@ try:
 except ImportError:
     api_client = None
 
+# Optional quantum teleportation (requires bleu-js[quantum])
+try:
+    from . import teleportation
+except ImportError:
+    teleportation = None
+
+try:
+    from . import ibm_runtime
+except ImportError:
+    ibm_runtime = None
+
 __all__ = [
     "BleuJS",
     "setup_logging",
     "get_device",
     "check_dependencies",
     "quantum",
+    "teleportation",
+    "ibm_runtime",
     "ml",
     "monitoring",
     "security",

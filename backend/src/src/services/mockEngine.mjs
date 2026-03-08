@@ -21,7 +21,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
 /* eslint-env node */
 
@@ -30,13 +30,13 @@ class Engine {
     if (data.temperature > 100) {
       return [
         {
-          message: 'Extremely high temperature detected',
+          message: "Extremely high temperature detected",
         },
       ];
     }
     return [
       {
-        message: 'High temperature detected',
+        message: "High temperature detected",
       },
     ];
   }

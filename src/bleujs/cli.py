@@ -511,6 +511,126 @@ def models_list(output_json: bool):
         sys.exit(1)
 
 
+# Quantum commands (require bleu-js[quantum])
+@cli.group()
+def quantum():
+    """Quantum computing: teleportation, simulators, IBM hardware"""
+    pass
+
+
+@quantum.command("teleport")
+@click.option(
+    "--theta",
+    "-t",
+    type=float,
+    default=1.234,
+    help="Source state angle Ry(theta)|0> (default: 1.234)",
+)
+@click.option(
+    "--shots",
+    "-n",
+    type=int,
+    default=2048,
+    help="Number of shots (default: 2048)",
+)
+@click.option(
+    "--ibm",
+    "use_ibm",
+    is_flag=True,
+    default=False,
+    help="Run on IBM Quantum hardware (default: local simulator)",
+)
+@click.option("--draw", is_flag=True, help="Print circuit diagram")
+@click.option("--json", "output_json", is_flag=True, help="Output as JSON")
+def quantum_teleport(
+    theta: float,
+    shots: int,
+    use_ibm: bool,
+    draw: bool,
+    output_json: bool,
+):
+    """
+    Run quantum teleportation (simulator or IBM Quantum).
+
+    Teleports the state Ry(theta)|0> from q0 to q2 using entanglement and
+    classical feed-forward. Runs on local simulator by default; use --ibm to
+    run on real hardware (set QISKIT_IBM_TOKEN and optional QISKIT_IBM_INSTANCE).
+
+    Examples:
+      bleu quantum teleport
+      bleu quantum teleport --theta 0.9 --shots 1024
+      bleu quantum teleport --ibm --shots 1024
+      bleu quantum teleport --draw
+    """
+    try:
+        from .teleportation import build_teleportation_circuit
+    except ImportError as e:
+        click.echo(
+            "❌ Quantum support not installed. Install with: pip install 'bleu-js[quantum]'",
+            err=True,
+        )
+        click.echo(f"   {e}", err=True)
+        sys.exit(1)
+
+    if use_ibm:
+        try:
+            from .ibm_runtime import run_teleportation_on_ibm
+        except ImportError as e:
+            click.echo(
+                "❌ IBM Runtime not installed. Install with: pip install 'bleu-js[ibm]'",
+                err=True,
+            )
+            click.echo(f"   {e}", err=True)
+            sys.exit(1)
+        if not os.environ.get("QISKIT_IBM_TOKEN"):
+            click.echo(
+                "❌ QISKIT_IBM_TOKEN not set. Get a token at https://quantum.ibm.com",
+                err=True,
+            )
+            sys.exit(1)
+        try:
+            out = run_teleportation_on_ibm(theta=theta, shots=shots)
+            if output_json:
+                click.echo(
+                    json.dumps(
+                        {
+                            "backend": out["backend"],
+                            "job_id": out["job_id"],
+                            "counts": out.get("counts"),
+                        },
+                        indent=2,
+                    )
+                )
+            else:
+                click.echo(f"✅ Backend: {out['backend']}")
+                click.echo(f"   Job ID: {out['job_id']}")
+                if out.get("counts"):
+                    click.echo(f"   Counts: {out['counts']}")
+        except Exception as e:
+            click.echo(f"❌ IBM run failed: {e}", err=True)
+            sys.exit(1)
+        return
+
+    # Simulator
+    try:
+        from .teleportation import run_teleportation_simulator
+    except ImportError:
+        click.echo(
+            "❌ Simulator requires qiskit-aer. Install with: pip install 'bleu-js[quantum]'",
+            err=True,
+        )
+        sys.exit(1)
+    qc = build_teleportation_circuit(theta=theta)
+    if draw:
+        click.echo(qc.draw())
+    out = run_teleportation_simulator(theta=theta, shots=shots)
+    if output_json:
+        click.echo(json.dumps({"theta": theta, "shots": shots, "counts": out["counts"]}, indent=2))
+    else:
+        click.echo(f"✅ Teleportation (theta={theta}, shots={shots})")
+        click.echo(f"   Counts: {out['counts']}")
+
+
 @models.command("info")
 @click.argument("model_id")
 def models_info(model_id: str):

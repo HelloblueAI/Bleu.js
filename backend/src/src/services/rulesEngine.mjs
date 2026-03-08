@@ -21,11 +21,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
 /* eslint-env node */
-const { Engine } = require('json-rules-engine');
-const logger = require('../src/utils/logger');
+const { Engine } = require("json-rules-engine");
+const logger = require("../src/utils/logger");
 
 class RulesEngine {
   constructor() {
@@ -38,23 +38,23 @@ class RulesEngine {
    * Adds default rules to the engine.
    */
   addDefaultRules() {
-    logger.info('🔧 Adding default rules to the RulesEngine');
+    logger.info("🔧 Adding default rules to the RulesEngine");
 
     const defaultRules = [
       {
         conditions: {
           any: [
             {
-              fact: 'temperature',
-              operator: 'greaterThanInclusive',
+              fact: "temperature",
+              operator: "greaterThanInclusive",
               value: 100,
             },
           ],
         },
         event: {
-          type: 'High temperature detected',
+          type: "High temperature detected",
           params: {
-            message: 'High temperature detected',
+            message: "High temperature detected",
           },
         },
       },
@@ -62,16 +62,16 @@ class RulesEngine {
         conditions: {
           any: [
             {
-              fact: 'temperature',
-              operator: 'greaterThanInclusive',
+              fact: "temperature",
+              operator: "greaterThanInclusive",
               value: 120,
             },
           ],
         },
         event: {
-          type: 'Extremely high temperature detected',
+          type: "Extremely high temperature detected",
           params: {
-            message: 'Extremely high temperature detected',
+            message: "Extremely high temperature detected",
           },
         },
       },
@@ -92,7 +92,7 @@ class RulesEngine {
       });
       logger.info(`✅ Added ${newRules.length} new rules.`);
     } catch (error) {
-      logger.error('❌ Error adding rules:', error);
+      logger.error("❌ Error adding rules:", error);
       throw error;
     }
   }
@@ -104,19 +104,19 @@ class RulesEngine {
    */
   async evaluate(data) {
     try {
-      logger.info('🔍 Evaluating rules with given data');
+      logger.info("🔍 Evaluating rules with given data");
       const results = await this.engine.run(data);
       const triggeredEvents = results.events.map((event) => event.params);
 
       if (triggeredEvents.length > 0) {
         logger.info(`🚀 Rules triggered: ${triggeredEvents.length}`);
       } else {
-        logger.info('ℹ️ No rules triggered.');
+        logger.info("ℹ️ No rules triggered.");
       }
 
       return triggeredEvents;
     } catch (error) {
-      logger.error('❌ Error evaluating rules:', error);
+      logger.error("❌ Error evaluating rules:", error);
       throw error;
     }
   }
