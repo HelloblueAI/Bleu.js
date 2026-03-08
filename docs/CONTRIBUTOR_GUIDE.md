@@ -353,7 +353,7 @@ A: Yes, but focus on one PR at a time for easier review.
 - **[Full Contributing Guide](CONTRIBUTING.md)** - Complete guide
 - **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community standards
 - **[API Reference](API_REFERENCE.md)** - Understand the API
-- **[Project Structure](../PROJECT_STRUCTURE.md)** - Codebase layout
+- **[Product architecture](PRODUCT_ARCHITECTURE.md)** - Codebase layout and which app is the product
 
 ---
 

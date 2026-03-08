@@ -78,7 +78,7 @@ git push origin docs/my-first-contribution
 
 ### Understanding the Project
 
-- **[Project Structure](../PROJECT_STRUCTURE.md)** - Codebase layout
+- **[Product architecture](PRODUCT_ARCHITECTURE.md)** - Codebase layout and which app is the product
 - **[README](../README.md)** - Project overview
 - **[User Guide](USER_CONCERNS_AND_FAQ.md)** - User perspective
 

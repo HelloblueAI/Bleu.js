@@ -1,5 +1,8 @@
 """
-Main entry point for the Bleu.js application.
+Alternate entry point using src.python.backend (ML/internal stack).
+
+For the product app (bleujs.org dashboard + API), use src.main.app instead.
+See docs/PRODUCT_ARCHITECTURE.md.
 """
 
 import logging

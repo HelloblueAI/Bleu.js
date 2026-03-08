@@ -105,7 +105,7 @@ We're actively working to build our community:
 **Best for:** Learning how to use Bleu.js
 
 - **Quick Start:** [`docs/QUICKSTART.md`](./QUICKSTART.md)
-- **User Guide:** [`../COMPLETE_USER_GUIDE.md`](../COMPLETE_USER_GUIDE.md)
+- **User guide:** [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
 - **API Reference:** [`docs/API_REFERENCE.md`](./API_REFERENCE.md)
 - **Examples:** [`examples/`](../examples/)
 
