@@ -2,10 +2,9 @@
 
 ## [v1.3.42] - 2026-03-08
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.3.41 to 1.3.42
-- See commit history for changes
-
+### Bug Fixes
+- **distributed:** Fix SyntaxError in `DistributedTrainingManager.dispose()` — removed invalid `await` in sync method; use sync `Client.close()`.
+- **api_client:** Fix async cleanup in `AsyncBleuAPIClient.__del__` — removed unsafe `asyncio.create_task(self.close())`; use `async with` for reliable cleanup.
 
 ## [v1.3.41] - 2026-03-08
 
