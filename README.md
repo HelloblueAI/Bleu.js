@@ -1,6 +1,8 @@
-### Bleu.js
+# Bleu.js
 
-### SDK - Cloud API Access
+Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https://bleujs.org)
+
+## SDK – Cloud API
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
 
@@ -35,7 +37,7 @@ print(response.embeddings)
 models = client.list_models()
 ```
 
-** [Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** | **🔑 [Get API Key](https://bleujs.org)** | **💡 [Examples](./examples/api_client_*.py)**
+**[Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** · **[Get API Key](https://bleujs.org)** · **[Examples](./examples/api_client_*.py)**
 
 ### Async Client
 
@@ -55,7 +57,7 @@ asyncio.run(main())
 
 ### 🖥️ Bleu CLI - Command Line Interface
 
-**NEW!** Access Bleu.js directly from your terminal with the comprehensive Bleu CLI.
+Access Bleu.js from the terminal with the Bleu CLI.
 
 #### Installation
 
@@ -203,7 +205,7 @@ bleu chat "Hello"
 
 ---
 
-###  Quick Install
+### Quick Install
 
 ```bash
 # Install from PyPI (Recommended - latest release)
@@ -268,8 +270,8 @@ with open(model_path, 'rb') as f:
 
 ### Version
 - **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
-- **In code:** use `from src.version import get_version` for API, health, or config. The main app and API use this for `/health` and FastAPI `version`.
-- **CLI:** `bleu version` or `python -c "from src.version import get_version; print(get_version())"`
+- **Installed package:** `from bleujs import __version__` or `bleu version`
+- **In-repo / API:** `from src.version import get_version` (used by the main app, `/health`, and FastAPI)
 
 ### For Contributors
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
@@ -292,6 +294,8 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 ## Quantum-Enhanced Vision System Achievements
 
 ### State-of-the-Art Performance Metrics
+
+*Vision/quantum benchmarks (specific workloads):*
 
 - **Detection Accuracy**: 18.90% confidence with 2.82% uncertainty
 - **Processing Speed**: 23.73ms inference time
@@ -398,9 +402,9 @@ pip install bleu-js
 ```
 
 **Prerequisites**
-- Python 3.10 or higher
+- Python 3.8+ (3.10+ recommended)
 - Docker (optional, for containerized deployment)
-- CUDA-capable GPU (recommended for quantum computations)
+- CUDA-capable GPU (optional, for quantum/ML workloads)
 - 16GB+ RAM (recommended)
 
 ### Quick Start
@@ -429,6 +433,9 @@ results = bleu.process(
 - **Version:** `from src.version import get_version`
 - **Raising/catching API exceptions:** `from src import ServiceUnavailable, RateLimitExceeded`
 - **How to contribute:** see [Contributing Guide](./docs/CONTRIBUTING.md)
+
+### Reliability
+- When dependencies are unavailable, the API returns **503 Service Unavailable** (circuit breaker). Use `ServiceUnavailable` and `RateLimitExceeded` from `bleujs` (or `src`) for error handling.
 
 ### CI/CD Pipeline
 
@@ -512,7 +519,7 @@ model = trainer.train(
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Bleu.js.git
+git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
 # Start all services
@@ -628,9 +635,11 @@ Data is persisted in Docker volumes:
 
 ## Performance Metrics
 
+*Targets and benchmarks; actual results depend on workload and environment.*
+
 ### Core Performance
-- Processing Speed: 10x faster than traditional AI with quantum acceleration
-- Accuracy: 93.6% in code analysis with continuous improvement
+- Processing Speed: up to 10x faster than traditional AI with quantum acceleration
+- Accuracy: up to 93.6% in code-analysis workloads with continuous improvement
 - Security: Military-grade encryption with quantum resistance
 - Scalability: Infinite with intelligent cluster management
 - Resource Usage: Optimized for maximum efficiency with auto-scaling
@@ -745,7 +754,7 @@ graph LR
 ```
 
 
-##  Contributing
+## Contributing
 
 We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or helping others, your contributions make Bleu.js better.
 
@@ -823,7 +832,7 @@ For complete development setup instructions, see [Contributing Guide](./docs/CON
 
 ## 🖥️ Bleu OS - Quantum-Enhanced Operating System
 
-**NEW!** The world's first OS optimized for quantum computing and AI workloads!
+Linux distribution optimized for quantum computing and AI workloads.
 
 ### What is Bleu OS?
 
@@ -860,7 +869,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 - [Quick Start](./bleu-os/QUICKSTART.md) - Get started in 5 minutes
 
 
-##  Additional Resources
+## Additional Resources
 
 ### Documentation
 - **[Roadmap](./docs/ROADMAP.md)** - Development plans and future features
@@ -895,7 +904,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![version](https://img.shields.io/badge/version-1.3.36-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![version](https://img.shields.io/badge/version-1.3.39-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)
