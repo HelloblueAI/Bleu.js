@@ -23,6 +23,21 @@
 
 Use **`src/main.py`** for the public product (dashboard + API). Use the others only if you have a specific deployment or internal need.
 
+## Quantum & ML in the product
+
+- **Product:** The cloud API (bleujs.org) and SDK expose quantum-enhanced and ML capabilities as part of the paid offering (e.g. models, features). That is the shipped product.
+- **R&D / optional:** The repo also contains quantum and ML libraries (e.g. teleportation, quantum_ml, error correction) used for research or advanced installs. They are part of the PyPI extras `[ml]` and `[quantum]`; the main revenue surface is the **API + subscriptions** at bleujs.org.
+
+## Run the product app locally
+
+```bash
+# From repo root. Install deps first: poetry install  OR  pip install -e .
+# Use python -m so uvicorn runs from the same env where the project is installed:
+python -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Then open `http://localhost:8000` (dashboard, docs at `/docs`). Set env (e.g. `.env`) for `SECRET_KEY`, `DATABASE_URL`, etc.; see [SECURITY](../SECURITY.md) and `.env.example`.
+
 ## Docs that matter for the product
 
 - [README](../README.md) — Quick start, SDK, CLI, install
