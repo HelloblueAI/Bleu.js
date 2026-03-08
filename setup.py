@@ -58,10 +58,15 @@ setup(
             "httpx>=0.24.0",
             "pydantic>=2.0.0",
         ],
-        # Quantum computing features
+        # Quantum computing features (simulator + circuits)
         "quantum": [
             "qiskit>=0.40.0",
+            "qiskit-aer>=0.13.0",
             "pennylane>=0.30.0",
+        ],
+        # IBM Quantum hardware (requires quantum)
+        "ibm": [
+            "qiskit-ibm-runtime>=0.22.0",
         ],
         # Machine learning features
         "ml": [
@@ -79,6 +84,7 @@ setup(
             "httpx>=0.24.0",
             "pydantic>=2.0.0",
             "qiskit>=0.40.0",
+            "qiskit-aer>=0.13.0",
             "pennylane>=0.30.0",
             "scikit-learn>=1.2.0",
             "xgboost>=1.7.0",

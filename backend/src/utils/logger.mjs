@@ -21,15 +21,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import winston from 'winston';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import winston from "winston";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { existsSync, mkdirSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const logDirectory = join(__dirname, '../logs');
+const logDirectory = join(__dirname, "../logs");
 if (!existsSync(logDirectory)) {
   mkdirSync(logDirectory, { recursive: true });
 }
@@ -40,18 +40,18 @@ const logFormat = winston.format.printf(({ timestamp, level, message }) => {
 
 export function createLogger(moduleName) {
   const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
+    level: process.env.LOG_LEVEL || "info",
     format: winston.format.combine(winston.format.timestamp(), logFormat),
     transports: [
       new winston.transports.Console(),
       new winston.transports.File({
-        filename: join(logDirectory, 'app.log'),
+        filename: join(logDirectory, "app.log"),
       }),
     ],
   });
 
-  logger.on('error', (err) => {
-    console.error('❌ Logger encountered an error:', err);
+  logger.on("error", (err) => {
+    console.error("❌ Logger encountered an error:", err);
   });
 
   return logger.child({ module: moduleName });

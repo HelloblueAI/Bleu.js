@@ -21,12 +21,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
-import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
-import path from 'path';
-import logger from '../utils/logger.mjs'; // Ensure logger is in .mjs
+import { spawn } from "child_process";
+import { fileURLToPath } from "url";
+import path from "path";
+import logger from "../utils/logger.mjs"; // Ensure logger is in .mjs
 
 /**
  * Resolving __dirname in ESM
@@ -39,9 +39,9 @@ const __dirname = path.dirname(__filename);
  */
 class ModelManager {
   constructor() {
-    this.trainScript = path.join(__dirname, 'models', 'train.py');
-    this.evaluateScript = path.join(__dirname, 'models', 'evaluate.py');
-    this.uploadScript = path.join(__dirname, 'models', 'upload.py');
+    this.trainScript = path.join(__dirname, "models", "train.py");
+    this.evaluateScript = path.join(__dirname, "models", "evaluate.py");
+    this.uploadScript = path.join(__dirname, "models", "upload.py");
   }
 
   /**
@@ -50,13 +50,13 @@ class ModelManager {
    * @returns {Promise<string>} - Training completion message.
    */
   async trainModel(modelInfo) {
-    if (!modelInfo || typeof modelInfo !== 'object') {
-      throw new Error('Invalid modelInfo provided.');
+    if (!modelInfo || typeof modelInfo !== "object") {
+      throw new Error("Invalid modelInfo provided.");
     }
 
-    logger.info('🚀 Starting model training...');
+    logger.info("🚀 Starting model training...");
     return this.runPythonScript(this.trainScript, [
-      '--modelInfo',
+      "--modelInfo",
       JSON.stringify(modelInfo),
     ]);
   }
@@ -66,8 +66,8 @@ class ModelManager {
    * @returns {Promise<string>} - Training status.
    */
   async getTrainModelStatus() {
-    logger.info('📊 Retrieving training status...');
-    return 'Training status not implemented.';
+    logger.info("📊 Retrieving training status...");
+    return "Training status not implemented.";
   }
 
   /**
@@ -76,12 +76,12 @@ class ModelManager {
    * @returns {Promise<string>} - Upload completion message.
    */
   async uploadDataset(datasetPath) {
-    if (!datasetPath || typeof datasetPath !== 'string') {
-      throw new Error('Invalid dataset path provided.');
+    if (!datasetPath || typeof datasetPath !== "string") {
+      throw new Error("Invalid dataset path provided.");
     }
 
     logger.info(`📤 Uploading dataset: ${datasetPath}`);
-    return this.runPythonScript(this.uploadScript, ['--file', datasetPath]);
+    return this.runPythonScript(this.uploadScript, ["--file", datasetPath]);
   }
 
   /**
@@ -93,18 +93,18 @@ class ModelManager {
   async evaluateRule(ruleId, inputData) {
     if (
       !ruleId ||
-      typeof ruleId !== 'string' ||
+      typeof ruleId !== "string" ||
       !inputData ||
-      typeof inputData !== 'object'
+      typeof inputData !== "object"
     ) {
-      throw new Error('Invalid ruleId or inputData provided.');
+      throw new Error("Invalid ruleId or inputData provided.");
     }
 
     logger.info(`🔍 Evaluating rule: ${ruleId}`);
     return this.runPythonScript(this.evaluateScript, [
-      '--ruleId',
+      "--ruleId",
       ruleId,
-      '--inputData',
+      "--inputData",
       JSON.stringify(inputData),
     ]);
   }
@@ -117,26 +117,26 @@ class ModelManager {
    */
   runPythonScript(scriptPath, args = []) {
     return new Promise((resolve, reject) => {
-      const process = spawn('python3', [scriptPath, ...args]);
+      const process = spawn("python3", [scriptPath, ...args]);
 
-      process.stdout.on('data', (data) => {
+      process.stdout.on("data", (data) => {
         logger.info(`📢 Output: ${data.toString().trim()}`);
       });
 
-      process.stderr.on('data', (data) => {
+      process.stderr.on("data", (data) => {
         logger.error(`⚠️ Error: ${data.toString().trim()}`);
       });
 
-      process.on('close', (code) => {
+      process.on("close", (code) => {
         if (code === 0) {
-          logger.info('✅ Process completed successfully.');
-          resolve('Process completed.');
+          logger.info("✅ Process completed successfully.");
+          resolve("Process completed.");
         } else {
           reject(new Error(`❌ Process exited with code ${code}`));
         }
       });
 
-      process.on('error', (error) => {
+      process.on("error", (error) => {
         reject(new Error(`❌ Process failed: ${error.message}`));
       });
     });

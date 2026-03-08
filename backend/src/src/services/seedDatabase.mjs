@@ -21,11 +21,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
 /* eslint-env node */
-const RuleModel = require('../models/RuleModel');
-const logger = require('../src/utils/logger');
+const RuleModel = require("../models/RuleModel");
+const logger = require("../src/utils/logger");
 
 /**
  * Seeds the database with initial rules.
@@ -35,23 +35,23 @@ const logger = require('../src/utils/logger');
 const seedDatabase = async (customData = null) => {
   const defaultData = [
     {
-      name: 'Sample Rule',
-      description: 'This is a sample rule for seeding.',
+      name: "Sample Rule",
+      description: "This is a sample rule for seeding.",
     },
     {
-      name: 'High Temperature Alert',
-      description: 'Triggers an alert when temperature exceeds 100°C.',
+      name: "High Temperature Alert",
+      description: "Triggers an alert when temperature exceeds 100°C.",
       conditions: [
-        { fact: 'temperature', operator: 'greaterThan', value: 100 },
+        { fact: "temperature", operator: "greaterThan", value: 100 },
       ],
-      actions: [{ type: 'alert', message: 'High temperature detected!' }],
+      actions: [{ type: "alert", message: "High temperature detected!" }],
     },
   ];
 
   const dataToInsert = customData || defaultData;
 
   try {
-    logger.info('🔄 Seeding database...');
+    logger.info("🔄 Seeding database...");
 
     await RuleModel.insertMany(dataToInsert);
 
@@ -59,7 +59,7 @@ const seedDatabase = async (customData = null) => {
       `✅ Database seeded successfully with ${dataToInsert.length} entries.`,
     );
   } catch (error) {
-    logger.error('❌ Error seeding database:', error);
+    logger.error("❌ Error seeding database:", error);
   }
 };
 

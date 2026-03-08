@@ -72,17 +72,10 @@
 
 ## [v1.3.29] - 2026-02-12
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.3.28 to 1.3.29
-- See commit history for changes
-
-
-## [v1.3.28] - 2026-02-12
-
-### 🎉 Automatic Release
-- Version bumped automatically from 1.3.27 to 1.3.28
-- See commit history for changes
-
+### PyPI release 1.3.29
+- Centralized version (`src/version.py`), circuit breaker 503, Redis health fix
+- QuantumGPUManager fixes (`_select_best_device`, `_get_available_memory`, `free`, `get_memory_info`)
+- pytest asyncio and coverage config, LICENSE/SECURITY.md, docs updates
 
 ## [v1.3.27] - 2026-02-12
 

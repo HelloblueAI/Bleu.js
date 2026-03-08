@@ -21,10 +21,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
 /* eslint-env node */
-const logger = require('../src/utils/logger');
+const logger = require("../src/utils/logger");
 
 /**
  * Validates the structure of a rule input.
@@ -32,14 +32,14 @@ const logger = require('../src/utils/logger');
  * @returns {boolean} - Whether the rule is valid.
  */
 const validateRuleInput = (rule) => {
-  if (!rule || typeof rule !== 'object') {
-    logger.warn('⚠️ Invalid rule input: Rule must be an object.');
+  if (!rule || typeof rule !== "object") {
+    logger.warn("⚠️ Invalid rule input: Rule must be an object.");
     return false;
   }
 
   if (!Array.isArray(rule.conditions) || !Array.isArray(rule.actions)) {
     logger.warn(
-      '⚠️ Invalid rule structure: Conditions and actions must be arrays.',
+      "⚠️ Invalid rule structure: Conditions and actions must be arrays.",
     );
     return false;
   }
@@ -54,8 +54,8 @@ const validateRuleInput = (rule) => {
  */
 const validateCondition = (condition) => {
   const isValid =
-    condition && typeof condition === 'object' && 'type' in condition;
-  if (!isValid) logger.warn('⚠️ Invalid condition format:', condition);
+    condition && typeof condition === "object" && "type" in condition;
+  if (!isValid) logger.warn("⚠️ Invalid condition format:", condition);
   return isValid;
 };
 
@@ -65,8 +65,8 @@ const validateCondition = (condition) => {
  * @returns {boolean} - Whether the action is valid.
  */
 const validateAction = (action) => {
-  const isValid = action && typeof action === 'object' && 'type' in action;
-  if (!isValid) logger.warn('⚠️ Invalid action format:', action);
+  const isValid = action && typeof action === "object" && "type" in action;
+  if (!isValid) logger.warn("⚠️ Invalid action format:", action);
   return isValid;
 };
 
@@ -78,8 +78,8 @@ const validateAction = (action) => {
  */
 const trainModelLogic = async (datasetId) => {
   if (!datasetId) {
-    logger.error('❌ Dataset ID is required for model training.');
-    throw new Error('Dataset ID is required');
+    logger.error("❌ Dataset ID is required for model training.");
+    throw new Error("Dataset ID is required");
   }
 
   try {

@@ -21,11 +21,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-'use strict';
+"use strict";
 
-import NLPProcessor from '../ai/nlpProcessor.mjs';
-import ModelManager from '../ml/modelManager.mjs';
-import logger from '../utils/logger.mjs';
+import NLPProcessor from "../ai/nlpProcessor.mjs";
+import ModelManager from "../ml/modelManager.mjs";
+import logger from "../utils/logger.mjs";
 
 class AIService {
   constructor() {
@@ -39,15 +39,15 @@ class AIService {
    * @returns {Promise<Object>} Analysis results (tokens, sentiment, named entities).
    */
   async analyzeText(text) {
-    if (!text || typeof text !== 'string') {
+    if (!text || typeof text !== "string") {
       logger.error({
-        message: 'Invalid input. Text must be a non-empty string.',
+        message: "Invalid input. Text must be a non-empty string.",
         input: text,
       });
-      throw new Error('Invalid input. Text must be a non-empty string.');
+      throw new Error("Invalid input. Text must be a non-empty string.");
     }
 
-    logger.info({ message: '🔍 Starting text analysis', input: text });
+    logger.info({ message: "🔍 Starting text analysis", input: text });
 
     try {
       const tokens = await this.nlpProcessor.tokenize(text);
@@ -58,7 +58,7 @@ class AIService {
       const entities = await this.nlpProcessor.namedEntityRecognition(text);
 
       logger.info({
-        message: '📊 NLP Analysis Completed',
+        message: "📊 NLP Analysis Completed",
         tokens,
         stemmedTokens,
         sentiment,
@@ -68,7 +68,7 @@ class AIService {
       return { tokens, stemmedTokens, sentiment, entities };
     } catch (error) {
       logger.error({
-        message: '❌ Error during text analysis',
+        message: "❌ Error during text analysis",
         error: error.message,
         stack: error.stack,
       });
@@ -82,18 +82,18 @@ class AIService {
    * @returns {Promise<Object>} Training result.
    */
   async trainModel(modelInfo) {
-    logger.info({ message: '🚀 Training AI model', modelInfo });
+    logger.info({ message: "🚀 Training AI model", modelInfo });
 
     try {
       const result = await this.modelManager.trainModel(modelInfo);
       logger.info({
-        message: '✅ Model training completed successfully',
+        message: "✅ Model training completed successfully",
         result,
       });
       return result;
     } catch (error) {
       logger.error({
-        message: '❌ Error during model training',
+        message: "❌ Error during model training",
         error: error.message,
         stack: error.stack,
       });
@@ -106,15 +106,15 @@ class AIService {
    * @returns {Promise<Object>} Training status.
    */
   async getTrainModelStatus() {
-    logger.info({ message: '📊 Fetching model training status' });
+    logger.info({ message: "📊 Fetching model training status" });
 
     try {
       const status = await this.modelManager.getTrainModelStatus();
-      logger.info({ message: '✅ Retrieved model training status', status });
+      logger.info({ message: "✅ Retrieved model training status", status });
       return status;
     } catch (error) {
       logger.error({
-        message: '❌ Error fetching training status',
+        message: "❌ Error fetching training status",
         error: error.message,
         stack: error.stack,
       });
@@ -128,15 +128,15 @@ class AIService {
    * @returns {Promise<Object>} Upload result.
    */
   async uploadDataset(dataset) {
-    logger.info({ message: '📤 Uploading dataset', dataset });
+    logger.info({ message: "📤 Uploading dataset", dataset });
 
     try {
       const result = await this.modelManager.uploadDataset(dataset);
-      logger.info({ message: '✅ Dataset uploaded successfully', result });
+      logger.info({ message: "✅ Dataset uploaded successfully", result });
       return result;
     } catch (error) {
       logger.error({
-        message: '❌ Error uploading dataset',
+        message: "❌ Error uploading dataset",
         error: error.message,
         stack: error.stack,
       });
@@ -151,11 +151,11 @@ class AIService {
    * @returns {Promise<Object>} Rule evaluation result.
    */
   async evaluateRule(ruleId, inputData) {
-    logger.info({ message: '🔎 Evaluating rule', ruleId, inputData });
+    logger.info({ message: "🔎 Evaluating rule", ruleId, inputData });
 
     try {
       const result = await this.modelManager.evaluateRule(ruleId, inputData);
-      logger.info({ message: '✅ Rule evaluation successful', result });
+      logger.info({ message: "✅ Rule evaluation successful", result });
       return result;
     } catch (error) {
       logger.error({

@@ -21,4 +21,4 @@ def get_version() -> str:
         return importlib.metadata.version("bleu-js")
     except Exception:
         # Fallback when package not installed or metadata missing
-        return "1.3.27"
+        return "1.3.29"
