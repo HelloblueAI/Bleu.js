@@ -26,15 +26,48 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 
 **Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org).
 
-### Install & first run
+---
 
-**Requirements:** Python 3.11+
+### Get started in 60 seconds
 
-**Fast install (recommended)** — small download, API + CLI in seconds (like Fuse.js):
+**1. Install** (Python 3.11+):
 
 ```bash
 pip install bleu-js
-# or: pip install "bleu-js[api]"   (same — API client + CLI)
+```
+
+**2. Get an API key** at [bleujs.org](https://bleujs.org), then set it:
+
+```bash
+export BLEUJS_API_KEY="bleujs_sk_your_key_here"
+# or: bleu config set api-key bleujs_sk_your_key_here
+```
+
+**3. Run:**
+
+```bash
+bleu chat "Say hello in one word."
+```
+
+Or in Python:
+
+```python
+from bleujs.api_client import BleuAPIClient
+print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
+```
+
+**Full walkthrough:** [Get started](docs/GET_STARTED.md) · **Quick reference:** [QUICKSTART](docs/QUICKSTART.md) · **API & CLI docs:** [API Client Guide](docs/API_CLIENT_GUIDE.md)
+
+---
+
+### Install & first run (details)
+
+**Requirements:** Python 3.11+
+
+**Fast install (recommended)** — small download, API + CLI in seconds:
+
+```bash
+pip install bleu-js
 ```
 
 **Quick test (SDK):** Get an API key at [bleujs.org](https://bleujs.org), then:
@@ -47,11 +80,11 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 **Quick test (CLI):** `export BLEUJS_API_KEY=bleujs_sk_...` then `bleu chat "Hello"`.
 
-**What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing. Add extras only when you need them: `pip install "bleu-js[ml]"` (XGBoost, scikit-learn), `bleu-js[quantum]` (Qiskit, PennyLane), `bleu-js[deep]` (PyTorch, TensorFlow), or `bleu-js[all]` for the full stack. **5-minute start:** [QUICKSTART](docs/QUICKSTART.md) — install → set API key → one SDK call + one CLI command.
+**What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing. Add extras only when you need them: `pip install "bleu-js[ml]"` (XGBoost, scikit-learn), `bleu-js[quantum]` (Qiskit, PennyLane), `bleu-js[deep]` (PyTorch, TensorFlow), or `bleu-js[all]` for the full stack.
 
-**Local app:** Copy [`.env.example`](.env.example) to `.env` and set your secrets; see [SECURITY.md](SECURITY.md).
+**Local app (self-host):** Copy [`.env.example`](.env.example) to `.env` and set your secrets; see [SECURITY.md](SECURITY.md) and [INSTALLATION](docs/INSTALLATION.md).
 
-**More:** [Full installation guide](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md) · [API contract](docs/API_CLIENT_GUIDE.md#api-contract)
+**More:** [Get started](docs/GET_STARTED.md) · [Full installation](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md)
 
 ## SDK – Cloud API
 
@@ -88,7 +121,7 @@ print(response.embeddings)
 models = client.list_models()
 ```
 
-**[Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** · **[Get API Key](https://bleujs.org)** · **[Examples](./examples/api_client_*.py)**
+**[Complete SDK Documentation](./docs/API_CLIENT_GUIDE.md)** · **[Get API Key](https://bleujs.org)** · **[Examples](examples/README.md)**
 
 ### Async Client
 
@@ -516,13 +549,14 @@ results = bleu.process(
 ### Development
 
 - **Run tests:** `pytest tests/ -q` (optional: `pip install pytest pytest-asyncio` for async tests)
-- **Version:** `from src.version import get_version`
-- **Raising/catching API exceptions:** `from src import ServiceUnavailable, RateLimitExceeded`
+- **Version:** `from bleujs import get_version` or `from src.version import get_version`
+- **API exceptions (SDK):** `from bleujs import BleuAPIError, RateLimitError, AuthenticationError, NetworkError, ValidationError`
+- **Server exceptions (app only):** `from src import ServiceUnavailable, RateLimitExceeded` when running the FastAPI app
 - **How to contribute:** see [Contributing Guide](./docs/CONTRIBUTING.md)
 
 ### Reliability
 
-- When dependencies are unavailable, the API returns **503 Service Unavailable** (circuit breaker). Use `ServiceUnavailable` and `RateLimitExceeded` from `bleujs` (or `src`) for error handling.
+- When dependencies are unavailable, the API returns **503 Service Unavailable** (circuit breaker). **SDK:** catch `BleuAPIError`, `RateLimitError` from `bleujs`. **Server (self-hosted app):** use `ServiceUnavailable` and `RateLimitExceeded` from `src` for middleware/error handling.
 
 ### CI/CD Pipeline
 
@@ -542,6 +576,8 @@ For local CI/CD testing, you can use the `act` tool to run GitHub Actions workfl
 For complete API documentation, see [API Reference](./docs/API_REFERENCE.md).
 
 ## Examples
+
+**Run ready-made scripts:** See [examples/](examples/) and [examples/README.md](examples/README.md) for API vs local examples and how to run them.
 
 ### Quantum Feature Extraction
 
@@ -1017,7 +1053,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![version](https://img.shields.io/badge/version-1.3.45-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![version](https://img.shields.io/badge/version-1.3.x-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)

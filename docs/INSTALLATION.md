@@ -1,8 +1,25 @@
 # 📦 Bleu.js Installation Guide
 
-**Environment:** For local or deployed runs, copy [`.env.example`](../.env.example) to `.env` in the repo root and set your secrets (see [SECURITY.md](../SECURITY.md)).
+## For most users: Cloud API + CLI (recommended)
 
-## 🚀 Quick Installation (Recommended)
+If you only need the **SDK and CLI** to call the Bleu.js API at [bleujs.org](https://bleujs.org):
+
+1. **Install:** `pip install bleu-js` (Python 3.11+)
+2. **Get an API key** at [bleujs.org](https://bleujs.org)
+3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` or `bleu config set api-key bleujs_sk_...`
+4. **Run:** `bleu chat "Hello"` or use the SDK in Python
+
+**Full walkthrough:** [Get started](GET_STARTED.md). No `.env`, database, or server setup required.
+
+---
+
+## Self-hosting and development
+
+The sections below cover **running the Bleu.js app yourself** (API server, dashboard) or **developing/contributing** (clone, Poetry, tests). For that you need a `.env` file and optional database; see [SECURITY.md](../SECURITY.md) and [`.env.example`](../.env.example).
+
+---
+
+## 🚀 Quick Installation (pip)
 
 ### Using pip from PyPI (Simplest)
 
@@ -40,16 +57,19 @@ poetry shell
 
 ### Using pip from Source
 
+**For development or self-hosting only.** Most users should use `pip install bleu-js` from PyPI.
+
 ```bash
 # Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
-# Install in development mode
+# Install the package (API + CLI, same as PyPI)
 pip install -e .
 
-# Or install with all dependencies
-pip install -r requirements.txt
+# Or install with full app dependencies (for running the server)
+pip install -e ".[server]"
+# requirements.txt is used by CI/full stack; prefer pyproject.toml extras.
 ```
 
 ---
@@ -86,16 +106,20 @@ poetry --version  # Should be 1.0+
 
 ## 🔧 Installation Methods
 
-### Method 1: Quick Install (For Users)
+### Method 1: Quick Install (For Users – Cloud API)
 
-**Best for:** Users who want to use Bleu.js quickly
+**Best for:** Users who want to use the Bleu.js cloud API and CLI
 
 ```bash
-# Install directly from GitHub
-pip install git+https://github.com/HelloblueAI/Bleu.js.git
+# Install from PyPI (recommended)
+pip install bleu-js
 
 # Verify installation
-python3 -c "import bleujs; print('✅ Bleu.js installed!')"
+python3 -c "import bleujs; print('✅ Bleu.js installed! Version:', bleujs.__version__)"
+
+# Set API key and try CLI (get key at https://bleujs.org)
+bleu config set api-key bleujs_sk_your_key
+bleu chat "Hello"
 ```
 
 ---
@@ -227,26 +251,22 @@ python3 -c "from src.database import check_db_connection; print('✅ DB OK' if c
 
 ## 🧪 Verify Installation
 
-### Test 1: Import Package
+### Test 1: Import Package (pip users)
 
 ```bash
-python3 << 'EOF'
-# Test basic import
-import bleujs
-print("✅ Bleu.js imported successfully")
+# If you installed with: pip install bleu-js
+python3 -c "import bleujs; print('✅ Bleu.js', bleujs.__version__)"
+bleu version
+bleu health   # requires BLEUJS_API_KEY
+```
 
-# Test configuration
-from src.config import get_settings
-settings = get_settings()
-print("✅ Configuration loaded")
+### Test 1b: Import Package (self-host / from source)
 
-# Test database
-from src.database import check_db_connection
-if check_db_connection():
-    print("✅ Database connected")
-else:
-    print("⚠️  Database not configured (optional)")
-EOF
+```bash
+# If you cloned the repo and run the app locally
+python3 -c "import bleujs; print('✅ Bleu.js imported')"
+python3 -c "from src.config import get_settings; print('✅ Config loaded')"
+# Optional: from src.database import check_db_connection; print('✅ DB' if check_db_connection() else '⚠️ DB not configured')"
 ```
 
 ### Test 2: Start Application
@@ -620,11 +640,11 @@ curl http://localhost:8000/health
 
 After successful installation:
 
-1. **Read Quick Start:** See `QUICK_START.md`
-2. **Configure:** Review [`.env.example`](../.env.example) for all options
-3. **Explore API:** Visit http://localhost:8000/docs
-4. **Run Tests:** `pytest --cov=src`
-5. **Read Docs:** Check `docs/` directory
+1. **Cloud API users:** [Get started](GET_STARTED.md) · [QUICKSTART](QUICKSTART.md)
+2. **Self-host / dev:** Review [`.env.example`](../.env.example); run `uvicorn src.main:app --reload`
+3. **Explore API (when app running):** http://localhost:8000/docs
+4. **Run tests (contributors):** `pytest --cov=src`
+5. **Docs:** `docs/` directory
 
 ---
 
@@ -689,9 +709,10 @@ python3 -c "import torch; print('GPU:', torch.cuda.is_available())"
 
 ### Documentation
 
-- **Quick Start:** `QUICK_START.md`
-- **Configuration:** [`.env.example`](../.env.example)
-- **API Docs:** http://localhost:8000/docs
+- **Get started (cloud API):** [GET_STARTED.md](GET_STARTED.md)
+- **Quick start:** [QUICKSTART.md](QUICKSTART.md)
+- **Configuration (self-host):** [`.env.example`](../.env.example)
+- **API docs (when app running):** http://localhost:8000/docs
 
 ### Community
 
@@ -709,6 +730,4 @@ Bleu.js is now installed and ready to use. Start building amazing AI/ML applicat
 
 ---
 
-**Version:** 1.2.0
-**Last Updated:** 2025-01-12
-**License:** MIT
+**Version:** See [pyproject.toml](../pyproject.toml) or `bleu version`. **License:** MIT

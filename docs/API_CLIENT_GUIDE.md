@@ -8,16 +8,13 @@ Complete guide to using the Bleu.js API client to access the cloud API at bleujs
 
 **Requirements:** Python 3.11+
 
-Install the API client feature:
+The default install includes the API client and CLI:
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```
 
-This installs:
-
-- `httpx>=0.24.0` - For HTTP requests with async support
-- `pydantic>=2.0.0` - For data validation
+This brings in the API client, CLI, and core dependencies (e.g. `httpx`, `pydantic`). Add `[ml]`, `[quantum]`, or `[all]` only if you need those extras.
 
 ---
 
