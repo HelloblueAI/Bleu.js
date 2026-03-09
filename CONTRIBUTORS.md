@@ -31,6 +31,8 @@ This file recognizes all contributors to the project.
 - **[Your Name](https://github.com/yourusername)** - Description of contributions
 ```
 
+(Replace `yourusername` with your GitHub username.)
+
 ---
 
 ## 🎉 Recent Contributors

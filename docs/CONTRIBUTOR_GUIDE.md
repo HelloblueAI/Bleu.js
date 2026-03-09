@@ -23,7 +23,7 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 
 ```bash
 # Fork on GitHub (click Fork button)
-# Then clone your fork
+# Then clone your fork (replace YOUR_USERNAME with your GitHub username)
 git clone https://github.com/YOUR_USERNAME/Bleu.js.git
 cd Bleu.js
 ```

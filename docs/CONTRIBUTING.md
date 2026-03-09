@@ -137,6 +137,7 @@ You don't need to write code to contribute! Here are many ways to help:
 #### 2. Clone Your Fork
 
 ```bash
+# Replace YOUR_USERNAME with your GitHub username
 git clone https://github.com/YOUR_USERNAME/Bleu.js.git
 cd Bleu.js
 ```
