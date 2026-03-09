@@ -61,10 +61,10 @@ class UserUpdate(CompatBaseModel):
 
 
 class UserResponse(UserBase):
-    """User response schema."""
+    """User response schema. Never includes raw api_key; use api_key_display for masked hint."""
 
     id: str
-    api_key: str | None = None
+    api_key_display: str | None = None  # e.g. "bleujs_****xyz1"; never the full key
     created_at: datetime
     updated_at: datetime
     last_login: datetime | None = None

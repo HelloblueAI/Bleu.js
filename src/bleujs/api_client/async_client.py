@@ -19,7 +19,7 @@ except ImportError:
 try:
     from .. import __version__ as _CLIENT_VERSION
 except ImportError:
-    _CLIENT_VERSION = "1.3.21"
+    _CLIENT_VERSION = "0.0.0"
 
 from .exceptions import (
     AuthenticationError,

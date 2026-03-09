@@ -111,7 +111,7 @@ class AuthService(BaseService):
         if user is None:
             raise credentials_exception
 
-        return UserResponse.model_validate(user.to_dict())
+        return UserResponse.model_validate(user.to_response_dict())
 
     async def create_user(self, user: UserCreate, db: Session) -> UserResponse:
         """Create a new user with subscription."""
@@ -163,7 +163,7 @@ class AuthService(BaseService):
         # Send verification email
         await self.send_verification_email(user.email)
 
-        return UserResponse.model_validate(db_user.to_dict())
+        return UserResponse.model_validate(db_user.to_response_dict())
 
     async def verify_email(self, token: str, db: Session) -> bool:
         try:
@@ -202,7 +202,7 @@ class AuthService(BaseService):
         # Check if user exists
         db_user = db.query(User).filter(User.email == user_data["email"]).first()
         if db_user:
-            return UserResponse.model_validate(db_user.to_dict())
+            return UserResponse.model_validate(db_user.to_response_dict())
 
         # Create new user
         db_user = User(

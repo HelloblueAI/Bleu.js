@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 try:
     from . import __version__ as _VERSION
 except ImportError:
-    _VERSION = "1.3.21"
+    _VERSION = "0.0.0"
 
 
 class BleuJS:

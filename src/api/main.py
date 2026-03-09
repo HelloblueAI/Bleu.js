@@ -256,10 +256,16 @@ async def _check_external_services():
 
 def _get_environment_info(start_time):
     """Get environment information."""
+    try:
+        from src.version import get_version
+
+        app_version = get_version()
+    except Exception:
+        app_version = "0.0.0"
     return {
         "python_version": os.getenv("PYTHON_VERSION", "unknown"),
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "app_version": "1.3.21",
+        "app_version": app_version,
         "uptime_seconds": int(time.time() - start_time),
     }
 

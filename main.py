@@ -87,7 +87,7 @@ def main():
                 "A state-of-the-art quantum-enhanced vision system "
                 "with advanced AI capabilities"
             ),
-            version="1.2.3",
+            version="1.3.59",
             lifespan=lifespan,
         )
 

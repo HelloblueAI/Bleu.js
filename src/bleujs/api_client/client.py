@@ -19,7 +19,7 @@ except ImportError:
 try:
     from .. import __version__ as _CLIENT_VERSION
 except ImportError:
-    _CLIENT_VERSION = "1.3.21"
+    _CLIENT_VERSION = "0.0.0"
 
 from .exceptions import (
     AuthenticationError,
@@ -314,21 +314,22 @@ class BleuAPIClient:
         model_list = ModelListResponse(**response_data)
         return model_list.data
 
-    def close(self):
-        """Close the HTTP client"""
+    def close(self) -> None:
+        """Close the HTTP client. Prefer using ``with BleuAPIClient(...) as client:``."""
         self._client.close()
 
-    def __enter__(self):
-        """Context manager entry"""
+    def __enter__(self) -> "BleuAPIClient":
+        """Context manager entry. Prefer: ``with BleuAPIClient(api_key="...") as client:``"""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit"""
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        """Context manager exit."""
         self.close()
 
-    def __del__(self):
-        """Cleanup on deletion"""
+    def __del__(self) -> None:
+        """Best-effort cleanup on GC. Prefer explicit close() or context manager."""
         try:
-            self.close()
+            if getattr(self, "_client", None) is not None and httpx is not None:
+                self._client.close()
         except Exception:
             pass

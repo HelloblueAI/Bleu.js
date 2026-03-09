@@ -59,7 +59,7 @@ def get_database_url() -> str:
 
 # Create engine with appropriate configuration
 if os.getenv("TESTING") == "true":
-    from tests.test_config import get_test_settings
+    from src.config.test_settings import get_test_settings
 
     settings = get_test_settings()
     if settings.DATABASE_URL.startswith("sqlite"):
