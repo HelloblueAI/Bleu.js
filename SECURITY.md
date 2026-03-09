@@ -26,6 +26,7 @@ We will acknowledge and work on the report and coordinate disclosure.
 | **Python (app)** | CVEs in `pyproject.toml` deps | Run `./scripts/check-security.sh`; CI runs pip-audit + Safety. Pins are in [pyproject.toml](pyproject.toml) with CVE comments. |
 | **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **~1.5k legacy alerts from old backend:** run `./scripts/dismiss-backend-dependabot-alerts.sh` (see [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss)). |
 | **Docker / Bleu OS** | Base image and system packages | Production image: [bleu-os/Dockerfile.production](bleu-os/Dockerfile.production) (Debian). Status: [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md), [.github/DOCKER_SCOUT_VULNERABILITIES.md](.github/DOCKER_SCOUT_VULNERABILITIES.md). Kernel CVEs = host; patch the host or dismiss. |
+| **Trivy / Code scanning** | Container image vulns (SARIF) | Trivy uploads to **Security → Code scanning** (not Dependabot). To bulk-dismiss documented unfixable alerts: `./scripts/dismiss-trivy-code-scanning-alerts.sh` (see [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md)). |
 | **Trivy / Docker Scout** | Container image vulns | CI runs Trivy on images. Unfixable base vulns (c-ares, sqlite, xz, etc.) are documented; rebuild when Alpine/Debian release patches. |
 | **Known transitive (lockfile)** | protobuf 5.x (CVE-2026-0994), ray 2.x (multiple CVEs, no fix yet) | Run `./scripts/check-security.sh`. Protobuf: upgrade when TensorFlow/grpcio support protobuf 6+. Ray: optional extra; track upstream for fixes. |
 
@@ -103,13 +104,33 @@ When deploying Bleu.js:
 3. Keep dependencies updated (e.g. Dependabot, `pip install -U`, security scans).
 4. **Before release:** Run `./scripts/check-security.sh` (pip-audit, safety, optional Trivy). Full steps: [Release checklist](docs/RELEASE_CHECKLIST.md).
 
+## Grade A / big-tech alignment
+
+We align with practices used by major providers (e.g. GitHub, Stripe, AWS) where applicable:
+
+| Practice | Status |
+|----------|--------|
+| **API tokens stored as hash only** | ✅ API tokens (APIToken) are stored as SHA-256 hash; raw token returned only once at creation. |
+| **No raw secrets in API responses** | ✅ User responses expose `api_key_display` (masked) only; token list returns `token_prefix` only. |
+| **Password hashing** | ✅ bcrypt via passlib. |
+| **JWT algorithm fixed** | ✅ Explicit `algorithms=[...]` (no `alg=none`). |
+| **Weak secrets rejected in prod** | ✅ Production/staging reject default/dev secrets (see Settings validators). |
+| **CSRF** | ✅ Optional double-submit cookie; uses app `SECRET_KEY` when enabled. |
+| **Security headers** | ✅ HSTS, X-Frame-Options, CSP, X-Content-Type-Options, Referrer-Policy, Permissions-Policy. |
+| **Constant-time comparison** | ✅ CSRF and token validation use constant-time compare where applicable. |
+| **Dependency scanning** | ✅ pip-audit, Safety, Dependabot, Trivy (see Check security locally). |
+
+**Recommendations for highest grade:** Use a separate JWT refresh secret (e.g. `JWT_REFRESH_SECRET_KEY`) in production. **Database:** If upgrading from an older schema, add column `api_tokens.token_prefix` (e.g. `ALTER TABLE api_tokens ADD COLUMN token_prefix VARCHAR(20) NULL;`). Existing rows work with `token_prefix` NULL (display shows `****`).
+
 ## Recent security hardening
 
 The codebase has been hardened with:
 
 - **Auth:** JWT `sub` claim uses user id (UUID); UserService and middleware aligned; no weak or empty secret in production.
 - **Secrets:** Production/staging reject default or weak `SECRET_KEY`/`JWT_SECRET_KEY`; Python backend requires a non-empty secret when not in dev.
-- **CSRF:** Optional double-submit cookie protection (`ENABLE_CSRF_PROTECTION`); `GET /api/v1/csrf-token` and `X-CSRF-Token` header for state-changing requests when enabled.
+- **API tokens:** Stored as SHA-256 hash only; raw token shown once at create; list/revoke/rotate return only `token_prefix` (e.g. `...abc1`).
+- **User responses:** No raw `api_key` in API; only `api_key_display` (masked) for identification.
+- **CSRF:** Optional double-submit cookie protection (`ENABLE_CSRF_PROTECTION`); uses app `SECRET_KEY` when set; `GET /api/v1/csrf-token` and `X-CSRF-Token` header for state-changing requests when enabled.
 - **Sensitive data:** Database URL is no longer logged (no credential fragments); default DB password is not allowed in production.
 - **CORS & CSP:** Python backend no longer uses `allow_origins=["*"]` with credentials; CSP tightened (no `unsafe-inline`/`unsafe-eval` for scripts where possible).
 - **XSS:** Dashboard and subscription templates escape API-sourced data when using `innerHTML`.

@@ -71,7 +71,12 @@ else
 fi
 if [ -z "$ALERTS_JSON" ] || [ "$ALERTS_JSON" = "[]" ]; then
   echo "No open Dependabot alerts found for this repo."
-  echo "If you expected legacy alerts, they may already be dismissed or you need repo/security_events scope. Check: gh auth status"
+  echo ""
+  echo "This usually means:"
+  echo "  • Legacy backend alerts were already dismissed (Security tab is clear), or"
+  echo "  • Your gh CLI needs repo/security_events scope (run: gh auth status)"
+  echo ""
+  echo "If the GitHub Security tab still shows a high count, check that you have access and try: gh auth refresh -s security_events"
   exit 0
 fi
 

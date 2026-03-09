@@ -55,3 +55,17 @@ So all **kernel:** High/Critical alerts are expected to remain in the Trivy list
 | **kernel (High)**      | **Host kernel**    | **Not in image; patch host or dismiss**  |
 
 We did **not** fix these in the main Bleu.js repo before; they are fixed or mitigated in the **Bleu OS production image** and process as above. Kernel alerts are handled by host/VM updates, not by the image.
+
+## GitHub Code scanning (Trivy SARIF) – bulk dismiss
+
+Trivy results are uploaded as SARIF to **Security → Code scanning** (not Dependabot). If you see hundreds of open Trivy alerts (zlib, sqlite, cpython, python-markdown, jackson-core, kernel) that are documented above as “not fixable in image” or “patch host,” you can bulk-dismiss them:
+
+1. **Script (recommended)** — from repo root, with `gh` authenticated and `security_events` scope:
+   ```bash
+   ./scripts/dismiss-trivy-code-scanning-alerts.sh --dry-run   # list only
+   ./scripts/dismiss-trivy-code-scanning-alerts.sh              # dismiss Trivy alerts
+   ./scripts/dismiss-trivy-code-scanning-alerts.sh --all-tools   # dismiss all Code scanning tools
+   ```
+   Alerts are dismissed with reason **“won't fix”** and a comment pointing to this doc.
+
+2. **Manual** — In **Security → Code scanning**, filter by tool (Trivy), select alerts, and use **Dismiss** with reason “Won’t fix” and a short comment (e.g. “Not fixable in image; see bleu-os/TRIVY_ALERTS.md”).
