@@ -4,7 +4,7 @@ Bleu configuration module.
 This module provides configuration management for Bleu.js.
 """
 
-__version__ = "1.4.3"
+__version__ = "1.4.4"
 
 from functools import lru_cache
 
