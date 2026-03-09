@@ -21,6 +21,12 @@
 - See commit history for changes
 
 
+## [v1.3.59] - 2026-03-08
+
+### Version alignment
+- Version set to **1.3.59** to match bleujs.org: **Bleu.js v1.3.x – Unified SDK & CLI**
+- Single source of truth: `pyproject.toml` and `src/bleujs/__init__.py` (CLI • Python SDK • Cloud API)
+
 ## [v1.4.1] - 2026-03-08
 
 ### 🎉 Automatic Release
