@@ -172,13 +172,28 @@ def test_subscription(db, test_user):
     return subscription
 
 
+# Plain token for tests only; stored as hash in DB (see api_token_service._hash_token)
+_TEST_PLAIN_TOKEN = "bleujs_test_plain_token_conftest_xyz"
+
+
+def _hash_token(raw: str) -> str:
+    import hashlib
+
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _token_display_prefix(raw: str) -> str:
+    return f"...{raw[-4:]}" if len(raw) >= 4 else "****"
+
+
 @pytest.fixture
 def test_api_token(db, test_user):
-    """Create a test API token."""
+    """Create a test API token (hash stored; use _TEST_PLAIN_TOKEN for validate_token)."""
     token = APIToken(
         user_id=test_user.id,
         name="Test API Token",
-        token_hash="test_token_123456789",
+        token_hash=_hash_token(_TEST_PLAIN_TOKEN),
+        token_prefix=_token_display_prefix(_TEST_PLAIN_TOKEN),
         is_active="active",
     )
     db.add(token)
