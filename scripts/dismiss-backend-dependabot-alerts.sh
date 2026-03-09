@@ -9,13 +9,15 @@ REASON="not_used"
 DRY_RUN=false
 DISMISS_ALL_LEGACY=false
 DISMISS_ALL=false
+DISMISS_KERNEL=false
 
 usage() {
-  echo "Usage: $0 [--dry-run] [--dismiss-all-legacy] [--dismiss-all]"
+  echo "Usage: $0 [--dry-run] [--dismiss-all-legacy] [--dismiss-all] [--dismiss-kernel]"
   echo ""
   echo "  --dry-run           Only list matching alerts; do not dismiss."
   echo "  --dismiss-all-legacy Dismiss alerts whose manifest is not in current scope."
   echo "  --dismiss-all       Dismiss every open Dependabot alert (use to clear all at once)."
+  echo "  --dismiss-kernel    Dismiss only kernel/OS Trivy alerts (not fixable in image; patch host)."
   echo "                      Default: only dismiss when path contains 'backend'."
   echo ""
   echo "Requires: gh auth login (with repo or security_events scope)."
@@ -28,6 +30,7 @@ while [ $# -gt 0 ]; do
     --dry-run)            DRY_RUN=true; shift ;;
     --dismiss-all-legacy) DISMISS_ALL_LEGACY=true; shift ;;
     --dismiss-all)        DISMISS_ALL=true; shift ;;
+    --dismiss-kernel)     DISMISS_KERNEL=true; shift ;;
     -h|--help)            usage ;;
     *)                    echo "Unknown option: $1"; usage ;;
   esac
@@ -72,13 +75,30 @@ if [ -z "$ALERTS_JSON" ] || [ "$ALERTS_JSON" = "[]" ]; then
   exit 0
 fi
 
-# Filter: --dismiss-all = every open alert; else backend or legacy
+# Filter: --dismiss-all = every open alert; --dismiss-kernel = kernel/Trivy only; else backend or legacy
 if [ "$DISMISS_ALL" = true ]; then
   TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '.[] | .number | tostring')
   COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
   echo "Found $COUNT open alert(s) to dismiss (all)."
   [ "$COUNT" -eq 0 ] && exit 0
   COMMENT="Bulk dismiss of open alerts. See docs/DEPENDABOT_AND_DEPENDENCIES.md"
+  REASON="not_used"
+elif [ "$DISMISS_KERNEL" = true ]; then
+  # Kernel/OS CVEs: not fixable in container image; patch host. See bleu-os/TRIVY_ALERTS.md
+  TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
+    .[] |
+    select(
+      (.security_advisory.summary // "" | ascii_downcase | test("kernel")) or
+      (.security_advisory.description // "" | ascii_downcase | test("kernel")) or
+      (.dependency.package.name // "" | ascii_downcase | test("kernel")) or
+      (.dependency.package.ecosystem // "" | ascii_downcase | test("docker|container|debian|alpine"))
+    ) | .number | tostring
+  ')
+  COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
+  echo "Found $COUNT open alert(s) matching kernel/container/OS (Trivy-style)."
+  [ "$COUNT" -eq 0 ] && echo "No kernel/container alerts to dismiss." && exit 0
+  COMMENT="Kernel/OS CVE: not fixable in container image; patch host. See bleu-os/TRIVY_ALERTS.md"
+  REASON="tolerable_risk"
 else
   # Current scope: collaboration-tools/, bleu-os/, .github/, pyproject.toml, Dockerfile, package.json, etc.
   if [ "$DISMISS_ALL_LEGACY" = true ]; then
@@ -101,7 +121,7 @@ else
   if [ "$COUNT" -eq 0 ]; then
     echo "No matching legacy alerts to dismiss (backend in path)."
     if [ "$DISMISS_ALL_LEGACY" = false ] && [ "$DISMISS_ALL" = false ]; then
-      echo "Tip: try --dismiss-all-legacy or --dismiss-all to dismiss more."
+      echo "Tip: try --dismiss-all-legacy, --dismiss-kernel (Trivy kernel), or --dismiss-all to dismiss more."
     fi
     exit 0
   fi

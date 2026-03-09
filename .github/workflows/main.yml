@@ -137,9 +137,10 @@ jobs:
       - name: Install dependencies
         run: |
           set -e
+          # Use --extras ci (all minus gputil) to avoid gputil install querying repo "python/" dir → permission denied
           for i in 1 2 3; do
-            echo "Attempt $i: poetry install --no-interaction --no-root --extras all --with dev"
-            if poetry install --no-interaction --no-root --extras all --with dev; then
+            echo "Attempt $i: poetry install --no-interaction --no-root --extras ci --with dev"
+            if poetry install --no-interaction --no-root --extras ci --with dev; then
               echo "✅ Poetry install succeeded on attempt $i"
               break
             fi
