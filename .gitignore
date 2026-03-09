@@ -12,6 +12,12 @@
 !.github/workflows/*.yml
 
 # ----------------------------------------
+# 📁 Internal docs (maintainer-only, not for public repo)
+# ----------------------------------------
+docs/internal/*
+!docs/internal/README.md
+
+# ----------------------------------------
 # 📊 NEVER Track Any Reports
 # ----------------------------------------
 report/

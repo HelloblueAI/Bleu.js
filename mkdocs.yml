@@ -1,7 +1,7 @@
 site_name: BleuJS Documentation
 site_description: Documentation for BleuJS - Quantum-Enhanced Computer Vision System
 site_author: BleuJS Team
-repo_url: https://github.com/yourusername/bleujs
+repo_url: https://github.com/HelloblueAI/Bleu.js
 edit_uri: edit/main/docs/
 
 theme:
@@ -104,7 +104,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/yourusername/bleujs
+      link: https://github.com/HelloblueAI/Bleu.js
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/bleujs/
     - icon: fontawesome/brands/npm

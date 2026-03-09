@@ -14,4 +14,6 @@ Quick links:
 - [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes)
 - [Bug report](.github/ISSUE_TEMPLATE/bug_report.md) · [Feature request](.github/ISSUE_TEMPLATE/feature_request.md)
 
+**Internal docs:** Maintainer-only docs (release instructions, org checklist) are in `docs/internal/` and are not in the public repo; see [docs/internal/README.md](docs/internal/README.md).
+
 **Version:** The package version is defined in `src/bleujs/__init__.py` only. Other subpackages may use their own version strings; the canonical version for releases and the API is `bleujs.__version__`. See [Release checklist](docs/RELEASE_CHECKLIST.md).
