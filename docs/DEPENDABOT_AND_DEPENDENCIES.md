@@ -22,10 +22,11 @@ This doc explains how we keep Dependabot and security alerts under control so we
 - **Do not** add a new top-level app (e.g. another Node or Python app) with its own `package.json` or `requirements.txt` inside this repo if you want to avoid a new wave of alerts. Prefer a **separate repository** for that app, or use the existing ecosystems (root pip, collaboration-tools npm) only.
 - If you must add a manifest, add it under a directory that is **not** in the default Dependabot scan (we only have pip at `/`, npm at `/collaboration-tools`). Prefer consolidating into root `pyproject.toml` or the existing npm app instead of new directories.
 
-## Why the alert count still shows ~1.5k
+## Why the alert count may have shown ~1.5k
 
-- **Those are old open alerts.** When we stopped tracking `backend/`, we stopped _new_ alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files. So the 1.5k are **legacy** alerts that were opened when backend was still in the repo.
-- **To see what we actually have now:** You have to **dismiss** the obsolete ones. Then only alerts for the _current_ scan scope (root pip, collaboration-tools npm, Docker, Actions) will remain.
+- **Those were old open alerts.** When we stopped tracking `backend/`, we stopped _new_ alerts from backend manifests. GitHub does **not** auto-close existing Dependabot alerts when you remove files, so the ~1.5k were **legacy** alerts from when backend was still in the repo.
+- **If the script reports "No open Dependabot alerts":** The legacy alerts have already been dismissed (by you or a maintainer). The Security tab should show only current-scope alerts, if any.
+- **To see what you have now:** Run the script (see below) or open [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). After bulk-dismissing legacy ones, only alerts for the _current_ scope (root pip, collaboration-tools npm, Docker, Actions) remain.
 
 ## Fix the Security tab (bulk-dismiss)
 
