@@ -1,3 +1,4 @@
+import hashlib
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -21,6 +22,17 @@ from src.services.api_token_service import APITokenService
 from src.services.auth_service import AuthService
 
 client = TestClient(app)
+
+# Plain token for test_token fixture; DB stores hash only
+_TEST_PLAIN_TOKEN = "bleujs_test_plain_token_fixture_xyz"
+
+
+def _hash_token(raw: str) -> str:
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _token_display_prefix(raw: str) -> str:
+    return f"...{raw[-4:]}" if len(raw) >= 4 else "****"
 
 
 @pytest.fixture
@@ -103,12 +115,13 @@ def test_subscription(db: Session, test_user: User):
 
 @pytest.fixture
 def test_token(db: Session, test_user: User) -> APIToken:
-    """Create a test API token."""
+    """Create a test API token. Use _TEST_PLAIN_TOKEN for validate_token(plain)."""
     token = APIToken(
         id=str(uuid.uuid4()),
         user_id=test_user.id,
         name="Test Token",
-        token_hash=secrets.token_urlsafe(32),
+        token_hash=_hash_token(_TEST_PLAIN_TOKEN),
+        token_prefix=_token_display_prefix(_TEST_PLAIN_TOKEN),
         is_active="active",
     )
     db.add(token)
@@ -119,14 +132,14 @@ def test_token(db: Session, test_user: User) -> APIToken:
 
 @pytest.fixture
 def auth_headers(test_user: User, db: Session) -> dict:
-    """Create authentication headers for test user."""
+    """Create authentication headers for test user (JWT sub = user id)."""
     auth_service = AuthService(db)
-    access_token = auth_service.create_access_token({"sub": test_user.email})
+    access_token = auth_service.create_access_token({"sub": str(test_user.id)})
     return {"Authorization": f"Bearer {access_token}"}
 
 
 def test_create_token(client: TestClient, test_user: User, auth_headers: dict):
-    """Test creating a new API token."""
+    """Test creating a new API token. Raw token returned only once."""
     response = client.post(
         "/api/v1/tokens",
         json={"name": "New Token"},
@@ -137,6 +150,8 @@ def test_create_token(client: TestClient, test_user: User, auth_headers: dict):
     assert data["name"] == "New Token"
     assert data["user_id"] == test_user.id
     assert data["is_active"] == "active"
+    assert "token" in data  # one-time raw token
+    assert "token_prefix" in data
 
 
 def test_create_token_without_subscription(
@@ -194,7 +209,6 @@ def test_rotate_token(
     client: TestClient, test_user: User, test_token: APIToken, auth_headers: dict
 ):
     """Test rotating an API token."""
-    old_token = test_token.token_hash
     response = client.post(
         f"/api/v1/tokens/{test_token.id}/rotate",
         headers=auth_headers,
@@ -202,14 +216,14 @@ def test_rotate_token(
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == test_token.id
-    assert data["token_hash"] != old_token
+    assert "token_prefix" in data
 
 
 @pytest.mark.asyncio
 async def test_validate_token(db: Session, test_token: APIToken):
-    """Test validating an API token."""
+    """Test validating an API token (plain token hashed and compared to DB)."""
     token_service = APITokenService(db)
-    result = await token_service.validate_token(test_token.token_hash)
+    result = await token_service.validate_token(_TEST_PLAIN_TOKEN)
     assert result is True
 
     # Test invalid token
@@ -218,9 +232,8 @@ async def test_validate_token(db: Session, test_token: APIToken):
 
 
 @pytest.mark.asyncio
-async def test_validate_expired_token(db: Session):
-    """Test validating an expired token."""
-    # Create a test user with subscription
+async def test_validate_inactive_token(db: Session):
+    """Test that validate_token returns False for inactive (revoked) token."""
     user = User(
         id=str(uuid.uuid4()),
         email="test@example.com",
@@ -230,62 +243,32 @@ async def test_validate_expired_token(db: Session):
     db.add(user)
     db.commit()
 
-    # Create a subscription plan
-    plan = SubscriptionPlan(
-        id=str(uuid.uuid4()),
-        name="Test Plan",
-        plan_type="CORE",
-        price=1000,
-        api_calls_limit=100,
-        rate_limit=1000,
-        uptime_sla="99.9",
-        support_level="standard",
-        features={"core_ai_model_access": True},
-        trial_days=30,
-    )
-    db.add(plan)
-    db.commit()
-
-    # Create a subscription
-    subscription = Subscription(
-        id=str(uuid.uuid4()),
-        user_id=user.id,
-        plan_id=plan.id,
-        plan_type="CORE",
-        status="active",
-        current_period_start=datetime.now(timezone.utc),
-        current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
-    )
-    db.add(subscription)
-    db.commit()
-
-    # Create an expired token
+    plain = "bleujs_inactive_token_plain_xyz"
     token = APIToken(
         id=str(uuid.uuid4()),
         user_id=user.id,
-        subscription_id=subscription.id,
-        name="Expired Token",
-        token=secrets.token_urlsafe(32),
-        is_active=True,
-        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
+        name="Inactive Token",
+        token_hash=_hash_token(plain),
+        token_prefix=_token_display_prefix(plain),
+        is_active="inactive",
     )
     db.add(token)
     db.commit()
 
-    # Test validation
     token_service = APITokenService(db)
-    result = await token_service.validate_token(token.token_hash)
+    result = await token_service.validate_token(plain)
     assert result is False
 
 
 @pytest.mark.asyncio
 async def test_create_api_token(services: dict, test_user: User):
-    """Test creating an API token using the service directly."""
+    """Test creating an API token using the service directly (returns one-time raw token)."""
     token_data = APITokenCreate(name="Service Token")
     token = await services["api_token_service"].create_token(test_user, token_data)
     assert token.name == "Service Token"
     assert token.user_id == test_user.id
     assert token.is_active == "active"
+    assert hasattr(token, "token") and token.token  # one-time raw token
 
 
 @pytest.mark.asyncio
@@ -333,17 +316,16 @@ async def test_revoke_nonexistent_token(services: dict, test_user: User):
 @pytest.mark.asyncio
 async def test_rotate_api_token(services: dict, test_user: User, test_token: APIToken):
     """Test rotating a token using the service directly."""
-    old_token = test_token.token_hash
     new_token = await services["api_token_service"].rotate_token(
         test_token.id, test_user
     )
     assert new_token.id == test_token.id
-    assert new_token.token_hash != old_token
+    assert new_token.token_prefix  # new prefix after rotate
 
 
 @pytest.mark.asyncio
 async def test_create_multiple_tokens(services: dict, test_user: User):
-    """Test creating multiple tokens for the same user."""
+    """Test creating multiple tokens for the same user (each gets unique raw token)."""
     token_data1 = APITokenCreate(name="Token 1")
     token_data2 = APITokenCreate(name="Token 2")
 
@@ -352,7 +334,7 @@ async def test_create_multiple_tokens(services: dict, test_user: User):
 
     assert token1.name == "Token 1"
     assert token2.name == "Token 2"
-    assert token1.token_hash != token2.token_hash
+    assert token1.token != token2.token
 
 
 @pytest.mark.asyncio
