@@ -525,8 +525,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 📦 Installation & Usage
 
 ```bash
-# Install with API client support
-pip install "bleu-js[api]"
+# Install (includes API client + CLI)
+pip install bleu-js
 
 # Set API key
 bleu config set api-key <your-key>

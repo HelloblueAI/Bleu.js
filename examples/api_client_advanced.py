@@ -5,7 +5,7 @@ Demonstrates advanced usage patterns including error handling, retries,
 and custom configurations.
 
 Installation:
-    pip install bleu-js[api]
+    pip install bleu-js
 
 Setup:
     export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"

@@ -1,7 +1,17 @@
+import re
+
 from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
+# Single source of truth: read version from bleujs package
+_version_file = "src/bleujs/__init__.py"
+with open(_version_file, "r", encoding="utf-8") as fh:
+    _version_match = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', fh.read())
+    if not _version_match:
+        raise RuntimeError(f"Could not find __version__ in {_version_file}")
+    version = _version_match.group(1)
 
 requirements = [
     # Core dependencies (minimal, always required)
@@ -12,7 +22,7 @@ requirements = [
 
 setup(
     name="bleu-js",
-    version="1.4.5",
+    version=version,
     author="Bleujs Team",
     author_email="support@helloblue.ai",
     description=(
@@ -31,15 +41,14 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Quantum Computing",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.11",
     install_requires=requirements,
     entry_points={
         "console_scripts": [

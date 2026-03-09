@@ -7,7 +7,7 @@ Get started with the Bleu.js API client in 5 minutes! 🚀
 ## 📦 Step 1: Install
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```
 
 ---

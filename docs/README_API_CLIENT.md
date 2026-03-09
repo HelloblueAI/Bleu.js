@@ -11,7 +11,7 @@ The Bleu.js package now includes a **production-ready API client** to access the
 ### Install
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```
 
 ### Use
@@ -127,7 +127,7 @@ except RateLimitError:
 
 ```bash
 # API client only
-pip install bleu-js[api]
+pip install bleu-js
 
 # API + ML
 pip install bleu-js[api,ml]
@@ -171,7 +171,7 @@ The API client requires:
 - `httpx>=0.24.0` - HTTP client with async support
 - `pydantic>=2.0.0` - Data validation
 
-These are automatically installed with `pip install bleu-js[api]`.
+These are included in the default `pip install bleu-js`.
 
 ---
 
@@ -221,7 +221,7 @@ See the complete guides:
 ### "httpx is required"
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```
 
 ### "Invalid API key"
@@ -288,5 +288,5 @@ MIT License - See [LICENSE.md](LICENSE.md) for details
 **Start building with Bleu.js API today! 🚀**
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```

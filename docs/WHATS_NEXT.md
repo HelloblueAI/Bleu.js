@@ -2,7 +2,7 @@
 
 Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to contribute to—building on the recent security fixes, backend split, and OSS standards.
 
-**Done:** [Product architecture](PRODUCT_ARCHITECTURE.md) added; duplicate/one-off docs moved to [docs/archive/](archive/); coverage-only tests moved to [tests/archive/](archive/); root `main.py` and `src/python/backend` marked as non-product; [README](../README.md) and doc links updated.
+**Done:** [Product architecture](PRODUCT_ARCHITECTURE.md) added; duplicate/one-off docs moved to [docs/archive/](archive/); root `main.py` and `src/python/backend` marked as non-product; [README](../README.md) and doc links updated. **Latest batch:** ROADMAP v1.4.x, placeholder links (HelloblueAI), SECURITY hardening note, backend stub comments, single source of version + API contract links, RELEASE_CHECKLIST CHANGELOG note, BACKEND_REPO parity note, CONTRIBUTOR_GUIDE good-first-issue reminder, CONTRIBUTING version + API contract link.
 
 ---
 
@@ -10,7 +10,7 @@ Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to con
 
 | Action                                           | Why                                                                                                                                                                                                                               |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ROADMAP**                                      | Already refreshed (v1.3.x, real links). Keep it updated.                                                                                                                                                                          |
+| **ROADMAP**                                      | ✅ Updated to v1.4.x; repo links use HelloblueAI/Bleu.js. Keep it updated.                                                                                                                                                                          |
 | **Bulk-dismiss obsolete Dependabot alerts**      | Per [DEPENDABOT_AND_DEPENDENCIES.md](DEPENDABOT_AND_DEPENDENCIES.md), dismiss alerts for `backend/` and removed manifests so the Security tab reflects only root pip, collaboration-tools npm, Docker, Actions.                   |
 | **Add a short “Recent security hardening” note** | In [SECURITY.md](../SECURITY.md) or a one-line in README: mention auth/JWT fix, CSRF option, secret validation, no DB URL logging, CORS/CSP tightening (link to CHANGELOG or a small `docs/SECURITY_HARDENING.md` if you add it). |
 
@@ -22,7 +22,7 @@ Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to con
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Tighten when auto-release runs**        | Right now any push to `main` (excluding docs) bumps version and creates a release. Consider: only bump on version-file change, or when a label/tag is pushed, so CHANGELOG isn’t mostly “Automatic Release” entries. |
 | **Curate CHANGELOG for notable releases** | For minor/major (or “highlight” releases), add 2–3 bullet points so users see what actually changed. Keep auto-bump for patch; hand-edit for minor/major.                                                            |
-| **Single source of version**              | Ensure `src/version.py`, `pyproject.toml`, `setup.py`, and CHANGELOG header stay in sync (script or CI check).                                                                                                       |
+| **Single source of version**              | ✅ Version is sourced from `src/bleujs/__init__.py`; `src/version.py` and `setup.py` read from it. Keep CHANGELOG header in sync on release.                                                                             |
 
 ---
 
@@ -32,7 +32,7 @@ Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to con
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Fix ROADMAP links**         | Replace placeholder “yourusername”, “your-server”, “docs.bleu.js” with real repo/discussions/docs links.                                                                                       |
 | **“Getting started” path**    | One doc or README section: “5-minute start” (install → set API key → one SDK call + one CLI command). Already partly in README; make it unmissable.                                            |
-| **API contract in one place** | [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) is the contract; link it from README, CONTRIBUTING, and OPEN_SOURCE_STANDARDS so backend and clients stay aligned. |
+| **API contract in one place** | ✅ [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) is the contract; linked from README, CONTRIBUTING, and OPEN_SOURCE_STANDARDS. |
 
 ---
 
@@ -42,7 +42,7 @@ Prioritized actions to make Bleu.js clearer, more trustworthy, and easier to con
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Run tests in main.yml**   | If not already: run pytest (or your test suite) on every PR/push to main so “Tests Passing” badge is meaningful.                                                   |
 | **Optional: coverage gate** | Fail or warn if coverage drops below a threshold (e.g. 70%) so new code doesn’t shrink coverage.                                                                   |
-| **Backend repo parity**     | In [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend): add a minimal CI (lint + test), README, and SECURITY.md so both repos feel production-ready. |
+| **Backend repo parity**     | ✅ [BACKEND_REPO.md](BACKEND_REPO.md) now recommends the backend repo have minimal CI, README, and SECURITY.md; this repo’s docs can be used as templates.                                                                        |
 
 ---
 

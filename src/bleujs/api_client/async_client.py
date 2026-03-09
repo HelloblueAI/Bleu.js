@@ -69,7 +69,7 @@ class AsyncBleuAPIClient:
     ):
         if httpx is None:
             raise ImportError(
-                "httpx is required for API client. Install with: pip install bleu-js[api]"
+                "httpx is required for API client. Install with: pip install bleu-js"
             )
 
         self.api_key = api_key or os.getenv("BLEUJS_API_KEY")

@@ -257,4 +257,4 @@ Current version: 1.1.3
 
 ## License
 
-BleuJS is released under the MIT License. See the [LICENSE](https://github.com/yourusername/bleujs/blob/main/LICENSE) file for more details.
+BleuJS is released under the MIT License. See the [LICENSE](https://github.com/HelloblueAI/Bleu.js/blob/main/LICENSE) file for more details.

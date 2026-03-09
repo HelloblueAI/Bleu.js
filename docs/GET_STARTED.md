@@ -2,6 +2,8 @@
 
 Get from zero to your first API call in under two minutes.
 
+**Flow:** `pip install bleu-js` → get API key at [bleujs.org](https://bleujs.org) → set `BLEUJS_API_KEY` or `bleu config set api-key <key>` → `bleu chat "Hello"` or use the SDK in Python.
+
 ---
 
 ## Right after install (no API key needed)

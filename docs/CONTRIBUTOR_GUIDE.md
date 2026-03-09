@@ -8,7 +8,7 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 
 **Good First Issues:**
 
-- 🔍 Look for issues labeled `good first issue` or `help wanted`
+- 🔍 Look for issues labeled `good first issue` or `help wanted` (maintainers aim to keep 3–5 such issues labeled for new contributors)
 - 📝 Fix typos in documentation
 - 🧪 Add missing tests
 - 📚 Improve examples

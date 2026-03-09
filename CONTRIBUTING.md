@@ -11,5 +11,7 @@ Quick links:
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Open source standards we follow](docs/OPEN_SOURCE_STANDARDS.md)
 - [Security policy](SECURITY.md)
-- [API contract](docs/API_CLIENT_GUIDE.md#api-contract)
+- [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes)
 - [Bug report](.github/ISSUE_TEMPLATE/bug_report.md) · [Feature request](.github/ISSUE_TEMPLATE/feature_request.md)
+
+**Version:** The package version is defined in `src/bleujs/__init__.py` only. Other subpackages may use their own version strings; the canonical version for releases and the API is `bleujs.__version__`. See [Release checklist](docs/RELEASE_CHECKLIST.md).
