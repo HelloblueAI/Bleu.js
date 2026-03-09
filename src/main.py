@@ -9,10 +9,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from src.config import get_settings
+from src.config.test_settings import get_test_settings
 from src.database import init_db
 from src.quantum_py.core.quantum_processor import ProcessorConfig, QuantumProcessor
 from src.routes import api_tokens, auth, subscription
-from tests.test_config import get_test_settings
 
 # Constants
 API_V1_PREFIX = "/api/v1"

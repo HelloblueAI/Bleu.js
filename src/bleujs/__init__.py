@@ -32,7 +32,7 @@ __license__ = "MIT"
 
 # Core imports (always available)
 from .core import BleuJS
-from .utils import check_dependencies, get_device, setup_logging
+from .utils import check_dependencies, get_device, get_version, setup_logging
 
 # Optional imports (fail gracefully)
 try:
@@ -55,7 +55,23 @@ try:
 except ImportError:
     security = None
 
-# Optional API client import
+# API client exceptions (always available; no httpx dependency)
+try:
+    from .api_client.exceptions import (
+        AuthenticationError,
+        BleuAPIError,
+        NetworkError,
+        RateLimitError,
+        ValidationError,
+    )
+except ImportError:
+    AuthenticationError = None  # type: ignore[misc, assignment]
+    BleuAPIError = None  # type: ignore[misc, assignment]
+    NetworkError = None  # type: ignore[misc, assignment]
+    RateLimitError = None  # type: ignore[misc, assignment]
+    ValidationError = None  # type: ignore[misc, assignment]
+
+# Optional API client (requires httpx)
 try:
     from . import api_client
 except ImportError:
@@ -73,16 +89,22 @@ except ImportError:
     ibm_runtime = None
 
 __all__ = [
+    "__version__",
+    "AuthenticationError",
+    "BleuAPIError",
     "BleuJS",
-    "setup_logging",
-    "get_device",
+    "NetworkError",
+    "RateLimitError",
+    "ValidationError",
+    "api_client",
     "check_dependencies",
-    "quantum",
-    "teleportation",
-    "ibm_runtime",
+    "get_device",
+    "get_version",
     "ml",
     "monitoring",
+    "quantum",
     "security",
-    "api_client",
-    "__version__",
+    "setup_logging",
+    "teleportation",
+    "ibm_runtime",
 ]

@@ -36,7 +36,10 @@ class APIToken(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
     name = Column(String(255), nullable=False)
-    token_hash = Column(String(255), nullable=False, unique=True)
+    token_hash = Column(
+        String(255), nullable=False, unique=True
+    )  # SHA-256 of raw token
+    token_prefix = Column(String(20), nullable=True)  # e.g. "...abc1" for display only
     is_active = Column(String(10), default="active")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -48,16 +51,42 @@ class APIToken(Base):
         return f"<APIToken(id={self.id}, name='{self.name}', user_id={self.user_id})>"
 
     def to_dict(self):
-        """Convert API token to dictionary."""
+        """Full dict (avoid in API responses; use to_safe_dict or to_create_response)."""
         return {
             "id": str(self.id),
             "user_id": str(self.user_id),
             "name": self.name,
             "token_hash": self.token_hash,
+            "token_prefix": self.token_prefix or "****",
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
+
+    def to_safe_dict(self):
+        """For list/revoke/rotate: never include secret."""
+        return {
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "name": self.name,
+            "token_prefix": self.token_prefix or "****",
+            "is_active": self.is_active,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+        }
+
+    def to_create_response(self, raw_token: str):
+        """One-time create response including raw token."""
+        return APITokenCreateResponse(
+            id=str(self.id),
+            user_id=str(self.user_id),
+            name=self.name,
+            token=raw_token,
+            token_prefix=self.token_prefix or "****",
+            is_active=self.is_active,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+        )
 
 
 class SubscriptionPlan(Base):
@@ -116,6 +145,27 @@ class Subscription(Base):
             f"status='{self.status}')>"
         )
 
+    # Aliases for APIService/dashboard (expect current_period_*, api_calls_limit, rate_limit, plan_type)
+    @property
+    def current_period_start(self):
+        return self.start_date
+
+    @property
+    def current_period_end(self):
+        return self.end_date
+
+    @property
+    def api_calls_limit(self):
+        return self.plan.api_calls_limit if self.plan else 0
+
+    @property
+    def rate_limit(self):
+        return getattr(self.plan, "rate_limit", None) or 100
+
+    @property
+    def plan_type(self):
+        return self.plan.plan_type if self.plan else None
+
     def to_dict(self):
         """Convert subscription to dictionary."""
         return {
@@ -156,11 +206,25 @@ class APITokenUpdate(BaseModel):
 
 
 class APITokenResponse(APITokenBase):
-    """API token response model."""
+    """API token list/revoke/rotate response. Never includes full token (only token_prefix)."""
 
     id: str
     user_id: str
-    token_hash: str
+    token_prefix: str
+    is_active: str
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class APITokenCreateResponse(APITokenBase):
+    """Returned only once when creating a token. Includes raw token; save it, it won't be shown again."""
+
+    id: str
+    user_id: str
+    token: str
+    token_prefix: str
     is_active: str
     created_at: datetime
     updated_at: datetime

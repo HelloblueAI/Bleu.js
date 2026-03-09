@@ -44,11 +44,18 @@ class User(Base):
     api_usage = relationship("src.models.api_call.APIUsage", back_populates="user")
     api_tokens = relationship("src.models.subscription.APIToken", back_populates="user")
 
+    @property
+    def subscription(self):
+        """First active subscription, or first subscription if none active. Used by APIService."""
+        subs = self.subscriptions or []
+        active = [s for s in subs if getattr(s, "status", None) == "active"]
+        return active[0] if active else (subs[0] if subs else None)
+
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"
 
     def to_dict(self):
-        """Convert user to dictionary."""
+        """Convert user to dictionary (internal; includes api_key)."""
         return {
             "id": str(self.id),
             "email": self.email,
@@ -61,6 +68,33 @@ class User(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "last_login": self.last_login.isoformat() if self.last_login else None,
+            "profile_picture": self.profile_picture,
+            "bio": self.bio,
+            "location": self.location,
+            "website": self.website,
+            "twitter_handle": self.twitter_handle,
+            "github_username": self.github_username,
+            "linkedin_url": self.linkedin_url,
+        }
+
+    def to_response_dict(self):
+        """For API responses: never include raw api_key; only masked display."""
+        return {
+            "id": str(self.id),
+            "email": self.email,
+            "username": self.username,
+            "full_name": self.full_name,
+            "is_active": self.is_active,
+            "is_superuser": self.is_superuser,
+            "is_admin": self.is_admin,
+            "api_key_display": (
+                f"bleujs_****{self.api_key[-4:]}"
+                if self.api_key and len(self.api_key) >= 4
+                else None
+            ),
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "last_login": self.last_login,
             "profile_picture": self.profile_picture,
             "bio": self.bio,
             "location": self.location,

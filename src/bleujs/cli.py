@@ -94,6 +94,10 @@ def get_client() -> Optional[BleuAPIClient]:
             "   Or set BLEUJS_API_KEY environment variable.",
             err=True,
         )
+        click.echo(
+            "   Get your key: https://bleujs.org",
+            err=True,
+        )
         sys.exit(1)
 
     try:

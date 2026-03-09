@@ -79,4 +79,4 @@ except ImportError:
 try:
     from .. import __version__ as __version__
 except ImportError:
-    __version__ = "1.3.6"  # Fallback
+    __version__ = "0.0.0"

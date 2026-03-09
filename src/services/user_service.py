@@ -10,7 +10,7 @@ from src.schemas.user import UserCreate, UserResponse
 
 def _user_to_response(user: User) -> UserResponse:
     """Map User ORM model to UserResponse."""
-    return UserResponse.model_validate(user.to_dict())
+    return UserResponse.model_validate(user.to_response_dict())
 
 
 class UserService:
