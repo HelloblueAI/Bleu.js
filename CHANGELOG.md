@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.4.5] - 2026-03-09
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.4.4 to 1.4.5
+- See commit history for changes
+
+
 ## [v1.4.4] - 2026-03-09
 
 ### 🎉 Automatic Release
