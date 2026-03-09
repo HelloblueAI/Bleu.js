@@ -79,7 +79,7 @@ def get_client() -> Optional[BleuAPIClient]:
     """Get API client instance"""
     if BleuAPIClient is None:
         click.echo(
-            "❌ API client not available. Install with: pip install bleu-js[api]",
+            "❌ API client not available. Install with: pip install bleu-js",
             err=True,
         )
         sys.exit(1)
@@ -100,8 +100,11 @@ def get_client() -> Optional[BleuAPIClient]:
         )
         sys.exit(1)
 
+    config = get_config()
+    base_url = os.getenv("BLEUJS_BASE_URL") or config.get("base_url")
+
     try:
-        return BleuAPIClient(api_key=api_key)
+        return BleuAPIClient(api_key=api_key, base_url=base_url or None)
     except Exception as e:
         click.echo(f"❌ Failed to initialize client: {e}", err=True)
         sys.exit(1)

@@ -31,8 +31,8 @@ If applicable, add screenshots to help explain your problem.
 ## 💻 Environment
 
 - **OS:** [e.g. Ubuntu 22.04, macOS 13.0, Windows 11]
-- **Python Version:** [e.g. 3.10.12]
-- **Bleu.js Version:** [e.g. 1.2.1]
+- **Python Version:** [e.g. 3.11.x, 3.12.x — we support 3.11+]
+- **Bleu.js Version:** [e.g. 1.4.x — run `bleu version` or `pip show bleu-js`]
 - **Installation Method:** [e.g. pip, poetry, from source]
 
 ## 📋 Additional Context

@@ -1,22 +1,22 @@
-### Bleu.js - Quantum-Enhanced AI Platform
+### Bleu.js - Quantum-Enhanced AI Platform (docs)
 
-> **Version 1.3.33** - Enterprise-grade AI/ML platform with quantum computing capabilities
+> **Canonical README and version:** See the [root README](../README.md) and [pyproject.toml](../pyproject.toml). This doc is for the docs folder.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
-[![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
+[![Status: Beta](https://img.shields.io/badge/Status-Beta-yellow.svg)]()
 
 ## 🚀 Quick Install
 
 ```bash
-# From PyPI (recommended)
-pip install "bleu-js[api]"
+# From PyPI (recommended) — includes API client + CLI
+pip install bleu-js
 
 # From GitHub
 pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
-# Or clone and install
+# Or clone and install (contributors)
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 poetry install
@@ -772,7 +772,7 @@ model = trainer.train(
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Bleu.js.git
+git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
 # Start all services

@@ -24,7 +24,7 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Status:** Beta. [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md)
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist; [Release checklist](docs/RELEASE_CHECKLIST.md) for cutting a version.
 
-**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); documented API contract; [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org).
+**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes); [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org).
 
 ---
 
@@ -56,6 +56,8 @@ from bleujs.api_client import BleuAPIClient
 print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
 ```
 
+**4. Verify** (optional): `bleu version` · `bleu health` (checks API connection)
+
 **Full walkthrough:** [Get started](docs/GET_STARTED.md) · **Quick reference:** [QUICKSTART](docs/QUICKSTART.md) · **API & CLI docs:** [API Client Guide](docs/API_CLIENT_GUIDE.md)
 
 ---
@@ -82,7 +84,7 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 **What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing. Add extras only when you need them: `pip install "bleu-js[ml]"` (XGBoost, scikit-learn), `bleu-js[quantum]` (Qiskit, PennyLane), `bleu-js[deep]` (PyTorch, TensorFlow), or `bleu-js[all]` for the full stack.
 
-**Local app (self-host):** Copy [`.env.example`](.env.example) to `.env` and set your secrets; see [SECURITY.md](SECURITY.md) and [INSTALLATION](docs/INSTALLATION.md).
+**Local app (self-host):** Copy [`.env.example`](.env.example) to `.env` and set your secrets; then run `python main.py` from the repo root. See [SECURITY.md](SECURITY.md) and [INSTALLATION](docs/INSTALLATION.md).
 
 **More:** [Get started](docs/GET_STARTED.md) · [Full installation](docs/INSTALLATION.md) · [Quick start](docs/QUICKSTART.md) · [API client guide](docs/API_CLIENT_GUIDE.md)
 
@@ -330,8 +332,8 @@ pip install --upgrade git+https://github.com/HelloblueAI/Bleu.js.git
 
 ```mermaid
 flowchart LR
-    A[pip install bleu-js] --> B{Use case?}
-    B -->|Cloud API & CLI| C["pip install 'bleu-js[api]'"]
+    A["pip install bleu-js"] --> B{Use case?}
+    B -->|Cloud API & CLI| C[Set API key → bleu chat / SDK]
     B -->|Quantum & teleport| D["pip install 'bleu-js[quantum]'"]
     B -->|ML / XGBoost| E["pip install 'bleu-js[ml]'"]
     C --> F[bleu chat / SDK]
@@ -503,7 +505,7 @@ pip install bleu-js
 
 | Extra | Use case |
 |-------|----------|
-| `pip install "bleu-js[api]"` | Same as default (API + CLI) |
+| `pip install bleu-js` | Default: API client + CLI (start here) |
 | `pip install "bleu-js[ml]"` | Pandas, scikit-learn, XGBoost |
 | `pip install "bleu-js[quantum]"` | Qiskit, PennyLane |
 | `pip install "bleu-js[deep]"` | PyTorch, TensorFlow |
@@ -1047,7 +1049,6 @@ docker run -it --gpus all bleuos/bleu-os:latest
 
 ---
 
-## Badges
 
 [![AI](https://img.shields.io/badge/AI-NLP%20%7C%20Decision%20Tree-purple?style=flat-square&logo=ai)](https://github.com/HelloblueAI/Bleu.js)
 

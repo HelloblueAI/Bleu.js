@@ -215,7 +215,7 @@ pip install bleu-js
 # Install with specific extras
 pip install 'bleu-js[ml]'        # ML features only
 pip install 'bleu-js[quantum]'   # Quantum features only
-pip install 'bleu-js[api]'       # API client only
+pip install bleu-js              # default includes API client + CLI
 ```
 
 **Option 2: Use Virtual Environments**

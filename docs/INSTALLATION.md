@@ -168,8 +168,9 @@ cp .env.example .env
 # 5. Initialize database
 alembic upgrade head
 
-# 6. Start application
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 4
+# 6. Start application (product app)
+python main.py
+# Or with workers: python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ---
@@ -273,7 +274,7 @@ python3 -c "from src.config import get_settings; print('✅ Config loaded')"
 
 ```bash
 # Start development server
-uvicorn src.api.main:app --reload
+uvicorn src.main:app --reload
 
 # Should see:
 # INFO:     Uvicorn running on http://127.0.0.1:8000
@@ -318,7 +319,7 @@ echo "ENCRYPTION_KEY=your-generated-secret" >> .env
 echo "DATABASE_URL=sqlite:///./bleujs.db" >> .env
 
 # Start
-uvicorn src.api.main:app --reload
+uvicorn src.main:app --reload
 ```
 
 ### Scenario 2: Local Development
@@ -341,7 +342,7 @@ alembic upgrade head
 pytest
 
 # Start development server
-uvicorn src.api.main:app --reload --port 8000
+uvicorn src.main:app --reload --port 8000
 ```
 
 ### Scenario 3: Production Deployment
@@ -364,7 +365,7 @@ cp .env.example .env
 alembic upgrade head
 
 # Run with multiple workers
-uvicorn src.api.main:app \
+uvicorn src.main:app \
   --host 0.0.0.0 \
   --port 8000 \
   --workers 4 \
@@ -490,10 +491,10 @@ python3 -c "from src.database import check_db_connection; print('✅' if check_d
 
 ```bash
 # Development mode
-uvicorn src.api.main:app --reload
+uvicorn src.main:app --reload
 
 # Production mode
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ### 4. Verify Installation
@@ -626,7 +627,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 EOF
 
 # 3. Start the application
-uvicorn src.api.main:app --reload
+uvicorn src.main:app --reload
 
 # 4. Test it
 curl http://localhost:8000/health
@@ -657,7 +658,7 @@ After successful installation:
 poetry install --with dev
 
 # Enable auto-reload
-uvicorn src.api.main:app --reload --log-level debug
+uvicorn src.main:app --reload --log-level debug
 ```
 
 ### For Production
@@ -665,7 +666,7 @@ uvicorn src.api.main:app --reload --log-level debug
 ```bash
 # Use production WSGI server
 pip install gunicorn
-gunicorn src.api.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+gunicorn src.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 
 # Or use supervisor/systemd for process management
 ```

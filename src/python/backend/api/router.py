@@ -100,7 +100,7 @@ async def predict(request: Request, user_id: int, db: Session = Depends(get_db))
     start_time = datetime.utcnow()
 
     try:
-        # TODO: Implement prediction logic here
+        # Stub: real prediction runs in the separate backend repo (see docs/BACKEND_REPO.md).
         result = {"prediction": "example"}
 
         # Update API call log with success

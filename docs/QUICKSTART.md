@@ -8,7 +8,7 @@ Get up and running with Bleu.js in 5 minutes!
 
 ## 🌐 Cloud API (recommended – start here)
 
-Use the Bleu.js API at [bleujs.org](https://bleujs.org) with the SDK or CLI. No server to run.
+Use the Bleu.js API at [bleujs.org](https://bleujs.org) with the SDK or CLI. No server to run. The default install includes the API client and CLI; no extras needed for chat, generate, embed, or list models.
 
 1. **Install:** `pip install bleu-js`
 2. **Get an API key** at [bleujs.org](https://bleujs.org)

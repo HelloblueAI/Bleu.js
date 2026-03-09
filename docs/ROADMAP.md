@@ -4,7 +4,7 @@
 
 Bleu.js is a quantum-enhanced AI platform: cloud API, CLI, and Python SDK. This roadmap tracks status and planned work.
 
-## Current Status (v1.3.x)
+## Current Status (v1.4.x)
 
 ### Core Features Status
 

@@ -46,8 +46,8 @@ def process_train(
         job.started_at = datetime.utcnow()
         self.db.commit()
 
-        # TODO: Implement actual training logic
-        # This is a placeholder that simulates training
+        # Stub: actual training runs in the separate backend repo (see docs/BACKEND_REPO.md).
+        # Placeholder below simulates training for local/dev.
         time.sleep(5)  # Simulate training time
         result = {"accuracy": 0.95, "loss": 0.05}
 
@@ -87,8 +87,8 @@ def process_predict(
         job.started_at = datetime.utcnow()
         self.db.commit()
 
-        # TODO: Implement actual prediction logic
-        # This is a placeholder that simulates prediction
+        # Stub: actual prediction runs in the separate backend repo (see docs/BACKEND_REPO.md).
+        # Placeholder below simulates prediction for local/dev.
         time.sleep(2)  # Simulate prediction time
         result = {"predictions": [0, 1, 0, 1, 0]}
 
@@ -128,8 +128,8 @@ def process_evaluate(
         job.started_at = datetime.utcnow()
         self.db.commit()
 
-        # TODO: Implement actual evaluation logic
-        # This is a placeholder that simulates evaluation
+        # Stub: actual evaluation runs in the separate backend repo (see docs/BACKEND_REPO.md).
+        # Placeholder below simulates evaluation for local/dev.
         time.sleep(3)  # Simulate evaluation time
         result = {"accuracy": 0.92, "precision": 0.91, "recall": 0.93}
 

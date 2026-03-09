@@ -1,3 +1,11 @@
+"""
+Canonical Bleu.js product app (bleujs.org): dashboard, auth, subscription, API.
+
+This is the single FastAPI app for the product. Run from repo root: python main.py
+Or: python -m uvicorn src.main:app --reload
+See docs/PRODUCT_ARCHITECTURE.md.
+"""
+
 import logging
 import os
 

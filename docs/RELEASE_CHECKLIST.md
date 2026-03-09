@@ -5,7 +5,7 @@ Use this before cutting a new version or deploying to production.
 ## Pre-release
 
 - [ ] **Version** — Bump in single source: `src/bleujs/__init__.py` (e.g. `__version__`). Config reads from `src.version.get_version()`.
-- [ ] **Changelog** — Update [CHANGELOG.md](../CHANGELOG.md) with new version, date, and changes.
+- [ ] **Changelog** — Update [CHANGELOG.md](../CHANGELOG.md) with new version, date, and changes. For **minor/major** releases, add 2–3 bullet points so users see what actually changed (not just “Version bumped automatically”).
 - [ ] **Security** — Run `./scripts/check-security.sh`. Resolve or document any HIGH/CRITICAL (see [SECURITY.md](../SECURITY.md)).
 - [ ] **Tests** — `pipx run poetry run pytest` (or `poetry run pytest` with `--extras all`). All tests must pass.
 - [ ] **Lint** — Run project linter/formatter (e.g. ruff, black) and fix issues.

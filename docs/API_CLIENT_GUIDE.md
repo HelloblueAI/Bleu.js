@@ -596,7 +596,7 @@ def test_real_api():
 ### "httpx is required" Error
 
 ```bash
-pip install bleu-js[api]
+pip install bleu-js
 ```
 
 ### "Invalid API key" Error

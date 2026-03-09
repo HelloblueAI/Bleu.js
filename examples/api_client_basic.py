@@ -4,7 +4,7 @@ Basic API Client Example
 Demonstrates basic usage of the Bleu.js API client for chat, generation, and embeddings.
 
 Installation:
-    pip install bleu-js[api]
+    pip install bleu-js
 
 Setup:
     export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"

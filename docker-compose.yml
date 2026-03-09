@@ -1,5 +1,4 @@
-version: '3.8'
-
+# Docker Compose v2+ (version key optional)
 services:
   # MongoDB Database
   mongo:

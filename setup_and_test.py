@@ -19,7 +19,7 @@ def setup_environment():
     run_command("rm -rf .venv")
 
     # Create new virtual environment
-    python_version = "3.10"  # Using Python 3.10 as specified in CI
+    python_version = "3.11"  # Matches pyproject.toml (>=3.11,<3.14)
     run_command(f"python{python_version} -m venv .venv")
 
     # Activate virtual environment and install dependencies

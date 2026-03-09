@@ -38,7 +38,7 @@ Bleu.js 1.2.1 is a focused patch release that guarantees a smooth upgrade path f
 ### 🧑‍💻 Upgrade Command
 
 ```bash
-pip install --upgrade 'bleu-js[api]'==1.2.1
+pip install --upgrade bleu-js
 ```
 ````
 
