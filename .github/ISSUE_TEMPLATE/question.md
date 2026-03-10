@@ -33,7 +33,7 @@ Share any code or approaches you've attempted.
 
 - **OS:** [e.g. Ubuntu 22.04]
 - **Python Version:** [e.g. 3.11.x — we support 3.11+]
-- **Bleu.js Version:** [e.g. 1.4.x — run `bleu version`]
+- **Bleu.js Version:** [e.g. 1.4.x — run `bleu version` or `bleujs version`]
 
 ## 🎯 Expected Outcome
 

@@ -11,7 +11,7 @@ Bleu.js is a quantum-enhanced AI platform: cloud API, CLI, and Python SDK. This 
 | Category           | Status           | Notes                                                                                                                             |
 | ------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Cloud API & SDK    | ✅ Complete      | REST API, sync/async clients, [bleujs.org](https://bleujs.org)                                                                    |
-| Bleu CLI           | ✅ Complete      | `bleu chat`, `generate`, `embed`, `models`, config, health                                                                        |
+| Bleu CLI           | ✅ Complete      | `bleu` / `bleujs` (e.g. `bleu chat`, `bleu generate`, `bleu health`)                                                             |
 | Quantum            | ✅ In place      | Teleportation, IBM runtime, quantum-enhanced features                                                                             |
 | ML Pipeline        | ✅ Complete      | XGBoost, LLaMA, model management, hybrid training                                                                                 |
 | Development & docs | ✅ In place      | Testing, API reference, [API Client Guide](API_CLIENT_GUIDE.md), [Repositories and sync](REPOSITORIES.md)                |

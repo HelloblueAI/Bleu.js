@@ -2,16 +2,16 @@
 
 Get from zero to your first API call in under two minutes.
 
-**Flow:** `pip install bleu-js` → get API key at [bleujs.org](https://bleujs.org) → set `BLEUJS_API_KEY` or `bleu config set api-key <key>` → `bleu chat "Hello"` or use the SDK in Python.
+**Flow:** `pip install bleu-js` → get API key at [bleujs.org](https://bleujs.org) → set `BLEUJS_API_KEY` or `bleu config set api-key <key>` → `bleu chat "Hello"` (or `bleujs chat "Hello"`) or use the SDK in Python.
 
 ---
 
 ## Right after install (no API key needed)
 
-As soon as `pip install bleu-js` finishes, you can run:
+As soon as `pip install bleu-js` finishes, you can run (use either **`bleu`** or **`bleujs`** — both are installed):
 
-- **`bleu --help`** — see all commands and a short “Get started” hint.
-- **`bleu version`** — see CLI version (e.g. `Bleu CLI v1.4.6`).
+- **`bleu --help`** or **`bleujs --help`** — see all commands and a short “Get started” hint.
+- **`bleu version`** or **`bleujs version`** — see CLI version (e.g. `Bleu CLI v1.4.6`).
 
 To call the cloud API (chat, generate, embed, etc.), you’ll need an API key from [bleujs.org](https://bleujs.org). If you run e.g. `bleu chat "Hi"` without a key, the CLI will tell you to set one and point you to bleujs.org.
 
@@ -47,7 +47,7 @@ export BLEUJS_API_KEY="bleujs_sk_your_key_here"
 **Option B – CLI config (good for interactive use):**
 
 ```bash
-bleu config set api-key bleujs_sk_your_key_here
+bleu config set api-key bleujs_sk_your_key_here   # or: bleujs config set api-key ...
 ```
 
 This saves the key in **`~/.bleujs/config.json`** so you don’t need to set the environment variable each time.
@@ -78,11 +78,11 @@ If you see a short reply from the model, you’re set.
 ## Verify installation (optional)
 
 ```bash
-bleu version
-bleu health
+bleu version   # or: bleujs version
+bleu health    # or: bleujs health
 ```
 
-`bleu health` checks connectivity to the Bleu.js API.
+`bleu health` (or `bleujs health`) checks connectivity to the Bleu.js API.
 
 ---
 

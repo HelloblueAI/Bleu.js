@@ -57,7 +57,7 @@ from bleujs.api_client import BleuAPIClient
 print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
 ```
 
-**4. Verify** (optional): `bleu version` · `bleu health` (checks API connection)
+**4. Verify** (optional): `bleu version` or `bleujs version` · `bleu health` or `bleujs health` (checks API connection; both command names work)
 
 **Full walkthrough:** [Get started](docs/GET_STARTED.md) · **Quick reference:** [QUICKSTART](docs/QUICKSTART.md) · **API & CLI docs:** [API Client Guide](docs/API_CLIENT_GUIDE.md)
 
@@ -81,7 +81,7 @@ c = BleuAPIClient(api_key="bleujs_sk_...")
 print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 ```
 
-**Quick test (CLI):** `export BLEUJS_API_KEY=bleujs_sk_...` then `bleu chat "Hello"`.
+**Quick test (CLI):** `export BLEUJS_API_KEY=bleujs_sk_...` then `bleu chat "Hello"` (or `bleujs chat "Hello"`).
 
 **What you get:** Cloud API client and CLI (above), core `BleuJS` for local processing. Add extras only when you need them: `pip install "bleu-js[ml]"` (XGBoost, scikit-learn), `bleu-js[quantum]` (Qiskit, PennyLane), `bleu-js[deep]` (PyTorch, TensorFlow), or `bleu-js[all]` for the full stack.
 
@@ -247,12 +247,14 @@ bleu models list --json
 
 **Utilities**
 
+You can use either `bleu` or `bleujs` (both are installed):
+
 ```bash
 # Check API health
-bleu health
+bleu health   # or: bleujs health
 
 # Show version
-bleu version
+bleu version  # or: bleujs version
 
 # Show help
 bleu --help
@@ -384,7 +386,7 @@ with open(model_path, 'rb') as f:
 ### Version
 
 - **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
-- **Installed package:** `from bleujs import __version__` or `bleu version`
+- **Installed package:** `from bleujs import __version__` or `bleu version` / `bleujs version`
 - **In-repo / API:** `from src.version import get_version` (used by the main app, `/health`, and FastAPI)
 
 ### For Contributors

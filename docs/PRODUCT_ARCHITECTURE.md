@@ -9,7 +9,7 @@
 | **Cloud API**     | Chat, generate, embed, models, subscriptions, API keys | Served by **`src/main.py`** (FastAPI app)          |
 | **Web dashboard** | Sign up, login, usage, subscriptions, API keys         | Same app — routes and templates under `src/`       |
 | **Python SDK**    | `BleuAPIClient`, `AsyncBleuAPIClient`                  | `src/bleujs/api_client/`, PyPI `bleu-js`           |
-| **Bleu CLI**      | `bleu chat`, `generate`, `embed`, `models`             | `src/bleujs/cli.py`, PyPI `bleu-js`                |
+| **Bleu CLI**      | `bleu` / `bleujs` (e.g. `bleu chat`, `bleu health`)   | `src/bleujs/cli.py`, PyPI `bleu-js`                |
 | **PyPI package**  | Install and upgrades                                   | `bleu-js` with extras `[api]`, `[ml]`, `[quantum]` |
 
 **Canonical app for the product:** `src/main.py`. This is what runs at bleujs.org (dashboard, auth, subscription, AI routes).

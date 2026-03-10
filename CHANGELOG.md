@@ -2,10 +2,9 @@
 
 ## [v1.4.13] - 2026-03-10
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.12 to 1.4.13
-- See commit history for changes
-
+### Fixed
+- **CLI entry point:** Ensure the installed console script uses the package-relative import `bleujs.cli:main` (not `cli:main`) so `bleujs version` / `bleujs health` work after `pip install bleu-js`. Added comments in `pyproject.toml` and `setup.py` to prevent regressions.
+- **Docs:** Document that both `bleu` and `bleujs` are installed as CLI commands (e.g. `bleu version` and `bleujs version` both work). Updated README, GET_STARTED, INSTALLATION, ROADMAP, and issue templates.
 
 ## [v1.4.12] - 2026-03-10
 
