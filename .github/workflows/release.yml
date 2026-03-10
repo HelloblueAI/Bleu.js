@@ -283,7 +283,7 @@ jobs:
     needs: [test-packages]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run))
+    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'))
 
     steps:
       - name: Checkout Repository
@@ -323,7 +323,7 @@ jobs:
     needs: [publish-pypi]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
 
     steps:
       - name: Checkout Repository
@@ -387,7 +387,7 @@ jobs:
     needs: [publish-pypi]
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && !github.event.inputs.dry_run) }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
 
     steps:
       - name: Checkout Repository
