@@ -51,6 +51,6 @@ Then open `http://localhost:8000` (dashboard, docs at `/docs`). Set env (e.g. `.
 - [Installation](INSTALLATION.md) — Install and deploy
 - [SECURITY](../SECURITY.md) — Reporting, deployment checklist
 - [ROADMAP](ROADMAP.md) — Status and roadmap
-- [Open source standards](OPEN_SOURCE_STANDARDS.md) — How we run the repo
+- [Repositories and sync](REPOSITORIES.md) — How the two repos work together
 
 Older or one-off docs are in [docs/archive/](archive/) for reference.

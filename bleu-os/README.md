@@ -20,9 +20,11 @@ Bleu OS is a specialized Linux distribution designed from the ground up for quan
 ### ⚡ Quick Start (30 seconds)
 
 ```bash
-# Pull and run Bleu OS
-docker pull ghcr.io/helloblueai/bleu-os:latest
-docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
+# Pull from Docker Hub (recommended) or GitHub Container Registry
+docker pull bleuos/bleu-os:latest
+# docker pull ghcr.io/helloblueai/bleu-os:latest
+
+docker run -it --rm bleuos/bleu-os:latest
 
 # You're now in a quantum + AI ready environment!
 python3 -c "import qiskit, numpy, bleujs; print('✅ Ready!')"
@@ -49,6 +51,7 @@ python3 -c "import qiskit, numpy, bleujs; print('✅ Ready!')"
 - Auto-scaling and resource management
 
 ### Security & Performance
+- **Docker image security:** Production images (`latest`, `minimal`) are built for safety: we use **Debian bookworm-slim** (no Alpine busybox/curl CVEs), **do not ship** Debian’s old pip/setuptools (we install pip via get-pip.py and pin pip≥25.3, setuptools≥78.1.1), run as **non-root** user `bleuos`, and pin critical Python deps (cryptography, urllib3, pillow). Fixable CVEs are addressed at build time; remaining base-package items are documented in [TRIVY_ALERTS.md](TRIVY_ALERTS.md). Many users pull this image—we treat it as production-grade.
 - Quantum-resistant cryptography
 - Hardware security module (HSM) support
 - Real-time threat detection
@@ -60,24 +63,27 @@ python3 -c "import qiskit, numpy, bleujs; print('✅ Ready!')"
 
 **Pull and run the production image:**
 ```bash
-# Pull the latest production image
-docker pull ghcr.io/helloblueai/bleu-os:latest
+# Docker Hub (primary)
+docker pull bleuos/bleu-os:latest
+docker run -it --rm bleuos/bleu-os:latest
 
-# Run the container
+# Or GitHub Container Registry
+docker pull ghcr.io/helloblueai/bleu-os:latest
 docker run -it --rm ghcr.io/helloblueai/bleu-os:latest
 
-# Or with GPU support
-docker run -it --rm --gpus all ghcr.io/helloblueai/bleu-os:latest
+# GPU support (use either registry)
+docker run -it --rm --gpus all bleuos/bleu-os:latest
 ```
 
 **Available image variants (both Debian-based; no Alpine busybox/curl CVEs):**
 ```bash
-# Production (full-featured, ~2.8GB)
-docker pull ghcr.io/helloblueai/bleu-os:latest
-docker pull ghcr.io/helloblueai/bleu-os:1.0.0
+# Production (full-featured, ~5GB compressed)
+docker pull bleuos/bleu-os:latest
+docker pull bleuos/bleu-os:main
+docker pull bleuos/bleu-os:1.0.0
 
 # Minimal (lightweight)
-docker pull ghcr.io/helloblueai/bleu-os:minimal
+docker pull bleuos/bleu-os:minimal
 ```
 
 **With Docker Compose:**

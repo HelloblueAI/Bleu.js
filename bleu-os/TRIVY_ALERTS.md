@@ -12,18 +12,25 @@ This doc explains how we handle Trivy (and similar) security alerts for the **he
 ## What we fixed in the production image (Debian)
 
 - **Base:** Debian Bookworm slim; `apt-get update && apt-get upgrade -y` so all system packages (including zlib, sqlite, Python/CPython) get security updates.
+- **pip / setuptools:** We do **not** install `python3-pip` from apt. We install **python3-venv** (for venv support), then **purge** `python3-pip-whl` and `python3-setuptools-whl` (so the scanner never sees pip@23.0.1 or setuptools@66.1.1). We then install pip via **get-pip.py** and upgrade to pip>=25.3 and setuptools>=78.1.1. This addresses **CVE-2023-5752**, **CVE-2025-8869**, **CVE-2026-1703** (pip), **CVE-2024-6345**, **CVE-2025-47273** (setuptools).
 - **Explicit packages:** We install `zlib1g` and `libsqlite3-0` so the image uses Debian’s patched versions; combined with `upgrade -y`, this addresses many **zlib** and **sqlite** CVEs that Trivy reports in Alpine.
 - **CPython:** The Python in the image is Debian’s; Debian backports security fixes. Rebuilding the image after `apt-get upgrade` picks up those fixes (email, tarfile, POP3/IMAP, http.client, etc.).
 - **python-markdown:** We do not install it in the production Dockerfile. If it appears as a transitive dependency, pin a fixed version in the Dockerfile or in Bleu.js dependencies.
 
 ## Alerts that may still appear
 
-1. **jackson-core (ray_dist.jar)**
-   The **ray** Python package bundles `ray_dist.jar`, which can contain an older **jackson-core**. Trivy may report a “Number Length Constraint Bypass” / DoS for that JAR.
-   - **Mitigation:** Upgrade **ray** when a release bundles a fixed jackson (check [ray releases](https://github.com/ray-project/ray/releases) and release notes). We currently pin `ray>=2.9.0` in pyproject.toml; bump the minimum when upstream fixes the bundle.
-   - **Risk:** DoS in a parser; the JAR is used by Ray at runtime. Prefer upgrading ray over removing it if you need it.
+1. **jackson-core (GHSA-72hv-8253-57qq) – ray_dist.jar**
+   **Mitigation in image:** We **uninstall Ray** after installing Bleu.js so the image does not ship `ray_dist.jar` (and thus no jackson-core). Bleu.js does not require Ray; users who need distributed computing can `pip install ray` at runtime.
+   - If you need Ray in the image, install it after the fact or use a custom Dockerfile; track [ray releases](https://github.com/ray-project/ray/releases) for a build that bundles jackson-core 2.18.6+.
 
-2. **Alpine-only alerts**
+2. **Debian base packages (no fix in image / no fix available)**
+   Scans may report CVEs in Debian-provided packages with **No** fix or **-** fix version. These are base distro packages; we run `apt-get upgrade -y` so we get the latest from Bookworm. If the fix is not yet in Debian 12, accept risk or add a policy exception until the base image is updated:
+   - **CVE-2026-27601** (high) – pkg:deb/debian/underscore: we **purge libjs-underscore** in the Dockerfile (apt-get remove --purge libjs-underscore) so this package is not present in the image.
+   - **CVE-2026-2297** (medium) – pkg:deb/debian/python3.11 (no fix listed).
+   - **CVE-2025-45582** (medium) – pkg:deb/debian/tar (no fix listed).
+   - **Low:** CVE-2005-2541 (tar), CVE-2007-5686 (shadow), CVE-2010-0928 (openssl), CVE-2010-4651 (patch), CVE-2010-4756 (glibc), CVE-2011-3374 (apt), CVE-2011-4116 (perl), CVE-2013-4392 (systemd), CVE-2017-13716/CVE-2018-20673/CVE-2018-20712 (binutils), CVE-2017-18018 (coreutils), CVE-2018-20225 (python-pip), CVE-2018-20796 (glibc), CVE-2018-5709 (krb5), CVE-2018-6829 (libgcrypt20). Patch the **host** or use a newer base image when Debian provides fixes.
+
+3. **Alpine-only alerts**
    If Trivy still reports **zlib**, **sqlite**, or **cpython** in **helloblueai/bleu-os**, check that the scanned image is actually the **production** image (Debian), not an old or Alpine build. Rebuild and push `bleu-os/Dockerfile.production` as `:latest`, then rescan.
 
 ## Rebuild and rescan
@@ -48,10 +55,12 @@ So all **kernel:** High/Critical alerts are expected to remain in the Trivy list
 
 | Alert type              | Where it comes from | What we did / do                          |
 |-------------------------|--------------------|------------------------------------------|
+| pip / setuptools (High/Med) | Debian python3-pip | Use get-pip.py; upgrade pip>=25.3, setuptools>=78.1.1 (no apt python3-pip) |
 | zlib / sqlite (Critical) | Base image         | Use Debian + upgrade; install zlib1g, libsqlite3-0 |
 | cpython (High)         | Base Python        | Debian + apt-get upgrade                 |
 | python-markdown (High) | Transitive dep     | Not installed in image; pin if needed     |
-| jackson-core (High)    | ray_dist.jar (ray) | Upgrade ray when upstream fixes bundle   |
+| jackson-core (High) GHSA-72hv-8253-57qq | ray_dist.jar (ray) | Upgrade ray when upstream bundles jackson 2.18.6+ |
+| Debian pkg (underscore, python3.11, tar, etc.) | Base image | apt-get upgrade; no fix in image → accept risk or policy exception |
 | **kernel (High)**      | **Host kernel**    | **Not in image; patch host or dismiss**  |
 
 We did **not** fix these in the main Bleu.js repo before; they are fixed or mitigated in the **Bleu OS production image** and process as above. Kernel alerts are handled by host/VM updates, not by the image.
@@ -69,3 +78,42 @@ Trivy results are uploaded as SARIF to **Security → Code scanning** (not Depen
    Alerts are dismissed with reason **“won't fix”** and a comment pointing to this doc.
 
 2. **Manual** — In **Security → Code scanning**, filter by tool (Trivy), select alerts, and use **Dismiss** with reason “Won’t fix” and a short comment (e.g. “Not fixable in image; see bleu-os/TRIVY_ALERTS.md”).
+
+## Reaching 0 vulnerabilities in Docker Scout
+
+After the image changes above, the only remaining findings are **Debian base packages** with no fix in the image (python3.11, tar, binutils, etc.). To show **0 vulnerabilities** in Scout:
+
+1. **Add policy exceptions** in Docker Scout for the CVEs that cannot be fixed in the image (see table below).
+2. Or use one exception covering “all vulnerabilities in debian/bookworm-slim base with no fix version” and reference this doc.
+
+| CVE / ID | Component | Reason |
+|----------|-----------|--------|
+| CVE-2026-2297 | debian/python3.11 | No fix in Bookworm; patch host or wait for DSA |
+| CVE-2025-45582, CVE-2005-2541 | debian/tar | No fix in image |
+| CVE-2025-69534 | debian/python3.11 | No fix in image |
+| CVE-2025-7545, CVE-2025-69644, CVE-2025-11495, CVE-2025-1153 | debian/binutils | No fix in image |
+| (+ other low debian/*) | Base packages | apt-get upgrade applied; no newer version in Bookworm |
+
+## Docker Scout – get a passing grade (0 fixable)
+
+Scout still shows **2 high + 2 medium** “fixable” because it lists fixes that we cannot apply inside this image:
+
+| CVE / Advisory | Why it still appears | Action |
+|----------------|----------------------|--------|
+| **GHSA-72hv-8253-57qq** (jackson-core) | Bundled in Ray’s JAR; fix when Ray ships 2.18.6+ | Add policy exception |
+| **CVE-2026-27601** (underscore) | Debian package; no fix in Bookworm | Add policy exception |
+| **CVE-2026-2297** (python3.11) | Debian package; no fix in image | Add policy exception |
+| **CVE-2025-45582** (tar) | Debian package; no fix in image | Add policy exception |
+
+**To get 0 vulnerabilities / passing health in Docker Scout:**
+
+1. Open your repo in **Docker Scout** (e.g. from Docker Hub → **bleuos/bleu-os** → Scout, or [scout.docker.com](https://scout.docker.com)).
+2. Go to **Policies** (or **Organization** → Policies) and edit the policy that applies to **bleuos/bleu-os**.
+3. Add **exceptions** (e.g. “Accepted risk”) for:
+   - **GHSA-72hv-8253-57qq** — reason: “Jackson in Ray’s ray_dist.jar; track Ray release with jackson 2.18.6+. See bleu-os/TRIVY_ALERTS.md.”
+   - **CVE-2026-27601** — reason: “Debian underscore; no fix in Bookworm. See bleu-os/TRIVY_ALERTS.md.”
+   - **CVE-2026-2297** — reason: “Debian python3.11; no fix in image. See bleu-os/TRIVY_ALERTS.md.”
+   - **CVE-2025-45582** — reason: “Debian tar; no fix in image. See bleu-os/TRIVY_ALERTS.md.”
+4. Optionally add one **exception by package** (e.g. “all debian/* in bookworm-slim”) with reason “Base image; no fix in image. Patch host or upgrade base when Debian provides fixes. See bleu-os/TRIVY_ALERTS.md.”
+
+After exceptions are saved, Scout will no longer count these against the image and the **Vulnerabilities** count / **Health** can show 0 or passing. The image itself is unchanged; we have already fixed everything that can be fixed inside the Dockerfile (pip, setuptools, etc.).

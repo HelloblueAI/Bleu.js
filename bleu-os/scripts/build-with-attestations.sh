@@ -67,13 +67,15 @@ cd "${PROJECT_ROOT}"
 # Check if user wants to push directly (attestations work best with direct push)
 PUSH_DIRECTLY="${PUSH_DIRECTLY:-false}"
 
+IMAGE_REVISION="$(git rev-parse --short HEAD 2>/dev/null || echo '')"
 if [[ "${PUSH_DIRECTLY}" == "true" ]]; then
     log_info "Building and pushing directly (attestations will be attached)..."
     # Build and push directly - attestations are automatically attached
-    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')")
+    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-${IMAGE_REVISION:-local}")
     for t in "${EXTRA_TAGS[@]}"; do TAGS+=("--tag" "${IMAGE_NAME}:${t}"); done
     docker buildx build \
         --file "${DOCKERFILE}" \
+        --build-arg "IMAGE_REVISION=${IMAGE_REVISION}" \
         "${TAGS[@]}" \
         --provenance=true \
         --sbom=true \
@@ -86,10 +88,11 @@ if [[ "${PUSH_DIRECTLY}" == "true" ]]; then
     log_success "Pushed to Docker Hub with attestations!"
 else
     log_info "Building with attestations (local)..."
-    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')")
+    TAGS=("--tag" "${IMAGE_NAME}:${TAG}" "--tag" "${IMAGE_NAME}:sha-${IMAGE_REVISION:-local}")
     for t in "${EXTRA_TAGS[@]}"; do TAGS+=("--tag" "${IMAGE_NAME}:${t}"); done
     docker buildx build \
         --file "${DOCKERFILE}" \
+        --build-arg "IMAGE_REVISION=${IMAGE_REVISION}" \
         "${TAGS[@]}" \
         --provenance=true \
         --sbom=true \
@@ -101,8 +104,9 @@ else
         log_info "Using DOCKER_BUILDKIT=1 as fallback..."
         DOCKER_BUILDKIT=1 docker build \
             --file "${DOCKERFILE}" \
+            --build-arg "IMAGE_REVISION=${IMAGE_REVISION}" \
             --tag "${IMAGE_NAME}:${TAG}" \
-            --tag "${IMAGE_NAME}:sha-$(git rev-parse --short HEAD 2>/dev/null || echo 'local')" \
+            --tag "${IMAGE_NAME}:sha-${IMAGE_REVISION:-local}" \
             . || exit 1
         log_warning "Fallback build may not include attestations"
     }

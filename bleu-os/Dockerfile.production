@@ -2,36 +2,16 @@
 # Debian base: avoids Alpine busybox CVE-2025-60876 (no fix in Alpine 3.23 yet)
 # Optimized, secure, and production-grade container image
 
-# Stage 1: Builder - Install build dependencies
-FROM debian:bookworm-slim AS builder
-
-ARG BLEU_OS_VERSION=1.0.0
-ARG PYTHON_VERSION=3.11
-
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-venv \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
-RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
-    pip>=25.3 \
-    setuptools>=78.1.1 \
-    "urllib3>=2.6.3" \
-    "wheel>=0.46.3"
-
-# Stage 2: Runtime - Production image (Debian = no Alpine busybox CVE-2025-60876)
-FROM debian:bookworm-slim AS runtime
+FROM debian:bookworm-slim
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG INSTALL_QUANTUM=true
 ARG INSTALL_ML=true
 ARG INSTALL_JUPYTER=false
+# Set at build time for traceability, e.g. --build-arg IMAGE_REVISION=$(git rev-parse --short HEAD)
+ARG IMAGE_REVISION=""
 
-# Metadata
+# Metadata (OCI + Docker Scout)
 LABEL maintainer="HelloblueAI <support@helloblue.ai>"
 LABEL description="Bleu OS - Quantum-Enhanced AI Operating System (Production)"
 LABEL version="${BLEU_OS_VERSION}"
@@ -39,18 +19,20 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
+LABEL org.opencontainers.image.version="${BLEU_OS_VERSION}"
+LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
 LABEL org.opencontainers.image.base.name="debian:bookworm-slim"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
 # Install runtime dependencies (Debian: no busybox, no CVE-2025-60876)
-# Explicit upgrade of zlib/sqlite/python to get security fixes (Trivy: zlib, sqlite, cpython CVEs)
+# Do NOT install python3-pip so scanner never sees pip@23.0.1 / setuptools@66.1.1.
+# python3-venv pulls in python3-pip-whl/python3-setuptools-whl; purge them so only get-pip.py pip/setuptools remain.
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     bash \
     python3 \
-    python3-pip \
     python3-venv \
     python3-dev \
     build-essential \
@@ -58,6 +40,9 @@ RUN apt-get update && apt-get upgrade -y && \
     libstdc++6 \
     zlib1g \
     libsqlite3-0 \
+    curl \
+    && apt-get remove -y --purge libjs-underscore 2>/dev/null || true \
+    && (dpkg --purge python3-pip-whl python3-setuptools-whl python3-pip python3-setuptools 2>/dev/null || dpkg --remove --force-depends python3-pip-whl python3-setuptools-whl 2>/dev/null) || true \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g 1000 bleuos \
     && useradd -m -u 1000 -g bleuos -s /bin/bash bleuos
@@ -77,12 +62,16 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/bleuos/.local/bin:$PATH" \
     PYTHONPATH="/opt/bleu-js:/workspace"
 
-# Upgrade pip/setuptools and fix PyPI CVEs: urllib3 (CVE-2026-21441), wheel (CVE-2026-24049)
-RUN pip3 install --no-cache-dir --break-system-packages --upgrade \
-    pip>=25.3 \
-    setuptools>=78.1.1 \
+# Install pip via get-pip.py (no Debian pip/setuptools); fix CVEs: pip (CVE-2023-5752, CVE-2025-8869), setuptools (CVE-2024-6345, CVE-2025-47273), urllib3, wheel
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
+    python3 /tmp/get-pip.py --break-system-packages && \
+    pip3 install --no-cache-dir --break-system-packages --upgrade \
+    "pip>=25.3" \
+    "setuptools>=78.1.1" \
     "urllib3>=2.6.3" \
-    "wheel>=0.46.3"
+    "wheel>=0.46.3" && \
+    rm -f /tmp/get-pip.py && \
+    pip3 --version && python3 -c "import setuptools; assert setuptools.__version__ >= '78.1.1', 'setuptools too old'"
 
 # Switch to non-root user
 USER bleuos
@@ -126,6 +115,7 @@ COPY --chown=bleuos:bleuos setup.py /opt/bleu-js/
 COPY --chown=bleuos:bleuos pyproject.toml /opt/bleu-js/
 
 # Security: pin cryptography (CVE-2026-26007), urllib3 (CVE-2026-21441), pillow (CVE-2026-25990) before Bleu.js
+# Install Bleu.js without [server]/[all] extras so Ray (and its jackson JAR) is never installed
 RUN pip3 install --user --no-cache-dir --break-system-packages \
     "cryptography>=46.0.5" "urllib3>=2.6.3" "pillow>=12.1.1" && \
     if [ -f /opt/bleu-js/setup.py ] || [ -f /opt/bleu-js/pyproject.toml ]; then \
@@ -136,6 +126,10 @@ RUN pip3 install --user --no-cache-dir --break-system-packages \
         pip3 install --user --no-cache-dir --break-system-packages bleu-js 2>/dev/null || \
         echo "Bleu.js: Installation from PyPI attempted"; \
     fi
+
+# Remove Ray and any jackson JARs (GHSA-72hv-8253-57qq). Bleu.js default install does not need Ray; users can: pip install ray
+RUN pip3 uninstall -y ray 2>/dev/null || true \
+    && rm -rf /home/bleuos/.local/lib/python3.11/site-packages/ray 2>/dev/null || true
 
 # System configuration (as root, then switch back)
 USER root
