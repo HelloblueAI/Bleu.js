@@ -307,15 +307,6 @@ jobs:
         run: |
           python -m twine upload --skip-existing *.whl *.tar.gz
 
-      - name: Publish to Test PyPI
-        continue-on-error: true
-        env:
-          TWINE_REPOSITORY: testpypi
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        run: |
-          python -m twine upload --repository testpypi --skip-existing *.whl *.tar.gz
-
   # ============================================================================
   # CREATE GITHUB RELEASE
   # ============================================================================
