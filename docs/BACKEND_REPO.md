@@ -1,5 +1,7 @@
 # Backend: separate repository
 
+**See also:** [Repositories and sync](REPOSITORIES.md) — how both repos fit together and stay in sync.
+
 The Node/Express backend (inference, ML API, services) is **not** in this repo. It lives in a **separate repository** so this repo stays focused on the Bleu.js product (Python package, CLI, cloud API) and dependency alerts stay manageable—the same pattern used by Node.js, Stripe, and other API-first projects.
 
 ## Why a separate repo
@@ -25,7 +27,7 @@ chmod +x scripts/export-backend-repo.sh
 ./scripts/export-backend-repo.sh
 ```
 
-This creates `../Bleu.js-backend-export/` with a copy of `backend/` plus a minimal README and `.gitignore`. Then:
+This creates `../Bleu.js-backend-export/` with a copy of `backend/` plus a minimal README (only if the export folder is new) and `.gitignore`. Then:
 
 ```bash
 cd ../Bleu.js-backend-export
@@ -53,6 +55,10 @@ If you create a new repo, use the same remote URL; existing repo: [Bleujs.-backe
 - **Link:** Backend repo: [github.com/HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend).
 
 **Backend repo parity (recommended):** So both repos feel production-ready, the backend repo should have: a minimal CI (lint + test), a README with install/run instructions, and a SECURITY.md (reporting, no secrets, deployment checklist). This repo’s [SECURITY.md](../SECURITY.md) and [OPEN_SOURCE_STANDARDS.md](OPEN_SOURCE_STANDARDS.md) can be used as templates.
+
+## Re-exporting
+
+If you run the export script again (e.g. to refresh the backend repo from local `backend/`), the script **does not overwrite** an existing `README.md` in the export folder, so the backend repo keeps its customized README. Merge any other changes from the export into the backend repo as needed.
 
 ## Do not re-add backend here
 
