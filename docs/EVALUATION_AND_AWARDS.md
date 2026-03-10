@@ -16,7 +16,7 @@ This page gives evaluators, judges, and award committees a single entry point to
 | **Open source practices we follow** | [Open source standards](OPEN_SOURCE_STANDARDS.md) |
 | **Security (reporting, no secrets, deployment)** | [SECURITY.md](../SECURITY.md) |
 | **How to contribute (both repos)** | [CONTRIBUTING.md](../CONTRIBUTING.md) |
-| **API contract (client ↔ backend)** | [API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) |
+| **API contract (client ↔ backend)** | [API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) · [OpenAPI spec](api/openapi.yaml) |
 | **Community standards** | [Code of Conduct](../CODE_OF_CONDUCT.md) |
 | **Roadmap and status** | [ROADMAP.md](ROADMAP.md) |
 | **Product and bleujs.org app** | [Product architecture](PRODUCT_ARCHITECTURE.md) |

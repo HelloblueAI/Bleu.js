@@ -1,0 +1,172 @@
+# Bleu.js API – OpenAPI 3.0
+# Single source of truth for the API contract. Keep in sync with the backend (Bleujs.-backend).
+# See: docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes
+
+openapi: 3.0.3
+info:
+  title: Bleu.js API
+  description: Quantum-enhanced AI platform – chat, generate, embed. Used by the Bleu.js SDK and CLI.
+  version: "1.0"
+  contact:
+    name: Bleu.js
+    url: https://github.com/HelloblueAI/Bleu.js
+
+servers:
+  - url: https://bleujs.org
+    description: Production
+  - url: http://localhost:4003
+    description: Local / development
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/v1/chat:
+    post:
+      summary: Chat completion
+      operationId: chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [messages]
+              properties:
+                messages:
+                  type: array
+                  items: { $ref: "#/components/schemas/ChatMessage" }
+                model: { type: string }
+                temperature: { type: number }
+                max_tokens: { type: integer }
+      responses:
+        "200":
+          description: OpenAI-style or flat content
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ChatResponseOpenAI"
+                  - $ref: "#/components/schemas/ChatResponseFlat"
+
+  /api/v1/generate:
+    post:
+      summary: Text generation
+      operationId: generate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [prompt]
+              properties:
+                prompt: { type: string }
+                model: { type: string }
+                temperature: { type: number }
+                max_tokens: { type: integer }
+      responses:
+        "200":
+          description: Generated text and metadata
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GenerateResponse" }
+
+  /api/v1/embed:
+    post:
+      summary: Embeddings (use "input" for SDK compatibility)
+      operationId: embed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [input]
+              properties:
+                input:
+                  type: array
+                  items: { type: string }
+                inputs:
+                  type: array
+                  items: { type: string }
+                  description: Alternative key; prefer "input" for client compatibility
+      responses:
+        "200":
+          description: Embeddings array
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EmbedResponse" }
+
+  /api/v1/models:
+    get:
+      summary: List models
+      operationId: listModels
+      responses:
+        "200":
+          description: List of available models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: "#/components/schemas/Model" } }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+      description: Bleu.js API key (e.g. bleujs_sk_...)
+
+  schemas:
+    ChatMessage:
+      type: object
+      required: [role, content]
+      properties:
+        role: { type: string }
+        content: { type: string }
+
+    ChatResponseOpenAI:
+      type: object
+      properties:
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/ChatMessage" }
+
+    ChatResponseFlat:
+      type: object
+      properties:
+        content: { type: string }
+
+    GenerateResponse:
+      type: object
+      properties:
+        text: { type: string }
+        id: { type: string }
+        model: { type: string }
+        usage: { type: object }
+        finish_reason: { type: string }
+
+    EmbedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              embedding: { type: array, items: { type: number } }
+              index: { type: integer }
+        model: { type: string }
+        usage: { type: object }
+
+    Model:
+      type: object
+      properties:
+        id: { type: string }
+        object: { type: string }

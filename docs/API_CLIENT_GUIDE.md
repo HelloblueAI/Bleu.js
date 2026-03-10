@@ -291,6 +291,10 @@ models = client.list_models()
 
 ## API contract and response shapes
 
+**Machine-readable spec:** [openapi.yaml](api/openapi.yaml) is the single source of truth for the API. Clients and the backend ([Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) should stay aligned with this spec.
+
+**API versioning:** We use `/api/v1` for the current API. We avoid breaking changes within v1; non-breaking changes (new optional fields, new endpoints) may be added. When we introduce breaking changes, we will add a new path (e.g. `/api/v2`) and document the migration. See the main [CHANGELOG](../CHANGELOG.md) and the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for changes.
+
 When implementing clients (e.g. the [API Playground](https://github.com/HelloblueAI/Bleu.js/blob/main/api_playground.html)) or backend routes, keep these consistent:
 
 | Endpoint                             | Request body                                                                                                                                                         | Response shape                                                                                                                                                                                             |
