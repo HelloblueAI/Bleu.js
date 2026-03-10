@@ -233,6 +233,8 @@ types-aiofiles = "^25.1.0.20251011"
 virtualenv = ">=20.36.1"
 
 [tool.poetry.scripts]
+# Use package-relative path (bleujs.cli:main) so the installed script works after pip install.
+# Do not use "cli:main" — that breaks with ModuleNotFoundError when the package is installed.
 bleu = "bleujs.cli:main"
 bleu-js = "bleujs.cli:main"
 bleujs = "bleujs.cli:main"

@@ -52,6 +52,8 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
+            # Use package-relative path (bleujs.cli:main) so the installed CLI works after pip install.
+            # Do not use "cli:main" — that causes ModuleNotFoundError when the package is installed.
             "bleu-js=bleujs.cli:main",
             "bleujs=bleujs.cli:main",
             "bleu=bleujs.cli:main",

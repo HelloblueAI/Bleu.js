@@ -257,8 +257,8 @@ python3 -c "from src.database import check_db_connection; print('✅ DB OK' if c
 ```bash
 # If you installed with: pip install bleu-js
 python3 -c "import bleujs; print('✅ Bleu.js', bleujs.__version__)"
-bleu version
-bleu health   # requires BLEUJS_API_KEY
+bleu version   # or: bleujs version
+bleu health    # or: bleujs health (requires BLEUJS_API_KEY)
 ```
 
 ### Test 1b: Import Package (self-host / from source)
