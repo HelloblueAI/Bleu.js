@@ -11,9 +11,10 @@ We welcome contributions. The full guide is in the docs:
 Quick links:
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Open source standards we follow](docs/OPEN_SOURCE_STANDARDS.md)
+- [Repositories and sync](docs/REPOSITORIES.md) (where to contribute: SDK vs backend)
 - [Security policy](SECURITY.md)
 - [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes)
+- [Changing the API](docs/CHANGING_THE_API.md) — when your change affects the API, follow this runbook so both repos stay in sync.
 - [Bug report](.github/ISSUE_TEMPLATE/bug_report.md) · [Feature request](.github/ISSUE_TEMPLATE/feature_request.md)
 
 **Internal docs:** Maintainer-only docs (release instructions, org checklist) are in `docs/internal/` and are not in the public repo; see [docs/internal/README.md](docs/internal/README.md).

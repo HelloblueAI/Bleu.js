@@ -21,6 +21,22 @@ security:
   - BearerAuth: []
 
 paths:
+  /health:
+    get:
+      summary: Health check (for deployers and load balancers)
+      operationId: health
+      security: []
+      responses:
+        "200":
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+                  version: { type: string }
+
   /api/v1/chat:
     post:
       summary: Chat completion
