@@ -1429,6 +1429,8 @@ Types:
 
 ## Awards and Recognition
 
+Our project is run to open source best practices: [Open source standards](OPEN_SOURCE_STANDARDS.md), [two-repo architecture and sync](REPOSITORIES.md), [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes), and [Code of Conduct](../CODE_OF_CONDUCT.md). We welcome evaluation and contributions.
+
 ### 2025 Award Submissions
 
 Bleu.js has been submitted for consideration to several prestigious awards in recognition of its groundbreaking innovations in quantum computing and AI:

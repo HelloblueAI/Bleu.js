@@ -4,6 +4,7 @@ Bleu.js is run like a modern, maintainable open-source project. Here’s what we
 
 | Practice                    | What we do                                                                                                                                                                          |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two-repo architecture**  | This repo = SDK, CLI, docs; [backend repo](https://github.com/HelloblueAI/Bleujs.-backend) = API and services. Single source of truth: [Repositories and sync](REPOSITORIES.md).   |
 | **Single product surface**  | This repo = Python SDK, CLI, docs, demos. Backend lives in a [separate repo](BACKEND_REPO.md). Same pattern as Node.js and API-first companies.                                     |
 | **Security first**          | No secrets in the repo. [SECURITY.md](../SECURITY.md) covers reporting, API keys, and deployment checklist.                                                                         |
 | **Controlled dependencies** | One pip surface (root), one npm app (collaboration-tools). [Dependabot doc](DEPENDABOT_AND_DEPENDENCIES.md) explains scope so we avoid alert overload.                              |

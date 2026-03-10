@@ -6,6 +6,8 @@ We welcome contributions. The full guide is in the docs:
 
 **[→ Contributing guide (setup, PR process, coding standards)](docs/CONTRIBUTING.md)**
 
+**Backend:** The Node/Express API lives in a [separate repo](docs/BACKEND_REPO.md). For backend-only changes, open issues and PRs in [HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). See [Repositories and sync](docs/REPOSITORIES.md) for how both repos fit together.
+
 Quick links:
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
