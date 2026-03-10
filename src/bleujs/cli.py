@@ -148,7 +148,8 @@ def cli(ctx):
 
 # Config commands
 @cli.group()
-def config():
+@click.pass_context
+def config(ctx):
     """Manage Bleu.js configuration"""
     pass
 
