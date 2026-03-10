@@ -99,6 +99,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.version }}"
+            [[ "$VERSION" != v* ]] && VERSION="v${VERSION}"
           elif [ "${{ github.event_name }}" == "workflow_run" ]; then
             VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
             VERSION="v${VERSION}"
@@ -320,7 +321,7 @@ jobs:
   # ============================================================================
   create-release:
     name: 🏷️ Create GitHub Release
-    needs: [publish-pypi]
+    needs: [publish-pypi, validate]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
@@ -384,7 +385,7 @@ jobs:
   # ============================================================================
   docker:
     name: 🐳 Build Docker Images
-    needs: [publish-pypi]
+    needs: [publish-pypi, validate]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
