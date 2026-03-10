@@ -33,6 +33,10 @@ This doc explains how we handle Trivy (and similar) security alerts for the **he
 3. **Alpine-only alerts**
    If Trivy still reports **zlib**, **sqlite**, or **cpython** in **helloblueai/bleu-os**, check that the scanned image is actually the **production** image (Debian), not an old or Alpine build. Rebuild and push `bleu-os/Dockerfile.production` as `:latest`, then rescan.
 
+4. **openldap / curl / libcurl / OpenSSH (Debian base)**
+   Trivy may report **openldap** (e.g. null pointer dereference in ber_memalloc_x, LMDB buffer underflow, nops.c stack buffer, privilege escalation via PID file, cipherstring parsing), **curl** (e.g. predictable WebSocket mask, QUIC cert bypass, SFTP host verification, TLS/OAuth2/LDAPS issues, zlib buffer overflow), and **OpenSSH** (SCP/SFTP transfer issues). These come from **Debian bookworm-slim** base or its dependencies (we install `curl` explicitly; openldap/openssh may be pulled in transitively). We run `apt-get update && apt-get upgrade -y` so we get the latest patched versions from Bookworm.
+   - **What to do:** If no fix is available in Debian 12 yet, **accept risk** or add a **policy exception** in Dependabot/Scout (e.g. “Debian base package; no fix in image. See bleu-os/TRIVY_ALERTS.md”). Rebuild the image when Debian backports fixes so the next build picks them up.
+
 ## Rebuild and rescan
 
 After changes to `Dockerfile.production`:
@@ -61,6 +65,7 @@ So all **kernel:** High/Critical alerts are expected to remain in the Trivy list
 | python-markdown (High) | Transitive dep     | Not installed in image; pin if needed     |
 | jackson-core (High) GHSA-72hv-8253-57qq | ray_dist.jar (ray) | Upgrade ray when upstream bundles jackson 2.18.6+ |
 | Debian pkg (underscore, python3.11, tar, etc.) | Base image | apt-get upgrade; no fix in image → accept risk or policy exception |
+| openldap / curl / libcurl / OpenSSH | Debian base (or transitive) | apt-get upgrade; no fix in image → accept risk or policy exception; see §4 above |
 | **kernel (High)**      | **Host kernel**    | **Not in image; patch host or dismiss**  |
 
 We did **not** fix these in the main Bleu.js repo before; they are fixed or mitigated in the **Bleu OS production image** and process as above. Kernel alerts are handled by host/VM updates, not by the image.
