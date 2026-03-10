@@ -23,7 +23,7 @@ If PyPI still shows an old version (e.g. 1.3.29) even though **`PYPI_API_TOKEN` 
 ## What to do
 
 1. **Add or fix the PyPI token**
-   - GitHub: **Settings → Secrets and variables → Actions**
+   - GitHub: **Settings → Secrets and variables → Actions** → **Secrets** (not Variables).
    - Ensure there is a secret named **`PYPI_API_TOKEN`**.
    - Create a token at [pypi.org](https://pypi.org) → Account → API tokens (scope: entire account or just this project).
 
