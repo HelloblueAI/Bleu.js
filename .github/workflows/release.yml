@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  # Tag pushes from GITHUB_TOKEN do not trigger workflows; run after auto-release instead.
+  workflow_run:
+    workflows: ["🚀 Automatic Version Bump & Release"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       version:
@@ -43,6 +48,7 @@ jobs:
     name: ✅ Pre-Release Validation
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     outputs:
       version: ${{ steps.get-version.outputs.version }}
       is-prerelease: ${{ steps.get-version.outputs.is-prerelease }}
@@ -69,6 +75,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -92,6 +99,9 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.version }}"
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+            VERSION="v${VERSION}"
           else
             VERSION="${GITHUB_REF#refs/tags/}"
           fi
@@ -284,6 +294,7 @@ jobs:
           python -m twine upload --skip-existing dist/*
 
       - name: Publish to Test PyPI
+        continue-on-error: true
         env:
           TWINE_REPOSITORY: testpypi
           TWINE_USERNAME: __token__
