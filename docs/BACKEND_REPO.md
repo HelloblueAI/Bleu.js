@@ -54,7 +54,7 @@ If you create a new repo, use the same remote URL; existing repo: [Bleujs.-backe
 - **Deploy:** Point bleujs.org API at the backend repo’s main branch or releases.
 - **Link:** Backend repo: [github.com/HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend).
 
-**Backend repo parity (recommended):** So both repos feel production-ready, the backend repo should have: a minimal CI (lint + test), a README with install/run instructions, and a SECURITY.md (reporting, no secrets, deployment checklist). This repo’s [SECURITY.md](../SECURITY.md) and [OPEN_SOURCE_STANDARDS.md](OPEN_SOURCE_STANDARDS.md) can be used as templates.
+**Backend repo parity (recommended):** So both repos feel production-ready, the backend repo should have: a minimal CI (lint + test), a README with install/run instructions, and a SECURITY.md (reporting, no secrets, deployment checklist). This repo’s [SECURITY.md](../SECURITY.md) can be used as a template.
 
 ## Re-exporting
 

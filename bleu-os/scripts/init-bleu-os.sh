@@ -8,6 +8,9 @@ log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] [Bleu OS] $1"
 }
 
+# Version (set by Dockerfile)
+log "Bleu OS ${BLEU_OS_VERSION:-1.0.0}"
+
 # Load configuration
 if [[ -f /etc/bleu-os/bleu-optimizations.conf ]]; then
     log "Loading Bleu OS configuration..."
@@ -28,6 +31,11 @@ if [[ -f /etc/bleu-os/bleu-optimizations.conf ]]; then
         fi
     done < /etc/bleu-os/bleu-optimizations.conf
 fi
+
+# Export AI/ML env from config when set (containers can use these)
+[[ -n "${tensorflow_inter_op_parallelism:-}" ]] && export TF_NUM_INTEROP_THREADS="${tensorflow_inter_op_parallelism}"
+[[ -n "${tensorflow_intra_op_parallelism:-}" ]] && export TF_NUM_INTRAOP_THREADS="${tensorflow_intra_op_parallelism}"
+[[ -n "${ml_threads:-}" && "${ml_threads}" != "auto" ]] && export OMP_NUM_THREADS="${ml_threads}"
 
 # Apply system optimizations
 log "Applying system optimizations..."
@@ -78,5 +86,11 @@ log "Bleu OS initialization complete"
 
 # Execute command if provided
 if [[ $# -gt 0 ]]; then
+    # Interactive bash: show short welcome
+    if [[ "$1" == "bash" && -t 0 ]]; then
+        echo ""
+        echo "  Bleu OS ${BLEU_OS_VERSION:-1.0.0}  |  python3 -c \"import bleujs; print('Bleu.js OK')\"  |  --gpus all for GPU"
+        echo ""
+    fi
     exec "$@"
 fi

@@ -25,7 +25,7 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Evaluating Bleu.js or submitting for an award?** See [Evaluation & awards](docs/EVALUATION_AND_AWARDS.md).
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist; [Release checklist](docs/RELEASE_CHECKLIST.md) for cutting a version.
 
-**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes); [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). Full list: [Open source standards](docs/OPEN_SOURCE_STANDARDS.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org). **Project structure:** Two repos (this one + [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) — see [Repositories and sync](docs/REPOSITORIES.md).
+**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes); [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org). **Project structure:** Two repos (this one + [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) — see [Repositories and sync](docs/REPOSITORIES.md).
 
 ---
 
@@ -378,7 +378,7 @@ with open(model_path, 'rb') as f:
 - **[Dependency Management](./docs/DEPENDENCY_MANAGEMENT.md)** - Managing dependencies and resolving conflicts
 - **[Dependabot and dependency security](./docs/DEPENDABOT_AND_DEPENDENCIES.md)** - Why we keep scan scope minimal; do not re-add backend
 - **[Backend repo](docs/BACKEND_REPO.md)** - Node/Express backend lives in a separate repo; export script and setup
-- **[Open source standards](docs/OPEN_SOURCE_STANDARDS.md)** - How we run the repo (security, deps, API contract, community)
+- **[Repositories and sync](docs/REPOSITORIES.md)** - How the two repos work together (API contract, where to contribute)
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
 
 ### Version

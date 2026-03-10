@@ -44,6 +44,7 @@ docker build \
     --build-arg INSTALL_QUANTUM="${INSTALL_QUANTUM}" \
     --build-arg INSTALL_ML="${INSTALL_ML}" \
     --build-arg INSTALL_JUPYTER="${INSTALL_JUPYTER}" \
+    --build-arg "IMAGE_REVISION=$(git rev-parse --short HEAD 2>/dev/null || true)" \
     -t bleuos/bleu-os:${VERSION} \
     -t bleuos/bleu-os:latest \
     .

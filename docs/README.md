@@ -1429,7 +1429,7 @@ Types:
 
 ## Awards and Recognition
 
-Our project is run to open source best practices: [Open source standards](OPEN_SOURCE_STANDARDS.md), [two-repo architecture and sync](REPOSITORIES.md), [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes), and [Code of Conduct](../CODE_OF_CONDUCT.md). **For evaluators and award committees:** [Evaluation and awards](EVALUATION_AND_AWARDS.md) is your single entry point. We welcome evaluation and contributions.
+Our project is run to open source best practices: [two-repo architecture and sync](REPOSITORIES.md), [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes), [SECURITY](../SECURITY.md), and [Code of Conduct](../CODE_OF_CONDUCT.md). **For evaluators and award committees:** [Evaluation and awards](EVALUATION_AND_AWARDS.md) is your single entry point. We welcome evaluation and contributions.
 
 ### 2025 Award Submissions
 

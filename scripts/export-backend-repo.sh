@@ -20,8 +20,9 @@ cp -R "$BACKEND_SRC"/* "$EXPORT_DIR/" 2>/dev/null || true
 rm -rf "$EXPORT_DIR/node_modules" "$EXPORT_DIR/.env" "$EXPORT_DIR/.git" 2>/dev/null || true
 find "$EXPORT_DIR" -name '*.pkl' -type f -delete 2>/dev/null || true
 
-# Minimal README for the new repo
-cat > "$EXPORT_DIR/README.md" << 'EOF'
+# Minimal README only for first-time export (do not overwrite existing backend README)
+if [ ! -f "$EXPORT_DIR/README.md" ]; then
+  cat > "$EXPORT_DIR/README.md" << 'EOF'
 # Bleu.js Backend
 
 Node/Express API and services for Bleu.js. Exported from the main [Bleu.js](https://github.com/HelloblueAI/Bleu.js) repo so the product repo stays focused on the Python SDK and CLI.
@@ -38,6 +39,7 @@ npm run dev
 
 Point your deployment (e.g. bleujs.org API) at this repo. See main repo [docs](https://github.com/HelloblueAI/Bleu.js/tree/main/docs) for architecture.
 EOF
+fi
 
 # Standard Node .gitignore if missing
 if [ ! -f "$EXPORT_DIR/.gitignore" ]; then
@@ -54,6 +56,6 @@ fi
 echo "Done. Next:"
 echo "  cd $EXPORT_DIR"
 echo "  git init && git add . && git commit -m 'Initial commit: Bleu.js backend'"
-echo "  Create repo HelloblueAI/Bleu.js-backend on GitHub, then:"
-echo "  git remote add origin git@github.com:HelloblueAI/Bleu.js-backend.git"
+echo "  Create repo HelloblueAI/Bleujs.-backend on GitHub if needed, then:"
+echo "  git remote add origin git@github.com:HelloblueAI/Bleujs.-backend.git"
 echo "  git branch -M main && git push -u origin main"
