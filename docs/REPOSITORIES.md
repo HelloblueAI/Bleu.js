@@ -28,7 +28,7 @@ We keep behavior consistent across repos via a **documented API contract**:
 - **Endpoints:** e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`.
 - **Request/response shapes:** The table in the link above defines what clients send and what backends should return. When you change the API, update that doc and then align both the SDK (this repo) and the backend (Bleujs.-backend) to it.
 
-The backend README links to this contract so backend contributors stay aligned.
+The backend README links to this contract so backend contributors stay aligned. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md); when you change the contract, update the table in the link above and then align both repos.
 
 ## Where to contribute
 
@@ -48,5 +48,7 @@ The backend README links to this contract so backend contributors stay aligned.
 ## More
 
 - **Backend details (export, setup, deploy):** [BACKEND_REPO.md](BACKEND_REPO.md)
+- **Backend release notes:** [Bleujs.-backend CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md)
 - **Open source standards we follow:** [OPEN_SOURCE_STANDARDS.md](OPEN_SOURCE_STANDARDS.md)
 - **Product architecture (bleujs.org app):** [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md)
+- **Evaluating Bleu.js / award submission:** [Evaluation and awards](EVALUATION_AND_AWARDS.md)

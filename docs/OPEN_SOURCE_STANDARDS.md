@@ -12,4 +12,4 @@ Bleu.js is run like a modern, maintainable open-source project. Here’s what we
 | **Clear status**            | Beta, with [Changelog](../CHANGELOG.md) and [Roadmap](ROADMAP.md). “Who it’s for” and production path in README.                                                                    |
 | **Community**               | [Code of Conduct](../CODE_OF_CONDUCT.md), [Contributing](../CONTRIBUTING.md), [Support](../SUPPORT.md), [Contributor](CONTRIBUTOR_GUIDE.md) and [Onboarding](ONBOARDING.md) guides. |
 
-If you’re evaluating the project or contributing, this is the standard we hold ourselves to.
+If you’re evaluating the project or contributing, this is the standard we hold ourselves to. **Evaluators and award committees:** see [Evaluation and awards](EVALUATION_AND_AWARDS.md) for a single entry point to all of the above.
