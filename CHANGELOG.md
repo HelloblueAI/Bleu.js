@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.4.31] - 2026-03-10
+
+### Fixed
+- **CLI:** `bleu config show` now works (fixed Click routing: config group uses `@click.pass_context` so "show" is dispatched as subcommand instead of extra argument).
+
+### Documentation
+- **bleujs.org alignment:** Added [BLEUJS_ORG_REVIEW_2026-03.md](docs/BLEUJS_ORG_REVIEW_2026-03.md) with review of site vs repo claims and copy-paste block for website team (version, BLEUJS_API_KEY, one-line pitch).
+
+### Changed
+- Version set to 1.4.31 for release.
+
+
 ## [v1.4.30] - 2026-03-10
 
 ### 🎉 Automatic Release
