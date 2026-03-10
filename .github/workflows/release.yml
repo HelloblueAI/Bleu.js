@@ -236,20 +236,20 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Download all build artifacts
+      # Use single artifact to avoid merged corrupt/duplicate sdist (zlib errors)
+      - name: Download build artifacts (ubuntu 3.11)
         uses: actions/download-artifact@v8
         with:
-          pattern: "python-packages-*"
-          merge-multiple: true
+          pattern: "python-packages-ubuntu-latest-3.11"
 
       - name: Test package installation
         run: |
-          # Merged artifacts extract to current dir (no dist/ subdir)
+          # Single artifact: one .whl and one .tar.gz from same build (avoids corrupt merged sdist)
           WHEEL=$(find . -maxdepth 2 -name "*.whl" -type f | head -1)
           SDIST=$(find . -maxdepth 2 -name "*.tar.gz" -type f | head -1)
           if [ -z "$WHEEL" ] || [ -z "$SDIST" ]; then
             echo "❌ Artifacts not found (expected .whl and .tar.gz)"
-            find . -type f -name "*.whl" -o -name "*.tar.gz" || true
+            find . -type f \( -name "*.whl" -o -name "*.tar.gz" \) || true
             exit 1
           fi
           pip install "$WHEEL" --force-reinstall
