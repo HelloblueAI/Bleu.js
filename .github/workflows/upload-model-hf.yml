@@ -63,6 +63,12 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "⚠️ HF_TOKEN not set - skipping Hugging Face upload."
+            echo "To enable: add HF_TOKEN (https://huggingface.co/settings/tokens) as a repo secret in Settings → Secrets and variables → Actions."
+            exit 0
+          fi
+
           MODEL_NAME="${{ github.event.inputs.model_name || 'bleu-xgboost-classifier' }}"
           ORG="${{ github.event.inputs.organization || 'helloblueai' }}"
           VERSION="${{ steps.version.outputs.version }}"
