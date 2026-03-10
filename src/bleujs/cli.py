@@ -29,8 +29,18 @@ try:
         NetworkError,
         RateLimitError,
     )
+    from .api_client.constants import (
+        DEFAULT_BASE_URL,
+        DEFAULT_MODEL_CHAT,
+        DEFAULT_MODEL_EMBED,
+        DEFAULT_MODEL_GENERATE,
+    )
 except ImportError:
     BleuAPIClient = None
+    DEFAULT_BASE_URL = "https://bleujs.org"
+    DEFAULT_MODEL_CHAT = "bleu-chat-v1"
+    DEFAULT_MODEL_EMBED = "bleu-embed-v1"
+    DEFAULT_MODEL_GENERATE = "bleu-gen-v1"
 
 from . import __version__
 
@@ -95,7 +105,7 @@ def get_client() -> Optional[BleuAPIClient]:
             err=True,
         )
         click.echo(
-            "   Get your key: https://bleujs.org",
+            f"   Get your key: {DEFAULT_BASE_URL}",
             err=True,
         )
         sys.exit(1)
@@ -238,7 +248,10 @@ def config_reset():
 @cli.command()
 @click.argument("message", required=False)
 @click.option(
-    "--model", "-m", default="bleu-chat-v1", help="Model to use (default: bleu-chat-v1)"
+    "--model",
+    "-m",
+    default=DEFAULT_MODEL_CHAT,
+    help=f"Model to use (default: {DEFAULT_MODEL_CHAT})",
 )
 @click.option(
     "--temperature",
@@ -323,7 +336,10 @@ def chat(
 @cli.command()
 @click.argument("prompt", required=False)
 @click.option(
-    "--model", "-m", default="bleu-gen-v1", help="Model to use (default: bleu-gen-v1)"
+    "--model",
+    "-m",
+    default=DEFAULT_MODEL_GENERATE,
+    help=f"Model to use (default: {DEFAULT_MODEL_GENERATE})",
 )
 @click.option(
     "--temperature",
@@ -408,8 +424,8 @@ def generate(
 @click.option(
     "--model",
     "-m",
-    default="bleu-embed-v1",
-    help="Model to use (default: bleu-embed-v1)",
+    default=DEFAULT_MODEL_EMBED,
+    help=f"Model to use (default: {DEFAULT_MODEL_EMBED})",
 )
 @click.option(
     "--file",
@@ -685,7 +701,7 @@ def models_info(model_id: str):
 def version():
     """Show version information"""
     click.echo(f"Bleu CLI v{__version__}")
-    click.echo("Visit https://bleujs.org for more information")
+    click.echo(f"Visit {DEFAULT_BASE_URL} for more information")
 
 
 # Health check command
@@ -722,8 +738,13 @@ def main():
     if click is None:
         print("❌ Click is required. Install with: pip install click", file=sys.stderr)
         sys.exit(1)
-
-    cli()
+    # Pass args and prog_name explicitly so `bleu config show` and tests work
+    # (avoids sys.argv / _detect_program_name() issues under pytest or -m)
+    args = sys.argv[1:] if len(sys.argv) > 1 else None
+    if args:
+        cli.main(args=args, prog_name="bleu")
+    else:
+        cli.main(prog_name="bleu")  # no args: show help
 
 
 if __name__ == "__main__":

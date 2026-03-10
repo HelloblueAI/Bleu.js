@@ -75,7 +75,10 @@ class BleuJS:
             **kwargs: Additional processing options
 
         Returns:
-            Dict containing processed results
+            Dict containing processed results. On success: ``status``, ``processed_data``,
+            ``quantum_enhanced``, etc. On exception (unlike the API client and CLI, which
+            raise), this method returns a dict with ``status: "error"`` and ``error: str``
+            instead of raising, so callers can check ``result["status"] == "error"``.
 
         Example:
             >>> bleu = BleuJS()

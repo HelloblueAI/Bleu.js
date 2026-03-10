@@ -2,6 +2,8 @@
 
 Thank you for your interest in contributing to Bleu.js! We're excited to have you join our community. This guide will help you get started and make your first contribution.
 
+> **Entry point:** The repo root [CONTRIBUTING.md](../CONTRIBUTING.md) links here for the full guide. Both files are kept in sync; this is the detailed version.
+
 ## 🌟 Why Contribute?
 
 - **Learn:** Work with cutting-edge quantum-enhanced AI technology

@@ -114,11 +114,7 @@ jobs:
           sed -i "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
           echo "✅ Updated pyproject.toml to $NEW_VERSION"
 
-      - name: Update version in setup.py
-        run: |
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
-          sed -i "s/version=\"[^\"]*\"/version=\"$NEW_VERSION\"/" setup.py
-          echo "✅ Updated setup.py to $NEW_VERSION"
+      # setup.py reads version from src/bleujs/__init__.py (single source of truth); no sed needed
 
       - name: Update version in __init__.py files
         run: |
@@ -153,7 +149,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Explicitly add only version files, excluding workflow files
-          git add pyproject.toml setup.py src/**/__init__.py CHANGELOG.md
+          git add pyproject.toml src/**/__init__.py CHANGELOG.md
           # Ensure no workflow files are staged
           git reset .github/workflows/ || true
           git commit -m "chore: Bump version to ${{ steps.new-version.outputs.version }} [skip ci]" || echo "No changes to commit"

@@ -11,7 +11,7 @@ Get from zero to your first API call in under two minutes.
 As soon as `pip install bleu-js` finishes, you can run (use either **`bleu`** or **`bleujs`** — both are installed):
 
 - **`bleu --help`** or **`bleujs --help`** — see all commands and a short “Get started” hint.
-- **`bleu version`** or **`bleujs version`** — see CLI version (e.g. `Bleu CLI v1.4.6`).
+- **`bleu version`** or **`bleujs version`** — see CLI version (e.g. `Bleu CLI v1.4.x`).
 
 To call the cloud API (chat, generate, embed, etc.), you’ll need an API key from [bleujs.org](https://bleujs.org). If you run e.g. `bleu chat "Hi"` without a key, the CLI will tell you to set one and point you to bleujs.org.
 

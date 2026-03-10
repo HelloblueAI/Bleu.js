@@ -4,6 +4,8 @@ Exception classes for Bleu.js API Client
 
 from typing import Any, Dict, Optional
 
+from .constants import DEFAULT_BASE_URL
+
 
 class BleuAPIError(Exception):
     """Base exception class for all Bleu.js API errors"""
@@ -35,7 +37,10 @@ class AuthenticationError(BleuAPIError):
     - Missing API key
     """
 
-    USER_HINT = "Get an API key at https://bleujs.org or set BLEUJS_API_KEY / bleu config set api-key <key>"
+    USER_HINT = (
+        f"Get an API key at {DEFAULT_BASE_URL} or set BLEUJS_API_KEY / "
+        "bleu config set api-key <key>"
+    )
 
     @property
     def user_hint(self) -> str:
