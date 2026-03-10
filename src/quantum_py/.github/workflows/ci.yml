@@ -14,10 +14,10 @@ jobs:
         python-version: [3.8, 3.9, "3.10", "3.11"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -40,10 +40,10 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: "3.8"
 
@@ -57,7 +57,7 @@ jobs:
         pytest tests/test_services.py tests/test_config.py tests/benchmarks/ tests/config/ tests/ml/ tests/performance/ tests/services/test_rate_limiting_service.py --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing --cov-fail-under=30 --ignore tests/test_api_token_service.py --ignore tests/test_api_token_validation.py --ignore tests/test_api_tokens.py --ignore tests/test_monitoring.py --ignore tests/test_rate_limiting.py --ignore tests/test_services_coverage.py --ignore tests/services/test_redis_client.py --ignore tests/services/test_secrets_manager.py --ignore tests/unit/ai/test_attention.py --ignore tests/unit/aws/test_ec2.py --ignore tests/quantum/test_contest_strategy.py --ignore tests/quantum/test_quantum_circuit.py --ignore tests/middleware/rate_limit_test.py --ignore tests/middleware/auth_test.py --ignore tests/quantum/quantum_processor_test.py --ignore tests/integration/ --strict-markers --disable-warnings --tb=short --maxfail=10 --durations=10 -v
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
         fail_ci_if_error: true
@@ -68,12 +68,12 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: "3.8"
+        python-version: "3.11"
 
     - name: Install dependencies
       run: |
