@@ -1,6 +1,6 @@
 ### Bleu.js - Quantum-Enhanced AI Platform (docs)
 
-> **Canonical README and version:** See the [root README](../README.md) and [pyproject.toml](../pyproject.toml). This doc is for the docs folder.
+> **Canonical README and version:** See the [root README](../README.md) and [pyproject.toml](../pyproject.toml). This doc is for the docs folder. **Install:** Python 3.11+, `pip install bleu-js` (see [INSTALLATION.md](./INSTALLATION.md)).
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -55,9 +55,9 @@ total 3608
 **Step 2: Python Environment**
 
 ```bash
-# Check Python version
+# Check Python version (3.11+ required)
 $ python3 --version
-Python 3.10.12
+Python 3.11.x
 
 # Create virtual environment
 $ python3 -m venv bleujs-demo-env

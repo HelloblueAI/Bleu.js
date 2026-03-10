@@ -186,7 +186,9 @@ class QuantumSecurityManager:
     def encrypt_sync(
         self, data: Any, quantum_resistant: bool = True, **kwargs: Any
     ) -> Dict[str, Any]:
-        """Synchronous wrapper for encrypt(). Use from sync code."""
+        """Synchronous wrapper for encrypt(). Use from sync code only (not from async).
+        Note: uses asyncio.run(); do not call from code that already has a running event loop.
+        """
         return asyncio.run(
             self.encrypt(data, quantum_resistant=quantum_resistant, **kwargs)
         )
@@ -194,7 +196,9 @@ class QuantumSecurityManager:
     def generate_hashes_sync(
         self, data: Any, algorithm: str = "quantum_sha256", **kwargs: Any
     ) -> Dict[str, str]:
-        """Synchronous wrapper for generate_hashes(). Use from sync code."""
+        """Synchronous wrapper for generate_hashes(). Use from sync code only (not from async).
+        Note: uses asyncio.run(); do not call from code that already has a running event loop.
+        """
         return asyncio.run(self.generate_hashes(data, algorithm=algorithm, **kwargs))
 
     def verify_integrity_sync(
@@ -204,13 +208,19 @@ class QuantumSecurityManager:
         hashes: Dict[str, str],
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """Synchronous wrapper for verify_integrity(). Use from sync code."""
+        """Synchronous wrapper for verify_integrity(). Use from sync code only (not from async).
+        Note: uses asyncio.run(); do not call from code that already has a running event loop.
+        """
         return asyncio.run(
             self.verify_integrity(original_data, encrypted_data, hashes, **kwargs)
         )
 
     async def verify_integrity(
-        self, original_data: Any, encrypted_data: Dict, hashes: Dict[str, str], **kwargs
+        self,
+        original_data: Any,
+        encrypted_data: Dict[str, Any],
+        hashes: Dict[str, str],
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """
         Verify data integrity.

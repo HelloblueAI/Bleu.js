@@ -1,11 +1,17 @@
 # Changelog
 
+Releases are created automatically on push to `main` (see `.github/workflows/auto-release.yml` and `release.yml`). Manual version bumps and release notes are documented in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
+
 ## [v1.4.32] - 2026-03-10
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.31 to 1.4.32
-- See commit history for changes
+### Fixed
+- **CLI:** Entry point `main()` now calls `cli.main(args=..., prog_name="bleu")` explicitly so `bleu config show` works reliably regardless of `sys.argv` / `_detect_program_name()` (e.g. under pytest or `python -m`).
 
+### Tests
+- **CLI config show:** Tests run `bleu config show` in a subprocess with explicit `prog_name="bleu"`; "with data" test uses a temp HOME and `~/.bleujs/config.json` so output assertions (e.g. masked API key) are reliable.
+
+### Changed
+- Version set to 1.4.32 for release.
 
 ## [v1.4.31] - 2026-03-10
 

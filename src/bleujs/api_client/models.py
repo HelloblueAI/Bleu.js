@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+from .constants import DEFAULT_MODEL_CHAT, DEFAULT_MODEL_EMBED, DEFAULT_MODEL_GENERATE
+
 
 class ChatMessage(BaseModel):
     """A single message in a chat conversation"""
@@ -33,7 +35,7 @@ class ChatCompletionRequest(BaseModel):
         ..., description="List of messages in the conversation", min_length=1
     )
     model: str = Field(
-        default="bleu-chat-v1", description="Model to use for completion"
+        default=DEFAULT_MODEL_CHAT, description="Model to use for completion"
     )
     temperature: float = Field(
         default=0.7, ge=0.0, le=2.0, description="Sampling temperature"
@@ -72,7 +74,9 @@ class GenerationRequest(BaseModel):
     """Request body for text generation endpoint"""
 
     prompt: str = Field(..., description="The prompt to generate from", min_length=1)
-    model: str = Field(default="bleu-gen-v1", description="Model to use for generation")
+    model: str = Field(
+        default=DEFAULT_MODEL_GENERATE, description="Model to use for generation"
+    )
     temperature: float = Field(
         default=0.7, ge=0.0, le=2.0, description="Sampling temperature"
     )
@@ -105,7 +109,7 @@ class EmbeddingRequest(BaseModel):
         ..., description="List of texts to embed", min_length=1, max_length=100
     )
     model: str = Field(
-        default="bleu-embed-v1", description="Model to use for embeddings"
+        default=DEFAULT_MODEL_EMBED, description="Model to use for embeddings"
     )
     encoding_format: Literal["float", "base64"] = Field(
         default="float", description="Format of the embeddings"

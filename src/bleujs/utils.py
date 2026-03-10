@@ -94,21 +94,3 @@ def check_dependencies(group: str = "core") -> dict:
             status[dep] = "missing"
 
     return status
-
-
-def format_results(results: dict, pretty: bool = True) -> str:
-    """
-    Format processing results for display.
-
-    Args:
-        results: Results dictionary
-        pretty: Use pretty formatting
-
-    Returns:
-        str: Formatted results
-    """
-    if pretty:
-        import json
-
-        return json.dumps(results, indent=2, default=str)
-    return str(results)

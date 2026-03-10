@@ -5,7 +5,6 @@ This module provides a synchronous HTTP client for interacting with
 the Bleu.js cloud API at https://bleujs.org
 """
 
-import json
 import os
 import time
 from typing import Any, Dict, List, Optional
@@ -21,13 +20,22 @@ try:
 except ImportError:
     _CLIENT_VERSION = "0.0.0"
 
-from .exceptions import (
-    AuthenticationError,
-    BleuAPIError,
-    NetworkError,
-    ValidationError,
-    parse_api_error,
+from ._shared import handle_response
+from .constants import (
+    DEFAULT_BASE_URL,
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_MODEL_CHAT,
+    DEFAULT_MODEL_EMBED,
+    DEFAULT_MODEL_GENERATE,
+    DEFAULT_TIMEOUT,
+    ENDPOINT_CHAT,
+    ENDPOINT_EMBED,
+    ENDPOINT_GENERATE,
+    ENDPOINT_HEALTH,
+    ENDPOINT_MODELS,
 )
+from .constants import get_headers as _get_headers_shared
+from .exceptions import AuthenticationError, BleuAPIError, NetworkError, ValidationError
 from .models import (
     ChatCompletionRequest,
     ChatCompletionResponse,
@@ -51,14 +59,14 @@ class BleuAPIClient:
 
     Args:
         api_key: Your Bleu.js API key (or set BLEUJS_API_KEY env var)
-        base_url: Base URL for API (default: https://bleujs.org)
+        base_url: Base URL for API (default from constants)
         timeout: Request timeout in seconds (default: 60)
         max_retries: Maximum number of retries for failed requests (default: 3)
     """
 
-    DEFAULT_BASE_URL = "https://bleujs.org"
-    DEFAULT_TIMEOUT = 60.0
-    DEFAULT_MAX_RETRIES = 3
+    DEFAULT_BASE_URL = DEFAULT_BASE_URL
+    DEFAULT_TIMEOUT = DEFAULT_TIMEOUT
+    DEFAULT_MAX_RETRIES = DEFAULT_MAX_RETRIES
 
     def __init__(
         self,
@@ -85,16 +93,8 @@ class BleuAPIClient:
 
         self._client = httpx.Client(
             timeout=self.timeout,
-            headers=self._get_headers(),
+            headers=_get_headers_shared(self.api_key, _CLIENT_VERSION),
         )
-
-    def _get_headers(self) -> Dict[str, str]:
-        """Get HTTP headers for requests"""
-        return {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-            "User-Agent": f"bleu-js-python/{_CLIENT_VERSION}",
-        }
 
     def _build_url(self, endpoint: str) -> str:
         """Build full URL from endpoint"""
@@ -134,19 +134,9 @@ class BleuAPIClient:
                     json=data,
                     params=params,
                 )
-
-                # Handle successful response
-                if response.status_code == 200:
-                    return response.json()
-
-                # Handle error responses
-                try:
-                    error_data = response.json()
-                except json.JSONDecodeError:
-                    error_data = {"error": {"message": response.text}}
-
-                raise parse_api_error(response.status_code, error_data)
-
+                return handle_response(response)
+            except BleuAPIError:
+                raise
             except httpx.TimeoutException as e:
                 last_error = NetworkError(f"Request timeout: {str(e)}")
             except httpx.NetworkError as e:
@@ -167,7 +157,7 @@ class BleuAPIClient:
     def chat(
         self,
         messages: List[Dict[str, str]],
-        model: str = "bleu-chat-v1",
+        model: str = DEFAULT_MODEL_CHAT,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
         **kwargs: Any,
@@ -207,7 +197,7 @@ class BleuAPIClient:
         # Make API call
         response_data = self._request(
             method="POST",
-            endpoint="/api/v1/chat",
+            endpoint=ENDPOINT_CHAT,
             data=request.model_dump(exclude_none=True),
         )
 
@@ -216,7 +206,7 @@ class BleuAPIClient:
     def generate(
         self,
         prompt: str,
-        model: str = "bleu-gen-v1",
+        model: str = DEFAULT_MODEL_GENERATE,
         temperature: float = 0.7,
         max_tokens: int = 256,
         **kwargs: Any,
@@ -248,7 +238,7 @@ class BleuAPIClient:
 
         response_data = self._request(
             method="POST",
-            endpoint="/api/v1/generate",
+            endpoint=ENDPOINT_GENERATE,
             data=request.model_dump(exclude_none=True),
         )
 
@@ -257,7 +247,7 @@ class BleuAPIClient:
     def embed(
         self,
         texts: List[str],
-        model: str = "bleu-embed-v1",
+        model: str = DEFAULT_MODEL_EMBED,
         **kwargs: Any,
     ) -> EmbeddingResponse:
         """
@@ -288,7 +278,7 @@ class BleuAPIClient:
 
         response_data = self._request(
             method="POST",
-            endpoint="/api/v1/embed",
+            endpoint=ENDPOINT_EMBED,
             data=request.model_dump(exclude_none=True),
         )
 
@@ -303,7 +293,7 @@ class BleuAPIClient:
             exposes GET /health per the API contract. On failure (e.g. 404),
             raises; callers can fall back to list_models() for connectivity check.
         """
-        return self._request(method="GET", endpoint="/health")
+        return self._request(method="GET", endpoint=ENDPOINT_HEALTH)
 
     def list_models(self) -> List[Model]:
         """
@@ -319,7 +309,7 @@ class BleuAPIClient:
         """
         response_data = self._request(
             method="GET",
-            endpoint="/api/v1/models",
+            endpoint=ENDPOINT_MODELS,
         )
 
         model_list = ModelListResponse(**response_data)
