@@ -84,6 +84,12 @@ Trivy results are uploaded as SARIF to **Security → Code scanning** (not Depen
 
 2. **Manual** — In **Security → Code scanning**, filter by tool (Trivy), select alerts, and use **Dismiss** with reason “Won’t fix” and a short comment (e.g. “Not fixable in image; see bleu-os/TRIVY_ALERTS.md”).
 
+3. **If alerts appear under Dependabot** — GitHub may show the same Trivy findings under **Security → Dependabot** (container alerts). Dismiss them there manually: open each alert → **Dismiss** → reason “Won’t fix” and paste this comment:
+   ```
+   Not fixable in container image. openldap/curl/libcurl/OpenSSH (and kernel) come from Debian base or host; we run apt-get upgrade. No fix in image; see bleu-os/TRIVY_ALERTS.md §4.
+   ```
+   There is no bulk-dismiss for Dependabot container alerts via the script above (that script only dismisses Code scanning alerts). Use **Select all** in the Dependabot alerts list and **Dismiss selected** if your GitHub UI offers it, or dismiss one by one with the same comment.
+
 ## Reaching 0 vulnerabilities in Docker Scout
 
 After the image changes above, the only remaining findings are **Debian base packages** with no fix in the image (python3.11, tar, binutils, etc.). To show **0 vulnerabilities** in Scout:
