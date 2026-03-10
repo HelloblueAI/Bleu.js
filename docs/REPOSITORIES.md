@@ -9,6 +9,8 @@ The **Bleu.js project** is split across two repositories so each stays focused, 
 | **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, demos, Bleu OS, product app (bleujs.org surface) | Users, SDK/CLI contributors, doc contributors |
 | **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** | Node/Express API, ML inference, rules engine, services that power the cloud API | Backend contributors, DevOps |
 
+The backend repo’s canonical name is **Bleujs.-backend** (with the dot); URL: `https://github.com/HelloblueAI/Bleujs.-backend`.
+
 ## How they work together
 
 ```
@@ -28,7 +30,9 @@ We keep behavior consistent across repos via a **documented API contract**:
 - **Endpoints:** e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`.
 - **Request/response shapes:** The table in the link above defines what clients send and what backends should return. When you change the API, update that doc and then align both the SDK (this repo) and the backend (Bleujs.-backend) to it.
 
-The backend README links to this contract so backend contributors stay aligned. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md); when you change the contract, update the table in the link above and then align both repos.
+The backend README links to this contract so backend contributors stay aligned. The **machine-readable** contract is [docs/api/openapi.yaml](api/openapi.yaml); when you change the API, update that spec and the doc table, then align both repos. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md).
+
+**Version compatibility:** The SDK (this repo) and the backend ([Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) are versioned independently. Use an SDK version that is compatible with the backend API you deploy; check the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for API changes when upgrading either side.
 
 ## Where to contribute
 
