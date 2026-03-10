@@ -145,9 +145,11 @@ jobs:
       - name: Check CHANGELOG
         run: |
           VERSION="${{ steps.get-version.outputs.version }}"
-          if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+          # Accept [v1.4.17] or [1.4.17] in CHANGELOG
+          VER_STRIP="${VERSION#v}"
+          if ! grep -qE "## \[v?${VER_STRIP}\]" CHANGELOG.md; then
             echo "❌ No changelog entry found for version $VERSION"
-            echo "Please add an entry to CHANGELOG.md"
+            echo "Please add an entry to CHANGELOG.md (e.g. ## [v$VER_STRIP] or ## [$VER_STRIP])"
             exit 1
           fi
           echo "✅ Changelog entry found"
@@ -239,12 +241,17 @@ jobs:
 
       - name: Test package installation
         run: |
-          # Test wheel installation
-          pip install dist/*.whl --force-reinstall
+          # Merged artifacts extract to current dir (no dist/ subdir)
+          WHEEL=$(find . -maxdepth 2 -name "*.whl" -type f | head -1)
+          SDIST=$(find . -maxdepth 2 -name "*.tar.gz" -type f | head -1)
+          if [ -z "$WHEEL" ] || [ -z "$SDIST" ]; then
+            echo "❌ Artifacts not found (expected .whl and .tar.gz)"
+            find . -type f -name "*.whl" -o -name "*.tar.gz" || true
+            exit 1
+          fi
+          pip install "$WHEEL" --force-reinstall
           python -c "import bleujs; print('✅ Package imports successfully')"
-
-          # Test source distribution
-          pip install dist/*.tar.gz --force-reinstall
+          pip install "$SDIST" --force-reinstall
           python -c "import bleujs; print('✅ Source distribution works')"
 
       - name: Test package functionality
@@ -291,7 +298,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          python -m twine upload --skip-existing dist/*
+          python -m twine upload --skip-existing *.whl *.tar.gz
 
       - name: Publish to Test PyPI
         continue-on-error: true
@@ -300,7 +307,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: |
-          python -m twine upload --repository testpypi --skip-existing dist/*
+          python -m twine upload --repository testpypi --skip-existing *.whl *.tar.gz
 
   # ============================================================================
   # CREATE GITHUB RELEASE
@@ -328,9 +335,11 @@ jobs:
         id: release-notes
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
+          VER_STRIP="${VERSION#v}"
+          VER_AWK="${VER_STRIP//./\\.}"
 
-          # Extract changelog section
-          awk "/^## \\[$VERSION\\]/,/^## /" CHANGELOG.md | head -n -1 > release-notes.md
+          # Extract changelog section (match [v1.4.17] or [1.4.17])
+          awk "/^## \\[v?${VER_AWK}\\]/,/^## /" CHANGELOG.md | head -n -1 > release-notes.md
 
           # Add installation instructions
           echo "" >> release-notes.md
@@ -358,7 +367,9 @@ jobs:
           tag_name: ${{ needs.validate.outputs.version }}
           name: Release ${{ needs.validate.outputs.version }}
           body: ${{ steps.release-notes.outputs.notes }}
-          files: dist/*
+          files: |
+            *.whl
+            *.tar.gz
           draft: false
           prerelease: ${{ needs.validate.outputs.is-prerelease }}
 
