@@ -411,8 +411,8 @@ jobs:
           context: .
           push: true
           tags: |
-            bleujs/bleu-js:${{ needs.validate.outputs.version }}
-            bleujs/bleu-js:latest
+            henfarm/bleu-js:${{ needs.validate.outputs.version }}
+            henfarm/bleu-js:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -423,8 +423,8 @@ jobs:
           file: Dockerfile.quantum
           push: true
           tags: |
-            bleujs/bleu-js-quantum:${{ needs.validate.outputs.version }}
-            bleujs/bleu-js-quantum:latest
+            henfarm/bleu-js-quantum:${{ needs.validate.outputs.version }}
+            henfarm/bleu-js-quantum:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -468,7 +468,7 @@ jobs:
                   },
                   {
                     "title": "Docker",
-                    "value": "https://hub.docker.com/r/bleujs/bleu-js",
+                    "value": "https://hub.docker.com/r/henfarm/bleu-js",
                     "short": true
                   }
                 ]
