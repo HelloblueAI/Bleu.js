@@ -20,15 +20,25 @@ jobs:
           python-version: "3.11"
       - name: Install PyYAML
         run: pip install pyyaml
-      - name: Validate OpenAPI spec (YAML + structure)
+      - name: Validate OpenAPI spec (YAML + structure + contract quality)
         run: |
           python -c "
-          import yaml, sys
+          import yaml
           with open('docs/api/openapi.yaml') as f:
             spec = yaml.safe_load(f)
           assert 'openapi' in spec, 'missing openapi key'
           assert 'paths' in spec, 'missing paths'
           assert 'info' in spec, 'missing info'
           assert spec.get('openapi', '').startswith('3.'), 'openapi must be 3.x'
-          print('OpenAPI spec valid (YAML + structure)')
+          paths = spec['paths']
+          assert len(paths) >= 1, 'paths must not be empty'
+          op_ids = []
+          for path, methods in paths.items():
+            for method, op in (methods or {}).items():
+              if method.lower() in ('get','put','post','delete','patch','head','options') and isinstance(op, dict):
+                oid = op.get('operationId')
+                if oid:
+                  assert oid not in op_ids, f'duplicate operationId: {oid}'
+                  op_ids.append(oid)
+          print('OpenAPI spec valid (YAML + structure + operationIds unique)')
           "
