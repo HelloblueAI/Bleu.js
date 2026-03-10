@@ -13,11 +13,13 @@ with open(_version_file, "r", encoding="utf-8") as fh:
         raise RuntimeError(f"Could not find __version__ in {_version_file}")
     version = _version_match.group(1)
 
+# Minimal default: API + CLI only (match pyproject.toml)
 requirements = [
-    # Core dependencies (minimal, always required)
     "numpy>=1.24.0,<3.0.0",
-    "requests>=2.31.0",
     "click>=8.0.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "urllib3>=2.6.3",
 ]
 
 setup(

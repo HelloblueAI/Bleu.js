@@ -102,11 +102,13 @@ class BleuJS:
             else:
                 enhanced_data = data
 
-            # Process data
+            # Process data (quantum_enhanced only True when extractor actually ran)
             results = {
                 "status": "success",
                 "processed_data": enhanced_data,
-                "quantum_enhanced": quantum_features and self.quantum_mode,
+                "quantum_enhanced": bool(
+                    quantum_features and self.quantum_mode and self.quantum_extractor
+                ),
                 "device": self.device,
                 "version": _VERSION,
             }

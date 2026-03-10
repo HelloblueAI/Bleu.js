@@ -2,10 +2,15 @@
 
 ## [v1.4.16] - 2026-03-10
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.15 to 1.4.16
-- See commit history for changes
+### Added
+- **Product philosophy** — [docs/PRODUCT_PHILOSOPHY.md](docs/PRODUCT_PHILOSOPHY.md): efficient by default, powerful by choice; positioning and principles for the team.
+- **Exception hints** — `AuthenticationError` and `RateLimitError` now expose a `user_hint` property; CLI shows actionable hints (e.g. "Get an API key at https://bleujs.org").
 
+### Changed
+- **README** — "What's next & keep improving" section (Roadmap, Changelog, Product philosophy); link to Product philosophy in standards.
+- **GET_STARTED** — "What's next?" table includes Roadmap & Product philosophy.
+- **CLI** — Main help text updated: two-minute promise, `bleu`/`bleujs` both work, link to docs.
+- **API client** — Module docstring improved: retries/timeouts mentioned, best-practice context manager.
 
 ## [v1.4.15] - 2026-03-10
 

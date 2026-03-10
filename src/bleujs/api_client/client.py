@@ -294,6 +294,17 @@ class BleuAPIClient:
 
         return EmbeddingResponse(**response_data)
 
+    def health(self) -> Dict[str, Any]:
+        """
+        Check API health (GET /health).
+
+        Returns:
+            Health response dict (e.g. status, version). Use when the backend
+            exposes GET /health per the API contract. On failure (e.g. 404),
+            raises; callers can fall back to list_models() for connectivity check.
+        """
+        return self._request(method="GET", endpoint="/health")
+
     def list_models(self) -> List[Model]:
         """
         List available models

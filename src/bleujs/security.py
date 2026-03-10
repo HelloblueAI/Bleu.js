@@ -1,7 +1,13 @@
 """
-Security features for Bleu.js including quantum-resistant encryption
+Security features for Bleu.js.
+
+Encryption: Fernet (AES-256-GCM) when cryptography is available; otherwise
+SHA-256-based. "Quantum-resistant" hashing is multi-round SHA-512 (hardening
+only), not NIST post-quantum (e.g. Kyber/Dilithium). Sync wrappers are
+provided for encrypt, generate_hashes, and verify_integrity.
 """
 
+import asyncio
 import hashlib
 import json
 import logging
@@ -13,18 +19,25 @@ logger = logging.getLogger(__name__)
 
 class QuantumSecurityManager:
     """
-    Manage security with quantum-resistant encryption.
+    Manage encryption and hashing for Bleu.js.
+
+    - **Encryption:** "military" uses Fernet (AES-256-GCM) when the
+      cryptography library is installed; otherwise SHA-256-based.
+    - **"Quantum-resistant" hashing:** Multi-round SHA-512 (10 rounds) for
+      extra hardening. This is not NIST post-quantum (e.g. Kyber, Dilithium).
+      Use encrypt_sync / generate_hashes_sync / verify_integrity_sync from
+      sync code to avoid managing event loops.
 
     Args:
-        encryption_level (str): Encryption level ('standard', 'military')
-        quantum_resistant (bool): Enable quantum-resistant algorithms
+        encryption_level (str): 'standard' or 'military'
+        quantum_resistant (bool): Use multi-round SHA-512 for hashes
 
     Example:
         >>> security = QuantumSecurityManager(
         ...     encryption_level='military',
         ...     quantum_resistant=True
         ... )
-        >>> encrypted = security.encrypt(sensitive_data)
+        >>> encrypted = security.encrypt_sync(sensitive_data)
     """
 
     def __init__(
@@ -164,12 +177,37 @@ class QuantumSecurityManager:
             return {"error": str(e)}
 
     def _quantum_resistant_hash(self, data_str: str) -> str:
-        """Generate quantum-resistant hash."""
-        # Use multiple rounds of SHA-512 for quantum resistance simulation
+        """Multi-round SHA-512 (hardening only; not NIST post-quantum)."""
         hash_value = data_str.encode()
-        for _ in range(10):  # Multiple rounds
+        for _ in range(10):
             hash_value = hashlib.sha512(hash_value).digest()
         return hash_value.hex()
+
+    def encrypt_sync(
+        self, data: Any, quantum_resistant: bool = True, **kwargs: Any
+    ) -> Dict[str, Any]:
+        """Synchronous wrapper for encrypt(). Use from sync code."""
+        return asyncio.run(
+            self.encrypt(data, quantum_resistant=quantum_resistant, **kwargs)
+        )
+
+    def generate_hashes_sync(
+        self, data: Any, algorithm: str = "quantum_sha256", **kwargs: Any
+    ) -> Dict[str, str]:
+        """Synchronous wrapper for generate_hashes(). Use from sync code."""
+        return asyncio.run(self.generate_hashes(data, algorithm=algorithm, **kwargs))
+
+    def verify_integrity_sync(
+        self,
+        original_data: Any,
+        encrypted_data: Dict[str, Any],
+        hashes: Dict[str, str],
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Synchronous wrapper for verify_integrity(). Use from sync code."""
+        return asyncio.run(
+            self.verify_integrity(original_data, encrypted_data, hashes, **kwargs)
+        )
 
     async def verify_integrity(
         self, original_data: Any, encrypted_data: Dict, hashes: Dict[str, str], **kwargs

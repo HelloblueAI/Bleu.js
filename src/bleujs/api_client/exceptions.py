@@ -35,7 +35,12 @@ class AuthenticationError(BleuAPIError):
     - Missing API key
     """
 
-    pass
+    USER_HINT = "Get an API key at https://bleujs.org or set BLEUJS_API_KEY / bleu config set api-key <key>"
+
+    @property
+    def user_hint(self) -> str:
+        """Suggested action for the user (e.g. for CLI display)."""
+        return self.USER_HINT
 
 
 class RateLimitError(BleuAPIError):
@@ -47,7 +52,11 @@ class RateLimitError(BleuAPIError):
     - Need to implement backoff/retry logic
     """
 
-    pass
+    USER_HINT = "Wait a moment and retry; use exponential backoff in scripts."
+
+    @property
+    def user_hint(self) -> str:
+        return self.USER_HINT
 
 
 class InvalidRequestError(BleuAPIError):

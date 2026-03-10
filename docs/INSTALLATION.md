@@ -4,7 +4,7 @@
 
 If you only need the **SDK and CLI** to call the Bleu.js API at [bleujs.org](https://bleujs.org):
 
-1. **Install:** `pip install bleu-js` (Python 3.11+)
+1. **Install:** `pip install bleu-js` (Python 3.11+). This is a **lightweight** install (no torch, shap, numba, or quantum libs); add `[ml]`, `[quantum]`, or `[all]` only if you need them.
 2. **Get an API key** at [bleujs.org](https://bleujs.org)
 3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` or `bleu config set api-key bleujs_sk_...`
 4. **Run:** `bleu chat "Hello"` or use the SDK in Python
