@@ -1,3 +1,4 @@
+# Legacy workflow: references in-repo frontend/ and backend/. Backend now lives in Bleujs.-backend; primary CI is .github/workflows/main.yml. Remove or update this file if you no longer use it.
 name: CI/CD Pipeline
 
 on:

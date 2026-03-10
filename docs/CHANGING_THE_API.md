@@ -16,7 +16,7 @@ When you add or change endpoints, request/response shapes, or the public API in 
 ## 2. Implement in backend (Bleujs.-backend repo)
 
 - Implement or update routes and handlers to match the spec.
-- Run `npm test` (typecheck + smoke) and `npm run lint`.
+- Run `npm test` (typecheck + smoke + contract) and `npm run lint`.
 - Add an entry to the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) describing the API change (for deployers and SDK maintainers).
 
 ## 3. Implement in SDK / CLI (Bleu.js repo)
