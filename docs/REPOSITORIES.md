@@ -30,9 +30,9 @@ We keep behavior consistent across repos via a **documented API contract**:
 - **Endpoints:** e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`.
 - **Request/response shapes:** The table in the link above defines what clients send and what backends should return. When you change the API, update that doc and then align both the SDK (this repo) and the backend (Bleujs.-backend) to it.
 
-The backend README links to this contract so backend contributors stay aligned. The **machine-readable** contract is [docs/api/openapi.yaml](api/openapi.yaml); when you change the API, update that spec and the doc table, then align both repos. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md).
+The backend README links to this contract so backend contributors stay aligned. The **machine-readable** contract is [docs/api/openapi.yaml](api/openapi.yaml); when you change the API, update that spec and the doc table, then align both repos. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md). **Runbook:** [Changing the API](CHANGING_THE_API.md) — step-by-step so both repos stay in sync and we ship faster.
 
-**Version compatibility:** The SDK (this repo) and the backend ([Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) are versioned independently. Use an SDK version that is compatible with the backend API you deploy; check the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for API changes when upgrading either side.
+**Version compatibility:** The SDK (this repo) and the backend ([Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) are versioned independently. Use an SDK version that is compatible with the backend API you deploy; check the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for API changes when upgrading either side. We aim to keep current SDK (e.g. 1.4.x) working with current backend (e.g. 1.1.x); when we introduce breaking API changes we document them in both CHANGELOGs and may bump a path (e.g. `/api/v2`).
 
 ## Where to contribute
 
@@ -49,10 +49,15 @@ The backend README links to this contract so backend contributors stay aligned. 
 - **Security and dependency hygiene:** Fewer manifests in one place, so Dependabot and security alerts stay manageable. See [Dependabot and dependencies](DEPENDABOT_AND_DEPENDENCIES.md) and [Backend repo](BACKEND_REPO.md).
 - **Contributor experience:** Contributors know where to open issues and PRs; backend and SDK can evolve at their own pace.
 
+## Accelerating the flow
+
+- **Change the API in one place:** Update [openapi.yaml](api/openapi.yaml) first; CI validates it. Then backend and SDK follow. See [Changing the API](CHANGING_THE_API.md).
+- **Backend contributors:** After changing routes or responses, update the spec in the main repo (or open a PR there), add a backend CHANGELOG entry, and run `npm test`.
+- **Single checklist:** The runbook above keeps contract → backend → client in order so we stay ahead of teams that don’t document the flow.
+
 ## More
 
 - **Backend details (export, setup, deploy):** [BACKEND_REPO.md](BACKEND_REPO.md)
 - **Backend release notes:** [Bleujs.-backend CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md)
-- **Open source standards we follow:** [OPEN_SOURCE_STANDARDS.md](OPEN_SOURCE_STANDARDS.md)
 - **Product architecture (bleujs.org app):** [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md)
 - **Evaluating Bleu.js / award submission:** [Evaluation and awards](EVALUATION_AND_AWARDS.md)

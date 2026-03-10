@@ -1,0 +1,34 @@
+# Validate OpenAPI spec (docs/api/openapi.yaml) so the API contract stays valid.
+# Runs when the spec or API doc changes; keeps us ahead of projects that don't validate their spec.
+name: Validate OpenAPI
+
+on:
+  push:
+    branches: [main, staging]
+    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md']
+  pull_request:
+    branches: [main, staging]
+    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Validate OpenAPI spec (YAML + structure)
+        run: |
+          python -c "
+          import yaml, sys
+          with open('docs/api/openapi.yaml') as f:
+            spec = yaml.safe_load(f)
+          assert 'openapi' in spec, 'missing openapi key'
+          assert 'paths' in spec, 'missing paths'
+          assert 'info' in spec, 'missing info'
+          assert spec.get('openapi', '').startswith('3.'), 'openapi must be 3.x'
+          print('OpenAPI spec valid (YAML + structure)')
+          "

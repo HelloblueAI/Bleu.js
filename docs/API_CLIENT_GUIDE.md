@@ -295,6 +295,8 @@ models = client.list_models()
 
 **API versioning:** We use `/api/v1` for the current API. We avoid breaking changes within v1; non-breaking changes (new optional fields, new endpoints) may be added. When we introduce breaking changes, we will add a new path (e.g. `/api/v2`) and document the migration. See the main [CHANGELOG](../CHANGELOG.md) and the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for changes.
 
+**Changing the API?** Follow the [Changing the API runbook](CHANGING_THE_API.md) so the spec, backend, and SDK stay in sync.
+
 When implementing clients (e.g. the [API Playground](https://github.com/HelloblueAI/Bleu.js/blob/main/api_playground.html)) or backend routes, keep these consistent:
 
 | Endpoint                             | Request body                                                                                                                                                         | Response shape                                                                                                                                                                                             |
