@@ -1,14 +1,16 @@
 """
-Bleu.js API Client - Access bleujs.org cloud API
+Bleu.js API Client – access the bleujs.org cloud API.
 
-This module provides both synchronous and asynchronous clients for
-interacting with the Bleu.js cloud API.
+Synchronous and async clients with retries, timeouts, and typed errors.
+Get an API key at https://bleujs.org and set BLEUJS_API_KEY or pass api_key=.
 
 Usage:
     from bleujs.api_client import BleuAPIClient
 
     client = BleuAPIClient(api_key="bleujs_sk_...")
     response = client.chat([{"role": "user", "content": "Hello!"}])
+
+Best practice: Use context manager for cleanup: ``with BleuAPIClient(...) as c: ...``
 """
 
 from .client import BleuAPIClient

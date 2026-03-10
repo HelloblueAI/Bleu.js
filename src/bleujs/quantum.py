@@ -184,7 +184,12 @@ class QuantumFeatureExtractor:
 
 class QuantumAttention:
     """
-    Quantum-enhanced attention mechanism.
+    Attention-style layer with a classical (simulated) implementation.
+
+    This is a classical simulation only: it uses random projections and
+    softmax-style weighting. It does not run quantum circuits. The name
+    is kept for API compatibility; for real quantum attention, use
+    QuantumFeatureExtractor with Qiskit/PennyLane.
 
     Args:
         num_heads (int): Number of attention heads
@@ -211,15 +216,19 @@ class QuantumAttention:
         self, input_data: Any, quantum_enhanced: bool = True, **kwargs
     ) -> np.ndarray:
         """
-        Process input with quantum-enhanced attention.
+        Process input with attention-style weighting (classical simulation).
+
+        Uses a simple embedding and softmax-style weights. No quantum circuit
+        is executed. The quantum_enhanced flag is accepted for API compatibility
+        but does not change behavior.
 
         Args:
             input_data: Input data
-            quantum_enhanced: Enable quantum enhancement
+            quantum_enhanced: Ignored; kept for API compatibility
             **kwargs: Additional options
 
         Returns:
-            Attention-processed output
+            Attention-weighted output array
         """
         # Convert to array
         if isinstance(input_data, (list, str)):

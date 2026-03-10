@@ -113,9 +113,11 @@ def get_client() -> Optional[BleuAPIClient]:
 def format_error(error: Exception) -> str:
     """Format error message for display"""
     if isinstance(error, AuthenticationError):
-        return "🔐 Authentication failed. Check your API key."
+        hint = getattr(error, "user_hint", None) or "Check your API key."
+        return f"🔐 Authentication failed. {hint}"
     elif isinstance(error, RateLimitError):
-        return "⏱️  Rate limit exceeded. Please wait and try again."
+        hint = getattr(error, "user_hint", None) or "Please wait and try again."
+        return f"⏱️  Rate limit exceeded. {hint}"
     elif isinstance(error, NetworkError):
         return "🌐 Network error. Check your connection."
     elif isinstance(error, BleuAPIError):
@@ -130,15 +132,16 @@ def format_error(error: Exception) -> str:
 @click.pass_context
 def cli(ctx):
     """
-    🚀 Bleu CLI - Command-line interface for Bleu.js
+    Bleu CLI – quantum-enhanced AI from the command line.
 
-    Access Bleu.js quantum-enhanced AI features from the command line.
-
-    Get started:
+    Get your first response in under two minutes:
+      pip install bleu-js
+      Get API key at https://bleujs.org
       bleu config set api-key <your-key>
       bleu chat "Hello, world!"
 
-    For more information, visit: https://bleujs.org
+    Commands: chat, generate, embed, models, config, health, version.
+    Use 'bleu' or 'bleujs' (both work). Docs: https://bleujs.org
     """
     ctx.ensure_object(dict)
 
@@ -687,10 +690,22 @@ def version():
 # Health check command
 @cli.command()
 def health():
-    """Check API health and connection"""
+    """Check API health and connection (uses GET /health when available, else list_models)"""
     try:
         client = get_client()
-        # Try to list models as a health check
+        health_method = getattr(client, "health", None)
+        if callable(health_method):
+            try:
+                result = client.health()
+                click.echo("✅ API connection healthy")
+                click.echo(f"   Base URL: {client.base_url}")
+                if isinstance(result, dict) and result:
+                    status = result.get("status") or result.get("ok")
+                    if status is not None:
+                        click.echo(f"   Status: {status}")
+                return
+            except Exception:
+                pass
         client.list_models()
         click.echo("✅ API connection healthy")
         click.echo(f"   Base URL: {client.base_url}")

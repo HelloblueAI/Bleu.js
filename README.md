@@ -1,6 +1,6 @@
 # Bleu.js
 
-Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https://bleujs.org)
+**Quantum-enhanced AI platform: cloud API, CLI, and Python SDK.** [bleujs.org](https://bleujs.org) — *Get your first API call in under two minutes.*
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![Security: 9.5/10](https://img.shields.io/badge/Security-9.5%2F10-brightgreen.svg)]()
@@ -17,7 +17,9 @@ Quantum-enhanced AI platform: cloud API, CLI, and Python SDK. [bleujs.org](https
   </a>
 </div>
 
-Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities. Built with Python and optimized for performance, it provides state-of-the-art AI solutions with quantum acceleration.
+Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical machine learning with quantum computing capabilities.
+
+**Efficient by default, powerful by choice.** We do *not* ship torch, shap, or numba in the default install. That keeps `pip install bleu-js` fast and reliable (no build failures, works everywhere) so you get the full **API + CLI + core** in one command. When you need heavy ML, quantum, or deep learning, add optional extras: `[ml]`, `[quantum]`, `[deep]`, or `[all]`. One product, one install command, zero friction for the majority of users—and a clear path to full power when you need it.
 
 - **Who it's for:** ML engineers, researchers, and developers building quantum-enhanced AI, cloud APIs, or CLI tools.
 - **Security & data:** API keys and secrets are not stored in the repo. For reporting vulnerabilities and deployment checklist, see [SECURITY.md](SECURITY.md).
@@ -25,7 +27,7 @@ Bleu.js is a cutting-edge quantum-enhanced AI platform that combines classical m
 - **Evaluating Bleu.js or submitting for an award?** See [Evaluation & awards](docs/EVALUATION_AND_AWARDS.md).
 - **Production:** [Installation & deployment](docs/INSTALLATION.md); use env-based secrets and see [SECURITY.md](SECURITY.md) for the deployment checklist; [Release checklist](docs/RELEASE_CHECKLIST.md) for cutting a version.
 
-**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes); [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org). **Project structure:** Two repos (this one + [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) — see [Repositories and sync](docs/REPOSITORIES.md).
+**Standards we follow** — Clean repo (one product surface, backend in a [separate repo](docs/BACKEND_REPO.md)); security-first (no secrets in tree, [SECURITY.md](SECURITY.md)); single source of truth for dependencies ([Dependabot doc](docs/DEPENDABOT_AND_DEPENDENCIES.md)); [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes); [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md). **Product app:** [Product architecture](docs/PRODUCT_ARCHITECTURE.md) (one app = `src/main.py` for bleujs.org). **Why we build it this way:** [Product philosophy](docs/PRODUCT_PHILOSOPHY.md). **Project structure:** Two repos (this one + [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) — see [Repositories and sync](docs/REPOSITORIES.md).
 
 ---
 
@@ -898,6 +900,15 @@ graph LR
     P --> O
 ```
 
+## What’s next & keep improving
+
+- **[Roadmap](docs/ROADMAP.md)** — Planned features and status.
+- **[Changelog](CHANGELOG.md)** — Latest changes and releases.
+- **[Product philosophy](docs/PRODUCT_PHILOSOPHY.md)** — How we stay efficient by default and powerful by choice.
+- **Contributing** — See below; we keep improving and enhancing the SDK, CLI, and docs.
+
+---
+
 ## Contributing
 
 We welcome contributions. New to the repo? **[Start with a good first issue](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)** or fix a typo, add a test, or improve docs.
@@ -1057,7 +1068,7 @@ docker run -it --gpus all bleuos/bleu-os:latest
 
 [![Platform Support](https://img.shields.io/badge/Platform-Linux-green)](https://github.com/HelloblueAI/Bleu.js)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen?style=flat-square&logo=github)](https://github.com/HelloblueAI/Bleu.js)
-[![version](https://img.shields.io/badge/version-1.3.x-0ff?style=flat)](https://github.com/HelloblueAI/Bleu.js)
+[![version](https://img.shields.io/badge/version-1.4.x-0ff?style=flat)](https://pypi.org/project/bleu-js/)
 [![Neural Networks](https://img.shields.io/badge/Neural%20Networks-Convolutional%20%7C%20Recurrent-red?style=flat-square&logo=pytorch)](https://github.com/HelloblueAI/Bleu.js)
 [![Deep Learning](https://img.shields.io/badge/Deep%20Learning-TensorFlow%20%7C%20PyTorch-orange?style=flat-square&logo=tensorflow)](https://github.com/HelloblueAI/Bleu.js)
 [![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Supervised%20%7C%20Unsupervised-blue?style=flat-square&logo=python)](https://github.com/HelloblueAI/Bleu.js)

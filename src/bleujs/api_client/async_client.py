@@ -294,6 +294,16 @@ class AsyncBleuAPIClient:
 
         return EmbeddingResponse(**response_data)
 
+    async def health(self) -> Dict[str, Any]:
+        """
+        Check API health (GET /health). Async.
+
+        Returns:
+            Health response dict (e.g. status, version). On failure (e.g. 404),
+            raises; callers can fall back to list_models() for connectivity check.
+        """
+        return await self._request(method="GET", endpoint="/health")
+
     async def list_models(self) -> List[Model]:
         """
         List available models (async)
