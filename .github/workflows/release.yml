@@ -416,18 +416,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build quantum variant
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: Dockerfile.quantum
-          push: true
-          tags: |
-            henfarm/bleu-js-quantum:${{ needs.validate.outputs.version }}
-            henfarm/bleu-js-quantum:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
   # ============================================================================
   # NOTIFICATIONS
   # ============================================================================
