@@ -295,6 +295,9 @@ jobs:
           pattern: "python-packages-ubuntu-latest-3.11"
           merge-multiple: true
 
+      - name: Install twine
+        run: pip install twine
+
       - name: Publish to PyPI
         env:
           TWINE_REPOSITORY: pypi
