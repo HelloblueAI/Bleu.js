@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.4.33] - 2026-03-11
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.4.32 to 1.4.33
+- See commit history for changes
+
+
 Releases are created automatically on push to `main` (see `.github/workflows/auto-release.yml` and `release.yml`). Manual version bumps and release notes are documented in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
 
 ## [v1.4.32] - 2026-03-10
