@@ -190,6 +190,19 @@ def config_set(key: str, value: str):
     click.echo(f"✅ Set {key} = {display_value}")
 
 
+def _show_all_config():
+    """Display all config (used by config get with no key and config show)."""
+    config = get_config()
+    if not config:
+        click.echo("No configuration set.")
+        click.echo("Set API key with: bleu config set api-key <key>")
+    else:
+        for k, v in config.items():
+            if k == "api_key":
+                v = f"{v[:8]}...{v[-4:]}"
+            click.echo(f"{k} = {v}")
+
+
 @config.command("get")
 @click.argument("key", required=False)
 def config_get(key: Optional[str]):
@@ -216,21 +229,13 @@ def config_get(key: Optional[str]):
         else:
             click.echo("(not set)")
     else:
-        # Show all config
-        if not config:
-            click.echo("No configuration set.")
-            click.echo("Set API key with: bleu config set api-key <key>")
-        else:
-            for k, v in config.items():
-                if k == "api_key":
-                    v = f"{v[:8]}...{v[-4:]}"
-                click.echo(f"{k} = {v}")
+        _show_all_config()
 
 
 @config.command("show")
 def config_show():
     """Show all configuration"""
-    config_get(None)
+    _show_all_config()
 
 
 @config.command("reset")

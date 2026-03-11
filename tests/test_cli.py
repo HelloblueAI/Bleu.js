@@ -96,7 +96,14 @@ class TestCLIConfig:
         assert (
             "unexpected extra argument" not in out.lower()
         ), f"CLI still has config show bug: {out!r}"
-        assert "configuration" in out.lower() or "config" in out.lower() or "No " in out
+        # Subprocess reads real config; accept empty message or key=value output
+        assert (
+            "configuration" in out.lower()
+            or "config" in out.lower()
+            or "No " in out
+            or "api_key" in out
+            or "base_url" in out
+        )
 
     def test_config_show_with_data(self, runner):
         """bleu config show with mock config shows keys (masked api_key)."""
