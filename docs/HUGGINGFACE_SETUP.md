@@ -2,6 +2,8 @@
 
 This guide will help you create and upload a model repository to Hugging Face Hub under the `helloblueai` organization.
 
+**Security:** Never commit `HF_TOKEN` or put it in tracked files. Use environment variables or GitHub Actions secrets only.
+
 ## Prerequisites
 
 1. **Hugging Face Account**: Create an account at https://huggingface.co

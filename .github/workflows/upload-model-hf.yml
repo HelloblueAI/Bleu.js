@@ -43,10 +43,30 @@ jobs:
           pip install huggingface-hub
           pip install -r requirements.txt || true
 
-      - name: Verify model files exist
+      - name: Verify model files (same paths as setup_hf_model_auto.py)
+        id: model-files
         run: |
-          echo "Checking for model files..."
-          ls -lh backend/*.pkl backend/models/*.pkl 2>/dev/null || echo "No model files found"
+          echo "Paths used by scripts/setup_hf_model_auto.py (prefer *_latest.pkl):"
+          FOUND=0
+          for p in \
+            backend/xgboost_model_latest.pkl \
+            backend/models/xgboost_model_latest.pkl \
+            backend/scaler_latest.pkl \
+            backend/models/scaler_latest.pkl \
+            backend/xgboost_model.pkl \
+            backend/scaler.pkl
+          do
+            if [ -f "$p" ]; then
+              echo "  ✓ $p ($(ls -lh "$p" | awk '{print $5}'))"
+              FOUND=1
+            else
+              echo "  ✗ $p"
+            fi
+          done
+          echo "found=$FOUND" >> $GITHUB_OUTPUT
+          if [ "$FOUND" -eq 0 ]; then
+            echo "No model files found. Upload step will fail unless HF_TOKEN is unset (then upload is skipped)."
+          fi
 
       - name: Determine version
         id: version
@@ -59,7 +79,14 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Using version: $VERSION"
 
+      - name: Skip upload (no model files)
+        if: steps.model-files.outputs.found != '1'
+        run: |
+          echo "⏭️ No model .pkl files found under backend/ — upload step skipped."
+          echo "Add backend/xgboost_model*.pkl and/or backend/scaler*.pkl to enable Hugging Face upload."
+
       - name: Upload to Hugging Face
+        if: steps.model-files.outputs.found == '1'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -79,19 +106,15 @@ jobs:
           fi
 
           echo "Uploading model: ${ORG}/${MODEL_NAME}"
-
           python3 scripts/setup_hf_model_auto.py \
             --organization "$ORG" \
             --model-name "$MODEL_NAME"
 
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: startsWith(github.ref, 'refs/tags/') && steps.model-files.outputs.found == '1'
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Model Release ${{ github.ref }}
+          name: Model Release ${{ github.ref_name }}
           body: |
             Model uploaded to Hugging Face:
             - Organization: ${{ github.event.inputs.organization || 'helloblueai' }}
@@ -101,3 +124,4 @@ jobs:
             View model: https://huggingface.co/${{ github.event.inputs.organization || 'helloblueai' }}/${{ github.event.inputs.model_name || 'bleu-xgboost-classifier' }}
           draft: false
           prerelease: false
+          make_latest: true

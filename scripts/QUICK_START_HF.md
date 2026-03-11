@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. Get your Hugging Face token: https://huggingface.co/settings/tokens
+1. Get your Hugging Face token: https://huggingface.co/settings/tokens (never commit it).
 2. Install dependencies: `pip install huggingface-hub`
 
 ## Step 1: Set Your Token
