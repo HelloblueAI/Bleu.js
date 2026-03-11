@@ -285,6 +285,7 @@ warn_no_return = true
 warn_unreachable = true
 strict_equality = true
 
+# Pytest: pytest.ini at repo root is canonical (pytest uses it when both exist).
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]

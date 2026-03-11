@@ -86,10 +86,10 @@ setup(
         "ibm": [
             "qiskit-ibm-runtime>=0.22.0",
         ],
-        # Machine learning features
+        # Machine learning features (versions aligned with pyproject.toml)
         "ml": [
             "scikit-learn>=1.2.0",
-            "xgboost>=1.7.0",
+            "xgboost>=3.0.2",
             "pandas>=2.0.0",
         ],
         # Deep learning features
@@ -105,7 +105,7 @@ setup(
             "qiskit-aer>=0.13.0",
             "pennylane>=0.30.0",
             "scikit-learn>=1.2.0",
-            "xgboost>=1.7.0",
+            "xgboost>=3.0.2",
             "pandas>=2.0.0",
             "torch>=2.0.0",
             "tensorflow>=2.10.0,<2.22",
