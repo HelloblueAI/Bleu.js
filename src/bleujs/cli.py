@@ -245,8 +245,11 @@ def config_get(key: Optional[str]):
 
 
 @config.command("show")
-def config_show():
-    """Show all configuration"""
+@click.argument("_rest", nargs=-1, required=False)
+def config_show(_rest: tuple = ()):
+    """Show all configuration (same as: bleu config get)."""
+    # _rest absorbs any extra tokens so "bleu config show" never gets
+    # "Got unexpected extra argument (show)" from Click in edge cases
     _show_all_config()
 
 
