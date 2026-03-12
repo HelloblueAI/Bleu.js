@@ -25,7 +25,7 @@ Machine Learning:
 For more examples, see: https://github.com/HelloblueAI/Bleu.js
 """
 
-__version__ = "1.4.42"
+__version__ = "1.4.43"
 __author__ = "Bleujs Team"
 __email__ = "support@helloblue.ai"
 __license__ = "MIT"
