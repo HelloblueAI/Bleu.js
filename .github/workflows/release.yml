@@ -316,6 +316,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
+    permissions:
+      contents: write  # Required to create GitHub Release (fixes "Resource not accessible by integration")
 
     steps:
       - name: Checkout Repository
