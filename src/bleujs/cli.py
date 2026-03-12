@@ -168,12 +168,13 @@ def cli(ctx, debug: bool):
             logging.getLogger("bleujs.api_client").addHandler(h)
 
 
-# Config commands
-@cli.group()
+# Config commands: group can be invoked without subcommand (bleu config → show all)
+@cli.group(invoke_without_command=True)
 @click.pass_context
 def config(ctx):
-    """Manage Bleu.js configuration"""
-    pass
+    """Manage Bleu.js configuration. Run `bleu config` or `bleu config show` to show all; `bleu config get` (no key) does the same."""
+    if ctx.invoked_subcommand is None:
+        _show_all_config()
 
 
 @config.command("set")
@@ -246,10 +247,8 @@ def config_get(key: Optional[str]):
 
 @config.command("show")
 @click.argument("_rest", nargs=-1, required=False)
-def config_show(_rest: tuple = ()):
-    """Show all configuration (same as: bleu config get)."""
-    # _rest absorbs any extra tokens so "bleu config show" never gets
-    # "Got unexpected extra argument (show)" from Click in edge cases
+def config_show(_rest: tuple):
+    """Show all configuration (same as: bleu config or bleu config get with no key)."""
     _show_all_config()
 
 
