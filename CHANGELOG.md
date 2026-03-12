@@ -2,10 +2,9 @@
 
 ## [v1.4.38] - 2026-03-12
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.37 to 1.4.38
-- See commit history for changes
-
+### Changed
+- **bleu-os:** TRIVY_ALERTS.md documents Docker Hub push as `bleuos/bleu-os` (tag and push commands). Dockerfile comments note `--pull` for security-sensitive builds.
+- **Docs:** Smoke test results (pass/fail vs bleujs.org) in `docs/SMOKE_TEST_RESULTS.md`; BACKEND_REPO.md links to it for backend handoff.
 
 ## [v1.4.37] - 2026-03-12
 
