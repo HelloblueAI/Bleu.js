@@ -16,27 +16,27 @@ Copy-paste reference for the four main issues and how they were fixed.
 ## ISSUE 2: Chat times out / no response
 
 - **Symptom:** `bleu chat "Hello, world!"` and Python `client.chat([...])` never return; they time out (e.g. 30–40s).
-- **Cause:** Backend did not respond in time or did not implement POST /api/v1/chat.
-- **Solution (fixed in backend repo):** Backend (Bleu.js-backend-export / Bleujs.-backend) now implements POST /api/v1/chat and returns within a few seconds with valid JSON (`choices[].message.content`).
-- **Status:** Fixed in **Bleu.js-backend-export** `index.mjs`. Deploy that backend to the host serving https://bleujs.org so the live API responds.
+- **Cause:** The API (served by **bleujs.org**, not by Bleu.js) did not respond in time.
+- **Solution (fixed on bleujs.org):** Chat has a 20s timeout; if the backend does not respond in time we return 503 with a clear message instead of hanging. See [Who serves the API](WHO_SERVES_THE_API.md).
+- **Status:** Fixed on **bleujs.org** (Next.js/Vercel). No changes required in the Bleu.js repo.
 
 ---
 
 ## ISSUE 3: Generate returns 500 Internal Server Error
 
 - **Symptom:** `bleu generate "..."` and `client.generate(...)` return: `API Error: {'success': False, 'error': 'Internal Server Error', 'code': 'INTERNAL_ERROR'}`
-- **Cause:** Backend POST /api/v1/generate was returning HTTP 500.
-- **Solution (fixed in backend repo):** Backend now implements POST /api/v1/generate and returns 200 with `{ text, id, model, usage, finish_reason }`.
-- **Status:** Fixed in **Bleu.js-backend-export** `index.mjs`. Deploy that backend to bleujs.org.
+- **Cause:** The API (bleujs.org) was returning HTTP 500 for generate errors.
+- **Solution (fixed on bleujs.org):** Errors from the AI layer now return 503 (and are logged); response includes a top-level `"text"` field. See [Who serves the API](WHO_SERVES_THE_API.md).
+- **Status:** Fixed on **bleujs.org**. No changes required in the Bleu.js repo.
 
 ---
 
 ## ISSUE 4: Embed returns 500 Internal Server Error
 
 - **Symptom:** `bleu embed "Hello world" "Goodbye world"` and `client.embed([...])` return the same 500 INTERNAL_ERROR.
-- **Cause:** Backend POST /api/v1/embed was returning HTTP 500.
-- **Solution (fixed in backend repo):** Backend now implements POST /api/v1/embed and returns 200 with `{ data: [{ embedding, index }], model, usage }`.
-- **Status:** Fixed in **Bleu.js-backend-export** `index.mjs`. Deploy that backend to bleujs.org.
+- **Cause:** The API (bleujs.org) was returning HTTP 500 for embed.
+- **Solution (fixed on bleujs.org):** 503 and logging instead of 500; fallback embedding provider when primary fails so we can still return 200 with embeddings when possible. See [Who serves the API](WHO_SERVES_THE_API.md).
+- **Status:** Fixed on **bleujs.org**. No changes required in the Bleu.js repo.
 
 ---
 
@@ -63,4 +63,4 @@ client.embed(["x", "y"])                                # returns embeddings, no
 ```
 
 - **SDK/CLI:** Fixed in this repo; `pip install -U bleu-js` gets the latest.
-- **Live API (bleujs.org):** Fix chat/generate/embed by deploying the updated backend (Bleu.js-backend-export or Bleujs.-backend) to the server that serves https://bleujs.org. See [BACKEND_REPO.md](BACKEND_REPO.md) and [SMOKE_TEST_RESULTS.md](SMOKE_TEST_RESULTS.md).
+- **Live API:** Served by **bleujs.org** (Next.js on Vercel). Chat/generate/embed fixes were deployed there. Bleu.js only calls the API; it does not serve it. See [Who serves the API](WHO_SERVES_THE_API.md) and [BACKEND_REPO.md](BACKEND_REPO.md).
