@@ -88,6 +88,63 @@ for model in models:
 
 ---
 
+## 🏆 Best Practices (Production)
+
+The Bleu.js client is built to **best-in-market** standards so you can run it in production with the same confidence as leading AI SDKs.
+
+### Reuse one client
+
+Create a single client per application and reuse it. The client uses connection pooling and is thread-safe for sync use; for async, use one `AsyncBleuAPIClient` per event loop.
+
+```python
+# Good: one client, reuse
+client = BleuAPIClient(api_key="...")
+response1 = client.chat([{"role": "user", "content": "Hi"}])
+response2 = client.generate("Continue the story...")
+
+# Prefer context manager for cleanup
+with BleuAPIClient(api_key="...") as client:
+    ...
+```
+
+### Timeouts
+
+Use a **read timeout** appropriate for long-running completions; the client uses a short **connect timeout** (5s) by default so connection issues fail fast. You can pass a tuple for (connect, read):
+
+```python
+# 5s connect, 120s read (for long generations)
+client = BleuAPIClient(timeout=(5, 120))
+```
+
+### Retries and rate limits
+
+- **429 / 503:** The client **retries automatically** with exponential backoff and jitter, and honors the `Retry-After` header when the API sends it. This matches industry best practice (e.g. OpenAI, Anthropic).
+- **RateLimitError:** If you handle it yourself, use `exc.retry_after` (seconds) to wait before retrying.
+- To disable automatic retry on rate limit: `BleuAPIClient(retry_on_rate_limit=False)`.
+
+### Error handling
+
+Catch specific exception types and use `user_hint` for auth/rate-limit messages:
+
+```python
+from bleujs.api_client import BleuAPIClient, AuthenticationError, RateLimitError
+
+try:
+    response = client.chat([{"role": "user", "content": "Hi"}])
+except AuthenticationError as e:
+    print(e.user_hint)  # e.g. "Get an API key at ..."
+except RateLimitError as e:
+    if e.retry_after:
+        time.sleep(e.retry_after)
+    # retry request
+```
+
+### API key and secrets
+
+Store the API key in environment variables or a secret manager, not in source code. Use `BLEUJS_API_KEY` so the client picks it up without passing `api_key=`.
+
+---
+
 ## ⚡ Async Client
 
 For asynchronous operations, use `AsyncBleuAPIClient`:
@@ -305,8 +362,10 @@ When implementing clients (e.g. the [API Playground](https://github.com/Helloblu
 | **Generate** `POST /api/v1/generate` | `prompt`, `model`, `temperature`, `max_tokens`                                                                                                                       | `text`, `id`, `model`, `usage`, `finish_reason`.                                                                                                                                                           |
 | **Embed** `POST /api/v1/embed`       | **Request field**: use `input` (list of strings) for SDK/OpenAI-style compatibility. In-repo route uses `inputs`; align server and client so one convention is used. | `data: [{ embedding: number[], index }]`, `model`, `usage`.                                                                                                                                                |
 
-- **Chat**: The Python client normalizes both shapes via `ChatCompletionResponse.content`. Keep backend either returning `choices` (OpenAI-style) or document that clients must support flat `content` as well.
-- **Embed**: If your API expects `inputs` (plural), the Python SDK and playground send `input`; update the API to accept `input` or document the difference for consumers.
+- **Chat**: The Python client normalizes both shapes via `ChatCompletionResponse.content`. It also accepts flat `content`, `choices` as list of strings, `message` as string, or bare string/`None`; all are normalized to a consistent model.
+- **Generate**: The client accepts a dict with `text` or a plain string/list/`None` response and normalizes to `GenerationResponse`.
+- **Embed**: The client accepts `data` as list of `{ embedding: number[] }` or list of raw vectors; null/missing `data` yields an empty list. If your API expects `inputs` (plural), the Python SDK and playground send `input`; update the API to accept `input` or document the difference for consumers.
+- **Debugging**: Run `bleu --debug chat "Hi"` (or any command) to enable debug logging for the API client; you’ll see when alternate response shapes are normalized or when parsing fails.
 
 ---
 

@@ -4,6 +4,11 @@ Bleu.js API Client – access the bleujs.org cloud API.
 Synchronous and async clients with retries, timeouts, and typed errors.
 Get an API key at https://bleujs.org and set BLEUJS_API_KEY or pass api_key=.
 
+The client accepts multiple response shapes from the API (OpenAI-style,
+flat content, plain string, or list forms) and normalizes them so you always
+get consistent Pydantic models. Use ``bleu --debug`` to log when alternate
+shapes are detected.
+
 Usage:
     from bleujs.api_client import BleuAPIClient
 
@@ -32,6 +37,7 @@ from .models import (
     GenerationRequest,
     GenerationResponse,
     Model,
+    ModelListResponse,
 )
 
 # Optional async client import
@@ -56,6 +62,7 @@ try:
         "EmbeddingRequest",
         "EmbeddingResponse",
         "Model",
+        "ModelListResponse",
     ]
 except ImportError:
     __all__ = [
@@ -75,6 +82,7 @@ except ImportError:
         "EmbeddingRequest",
         "EmbeddingResponse",
         "Model",
+        "ModelListResponse",
     ]
 
 # Get version from main package

@@ -157,6 +157,57 @@ class TestChatCompletion:
         with pytest.raises(Exception):  # Pydantic validation error
             client.chat([{"role": "user", "content": ""}])
 
+    @patch("httpx.Client.request")
+    def test_chat_flat_content_response(self, mock_request, client):
+        """Test chat when API returns flat { content: '...' } (no choices)."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {"content": "Hello from flat API!"},
+        )
+        response = client.chat([{"role": "user", "content": "Hi"}])
+        assert isinstance(response, ChatCompletionResponse)
+        assert response.content == "Hello from flat API!"
+
+    @patch("httpx.Client.request")
+    def test_chat_response_none(self, mock_request, client):
+        """Test chat when API returns null/empty body (normalized to empty content)."""
+        mock_request.return_value = Mock(status_code=200, json=lambda: None)
+        response = client.chat([{"role": "user", "content": "Hi"}])
+        assert isinstance(response, ChatCompletionResponse)
+        assert response.content == ""
+
+    @patch("httpx.Client.request")
+    def test_chat_choices_as_strings(self, mock_request, client):
+        """Test chat when API returns choices as list of strings (no message dict)."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "c1",
+                "created": 0,
+                "model": "bleu-chat-v1",
+                "choices": ["Reply as plain string"],
+            },
+        )
+        response = client.chat([{"role": "user", "content": "Hi"}])
+        assert isinstance(response, ChatCompletionResponse)
+        assert response.content == "Reply as plain string"
+
+    @patch("httpx.Client.request")
+    def test_chat_choice_message_as_string(self, mock_request, client):
+        """Test chat when API returns choices[].message as a string (not dict)."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "c1",
+                "created": 0,
+                "model": "bleu-chat-v1",
+                "choices": [{"message": "Hello from string message"}],
+            },
+        )
+        response = client.chat([{"role": "user", "content": "Hi"}])
+        assert isinstance(response, ChatCompletionResponse)
+        assert response.content == "Hello from string message"
+
 
 class TestTextGeneration:
     """Test text generation functionality"""
@@ -206,6 +257,17 @@ class TestTextGeneration:
         assert isinstance(response, GenerationResponse)
         assert response.usage is not None
 
+    @patch("httpx.Client.request")
+    def test_generate_plain_string_response(self, mock_request, client):
+        """Test generate when API returns a plain string body."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: "Just the generated text",
+        )
+        response = client.generate("Prompt")
+        assert isinstance(response, GenerationResponse)
+        assert response.text == "Just the generated text"
+
 
 class TestEmbeddings:
     """Test embeddings functionality"""
@@ -240,6 +302,34 @@ class TestEmbeddings:
         """Test embedding too many texts raises error"""
         with pytest.raises(ValidationError):
             client.embed(["text"] * 101)
+
+    @patch("httpx.Client.request")
+    def test_embed_data_as_raw_vectors(self, mock_request, client):
+        """Test embed when API returns data as list of raw vectors (no embedding key)."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "object": "list",
+                "model": "bleu-embed-v1",
+                "data": [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]],
+            },
+        )
+        response = client.embed(["Hello", "World"])
+        assert isinstance(response, EmbeddingResponse)
+        assert len(response.embeddings) == 2
+        assert response.embeddings[0] == [0.1, 0.2, 0.3]
+        assert response.embeddings[1] == [0.4, 0.5, 0.6]
+
+    @patch("httpx.Client.request")
+    def test_embed_data_null_or_missing(self, mock_request, client):
+        """Test embed when API returns null or missing data."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {"object": "list", "model": "bleu-embed-v1", "data": None},
+        )
+        response = client.embed(["Hello"])
+        assert isinstance(response, EmbeddingResponse)
+        assert response.embeddings == []
 
 
 class TestModels:
@@ -306,6 +396,51 @@ class TestErrorHandling:
             client.chat([{"role": "user", "content": "Hello"}])
 
     @patch("httpx.Client.request")
+    def test_rate_limit_error_includes_retry_after_when_header_present(
+        self, mock_request, client
+    ):
+        """Test that 429 response with Retry-After header sets retry_after on exception."""
+        resp = Mock(
+            status_code=429,
+            json=lambda: {"error": {"message": "Too many requests"}},
+            headers={"retry-after": "10"},
+        )
+        mock_request.return_value = resp
+        with pytest.raises(RateLimitError) as exc:
+            client.chat([{"role": "user", "content": "Hi"}])
+        assert exc.value.retry_after == 10.0
+
+    @patch("httpx.Client.request")
+    @patch("time.sleep")
+    def test_429_retry_then_success(self, mock_sleep, mock_request, mock_api_key):
+        """Test that client retries on 429 and succeeds on next attempt (best-in-market)."""
+        if not HTTPX_AVAILABLE:
+            pytest.skip("httpx not installed")
+        client = BleuAPIClient(api_key=mock_api_key, retry_on_rate_limit=True)
+        mock_request.side_effect = [
+            Mock(
+                status_code=429,
+                json=lambda: {"error": {"message": "Rate limited"}},
+                headers={},
+            ),
+            Mock(
+                status_code=200,
+                json=lambda: {
+                    "id": "c1",
+                    "created": 0,
+                    "model": "bleu-chat-v1",
+                    "choices": [
+                        {"message": {"role": "assistant", "content": "Hi back!"}}
+                    ],
+                },
+            ),
+        ]
+        response = client.chat([{"role": "user", "content": "Hi"}])
+        assert response.content == "Hi back!"
+        assert mock_request.call_count == 2
+        mock_sleep.assert_called_once()
+
+    @patch("httpx.Client.request")
     def test_invalid_request_error(self, mock_request, client):
         """Test invalid request error (400)"""
         mock_request.return_value = Mock(
@@ -325,6 +460,17 @@ class TestErrorHandling:
 
         with pytest.raises(APIError):
             client.chat([{"role": "user", "content": "Hello"}])
+
+    @patch("httpx.Client.request")
+    def test_error_response_body_as_string(self, mock_request, client):
+        """Test that non-dict error body (e.g. plain string) is handled without .get() crash."""
+        mock_request.return_value = Mock(
+            status_code=401,
+            json=lambda: "Unauthorized",
+        )
+        with pytest.raises(AuthenticationError) as exc:
+            client.chat([{"role": "user", "content": "Hello"}])
+        assert "Unauthorized" in str(exc.value)
 
     @patch("httpx.Client.request")
     def test_network_timeout(self, mock_request, client):

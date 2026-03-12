@@ -11,6 +11,7 @@ This CLI provides easy access to all Bleu.js features including:
 """
 
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -138,9 +139,14 @@ def format_error(error: Exception) -> str:
 
 # Main CLI group
 @click.group()
+@click.option(
+    "--debug",
+    is_flag=True,
+    help="Enable debug logging (e.g. API response shape when parsing fails).",
+)
 @click.version_option(version=__version__, prog_name="bleu")
 @click.pass_context
-def cli(ctx):
+def cli(ctx, debug: bool):
     """
     Bleu CLI – quantum-enhanced AI from the command line.
 
@@ -154,6 +160,12 @@ def cli(ctx):
     Use 'bleu' or 'bleujs' (both work). Docs: https://bleujs.org
     """
     ctx.ensure_object(dict)
+    if debug:
+        logging.getLogger("bleujs.api_client").setLevel(logging.DEBUG)
+        if not logging.getLogger("bleujs.api_client").handlers:
+            h = logging.StreamHandler(sys.stderr)
+            h.setFormatter(logging.Formatter("%(name)s %(levelname)s: %(message)s"))
+            logging.getLogger("bleujs.api_client").addHandler(h)
 
 
 # Config commands

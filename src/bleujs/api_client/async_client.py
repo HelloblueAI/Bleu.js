@@ -7,8 +7,9 @@ the Bleu.js cloud API at https://bleujs.org
 
 import asyncio
 import os
+import random
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type, Union
 from urllib.parse import urljoin
 
 try:
@@ -21,9 +22,16 @@ try:
 except ImportError:
     _CLIENT_VERSION = "0.0.0"
 
-from ._shared import handle_response
+from ._shared import (
+    build_chat_response,
+    build_embed_response,
+    build_generate_response,
+    compute_retry_delay,
+    handle_response,
+)
 from .constants import (
     DEFAULT_BASE_URL,
+    DEFAULT_CONNECT_TIMEOUT,
     DEFAULT_MAX_RETRIES,
     DEFAULT_MODEL_CHAT,
     DEFAULT_MODEL_EMBED,
@@ -61,8 +69,10 @@ class AsyncBleuAPIClient:
     Args:
         api_key: Your Bleu.js API key (or set BLEUJS_API_KEY env var)
         base_url: Base URL for API (default from constants)
-        timeout: Request timeout in seconds (default: 60)
-        max_retries: Maximum number of retries for failed requests (default: 3)
+        timeout: Read timeout in seconds, or (connect_secs, read_secs) tuple
+            (default: 60; connect uses 5s). Industry-standard.
+        max_retries: Max retries for network/timeout and 429/503 (default: 3).
+        retry_on_rate_limit: If True (default), retry on 429/503 with backoff.
     """
 
     DEFAULT_BASE_URL = DEFAULT_BASE_URL
@@ -73,8 +83,9 @@ class AsyncBleuAPIClient:
         self,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
-        timeout: float = DEFAULT_TIMEOUT,
+        timeout: Union[float, tuple] = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        retry_on_rate_limit: bool = True,
     ):
         if httpx is None:
             raise ImportError(
@@ -91,9 +102,23 @@ class AsyncBleuAPIClient:
         self.base_url = base_url or os.getenv("BLEUJS_BASE_URL", self.DEFAULT_BASE_URL)
         self.timeout = timeout
         self.max_retries = max_retries
+        self.retry_on_rate_limit = retry_on_rate_limit
+
+        if isinstance(timeout, (int, float)):
+            read_secs = float(timeout)
+            _timeout = httpx.Timeout(
+                read_secs,
+                connect=DEFAULT_CONNECT_TIMEOUT,
+            )
+        else:
+            connect_t, read_t = timeout
+            _timeout = httpx.Timeout(
+                float(read_t),
+                connect=float(connect_t),
+            )
 
         self._client = httpx.AsyncClient(
-            timeout=self.timeout,
+            timeout=_timeout,
             headers=_get_headers_shared(self.api_key, _CLIENT_VERSION),
         )
 
@@ -135,6 +160,11 @@ class AsyncBleuAPIClient:
                     json=data,
                     params=params,
                 )
+                if response.status_code in (429, 503) and self.retry_on_rate_limit:
+                    if attempt < self.max_retries - 1:
+                        delay = compute_retry_delay(response, attempt)
+                        await asyncio.sleep(delay)
+                        continue
                 return handle_response(response)
             except BleuAPIError:
                 raise
@@ -142,15 +172,10 @@ class AsyncBleuAPIClient:
                 last_error = NetworkError(f"Request timeout: {str(e)}")
             except httpx.NetworkError as e:
                 last_error = NetworkError(f"Network error: {str(e)}")
-            except BleuAPIError:
-                # Re-raise API errors immediately (don't retry)
-                raise
 
-            # Exponential backoff
             if attempt < self.max_retries - 1:
-                await asyncio.sleep(2**attempt)
+                await asyncio.sleep(2**attempt + (random.random() * 0.5))
 
-        # All retries failed
         if last_error:
             raise last_error
         raise NetworkError("Request failed after all retries")
@@ -201,8 +226,7 @@ class AsyncBleuAPIClient:
             endpoint=ENDPOINT_CHAT,
             data=request.model_dump(exclude_none=True),
         )
-
-        return ChatCompletionResponse(**response_data)
+        return build_chat_response(response_data)
 
     async def generate(
         self,
@@ -242,8 +266,7 @@ class AsyncBleuAPIClient:
             endpoint=ENDPOINT_GENERATE,
             data=request.model_dump(exclude_none=True),
         )
-
-        return GenerationResponse(**response_data)
+        return build_generate_response(response_data)
 
     async def embed(
         self,
@@ -282,8 +305,7 @@ class AsyncBleuAPIClient:
             endpoint=ENDPOINT_EMBED,
             data=request.model_dump(exclude_none=True),
         )
-
-        return EmbeddingResponse(**response_data)
+        return build_embed_response(response_data)
 
     async def health(self) -> Dict[str, Any]:
         """

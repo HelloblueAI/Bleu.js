@@ -3,6 +3,8 @@ Shared constants for Bleu.js API client.
 
 Single source of truth for base URL, endpoints, default models, and timeouts.
 Used by both sync and async clients and by the CLI.
+
+Best-in-market defaults: separate connect/read timeouts, retries with backoff.
 """
 
 # Base URL and env var (CLI and client read BLEUJS_BASE_URL; default below)
@@ -20,9 +22,14 @@ DEFAULT_MODEL_CHAT = "bleu-chat-v1"
 DEFAULT_MODEL_GENERATE = "bleu-gen-v1"
 DEFAULT_MODEL_EMBED = "bleu-embed-v1"
 
-# Request defaults
+# Request defaults (industry-standard: short connect, longer read)
+DEFAULT_CONNECT_TIMEOUT = 5.0
+DEFAULT_READ_TIMEOUT = 60.0
+# Single timeout for backward compat (used as read timeout when connect not set)
 DEFAULT_TIMEOUT = 60.0
 DEFAULT_MAX_RETRIES = 3
+# Max delay cap for retry backoff (seconds)
+DEFAULT_MAX_RETRY_DELAY = 60.0
 
 
 def get_headers(api_key: str, version: str) -> dict:
