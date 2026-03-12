@@ -2,10 +2,12 @@
 
 ## [v1.4.39] - 2026-03-12
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.38 to 1.4.39
-- See commit history for changes
+### Fixed
+- **CLI:** `bleu config show` accepts optional trailing args (`_rest`) so extra tokens no longer cause "Got unexpected extra argument (show)" in some environments.
 
+### Changed
+- **bleu-os:** TRIVY_ALERTS.md adds a policy-exception table for Debian 12 CVEs with "Fix available: No" (tar, shadow, openssl, patch, apt, gnutls28, openldap, binutils, coreutils, libgcrypt20, jansson, sqlite3, gcc-12, gnupg2).
+- **Docs:** [ISSUES_AND_SOLUTIONS.md](docs/ISSUES_AND_SOLUTIONS.md) — developer reference for config show, chat timeout, generate/embed 500 (fixes and verification). BACKEND_REPO.md links to it.
 
 ## [v1.4.38] - 2026-03-12
 

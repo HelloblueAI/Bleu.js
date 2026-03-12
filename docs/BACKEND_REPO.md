@@ -1,6 +1,6 @@
 # Backend: separate repository
 
-**See also:** [Repositories and sync](REPOSITORIES.md) — how both repos fit together and stay in sync. **Live API status:** [Smoke test results](SMOKE_TEST_RESULTS.md) (pass/fail vs bleujs.org; handoff for backend fixes).
+**See also:** [Repositories and sync](REPOSITORIES.md) — how both repos fit together and stay in sync. **Live API status:** [Smoke test results](SMOKE_TEST_RESULTS.md) (pass/fail vs bleujs.org; handoff for backend fixes). **Issue/solution reference:** [Issues and solutions](ISSUES_AND_SOLUTIONS.md) (config show, chat timeout, generate/embed 500 — fixes and verification).
 
 The Node/Express backend (inference, ML API, services) is **not** in this repo. It lives in a **separate repository** so this repo stays focused on the Bleu.js product (Python package, CLI, cloud API) and dependency alerts stay manageable—the same pattern used by Node.js, Stripe, and other API-first projects.
 

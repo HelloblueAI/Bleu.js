@@ -9,6 +9,17 @@ This doc explains how we handle Trivy (and similar) security alerts for the **he
 - **`ghcr.io/helloblueai/bleu-os:latest`** and **`bleuos/bleu-os:latest`** are built from **`bleu-os/Dockerfile.production`** (Debian Bookworm). That image is the one that should be scanned and used in production.
 - The **Alpine** Dockerfile (`bleu-os/Dockerfile`) is used in CI only (bleu-os.yml, `push: false`). We do **not** publish the Alpine image as `:latest`, so Trivy alerts that refer to “Alpine” packages (e.g. old zlib/sqlite in Alpine 3.23) apply to a non-published build.
 
+## Intelligent next steps (runbook)
+
+To get to **0 vulnerabilities / passing grade** without changing the image (remaining items are unfixable Debian base or host kernel):
+
+1. **Docker Scout** – Add **one policy exception** for “all vulnerabilities in debian:bookworm-slim base packages where fix version is not available.” Reason: *Debian 12 base; no fix in image. See bleu-os/TRIVY_ALERTS.md.* Optionally add exceptions for specific CVEs (e.g. CVE-2025-45582, GHSA-72hv-8253-57qq) as in the table under “Docker Scout – get a passing grade” below.
+2. **GitHub Code scanning (Trivy SARIF)** – Bulk-dismiss open Trivy alerts:
+   `./scripts/dismiss-trivy-code-scanning-alerts.sh` (use `--dry-run` first). Alerts are dismissed with a comment pointing to this doc.
+3. **Dependabot container alerts** – If the same findings appear under Security → Dependabot, dismiss there manually (or “Select all” → Dismiss) with: *Not fixable in container image; Debian base. See bleu-os/TRIVY_ALERTS.md.*
+
+Rebuild the image periodically with `docker build --pull --no-cache -f bleu-os/Dockerfile.production -t …` so you pick up Debian backports when they are released.
+
 ## What we fixed in the production image (Debian)
 
 - **Base:** Debian Bookworm slim; `apt-get update && apt-get upgrade -y` so all system packages (including zlib, sqlite, Python/CPython) get security updates.
@@ -67,6 +78,41 @@ docker push bleuos/bleu-os:latest
 ```
 
 Then **dismiss** kernel alerts (#1621, #1622) with reason “Not fixable in image; kernel is host. See bleu-os/TRIVY_ALERTS.md.” For curl/binutils, either they clear after rebuild (if Debian has fixed versions) or dismiss with “Debian base; no fix in Bookworm yet. See TRIVY_ALERTS.md.”
+
+---
+
+### Docker Scout / Trivy – "Fix available: No" (add policy exceptions)
+
+When the scanner shows **Fix available: No** / **Fix Version: -** for Debian 12 packages, add a **policy exception** (or dismiss) with reason: *Debian 12 base; no fix in Bookworm. See bleu-os/TRIVY_ALERTS.md.*
+
+| CVE | Package (Debian 12) | Severity |
+|-----|----------------------|----------|
+| CVE-2025-45582 | tar | medium |
+| CVE-2005-2541 | tar | low |
+| CVE-2007-5686 | shadow | low |
+| CVE-2010-0928 | openssl | low |
+| CVE-2010-4651 | patch | low |
+| CVE-2011-3374 | apt | low |
+| CVE-2011-3389 | gnutls28 | low |
+| CVE-2015-3276 | openldap | low |
+| CVE-2017-13716 | binutils | low |
+| CVE-2017-14159 | openldap | low |
+| CVE-2017-17740 | openldap | low |
+| CVE-2017-18018 | coreutils | low |
+| CVE-2018-20673 | binutils | low |
+| CVE-2018-20712 | binutils | low |
+| CVE-2018-6829 | libgcrypt20 | low |
+| CVE-2018-6951, CVE-2018-6952 | patch | low |
+| CVE-2018-9996 | binutils | low |
+| CVE-2020-15719 | openldap | low |
+| CVE-2020-36325 | jansson | low |
+| CVE-2021-32256 | binutils | low |
+| CVE-2021-45261 | patch | low |
+| CVE-2021-45346 | sqlite3 | low |
+| CVE-2022-27943 | gcc-12 | low |
+| CVE-2022-3219 | gnupg2 | low |
+
+The image already runs `apt-get update && apt-get upgrade -y`; there is no newer fixed version in Bookworm to install. Rebuild when Debian backports fixes.
 
 ---
 
@@ -129,6 +175,14 @@ After the image changes above, the only remaining findings are **Debian base pac
 | CVE-2025-69534 | debian/python3.11 | No fix in image |
 | CVE-2025-7545, CVE-2025-69644, CVE-2025-11495, CVE-2025-1153 | debian/binutils | No fix in image |
 | (+ other low debian/*) | Base packages | apt-get upgrade applied; no newer version in Bookworm |
+
+### 82+ Debian base CVEs (tar, shadow, openssl, patch, apt, gnutls, openldap, binutils, coreutils, libgcrypt, jansson, sqlite3, gcc-12, gnupg2, etc.)
+
+Scans may list many CVEs in Debian 12 (bookworm) packages with **Fix available: No** and **Fix version: -**. Examples: CVE-2025-45582 (tar), CVE-2005-2541 (tar), CVE-2007-5686 (shadow), CVE-2010-0928 (openssl), CVE-2010-4651 (patch), CVE-2011-3374 (apt), CVE-2011-3389 (gnutls28), CVE-2015-3276 / CVE-2017-14159 / CVE-2017-17740 / CVE-2020-15719 (openldap), CVE-2017-13716 / CVE-2018-20673 / CVE-2018-20712 / CVE-2018-9996 / CVE-2021-32256 (binutils), CVE-2017-18018 (coreutils), CVE-2018-6829 (libgcrypt20), CVE-2020-36325 (jansson), CVE-2021-45346 (sqlite3), CVE-2022-27943 (gcc-12), CVE-2022-3219 (gnupg2), and others.
+
+**We have not fixed these in the image** because Debian 12 has not released patched versions (or the fix is only in a newer distro). The Dockerfile already runs `apt-get update && apt-get upgrade -y`, so when Debian backports fixes, the next image rebuild will pick them up.
+
+**What to do:** Add **one policy exception** in Docker Scout / Trivy for “all vulnerabilities in debian:bookworm-slim base packages where fix version is not available” and reference this doc. Or dismiss each alert with reason “Won’t fix” and comment: “Debian 12 base; no fix in image. See bleu-os/TRIVY_ALERTS.md.” Rebuild the image with `docker build --pull --no-cache` periodically so you get the latest Bookworm package set.
 
 ## Docker Scout – get a passing grade (0 fixable)
 
