@@ -371,6 +371,8 @@ When implementing clients (e.g. the [API Playground](https://github.com/Helloblu
 
 ## ⚠️ Error Handling
 
+The client surfaces the **real error message** from the API when the server sends it (e.g. `error.message`, FastAPI-style `detail`, or top-level `message`), so you see actionable messages instead of a generic "Unknown error".
+
 The client provides specific exception types for different errors:
 
 ```python
