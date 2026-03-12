@@ -5,7 +5,6 @@
     "dockerfilePath": "bleu-os/Dockerfile"
   },
   "deploy": {
-    "startCommand": "/usr/local/bin/init-bleu-os.sh",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
