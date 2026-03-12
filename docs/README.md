@@ -230,6 +230,8 @@ pip install "bleu-js[all]"
 
 ### Troubleshooting
 
+**CLI and API issues (config show, chat timeout, generate/embed 500):** See [ISSUES_AND_SOLUTIONS.md](ISSUES_AND_SOLUTIONS.md) for copy-paste causes and fixes.
+
 If you encounter dependency conflicts, try:
 
 ```bash
