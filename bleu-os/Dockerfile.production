@@ -1,6 +1,10 @@
 # Bleu OS Docker Image - Production Ready
 # Debian base: avoids Alpine busybox CVE-2025-60876 (no fix in Alpine 3.23 yet)
 # Optimized, secure, and production-grade container image
+#
+# Security: Build with --pull so base image is fresh (e.g. docker build --pull --no-cache).
+# This helps pick up fixed curl/libcurl (CVE-2026-3783, CVE-2026-1965, CVE-2026-3784) and
+# binutils when Debian publishes them. Kernel CVEs (e.g. tls, espintcp) require host kernel update.
 
 FROM debian:bookworm-slim
 
@@ -28,6 +32,7 @@ LABEL security.hardening="enabled"
 # Install runtime dependencies (Debian: no busybox, no CVE-2025-60876)
 # Do NOT install python3-pip so scanner never sees pip@23.0.1 / setuptools@66.1.1.
 # python3-venv pulls in python3-pip-whl/python3-setuptools-whl; purge them so only get-pip.py pip/setuptools remain.
+# upgrade -y picks up latest curl, libcurl4, binutils when Debian backports fixes (CVE-2026-3783, etc.).
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     ca-certificates \

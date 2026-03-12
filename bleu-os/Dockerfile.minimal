@@ -1,5 +1,8 @@
 # Bleu OS Docker Image - Minimal Version
 # Debian base: same as production for consistency and no Alpine busybox/curl CVEs
+#
+# Security: Build with --pull (e.g. docker build --pull --no-cache) to get latest base
+# and pick up curl/libcurl/binutils fixes when Debian publishes them. See TRIVY_ALERTS.md.
 
 FROM debian:bookworm-slim
 

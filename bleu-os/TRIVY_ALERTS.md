@@ -45,9 +45,34 @@ After changes to `Dockerfile.production`:
 2. Rescan the new image with Trivy. Many of the previous zlib/sqlite/cpython/python-markdown alerts should clear for the Debian-based `:latest` image.
 3. If jackson/ray alerts remain, track an upgrade of the **ray** dependency as above.
 
+## Recent Trivy alerts (#1601–#1622) – how to handle
+
+| Alert # | Component | Severity | Action |
+|--------|------------|----------|--------|
+| **#1622** | kernel: tls (race in tls_sw_cancel_work_tx) | High | **Kernel** – not in image; patch **host** kernel or dismiss. See “Kernel alerts” below. |
+| **#1621** | kernel: espintcp (race in espintcp_close) | High | **Kernel** – not in image; patch **host** kernel or dismiss. |
+| **#1617, #1616, #1608, #1607** | curl / libcurl4 (CVE-2026-3783, CVE-2026-1965) | Medium | Image runs `apt-get update && apt-get upgrade -y`. **Rebuild** with `docker build --pull --no-cache` so the base and packages are fresh. If Debian has not yet published a fixed curl in Bookworm, add a **policy exception** until then. |
+| **#1618, #1609** | libcurl4 / curl (CVE-2026-3784) | Low | Same as above; rebuild with `--pull`. |
+| **#1620, #1619, #1615–#1601** | binutils (readelf infinite loop; DWARF .debug_rnglists / loclists) | Low | From Debian base. `apt-get upgrade -y` in the Dockerfile picks up fixes when Debian releases them. **Rebuild** with `--pull --no-cache`; if no fix in Bookworm yet, add **policy exception** or dismiss as “No fix in image.” |
+
+**One-time fix:** Rebuild and push the production image with a fresh base so the next Trivy run sees the latest packages:
+
+```bash
+# From Bleu.js repo root. Docker Hub image is bleuos/bleu-os (see .github/workflows/docker-publish.yml).
+docker build --pull --no-cache -f bleu-os/Dockerfile.production -t helloblueai/bleu-os:1 .
+docker tag helloblueai/bleu-os:1 bleuos/bleu-os:1
+docker tag helloblueai/bleu-os:1 bleuos/bleu-os:latest
+docker push bleuos/bleu-os:1
+docker push bleuos/bleu-os:latest
+```
+
+Then **dismiss** kernel alerts (#1621, #1622) with reason “Not fixable in image; kernel is host. See bleu-os/TRIVY_ALERTS.md.” For curl/binutils, either they clear after rebuild (if Debian has fixed versions) or dismiss with “Debian base; no fix in Bookworm yet. See TRIVY_ALERTS.md.”
+
+---
+
 ## Kernel alerts (cannot fix in the image)
 
-Trivy may report **kernel** CVEs (e.g. nf_tables, ksmbd, macvlan, scsi, ALSA, bonding, smb, smc, ipv6, hfsplus, etc.). These refer to the **Linux kernel**, not to anything inside the container image.
+Trivy may report **kernel** CVEs (e.g. nf_tables, ksmbd, macvlan, scsi, ALSA, bonding, smb, smc, ipv6, hfsplus, **tls**, **espintcp**, etc.). These refer to the **Linux kernel**, not to anything inside the container image.
 
 - **The container image does not ship a kernel.** The kernel is provided by the **host** (the machine or VM running Docker/Kubernetes).
 - You **cannot** fix kernel CVEs by changing the Bleu OS Dockerfile or base image.
