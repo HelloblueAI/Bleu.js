@@ -165,12 +165,32 @@ def parse_api_error(
         retry_after set from headers).
     """
     if not isinstance(response_data, dict):
-        error_message = str(response_data) if response_data else "Unknown error"
+        error_message = str(response_data).strip() if response_data else "Unknown error"
         response_data = {"error": {"message": error_message}}
     else:
         err = response_data.get("error")
         inner = err if isinstance(err, dict) else {}
-        error_message = inner.get("message", "Unknown error")
+        error_message = inner.get("message")
+        if not error_message:
+            detail = response_data.get("detail")
+            if isinstance(detail, str):
+                error_message = detail
+            elif isinstance(detail, list):
+                # FastAPI validation errors: list of { "msg": "..." }
+                parts = []
+                for d in detail[:3]:
+                    if isinstance(d, dict) and d.get("msg"):
+                        parts.append(d["msg"])
+                    elif isinstance(d, str):
+                        parts.append(d)
+                if parts:
+                    error_message = "; ".join(parts)
+            if not error_message:
+                error_message = response_data.get("message")
+            if not error_message:
+                error_message = (
+                    str(response_data)[:500] if response_data else "Unknown error"
+                )
 
     error_map = {
         400: InvalidRequestError,

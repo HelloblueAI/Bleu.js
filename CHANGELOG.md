@@ -9,6 +9,15 @@
 
 ## [Unreleased]
 
+## [v1.4.36] - 2026-03-11
+
+### Fixed
+- **CLI:** `bleu config show` no longer raises "Got unexpected extra argument (show)"; command accepts optional trailing args so Click routing works in all environments.
+- **API client:** Generate/embed (and other endpoints) now surface the real API error message instead of "Unknown error". Error parsing supports `error.message`, FastAPI-style `detail` (string or list of validation errors), and top-level `message`.
+
+### Tests
+- Added `test_error_response_fastapi_detail_surfaced` for FastAPI-style error body.
+
 ## [v1.4.35] - 2026-03-11
 
 ### Added (best-in-market)

@@ -473,6 +473,18 @@ class TestErrorHandling:
         assert "Unauthorized" in str(exc.value)
 
     @patch("httpx.Client.request")
+    def test_error_response_fastapi_detail_surfaced(self, mock_request, client):
+        """Test that FastAPI-style { \"detail\": \"...\" } is shown instead of 'Unknown error'."""
+        mock_request.return_value = Mock(
+            status_code=400,
+            json=lambda: {"detail": "Invalid model name"},
+        )
+        with pytest.raises(InvalidRequestError) as exc:
+            client.chat([{"role": "user", "content": "Hi"}])
+        assert "Invalid model name" in str(exc.value)
+        assert "Unknown error" not in str(exc.value)
+
+    @patch("httpx.Client.request")
     def test_network_timeout(self, mock_request, client):
         """Test network timeout with retry"""
         mock_request.side_effect = httpx.TimeoutException("Request timeout")
