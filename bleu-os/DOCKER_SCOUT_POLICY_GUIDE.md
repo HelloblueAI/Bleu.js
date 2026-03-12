@@ -1,5 +1,7 @@
 # 🔧 Docker Scout Policy Configuration Guide
 
+**Production images use Debian bookworm-slim.** See [TRIVY_ALERTS.md](TRIVY_ALERTS.md) for the full runbook (policy exception + dismiss script).
+
 ## Current Policy Status
 
 ### ✅ Compliant (5 policies):
@@ -10,68 +12,40 @@
 - ✅ Supply chain attestations (0 violations) - **FIXED!**
 
 ### ❌ Not Compliant (2 policies):
-- ❌ No unapproved base images (1 violation) - **Needs configuration**
-- ❌ No fixable critical or high vulnerabilities (1 violation) - **Needs package update**
+- ❌ No unapproved base images (1 violation) - **Approve Debian base**
+- ❌ No fixable critical or high vulnerabilities (1 violation) - **Add policy exception** (no fix in image)
 
 ---
 
-## How to Approve Alpine Base Image
+## How to Approve Base Image (Debian)
+
+Published images (`latest`, `minimal`) are built from **Debian bookworm-slim**, not Alpine.
 
 ### Step 1: Access Policy Details
-1. On the Policies page, **click on "No unapproved base images"** policy
-2. This will open the policy details page
+1. On the Policies page, **click on "No unapproved base images"**
+2. Open the policy details page
 
 ### Step 2: Approve Base Image
-Once in the policy details, you should see options to:
+- Add **`debian:bookworm-slim`** (or `debian:*`) to the approved base images list.
+- If you still have an Alpine-based build in scope, you can approve `alpine:*` for that; the published `:latest` is Debian.
 
-**Option A: Approve Specific Image**
-- Look for an "Approve" or "Add Exception" button
-- Add `alpine:3.19` to the approved list
-- Or approve all Alpine: `alpine:*`
-
-**Option B: Configure Policy Settings**
-- Look for "Policy Settings" or "Configuration"
-- Find "Approved Base Images" section
-- Add `alpine:3.19` or `alpine:*`
-
-**Option C: View Violations and Approve**
-- Click on the violation count (1)
-- This should show the unapproved image
-- There should be an "Approve" or "Add Exception" button next to it
-
-### Step 3: Alternative - Use Environment Configuration
-If the above doesn't work, you can configure via environment:
-
-1. Go to Docker Scout → **Environments**
-2. Create or edit an environment
-3. Configure base image approvals there
+### Step 3: Environment Configuration
+- In Docker Scout → **Environments**, configure base image approvals for `debian:bookworm-slim` if needed.
 
 ---
 
-## How to Fix the Vulnerability
+## How to Get Passing Grade (Unfixable Base CVEs)
 
-### Step 1: View Vulnerability Details
-1. Click on **"No fixable critical or high vulnerabilities"** policy
-2. Click on the violation count (1)
-3. This will show the detailed vulnerability report
+Remaining vulnerabilities are **Debian 12 base packages with no fix version** (tar, shadow, openssl, openldap, binutils, etc.). We already run `apt-get upgrade`; there is nothing to “fix” in the Dockerfile.
 
-### Step 2: Identify the Issue
-The report should show:
-- CVE number
-- Affected package
-- Severity (Critical or High)
-- Available fix version
+### Step 1: Add Policy Exception (Recommended)
+1. In Docker Scout, go to **Policies** (or Organization → Policies) for **bleuos/bleu-os**.
+2. Add **one exception**: “All vulnerabilities in debian:bookworm-slim base packages where fix version is not available.”
+   - **Reason:** *Debian 12 base; no fix in image. See bleu-os/TRIVY_ALERTS.md.*
+3. Optionally add exceptions for specific CVEs (CVE-2025-45582, GHSA-72hv-8253-57qq, etc.) as listed in [TRIVY_ALERTS.md](TRIVY_ALERTS.md) under “Docker Scout – get a passing grade.”
 
-### Step 3: Update Dockerfile
-1. Note the package name and fixed version
-2. Update `bleu-os/Dockerfile.production` to pin the fixed version
-3. Example: If it's a Python package, update in the pip install commands
-
-### Step 4: Rebuild
-1. Commit the Dockerfile change
-2. Push to trigger CI/CD
-3. Wait for new build
-4. Re-scan with Docker Scout
+### Step 2: Rebuild When Debian Publishes Fixes
+- Rebuild with `docker build --pull --no-cache -f bleu-os/Dockerfile.production -t …` periodically so the image picks up backports.
 
 ---
 
@@ -85,7 +59,7 @@ Click "No unapproved base images"
   ↓
 View Violations / Configure
   ↓
-Approve alpine:3.19 or alpine:*
+Approve debian:bookworm-slim or debian:*
 ```
 
 ### If You Can't Find Approval Option:
@@ -97,12 +71,12 @@ Approve alpine:3.19 or alpine:*
 
 ## Expected Results After Configuration
 
-### After Approving Alpine:
+### After Approving Debian base:
 - ✅ "No unapproved base images" → 0 violations
 - Health score should improve
 
-### After Fixing Vulnerability:
-- ✅ "No fixable critical or high vulnerabilities" → 0 violations
+### After Adding Policy Exception (unfixable base CVEs):
+- ✅ "No fixable critical or high vulnerabilities" → 0 violations (exceptions applied)
 - Health score should reach **A** or **B**
 
 ---
@@ -121,5 +95,5 @@ Approve alpine:3.19 or alpine:*
 
 ---
 
-**Last Updated:** 2024-12-13
-**Status:** Guide for configuring Docker Scout policies
+**Last Updated:** 2026-03
+**Status:** Guide for configuring Docker Scout policies (Debian base; policy exceptions for unfixable CVEs). See [TRIVY_ALERTS.md](TRIVY_ALERTS.md) for full runbook.

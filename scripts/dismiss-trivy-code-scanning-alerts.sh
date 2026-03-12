@@ -6,7 +6,7 @@ set -e
 REPO="${REPO:-HelloblueAI/Bleu.js}"
 # GitHub API only allows: false positive, won't fix, used in tests
 DISMISS_REASON="${DISMISS_REASON:-"won't fix"}"
-DISMISS_COMMENT="Not fixable in image: openldap/curl/libcurl/OpenSSH from Debian base; kernel = host. See bleu-os/TRIVY_ALERTS.md §4 and SECURITY.md"
+DISMISS_COMMENT="Not fixable in image: Debian 12 base packages (tar, shadow, openssl, openldap, curl, binutils, etc.) and kernel = host. No fix version in Bookworm. See bleu-os/TRIVY_ALERTS.md and SECURITY.md"
 DRY_RUN=false
 TRIVY_ONLY=true
 
