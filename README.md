@@ -95,6 +95,8 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 **Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
 
+The Bleu.js Python client is built to **best-in-market** standards: automatic retries with exponential backoff and `Retry-After` support, separate connect/read timeouts, rich error types (`RateLimitError.retry_after`), and robust handling of multiple API response shapes. See [API Client Guide – Best practices](docs/API_CLIENT_GUIDE.md#-best-practices-production).
+
 ### Quick Start with SDK
 
 ```bash

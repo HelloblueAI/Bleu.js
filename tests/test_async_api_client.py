@@ -64,7 +64,7 @@ class TestAsyncClientInit:
             pytest.skip("AsyncBleuAPIClient not available")
         client = AsyncBleuAPIClient(api_key=mock_api_key)
         assert client.api_key == mock_api_key
-        assert "bleujs.org" in client.base_url
+        assert client.base_url == AsyncBleuAPIClient.DEFAULT_BASE_URL
 
 
 class TestAsyncChat:

@@ -1,11 +1,32 @@
 # Changelog
 
+## [Unreleased]
+
 ## [v1.4.35] - 2026-03-11
 
-### 🎉 Automatic Release
-- Version bumped automatically from 1.4.34 to 1.4.35
-- See commit history for changes
+### Added (best-in-market)
+- **Retries:** Automatic retry on **429** (rate limit) and **503** (overloaded) with exponential backoff and jitter; honors **Retry-After** header. Configurable via `retry_on_rate_limit=True` (default).
+- **RateLimitError.retry_after:** Optional seconds to wait (from API header) so callers can implement custom backoff.
+- **Timeouts:** Separate **connect** (5s default) and **read** timeouts; pass `timeout=(connect_secs, read_secs)` or a single read timeout. Uses `httpx.Timeout` for industry-standard behavior.
+- **Exports:** `ModelListResponse` exported for type-annotated code.
+- **Docs:** “Best practices (production)” section in API Client Guide (reuse client, timeouts, retries, error handling, secrets).
 
+### Fixed
+- **API client:** Resolved `'str' object has no attribute 'get'` when the live API returns alternate response shapes. Chat, generate, and embed now accept:
+  - **Chat:** OpenAI-style `choices[].message.content`, flat `{ "content": "..." }`, `choices` as list of strings, or `message` as string; bare string or `None` body.
+  - **Generate:** Dict with `text`, or plain string / list (first element) / `None`.
+  - **Embed:** `data` as list of `{ "embedding": [...] }` or list of raw vectors; `data` null or missing.
+- **Error handling:** Non-dict error response bodies (e.g. plain string `"Unauthorized"`) are handled without crashing.
+
+- **CLI:** `--debug` flag to enable debug logging for the API client.
+- **Tests:** Coverage for flat chat, string choices, message-as-string, plain-string generate, raw embedding vectors, null/missing data, string error body, `None` chat response, Retry-After, and 429 retry-then-success.
+
+### Security
+- **Tests:** Fix incomplete URL substring sanitization (CodeQL): assert exact `base_url == DEFAULT_BASE_URL` instead of `"bleujs.org" in base_url` in async client test.
+
+### Changed
+- Response parsing is centralized in `_shared` with `normalize_*` and `build_*` helpers; sync and async clients use the same logic.
+- `ChatCompletionResponse.content` and `EmbeddingResponse.embeddings` are defensive against any API shape (string/dict/list choices and data items).
 
 ## [v1.4.34] - 2026-03-11
 

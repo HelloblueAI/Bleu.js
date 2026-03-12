@@ -50,14 +50,29 @@ class AuthenticationError(BleuAPIError):
 
 class RateLimitError(BleuAPIError):
     """
-    Raised when API rate limit is exceeded (429 Too Many Requests)
+    Raised when API rate limit is exceeded (429 Too Many Requests).
 
-    This typically means:
-    - Too many requests in a short time
-    - Need to implement backoff/retry logic
+    The client can retry 429 automatically when ``retry_on_rate_limit=True``
+    (default), using the optional Retry-After header or exponential backoff.
+    If you handle this exception yourself, use ``retry_after`` to wait before
+    retrying.
+
+    Attributes:
+        retry_after: Suggested seconds to wait before retry (from Retry-After
+            header, if present). None if not provided by the API.
     """
 
     USER_HINT = "Wait a moment and retry; use exponential backoff in scripts."
+
+    def __init__(
+        self,
+        message: str,
+        status_code: Optional[int] = None,
+        response: Optional[Dict[str, Any]] = None,
+        retry_after: Optional[float] = None,
+    ):
+        super().__init__(message=message, status_code=status_code, response=response)
+        self.retry_after = retry_after
 
     @property
     def user_hint(self) -> str:
@@ -116,18 +131,46 @@ class ValidationError(BleuAPIError):
     pass
 
 
-def parse_api_error(status_code: int, response_data: Dict[str, Any]) -> BleuAPIError:
+def _parse_retry_after(headers: Optional[Any]) -> Optional[float]:
+    """Parse Retry-After header (seconds). httpx uses lowercase header names."""
+    if headers is None:
+        return None
+    get = getattr(headers, "get", None)
+    if get is None:
+        return None
+    value = get("retry-after")
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def parse_api_error(
+    status_code: int,
+    response_data: Any,
+    headers: Optional[Any] = None,
+) -> BleuAPIError:
     """
-    Parse API error response and return appropriate exception
+    Parse API error response and return appropriate exception.
 
     Args:
         status_code: HTTP status code
-        response_data: Response body as dictionary
+        response_data: Response body (dict preferred; str/list tolerated)
+        headers: Optional response headers (e.g. for Retry-After on 429)
 
     Returns:
-        Appropriate BleuAPIError subclass instance
+        Appropriate BleuAPIError subclass instance (RateLimitError may have
+        retry_after set from headers).
     """
-    error_message = response_data.get("error", {}).get("message", "Unknown error")
+    if not isinstance(response_data, dict):
+        error_message = str(response_data) if response_data else "Unknown error"
+        response_data = {"error": {"message": error_message}}
+    else:
+        err = response_data.get("error")
+        inner = err if isinstance(err, dict) else {}
+        error_message = inner.get("message", "Unknown error")
 
     error_map = {
         400: InvalidRequestError,
@@ -141,6 +184,13 @@ def parse_api_error(status_code: int, response_data: Dict[str, Any]) -> BleuAPIE
     }
 
     error_class = error_map.get(status_code, BleuAPIError)
+    if error_class is RateLimitError:
+        return RateLimitError(
+            message=error_message,
+            status_code=status_code,
+            response=response_data,
+            retry_after=_parse_retry_after(headers),
+        )
     return error_class(
         message=error_message,
         status_code=status_code,

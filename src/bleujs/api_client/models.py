@@ -64,10 +64,25 @@ class ChatCompletionResponse(BaseModel):
 
     @property
     def content(self) -> str:
-        """Get the content of the first choice"""
-        if self.choices:
-            return self.choices[0].get("message", {}).get("content", "")
-        return ""
+        """
+        Get the content of the first choice.
+
+        Handles: choice as string, choice as dict with message (dict or string),
+        or top-level content key. Safe against any shape returned by the API.
+        """
+        if not self.choices:
+            return ""
+        first = self.choices[0]
+        if isinstance(first, str):
+            return first
+        if not isinstance(first, dict):
+            return ""
+        msg = first.get("message")
+        if isinstance(msg, dict):
+            return msg.get("content", "")
+        if isinstance(msg, str):
+            return msg
+        return first.get("content", "")
 
 
 class GenerationRequest(BaseModel):
@@ -134,8 +149,17 @@ class EmbeddingResponse(BaseModel):
 
     @property
     def embeddings(self) -> List[List[float]]:
-        """Get embeddings as list of float vectors"""
-        return [item.get("embedding", []) for item in self.data]
+        """Get embeddings as list of float vectors. Handles item as dict or raw list."""
+        out: List[List[float]] = []
+        for item in self.data:
+            if isinstance(item, dict):
+                emb = item.get("embedding", [])
+                out.append(emb if isinstance(emb, list) else [])
+            elif isinstance(item, list):
+                out.append(item)
+            else:
+                out.append([])
+        return out
 
 
 class Model(BaseModel):
