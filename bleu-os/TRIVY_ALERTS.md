@@ -81,6 +81,21 @@ Then **dismiss** kernel alerts (#1621, #1622) with reason “Not fixable in imag
 
 ---
 
+## Current Trivy scan – packages that may still appear
+
+After a fresh `trivy image helloblueai/bleu-os:1` (or `bleuos/bleu-os:1`), you may see:
+
+| Package | Severity | Notes |
+|---------|----------|--------|
+| **libsqlite3-0** | CRITICAL (CVE-2025-7458) | SQLite integer overflow. Trivy may show fixed version `3.40.1-2+deb12u2`; rebuild with `--pull --no-cache` so `apt-get upgrade` picks it up if in Bookworm. If still present, add policy exception: "Debian base; no fix in Bookworm yet." |
+| **linux-libc-dev** | HIGH (many kernel CVEs) | Kernel **headers** from `build-essential`; same as kernel – not fixable in image. Dismiss: "Not fixable in image; kernel/headers from host/build. See TRIVY_ALERTS.md." |
+| **python3.11**, **python3.11-minimal**, **python3.11-venv**, **python3.11-dev** | MEDIUM/HIGH | CPython CVEs (CVE-2025-13836, CVE-2025-15366, CVE-2025-15367, CVE-2025-69534, CVE-2025-8194, CVE-2026-1299). Debian's Python; no fix version in Bookworm. Policy exception or dismiss. |
+| **zlib1g**, **zlib1g-dev** | CRITICAL (CVE-2023-45853) | Often reported as `will_not_fix`. Debian 12's zlib; no newer fixed version in Bookworm. Policy exception or dismiss. |
+
+**Action:** For all of the above, add **policy exceptions** in Docker Scout (or dismiss in Code scanning) with reason: *Debian 12 base; no fix in image. See bleu-os/TRIVY_ALERTS.md.* Rebuild with `docker build --pull --no-cache` periodically to pick up Debian security updates when they appear.
+
+---
+
 ### Docker Scout / Trivy – "Fix available: No" (add policy exceptions)
 
 When the scanner shows **Fix available: No** / **Fix Version: -** for Debian 12 packages, add a **policy exception** (or dismiss) with reason: *Debian 12 base; no fix in Bookworm. See bleu-os/TRIVY_ALERTS.md.*
@@ -111,6 +126,10 @@ When the scanner shows **Fix available: No** / **Fix Version: -** for Debian 12 
 | CVE-2021-45346 | sqlite3 | low |
 | CVE-2022-27943 | gcc-12 | low |
 | CVE-2022-3219 | gnupg2 | low |
+| CVE-2023-45853 | zlib1g | critical (will_not_fix in Bookworm) |
+| CVE-2025-7458 | libsqlite3-0 | critical (rebuild for 3.40.1-2+deb12u2 if in repo) |
+| CVE-2025-13836, CVE-2025-15366, CVE-2025-15367, CVE-2025-69534, CVE-2025-8194, CVE-2026-1299 | python3.11* | medium/high (cpython; no fix in Bookworm) |
+| (kernel CVEs) | linux-libc-dev | high (kernel headers; not fixable in image) |
 
 The image already runs `apt-get update && apt-get upgrade -y`; there is no newer fixed version in Bookworm to install. Rebuild when Debian backports fixes.
 
