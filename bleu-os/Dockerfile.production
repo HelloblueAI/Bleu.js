@@ -146,8 +146,15 @@ RUN chmod +x /usr/local/bin/init-bleu-os.sh
 RUN mkdir -p /var/log/bleu-os /var/cache/bleu-os \
     && chown -R bleuos:bleuos /var/log/bleu-os /var/cache/bleu-os
 
+# Product app (bleujs.org) for Railway: run on $PORT, fewer Trivy alerts (Debian base)
+COPY --chown=bleuos:bleuos main.py README.md /workspace/
+COPY --chown=bleuos:bleuos src/ /workspace/src/
+COPY --chown=bleuos:bleuos bleu-os/requirements-server.txt /workspace/
+
 USER bleuos
 WORKDIR /workspace
+
+RUN pip3 install --user --no-cache-dir --break-system-packages -r /workspace/requirements-server.txt
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD python3 -c "import bleujs; import sys; sys.exit(0)" || exit 1
@@ -155,4 +162,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 EXPOSE 8888 9090 8000
 
 ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
-CMD ["bash"]
+CMD ["sh", "-c", "exec python3 -m uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

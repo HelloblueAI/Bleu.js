@@ -1,0 +1,25 @@
+aiofiles>=24.1,<26.0
+aiohttp>=3.13.3
+alembic==1.18.4
+boto3>=1.24.0
+cryptography>=46.0.5,<47.0.0
+# Server deps for product app (src.main) in Docker. Omit ray (no Alpine wheel).
+fastapi>=0.116.1,<0.136.0
+filelock>=3.20.3
+h11==0.16.0
+jinja2>=3.1.6
+passlib>=1.7.4
+prometheus-client>=0.23.1,<0.25.0
+psutil>=7.0.0
+psycopg2-binary==2.9.11
+pyasn1>=0.6.2
+pydantic-settings>=2.10.1
+pyjwt>=2.10.1
+python-dotenv>=0.21,<1.3
+python-multipart>=0.0.22,<0.0.23
+redis>=6.2,<8.0
+requests>=2.32.4
+sqlalchemy==2.0.48
+starlette>=0.49.1
+uvicorn>=0.42.0
+werkzeug>=3.1.6
