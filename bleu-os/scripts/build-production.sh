@@ -59,7 +59,7 @@ if [[ $? -eq 0 ]]; then
     # Test the image
     log "Testing production image..."
     docker run --rm bleuos/bleu-os:latest \
-        python3 -c "import bleujs; print('Bleu.js version:', getattr(bleujs, '__version__', 'installed'))" 2>/dev/null || \
+        python3 -c 'import bleujs; print("Bleu.js version:", getattr(bleujs, "__version__", "installed"))' 2>/dev/null || \
         echo "Bleu.js test completed"
 
     log_success "Production build complete!"

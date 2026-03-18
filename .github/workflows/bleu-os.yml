@@ -6,13 +6,19 @@ on:
     paths:
       - 'bleu-os/**'
       - 'src/bleujs/**'
+      - 'src/**'
+      - 'main.py'
       - 'requirements.txt'
+      - 'railway.json'
       - '.github/workflows/bleu-os.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'bleu-os/**'
       - 'src/bleujs/**'
+      - 'src/**'
+      - 'main.py'
+      - 'railway.json'
   workflow_dispatch:
 
 env:
@@ -76,6 +82,44 @@ jobs:
           docker builder prune -af || true
           df -h
 
+  build-production:
+    name: Build Production Image (Railway)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL 2>/dev/null || true
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build production image (Railway deploy target)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./bleu-os/Dockerfile.production
+          push: false
+          tags: bleu-os:production
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test production image
+        run: |
+          cid=$(docker run -d --rm -p 8000:8000 -e PORT=8000 bleu-os:production)
+          sleep 8
+          curl -sf http://localhost:8000/health && echo " Health OK" || true
+          docker stop $cid 2>/dev/null || true
+
+      - name: Clean up
+        if: always()
+        run: docker system prune -af --volumes || true
+
   verify-os:
     name: Verify Bleu OS
     runs-on: ubuntu-latest
@@ -87,13 +131,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
-      - name: Log in to Container Registry
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log in to Container Registry
         uses: docker/login-action@v4
@@ -131,13 +168,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
-      - name: Log in to Container Registry
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log in to Container Registry
         uses: docker/login-action@v4
@@ -238,11 +268,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Build production image for Trivy
+        run: |
+          docker build --pull -f bleu-os/Dockerfile.production -t bleu-os:scan .
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: './bleu-os'
+          scan-type: 'image'
+          image-ref: 'bleu-os:scan'
           format: 'sarif'
           output: 'trivy-results.sarif'
 

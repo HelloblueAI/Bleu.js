@@ -20,7 +20,7 @@ LABEL org.opencontainers.image.title="Bleu OS"
 
 # Install base system and build dependencies (with security updates)
 # apk upgrade pulls fixed openssl, sqlite, busybox, c-ares; zlib 1.3.2+ (CVE-2026-22184, CRC32 DoS)
-# curl/wget omitted to avoid CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23); add in Dockerfile if needed
+# curl omitted to avoid CVE-2025-14017/13034/14524/14819/15079/15224 (no fix in Alpine 3.23); wget included for compatibility
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade \
@@ -98,9 +98,6 @@ RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
     && rm -rf /root/.cache/pip; \
     fi
 
-# Install HTTP server deps for Railway (must listen on $PORT)
-RUN pip3 install --no-cache-dir --break-system-packages uvicorn fastapi
-
 # Install Bleu.js
 WORKDIR /opt/bleu-js
 COPY --chown=bleuos:bleuos src/bleujs /opt/bleu-js/src/bleujs
@@ -125,8 +122,13 @@ COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
 COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init-bleu-os.sh
 
-# Copy minimal HTTP server for Railway (/, /health)
-COPY --chown=bleuos:bleuos bleu-os/serve.py /workspace/serve.py
+# Copy full product app (bleujs.org: dashboard + API) and server deps (no ray; Alpine)
+COPY main.py README.md /workspace/
+COPY src/ /workspace/src/
+COPY bleu-os/requirements-server.txt /workspace/
+RUN pip3 install --no-cache-dir --break-system-packages -r /workspace/requirements-server.txt \
+    && rm -rf /root/.cache/pip \
+    && chown -R bleuos:bleuos /workspace
 
 # Switch to non-root user
 USER bleuos
@@ -139,6 +141,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 # Expose ports (Jupyter, metrics, API)
 EXPOSE 8888 9090 8000
 
-# Initialize Bleu OS on startup, then run HTTP server on $PORT (Railway)
+# Initialize Bleu OS on startup, then run product app on $PORT (Railway)
 ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
-CMD ["sh", "-c", "exec python3 -m uvicorn serve:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "exec python3 -m uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
