@@ -98,6 +98,9 @@ RUN if [ "$INSTALL_JUPYTER" = "true" ]; then \
     && rm -rf /root/.cache/pip; \
     fi
 
+# Install HTTP server deps for Railway (must listen on $PORT)
+RUN pip3 install --no-cache-dir --break-system-packages uvicorn fastapi
+
 # Install Bleu.js
 WORKDIR /opt/bleu-js
 COPY --chown=bleuos:bleuos src/bleujs /opt/bleu-js/src/bleujs
@@ -122,6 +125,9 @@ COPY --chown=root:root bleu-os/config/bleu-optimizations.conf /etc/bleu-os/
 COPY --chown=root:root bleu-os/scripts/init-bleu-os.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init-bleu-os.sh
 
+# Copy minimal HTTP server for Railway (/, /health)
+COPY --chown=bleuos:bleuos bleu-os/serve.py /workspace/serve.py
+
 # Switch to non-root user
 USER bleuos
 WORKDIR /workspace
@@ -133,6 +139,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 # Expose ports (Jupyter, metrics, API)
 EXPOSE 8888 9090 8000
 
-# Initialize Bleu OS on startup
+# Initialize Bleu OS on startup, then run HTTP server on $PORT (Railway)
 ENTRYPOINT ["/usr/local/bin/init-bleu-os.sh"]
-CMD ["bash"]
+CMD ["sh", "-c", "exec python3 -m uvicorn serve:app --host 0.0.0.0 --port ${PORT:-8000}"]
