@@ -421,7 +421,8 @@ jobs:
 
     steps:
       - name: Notify on success
-        if: success()
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        continue-on-error: true
         uses: 8398a7/action-slack@v3
         with:
           status: custom
@@ -459,7 +460,8 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify on failure
-        if: failure()
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        continue-on-error: true
         uses: 8398a7/action-slack@v3
         with:
           status: custom
@@ -485,3 +487,7 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Slack notification skipped (webhook not configured)
+        if: secrets.SLACK_WEBHOOK_URL == ''
+        run: echo "SLACK_WEBHOOK_URL is not configured; skipping Slack notification."
