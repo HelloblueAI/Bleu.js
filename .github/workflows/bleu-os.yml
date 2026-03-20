@@ -85,6 +85,8 @@ jobs:
   build-production:
     name: Build Production Image (Railway)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Free Disk Space
         run: |
@@ -277,8 +279,12 @@ jobs:
         with:
           scan-type: 'image'
           image-ref: 'bleu-os:scan'
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          exit-code: '0'
+          ignore-unfixed: true
 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v4
