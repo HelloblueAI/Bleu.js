@@ -107,6 +107,8 @@ jobs:
           context: .
           file: ./bleu-os/Dockerfile.production
           push: false
+          load: true
+          platforms: linux/amd64
           tags: bleu-os:production
           cache-from: type=gha
           cache-to: type=gha,mode=max
