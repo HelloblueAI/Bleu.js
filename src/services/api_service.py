@@ -343,18 +343,25 @@ class APIService(BaseService):
             db_health = "unhealthy"
             self.logger.error(f"Database health check failed: {str(e)}")
 
-        # Get external service health
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(
-                    self.settings.QUANTUM_SERVICE_URL + "/health"
-                ) as response:
-                    quantum_health = (
-                        "healthy" if response.status == 200 else "unhealthy"
-                    )
-            except Exception as e:
-                quantum_health = "unhealthy"
-                self.logger.error(f"Quantum service health check failed: {str(e)}")
+        # Get external service health (only when URL is configured)
+        quantum_health = "unconfigured"
+        quantum_url = getattr(self.settings, "QUANTUM_SERVICE_URL", None) or getattr(
+            self.settings, "BLEUJS_BACKEND_URL", None
+        )
+        if quantum_url:
+            quantum_url = quantum_url.rstrip("/")
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(
+                        f"{quantum_url}/health",
+                        timeout=aiohttp.ClientTimeout(total=5),
+                    ) as response:
+                        quantum_health = (
+                            "healthy" if response.status == 200 else "unhealthy"
+                        )
+                except Exception as e:
+                    quantum_health = "unhealthy"
+                    self.logger.error(f"Quantum service health check failed: {str(e)}")
 
         return {
             "system_metrics": system_metrics,
