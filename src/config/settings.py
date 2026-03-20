@@ -269,7 +269,21 @@ class Settings(BaseSettings):
     # Quantum settings
     QUANTUM_ENABLED: bool = True
     QUANTUM_SIMULATOR_URL: str = "https://localhost:8080"
+    QUANTUM_SERVICE_URL: str = Field(
+        default="",
+        alias="QUANTUM_SERVICE_URL",
+        description="Optional BleuJS/quantum backend URL for health and predictions",
+    )
     ENABLE_QUANTUM: bool = True
+
+    # AI provider settings (provider order: BleuJS → OpenAI → Anthropic → in-process)
+    BLEUJS_BACKEND_URL: str = Field(
+        default="",
+        alias="BLEUJS_BACKEND_URL",
+        description="BleuJS AI backend URL (e.g. Railway predict API). Empty = skip.",
+    )
+    OPENAI_API_KEY: SecretStr | None = Field(default=None, alias="OPENAI_API_KEY")
+    ANTHROPIC_API_KEY: SecretStr | None = Field(default=None, alias="ANTHROPIC_API_KEY")
 
     # AI settings
     ENABLE_AI: bool = True

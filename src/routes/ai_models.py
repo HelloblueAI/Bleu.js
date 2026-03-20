@@ -135,32 +135,25 @@ def get_current_timestamp() -> int:
     return int(datetime.now(timezone.utc).timestamp())
 
 
-async def process_with_quantum_enhanced_ai(
-    prompt: str, model: str, temperature: float, max_tokens: int
-) -> str:
+async def process_with_provider_failover(
+    messages: List[Dict[str, str]],
+    model: str,
+    temperature: float,
+    max_tokens: int,
+) -> tuple[str, str]:
     """
-    Process input with quantum-enhanced AI
-    This integrates with your quantum and ML backend
+    Process chat with provider failover: BleuJS → OpenAI → Anthropic → in-process.
+    Returns (content, provider_used).
     """
-    try:
-        # Import your quantum and ML processors
-        from src.bleu_ai.models.xgboost_model import XGBoostModel
-        from src.quantum_py.quantum.processor import QuantumProcessor
+    from src.services.ai_provider_service import get_chat_completion
 
-        # Initialize processors
-        quantum_processor = QuantumProcessor()
-
-        # Process with quantum enhancement
-        # This is a simplified version - integrate with your actual processing
-        response = f"Quantum-enhanced response to: {prompt}"
-
-        logger.info(f"Generated response using {model}")
-        return response
-
-    except Exception as e:
-        logger.error(f"Error in quantum processing: {e}")
-        # Fallback response
-        return f"Response to: {prompt} (Note: Full quantum processing temporarily unavailable)"
+    content, provider_used = await get_chat_completion(
+        messages=messages,
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+    return (content, provider_used)
 
 
 def calculate_token_usage(prompt: str, response: str) -> Dict[str, int]:
@@ -203,14 +196,18 @@ async def chat_completion(
             )
 
         prompt = user_messages[-1].content
+        messages_for_api = [
+            {"role": msg.role, "content": msg.content} for msg in request.messages
+        ]
 
-        # Generate response using quantum-enhanced AI
-        response_content = await process_with_quantum_enhanced_ai(
-            prompt=prompt,
+        # Generate response with provider failover (BleuJS → OpenAI → Anthropic → in-process)
+        response_content, provider_used = await process_with_provider_failover(
+            messages=messages_for_api,
             model=request.model,
             temperature=request.temperature,
             max_tokens=request.max_tokens,
         )
+        logger.info("Chat completion provider_used=%s", provider_used)
 
         # Calculate token usage
         usage = calculate_token_usage(prompt, response_content)
@@ -249,13 +246,14 @@ async def generate_text(
     try:
         logger.info(f"Text generation request from user {current_user.id}")
 
-        # Generate text using quantum-enhanced AI
-        generated_text = await process_with_quantum_enhanced_ai(
-            prompt=request.prompt,
+        # Generate text with provider failover (BleuJS → OpenAI → Anthropic → in-process)
+        generated_text, provider_used = await process_with_provider_failover(
+            messages=[{"role": "user", "content": request.prompt}],
             model=request.model,
             temperature=request.temperature,
             max_tokens=request.max_tokens,
         )
+        logger.info("Generation provider_used=%s", provider_used)
 
         # Calculate token usage
         usage = calculate_token_usage(request.prompt, generated_text)

@@ -30,8 +30,8 @@ def run_teleportation_on_ibm(
     backend_name is specified.
 
     Environment:
-        QISKIT_IBM_TOKEN: IBM Quantum API token (required).
-        QISKIT_IBM_INSTANCE: Instance path, e.g. ibm-q/open/main (optional).
+        QISKIT_IBM_TOKEN or IBM_QUANTUM_API_TOKEN: IBM Quantum API token (required).
+        QISKIT_IBM_INSTANCE or IBM_QUANTUM_INSTANCE_CRN: Instance path or CRN (optional).
 
     Args:
         theta: Angle for source state Ry(theta)|0>.
@@ -53,10 +53,12 @@ def run_teleportation_on_ibm(
         >>> out = run_teleportation_on_ibm(theta=0.9, shots=1024)
         >>> print(out["backend"], out["job_id"])
     """
-    token = os.environ.get("QISKIT_IBM_TOKEN")
+    token = os.environ.get("QISKIT_IBM_TOKEN") or os.environ.get(
+        "IBM_QUANTUM_API_TOKEN"
+    )
     if not token:
         raise ValueError(
-            "QISKIT_IBM_TOKEN is not set. "
+            "QISKIT_IBM_TOKEN or IBM_QUANTUM_API_TOKEN is not set. "
             "Get a token at https://quantum.ibm.com and set the environment variable."
         )
 
@@ -66,7 +68,9 @@ def run_teleportation_on_ibm(
 
     from .teleportation import build_teleportation_circuit
 
-    instance = os.environ.get("QISKIT_IBM_INSTANCE")
+    instance = os.environ.get("QISKIT_IBM_INSTANCE") or os.environ.get(
+        "IBM_QUANTUM_INSTANCE_CRN"
+    )
     service = QiskitRuntimeService(
         channel="ibm_quantum",
         token=token,

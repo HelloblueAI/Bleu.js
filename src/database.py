@@ -17,6 +17,18 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def _int_env(name: str, default: int) -> int:
+    """Read int env var safely with fallback."""
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        logger.warning("Invalid %s=%r, using default %s", name, raw, default)
+        return default
+
+
 def get_database_url() -> str:
     """Get database URL with proper fallback logic."""
     try:
@@ -82,12 +94,14 @@ else:
         )
     else:
         # PostgreSQL with connection pooling
+        connect_timeout = _int_env("DATABASE_CONNECT_TIMEOUT", 5)
         engine = create_engine(
             database_url,
-            pool_size=int(os.getenv("DATABASE_POOL_SIZE", "5")),
-            max_overflow=int(os.getenv("DATABASE_MAX_OVERFLOW", "10")),
+            pool_size=_int_env("DATABASE_POOL_SIZE", 5),
+            max_overflow=_int_env("DATABASE_MAX_OVERFLOW", 10),
             pool_pre_ping=True,
             pool_recycle=3600,
+            connect_args={"connect_timeout": connect_timeout},
         )
 
 # Session factory
