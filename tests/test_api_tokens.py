@@ -169,7 +169,7 @@ def test_create_token_without_subscription(
     db.commit()
 
     auth_service = AuthService(db)
-    access_token = auth_service.create_access_token({"sub": user.email})
+    access_token = auth_service.create_access_token({"sub": str(user.id)})
     headers = {"Authorization": f"Bearer {access_token}"}
 
     response = client.post(

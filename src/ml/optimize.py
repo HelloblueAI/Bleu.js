@@ -13,7 +13,20 @@ except ImportError:
     optuna = None
 import torch
 import torch.nn as nn
-import xgboost as xgb
+
+try:
+    import xgboost as xgb
+except ImportError:  # pragma: no cover - optional dependency
+
+    class _XGBoostStub:
+        class XGBClassifier:
+            def __init__(self, *args, **kwargs):
+                raise RuntimeError(
+                    "xgboost is required for optimization workflows. "
+                    "Install with: pip install xgboost"
+                )
+
+    xgb = _XGBoostStub()
 from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import (

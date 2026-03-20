@@ -36,6 +36,13 @@ def db_engine():
     """Create a database engine for the test session."""
     # Use a single database file for the entire test session
     db_url = "sqlite:///test_session.db"
+    db_file = "test_session.db"
+
+    # Ensure a clean DB schema at the start of the test session.
+    try:
+        os.remove(db_file)
+    except FileNotFoundError:
+        pass
 
     # Create engine
     engine = create_engine(
@@ -45,19 +52,15 @@ def db_engine():
         echo=False,
     )
 
-    # Create all tables with error handling for existing indexes
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception as e:
-        # If tables already exist, that's fine
-        print(f"Note: Some tables may already exist: {e}")
+    # Create all tables
+    Base.metadata.create_all(bind=engine)
 
     yield engine
 
     # Clean up: dispose engine and remove file
     engine.dispose()
     try:
-        os.remove("test_session.db")
+        os.remove(db_file)
     except FileNotFoundError:
         pass
 
@@ -105,17 +108,10 @@ def clean_db(db):
 def test_customer(db):
     """Create a test customer."""
     customer = Customer(
-        stripe_customer_id="test_stripe_customer_id",
         email="test@example.com",
-        api_key="test_api_key",
-        plan="core",
-        features=["api_access"],
-        rate_limit=100,
-        subscription_start=datetime.now(timezone.utc),
-        subscription_end=datetime.now(timezone.utc).replace(
-            year=datetime.now(timezone.utc).year + 1
-        ),
-        is_active=True,
+        name="Test Customer",
+        company="Bleu Test Co",
+        is_active="active",
     )
     db.add(customer)
     db.commit()

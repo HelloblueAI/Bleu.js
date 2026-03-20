@@ -113,7 +113,7 @@ class QuantumAttention:
 
             # Apply rotation gates for attention weights
             for qubit in qubits:
-                self.quantum_circuit.append(Rz(self.config.rotation_angle)(qubit))
+                self.quantum_circuit.append(self._rz(self.config.rotation_angle, qubit))
 
         except Exception as e:
             self.logger.error(f"Failed to apply quantum gates: {str(e)}")
@@ -148,7 +148,7 @@ class QuantumAttention:
         """Initialize quantum state with feature values."""
         for i, qubit in enumerate(qubits):
             if i < len(features):
-                circuit.append(Ry(features[i])(qubit))
+                circuit.append(self._ry(float(features[i]), qubit))
 
     def _apply_attention_layer(self, circuit: Circuit, qubits: List[LineQubit]) -> None:
         """Apply a single layer of attention gates."""
@@ -156,8 +156,22 @@ class QuantumAttention:
             circuit.append(H(qubits[j]))
             for k in range(j + 1, self.config.num_qubits):
                 circuit.append(CNOT(qubits[j], qubits[k]))
-                circuit.append(Rz(self.config.rotation_angle)(qubits[k]))
+                circuit.append(self._rz(self.config.rotation_angle, qubits[k]))
                 circuit.append(CNOT(qubits[j], qubits[k]))
+
+    def _rz(self, angle: float, qubit: LineQubit):
+        """Build an Rz operation across Cirq API variants."""
+        try:
+            return Rz(rads=angle)(qubit)
+        except TypeError:
+            return Rz(angle)(qubit)
+
+    def _ry(self, angle: float, qubit: LineQubit):
+        """Build an Ry operation across Cirq API variants."""
+        try:
+            return Ry(rads=angle)(qubit)
+        except TypeError:
+            return Ry(angle)(qubit)
 
     def _build_quantum_circuit_for_features(self, features: np.ndarray) -> Circuit:
         """Build a quantum circuit for attention computation."""
@@ -165,11 +179,17 @@ class QuantumAttention:
             raise ValueError("Features cannot be None or empty")
 
         try:
+            # Accept either a single feature vector or a batch; use first sample for circuit init.
+            feature_vector = (
+                features[0]
+                if isinstance(features, np.ndarray) and features.ndim > 1
+                else features
+            )
             qubits = LineQubit.range(self.config.num_qubits)
             circuit = Circuit()
 
             # Initialize quantum state
-            self._initialize_quantum_state(circuit, qubits, features)
+            self._initialize_quantum_state(circuit, qubits, feature_vector)
 
             # Apply attention gates
             if self.config.use_attention:

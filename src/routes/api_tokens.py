@@ -42,9 +42,11 @@ async def create_token(
 @router.get("/tokens", response_model=List[APITokenResponse])
 async def get_tokens(
     db: Session = Depends(get_db),
-    current_user: UserResponse = Depends(get_current_user_dep()),
+    token: str = Depends(oauth2_scheme),
 ) -> List[APITokenResponse]:
     """Get all API tokens for the current user."""
+    auth_service = AuthService(db)
+    current_user = await auth_service.get_current_user(token)
     token_service = APITokenService(db)
     return await token_service.get_user_tokens(current_user)
 

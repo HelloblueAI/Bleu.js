@@ -16,7 +16,7 @@ class Payment(Base):
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
+    customer_id = Column(String(36), ForeignKey("customers.id"), nullable=False)
     amount = Column(Float, nullable=False)
     currency = Column(String(3), nullable=False, default="USD")
     status = Column(String(20), nullable=False)
@@ -27,12 +27,11 @@ class Payment(Base):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
 
-    # Relationships (fully qualified to avoid registry errors)
     customer = relationship("src.models.customer.Customer", back_populates="payments")
 
     def __init__(
         self,
-        customer_id: int,
+        customer_id: str,
         amount: float,
         transaction_id: str,
         currency: str = "USD",
@@ -80,7 +79,7 @@ class Payment(Base):
 
 # Pydantic models for API
 class PaymentBase(BaseModel):
-    customer_id: int
+    customer_id: str
     amount: float
     currency: str = "USD"
     status: str = "pending"
