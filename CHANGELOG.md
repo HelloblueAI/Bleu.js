@@ -6,6 +6,13 @@
 - Version bumped automatically from 1.4.49 to 1.4.50
 - See commit history for changes
 
+### Fixed
+- **ORM:** Resolved SQLAlchemy mapping inconsistencies between `Customer` and `Payment` relationships and aligned payment foreign-key typing with customer IDs.
+- **API tokens:** Fixed authenticated token listing flow and standardized token/auth tests to current service interfaces.
+- **Monitoring and rate limiting tests:** Updated test suites to match current service contracts and removed stale fixture assumptions.
+- **CLI tests:** Switched config-show verification to stable in-process invocation to avoid environment-dependent subprocess import failures.
+- **Quantum attention:** Added compatibility handling for Cirq rotation gate APIs and fixed batch feature handling during circuit initialization.
+- **Optional ML deps:** Made `xgboost` imports robust so module imports succeed when optional ML extras are not installed.
 
 ## [v1.4.49] - 2026-03-18
 

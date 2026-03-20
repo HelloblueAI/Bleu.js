@@ -31,7 +31,23 @@ try:
     import ray
 except ImportError:  # pragma: no cover - optional dependency
     ray = None
-import xgboost as xgb
+try:
+    import xgboost as xgb
+except ImportError:  # pragma: no cover - optional dependency
+
+    class _XGBoostStub:
+        class callback:
+            class TrainingCallback:
+                pass
+
+        class XGBClassifier:
+            def __init__(self, *args, **kwargs):
+                raise RuntimeError(
+                    "xgboost is required for EnhancedXGBoost. "
+                    "Install with: pip install xgboost"
+                )
+
+    xgb = _XGBoostStub()
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC

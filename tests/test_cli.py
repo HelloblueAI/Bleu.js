@@ -8,6 +8,7 @@ by patching sys.argv during invoke so the runner doesn't see them.
 
 import os
 import sys
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -21,7 +22,7 @@ except ImportError:
     CLICK_AVAILABLE = False
 
 if CLICK_AVAILABLE:
-    from bleujs.cli import cli
+    from src.bleujs.cli import cli
 
 
 def _invoke_isolated(runner, cli_obj, args):
@@ -36,22 +37,8 @@ def _invoke_isolated(runner, cli_obj, args):
 
 
 def _call_config_show(env_override=None):
-    """Call 'bleu config show' in a subprocess so pytest's argv/env don't affect the CLI."""
-    import subprocess
-
-    env = os.environ.copy() if env_override is None else {**os.environ, **env_override}
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-c",
-            "from bleujs.cli import cli; cli.main(args=['config', 'show'], prog_name='bleu')",
-        ],
-        capture_output=True,
-        text=True,
-        timeout=5,
-        env=env,
-    )
-    return result.stdout + result.stderr
+    """Retained for backwards-compatibility; prefer in-process invoke in tests."""
+    raise RuntimeError("Use _invoke_isolated with CliRunner in tests")
 
 
 @pytest.fixture
@@ -67,7 +54,7 @@ def no_api_key(monkeypatch):
     """Ensure BLEUJS_API_KEY is unset for tests that expect no key."""
     monkeypatch.delenv("BLEUJS_API_KEY", raising=False)
     # Also clear config so get_api_key() returns None
-    with patch("bleujs.cli.get_config", return_value={}):
+    with patch("src.bleujs.cli.get_config", return_value={}):
         yield
 
 
@@ -91,8 +78,10 @@ class TestCLIConfig:
 
     def test_config_show_exit_0(self, runner):
         """bleu config show runs without error (no 'unexpected extra argument')."""
-        with patch("bleujs.cli.get_config", return_value={}):
-            out = _call_config_show()
+        with patch("src.bleujs.cli.get_config", return_value={}):
+            result = _invoke_isolated(runner, cli, ["config", "show"])
+            out = result.output
+            assert result.exit_code == 0, out
         assert (
             "unexpected extra argument" not in out.lower()
         ), f"CLI still has config show bug: {out!r}"
@@ -113,6 +102,7 @@ class TestCLIConfig:
         with tempfile.TemporaryDirectory() as tmp:
             config_dir = os.path.join(tmp, ".bleujs")
             os.makedirs(config_dir, exist_ok=True)
+            config_file = os.path.join(config_dir, "config.json")
             with open(os.path.join(config_dir, "config.json"), "w") as f:
                 json.dump(
                     {
@@ -121,7 +111,13 @@ class TestCLIConfig:
                     },
                     f,
                 )
-            out = _call_config_show(env_override={"HOME": tmp})
+            with (
+                patch("src.bleujs.cli.CONFIG_DIR", Path(config_dir)),
+                patch("src.bleujs.cli.CONFIG_FILE", Path(config_file)),
+            ):
+                result = _invoke_isolated(runner, cli, ["config", "show"])
+                out = result.output
+                assert result.exit_code == 0, out
         assert (
             "unexpected extra argument" not in out.lower()
         ), f"CLI still has config show bug: {out!r}"
@@ -130,7 +126,7 @@ class TestCLIConfig:
 
     def test_config_get_empty(self, runner):
         """bleu config get with no key shows all (same as show)."""
-        with patch("bleujs.cli.get_config", return_value={}):
+        with patch("src.bleujs.cli.get_config", return_value={}):
             result = runner.invoke(cli, ["config", "get"])
         assert result.exit_code == 0
 

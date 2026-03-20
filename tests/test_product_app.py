@@ -36,7 +36,7 @@ def test_product_app_has_api_v1_auth_routes(app):
 def test_product_app_has_api_v1_subscription_routes(app):
     """Product app must expose subscription under /api/v1 (plans, current)."""
     paths = _openapi_paths(app)
-    sub_paths = ["/api/v1/plans", "/api/v1/current"]
+    sub_paths = ["/api/v1/subscriptions/plans", "/api/v1/subscriptions/current"]
     assert any(
         p in paths for p in sub_paths
     ), "Product app should expose /api/v1 subscription routes (plans, current)"

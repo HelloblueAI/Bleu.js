@@ -31,8 +31,8 @@ class Customer(Base):
     notes = Column(Text, nullable=True)
 
     # Relationships
-    payments = relationship("Payment", back_populates="customer")
-    api_calls = relationship("APICall", back_populates="customer")
+    payments = relationship("src.models.payment.Payment", back_populates="customer")
+    api_calls = relationship("src.models.api_call.APICall", back_populates="customer")
 
     def __repr__(self):
         return f"<Customer(id={self.id}, email='{self.email}')>"
