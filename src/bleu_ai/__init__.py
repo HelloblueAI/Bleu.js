@@ -4,7 +4,7 @@ Bleujs - Quantum-Enhanced AI Platform
 A state-of-the-art quantum-enhanced vision system with advanced AI capabilities.
 """
 
-__version__ = "1.4.51"
+__version__ = "1.4.52"
 
 # Optional API client import
 try:
