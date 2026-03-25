@@ -4,8 +4,8 @@
 bcrypt==5.0.0
 
 # AWS services
-boto3==1.42.68
-botocore==1.42.68
+boto3==1.42.73
+botocore==1.42.73
 cirq>=1.5.0
 # FastAPI and web framework
 fastapi==0.135.1
@@ -39,7 +39,7 @@ torch>=2.7.1
 # Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)
 # Note: Using latest available version (4.57.1 as of Feb 2025)
 transformers>=4.55.0
-uvicorn==0.41.0
+uvicorn==0.42.0
 
 # Testing (will be installed separately)
 # pytest>=7.0.0
