@@ -48,6 +48,12 @@ def test_product_app_has_health(app):
     assert "/health" in paths, "Product app should expose /health"
 
 
+def test_product_app_has_gateway_predict(app):
+    """Product app must expose POST /predict for bleujs.org BLEUJS_API_URL gateway."""
+    paths = _openapi_paths(app)
+    assert "/predict" in paths, "Product app should expose POST /predict"
+
+
 def test_product_app_title_is_bleujs(app):
     """Product app title identifies Bleu.js."""
     title = getattr(app, "title", "") or ""

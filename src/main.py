@@ -19,7 +19,7 @@ from fastapi.templating import Jinja2Templates
 from src.config import get_settings
 from src.config.test_settings import get_test_settings
 from src.database import init_db
-from src.routes import api_tokens, auth, subscription
+from src.routes import api_tokens, auth, gateway_predict, subscription
 
 # Constants
 API_V1_PREFIX = "/api/v1"
@@ -100,6 +100,7 @@ if not os.getenv("TESTING"):
 app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
 app.include_router(subscription.router, prefix=API_V1_PREFIX, tags=["subscription"])
 app.include_router(api_tokens.router, prefix=API_V1_PREFIX, tags=["api_tokens"])
+app.include_router(gateway_predict.router)
 
 # Import and include AI models router
 try:
