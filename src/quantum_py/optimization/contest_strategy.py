@@ -22,6 +22,10 @@ except ImportError:
         def __init__(self):
             pass
 
+        @staticmethod
+        def get_backend(_name: str):
+            return object()
+
     class QuantumCircuit:
         def __init__(self, *args, **kwargs):
             pass
@@ -37,6 +41,24 @@ except ImportError:
     def execute(*args, **kwargs):
         """Mock execute function for when qiskit is not available."""
         return type("MockResult", (), {"result": lambda: {"counts": {"0": 1}}})()
+
+
+def _aer_get_backend(backend: str):
+    """Resolve an Aer simulator backend (qiskit-aer 0.14+ / Qiskit 2.x)."""
+    if not QISKIT_AVAILABLE:
+        return Aer.get_backend(backend)
+    legacy = {
+        "qasm_simulator": "aer_simulator",
+        "statevector_simulator": "aer_simulator_statevector",
+    }
+    name = legacy.get(backend, backend)
+    try:
+        found = Aer.backends(name=name)
+        if found:
+            return found[0]
+    except Exception:
+        pass
+    return Aer.backends()[0]
 
 
 try:
@@ -128,7 +150,7 @@ class BleuQuantumContestOptimizer:
         """
         self.attention_module = attention_module or QuantumAttention()
         self.fusion_module = fusion_module or QuantumFusion()
-        self.backend = Aer.get_backend(backend)
+        self.backend = _aer_get_backend(backend)
         self.shots = shots
         self.quantum_instance = QuantumInstance(
             self.backend, shots=shots, seed_simulator=42, seed_transpiler=42
