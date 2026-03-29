@@ -47,9 +47,15 @@ except ImportError:
         def __init__(self, *args, **kwargs):
             pass
 
+        def __call__(self, qubit):
+            return self
+
     class Rz:
         def __init__(self, *args, **kwargs):
             pass
+
+        def __call__(self, qubit):
+            return self
 
     class Simulator:
         def __init__(self, *args, **kwargs):
@@ -161,17 +167,23 @@ class QuantumAttention:
 
     def _rz(self, angle: float, qubit: LineQubit):
         """Build an Rz operation across Cirq API variants."""
-        try:
-            return Rz(rads=angle)(qubit)
-        except TypeError:
-            return Rz(angle)(qubit)
+        for factory in (lambda: Rz(rads=angle), lambda: Rz(angle)):
+            gate = factory()
+            if hasattr(gate, "on"):
+                return gate.on(qubit)
+            if callable(gate):
+                return gate(qubit)
+        raise TypeError("Rz gate could not be applied to qubit")
 
     def _ry(self, angle: float, qubit: LineQubit):
         """Build an Ry operation across Cirq API variants."""
-        try:
-            return Ry(rads=angle)(qubit)
-        except TypeError:
-            return Ry(angle)(qubit)
+        for factory in (lambda: Ry(rads=angle), lambda: Ry(angle)):
+            gate = factory()
+            if hasattr(gate, "on"):
+                return gate.on(qubit)
+            if callable(gate):
+                return gate(qubit)
+        raise TypeError("Ry gate could not be applied to qubit")
 
     def _build_quantum_circuit_for_features(self, features: np.ndarray) -> Circuit:
         """Build a quantum circuit for attention computation."""
