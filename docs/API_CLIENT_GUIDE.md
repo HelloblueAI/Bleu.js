@@ -216,7 +216,8 @@ response = client.chat(
     model="bleu-chat-v1",
     temperature=0.7,
     max_tokens=None,
-    top_p=1.0
+    top_p=1.0,
+    session_seed_goal=None,  # optional: first-turn onboarding hint (max 500 chars)
 )
 ```
 
@@ -227,6 +228,7 @@ response = client.chat(
 - `temperature` (float) - Sampling temperature 0-2 (default: 0.7)
 - `max_tokens` (int) - Maximum tokens to generate (optional)
 - `top_p` (float) - Nucleus sampling parameter (default: 1.0)
+- `session_seed_goal` (str, optional) - Max 500 characters; used on the **first turn** of a session (with your `conversation_id` / new-thread semantics) to seed guided onboarding. Omit to match previous requests.
 
 **Response:**
 
@@ -358,7 +360,7 @@ When implementing clients (e.g. the [API Playground](https://github.com/Helloblu
 
 | Endpoint                             | Request body                                                                                                                                                         | Response shape                                                                                                                                                                                             |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chat** `POST /api/v1/chat`         | `messages`, `model`, `temperature`, `max_tokens`                                                                                                                     | Prefer **OpenAI-style**: `choices: [{ message: { role, content } }]`. Some backends may return a flat `content`; clients should accept either `response.content` or `response.choices[0].message.content`. |
+| **Chat** `POST /api/v1/chat`         | `messages`, `model`, `temperature`, `max_tokens`, optional `session_seed_goal` (string, ≤500 chars, first turn only)                                                     | Prefer **OpenAI-style**: `choices: [{ message: { role, content } }]`. Some backends may return a flat `content`; clients should accept either `response.content` or `response.choices[0].message.content`. |
 | **Generate** `POST /api/v1/generate` | `prompt`, `model`, `temperature`, `max_tokens`                                                                                                                       | `text`, `id`, `model`, `usage`, `finish_reason`.                                                                                                                                                           |
 | **Embed** `POST /api/v1/embed`       | **Request field**: use `input` (list of strings) for SDK/OpenAI-style compatibility. In-repo route uses `inputs`; align server and client so one convention is used. | `data: [{ embedding: number[], index }]`, `model`, `usage`.                                                                                                                                                |
 

@@ -30,7 +30,8 @@ jobs:
   auto-version-bump:
     name: 🔄 Auto Bump Version & Release
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    # Skip when maintainers ship a hand-bumped version (avoids 1.5.1 → 1.5.2). Tag vX.Y.Z + release workflow publishes PyPI.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && !(github.event.head_commit && contains(github.event.head_commit.message, '[skip auto-version]')))
 
     steps:
       - name: Free Disk Space

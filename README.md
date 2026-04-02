@@ -93,7 +93,11 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 ## SDK – Cloud API
 
-**Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)**
+**Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)** (same paths and `Authorization: Bearer …` work against `https://api.bleujs.org` if you set `BLEUJS_BASE_URL`).
+
+### Integrators (hosted API)
+
+Existing HTTP clients keep working without upgrading the SDK: same paths, bearer token, and JSON bodies. **Chat:** `POST /api/v1/chat` accepts an optional `session_seed_goal` string (max 500 characters) on the first turn of a session to seed guided onboarding; omitting it matches older behavior. Reply wording may vary with new server-side session logic; successful response shapes should still parse—report any parse failures as regressions. **Self-hosted Postgres:** run new Prisma migrations for session memory if you fork the app; hosted BleuJS is already migrated.
 
 The Bleu.js Python client is built to **best-in-market** standards: automatic retries with exponential backoff and `Retry-After` support, separate connect/read timeouts, rich error types (`RateLimitError.retry_after`), and robust handling of multiple API response shapes. See [API Client Guide – Best practices](docs/API_CLIENT_GUIDE.md#-best-practices-production).
 
@@ -115,6 +119,12 @@ response = client.chat([
     {"role": "user", "content": "What is quantum computing?"}
 ])
 print(response.content)
+
+# Optional first-turn session hint (onboarding / context), max 500 chars
+# response = client.chat(
+#     [{"role": "user", "content": "Hello"}],
+#     session_seed_goal="Help me set up my first integration",
+# )
 
 # Text generation
 response = client.generate("Write a haiku about AI:")

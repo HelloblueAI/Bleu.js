@@ -19,6 +19,7 @@ from bleujs.api_client import (
     AuthenticationError,
     BleuAPIClient,
     BleuAPIError,
+    ChatCompletionRequest,
     ChatCompletionResponse,
     ChatMessage,
     EmbeddingResponse,
@@ -151,6 +152,44 @@ class TestChatCompletion:
         )
 
         assert isinstance(response, ChatCompletionResponse)
+
+    @patch("httpx.Client.request")
+    def test_chat_session_seed_goal_in_request_body(self, mock_request, client):
+        """session_seed_goal is sent in JSON when provided (first-turn onboarding hint)."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "c1",
+                "object": "chat.completion",
+                "created": 0,
+                "model": "bleu-chat-v1",
+                "choices": [{"message": {"role": "assistant", "content": "ok"}}],
+            },
+        )
+        client.chat(
+            [{"role": "user", "content": "Hello"}],
+            session_seed_goal="Learn the dashboard",
+        )
+        call_kw = mock_request.call_args.kwargs
+        assert call_kw.get("json", {}).get("session_seed_goal") == "Learn the dashboard"
+
+    def test_chat_session_seed_goal_too_long(self, client):
+        """Pydantic rejects session_seed_goal longer than 500 characters."""
+        long_goal = "x" * 501
+        with pytest.raises(Exception):
+            client.chat(
+                [{"role": "user", "content": "Hi"}],
+                session_seed_goal=long_goal,
+            )
+
+    def test_chat_completion_request_session_seed_goal_max_length(self):
+        """ChatCompletionRequest accepts exactly 500 chars for session_seed_goal."""
+        goal = "y" * 500
+        req = ChatCompletionRequest(
+            messages=[ChatMessage(role="user", content="hi")],
+            session_seed_goal=goal,
+        )
+        assert req.session_seed_goal == goal
 
     def test_chat_empty_message_content(self, client):
         """Test chat with empty message content raises error"""

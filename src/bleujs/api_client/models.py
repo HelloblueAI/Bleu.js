@@ -50,6 +50,14 @@ class ChatCompletionRequest(BaseModel):
     metadata: Optional[Dict[str, Any]] = Field(
         default=None, description="Optional metadata"
     )
+    session_seed_goal: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description=(
+            "Optional; on the first turn of a session (new thread), seeds guided "
+            "onboarding / session context. Ignored on later turns."
+        ),
+    )
 
 
 class ChatCompletionResponse(BaseModel):
