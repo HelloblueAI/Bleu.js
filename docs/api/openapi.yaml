@@ -55,6 +55,12 @@ paths:
                 model: { type: string }
                 temperature: { type: number }
                 max_tokens: { type: integer }
+                session_seed_goal:
+                  type: string
+                  maxLength: 500
+                  description: >-
+                    Optional; used on the first turn of a session to seed guided
+                    onboarding / context. Omit for legacy behavior.
       responses:
         "200":
           description: OpenAI-style or flat content

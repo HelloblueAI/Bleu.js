@@ -2,7 +2,9 @@
 
 ## Access the Cloud API from Python
 
-The Bleu.js package now includes a **production-ready API client** to access the cloud API at **bleujs.org**!
+The Bleu.js package now includes a **production-ready API client** to access the cloud API at **bleujs.org** (or **api.bleujs.org** via `BLEUJS_BASE_URL`).
+
+**Chat (optional):** pass `session_seed_goal="..."` (max 500 chars) on the first turn of a session for guided onboarding; omit for the same behavior as before.
 
 ---
 

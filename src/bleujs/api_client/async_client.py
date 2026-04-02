@@ -186,6 +186,7 @@ class AsyncBleuAPIClient:
         model: str = DEFAULT_MODEL_CHAT,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
+        session_seed_goal: Optional[str] = None,
         **kwargs: Any,
     ) -> ChatCompletionResponse:
         """
@@ -196,7 +197,10 @@ class AsyncBleuAPIClient:
             model: Model to use (default: bleu-chat-v1)
             temperature: Sampling temperature 0-2 (default: 0.7)
             max_tokens: Maximum tokens to generate
-            **kwargs: Additional parameters
+            session_seed_goal: Optional string (max 500 chars). Used on the first
+                turn of a session to seed guided onboarding / context; omit for
+                previous behavior.
+            **kwargs: Additional parameters (e.g. top_p, stream, metadata)
 
         Returns:
             ChatCompletionResponse object
@@ -211,13 +215,17 @@ class AsyncBleuAPIClient:
         # Convert dict messages to ChatMessage objects
         chat_messages = [ChatMessage(**msg) for msg in messages]
 
+        req_kwargs = dict(kwargs)
+        if session_seed_goal is not None:
+            req_kwargs["session_seed_goal"] = session_seed_goal
+
         # Build request
         request = ChatCompletionRequest(
             messages=chat_messages,
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
-            **kwargs,
+            **req_kwargs,
         )
 
         # Make API call

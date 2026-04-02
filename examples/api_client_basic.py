@@ -42,6 +42,17 @@ try:
 except Exception as e:
     print(f"Error: {e}")
 
+# Optional: first-turn session hint for guided onboarding (max 500 chars).
+# Only affects the first message when starting a new conversation/thread.
+# try:
+#     r = client.chat(
+#         [{"role": "user", "content": "Where do I start?"}],
+#         session_seed_goal="Onboard me to the BleuJS dashboard",
+#     )
+#     print(r.content)
+# except Exception as e:
+#     print(f"Error: {e}")
+
 # ============================================================================
 # EXAMPLE 2: Text Generation
 # ============================================================================

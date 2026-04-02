@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.5.2] - 2026-04-01
+
+### Python SDK & docs
+
+- **Chat API:** `BleuAPIClient.chat` / `AsyncBleuAPIClient.chat` and `ChatCompletionRequest` support optional `session_seed_goal` (string, max 500 chars) for first-turn session seeding; CLI flag `--session-seed-goal`. OpenAPI and API client guide updated. Hosted API remains backward compatible for existing clients.
+
 ## [v1.5.1] - 2026-03-29
 
 ### 🎉 Automatic Release

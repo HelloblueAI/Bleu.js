@@ -280,6 +280,12 @@ def config_reset():
     help="Sampling temperature 0-2 (default: 0.7)",
 )
 @click.option("--max-tokens", "-n", type=int, help="Maximum tokens to generate")
+@click.option(
+    "--session-seed-goal",
+    type=str,
+    default=None,
+    help="Optional first-turn session hint (max 500 chars); seeds guided onboarding",
+)
 @click.option("--system", "-s", help="System message to set context")
 @click.option("--json", "output_json", is_flag=True, help="Output as JSON")
 @click.option(
@@ -290,6 +296,7 @@ def chat(
     model: str,
     temperature: float,
     max_tokens: Optional[int],
+    session_seed_goal: Optional[str],
     system: Optional[str],
     output_json: bool,
     file: Optional[str],
@@ -315,6 +322,10 @@ def chat(
         click.echo("   Usage: bleu chat <message> or bleu chat --file <file>")
         sys.exit(1)
 
+    if session_seed_goal is not None and len(session_seed_goal) > 500:
+        click.echo("❌ --session-seed-goal must be at most 500 characters", err=True)
+        sys.exit(1)
+
     # Build messages
     messages = []
     if system:
@@ -329,6 +340,7 @@ def chat(
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
+            session_seed_goal=session_seed_goal,
         )
 
         if output_json:

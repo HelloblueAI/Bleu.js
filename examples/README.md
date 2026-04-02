@@ -10,7 +10,7 @@ Set your key first: `export BLEUJS_API_KEY=bleujs_sk_...` or get one at [bleujs.
 
 | File | What it does |
 |------|----------------|
-| **api_client_basic.py** | Chat, generate, embed, list models. **Start here for API.** |
+| **api_client_basic.py** | Chat (optional `session_seed_goal` for first-turn onboarding), generate, embed, list models. **Start here for API.** |
 | **api_client_advanced.py** | More options and patterns. |
 | **api_client_async.py** | Async client with `AsyncBleuAPIClient`. |
 
