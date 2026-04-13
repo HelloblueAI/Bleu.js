@@ -238,20 +238,25 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      # Use single artifact to avoid merged corrupt/duplicate sdist (zlib errors)
+      # Exact artifact name (pattern glob can miss); path + download-path for reliable finds.
       - name: Download build artifacts (ubuntu 3.11)
+        id: test-artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: "python-packages-ubuntu-latest-3.11"
+          name: python-packages-ubuntu-latest-3.11
+          path: dist
 
       - name: Test package installation
         run: |
-          # Single artifact: one .whl and one .tar.gz from same build (avoids corrupt merged sdist)
-          WHEEL=$(find . -maxdepth 2 -name "*.whl" -type f | head -1)
-          SDIST=$(find . -maxdepth 2 -name "*.tar.gz" -type f | head -1)
+          set -euo pipefail
+          DL="${{ steps.test-artifacts.outputs.download-path }}"
+          echo "Artifact path: $DL"
+          ls -laR "$DL" || true
+          WHEEL=$(find "$DL" -name "*.whl" -type f | head -1)
+          SDIST=$(find "$DL" -name "*.tar.gz" -type f | head -1)
           if [ -z "$WHEEL" ] || [ -z "$SDIST" ]; then
             echo "❌ Artifacts not found (expected .whl and .tar.gz)"
-            find . -type f \( -name "*.whl" -o -name "*.tar.gz" \) || true
+            find . -type f \( -name "*.whl" -o -name "*.tar.gz" \) | head -50 || true
             exit 1
           fi
           pip install "$WHEEL" --force-reinstall
@@ -282,21 +287,24 @@ jobs:
   # ============================================================================
   publish-pypi:
     name: 📦 Publish to PyPI
-    needs: [test-packages]
+    # Require build success so artifacts exist; still allow publish if tests failed but packages built.
+    needs: [build, test-packages]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'))
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'))
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      # Extract into dist/ so paths are stable (download-artifact puts files under artifact dirs by default, not repo root).
       - name: Download build artifacts
+        id: pypi-artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: "python-packages-ubuntu-latest-3.11"
-          merge-multiple: true
+          name: python-packages-ubuntu-latest-3.11
           path: dist
 
       - name: Install twine
@@ -309,11 +317,17 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           set -euo pipefail
-          ls -la dist/ || true
-          mapfile -t pkgs < <(find dist -maxdepth 3 \( -name '*.whl' -o -name '*.tar.gz' \) | sort -u)
+          DL="${{ steps.pypi-artifacts.outputs.download-path }}"
+          echo "Artifact download-path: $DL"
+          if [ -z "$DL" ] || [ ! -d "$DL" ]; then
+            echo "download-path missing or not a directory; listing workspace:"
+            find . -type f \( -name '*.whl' -o -name '*.tar.gz' \) | head -50 || true
+            exit 1
+          fi
+          ls -laR "$DL" || true
+          mapfile -t pkgs < <(find "$DL" \( -name '*.whl' -o -name '*.tar.gz' \) | sort -u)
           if [ "${#pkgs[@]}" -eq 0 ]; then
-            echo "No .whl or sdist found under dist/ after download; search from repo root:"
-            find . -name '*.whl' -o -name '*.tar.gz' | head -40 || true
+            echo "No .whl or sdist under $DL"
             exit 1
           fi
           python -m twine upload --skip-existing "${pkgs[@]}"
@@ -336,12 +350,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Same ubuntu 3.11 artifact as PyPI (pure wheel + sdist); extract to dist/ for glob paths.
       - name: Download build artifacts
+        id: release-artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: "python-packages-ubuntu-latest-3.11"
-          merge-multiple: true
+          name: python-packages-ubuntu-latest-3.11
           path: dist
 
       - name: Generate release notes
@@ -381,8 +394,8 @@ jobs:
           name: Release ${{ needs.validate.outputs.version }}
           body: ${{ steps.release-notes.outputs.notes }}
           files: |
-            dist/*.whl
-            dist/*.tar.gz
+            dist/**/*.whl
+            dist/**/*.tar.gz
           draft: false
           prerelease: ${{ needs.validate.outputs.is-prerelease }}
 
