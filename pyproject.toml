@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "bleu-js"
-version = "1.5.4"
+version = "1.5.5"
 description = "Advanced AI and Quantum Computing Framework"
 authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
@@ -227,7 +227,7 @@ ci = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^9.0.2"
+pytest = "^9.0.3"
 pytest-cov = ">=4,<8"
 pytest-asyncio = ">=0.21,<1.4"
 black = ">=25.1,<27.0"
