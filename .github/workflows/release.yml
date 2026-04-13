@@ -291,11 +291,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
+      # Extract into dist/ so paths are stable (download-artifact puts files under artifact dirs by default, not repo root).
       - name: Download build artifacts
         uses: actions/download-artifact@v8
         with:
           pattern: "python-packages-ubuntu-latest-3.11"
           merge-multiple: true
+          path: dist
 
       - name: Install twine
         run: pip install twine
@@ -306,7 +308,15 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          python -m twine upload --skip-existing *.whl *.tar.gz
+          set -euo pipefail
+          ls -la dist/ || true
+          mapfile -t pkgs < <(find dist -maxdepth 3 \( -name '*.whl' -o -name '*.tar.gz' \) | sort -u)
+          if [ "${#pkgs[@]}" -eq 0 ]; then
+            echo "No .whl or sdist found under dist/ after download; search from repo root:"
+            find . -name '*.whl' -o -name '*.tar.gz' | head -40 || true
+            exit 1
+          fi
+          python -m twine upload --skip-existing "${pkgs[@]}"
 
   # ============================================================================
   # CREATE GITHUB RELEASE
@@ -326,11 +336,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Same ubuntu 3.11 artifact as PyPI (pure wheel + sdist); extract to dist/ for glob paths.
       - name: Download build artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: "python-packages-*"
+          pattern: "python-packages-ubuntu-latest-3.11"
           merge-multiple: true
+          path: dist
 
       - name: Generate release notes
         id: release-notes
@@ -369,8 +381,8 @@ jobs:
           name: Release ${{ needs.validate.outputs.version }}
           body: ${{ steps.release-notes.outputs.notes }}
           files: |
-            *.whl
-            *.tar.gz
+            dist/*.whl
+            dist/*.tar.gz
           draft: false
           prerelease: ${{ needs.validate.outputs.is-prerelease }}
 
