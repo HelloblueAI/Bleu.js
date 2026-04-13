@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.5.5] - 2026-04-13
+
+### Security & CI
+
+- **pytest:** Bump to **9.0.3+** (addresses CVE-2025-71176 / Dependabot tmpdir symlink issue) in `pyproject.toml`, `poetry.lock`, `src/python/requirements-test.txt`, and `src/python/tests/requirements-test.txt`.
+- **Release workflow:** Run “Test built packages” only when the build matrix succeeds (avoids missing-artifact failures blocking PyPI).
+- **Slack notifications:** Replace deprecated `action-slack@v3` with an optional `curl`+`jq` webhook step (non-blocking on 404); fix `needs` so `validate` outputs are available for the message.
+
 ## [v1.5.4] - 2026-04-13
 
 ### 🎉 Automatic Release

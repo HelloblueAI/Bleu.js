@@ -226,7 +226,8 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: always() # Run even if some builds fail
+    # Only run when the full matrix completed successfully; otherwise ubuntu-3.11 artifacts may be missing.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
 
     steps:
       - name: Checkout Repository
@@ -414,76 +415,44 @@ jobs:
   # ============================================================================
   notify:
     name: 📢 Release Notifications
-    needs: [create-release, docker]
+    # Must list validate (for outputs) and publish-pypi (so this job runs when publish fails/skipped graph allows).
+    needs: [validate, publish-pypi]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
 
     steps:
-      - name: Notify on success
-        if: success()
-        continue-on-error: true
-        uses: 8398a7/action-slack@v3
-        with:
-          status: custom
-          custom_payload: |
-            {
-              "attachments": [{
-                "color": "good",
-                "title": "🎉 Release Successful",
-                "text": "Bleu.js ${{ needs.validate.outputs.version }} has been released",
-                "fields": [
-                  {
-                    "title": "Version",
-                    "value": "${{ needs.validate.outputs.version }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Type",
-                    "value": "${{ needs.validate.outputs.is-prerelease == 'true' && 'Pre-release' || 'Release' }}",
-                    "short": true
-                  },
-                  {
-                    "title": "PyPI",
-                    "value": "https://pypi.org/project/bleu-js/",
-                    "short": true
-                  },
-                  {
-                    "title": "Docker",
-                    "value": "https://hub.docker.com/r/henfarm/bleu-js",
-                    "short": true
-                  }
-                ]
-              }]
-            }
+      # Avoid action-slack@v3 (Node 20 deprecation) and 404 failing the job: optional Incoming Webhook only.
+      - name: Post release outcome to Slack (optional)
+        if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Notify on failure
-        if: failure()
-        continue-on-error: true
-        uses: 8398a7/action-slack@v3
-        with:
-          status: custom
-          custom_payload: |
-            {
-              "attachments": [{
-                "color": "danger",
-                "title": "❌ Release Failed",
-                "text": "Release ${{ needs.validate.outputs.version }} failed",
-                "fields": [
-                  {
-                    "title": "Version",
-                    "value": "${{ needs.validate.outputs.version }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Commit",
-                    "value": "${{ github.sha }}",
-                    "short": true
-                  }
-                ]
-              }]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          VERSION: ${{ needs.validate.outputs.version }}
+          PUBLISH_RESULT: ${{ needs.publish-pypi.result }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "No SLACK_WEBHOOK_URL secret; skipping Slack."
+            exit 0
+          fi
+          if [ "$PUBLISH_RESULT" = "success" ]; then
+            COLOR="good"
+            TITLE="Release successful"
+          else
+            COLOR="danger"
+            TITLE="Release failed or skipped (see workflow)"
+          fi
+          PAYLOAD=$(jq -n \
+            --arg color "$COLOR" \
+            --arg title "$TITLE" \
+            --arg ver "$VERSION" \
+            --arg pub "$PUBLISH_RESULT" \
+            --arg sha "${{ github.sha }}" \
+            '{attachments:[{color:$color,title:$title,text:("Bleu.js " + $ver + " — publish-pypi: " + $pub + " — " + $sha)}]}')
+          HTTP=$(curl -sS -o /tmp/slack_body.txt -w "%{http_code}" -X POST \
+            -H 'Content-type: application/json' \
+            -d "$PAYLOAD" "$SLACK_WEBHOOK_URL" || true)
+          if [ "$HTTP" != "200" ]; then
+            echo "Slack webhook returned HTTP $HTTP (fix SLACK_WEBHOOK_URL if this should notify); non-blocking."
+            [ -f /tmp/slack_body.txt ] && head -c 200 /tmp/slack_body.txt || true
+          fi
+          exit 0
