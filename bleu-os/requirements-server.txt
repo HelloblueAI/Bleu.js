@@ -15,8 +15,8 @@ psycopg2-binary==2.9.11
 pyasn1>=0.6.2
 pydantic-settings>=2.10.1
 pyjwt>=2.10.1
-python-dotenv>=0.21,<1.3
-python-multipart>=0.0.22,<0.0.23
+python-dotenv>=1.2.2,<1.3
+python-multipart>=0.0.26,<0.0.27
 redis>=6.2,<8.0
 requests>=2.32.4
 sqlalchemy==2.0.49

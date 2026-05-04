@@ -13,6 +13,7 @@ permissions:
 jobs:
   welcome:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Welcome First Issue
         if: github.event_name == 'issues' && github.event.action == 'opened'
