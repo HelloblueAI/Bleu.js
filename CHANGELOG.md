@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.5.7] - 2026-05-04
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.5.6 to 1.5.7
+- See commit history for changes
+
+
 ## [v1.5.6] - 2026-05-04
 
 ### 🎉 Automatic Release
