@@ -43,7 +43,7 @@ redis>=6.3.0
 
 # Additional utilities
 requests>=2.32.4
-rich>=14.1.0
+rich>=15.0.0
 safety>=3.7.0
 scikit-learn>=1.7.1
 sqlalchemy>=2.0.42
