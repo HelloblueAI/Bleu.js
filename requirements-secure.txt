@@ -46,7 +46,7 @@ python-multipart>=0.0.6
 qiskit>=2.1.1
 redis>=6.3.0
 requests>=2.32.4
-rich>=14.1.0
+rich>=15.0.0
 safety>=3.7.0
 scikit-learn>=1.7.1
 
