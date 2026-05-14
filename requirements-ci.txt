@@ -57,7 +57,7 @@ structlog>=25.5.0
 # ML frameworks
 tensorflow>=2.16.2
 torch>=2.7.1
-transformers>=4.37.0
+transformers>=5.8.1
 twine>=6.1.0
 
 # Security
