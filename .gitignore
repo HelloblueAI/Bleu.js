@@ -1032,3 +1032,4 @@ trivy-results.sarif
 
 # Local venvs (any ad-hoc names)
 security-update-env/
+Bleu.js/
