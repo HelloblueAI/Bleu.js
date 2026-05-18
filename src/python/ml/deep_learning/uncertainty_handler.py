@@ -343,9 +343,8 @@ class UncertaintyHandler(Generic[T]):
 
         # Fit uncertainty estimator
         if self.uncertainty_estimator is not None:
-            estimator = cast(T, self.uncertainty_estimator)
-            if hasattr(estimator, "fit"):
-                estimator.fit(features, labels)
+            if hasattr(self.uncertainty_estimator, "fit"):
+                self.uncertainty_estimator.fit(features, labels)
 
     async def get_calibration_metrics(self) -> dict[str, float]:
         """Get calibration metrics"""
@@ -356,8 +355,7 @@ class UncertaintyHandler(Generic[T]):
         if self.model is None:
             return {}
 
-        model = cast(T, self.model)
-        predictions = model.predict(features)
+        predictions = self.model.predict(features)
 
         # Calculate calibration metrics
         metrics = {
