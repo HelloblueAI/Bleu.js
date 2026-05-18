@@ -274,7 +274,7 @@ class TrainingManager:
         """Perform distributed hyperparameter tuning using Ray Tune."""
         try:
             if not self.initialized:
-                await self.initialize()
+                self.initialize()
 
             # Define search space
             search_space = {

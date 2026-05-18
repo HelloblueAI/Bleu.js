@@ -11,9 +11,8 @@ from src.ml.optimization.gpu_memory_manager import QuantumGPUManager
 @pytest.fixture
 def mock_gpu_utils():
     """Mock GPU utilities."""
-    with patch("GPUtil.getAvailable") as mock_available:
-        mock_available.return_value = [0, 1]  # Mock two available GPUs
-        yield mock_available
+    # GPUtil is not used by the actual implementation, so we don't need to mock it
+    yield None
 
 
 @pytest.fixture
