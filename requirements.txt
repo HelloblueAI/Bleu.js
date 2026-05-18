@@ -23,7 +23,7 @@ pandas>=2.0.0
 passlib[bcrypt]>=1.7.4
 pennylane>=0.42.1
 pillow>=12.1.1  # Fixed CVE-2026-25990 (Pillow PSD out-of-bounds write)
-pip-audit>=2.9.0
+pip-audit>=2.10.0
 pre-commit>=3.5.0
 pydantic>=2.11.0
 # Use cryptography-based JWT instead of python-jose
