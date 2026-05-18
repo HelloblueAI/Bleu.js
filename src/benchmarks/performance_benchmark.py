@@ -255,7 +255,7 @@ class PerformanceBenchmark:
                 value=energy_efficiency,
                 unit="%",
                 statistical_significance=self._calculate_statistical_significance(
-                    energy_readings, [baseline_energy] * len(energy_readings)
+                    energy_readings, [float(baseline_energy)] * len(energy_readings)
                 ),
                 metadata={
                     "energy_used_j": energy_used,
@@ -309,7 +309,7 @@ class PerformanceBenchmark:
                     np.percentile(times, 99),
                 ),
                 statistical_significance=self._calculate_statistical_significance(
-                    times, [baseline_time] * len(times)
+                    times, [float(baseline_time)] * len(times)
                 ),
                 metadata={
                     "avg_inference_time_ms": avg_time * 1000,

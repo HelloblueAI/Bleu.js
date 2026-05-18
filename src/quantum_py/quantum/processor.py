@@ -146,7 +146,7 @@ class QuantumProcessor(QuantumProcessorBase):
 
         return np.array(processed_features)
 
-    def initialize(self) -> bool:
+    def initialize(self) -> None:
         """Initialize the quantum processor"""
         try:
             # Initialize quantum circuit
@@ -176,17 +176,16 @@ class QuantumProcessor(QuantumProcessorBase):
                 f"- Error correction: "
                 f"{'Enabled' if self.error_correction else 'Disabled'}"
             )
-            return True
 
         except RuntimeError as e:
             print(f"Error initializing processor: {str(e)}")
-            return False
+            raise
         except ValueError as e:
             print(f"Invalid parameter value: {str(e)}")
-            return False
+            raise
         except ImportError as e:
             print(f"Failed to import required dependencies: {str(e)}")
-            return False
+            raise
 
     def _get_noise_model(self) -> Optional[NoiseModel]:
         """Get noise model for error correction"""
