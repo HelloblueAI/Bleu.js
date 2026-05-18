@@ -58,7 +58,7 @@ structlog>=25.5.0
 tensorflow>=2.16.2
 torch>=2.7.1
 transformers>=5.8.1
-twine>=6.1.0
+twine>=6.2.0
 
 # Security
 urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
