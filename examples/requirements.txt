@@ -84,5 +84,5 @@ tensorflow>=2.13.0
 torch>=2.0.0
 tqdm>=4.67.3
 uvicorn>=0.23.0
-vaex>=4.15.0
+vaex>=4.19.0
 xgboost>=1.7.0
