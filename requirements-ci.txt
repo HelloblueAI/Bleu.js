@@ -11,7 +11,7 @@ black>=25.1.0
 boto3>=1.24.0
 
 # Build tools
-build>=1.2.2
+build>=1.5.0
 cirq>=1.5.0
 cryptography>=44.0.3
 
