@@ -388,6 +388,7 @@ with open(model_path, 'rb') as f:
 **For users**
 
 - **[Security policy & reporting](SECURITY.md)** - No secrets in repo; how to report vulnerabilities; deployment checklist
+- **[Repository Health Report](REPOSITORY_HEALTH_REPORT.md)** - Current status, metrics, and recommendations
 - **[User Concerns & FAQ](./docs/USER_CONCERNS_AND_FAQ.md)** - Addresses common concerns about documentation, dependencies, resources, and use cases
 - **[API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
 - **[Resource Requirements](./docs/RESOURCE_REQUIREMENTS.md)** - System requirements and use case guidance
@@ -396,6 +397,7 @@ with open(model_path, 'rb') as f:
 - **[Backend repo](docs/BACKEND_REPO.md)** - Node/Express backend lives in a separate repo; export script and setup
 - **[Repositories and sync](docs/REPOSITORIES.md)** - How the two repos work together (API contract, where to contribute)
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
+- **[Monitoring Guide](./docs/MONITORING_GUIDE.md)** - Monitoring strategies, metrics, and alerting
 
 ### Version
 
