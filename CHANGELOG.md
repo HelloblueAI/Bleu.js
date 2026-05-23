@@ -6,6 +6,9 @@
 - Version bumped automatically from 1.5.19 to 1.5.20
 - See commit history for changes
 
+### 🔒 Security Follow-Up
+- Raise `python-multipart` minimum to `0.0.27` across manifests to address multipart header DoS advisories
+
 
 ## [v1.5.19] - 2026-05-18
 
