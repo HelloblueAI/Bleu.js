@@ -39,7 +39,7 @@ pip install qiskit>=1.1.0 cirq==1.2.0 pennylane==0.30.0
 
 # Install API and web framework
 echo -e "${YELLOW}Installing API and web framework...${NC}"
-pip install fastapi==0.115.12 uvicorn==0.34.0 python-multipart==0.0.6 pydantic>=2.9.2
+pip install fastapi==0.115.12 uvicorn==0.34.0 python-multipart==0.0.27 pydantic>=2.9.2
 
 # Install database dependencies
 echo -e "${YELLOW}Installing database dependencies...${NC}"

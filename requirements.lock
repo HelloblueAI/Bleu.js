@@ -277,7 +277,7 @@ python-dotenv==1.0.0
 python-gnupg==0.4.8
 python-jose==3.5.0
 python-json-logger==3.3.0
-python-multipart==0.0.20
+python-multipart==0.0.27
 python-slugify==8.0.4
 python-xlib==0.29
 pythran==0.10.0
