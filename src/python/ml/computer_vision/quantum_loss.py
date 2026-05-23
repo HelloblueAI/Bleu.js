@@ -179,7 +179,7 @@ class QuantumLoss:
         # Convert to quantum state
         if features is None:
             raise ValueError("Features cannot be None")
-        quantum_state = features.numpy()  # type: ignore
+        quantum_state = features.numpy()
         if quantum_state is None:
             raise ValueError("Failed to convert features to numpy array")
 

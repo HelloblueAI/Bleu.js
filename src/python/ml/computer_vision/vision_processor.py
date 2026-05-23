@@ -38,7 +38,7 @@ class VisionProcessor:
         self.models: dict[str, tf.keras.Model] = {}
         self.initialized = False
         self.model = None
-        self._quantum_processor = None  # type: ignore
+        self._quantum_processor = None
 
     def initialize(self):
         """Initialize the vision processor."""

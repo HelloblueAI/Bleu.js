@@ -65,11 +65,11 @@ try:
         ValidationError,
     )
 except ImportError:
-    AuthenticationError = None  # type: ignore[misc, assignment]
-    BleuAPIError = None  # type: ignore[misc, assignment]
-    NetworkError = None  # type: ignore[misc, assignment]
-    RateLimitError = None  # type: ignore[misc, assignment]
-    ValidationError = None  # type: ignore[misc, assignment]
+    AuthenticationError = None
+    BleuAPIError = None
+    NetworkError = None
+    RateLimitError = None
+    ValidationError = None
 
 # Optional API client (requires httpx)
 try:

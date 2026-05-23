@@ -5,7 +5,7 @@ Check PyPI download statistics for Bleu.js
 import json
 from datetime import datetime
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 
 def get_pypistats(package_name="bleu-js", stat_type="recent"):

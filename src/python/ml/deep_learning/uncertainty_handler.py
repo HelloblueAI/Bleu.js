@@ -4,7 +4,7 @@ Copyright (c) 2024, Bleu.js
 """
 
 from dataclasses import dataclass
-from typing import Any, Generic, Protocol, TypeGuard, TypeVar, cast, runtime_checkable
+from typing import Any, Generic, Protocol, TypeGuard, TypeVar, runtime_checkable
 
 import numpy as np
 import ray
@@ -343,8 +343,9 @@ class UncertaintyHandler(Generic[T]):
 
         # Fit uncertainty estimator
         if self.uncertainty_estimator is not None:
-            if hasattr(self.uncertainty_estimator, "fit"):
-                self.uncertainty_estimator.fit(features, labels)
+            estimator = self.uncertainty_estimator
+            if hasattr(estimator, "fit"):
+                estimator.fit(features, labels)
 
     async def get_calibration_metrics(self) -> dict[str, float]:
         """Get calibration metrics"""
@@ -355,7 +356,8 @@ class UncertaintyHandler(Generic[T]):
         if self.model is None:
             return {}
 
-        predictions = self.model.predict(features)
+        model = self.model
+        predictions = model.predict(features)
 
         # Calculate calibration metrics
         metrics = {

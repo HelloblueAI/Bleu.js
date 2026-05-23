@@ -224,8 +224,8 @@ class PerformanceBenchmark:
                 cpu_readings.append(end_cpu - start_cpu)
 
             # Calculate comprehensive energy metrics
-            energy_used = np.mean(energy_readings)
-            memory_used = np.mean(memory_readings)
+            energy_used = float(np.mean(energy_readings))
+            memory_used = float(np.mean(memory_readings))
             cpu_used = np.mean(cpu_readings)
 
             # Calculate baseline with hardware-specific factors
@@ -288,13 +288,13 @@ class PerformanceBenchmark:
                 batch_sizes.extend([batch_size] * len(batch_times))
 
             # Calculate comprehensive timing metrics
-            avg_time = np.mean(times)
+            avg_time = float(np.mean(times))
             np.std(times)
             min_time = np.min(times)
             max_time = np.max(times)
 
             # Calculate baseline with batch size consideration
-            baseline_time = avg_time * 1.6  # More realistic baseline
+            baseline_time = float(avg_time * 1.6)  # More realistic baseline
 
             # Calculate throughput metrics
             throughput = 1 / avg_time

@@ -154,7 +154,7 @@ class AdvancedDecisionTree:
         self._validate_labels(labels)
         self.model = self._build_tree(features, labels)
         feature_importance_result = self._calculate_feature_importance()
-        self.feature_importance = dict(feature_importance_result or {})  # type: ignore
+        self.feature_importance = dict(feature_importance_result or {})
         tree_structure_result = self._extract_tree_structure()
         self.tree_structure = dict(tree_structure_result or {})
 

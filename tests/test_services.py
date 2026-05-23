@@ -11,7 +11,7 @@ from src.services.email_service import EmailService
 try:
     from src.services.model_service import ModelService
 except ImportError:
-    ModelService = None  # type: ignore[misc, assignment]
+    ModelService = None
 from src.services.monitoring_service import MonitoringService
 from src.services.rate_limiting_service import RateLimitingService
 from src.services.redis_client import RedisClient
