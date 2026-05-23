@@ -95,7 +95,7 @@ class SubscriptionService:
                 APICallLog.method == method,
                 APICallLog.status_code == 0,  # Find the most recent uncompleted log
             )
-            .order_by(APICallLog.created_at.desc())  # type: ignore
+            .order_by(APICallLog.created_at.desc())
             .first()
         )
 
@@ -113,7 +113,7 @@ class SubscriptionService:
         recent_calls = (
             db.query(APICallLog)
             .filter(APICallLog.user_id == user_id)
-            .order_by(APICallLog.created_at.desc())  # type: ignore
+            .order_by(APICallLog.created_at.desc())
             .limit(10)
             .all()
         )

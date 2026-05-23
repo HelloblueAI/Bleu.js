@@ -643,8 +643,7 @@ def process_quantum_circuit(
     Returns:
         Dictionary containing the results
     """
-    # ... existing code ...
-    return {}
+    raise NotImplementedError("process_quantum_circuit is not implemented yet.")
 
 
 def analyze_quantum_results(
@@ -661,8 +660,7 @@ def analyze_quantum_results(
     Returns:
         Dictionary containing analysis results
     """
-    # ... existing code ...
-    return {}
+    raise NotImplementedError("analyze_quantum_results is not implemented yet.")
 
 
 def optimize_quantum_parameters(
@@ -679,5 +677,4 @@ def optimize_quantum_parameters(
     Returns:
         Dictionary containing optimized parameters and metrics
     """
-    # ... existing code ...
-    return {"optimized_params": initial_params, "loss": 0.0}
+    raise NotImplementedError("optimize_quantum_parameters is not implemented yet.")

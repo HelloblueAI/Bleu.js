@@ -249,8 +249,9 @@ class BenchmarkSuite:
     # Helper methods
     def prepare_test_images(self, category: str) -> List[np.ndarray]:
         """Prepare test images for benchmarking."""
-        # Implementation details
-        return []
+        raise NotImplementedError(
+            f"Test image preparation is not implemented for category '{category}'."
+        )
 
     def calculate_accuracy_improvement(self, classical: Dict, quantum: Dict) -> float:
         """Calculate accuracy improvement percentage."""
@@ -270,15 +271,16 @@ class BenchmarkSuite:
 
     async def measure_response_time(self) -> float:
         """Measure system response time."""
-        # Implementation details
-        return 0.0
+        raise NotImplementedError("Response time measurement is not implemented yet.")
 
     async def measure_power_consumption(self) -> float:
         """Measure power consumption."""
-        # Implementation details
-        return 0.0
+        raise NotImplementedError(
+            "Power consumption measurement is not implemented yet."
+        )
 
     def calculate_energy_efficiency(self, power_consumption: float) -> Dict[str, float]:
         """Calculate energy efficiency metrics."""
-        # Implementation details
-        return {}
+        raise NotImplementedError(
+            "Energy efficiency calculation is not implemented for benchmark suite."
+        )
