@@ -71,7 +71,6 @@ jobs:
   # VERSION BUMP (main branch only)
   # ============================================================================
   version-bump:
-    needs: auto-assign
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -236,7 +235,6 @@ jobs:
     name: 🧹 Code Quality & Linting
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [auto-assign, version-bump]
 
     steps:
       - name: Free Disk Space
@@ -297,7 +295,7 @@ jobs:
   # ============================================================================
   test:
     name: 🧪 Test Suite
-    needs: [auto-assign, version-bump, security-scan]
+    needs: security-scan
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
