@@ -34,7 +34,7 @@ print("-" * 70)
 
 client = BleuAPIClient(
     api_key="bleujs_sk_your_key_here",
-    base_url="https://bleujs.org",  # Custom base URL
+    base_url="https://api.bleujs.org",  # Custom base URL
     timeout=30.0,  # 30 second timeout
     max_retries=5,  # Retry failed requests up to 5 times
 )

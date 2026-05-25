@@ -188,7 +188,7 @@ async with AsyncBleuAPIClient() as client:
 ```python
 client = BleuAPIClient(
     api_key="bleujs_sk_...",
-    base_url="https://bleujs.org",  # Custom base URL
+    base_url="https://api.bleujs.org",  # Custom base URL
     timeout=30.0,                    # Request timeout (seconds)
     max_retries=5                    # Max retry attempts
 )

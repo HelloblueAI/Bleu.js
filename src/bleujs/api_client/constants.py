@@ -8,7 +8,7 @@ Best-in-market defaults: separate connect/read timeouts, retries with backoff.
 """
 
 # Base URL and env var (CLI and client read BLEUJS_BASE_URL; default below)
-DEFAULT_BASE_URL = "https://bleujs.org"
+DEFAULT_BASE_URL = "https://api.bleujs.org"
 
 # API paths (relative to base URL)
 ENDPOINT_HEALTH = "/health"

@@ -93,7 +93,7 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 ## SDK – Cloud API
 
-**Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)** (same paths and `Authorization: Bearer …` work against `https://api.bleujs.org` if you set `BLEUJS_BASE_URL`).
+**Access Bleu.js via REST API at `https://api.bleujs.org`** (get your API key at [bleujs.org](https://bleujs.org)).
 
 ### Integrators (hosted API)
 
@@ -401,7 +401,7 @@ with open(model_path, 'rb') as f:
 
 ### Version
 
-- **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
+- **Release version:** keep `pyproject.toml` and `src/bleujs/__init__.py` in sync
 - **Installed package:** `from bleujs import __version__` or `bleu version` / `bleujs version`
 - **In-repo / API:** `from src.version import get_version` (used by the main app, `/health`, and FastAPI)
 

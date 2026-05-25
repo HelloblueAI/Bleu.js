@@ -1,6 +1,6 @@
 """
 Legacy setuptools entry point for compatibility (e.g. pip install -e .).
-Canonical build: pyproject.toml + Poetry. Version is read from src/bleujs/__init__.py only.
+Canonical build: pyproject.toml + Poetry. Keep this legacy version source in sync with pyproject.toml.
 """
 
 import re
@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Single source of truth: read version from bleujs package (do not hardcode here)
+# Legacy setuptools reads the runtime package version.
 _version_file = "src/bleujs/__init__.py"
 with open(_version_file, "r", encoding="utf-8") as fh:
     _version_match = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', fh.read())

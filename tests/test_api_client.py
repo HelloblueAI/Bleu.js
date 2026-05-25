@@ -65,6 +65,7 @@ class TestClientInitialization:
         client = BleuAPIClient(api_key=mock_api_key)
         assert client.api_key == mock_api_key
         assert client.base_url == BleuAPIClient.DEFAULT_BASE_URL
+        assert client.base_url == "https://api.bleujs.org"
 
     def test_client_without_api_key(self):
         """Test creating client without API key raises error"""
