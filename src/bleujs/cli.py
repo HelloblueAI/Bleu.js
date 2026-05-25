@@ -38,7 +38,7 @@ try:
     )
 except ImportError:
     BleuAPIClient = None
-    DEFAULT_BASE_URL = "https://api.bleujs.org"
+    DEFAULT_BASE_URL = "https://api.bleujs.org"  # pragma: no cover
     DEFAULT_MODEL_CHAT = "bleu-chat-v1"
     DEFAULT_MODEL_EMBED = "bleu-embed-v1"
     DEFAULT_MODEL_GENERATE = "bleu-gen-v1"

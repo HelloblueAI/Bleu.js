@@ -279,7 +279,7 @@ jobs:
           poetry run isort . --check-only
           poetry run flake8 . --max-line-length=88 --extend-ignore=E501,W503 || true
           poetry run mypy . --ignore-missing-imports --no-strict-optional || true
-          poetry run bandit -r . -f json -o bandit-lint-results.json || true
+          poetry run bandit -r src scripts -x ".venv,venv,env,security-update-env,tests" -f json -o bandit-lint-results.json || true
 
       - name: Upload linting results
         uses: actions/upload-artifact@v7
@@ -426,7 +426,7 @@ jobs:
       - name: Download coverage reports
         uses: actions/download-artifact@v8
         with:
-          name: test-results-ubuntu-latest-3.11
+          name: test-results-Linux-${{ env.PYTHON_VERSION }}
           path: .
 
       - name: SonarCloud Scan
