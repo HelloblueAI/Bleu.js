@@ -2,6 +2,7 @@
 """
 Check PyPI download statistics for Bleu.js
 """
+
 import json
 from datetime import datetime
 
