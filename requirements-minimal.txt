@@ -4,11 +4,11 @@
 bcrypt==5.0.0
 
 # AWS services
-boto3==1.43.9
-botocore==1.43.9
+boto3==1.43.14
+botocore==1.43.14
 cirq>=1.5.0
 # FastAPI and web framework
-fastapi==0.136.1
+fastapi==0.136.3
 
 # ML and AI
 numpy<3.0
