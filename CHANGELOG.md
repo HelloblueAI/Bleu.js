@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.5.23] - 2026-05-25
+
+### Fixed
+- Default the Python SDK and CLI API base URL to `https://api.bleujs.org` so installed clients target the API host directly.
+- Add a live PyPI SDK smoke workflow that installs `bleu-js` in a clean virtualenv and exercises `health()` and `list_models()` with a real API key.
+- Document the Cloudflare/WAF requirement for `/health` and `/api/v1/*` to allow non-browser Python SDK clients.
+
+
 ## [v1.5.22] - 2026-05-25
 
 ### 🎉 Automatic Release

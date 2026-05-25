@@ -1,0 +1,59 @@
+name: Live SDK Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 9 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-sdk-smoke
+  cancel-in-progress: false
+
+jobs:
+  pypi-sdk-smoke:
+    name: PyPI SDK live API smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BLEUJS_API_KEY: ${{ secrets.BLEUJS_API_KEY }}
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install published SDK in clean venv
+        run: |
+          python -m venv .venv-smoke
+          . .venv-smoke/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install bleu-js
+          python -m pip show bleu-js
+
+      - name: Verify imports and CLI entry points
+        run: |
+          . .venv-smoke/bin/activate
+          python -c "import bleujs; from bleujs.api_client import BleuAPIClient; from bleujs import BleuJS; print('imports ok')"
+          bleu version
+          bleujs version
+
+      - name: Exercise live API from published SDK
+        run: |
+          if [ -z "$BLEUJS_API_KEY" ]; then
+            echo "BLEUJS_API_KEY repository secret is required for live SDK smoke tests."
+            exit 1
+          fi
+
+          . .venv-smoke/bin/activate
+          python - <<'PY'
+          import os
+          from bleujs.api_client import BleuAPIClient
+
+          client = BleuAPIClient(api_key=os.environ["BLEUJS_API_KEY"])
+          print("health:", client.health())
+          print("models:", client.list_models())
+          PY

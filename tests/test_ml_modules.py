@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from src.ml.enhanced_xgboost import (
     EnhancedXGBoost,
     PerformanceConfig,
+    PerformanceOptimizer,
     QuantumFeatureConfig,
     SecurityConfig,
 )
@@ -35,6 +36,18 @@ class TestEnhancedXGBoost:
         assert model is not None
         assert hasattr(model, "fit")
         assert hasattr(model, "predict")
+
+    def test_xgboost_device_selection(self, monkeypatch):
+        """Test XGBoost 3.x device selection without deprecated gpu_id."""
+        cpu_optimizer = PerformanceOptimizer(PerformanceConfig(use_gpu=False))
+        assert cpu_optimizer.get_xgboost_device() == "cpu"
+
+        gpu_optimizer = PerformanceOptimizer(PerformanceConfig(use_gpu=True))
+        monkeypatch.setattr(gpu_optimizer, "_get_gpu_memory", lambda: 0)
+        assert gpu_optimizer.get_xgboost_device() == "cpu"
+
+        monkeypatch.setattr(gpu_optimizer, "_get_gpu_memory", lambda: 1024)
+        assert gpu_optimizer.get_xgboost_device() == "cuda"
 
     def test_fit_model(self):
         """Test model fitting."""

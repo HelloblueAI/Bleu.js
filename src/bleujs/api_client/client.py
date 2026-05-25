@@ -2,7 +2,7 @@
 Synchronous client for Bleu.js API
 
 This module provides a synchronous HTTP client for interacting with
-the Bleu.js cloud API at https://bleujs.org
+the Bleu.js cloud API at https://api.bleujs.org
 """
 
 import os

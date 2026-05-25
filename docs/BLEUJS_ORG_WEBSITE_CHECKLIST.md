@@ -6,7 +6,7 @@ Use this checklist when updating the live site [bleujs.org](https://bleujs.org) 
 
 ## 1. Developers / Docs / API
 
-- [ ] **API base URL** — The API is served at `https://bleujs.org` (or your API subdomain). Ensure docs and examples use the same base URL as the deployed backend (Bleujs.-backend when deployed).
+- [ ] **API base URL** — The SDK and API docs use `https://api.bleujs.org` for API traffic. Ensure Cloudflare, docs, and examples use the same base URL as the deployed backend (Bleujs.-backend when deployed).
 - [ ] **API endpoints** — Match the [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes): e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`, `GET /api/v1/models`, `GET /health`. Machine-readable spec: [docs/api/openapi.yaml](api/openapi.yaml).
 - [ ] **Link to SDK/docs** — Point to the [Bleu.js repo](https://github.com/HelloblueAI/Bleu.js) for SDK, CLI, and [API Client Guide](API_CLIENT_GUIDE.md). Optional: link to [Get started](GET_STARTED.md) (e.g. on GitHub).
 
@@ -30,10 +30,10 @@ Use this checklist when updating the live site [bleujs.org](https://bleujs.org) 
 - [ ] **Pricing / plans** — `https://bleujs.org/pricing` is referenced in the repo; ensure that page exists and is correct.
 - [ ] **Docs URL** — Several places reference `https://bleujs.org/docs`; ensure it resolves to your docs or update references.
 
-## 6. No change needed
+## 6. Repo defaults
 
-- Links in the **Bleu.js repo** (README, docs, API client defaults) already use `https://bleujs.org`. You don’t need to change those unless you move the API to a different domain (e.g. `api.bleujs.org`).
+- Links for sign-up and API keys should keep pointing to `https://bleujs.org`; SDK/API request defaults should point to `https://api.bleujs.org`.
 
 ---
 
-**Summary:** Align the website with: (1) API base URL and endpoints matching the contract (and [openapi.yaml](api/openapi.yaml)), (2) “Contribute” / open source mentioning both repos and CONTRIBUTING, (3) deployment pointing at Bleujs.-backend, and (4) optional link to Evaluation and awards. The repo already points at bleujs.org.
+**Summary:** Align the website with: (1) API base URL and endpoints matching the contract (and [openapi.yaml](api/openapi.yaml)), (2) “Contribute” / open source mentioning both repos and CONTRIBUTING, (3) deployment pointing at Bleujs.-backend, and (4) optional link to Evaluation and awards.
