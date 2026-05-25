@@ -260,6 +260,9 @@ extend-exclude = '''
   | \.mypy_cache
   | \.tox
   | \.venv
+  | security-update-env
+  | venv
+  | env
   | build
   | dist
 )/
@@ -269,6 +272,19 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
+skip_gitignore = true
+skip = [
+    ".venv",
+    "venv",
+    "env",
+    "security-update-env",
+]
+skip_glob = [
+    ".venv/*",
+    "venv/*",
+    "env/*",
+    "security-update-env/*",
+]
 
 [tool.mypy]
 python_version = "3.11"
