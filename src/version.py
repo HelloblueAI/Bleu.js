@@ -1,6 +1,6 @@
 """
 Centralized version for Bleu.js.
-Single source of truth: src/bleujs/__init__.py __version__.
+Runtime source: src/bleujs/__init__.py __version__.
 Use this module when you need the package version (API, config, health endpoints).
 """
 

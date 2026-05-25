@@ -12,8 +12,8 @@ info:
     url: https://github.com/HelloblueAI/Bleu.js
 
 servers:
-  - url: https://bleujs.org
-    description: Production
+  - url: https://api.bleujs.org
+    description: Production API
   - url: http://localhost:4003
     description: Local / development
 
