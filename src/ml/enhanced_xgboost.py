@@ -525,12 +525,22 @@ class EnhancedXGBoost:
                     "colsample_bytree",
                     "objective",
                     "eval_metric",
+                    "tree_method",
+                    "device",
+                    "gpu_id",
                 }
             }
             # Training callback for logging (XGBoost 2.x: subclass TrainingCallback)
             callback = _TrainingHistoryCallback(self)
             # Early stopping requires eval_set; omit when no validation data provided
             use_early_stopping = eval_set is not None and len(eval_set) > 0
+            gpu_available = (
+                self.performance_config.use_gpu
+                and self.performance_optimizer._get_gpu_memory() > 0
+            )
+            requested_device = kwargs.get("device")
+            if requested_device is None:
+                requested_device = "cuda" if gpu_available else "cpu"
             model_kw: dict[str, Any] = {
                 "n_estimators": kwargs.get("n_estimators", 100),
                 "learning_rate": kwargs.get("learning_rate", 0.1),
@@ -539,8 +549,8 @@ class EnhancedXGBoost:
                 "subsample": kwargs.get("subsample", 0.8),
                 "colsample_bytree": kwargs.get("colsample_bytree", 0.8),
                 "objective": kwargs.get("objective", "binary:logistic"),
-                "tree_method": "hist" if self.performance_config.use_gpu else "auto",
-                "gpu_id": 0 if self.performance_config.use_gpu else None,
+                "tree_method": kwargs.get("tree_method", "hist"),
+                "device": requested_device,
                 "eval_metric": kwargs.get("eval_metric", ["logloss", "auc"]),
                 "callbacks": [callback],
                 **fit_kwargs,
