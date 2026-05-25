@@ -307,6 +307,15 @@ jobs:
             qiskit-aer-version: '0.13.0'
 
     steps:
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          docker system prune -af --volumes || true
+          df -h
+
       - uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.python-version }}

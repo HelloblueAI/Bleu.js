@@ -134,9 +134,9 @@ def test_bleujs_basic():
 
 def test_bleu_ai_version_basic():
     """Test bleu_ai exposes the package release version."""
-    from src import bleu_ai
+    from src import bleu_ai, bleujs
 
-    assert bleu_ai.__version__ == "1.5.23"
+    assert bleu_ai.__version__ == bleujs.__version__
 
 
 def test_db_config_basic():
