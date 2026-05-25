@@ -39,6 +39,7 @@ mocha-report/
 **/dist-tests/
 htmlcov/
 .coverage
+.coverage.*
 *.snap
 __snapshots__/
 *.lcov
