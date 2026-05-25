@@ -8,7 +8,7 @@ click>=8.2.1
 # Security and monitoring (CVE-2026-26007; align with pyproject.toml)
 cryptography>=46.0.5
 # Use alternative to ray for distributed computing
-dask[complete]>=2024.1.0
+dask[complete]>=2026.3.0
 # Core dependencies
 fastapi>=0.115.0
 flake8>=7.3.0
