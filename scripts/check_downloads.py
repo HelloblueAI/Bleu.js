@@ -2,10 +2,11 @@
 """
 Check PyPI download statistics for Bleu.js
 """
+
 import json
 from datetime import datetime
 
-import requests  # type: ignore[import-untyped]
+import requests
 
 
 def get_pypistats(package_name="bleu-js", stat_type="recent"):

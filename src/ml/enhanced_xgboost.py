@@ -393,6 +393,12 @@ class PerformanceOptimizer:
             logger.warning(f"Could not get GPU memory: {e}")
         return 0
 
+    def get_xgboost_device(self) -> str:
+        """Return an XGBoost device string compatible with XGBoost 3.x."""
+        if not self.config.use_gpu:
+            return "cpu"
+        return "cuda" if self._get_gpu_memory() > 0 else "cpu"
+
     def optimize_learning_rate(self, model: xgb.XGBClassifier) -> float:
         """Dynamically optimize learning rate"""
         # Implement learning rate optimization logic
@@ -539,8 +545,8 @@ class EnhancedXGBoost:
                 "subsample": kwargs.get("subsample", 0.8),
                 "colsample_bytree": kwargs.get("colsample_bytree", 0.8),
                 "objective": kwargs.get("objective", "binary:logistic"),
-                "tree_method": "hist" if self.performance_config.use_gpu else "auto",
-                "gpu_id": 0 if self.performance_config.use_gpu else None,
+                "tree_method": "hist",
+                "device": self.performance_optimizer.get_xgboost_device(),
                 "eval_metric": kwargs.get("eval_metric", ["logloss", "auc"]),
                 "callbacks": [callback],
                 **fit_kwargs,

@@ -107,7 +107,7 @@ class TestCLIConfig:
                 json.dump(
                     {
                         "api_key": "bleujs_sk_1234567890abcdef",
-                        "base_url": "https://bleujs.org",
+                        "base_url": "https://api.bleujs.org",
                     },
                     f,
                 )

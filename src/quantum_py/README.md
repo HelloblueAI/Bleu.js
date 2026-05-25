@@ -2150,10 +2150,7 @@ Bleu.js is licensed under the [MIT License](https://github.com/HelloblueAI/Bleu.
 ![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)
 ![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)
 ![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)
-![SonarQube Grade](https://img.shields.io/badge/SonarQube-A-brightgreen)
 ![MIT License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square&logo=opensource)
 
 This software is maintained by Helloblue, Inc.,
 a company dedicated to advanced innovations in AI solutions.
-
-[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=HelloblueAI_Bleu.js)](https://sonarcloud.io/summary/new_code?id=HelloblueAI_Bleu.js)

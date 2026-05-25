@@ -2,6 +2,7 @@
 """
 Verify Bleu.js package is properly installable and functional
 """
+
 import subprocess
 import sys
 import tempfile

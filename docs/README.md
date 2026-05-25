@@ -462,7 +462,6 @@ act --list
 # - ubuntu-22.04 (for Python environment)
 # - python:3.11 (for testing)
 # - node:18 (for frontend checks)
-# - sonarqube:latest (for code quality)
 ```
 
 #### 3. **Environment Setup**
@@ -497,7 +496,6 @@ act --list
 # - Coverage reports (HTML/XML)
 # - Security scan results (JSON)
 # - Performance metrics (CSV)
-# - Quality reports (SonarQube)
 ```
 
 ### Advanced Usage Examples
@@ -552,7 +550,6 @@ When you run `act` on this Bleu.js repository, you'll see:
 [CI/CD Pipeline] 🐳 Pulling Docker images...
 [CI/CD Pipeline]   ✅ ubuntu-22.04:latest
 [CI/CD Pipeline]   ✅ python:3.11-slim
-[CI/CD Pipeline]   ✅ sonarqube:latest
 [CI/CD Pipeline] ⚙️  Setting up environment...
 [CI/CD Pipeline]   ✅ GITHUB_WORKSPACE=/workspace
 [CI/CD Pipeline]   ✅ GITHUB_REPOSITORY=HelloblueAI/Bleu.js
@@ -659,7 +656,6 @@ This comprehensive demonstration shows exactly how the `act` tool works with our
 - **Security Scanning**: Bandit, Safety, and Semgrep integration
 - **Performance Monitoring**: Real-time performance tracking and optimization
 - **Deployment Automation**: Automated deployment to staging and production
-- **Quality Gates**: SonarQube integration with quality thresholds
 
 ## API Documentation
 
@@ -1586,7 +1582,6 @@ These improvements demonstrate our commitment to professional code quality stand
 [![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![SonarQube Grade](https://img.shields.io/badge/SonarQube-Coverage%2041%25-brightgreen)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
 [![Quantum Computing](https://img.shields.io/badge/Quantum-Qiskit%20%7C%20Cirq%20%7C%20PennyLane-blue?style=flat&logo=quantum)](https://github.com/HelloblueAI/Bleu.js)
 [![Quantum Enhanced](https://img.shields.io/badge/Quantum%20Enhanced-AI%20Platform-purple?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Quantum ML](https://img.shields.io/badge/Quantum%20ML-XGBoost%20Enhanced-green?style=flat)](https://github.com/HelloblueAI/Bleu.js)

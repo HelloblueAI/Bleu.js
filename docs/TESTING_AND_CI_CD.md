@@ -7,14 +7,14 @@ This document describes the comprehensive testing setup and CI/CD pipeline for t
 ### Current Status
 
 - **Overall Coverage**: 34%
-- **Target Coverage**: 80% (SonarCloud requirement)
+- **Target Coverage**: 80%
 - **Test Framework**: pytest with coverage reporting
 
 ### Coverage Reports
 
 - **Terminal**: Real-time coverage during test execution
 - **HTML**: Detailed coverage report in `htmlcov/index.html`
-- **XML**: Coverage data for SonarCloud integration
+- **XML**: Machine-readable coverage data for CI and coverage services
 
 ## 🚀 Running Tests
 
@@ -62,36 +62,6 @@ poetry run pytest -v
 - **ModelService**: Tests for model management
 - **MonitoringService**: Tests for monitoring and metrics
 
-## 🔍 SonarCloud Integration
-
-### Configuration
-
-The project is configured for SonarCloud with the following settings:
-
-```properties
-# sonar-project.properties
-sonar.projectKey=helloblueai
-sonar.projectName=Bleu.js
-sonar.host.url=https://sonarcloud.io
-sonar.organization=helloblueai
-
-# Coverage configuration
-sonar.python.coverage.reportPaths=coverage.xml
-sonar.coverage.exclusions=**/tests/**,**/__pycache__/**,**/*.pyc
-
-# Quality Gate thresholds
-sonar.coverage.minimum=80
-sonar.coverage.newCodeMinimum=80
-```
-
-### Quality Gate Requirements
-
-- **Coverage on New Code**: 80% minimum
-- **Coverage on Overall Code**: 80% minimum
-- **Code Smells**: < 5
-- **Bugs**: 0
-- **Vulnerabilities**: 0
-
 ## 🔄 CI/CD Pipeline
 
 ### GitHub Actions Workflow
@@ -99,9 +69,9 @@ sonar.coverage.newCodeMinimum=80
 The CI/CD pipeline includes:
 
 1. **Test Job**: Runs all tests with coverage reporting
-2. **SonarCloud Job**: Uploads coverage to SonarCloud and checks quality gate
-3. **Artifact Upload**: Stores test results and coverage reports
-4. **PR Comments**: Automatically comments on PRs with SonarCloud results
+2. **Lint Job**: Runs Black, isort, flake8, mypy, and Bandit checks
+3. **Security Job**: Runs dependency and security scans
+4. **Artifact Upload**: Stores test results and coverage reports
 
 ### Pipeline Steps
 
@@ -111,11 +81,10 @@ The CI/CD pipeline includes:
   run: |
     poetry run pytest --cov=src --cov-report=term-missing --cov-report=html --cov-report=xml
 
-- name: SonarCloud Scan
-  uses: SonarSource/sonarcloud-github-action@master
-
-- name: SonarCloud Quality Gate Check
-  uses: sonarqube-quality-gate-action@master
+- name: Run linting tools
+  run: |
+    poetry run black . --check
+    poetry run isort . --check-only
 ```
 
 ## 📊 Coverage Analysis
@@ -206,15 +175,7 @@ poetry run coverage run -m pytest
 poetry run coverage report
 ```
 
-#### 3. SonarCloud Integration Issues
-
-```bash
-# Solution: Check SonarCloud configuration
-cat sonar-project.properties
-# Verify SONAR_TOKEN is set in GitHub secrets
-```
-
-#### 4. Test Failures
+#### 3. Test Failures
 
 ```bash
 # Solution: Run tests with verbose output
@@ -239,16 +200,9 @@ poetry run pytest --cov=src.specific_module tests/
 - **XML Report**: `coverage.xml` - Machine-readable format for CI/CD
 - **Terminal Report**: Real-time coverage during test execution
 
-### SonarCloud Dashboard
-
-- **Quality Gate**: Overall project health status
-- **Coverage Trends**: Historical coverage data
-- **Code Smells**: Code quality issues
-- **Security Hotspots**: Security-related issues
-
 ### Continuous Monitoring
 
-- **PR Checks**: Automatic quality gate checks on pull requests
+- **PR Checks**: Automatic test, coverage, lint, and security checks on pull requests
 - **Coverage Alerts**: Notifications when coverage drops
 - **Quality Reports**: Regular quality assessment reports
 
@@ -257,9 +211,8 @@ poetry run pytest --cov=src.specific_module tests/
 ### Immediate Actions
 
 1. **Push Changes**: Commit and push all changes to trigger CI/CD
-2. **Check SonarCloud**: Verify quality gate status in SonarCloud dashboard
-3. **Review Coverage**: Analyze coverage reports to identify gaps
-4. **Add More Tests**: Focus on modules with low coverage
+2. **Review Coverage**: Analyze coverage reports to identify gaps
+3. **Add More Tests**: Focus on modules with low coverage
 
 ### Long-term Goals
 
@@ -273,7 +226,6 @@ poetry run pytest --cov=src.specific_module tests/
 
 - **pytest Documentation**: https://docs.pytest.org/
 - **Coverage.py Documentation**: https://coverage.readthedocs.io/
-- **SonarCloud Documentation**: https://docs.sonarcloud.io/
 - **GitHub Actions Documentation**: https://docs.github.com/en/actions
 
 ---

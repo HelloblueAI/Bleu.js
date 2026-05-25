@@ -93,7 +93,7 @@ print(c.chat([{"role": "user", "content": "Say hi in one word."}]).content)
 
 ## SDK – Cloud API
 
-**Access Bleu.js via REST API at [bleujs.org](https://bleujs.org)** (same paths and `Authorization: Bearer …` work against `https://api.bleujs.org` if you set `BLEUJS_BASE_URL`).
+**Access Bleu.js via REST API at `https://api.bleujs.org`** (get your API key at [bleujs.org](https://bleujs.org)).
 
 ### Integrators (hosted API)
 
@@ -401,7 +401,7 @@ with open(model_path, 'rb') as f:
 
 ### Version
 
-- **Single source of truth:** `src/bleujs/__init__.py` → `__version__`
+- **Release version:** keep `pyproject.toml` and `src/bleujs/__init__.py` in sync
 - **Installed package:** `from bleujs import __version__` or `bleu version` / `bleujs version`
 - **In-repo / API:** `from src.version import get_version` (used by the main app, `/health`, and FastAPI)
 
@@ -588,7 +588,6 @@ Bleu.js uses GitHub Actions for automated CI/CD. Key features:
 - **Security Scanning**: Bandit, Safety, and Semgrep integration
 - **Performance Monitoring**: Real-time performance tracking and optimization
 - **Deployment Automation**: Automated deployment to staging and production
-- **Quality Gates**: SonarQube integration with quality thresholds
 
 For local CI/CD testing, you can use the `act` tool to run GitHub Actions workflows locally. See [GitHub Actions documentation](https://docs.github.com/en/actions) for details.
 
@@ -1095,7 +1094,6 @@ docker run -it --gpus all bleuos/bleu-os:latest
 [![GitHub CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI/CD)](https://github.com/HelloblueAI/Bleu.js)
 [![AI Performance Leader](https://img.shields.io/badge/Performance-Leader-orange?style=flat-square&logo=fastapi)](https://github.com/HelloblueAI/Bleu.js)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat)](https://github.com/HelloblueAI/Bleu.js)
-[![SonarQube Grade](https://img.shields.io/badge/SonarQube-Coverage%2041%25-brightgreen)](https://sonarcloud.io/project/overview?id=HelloblueAI_Bleu.js)
 [![Quantum Computing](https://img.shields.io/badge/Quantum-Qiskit%20%7C%20Cirq%20%7C%20PennyLane-blue?style=flat&logo=quantum)](https://github.com/HelloblueAI/Bleu.js)
 [![Quantum Enhanced](https://img.shields.io/badge/Quantum%20Enhanced-AI%20Platform-purple?style=flat)](https://github.com/HelloblueAI/Bleu.js)
 [![Quantum ML](https://img.shields.io/badge/Quantum%20ML-XGBoost%20Enhanced-green?style=flat)](https://github.com/HelloblueAI/Bleu.js)

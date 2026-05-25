@@ -2,7 +2,7 @@
 
 ## Access the Cloud API from Python
 
-The Bleu.js package now includes a **production-ready API client** to access the cloud API at **bleujs.org** (or **api.bleujs.org** via `BLEUJS_BASE_URL`).
+The Bleu.js package now includes a **production-ready API client** to access the cloud API at **api.bleujs.org**.
 
 **Chat (optional):** pass `session_seed_goal="..."` (max 500 chars) on the first turn of a session for guided onboarding; omit for the same behavior as before.
 
@@ -71,7 +71,7 @@ print(response.embeddings)
 | `/api/v1/embed`    | POST   | Text embeddings  |
 | `/api/v1/models`   | GET    | List models      |
 
-**Base URL:** `https://bleujs.org`
+**Base URL:** `https://api.bleujs.org`
 
 ---
 
@@ -158,7 +158,7 @@ export BLEUJS_API_KEY="bleujs_sk_your_key_here"
 ```python
 client = BleuAPIClient(
     api_key="bleujs_sk_...",       # API key
-    base_url="https://bleujs.org",  # Base URL
+    base_url="https://api.bleujs.org",  # Base URL
     timeout=60.0,                   # Timeout (seconds)
     max_retries=3                   # Max retries
 )

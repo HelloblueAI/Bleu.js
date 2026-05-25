@@ -132,6 +132,13 @@ def test_bleujs_basic():
     assert main is not None
 
 
+def test_bleu_ai_version_basic():
+    """Test bleu_ai exposes the package release version."""
+    from src import bleu_ai
+
+    assert bleu_ai.__version__ == "1.5.23"
+
+
 def test_db_config_basic():
     """Test basic db_config functionality."""
     from src.db_config import get_database_url

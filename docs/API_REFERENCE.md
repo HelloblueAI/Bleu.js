@@ -379,7 +379,7 @@ Client for Bleu.js cloud API.
 ```python
 BleuAPIClient(
     api_key: str,
-    base_url: str = "https://bleujs.org",
+    base_url: str = "https://api.bleujs.org",
     timeout: float = 30.0,
     **kwargs
 )
@@ -388,7 +388,7 @@ BleuAPIClient(
 **Parameters:**
 
 - `api_key` (str): API key for authentication
-- `base_url` (str): Base URL for API (default: "https://bleujs.org")
+- `base_url` (str): Base URL for API (default: "https://api.bleujs.org")
 - `timeout` (float): Request timeout in seconds (default: 30.0)
 - `**kwargs`: Additional client options
 

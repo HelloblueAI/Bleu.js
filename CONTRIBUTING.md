@@ -19,4 +19,4 @@ Quick links:
 
 **Internal docs:** Maintainer-only docs (release instructions, org checklist) are in `docs/internal/` and are not in the public repo; see [docs/internal/README.md](docs/internal/README.md).
 
-**Version:** The package version is defined in `src/bleujs/__init__.py` only. Other subpackages may use their own version strings; the canonical version for releases and the API is `bleujs.__version__`. See [Release checklist](docs/RELEASE_CHECKLIST.md).
+**Version:** Keep `pyproject.toml` and `src/bleujs/__init__.py` in sync for releases. Other subpackages may use their own version strings; the runtime version exposed to users is `bleujs.__version__`. See [Release checklist](docs/RELEASE_CHECKLIST.md).
