@@ -4,5 +4,5 @@ Quantum Python module for Bleu.js.
 This module provides quantum computing capabilities and utilities.
 """
 
-__version__ = "1.5.24"
+__version__ = "1.5.25"
 __author__ = "Bleu.js Team"
