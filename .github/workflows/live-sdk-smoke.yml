@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      BLEUJS_API_KEY: ${{ secrets.BLEUJS_API_KEY }}
+      BLEUJS_API_KEY: ${{ secrets.BLEUJS_API_KEY || secrets.BLEUJS_PYTHON }}
 
     steps:
       - name: Set up Python
@@ -44,7 +44,7 @@ jobs:
       - name: Exercise live API from published SDK
         run: |
           if [ -z "$BLEUJS_API_KEY" ]; then
-            echo "BLEUJS_API_KEY repository secret is required for live SDK smoke tests."
+            echo "Set BLEUJS_API_KEY or BLEUJS_PYTHON repository secret for live SDK smoke tests."
             exit 1
           fi
 
