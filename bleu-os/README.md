@@ -51,7 +51,7 @@ python3 -c "import qiskit, numpy, bleujs; print('✅ Ready!')"
 - Auto-scaling and resource management
 
 ### Security & Performance
-- **Docker image security:** Production images (`latest`, `minimal`) are built for safety: we use **Debian bookworm-slim** (no Alpine busybox/curl CVEs), **do not ship** Debian’s old pip/setuptools (we install pip via get-pip.py and pin pip≥25.3, setuptools≥78.1.1), run as **non-root** user `bleuos`, and pin critical Python deps (cryptography, urllib3, pillow). Fixable CVEs are addressed at build time; remaining base-package items are documented in [TRIVY_ALERTS.md](TRIVY_ALERTS.md). Many users pull this image—we treat it as production-grade.
+- **Docker image security / Grade A:** See [GRADE_A_CHECKLIST.md](GRADE_A_CHECKLIST.md). Production images (`latest`, `minimal`) use **Debian bookworm-slim** (multi-stage) (no Alpine busybox/curl CVEs), **do not ship** Debian’s old pip/setuptools (we install pip via get-pip.py and pin pip≥25.3, setuptools≥78.1.1), run as **non-root** user `bleuos`, and pin critical Python deps (cryptography, urllib3, pillow). Fixable CVEs are addressed at build time; remaining base-package items are documented in [TRIVY_ALERTS.md](TRIVY_ALERTS.md). Many users pull this image—we treat it as production-grade.
 - Quantum-resistant cryptography
 - Hardware security module (HSM) support
 - Real-time threat detection

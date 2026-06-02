@@ -1,6 +1,6 @@
-# Bleu OS Docker Image - Production Ready
+# Bleu OS Docker Image - Alpine (CI legacy / local experiments only)
+# Published :latest uses Dockerfile.production (Debian multi-stage). Do not publish this file as :latest.
 # Optimized, secure container image for quantum/AI workloads
-# This is the main Dockerfile - for multi-stage builds, see Dockerfile.production
 # Base: Alpine 3.23.3+ for CVE fixes (openssl 3.3.6+, sqlite, curl, busybox, c-ares)
 
 ARG BLEU_OS_VERSION=1.0.0
