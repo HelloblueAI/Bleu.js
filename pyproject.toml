@@ -229,7 +229,7 @@ ci = [
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.3"
 pytest-cov = ">=4,<8"
-pytest-asyncio = ">=0.21,<1.4"
+pytest-asyncio = ">=0.21,<1.5"
 black = ">=25.1,<27.0"
 isort = ">=5,<9"
 flake8 = "^4.0.0"
