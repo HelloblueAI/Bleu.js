@@ -5,6 +5,13 @@
 ### Removed
 - **Bleu OS** — Removed `bleu-os/` tree, `bleu-os.yml` and `docker-publish.yml` workflows, and Docker Hub publish path. Railway and self-host use the root [Dockerfile](Dockerfile) with [deploy/requirements-server.txt](deploy/requirements-server.txt). The `bleuos/bleu-os` images on Docker Hub are retired (no longer built from this repo).
 
+## [v1.5.37] - 2026-06-02
+
+### 🎉 Automatic Release
+- Version bumped automatically from 1.5.36 to 1.5.37
+- See commit history for changes
+
+
 ## [v1.5.36] - 2026-06-02
 
 ### 🎉 Automatic Release
