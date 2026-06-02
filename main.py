@@ -55,7 +55,7 @@ def _run_legacy_backend() -> None:
 try:
     from src.main import app  # noqa: E402
 except ImportError:
-    app = None  # Minimal installs (e.g. bleu-os image) may not have src.main
+    app = None  # Minimal installs may not have src.main
 
 if __name__ == "__main__":
     if os.getenv("BLEUJS_LEGACY_BACKEND", "").strip() == "1":

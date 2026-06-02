@@ -1,6 +1,6 @@
 # Dependabot: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 # Keep scan scope minimal to avoid hundreds of duplicate alerts.
-# Only root pip, collaboration-tools npm, root + bleu-os Docker, and GitHub Actions.
+# Only root pip, collaboration-tools npm, root Docker, and GitHub Actions.
 # backend/ is NOT in this repo (see docs/DEPENDABOT_AND_DEPENDENCIES.md).
 # Do not add package-ecosystem entries for backend/ or other removed dirs.
 # To clear legacy ~1.5k alerts: run scripts/dismiss-backend-dependabot-alerts.sh
@@ -58,20 +58,6 @@ updates:
   # Enable version updates for Docker (root)
   - package-ecosystem: "docker"
     directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "helloblueai"
-    labels:
-      - "dependencies"
-      - "docker"
-
-  # Enable version updates for Docker (bleu-os)
-  - package-ecosystem: "docker"
-    directory: "/bleu-os"
     schedule:
       interval: "weekly"
       day: "monday"
