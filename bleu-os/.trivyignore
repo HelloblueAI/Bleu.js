@@ -17,3 +17,13 @@ CVE-2025-15367
 CVE-2025-69534
 CVE-2025-8194
 CVE-2026-1299
+
+# Debian perl (no fix in image — common on stable-slim/Debian 13; bookworm runtime avoids perl when possible)
+CVE-2026-42496
+CVE-2026-42497
+CVE-2026-48959
+CVE-2026-9538
+CVE-2026-48962
+CVE-2025-15649
+CVE-2023-31486
+CVE-2026-48961

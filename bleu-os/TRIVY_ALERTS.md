@@ -9,6 +9,15 @@ This doc explains how we handle Trivy (and similar) security alerts for the **he
 - **`ghcr.io/helloblueai/bleu-os:latest`** and **`bleuos/bleu-os:latest`** are built from **`bleu-os/Dockerfile.production`** (Debian Bookworm). That image is the one that should be scanned and used in production.
 - The **Alpine** Dockerfile (`bleu-os/Dockerfile`) is used in CI only (bleu-os.yml, `push: false`). We do **not** publish the Alpine image as `:latest`, so Trivy alerts that refer to “Alpine” packages (e.g. old zlib/sqlite in Alpine 3.23) apply to a non-published build.
 
+### Base tag: `bookworm-slim` vs `stable-slim`
+
+| Tag | OS | Use |
+|-----|-----|-----|
+| **`bookworm-slim`** (default) | Debian 12 LTS | Production pin; predictable Scout/Trivy surface |
+| **`stable-slim`** | Currently Debian 13 (Trixie) | Only when you intentionally want latest stable |
+
+If Scout lists **`os_version=13`** and **`perl@5.40`**, you are on an image built from **`stable-slim`**. Rebuild with the default Dockerfile (`bookworm-slim`) or set `DEBIAN_VERSION=bookworm-slim` in CI. Perl CVEs with **Fix available: No** are expected until Debian publishes DSA; Grade A can still pass.
+
 ## Intelligent next steps (runbook)
 
 To get to **0 vulnerabilities / passing grade** without changing the image (remaining items are unfixable Debian base or host kernel):

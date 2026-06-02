@@ -141,6 +141,10 @@ jobs:
           context: .
           file: ./${{ matrix.dockerfile }}
           pull: true
+          build-args: |
+            IMAGE_REVISION=${{ github.sha }}
+            BLEU_OS_VERSION=1.0.0
+            DEBIAN_VERSION=bookworm-slim
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta-ghcr.outputs.tags }}
           labels: ${{ steps.meta-ghcr.outputs.labels }}
@@ -158,6 +162,11 @@ jobs:
         with:
           context: .
           file: ./${{ matrix.dockerfile }}
+          pull: true
+          build-args: |
+            IMAGE_REVISION=${{ github.sha }}
+            BLEU_OS_VERSION=1.0.0
+            DEBIAN_VERSION=bookworm-slim
           push: true
           tags: ${{ steps.meta-dockerhub.outputs.tags }}
           labels: ${{ steps.meta-dockerhub.outputs.labels }}

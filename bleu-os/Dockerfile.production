@@ -3,10 +3,11 @@
 # Builder stage: compiles wheels and installs all Python deps, then copies .local to runtime.
 #
 # Build: docker build --pull --no-cache -f bleu-os/Dockerfile.production -t bleuos/bleu-os:latest .
-# Base: debian:stable-slim (Docker Scout–recommended over bookworm-slim; still Debian 12 stable)
+# Base: debian:bookworm-slim (Debian 12 LTS — pinned; debian:stable-slim now tracks Debian 13)
+# Override: docker build --build-arg DEBIAN_VERSION=stable-slim ...
 # Grade A: bleu-os/.trivyignore + Scout policy exceptions — see bleu-os/GRADE_A_CHECKLIST.md
 
-ARG DEBIAN_VERSION=stable-slim
+ARG DEBIAN_VERSION=bookworm-slim
 
 # -----------------------------------------------------------------------------
 # Stage 1: builder (build tools stay here, not in published image)
@@ -130,7 +131,7 @@ LABEL org.opencontainers.image.title="Bleu OS"
 LABEL org.opencontainers.image.description="Production-ready OS for quantum computing and AI"
 LABEL org.opencontainers.image.version="${BLEU_OS_VERSION}"
 LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
-LABEL org.opencontainers.image.base.name="debian:stable-slim"
+LABEL org.opencontainers.image.base.name="debian:bookworm-slim"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 
