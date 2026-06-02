@@ -8,7 +8,7 @@
 
 ## 🚀 Overview
 
-Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads. **Published images (`latest`, `minimal`) use Debian bookworm-slim** for a single, CVE-clean base; other Dockerfiles in this dir (e.g. `Dockerfile`, `Dockerfile.improved`) are Alpine-based and optional. Built on a minimal, secure base, it provides:
+Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads. **Published images (`latest`, `minimal`) use Debian `bookworm-slim` (12 LTS)** — pinned, not rolling `stable-slim`; other Dockerfiles in this dir (e.g. `Dockerfile`, `Dockerfile.improved`) are Alpine-based and optional. Built on a minimal, secure base, it provides:
 
 - **Quantum Hardware Optimization**: Direct access and optimization for quantum processors
 - **AI/ML Acceleration**: Pre-configured for TensorFlow, PyTorch, XGBoost with GPU/TPU support

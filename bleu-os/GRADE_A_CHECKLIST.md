@@ -7,7 +7,7 @@
 | Step | What we did |
 |------|-------------|
 | **Multi-stage image** | `Dockerfile.production` — build tools only in `builder`; runtime has no `build-essential` / `perl` / `linux-libc-dev` |
-| **Base image** | `debian:stable-slim` (Scout-recommended over `bookworm-slim`) |
+| **Base image** | `debian:bookworm-slim` (Debian 12 LTS, pinned). Use `stable-slim` only when intentionally tracking Debian 13+ |
 | **Published tags** | `docker-publish.yml` builds `Dockerfile.production` → `bleuos/bleu-os:latest` |
 | **CI alignment** | `bleu-os.yml` builds/tests **production** Dockerfile (not Alpine) |
 | **Trivy ignore file** | `bleu-os/.trivyignore` — documented Debian/host CVEs only |
