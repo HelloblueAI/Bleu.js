@@ -27,6 +27,14 @@ def test_health_returns_200_and_healthy(client: TestClient):
     assert len(data["version"]) > 0
 
 
+def test_home_returns_200_html(client: TestClient):
+    """GET / renders index.html (Starlette 1.0 TemplateResponse signature)."""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    assert len(response.text) > 0
+
+
 def test_predict_returns_prediction_and_confidence(client: TestClient):
     """POST /predict matches bleujs.org gateway contract (10 floats → JSON)."""
     payload = {"features": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]}
