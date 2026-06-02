@@ -51,14 +51,14 @@ ENTERPRISE_DATA = {
 @app.get("/core", response_class=HTMLResponse)
 async def core_dashboard(request: Request):
     return templates.TemplateResponse(
-        "dashboard.html", {"request": request, "usage_data": CORE_DATA}
+        request, "dashboard.html", {"usage_data": CORE_DATA}
     )
 
 
 @app.get("/enterprise", response_class=HTMLResponse)
 async def enterprise_dashboard(request: Request):
     return templates.TemplateResponse(
-        "dashboard.html", {"request": request, "usage_data": ENTERPRISE_DATA}
+        request, "dashboard.html", {"usage_data": ENTERPRISE_DATA}
     )
 
 
