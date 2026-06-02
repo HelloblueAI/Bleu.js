@@ -13,7 +13,7 @@ This doc explains how we keep Dependabot and security alerts under control so we
 2. **Only these are scanned for updates:**
    - **Pip:** Root only (`/`) — `pyproject.toml` (and lockfile if present). Other `requirements*.txt` in the repo are for CI or reference; we don't add extra pip scan directories.
    - **npm:** `collaboration-tools/` only. No root or other `package.json` in the repo.
-   - **Docker:** Root and `bleu-os/` (minimal set).
+   - **Docker:** Root [Dockerfile](../Dockerfile) only.
    - **GitHub Actions:** `.github/workflows` at root.
 3. **No lockfiles in repo for backend.** We don't commit `backend/package-lock.json` or similar, so we never re-introduce that tree into the repo.
 
@@ -63,7 +63,7 @@ The script uses the GitHub API to list open Dependabot alerts and PATCH each mat
 3. Select those alerts (checkbox or Select all in a filtered view). Use **Dismiss** (or bulk action) and choose:
    - **Reason:** "No longer used" or "Removed from repo"
    - **Comment (optional):** e.g. "Manifest removed; backend is in separate repo."
-4. Repeat until the list only shows alerts for **root** `pyproject.toml`, **collaboration-tools/** npm, **Docker** (root + bleu-os), and **GitHub Actions**.
+4. Repeat until the list only shows alerts for **root** `pyproject.toml`, **collaboration-tools/** npm, **Docker** (root), and **GitHub Actions**.
 
 After that, the count will reflect only current scope (typically dozens, not thousands). Fix or dismiss remaining alerts as usual.
 

@@ -27,8 +27,8 @@ We will acknowledge and work on the report and coordinate disclosure.
 |--------|----------------|---------------------|
 | **Python (app)** | CVEs in `pyproject.toml` deps | Run `./scripts/check-security.sh`; CI runs pip-audit + Safety. Pins are in [pyproject.toml](pyproject.toml) with CVE comments. |
 | **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **~1.5k legacy alerts from old backend:** run `./scripts/dismiss-backend-dependabot-alerts.sh` (see [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss)). |
-| **Docker / Bleu OS** | Base image and system packages | Production image: [bleu-os/Dockerfile.production](bleu-os/Dockerfile.production) (Debian). Status: [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md), [.github/DOCKER_SCOUT_VULNERABILITIES.md](.github/DOCKER_SCOUT_VULNERABILITIES.md). Kernel CVEs = host; patch the host or dismiss. |
-| **Trivy / Code scanning** | Container image vulns (SARIF) | Trivy uploads to **Security → Code scanning** (not Dependabot). To bulk-dismiss documented unfixable alerts: `./scripts/dismiss-trivy-code-scanning-alerts.sh` (see [bleu-os/TRIVY_ALERTS.md](bleu-os/TRIVY_ALERTS.md)). |
+| **Docker** | Base image and system packages | Production image: root [Dockerfile](Dockerfile) (Debian bookworm-slim). Kernel CVEs = host; patch the host or dismiss. |
+| **Trivy / Code scanning** | Container image vulns (SARIF) | Trivy uploads to **Security → Code scanning** (not Dependabot). To bulk-dismiss legacy alerts: `./scripts/dismiss-trivy-code-scanning-alerts.sh`. |
 | **Trivy / Docker Scout** | Container image vulns | CI runs Trivy on images. Unfixable base vulns (c-ares, sqlite, xz, etc.) are documented; rebuild when Alpine/Debian release patches. |
 | **Known transitive (lockfile)** | protobuf 5.x (CVE-2026-0994), ray 2.x (multiple CVEs, no fix yet) | Run `./scripts/check-security.sh`. Protobuf: upgrade when TensorFlow/grpcio support protobuf 6+. Ray: optional extra; track upstream for fixes. |
 
@@ -37,7 +37,7 @@ We will acknowledge and work on the report and coordinate disclosure.
 1. **Local:** `./scripts/check-security.sh` (pip-audit, safety, optional Trivy). Fix any reported Python vulns by bumping versions in `pyproject.toml` and re-running.
 2. **GitHub Security tab:** Open [Dependabot alerts](https://github.com/HelloblueAI/Bleu.js/security/dependabot). Fix or dismiss each alert; for legacy `backend/` alerts, [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss).
 3. **CI:** The main workflow runs Safety, Bandit, and pip-audit and uploads reports. Resolve any failures by updating dependencies or addressing code findings.
-4. **Containers:** Rebuild Bleu OS images after base image or dependency updates; rescan with Trivy. Kernel alerts: patch host or dismiss as “Not fixable in image.”
+4. **Containers:** Rebuild the root Docker image after base image or dependency updates; rescan with Trivy. Kernel alerts: patch host or dismiss as “Not fixable in image.”
 
 ## Dependency alerts and Dependabot
 
@@ -51,7 +51,7 @@ Run dependency and (optional) image checks from the repo root:
 ./scripts/check-security.sh
 ```
 
-This runs **pip-audit** (Python), **safety** (Python, if installed), and optionally **Trivy** on the Bleu OS image if Trivy is installed. For Dependabot and code-scanning alerts, use **GitHub → Security → Dependabot / Code scanning**.
+This runs **pip-audit** (Python), **safety** (Python, if installed), and optionally **Trivy** on a locally built product image if Trivy is installed. For Dependabot and code-scanning alerts, use **GitHub → Security → Dependabot / Code scanning**.
 
 **Easiest (no Poetry, works in Fish and Bash):** install [pipx](https://pypa.github.io/pipx/) then:
 

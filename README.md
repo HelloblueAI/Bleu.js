@@ -1001,48 +1001,21 @@ DATABASE_URL="sqlite:///./bleujs.db" python -m uvicorn src.main:app --reload --p
 
 For complete development setup instructions, see [Contributing Guide](./docs/CONTRIBUTING.md).
 
-## Bleu OS – Quantum-Enhanced Operating System
+## Docker (optional self-host)
 
-Linux distribution optimized for quantum computing and AI workloads.
-
-### What is Bleu OS?
-
-Bleu OS is a specialized Linux distribution designed from the ground up for quantum computing and AI workloads, with native Bleu.js integration.
-
-**Key Features:**
-
-- **2x faster** quantum circuit execution
-- **1.5x faster** ML training
-- **3.75x faster** boot time
-- Quantum-resistant security
-- Zero-config Bleu.js integration
-
-### Get Bleu OS Now
-
-**Docker (Recommended - 5 minutes):**
+**Not required for Bleu.js.** Use the SDK/CLI and [bleujs.org](https://bleujs.org) API by default. To run the product app locally or on your own host, build from the root [Dockerfile](./Dockerfile) (same image Railway uses).
 
 ```bash
-docker pull bleuos/bleu-os:latest
-docker run -it --gpus all bleuos/bleu-os:latest
+docker build -t bleu-js:local .
+docker run --rm -p 8000:8000 -e PORT=8000 bleu-js:local
 ```
 
-**Download ISO:**
+- http://localhost:8000/health
+- http://localhost:8000/
 
-- Visit [GitHub Releases](https://github.com/HelloblueAI/Bleu.js/releases)
-- Download `bleu-os-1.0.0-x86_64.iso`
-- Create bootable USB and install
+If port 8000 is busy, use `-p 8001:8000` and open http://localhost:8001/
 
-**Cloud Deployment:**
-
-- **AWS:** Search "Bleu OS" in Marketplace
-- **GCP:** Available in GCP Marketplace
-- **Azure:** Available in Azure Marketplace
-
-**Learn more:**
-
-- [User Guide](./bleu-os/USER_GUIDE.md) - How to use Bleu OS
-- [How Users Get It](./bleu-os/HOW_USERS_GET_IT.md) - All distribution methods
-- [Quick Start](./bleu-os/QUICKSTART.md) - Get started in 5 minutes
+Server dependencies: [deploy/requirements-server.txt](./deploy/requirements-server.txt). Deployment notes: [docs/DEPLOYMENT_PRACTICES.md](./docs/DEPLOYMENT_PRACTICES.md).
 
 ## Additional Resources
 
@@ -1052,8 +1025,6 @@ docker run -it --gpus all bleuos/bleu-os:latest
 - **[Changelog](./docs/CHANGELOG.md)** - Version history and release notes
 - **[Product architecture](docs/PRODUCT_ARCHITECTURE.md)** - One product app, what runs at bleujs.org
 - **[API Client Guide](docs/API_CLIENT_GUIDE.md)** - SDK and API documentation
-- **[Bleu OS Documentation](./bleu-os/README.md)** - Operating system documentation
-
 ### Community & Support
 
 - **[Community & Maintenance](./docs/COMMUNITY_AND_MAINTENANCE.md)** - Support channels and maintenance status
