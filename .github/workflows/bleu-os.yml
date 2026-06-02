@@ -55,12 +55,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Bleu OS Docker image
+      - name: Build Bleu OS Docker image (production — matches Docker Hub :latest)
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./bleu-os/Dockerfile
+          file: ./bleu-os/Dockerfile.production
+          pull: true
           push: false
+          load: true
           tags: ghcr.io/helloblueai/bleu-os:latest,ghcr.io/helloblueai/bleu-os:${{ env.BLEU_OS_VERSION }}
           cache-from: type=registry,ref=ghcr.io/helloblueai/bleu-os:buildcache
           cache-to: type=registry,ref=ghcr.io/helloblueai/bleu-os:buildcache,mode=max
@@ -69,10 +71,11 @@ jobs:
         run: |
           docker run --rm ghcr.io/helloblueai/bleu-os:latest /bin/bash -c "
             python3 --version &&
+            python3 -c 'import bleujs; print(\"Bleu.js: OK\")' &&
             python3 -c 'import numpy; print(\"NumPy:\", numpy.__version__)' &&
             python3 -c 'import qiskit; print(\"Qiskit:\", qiskit.__version__)' 2>/dev/null || echo 'Qiskit optional' &&
-            echo 'Bleu OS Docker image test passed!'
-          " || echo "Note: Image may need to be built first or pulled from registry"
+            echo 'Bleu OS production image test passed!'
+          "
 
       - name: Clean up Docker after build
         if: always()
@@ -106,6 +109,7 @@ jobs:
         with:
           context: .
           file: ./bleu-os/Dockerfile.production
+          pull: true
           push: false
           load: true
           platforms: linux/amd64
@@ -287,6 +291,7 @@ jobs:
           output: 'trivy-results.sarif'
           exit-code: '0'
           ignore-unfixed: true
+          trivyignores: bleu-os/.trivyignore
 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v4

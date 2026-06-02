@@ -1,0 +1,19 @@
+# Documented unfixable or host-level findings for Bleu OS (Debian bookworm-slim).
+# See bleu-os/TRIVY_ALERTS.md and bleu-os/GRADE_A_CHECKLIST.md
+# Do not add PyPI/library CVEs here unless documented — fix those in Dockerfile pins.
+
+# Debian zlib (no fix in Bookworm yet)
+CVE-2023-45853
+
+# Debian base — no fix version in image (apt upgrade applied)
+CVE-2025-45582
+CVE-2026-2297
+CVE-2026-27601
+
+# CPython in Debian python3.11 (patch via Debian security, not pip)
+CVE-2025-13836
+CVE-2025-15366
+CVE-2025-15367
+CVE-2025-69534
+CVE-2025-8194
+CVE-2026-1299

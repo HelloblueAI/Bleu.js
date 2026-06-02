@@ -4,7 +4,7 @@
 # Security: Build with --pull (e.g. docker build --pull --no-cache) to get latest base
 # and pick up curl/libcurl/binutils fixes when Debian publishes them. See TRIVY_ALERTS.md.
 
-FROM debian:bookworm-slim
+FROM debian:stable-slim
 
 ARG BLEU_OS_VERSION=1.0.0
 ARG IMAGE_REVISION=""
@@ -16,7 +16,7 @@ LABEL org.opencontainers.image.source="https://github.com/HelloblueAI/Bleu.js"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.version="${BLEU_OS_VERSION}"
 LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
-LABEL org.opencontainers.image.base.name="debian:bookworm-slim"
+LABEL org.opencontainers.image.base.name="debian:stable-slim"
 LABEL security.scanning="enabled"
 LABEL security.hardening="enabled"
 

@@ -1,8 +1,10 @@
-# 📊 Docker Scout Grade B - Understanding the Status
+# 📊 Docker Scout Grade B → A
+
+> **Action plan:** [GRADE_A_CHECKLIST.md](GRADE_A_CHECKLIST.md) — multi-stage image, CI, `.trivyignore`, Scout exceptions.
 
 ## Current Status
 
-**Health Score:** **B** (Good, but not perfect)
+**Health Score:** **B** (Good, but not perfect) — target **A** via checklist above
 
 ### Policy Status: "Fixable critical or high vulnerabilities found"
 
