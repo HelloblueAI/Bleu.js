@@ -47,7 +47,7 @@ python-dotenv>=0.20.0
 # Quantum computing
 qiskit>=1.4.2
 requests>=2.32.4
-safety>=3.7.0
+safety>=3.8.1
 scikit-learn>=1.2.2
 
 # Database

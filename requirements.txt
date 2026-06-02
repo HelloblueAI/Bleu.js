@@ -44,7 +44,7 @@ redis>=6.3.0
 # Additional utilities
 requests>=2.32.4
 rich>=15.0.0
-safety>=3.7.0
+safety>=3.8.1
 scikit-learn>=1.7.1
 sqlalchemy>=2.0.42
 # Updated to fix DoS vulnerability CVE-2025-62727 (Issues #302, #303)
