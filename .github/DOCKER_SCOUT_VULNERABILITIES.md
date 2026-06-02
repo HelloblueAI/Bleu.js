@@ -1,18 +1,20 @@
 # Docker Scout Vulnerability Analysis
 
-**See also:** [SECURITY.md](../SECURITY.md) — known vulnerabilities table and one-page fix checklist. For production image (Debian) and **how to get 0 vulnerabilities / passing grade**, see [bleu-os/TRIVY_ALERTS.md](../bleu-os/TRIVY_ALERTS.md) (runbook: policy exception + dismiss script).
+> **Note (2026-06):** The **Bleu OS** distribution (`bleu-os/`, `bleuos/bleu-os` on Docker Hub) was removed from this repo. Railway and self-host use the root [Dockerfile](../Dockerfile). Historical Scout notes below refer to the retired images.
+
+**See also:** [SECURITY.md](../SECURITY.md) — known vulnerabilities table and one-page fix checklist.
 
 ## Current Status
 
-**Date:** 2025-12-10 (updated 2026-03)
-**Images Scanned:** `bleuos/bleu-os:latest`, `bleuos/bleu-os:minimal`
+**Date:** 2025-12-10 (updated 2026-03; Bleu OS retired 2026-06)
+**Images Scanned (historical):** `bleuos/bleu-os:latest`, `bleuos/bleu-os:minimal`
 **Base Image:** **Debian 12 (bookworm-slim)** for published images. Alpine Dockerfiles are CI-only, not published as `:latest`.
 
 ## Vulnerability Summary (Debian-based production image)
 
 Scans of the **Debian bookworm-slim** image may show **80+ findings** (e.g. 1 medium: CVE-2025-45582 in tar; many low in tar, shadow, openssl, patch, apt, gnutls28, openldap, binutils, coreutils, libgcrypt20, jansson, sqlite3, gcc-12, gnupg2). **Fix available: No** for these — Debian 12 has not released patched versions yet.
 
-**What we did:** Fixable items (pip, setuptools, urllib3, wheel, pillow, etc.) are fixed in the Dockerfile. We run `apt-get update && apt-get upgrade -y`. Remaining items are **unfixable in image**; add a **policy exception** in Docker Scout and optionally bulk-dismiss in GitHub Code scanning. See [bleu-os/TRIVY_ALERTS.md](../bleu-os/TRIVY_ALERTS.md) — section “Intelligent next steps (runbook)”.
+**What we did:** Fixable items (pip, setuptools, urllib3, wheel, pillow, etc.) are fixed in the Dockerfile. We run `apt-get update && apt-get upgrade -y`. Remaining items are **unfixable in image**; add a **policy exception** in Docker Scout and optionally bulk-dismiss in GitHub Code scanning.
 
 ## Detailed Vulnerability List
 
@@ -209,7 +211,7 @@ Scans of the **Debian bookworm-slim** image may show **80+ findings** (e.g. 1 me
 - Risk is mitigated by container isolation and non-root user
 - Similar to industry standard (all Alpine images affected)
 
-**Recommendation:** For **Debian-based** production images: add one policy exception in Docker Scout for unfixable base CVEs (see [bleu-os/TRIVY_ALERTS.md](../bleu-os/TRIVY_ALERTS.md)). Rebuild with `--pull --no-cache` periodically. Current risk is acceptable for production use.
+**Recommendation:** For **Debian-based** production images: add one policy exception in Docker Scout for unfixable base CVEs. Rebuild with `--pull --no-cache` periodically. Current risk is acceptable for production use.
 
 ## References
 

@@ -89,7 +89,7 @@ if [ "$DISMISS_ALL" = true ]; then
   COMMENT="Bulk dismiss of open alerts. See docs/DEPENDABOT_AND_DEPENDENCIES.md"
   REASON="not_used"
 elif [ "$DISMISS_KERNEL" = true ]; then
-  # Kernel/OS CVEs: not fixable in container image; patch host. See bleu-os/TRIVY_ALERTS.md
+  # Kernel/OS CVEs: not fixable in container image; patch host. See SECURITY.md
   TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
     .[] |
     select(
@@ -102,16 +102,16 @@ elif [ "$DISMISS_KERNEL" = true ]; then
   COUNT=$(echo "$TO_DISMISS" | grep -c . 2>/dev/null || echo 0)
   echo "Found $COUNT open alert(s) matching kernel/container/OS (Trivy-style)."
   [ "$COUNT" -eq 0 ] && echo "No kernel/container alerts to dismiss." && exit 0
-  COMMENT="Kernel/OS CVE: not fixable in container image; patch host. See bleu-os/TRIVY_ALERTS.md"
+  COMMENT="Kernel/OS CVE: not fixable in container image; patch host. See SECURITY.md"
   REASON="tolerable_risk"
 else
-  # Current scope: collaboration-tools/, bleu-os/, .github/, pyproject.toml, Dockerfile, package.json, etc.
+  # Current scope: collaboration-tools/, .github/, pyproject.toml, Dockerfile, package.json, etc.
   if [ "$DISMISS_ALL_LEGACY" = true ]; then
     TO_DISMISS=$(echo "$ALERTS_JSON" | jq -r '
       .[] | select(.dependency.manifest_path != null) |
       select(
         (.dependency.manifest_path | ascii_downcase | test("backend")) or
-        ((.dependency.manifest_path | ascii_downcase | test("^collaboration-tools/|^bleu-os/|^\\.github/|^pyproject\\.toml|^poetry\\.lock|^pipfile|^requirements|^dockerfile|package\\.json")) | not)
+        ((.dependency.manifest_path | ascii_downcase | test("^collaboration-tools/|^\\.github/|^pyproject\\.toml|^poetry\\.lock|^pipfile|^requirements|^dockerfile|package\\.json")) | not)
       ) | .number | tostring
     ')
   else

@@ -6,7 +6,7 @@ The **Bleu.js project** is split across two repositories so each stays focused, 
 
 | Repository | Purpose | Primary audience |
 |------------|---------|------------------|
-| **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, demos, Bleu OS, product app (bleujs.org surface) | Users, SDK/CLI contributors, doc contributors |
+| **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, demos, product app (bleujs.org surface), Railway Docker image | Users, SDK/CLI contributors, doc contributors |
 | **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** | Node/Express API, ML inference, rules engine, services that power the cloud API | Backend contributors, DevOps |
 
 The backend repo’s canonical name is **Bleujs.-backend** (with the dot); URL: `https://github.com/HelloblueAI/Bleujs.-backend`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run local security checks (Python deps + optional Trivy for Bleu OS image).
+# Run local security checks (Python deps + optional Trivy for product Docker image).
 # For Dependabot/Trivy alerts in the repo, see: GitHub → Security → Dependabot / Code scanning.
 set -e
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -56,14 +56,14 @@ else
 fi
 echo ""
 
-# 3. Container: Trivy (optional, for Bleu OS image)
+# 3. Container: Trivy (optional, for product image)
 echo "[3/3] Trivy (container image; optional)..."
 if command -v trivy >/dev/null 2>&1; then
-  IMG="ghcr.io/helloblueai/bleu-os:latest"
+  IMG="bleu-js:local"
   if docker image inspect "$IMG" >/dev/null 2>&1; then
     trivy image --severity HIGH,CRITICAL "$IMG" 2>/dev/null || true
   else
-    echo "  Image $IMG not found locally. Build with: docker build -f bleu-os/Dockerfile.production -t $IMG ."
+    echo "  Image $IMG not found locally. Build with: docker build -t $IMG ."
   fi
 else
   echo "  Install: https://github.com/aquasecurity/trivy#installation  (optional, for image scan)"
