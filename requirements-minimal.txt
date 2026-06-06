@@ -4,8 +4,8 @@
 bcrypt==5.0.0
 
 # AWS services
-boto3==1.43.19
-botocore==1.43.19
+boto3==1.43.24
+botocore==1.43.24
 cirq>=1.5.0
 # FastAPI and web framework
 fastapi==0.136.3
