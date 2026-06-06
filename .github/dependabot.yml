@@ -1,18 +1,16 @@
 # Dependabot: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
-# Keep scan scope minimal to avoid hundreds of duplicate alerts.
-# Only root pip, collaboration-tools npm, root Docker, and GitHub Actions.
+# Keep scan scope minimal — only root pip, collaboration-tools npm, root Docker, GitHub Actions.
 # backend/ is NOT in this repo (see docs/DEPENDABOT_AND_DEPENDENCIES.md).
-# Do not add package-ecosystem entries for backend/ or other removed dirs.
-# To clear legacy ~1.5k alerts: run scripts/dismiss-backend-dependabot-alerts.sh
 version: 2
 updates:
-  # npm: collaboration-tools only. Do not add other package.json dirs (e.g. backend).
+  # npm: collaboration-tools only
   - package-ecosystem: "npm"
     directory: "/collaboration-tools"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+      timezone: "UTC"
     open-pull-requests-limit: 10
     reviewers:
       - "helloblueai"
@@ -22,19 +20,32 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-    # Group updates to reduce PR noise
     groups:
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
       production-dependencies:
+        applies-to: version-updates
         dependency-type: "production"
+        update-types:
+          - "patch"
+          - "minor"
       development-dependencies:
+        applies-to: version-updates
         dependency-type: "development"
-  # pip (Python: pyproject.toml + poetry.lock at /)
+        update-types:
+          - "patch"
+          - "minor"
+
+  # pip (pyproject.toml + lockfile at /)
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+      timezone: "UTC"
     open-pull-requests-limit: 10
     reviewers:
       - "helloblueai"
@@ -46,39 +57,75 @@ updates:
       include: "scope"
     ignore:
       - dependency-name: "torch"
-        # torch often fails in Dependabot (size/build); update manually when needed
+        # Dependabot often fails on torch (size/build); bump manually
+      - dependency-name: "ray"
+        # optional extra; no upstream fix yet — see SECURITY.md
     groups:
+      pip-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
       python-patch-minor:
+        applies-to: version-updates
         patterns:
           - "*"
         update-types:
           - "patch"
           - "minor"
 
-  # Enable version updates for Docker (root)
+  # Docker (root Dockerfile)
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+      timezone: "UTC"
     open-pull-requests-limit: 5
     reviewers:
       - "helloblueai"
     labels:
       - "dependencies"
       - "docker"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      docker-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      docker-version:
+        applies-to: version-updates
+        patterns:
+          - "*"
 
-  # github-actions (.github/workflows)
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+      timezone: "UTC"
     open-pull-requests-limit: 5
     reviewers:
       - "helloblueai"
     labels:
       - "dependencies"
       - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      actions-version:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
