@@ -1,3 +1,7 @@
+# Shell scripts are not exercised by pytest; exclude from patch/project coverage.
+ignore:
+  - "scripts/**"
+
 coverage:
   status:
     project:
