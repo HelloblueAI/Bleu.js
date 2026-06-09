@@ -8,6 +8,8 @@ We welcome contributions. The full guide is in the docs:
 
 **Backend:** The Node/Express API lives in a [separate repo](docs/BACKEND_REPO.md). For backend-only changes, open issues and PRs in [HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). See [Repositories and sync](docs/REPOSITORIES.md) for how both repos fit together.
 
+**Develop from source:** clone → `python -m venv .venv` → `pip install -e .` → set `BLEUJS_API_KEY` in `.env` → `bleu chat "Hello"`. Details: [Development setup](docs/CONTRIBUTING.md#-development-setup).
+
 Quick links:
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)

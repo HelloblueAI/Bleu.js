@@ -92,6 +92,7 @@ bleu health    # or: bleujs health
 |------|------|
 | **Quick reference** (SDK + CLI) | [QUICKSTART.md](QUICKSTART.md) |
 | **Full API & CLI docs** | [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md) |
+| **Hack on the repo** (clone, `pip install -e .`) | [CONTRIBUTING.md → Development setup](CONTRIBUTING.md#-development-setup) |
 | **Install extras** (ML, quantum, etc.) | [INSTALLATION.md](INSTALLATION.md) |
 | **Run examples** | `examples/api_client_basic.py` (needs API key) |
 | **Roadmap & philosophy** | [ROADMAP.md](ROADMAP.md) · [PRODUCT_PHILOSOPHY.md](PRODUCT_PHILOSOPHY.md) |

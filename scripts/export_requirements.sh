@@ -7,6 +7,7 @@ cd "$ROOT"
 
 cat <<'EOF'
 Bleu.js dependency installs (canonical source: pyproject.toml)
+  Contributor guide: docs/CONTRIBUTING.md#-development-setup
 
   Users (PyPI):     pip install bleu-js
   Dev SDK/CLI:      pip install -e .

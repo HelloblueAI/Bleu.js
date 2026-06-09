@@ -68,10 +68,10 @@ pip install "bleu-js[all]"
 ### **Option 5: Development Installation**
 
 ```bash
-# Clone and install in development mode
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-pip install -e ".[dev]"
+python -m venv .venv && source .venv/bin/activate
+pip install -e .                  # SDK + CLI; see CONTRIBUTING.md#-development-setup
 ```
 
 ## 🔧 Troubleshooting
@@ -94,8 +94,8 @@ error: resolution-too-deep
 pip install "bleu-js[ml]" --constraint requirements-basic.txt
 
 # Or use a virtual environment
-python3 -m venv bleujs-env
-source bleujs-env/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install bleu-js
 ```
 

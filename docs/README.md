@@ -19,7 +19,8 @@ pip install git+https://github.com/HelloblueAI/Bleu.js.git
 # Or clone and install (contributors)
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-poetry install
+python -m venv .venv && source .venv/bin/activate
+pip install -e .                  # see CONTRIBUTING.md#-development-setup
 ```
 
 **Requires Python 3.11+**
@@ -268,12 +269,11 @@ git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
 # Create and activate virtual environment
-python -m venv bleujs-env
+python -m venv .venv
+source .venv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Install development dependencies
+pip install -e .                  # SDK + CLI (same as requirements.txt)
+pip install -e ".[ci]"              # optional: full test stack
 pip install -r requirements-dev.txt
 ```
 
@@ -307,9 +307,9 @@ Here's how Bleu.js works in a real terminal session:
 # Clone and setup Bleu.js
 $ git clone https://github.com/HelloblueAI/Bleu.js.git
 $ cd Bleu.js
-$ python -m venv bleujs-env
-$ source bleujs-env/bin/activate
-$ pip install -r requirements.txt
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ pip install -e .
 
 # Run the comprehensive sample
 $ python examples/sample_usage.py
@@ -1213,14 +1213,11 @@ pie title System Performance Metrics
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
-# Create and activate virtual environment
-python -m venv bleujs-env
-
-# Install dependencies
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+pip install -e ".[ci]"
 pip install -r requirements-dev.txt
-
-# Install pre-commit hooks
 pre-commit install
 ```
 

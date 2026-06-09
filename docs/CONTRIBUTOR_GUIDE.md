@@ -31,15 +31,16 @@ cd Bleu.js
 ### 3. Set Up Environment
 
 ```bash
-# Create virtual environment
-python -m venv bleujs-env
-source bleujs-env/bin/activate  # Linux/Mac
-# or
-bleujs-env\Scripts\activate     # Windows
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
 
-# Install in development mode
-pip install -e ".[dev]"
+pip install -e .                # SDK + CLI (same as requirements.txt)
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a
+bleu chat "Hello"
 ```
+
+Full guide: [Contributing → Development setup](CONTRIBUTING.md#-development-setup). For tests: `pip install -e ".[ci]"` and `pip install -r requirements-dev.txt`.
 
 ### 4. Make a Small Change
 
