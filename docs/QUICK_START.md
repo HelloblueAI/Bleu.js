@@ -1,5 +1,9 @@
 # 🚀 Quick Start Guide - Bleu.js
 
+> **Using the hosted API?** Start with [Get started](GET_STARTED.md) (`pip install bleu-js` from PyPI).
+> **Contributing from a clone?** See [Development setup](CONTRIBUTING.md#-development-setup) (`pip install -e .`).
+> This page is for **self-hosting** the FastAPI app.
+
 ## ⚡ Get Running in 5 Minutes
 
 ### Step 1: Generate Secrets (1 min)
@@ -44,7 +48,8 @@ EOF
 ### Step 3: Install Dependencies (2 min)
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[server]"       # self-host stack; SDK-only: pip install -e .
 ```
 
 ### Step 4: Initialize Database (30 sec)
@@ -108,7 +113,7 @@ uvicorn src.api.main:app --reload --port 8001
 
 ```bash
 pip install --upgrade pip
-pip install -r requirements.txt --no-cache-dir
+pip install -e ".[server]" --no-cache-dir
 ```
 
 **Database errors?**

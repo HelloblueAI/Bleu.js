@@ -1,5 +1,7 @@
 # Local Development Guide
 
+**Environment setup** (venv, `pip install -e .`, `.env`): [Contributing → Development setup](CONTRIBUTING.md#-development-setup).
+
 This guide shows you how to run CI/CD checks locally to catch issues before pushing to GitHub.
 
 ## Quick Start

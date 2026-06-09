@@ -57,20 +57,35 @@ poetry shell
 
 ### Using pip from Source
 
-**For development or self-hosting only.** Most users should use `pip install bleu-js` from PyPI.
+**For contributors and self-hosting only.** Most users should use `pip install bleu-js` from PyPI.
 
 ```bash
-# Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
+python -m venv .venv && source .venv/bin/activate
 
-# Install the package (API + CLI, same as PyPI)
-pip install -e .
-
-# Or install with full app dependencies (for running the server)
-pip install -e ".[server]"
-# requirements.txt is used by CI/full stack; prefer pyproject.toml extras.
+pip install -e .                   # SDK + CLI — same as requirements.txt
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a
+bleu chat "Hello"
 ```
+
+**Dependency map** (canonical: `pyproject.toml`; files are CI/deploy wrappers):
+
+| File | Equivalent |
+|------|------------|
+| `requirements.txt` | `pip install -e .` |
+| `requirements-ci.txt` | `pip install -e ".[ci]"` |
+| `requirements-all.txt` | `pip install -e ".[all]"` |
+| `requirements-elasticbeanstalk.txt` | full stack (EB repo-root deploy) |
+| `requirements-dev.txt` | lint/test tools (after editable install) |
+
+```bash
+pip install -e ".[server]"         # self-host FastAPI app (database, uvicorn, …)
+pip install -e ".[ci]"             # run the full test suite locally
+```
+
+**Contributors:** [Development setup](CONTRIBUTING.md#-development-setup).
 
 ---
 
@@ -126,51 +141,37 @@ bleu chat "Hello"
 
 ### Method 2: Development Install (For Contributors)
 
-**Best for:** Developers who want to contribute
+**Best for:** SDK/CLI work against the hosted API at [bleujs.org](https://bleujs.org)
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-
-# 2. Install with Poetry (recommended)
-poetry install --with dev
-
-# 3. Activate virtual environment
-poetry shell
-
-# 4. Verify installation
-python3 -c "from src.config import get_settings; print('✅ Bleu.js ready!')"
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a
+bleu chat "Hello"
 ```
+
+For the full test suite: `pip install -e ".[ci]"` and `pip install -r requirements-dev.txt`. See [Contributing → Development setup](CONTRIBUTING.md#-development-setup).
 
 ---
 
 ### Method 3: Production Install (For Deployment)
 
-**Best for:** Production servers
+**Best for:** Self-hosting the FastAPI product app
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
+python3 -m venv .venv && source .venv/bin/activate
 
-# 2. Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -e ".[server]"          # or: pip install -r requirements-all.txt for full stack
 
-# 3. Install production dependencies
-pip install -r requirements.txt
-
-# 4. Set up environment
-cp .env.example .env
-# Edit .env with your production settings
-
-# 5. Initialize database
+cp .env.example .env                # set production secrets and DATABASE_URL
 alembic upgrade head
-
-# 6. Start application (product app)
 python main.py
-# Or with workers: python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
+# Or: uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ---
@@ -322,54 +323,34 @@ echo "DATABASE_URL=sqlite:///./bleujs.db" >> .env
 uvicorn src.main:app --reload
 ```
 
-### Scenario 2: Local Development
+### Scenario 2: Local Development (contributor)
 
 ```bash
-# Clone and setup
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-poetry install --with dev
-poetry shell
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+pip install -e ".[ci]" && pip install -r requirements-dev.txt   # for pytest
 
-# Setup environment
-cp .env.example .env
-# Edit .env with your settings
-
-# Initialize database
-alembic upgrade head
-
-# Run tests
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a
+bleu chat "Hello"
 pytest
-
-# Start development server
-uvicorn src.main:app --reload --port 8000
 ```
+
+Self-hosting the app locally? Add `pip install -e ".[server]"`, copy `.env.example` → `.env`, `alembic upgrade head`, then `uvicorn src.main:app --reload`.
 
 ### Scenario 3: Production Deployment
 
 ```bash
-# Clone specific version
 git clone --branch v1.2.1 https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[server]"          # or requirements-all.txt for full stack
 
-# Setup production environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Configure for production
 cp .env.example .env
-# Set production secrets and DATABASE_URL
-
-# Initialize database
 alembic upgrade head
-
-# Run with multiple workers
-uvicorn src.main:app \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --workers 4 \
-  --log-level info
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level info
 ```
 
 ### Scenario 4: Docker Deployment
@@ -415,43 +396,33 @@ curl http://localhost:8000/health
 sudo apt update
 sudo apt install python3.11 python3-pip python3-venv git
 
-# Install Bleu.js
+# Clone and install (SDK + CLI)
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .                    # self-host app: pip install -e ".[server]"
 ```
 
 ### macOS
 
 ```bash
-# Install Python (if not installed)
 brew install python@3.11
-
-# Install Bleu.js
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
 
 ### Windows
 
 ```powershell
-# Install Python from python.org first
-
-# Clone repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
-
-# Create virtual environment
-python -m venv venv
-venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e .
 ```
 
 ---
@@ -525,20 +496,17 @@ poetry install --no-interaction
 ### Issue: Dependencies conflict
 
 ```bash
-# Use pip instead
-pip install -r requirements.txt
+# Fresh venv + editable install (add [ci] or [all] only if you need them)
+rm -rf .venv && python -m venv .venv && source .venv/bin/activate
+pip install -U pip
+pip install -e .
 ```
 
 ### Issue: Import errors
 
 ```bash
-# Ensure you're in the right directory
 cd /path/to/Bleu.js
-
-# Ensure virtual environment is activated
-source venv/bin/activate  # or poetry shell
-
-# Reinstall
+source .venv/bin/activate
 pip install -e .
 ```
 
@@ -644,7 +612,7 @@ After successful installation:
 1. **Cloud API users:** [Get started](GET_STARTED.md) · [QUICKSTART](QUICKSTART.md)
 2. **Self-host / dev:** Review [`.env.example`](../.env.example); run `uvicorn src.main:app --reload`
 3. **Explore API (when app running):** http://localhost:8000/docs
-4. **Run tests (contributors):** `pytest --cov=src`
+4. **Run tests (contributors):** `pip install -e ".[ci]"` then `pytest --cov=src`
 5. **Docs:** `docs/` directory
 
 ---

@@ -7,22 +7,21 @@ Welcome to the Bleu.js community! This guide will help you get started as a cont
 ### 1. Set Up Your Environment
 
 ```bash
-# Clone the repository
 git clone https://github.com/HelloblueAI/Bleu.js.git
 cd Bleu.js
 
-# Create virtual environment
-python -m venv bleujs-env
-source bleujs-env/bin/activate  # Linux/Mac
-# or
-bleujs-env\Scripts\activate     # Windows
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
 
-# Install in development mode
-pip install -e ".[dev]"
+pip install -e .
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a
 
-# Verify installation
-python -c "from bleujs import BleuJS; print('✅ Setup complete!')"
+bleu chat "Hello"
+python -c "import bleujs; print('✅', bleujs.__version__)"
 ```
+
+See [Contributing → Development setup](CONTRIBUTING.md#-development-setup). For `pytest`: `pip install -e ".[ci]"` and `pip install -r requirements-dev.txt`.
 
 ### 2. Run Tests
 
