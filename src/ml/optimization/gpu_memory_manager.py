@@ -10,7 +10,10 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Set
 
-import torch
+try:
+    import torch
+except ImportError:  # pragma: no cover - optional deep-learning dependency
+    torch = None
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +131,7 @@ class QuantumGPUManager:
         """Initialize device statistics and capabilities."""
         for device in self.devices:
             try:
-                if torch.cuda.is_available():
+                if torch is not None and torch.cuda.is_available():
                     props = torch.cuda.get_device_properties(device)
                     total_memory = props.total_memory
                     compute_capability = f"{props.major}.{props.minor}"
@@ -381,7 +384,7 @@ class QuantumGPUManager:
                             self.metrics.record_fragmentation()
 
                             # Trigger garbage collection
-                            if torch.cuda.is_available():
+                            if torch is not None and torch.cuda.is_available():
                                 torch.cuda.empty_cache()
 
                     self.device_stats[device]["last_optimization"] = time.time()

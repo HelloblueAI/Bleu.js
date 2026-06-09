@@ -37,14 +37,23 @@ echo ""
 
 # 2. Python: safety (optional)
 echo "[2/3] safety (Python vulnerabilities)..."
+run_safety_tool() {
+  if [ -n "${SAFETY_API_KEY:-}" ]; then
+    "$@" --stage cicd scan 2>/dev/null || true
+  else
+    echo "  SAFETY_API_KEY not set; using non-interactive open-source DB fallback."
+    "$@" check --full-report 2>/dev/null || true
+  fi
+}
+
 if [ -n "$RUN_PY" ] && $RUN_PY safety --help >/dev/null 2>&1; then
-  $RUN_PY safety scan 2>/dev/null || true
+  run_safety_tool $RUN_PY safety
 elif command -v safety >/dev/null 2>&1; then
-  safety scan 2>/dev/null || true
+  run_safety_tool safety
 elif command -v pipx >/dev/null 2>&1 && pipx run safety --help >/dev/null 2>&1; then
-  pipx run safety scan 2>/dev/null || true
+  run_safety_tool pipx run safety
 elif python3 -m safety --help >/dev/null 2>&1; then
-  python3 -m safety scan 2>/dev/null || true
+  run_safety_tool python3 -m safety
 else
   if [ -n "$RUN_PY" ]; then
     echo "  Install in project: poetry run pip install safety  (optional)"
