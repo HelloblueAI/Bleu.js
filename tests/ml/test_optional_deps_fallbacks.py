@@ -70,3 +70,44 @@ def test_optimize_memory_layout_without_torch(monkeypatch):
     manager.device_stats[0]["allocated"] = 1 * 1024 * 1024 * 1024
     manager._optimize_memory_layout()
     assert manager.device_stats[0]["fragmentation"] > manager.max_fragmentation
+
+
+@pytest.mark.skipif(optimize.torch is None, reason="torch not installed")
+def test_require_torch_returns_modules_when_available():
+    """_require_torch exposes torch modules when deep extra is installed."""
+    torch_module, torch_nn, data_loader_cls, tensor_dataset_cls = (
+        optimize._require_torch()
+    )
+    assert torch_module is optimize.torch
+    assert torch_nn is optimize.nn
+    assert data_loader_cls is optimize.DataLoader
+    assert tensor_dataset_cls is optimize.TensorDataset
+
+
+@pytest.mark.skipif(optimize.torch is None, reason="torch not installed")
+def test_create_neural_network_with_torch(tmp_path):
+    """ModelOptimizer builds a torch model when deep deps are present."""
+    optimizer = optimize.ModelOptimizer(
+        data_path=str(tmp_path / "data.csv"),
+        output_dir=str(tmp_path / "out"),
+    )
+    model = optimizer.create_neural_network(input_dim=4)
+    assert model is not None
+
+
+@pytest.mark.skipif(optimize.torch is None, reason="torch not installed")
+def test_train_neural_network_with_torch(tmp_path):
+    """Refactored train path uses _require_torch imports end-to-end."""
+    import pandas as pd
+
+    optimizer = optimize.ModelOptimizer(
+        data_path=str(tmp_path / "data.csv"),
+        output_dir=str(tmp_path / "out"),
+    )
+    features = np.random.default_rng(0).random((32, 4)).astype(np.float32)
+    targets = pd.Series(
+        np.random.default_rng(1).integers(0, 2, size=32).astype(np.float32)
+    )
+    params = {"batch_size": 8, "epochs": 1, "learning_rate": 0.01}
+    model = optimizer.train_neural_network(features, targets, params)
+    assert model is not None
