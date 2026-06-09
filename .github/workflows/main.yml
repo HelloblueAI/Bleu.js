@@ -9,13 +9,10 @@ on:
       - '.github/*.md'
       - 'LICENSE'
       - 'CHANGELOG.md'
+  # Run CI on every PR (including docs-only) so branch ruleset required checks
+  # can pass. push.paths-ignore below still skips post-merge doc-only pushes.
   pull_request:
     branches: [main, staging]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-      - '.github/*.md'
-      - 'LICENSE'
   workflow_dispatch:
     inputs:
       environment:
