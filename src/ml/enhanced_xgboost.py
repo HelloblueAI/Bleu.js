@@ -144,11 +144,15 @@ class QuantumFeatureProcessor(BaseProcessor):
         try:
             self.config = config
             self.quantum_circuit = None
+            self.quantum_available = False
             self._validate_config()
-            self._initialize_quantum_circuit()
-            logger.info(
-                f"Quantum feature processor initialized with {config.n_qubits} qubits"
-            )
+            self.quantum_available = self._initialize_quantum_circuit()
+            if self.quantum_available:
+                logger.info(
+                    f"Quantum feature processor initialized with {config.n_qubits} qubits"
+                )
+            else:
+                logger.info("Quantum feature processor running in classical fallback mode")
         except Exception as e:
             logger.error(f"Failed to initialize quantum feature processor: {str(e)}")
             raise QuantumOperationError(f"Initialization failed: {str(e)}")
@@ -190,12 +194,16 @@ class QuantumFeatureProcessor(BaseProcessor):
             logger.info(
                 f"Quantum circuit initialized with {self.config.entanglement} entanglement"
             )
+            return True
 
         except ImportError as e:
-            logger.error(f"Qiskit not available: {str(e)}")
-            raise QuantumOperationError(
-                "Qiskit library required for quantum operations"
+            logger.warning(
+                "Qiskit not available (%s); quantum feature enhancement disabled. "
+                "Install with: pip install 'bleu-js[quantum]'",
+                e,
             )
+            self.quantum_circuit = None
+            return False
         except Exception as e:
             logger.error(f"Failed to initialize quantum circuit: {str(e)}")
             raise QuantumOperationError(f"Circuit initialization failed: {str(e)}")
@@ -211,6 +219,9 @@ class QuantumFeatureProcessor(BaseProcessor):
 
             if features.ndim != 2:
                 raise ValidationError("Features must be a 2D array")
+
+            if not self.quantum_available:
+                return features
 
             if features.shape[1] != self.config.n_qubits:
                 logger.warning(
