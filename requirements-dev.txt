@@ -1,5 +1,7 @@
-# Development dependencies - install separately from main requirements
-# This avoids conflicts with awscli which requires docutils<=0.19
+# Development dependencies — install after editable package install.
+#   pip install -e . && pip install -r requirements-dev.txt
+# For CI-parity stack: pip install -r requirements-ci.txt && pip install -r requirements-dev.txt
+# Canonical versions live in pyproject.toml [tool.poetry.group.dev.dependencies].
 
 -r requirements-types.txt
 bandit>=1.8.3

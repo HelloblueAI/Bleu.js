@@ -46,10 +46,10 @@ echo -e "\n${YELLOW}Running pre-flight checks...${NC}"
 
 # Check if token exists
 if [ -z "$HF_TOKEN" ] && [ -z "$HUGGINGFACE_API_KEY" ]; then
-  if [ -f ".env.local" ]; then
-    source <(grep -E '^HF_TOKEN=|^HUGGINGFACE_API_KEY=' .env.local | sed 's/^/export /')
+  if [ -f ".env" ]; then
+    source <(grep -E '^HF_TOKEN=|^HUGGINGFACE_API_KEY=' .env | sed 's/^/export /')
   else
-    echo -e "${RED}Error: HF_TOKEN not found in environment or .env.local${NC}"
+    echo -e "${RED}Error: HF_TOKEN not found in environment or .env${NC}"
     exit 1
   fi
 fi
