@@ -1,0 +1,3 @@
+# Self-hosted FastAPI app extras (same as: pip install -e ".[server]")
+# Docker/self-host image also uses deploy/requirements-server.txt for pinned server wheels.
+-e .[server]

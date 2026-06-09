@@ -1,0 +1,3 @@
+# Elastic Beanstalk production install when repo root is the EB application root.
+# For src/api EB deploys, use src/api/requirements.txt instead.
+-r requirements-all.txt
