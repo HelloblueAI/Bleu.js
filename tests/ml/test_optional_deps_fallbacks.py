@@ -66,6 +66,7 @@ def test_optimize_memory_layout_without_torch(monkeypatch):
     monkeypatch.setattr(gpu_memory_manager, "torch", None)
 
     manager = gpu_memory_manager.QuantumGPUManager(devices=[0])
-    manager.device_stats[0]["allocated"] = 7 * 1024 * 1024 * 1024
+    # Low allocation => high fragmentation score (1 - allocated/total) triggers compaction path
+    manager.device_stats[0]["allocated"] = 1 * 1024 * 1024 * 1024
     manager._optimize_memory_layout()
     assert manager.device_stats[0]["fragmentation"] > manager.max_fragmentation
