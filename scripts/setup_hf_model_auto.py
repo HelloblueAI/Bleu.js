@@ -36,7 +36,7 @@ def load_env_file(env_path: Path) -> dict:
 
 def main():
     """Main function to set up Hugging Face model repository."""
-    # Load .env.local file if it exists
+    # Load .env from repo root if present
     script_dir = Path(__file__).parent.absolute()
     possible_roots = [
         Path.cwd(),
@@ -46,10 +46,9 @@ def main():
 
     env_vars = {}
     for root in possible_roots:
-        env_file = root / ".env.local"
+        env_file = root / ".env"
         if env_file.exists():
             env_vars = load_env_file(env_file)
-            # Set environment variables from .env.local
             for key, value in env_vars.items():
                 if key not in os.environ:
                     os.environ[key] = value
@@ -70,7 +69,7 @@ def main():
         "--token",
         help=(
             "Hugging Face API token "
-            "(or set HF_TOKEN/HUGGINGFACE_API_KEY env var or in .env.local)"
+            "(or set HF_TOKEN/HUGGINGFACE_API_KEY env var or in .env)"
         ),
         default=token,
     )

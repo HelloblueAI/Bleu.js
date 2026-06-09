@@ -1,0 +1,2 @@
+# Full product stack (same as: pip install -e ".[all]")
+-e .[all]

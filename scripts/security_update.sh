@@ -7,7 +7,7 @@ echo "🔒 Bleu.js Security Update Script"
 echo "=================================="
 
 # Check if we're in the right directory
-if [ ! -f "requirements.txt" ]; then
+if [ ! -f "pyproject.toml" ]; then
     echo "❌ Error: Please run this script from the Bleu.js root directory"
     exit 1
 fi
