@@ -1,0 +1,3 @@
+# Elastic Beanstalk production install (full ML + quantum + server stack).
+# EB hooks use this file — do not point deploy at requirements.txt (SDK-only).
+-r requirements-all.txt

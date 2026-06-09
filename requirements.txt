@@ -1,3 +1,4 @@
 # Bleu.js — default SDK/CLI install (same as: pip install bleu-js / pip install -e .)
 # Other stacks: see requirements-*.txt or pip install -e ".[server|ml|quantum|deep|all|ci]"
+# Elastic Beanstalk deploy uses requirements-elasticbeanstalk.txt (full stack), not this file.
 -e .

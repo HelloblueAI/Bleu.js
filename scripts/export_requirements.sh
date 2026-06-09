@@ -24,8 +24,9 @@ Requirements files (thin wrappers around extras):
   requirements-minimal.txt      ->  -r requirements.txt
   requirements-server-extra.txt ->  -e .[server]
   requirements-ci.txt           ->  -e .[ci]
-  requirements-all.txt          ->  -e .[all]
-  deploy/requirements-server.txt -> pinned server wheels (Docker)
-  requirements-dev.txt          -> dev/lint/test tools (not in package extras)
+  requirements-all.txt              ->  -e .[all]
+  requirements-elasticbeanstalk.txt ->  -r requirements-all.txt (EB deploy)
+  deploy/requirements-server.txt    -> pinned server wheels (Docker)
+  requirements-dev.txt              -> dev/lint/test tools (not in package extras)
 
 EOF
