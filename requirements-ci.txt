@@ -52,7 +52,7 @@ scikit-learn>=1.2.2
 
 # Database
 sqlalchemy==2.0.50
-structlog>=25.5.0
+structlog>=26.1.0
 
 # ML frameworks
 tensorflow>=2.16.2
@@ -62,4 +62,4 @@ twine>=6.2.0
 
 # Security
 urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
-uvicorn==0.48.0
+uvicorn==0.49.0
