@@ -25,7 +25,8 @@ Requirements files (thin wrappers around extras):
   requirements-server-extra.txt ->  -e .[server]
   requirements-ci.txt           ->  -e .[ci]
   requirements-all.txt              ->  -e .[all]
-  requirements-elasticbeanstalk.txt ->  -r requirements-all.txt (EB deploy)
+  requirements-elasticbeanstalk.txt ->  -r requirements-all.txt (repo-root EB deploy)
+  src/api/requirements.txt           ->  API EB app when src/api is the deploy root
   deploy/requirements-server.txt    -> pinned server wheels (Docker)
   requirements-dev.txt              -> dev/lint/test tools (not in package extras)
 
