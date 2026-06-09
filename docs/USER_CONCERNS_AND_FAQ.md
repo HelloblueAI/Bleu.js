@@ -129,8 +129,8 @@ pip install bleu-js              # default includes API client + CLI
 
 ```bash
 # Isolate Bleu.js dependencies
-python -m venv bleujs-env
-source bleujs-env/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install bleu-js
 ```
 

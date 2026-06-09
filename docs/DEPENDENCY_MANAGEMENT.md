@@ -222,11 +222,9 @@ pip install bleu-js              # default includes API client + CLI
 
 ```bash
 # Isolate Bleu.js dependencies
-python -m venv bleujs-env
-source bleujs-env/bin/activate  # Linux/Mac
-# or
-bleujs-env\Scripts\activate     # Windows
-pip install bleu-js
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
+pip install bleu-js             # from PyPI; contributors: pip install -e .
 ```
 
 **Option 3: Override Versions (Advanced)**

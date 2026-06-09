@@ -120,6 +120,8 @@ You don't need to write code to contribute! Here are many ways to help:
 
 ## 🛠️ Development Setup
 
+Canonical guide for **working from a clone**. End users who only call the hosted API should use `pip install bleu-js` from PyPI ([Get started](GET_STARTED.md)).
+
 ### Prerequisites
 
 - **Python:** 3.11+
@@ -127,83 +129,86 @@ You don't need to write code to contribute! Here are many ways to help:
 - **IDE:** VS Code, PyCharm, or your favorite editor
 - **Docker:** (Optional, for containerized development)
 
-### Step-by-Step Setup
+### Daily workflow (SDK + hosted API)
 
-#### 1. Fork the Repository
+Most contributor work — CLI, SDK, docs, light tests — needs only the slim editable install:
 
 ```bash
-# Go to https://github.com/HelloblueAI/Bleu.js
-# Click "Fork" button in top-right corner
+git clone https://github.com/YOUR_USERNAME/Bleu.js.git   # fork first, or HelloblueAI/Bleu.js
+cd Bleu.js
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+pip install -e .                   # SDK + CLI — same as requirements.txt
+
+# API key for bleujs.org (create at https://bleujs.org)
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env
+set -a && source .env && set +a    # Linux/macOS; or: export BLEUJS_API_KEY=...
+
+bleu chat "Hello"
+bleu version
 ```
 
-#### 2. Clone Your Fork
+Use a **single `.env` at the repo root** for local secrets. Do not commit `.env`. For self-hosting the FastAPI app you need more vars — copy [`.env.example`](../.env.example).
+
+### Step-by-step setup
+
+#### 1. Fork and clone
 
 ```bash
-# Replace YOUR_USERNAME with your GitHub username
+# Fork at https://github.com/HelloblueAI/Bleu.js, then:
 git clone https://github.com/YOUR_USERNAME/Bleu.js.git
 cd Bleu.js
-```
-
-#### 3. Add Upstream Remote
-
-```bash
 git remote add upstream https://github.com/HelloblueAI/Bleu.js.git
-git remote -v  # Verify remotes
 ```
 
-#### 4. Create Virtual Environment
+#### 2. Virtual environment
 
 ```bash
-# Create virtual environment
-python -m venv bleujs-env
-
-# Activate (Linux/macOS)
-source bleujs-env/bin/activate
-
-# Activate (Windows)
-bleujs-env\Scripts\activate
-
-# Activate (PowerShell)
-bleujs-env\Scripts\Activate.ps1
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 ```
 
-#### 5. Install Dependencies
+#### 3. Install dependencies
 
-**What to use from now on:** If `poetry` fails (e.g. `PoetryCoreException` / `InvalidRequirement`), use Poetry via pipx: see [Poetry: what to use from now on](POETRY_FIX.md).
+**Canonical source:** [`pyproject.toml`](../pyproject.toml) extras. `requirements*.txt` files are thin wrappers for CI and deploy — prefer `pip install -e ".[extra]"` when developing.
+
+| Goal | Command | `requirements*.txt` alias |
+|------|---------|---------------------------|
+| SDK + CLI (default) | `pip install -e .` | `requirements.txt` |
+| Self-host FastAPI app | `pip install -e ".[server]"` | `requirements-server-extra.txt` |
+| ML stack | `pip install -e ".[ml]"` | — |
+| Quantum stack | `pip install -e ".[quantum]"` | — |
+| CI / full test stack | `pip install -e ".[ci]"` | `requirements-ci.txt` |
+| Full product stack | `pip install -e ".[all]"` | `requirements-all.txt` |
+| Elastic Beanstalk (repo root) | `pip install -r requirements-elasticbeanstalk.txt` | → `requirements-all.txt` |
+| Lint / test tools | `pip install -r requirements-dev.txt` | after editable install |
 
 ```bash
-# Recommended: use Poetry with all extras (needed for tests and running the app)
-poetry install --extras all
-
-# If poetry is broken, use pipx (same project root):
-# pipx run poetry install --no-interaction --extras all
-
-# Or with pip (minimal install first; add extras as needed)
-pip install -e .                  # API + CLI only
-pip install -e ".[all]"           # Full stack (ML, quantum, server)
+pip install -e .                     # start here
+pip install -e ".[ci]"               # before running the full test suite
+pip install -r requirements-dev.txt  # black, pytest, mypy, etc.
 ```
 
-#### 6. Verify Installation
+**Poetry (optional):** If you use Poetry, `poetry install --extras all` works. If Poetry fails, see [Poetry: what to use from now on](POETRY_FIX.md) or stick with `pip install -e ".[all]"`.
+
+**Backend API:** The Node/Worker handler is in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). You do **not** need it for daily `bleu chat` against the hosted API.
+
+#### 4. Verify installation
 
 ```bash
-# Run tests
-pytest
-
-# Check code style
-black --check src/
-isort --check src/
-
-# Type checking
-mypy src/ --ignore-missing-imports
+python -c "import bleujs; print(bleujs.__version__)"
+bleu health                        # needs BLEUJS_API_KEY in .env or environment
+pytest                             # after pip install -e ".[ci]" + requirements-dev.txt
 ```
 
-#### 7. Install Pre-commit Hooks (Optional but Recommended)
+#### 5. Pre-commit hooks (optional)
 
 ```bash
 pre-commit install
 ```
 
-This will automatically run code quality checks before each commit.
+See also [Local development](local-development.md) for running CI checks before you push.
 
 ---
 

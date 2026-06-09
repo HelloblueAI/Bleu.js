@@ -65,6 +65,30 @@ print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
 
 ---
 
+### For developers (clone & contribute)
+
+**End users** install from PyPI (`pip install bleu-js` above). **Contributors and maintainers** work from a clone:
+
+```bash
+git clone https://github.com/HelloblueAI/Bleu.js.git && cd Bleu.js
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e .                                    # SDK + CLI (same as requirements.txt)
+echo 'BLEUJS_API_KEY=bleujs_sk_...' > .env          # or cp .env.example .env for self-host
+set -a && source .env && set +a                     # Linux/macOS; or: export BLEUJS_API_KEY=...
+bleu chat "Hello"
+```
+
+| Need | Install |
+|------|---------|
+| SDK + CLI (daily dev) | `pip install -e .` |
+| Tests / CI parity | `pip install -e ".[ci]"` |
+| Self-host FastAPI app | `pip install -e ".[server]"` |
+| Full ML + quantum + server | `pip install -e ".[all]"` |
+
+**Full setup:** [Contributing → Development setup](docs/CONTRIBUTING.md#-development-setup) · [Install from source](docs/INSTALLATION.md#using-pip-from-source). The Node API lives in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) — not required for `bleu chat` against [bleujs.org](https://bleujs.org).
+
+---
+
 ### Install & first run (details)
 
 **Requirements:** Python 3.11+
@@ -534,9 +558,9 @@ pip install bleu-js
 If you encounter dependency conflicts, try:
 
 ```bash
-# Use virtual environment
-python3 -m venv bleujs-env
-source bleujs-env/bin/activate
+# Use a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install bleu-js
 ```
 

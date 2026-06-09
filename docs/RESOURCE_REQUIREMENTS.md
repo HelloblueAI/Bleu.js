@@ -190,8 +190,8 @@ pip install 'bleu-js[all]'
 
    ```bash
    # Isolate to avoid conflicts
-   python -m venv bleujs-env
-   source bleujs-env/bin/activate
+   python -m venv .venv
+   source .venv/bin/activate
    pip install bleu-js
    ```
 
