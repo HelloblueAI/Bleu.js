@@ -152,7 +152,9 @@ class QuantumFeatureProcessor(BaseProcessor):
                     f"Quantum feature processor initialized with {config.n_qubits} qubits"
                 )
             else:
-                logger.info("Quantum feature processor running in classical fallback mode")
+                logger.info(
+                    "Quantum feature processor running in classical fallback mode"
+                )
         except Exception as e:
             logger.error(f"Failed to initialize quantum feature processor: {str(e)}")
             raise QuantumOperationError(f"Initialization failed: {str(e)}")
