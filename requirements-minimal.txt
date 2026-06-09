@@ -39,7 +39,7 @@ torch>=2.7.1
 # Updated to fix ReDoS vulnerabilities (Issues #292, #296, #297, #298)
 # Note: Using latest available version (4.57.1 as of Feb 2025)
 transformers>=5.10.2
-uvicorn==0.48.0
+uvicorn==0.49.0
 
 # Testing (will be installed separately)
 # pytest>=7.0.0
