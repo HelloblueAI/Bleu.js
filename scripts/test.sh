@@ -16,8 +16,8 @@ source venv/bin/activate
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
-pip install pytest pytest-asyncio pytest-cov black isort mypy
+pip install -r requirements-ci.txt
+pip install -r requirements-dev.txt
 
 # Run linting
 echo "Running linting..."
