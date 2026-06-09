@@ -1,5 +1,6 @@
-# Basic Requirements for Bleu.js
-# Minimal dependencies for core functionality
+# Pinned constraints for server + ML installs (legacy constraint file).
+# Prefer: pip install -e ".[server,ml]" or pip install "bleu-js[ml]"
+# See requirements.txt / pyproject.toml extras for canonical installs.
 
 aiohttp>=3.9.3
 alembic==1.18.4
