@@ -11,8 +11,15 @@ try:
     import optuna
 except ImportError:
     optuna = None
-import torch
-import torch.nn as nn
+try:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+except ImportError:  # pragma: no cover - optional deep-learning dependency
+    torch = None
+    nn = None
+    DataLoader = None
+    TensorDataset = None
 
 try:
     import xgboost as xgb
@@ -37,9 +44,17 @@ from sklearn.model_selection import (
     train_test_split,
 )
 from sklearn.preprocessing import StandardScaler
-from torch.utils.data import DataLoader, TensorDataset
 
 from src.ml.metrics import PerformanceMetrics
+
+
+def _require_torch():
+    if torch is None or nn is None or DataLoader is None or TensorDataset is None:
+        raise RuntimeError(
+            "torch is required for neural-network optimization workflows. "
+            "Install with: pip install 'bleu-js[deep]'"
+        )
+    return torch, nn, DataLoader, TensorDataset
 
 
 class ModelOptimizer:
@@ -72,31 +87,38 @@ class ModelOptimizer:
 
     def create_neural_network(self, input_dim):
         """Create a neural network model."""
-        return nn.Sequential(
-            nn.Linear(input_dim, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(64, 1),
-            nn.Sigmoid(),
+        _, torch_nn, _, _ = _require_torch()
+        return torch_nn.Sequential(
+            torch_nn.Linear(input_dim, 128),
+            torch_nn.ReLU(),
+            torch_nn.Dropout(0.3),
+            torch_nn.Linear(128, 64),
+            torch_nn.ReLU(),
+            torch_nn.Dropout(0.3),
+            torch_nn.Linear(64, 1),
+            torch_nn.Sigmoid(),
         )
 
     def train_neural_network(self, features, targets, params):
         """Train a neural network model."""
+        torch_module, torch_nn, data_loader_cls, tensor_dataset_cls = _require_torch()
+
         # Convert data to PyTorch tensors
-        features_tensor = torch.FloatTensor(features)
-        targets_tensor = torch.FloatTensor(targets.values)
+        features_tensor = torch_module.FloatTensor(features)
+        targets_tensor = torch_module.FloatTensor(targets.values)
 
         # Create data loader
-        dataset = TensorDataset(features_tensor, targets_tensor)
-        dataloader = DataLoader(dataset, batch_size=params["batch_size"], shuffle=True)
+        dataset = tensor_dataset_cls(features_tensor, targets_tensor)
+        dataloader = data_loader_cls(
+            dataset, batch_size=params["batch_size"], shuffle=True
+        )
 
         # Create model
         model = self.create_neural_network(features.shape[1])
-        criterion = nn.BCELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=params["learning_rate"])
+        criterion = torch_nn.BCELoss()
+        optimizer = torch_module.optim.Adam(
+            model.parameters(), lr=params["learning_rate"]
+        )
 
         # Train model
         model.train()
@@ -112,6 +134,7 @@ class ModelOptimizer:
 
     def objective(self, trial):
         """Optuna objective function for hyperparameter optimization."""
+        torch_module, _, _, _ = _require_torch()
         param = {
             "n_estimators": trial.suggest_int("n_estimators", 100, 1000),
             "max_depth": trial.suggest_int("max_depth", 3, 10),
@@ -158,7 +181,10 @@ class ModelOptimizer:
             # Make predictions
             xgb_pred = xgb_model.predict_proba(features_val)[:, 1]
             nn_pred = (
-                nn_model(torch.FloatTensor(features_val)).detach().numpy().squeeze()
+                nn_model(torch_module.FloatTensor(features_val))
+                .detach()
+                .numpy()
+                .squeeze()
             )
 
             # Ensemble predictions
@@ -236,7 +262,8 @@ class ModelOptimizer:
 
         # Save neural network model
         nn_path = os.path.join(self.output_dir, f"nn_model_{timestamp}.pt")
-        torch.save(nn_model.state_dict(), nn_path)
+        torch_module, _, _, _ = _require_torch()
+        torch_module.save(nn_model.state_dict(), nn_path)
 
         # Save scaler
         scaler_path = os.path.join(self.output_dir, f"scaler_{timestamp}.pkl")
