@@ -1,0 +1,71 @@
+name: Docker Image Security Scan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'deploy/requirements-server.txt'
+      - 'requirements.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'src/**'
+      - 'main.py'
+      - '.github/workflows/docker-scan.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'deploy/requirements-server.txt'
+      - 'requirements.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'src/**'
+      - 'main.py'
+      - '.github/workflows/docker-scan.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-scan:
+    name: Trivy container scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          docker system prune -af --volumes || true
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build product image for Trivy
+        run: docker build --pull -t bleu-js:scan .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: bleu-js:scan
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-results.sarif
+          exit-code: '0'
+          ignore-unfixed: true
+
+      - name: Upload Trivy results
+        if: >-
+          success() &&
+          hashFiles('trivy-results.sarif') != '' &&
+          (github.event_name != 'pull_request' ||
+           github.event.pull_request.head.repo.full_name == github.repository)
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-results.sarif
