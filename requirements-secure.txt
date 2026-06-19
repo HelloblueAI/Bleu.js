@@ -29,7 +29,7 @@ optuna>=3.4.0
 pandas>=2.0.0
 passlib[bcrypt]>=1.7.4
 pennylane>=0.42.1
-pip-audit>=2.10.0
+pip-audit>=2.10.1
 pre-commit>=3.5.0
 # Use PyJWT instead of python-jose for better security
 PyJWT[crypto]>=2.8.0
