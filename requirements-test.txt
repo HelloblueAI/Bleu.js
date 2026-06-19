@@ -1,6 +1,6 @@
 alembic>=1.15.2
 bandit>=1.7.0
-bcrypt>=4.0.1
+bcrypt>=5.0.0
 black>=24.1.1
 cirq==1.6.1
 fastapi>=0.115.12
