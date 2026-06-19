@@ -45,7 +45,7 @@ jobs:
         run: docker build --pull -t bleu-js:scan .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
           image-ref: bleu-js:scan
