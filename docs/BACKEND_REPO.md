@@ -50,8 +50,10 @@ If you create a new repo, use the same remote URL; existing repo: [Bleujs.-backe
 
 ## After the backend repo exists
 
-- **CI/CD:** Add GitHub Actions in the backend repo for test, lint, deploy.
-- **Deploy:** Point bleujs.org API at the backend repo’s main branch or releases.
+- **CI/CD:** GitHub Actions in the backend repo handle test, lint, and ML script validation.
+- **Deploy chat/generate/embed:** Production routes are on **bleujs.org** (Next.js), not this backend repo. See [Who serves the API](./WHO_SERVES_THE_API.md).
+- **Deploy `/predict`:** Use the backend repo's **Python FastAPI** service (`predict_api.py`) via Docker, Railway, or Elastic Beanstalk.
+- **Deploy Node stub (optional):** Use `index.mjs` only for local dev, CI, or edge stub hosting — not for production AI.
 - **Link:** Backend repo: [github.com/HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend).
 
 **Backend repo parity (recommended):** So both repos feel production-ready, the backend repo should have: a minimal CI (lint + test), a README with install/run instructions, and a SECURITY.md (reporting, no secrets, deployment checklist). This repo’s [SECURITY.md](../SECURITY.md) can be used as a template.
