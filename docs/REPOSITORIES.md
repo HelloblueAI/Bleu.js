@@ -7,20 +7,23 @@ The **Bleu.js project** is split across two repositories so each stays focused, 
 | Repository | Purpose | Primary audience |
 |------------|---------|------------------|
 | **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, demos, product app (bleujs.org surface), Railway Docker image | Users, SDK/CLI contributors, doc contributors |
-| **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** | Node/Express API, ML inference, rules engine, services that power the cloud API | Backend contributors, DevOps |
+| **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** | Node edge stub (contract compliance), Python `/predict` (XGBoost FastAPI) | Backend contributors, DevOps |
 
 The backend repo’s canonical name is **Bleujs.-backend** (with the dot); URL: `https://github.com/HelloblueAI/Bleujs.-backend`.
 
 ## How they work together
 
 ```
-Users / SDK / CLI  →  bleujs.org (product)  →  Backend API (Bleujs.-backend)
+Users / SDK / CLI  →  api.bleujs.org  →  bleujs.org (Next.js) — chat / generate / embed
                           ↑
-                    This repo (Bleu.js): SDK, CLI, docs, dashboard
+                    This repo (Bleu.js): SDK, CLI, docs, product app
+
+ML clients  →  Bleujs.-backend (Python FastAPI) — POST /predict
+Local / CI  →  Bleujs.-backend (Node index.mjs) — stub + contract tests
 ```
 
-- **This repo (Bleu.js):** Users install `bleu-js`, use the CLI and SDK, and read the docs. The product app (e.g. bleujs.org) is also built from this repo.
-- **Backend repo:** The API that the SDK and CLI call (chat, generate, embed, etc.) is implemented and deployed from the backend repo. Deployments point bleujs.org (or your API URL) at the backend’s main branch or releases.
+- **This repo (Bleu.js):** Users install `bleu-js`, use the CLI and SDK, and read the docs. The product app surface is documented here; the live site is **bleujs.org**.
+- **Backend repo:** **Production chat/generate/embed → bleujs.org.** **`/predict` → Python FastAPI** in Bleujs.-backend. **Node handler → edge stub + contract compliance** (local dev, CI, optional Workers). See [Who serves the API](WHO_SERVES_THE_API.md) and the [backend README](https://github.com/HelloblueAI/Bleujs.-backend#who-serves-what-in-production).
 
 ## Keeping client and backend in sync
 
