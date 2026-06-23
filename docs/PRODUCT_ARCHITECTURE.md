@@ -47,6 +47,7 @@ Then open `http://localhost:8000` (dashboard, docs at `/docs`). Set env (e.g. `.
 ## Docs that matter for the product
 
 - [README](../README.md) — Quick start, SDK, CLI, install
+- [Platform overview](PLATFORM_OVERVIEW.md) — Features, architecture diagrams, local dev
 - [API Client Guide](API_CLIENT_GUIDE.md) — SDK and API contract
 - [Installation](INSTALLATION.md) — Install and deploy
 - [SECURITY](../SECURITY.md) — Reporting, deployment checklist
