@@ -131,4 +131,4 @@ You’re **not** overclaiming. You’re not promising post-quantum crypto or rea
 
 The main fixes are: **show the real version (1.4.31)**, **fix the env var so copy-paste works (BLEUJS_API_KEY)**, and **reuse the same one-line pitch** as the repo. Do those three and the site and the product are in lockstep — and users who land on bleujs.org get exactly what they’ll get when they `pip install bleu-js` and open the README.
 
-For exact wording and API contract, keep using **[BLEUJS_ORG_CLAIMS_ALIGNMENT.md](BLEUJS_ORG_CLAIMS_ALIGNMENT.md)** and **[BLEUJS_ORG_WEBSITE_CHECKLIST.md](BLEUJS_ORG_WEBSITE_CHECKLIST.md)**.
+For exact wording and API contract, keep using **[BLEUJS_ORG_CLAIMS_ALIGNMENT.md](../../BLEUJS_ORG_CLAIMS_ALIGNMENT.md)** and **[BLEUJS_ORG_WEBSITE_CHECKLIST.md](BLEUJS_ORG_WEBSITE_CHECKLIST.md)**.

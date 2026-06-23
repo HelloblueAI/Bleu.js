@@ -50,4 +50,4 @@ Thanks — this keeps the site in sync with the repo and v1.4.16.
 
 ---
 
-*This handoff is in the repo at `docs/BLEUJS_ORG_HANDOFF_2026-03-v1.4.16.md`.*
+*This handoff is in the repo at `docs/archive/maintainer/BLEUJS_ORG_HANDOFF_2026-03-v1.4.16.md`.*
