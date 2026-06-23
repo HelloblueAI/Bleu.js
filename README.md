@@ -132,6 +132,7 @@ Both `bleu` and `bleujs` command names work. **Full CLI/SDK docs:** [API Client 
 | I want to… | Start here |
 |------------|------------|
 | Install or upgrade | [INSTALLATION.md](docs/INSTALLATION.md) |
+| Which package to install | [PACKAGE_MAP.md](docs/PACKAGE_MAP.md) |
 | First API call | [GET_STARTED.md](docs/GET_STARTED.md) |
 | SDK, CLI, API contract | [API_CLIENT_GUIDE.md](docs/API_CLIENT_GUIDE.md) |
 | API reference | [API_REFERENCE.md](docs/API_REFERENCE.md) |

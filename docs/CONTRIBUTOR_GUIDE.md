@@ -42,6 +42,8 @@ bleu chat "Hello"
 
 Full guide: [Contributing → Development setup](CONTRIBUTING.md#-development-setup). For tests: `pip install -e ".[ci]"` and `pip install -r requirements-dev.txt`.
 
+**Canonical package:** `bleu-js` at the repo root — see [Package map](PACKAGE_MAP.md).
+
 ### 4. Make a Small Change
 
 **Example: Fix a Typo**
