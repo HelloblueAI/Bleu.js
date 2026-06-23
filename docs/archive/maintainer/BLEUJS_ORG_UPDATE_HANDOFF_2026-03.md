@@ -45,7 +45,7 @@ Use this list to keep the live site in sync with the latest SDK/CLI and docs.
 ## 4. Existing checklist (reference)
 
 The repo has a general website checklist:
-**[docs/BLEUJS_ORG_WEBSITE_CHECKLIST.md](https://github.com/HelloblueAI/Bleu.js/blob/main/docs/BLEUJS_ORG_WEBSITE_CHECKLIST.md)**
+**[docs/archive/maintainer/BLEUJS_ORG_WEBSITE_CHECKLIST.md](https://github.com/HelloblueAI/Bleu.js/blob/main/docs/archive/maintainer/BLEUJS_ORG_WEBSITE_CHECKLIST.md)**
 
 It covers API base URL, endpoints, “Get API key”, pricing, docs URL, open source links, and deployment. Use it for broader sync; this handoff focuses on the **v1.4.13 CLI/docs updates** above.
 
@@ -56,7 +56,7 @@ It covers API base URL, endpoints, “Get API key”, pricing, docs URL, open so
 - [ ] Replace or extend any “run `bleu ...`” copy so it’s clear **`bleu` or `bleujs`** both work.
 - [ ] Update displayed SDK/CLI version to **1.4.13** (or latest).
 - [ ] Leave **`pip install bleu-js`** as-is.
-- [ ] (Optional) Skim [BLEUJS_ORG_WEBSITE_CHECKLIST.md](https://github.com/HelloblueAI/Bleu.js/blob/main/docs/BLEUJS_ORG_WEBSITE_CHECKLIST.md) for other items (API, contribute, deployment).
+- [ ] (Optional) Skim [BLEUJS_ORG_WEBSITE_CHECKLIST.md](https://github.com/HelloblueAI/Bleu.js/blob/main/docs/archive/maintainer/BLEUJS_ORG_WEBSITE_CHECKLIST.md) for other items (API, contribute, deployment).
 
 ---
 

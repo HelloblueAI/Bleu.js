@@ -40,7 +40,7 @@ pip install git+https://github.com/HelloblueAI/Bleu.js.git
 
 ### Using Poetry (Recommended for Development)
 
-**What to use from now on:** If `poetry` fails on your machine, use Poetry via pipx: `pipx run poetry install --extras all`, etc. See [Poetry: what to use from now on](POETRY_FIX.md).
+**What to use from now on:** If `poetry` fails on your machine, use Poetry via pipx: `pipx run poetry install --extras all`, etc. See [Poetry: what to use from now on](archive/maintainer/POETRY_FIX.md) or prefer `pip install -e ".[all]"`.
 
 ```bash
 # Clone the repository
