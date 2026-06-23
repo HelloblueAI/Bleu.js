@@ -4,6 +4,7 @@ Provides intelligent workflow analysis and optimization capabilities.
 """
 
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any
@@ -101,6 +102,11 @@ class ProcessOptimizer:
         self.process_graph = nx.DiGraph()
         self.metrics_history: list = []
         self.bottleneck_cache: dict = {}
+        self._cached_critical_path: list[str] | None = None
+        self._last_process_data: dict[str, Any] | None = None
+        self._cached_resource_analysis: dict[str, float] | None = None
+        self._cached_quality_issues: list[dict] | None = None
+        self._pool_workers = min(32, (os.cpu_count() or 1) + 4)
         self._initialize_optimization_engine()
 
     def _initialize_optimization_engine(self) -> None:
@@ -108,8 +114,29 @@ class ProcessOptimizer:
         self.scaler = StandardScaler()
         self.kmeans = KMeans(n_clusters=3, random_state=42)
         self.executor = (
-            ThreadPoolExecutor(max_workers=4) if self.parallel_processing else None
+            ThreadPoolExecutor(max_workers=self._pool_workers)
+            if self.parallel_processing
+            else None
         )
+
+    def _invalidate_graph_cache(self) -> None:
+        """Clear graph-derived caches after the process graph changes."""
+        self._cached_critical_path = None
+        self.bottleneck_cache.clear()
+
+    def _get_critical_path(self) -> list[str]:
+        """Return the critical path, cached until the graph is rebuilt."""
+        if self._cached_critical_path is not None:
+            return self._cached_critical_path
+        if not self.process_graph.nodes:
+            return []
+        try:
+            self._cached_critical_path = list(
+                nx.dag_longest_path(self.process_graph, weight="duration")
+            )
+        except nx.NetworkXUnfeasible:
+            self._cached_critical_path = list(self.process_graph.nodes)
+        return self._cached_critical_path
 
     def analyze_workflow(self, process_data: dict) -> dict[str, Any]:
         """
@@ -136,6 +163,10 @@ class ProcessOptimizer:
 
             # Perform quality analysis
             quality_issues = self._analyze_quality_metrics(process_data)
+
+            self._last_process_data = process_data
+            self._cached_resource_analysis = resource_analysis
+            self._cached_quality_issues = quality_issues
 
             # Calculate optimization potential
             optimization_potential = self._calculate_optimization_potential(
@@ -191,6 +222,9 @@ class ProcessOptimizer:
 
     def _build_process_graph(self, process_data: dict) -> None:
         """Build directed graph representation of the process."""
+        self.process_graph.clear()
+        self._invalidate_graph_cache()
+
         steps = process_data.get("steps", [])
         dependencies = process_data.get("dependencies", [])
 
@@ -225,19 +259,24 @@ class ProcessOptimizer:
 
     def _identify_bottlenecks(self) -> list[str]:
         """Identify process bottlenecks using critical path analysis."""
-        critical_path = nx.dag_longest_path(self.process_graph, weight="duration")
-        bottlenecks = []
+        if "bottlenecks" in self.bottleneck_cache:
+            return self.bottleneck_cache["bottlenecks"]
 
-        for node in critical_path:
-            node_data = self.process_graph.nodes[node]
-            if node_data["duration"] > np.mean(
-                [
-                    self.process_graph.nodes[n]["duration"]
-                    for n in self.process_graph.nodes
-                ]
-            ):
-                bottlenecks.append(node)
+        critical_path = self._get_critical_path()
+        if not critical_path:
+            return []
 
+        durations = [
+            self.process_graph.nodes[n]["duration"] for n in self.process_graph.nodes
+        ]
+        mean_duration = float(np.mean(durations)) if durations else 0.0
+
+        bottlenecks = [
+            node
+            for node in critical_path
+            if self.process_graph.nodes[node]["duration"] > mean_duration
+        ]
+        self.bottleneck_cache["bottlenecks"] = bottlenecks
         return bottlenecks
 
     def _analyze_resource_utilization(self, process_data: dict) -> dict[str, float]:
@@ -290,6 +329,22 @@ class ProcessOptimizer:
 
         return float(bottleneck_impact + resource_impact + quality_impact + cost_impact)
 
+    def _get_resource_analysis(self) -> dict[str, float]:
+        """Return cached resource analysis or recompute from last workflow data."""
+        if self._cached_resource_analysis is not None:
+            return self._cached_resource_analysis
+        if self._last_process_data is not None:
+            return self._analyze_resource_utilization(self._last_process_data)
+        return {}
+
+    def _get_quality_issues(self) -> list[dict]:
+        """Return cached quality issues or recompute from last workflow data."""
+        if self._cached_quality_issues is not None:
+            return self._cached_quality_issues
+        if self._last_process_data is not None:
+            return self._analyze_quality_metrics(self._last_process_data)
+        return []
+
     def _generate_resource_recommendations(self) -> list[dict]:
         """Generate resource optimization recommendations."""
         recommendations = []
@@ -298,7 +353,7 @@ class ProcessOptimizer:
         underutilized = []
         overutilized = []
 
-        for resource, utilization in self._analyze_resource_utilization({}).items():
+        for resource, utilization in self._get_resource_analysis().items():
             if utilization < 0.5:
                 underutilized.append(resource)
             elif utilization > 0.8:
@@ -318,19 +373,28 @@ class ProcessOptimizer:
 
         return recommendations
 
+    def _find_parallelizable_groups(self) -> list[list[str]]:
+        """Find groups of steps that can run in parallel (same topological level)."""
+        if not self.process_graph.nodes:
+            return []
+        try:
+            generations = list(nx.topological_generations(self.process_graph))
+        except (nx.NetworkXError, nx.NetworkXUnfeasible):
+            return []
+        return [list(generation) for generation in generations if len(generation) > 1]
+
     def _generate_flow_recommendations(self) -> list[dict]:
         """Generate process flow optimization recommendations."""
         recommendations = []
 
-        # Parallel processing recommendations
-        independent_paths = list(nx.all_simple_paths(self.process_graph))
-        if len(independent_paths) > 1:
+        parallel_groups = self._find_parallelizable_groups()
+        if parallel_groups:
             recommendations.append(
                 {
                     "type": "parallel_processing",
                     "description": "Implement parallel processing for "
                     "independent paths",
-                    "paths": independent_paths,
+                    "paths": parallel_groups,
                     "impact_score": 0.7,
                 }
             )
@@ -341,7 +405,7 @@ class ProcessOptimizer:
         """Generate quality improvement recommendations."""
         recommendations = []
 
-        quality_issues = self._analyze_quality_metrics({})
+        quality_issues = self._get_quality_issues()
         if quality_issues:
             recommendations.append(
                 {
@@ -414,6 +478,9 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
         self.genetic_population_size = 100
         self.genetic_generations = 50
         self.rl_episodes = 1000
+        self.rl_max_steps_per_episode = 100
+        self.rl_early_stop_patience = 50
+        self.rl_reward_improvement_threshold = 1e-4
 
     def _initialize_optimization_engine(self) -> None:
         """Initialize enhanced optimization components."""
@@ -466,12 +533,14 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
             )
 
         bounds = self._get_optimization_bounds(process_data)
+        de_workers = self._pool_workers if self.parallel_processing else 1
         result = differential_evolution(
             fitness_function,
             bounds,
             popsize=pop_size,
             maxiter=gens,
-            workers=int(self.executor._max_workers if self.executor else 1),
+            workers=de_workers,
+            updating="deferred" if de_workers > 1 else "immediate",
         )
 
         return self._decode_solution(result.x)
@@ -494,42 +563,49 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
         # Initialize state space
         state = self._encode_process_state(process_data)
         best_reward = float("-inf")
-        best_config = None
+        best_config: dict[str, Any] | None = None
+        episodes_without_improvement = 0
+        patience = min(self.rl_early_stop_patience, max(1, num_episodes // 4))
 
         for _ in range(num_episodes):
             current_state = state.clone()
             total_reward = 0.0
+            episode_config = process_data
 
-            for _ in range(100):  # Max steps per episode
-                # Get action from policy
+            for _ in range(self.rl_max_steps_per_episode):
                 action = self._get_rl_action(current_state)
-
-                # Apply action and get reward
-                next_state, reward, done = self._apply_rl_action(
-                    current_state, action, process_data
+                next_state, reward, done, new_config = self._apply_rl_action(
+                    current_state, action, episode_config
                 )
 
-                # Update policy
                 self._update_rl_policy(reward, next_state, done)
 
                 total_reward += reward
                 current_state = next_state
+                episode_config = new_config
 
                 if done:
                     break
 
-            if total_reward > best_reward:
+            if total_reward > best_reward + self.rl_reward_improvement_threshold:
                 best_reward = total_reward
-                best_config = self._encode_process_state(current_state)
+                best_config = episode_config
+                episodes_without_improvement = 0
+            else:
+                episodes_without_improvement += 1
+
+            if episodes_without_improvement >= patience:
+                self.logger.debug(
+                    "RL early stopping after %d episodes without improvement",
+                    episodes_without_improvement,
+                )
+                break
 
         return best_config or {}
 
     def _encode_process_state(self, process_data: dict) -> torch.Tensor:
         """Encode process state for RL."""
-        features = []
-
-        # Extract relevant features
-        features.extend(
+        return torch.tensor(
             [
                 len(process_data.get("steps", [])),
                 len(process_data.get("dependencies", [])),
@@ -538,10 +614,9 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
                 self._calculate_resource_utilization(process_data),
                 self._calculate_quality_score(process_data),
                 self._calculate_cost_per_unit(process_data),
-            ]
+            ],
+            dtype=torch.float32,
         )
-
-        return torch.tensor(features, dtype=torch.float32)
 
     def _get_rl_action(self, state: torch.Tensor) -> torch.Tensor:
         """Get action from current policy."""
@@ -552,12 +627,10 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
 
     def _apply_rl_action(
         self, state: torch.Tensor, action: torch.Tensor, process_data: dict
-    ) -> tuple[torch.Tensor, float, bool]:
+    ) -> tuple[torch.Tensor, float, bool, dict[str, Any]]:
         """Apply action and get reward."""
-        # Apply action to process
         new_config = self._apply_optimization_action(action.numpy(), process_data)
 
-        # Calculate new state and reward
         new_state = self._encode_process_state(new_config)
         metrics = self._calculate_process_metrics(new_config)
         reward = (
@@ -568,10 +641,9 @@ class AdvancedProcessOptimizer(ProcessOptimizer):
             + (1 - metrics.cost_per_unit) * 0.1
         )
 
-        # Check if optimization is complete
         done = reward > 0.95 or self._check_convergence(state, new_state)
 
-        return new_state, reward, done
+        return new_state, reward, done, new_config
 
     def _update_rl_policy(
         self, reward: float, next_state: torch.Tensor, done: bool

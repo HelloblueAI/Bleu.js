@@ -23,6 +23,12 @@
 
 ## Unreleased
 
+### Performance
+- **`process_optimizer`:** Pre-compute duration mean in bottleneck detection (O(n) vs O(n²)); cache critical path and analysis results; replace exponential `all_simple_paths` with topological parallel groups; RL early stopping; direct tensor state encoding; CPU-aware `ThreadPoolExecutor` and `differential_evolution` workers.
+
+### Documentation
+- **OSS cleanup (PR 1):** Move maintainer handoffs and ops runbooks to `docs/archive/maintainer/`; refresh `docs/archive/README.md`; update contributor doc links.
+
 ### Removed
 - **Bleu OS** — Removed `bleu-os/` tree, `bleu-os.yml` and `docker-publish.yml` workflows, and Docker Hub publish path. Railway and self-host use the root [Dockerfile](Dockerfile) with [deploy/requirements-server.txt](deploy/requirements-server.txt). The `bleuos/bleu-os` images on Docker Hub are retired (no longer built from this repo).
 
@@ -408,7 +414,7 @@
 
 ### Changed
 - **bleu-os:** TRIVY_ALERTS.md adds a policy-exception table for Debian 12 CVEs with "Fix available: No" (tar, shadow, openssl, patch, apt, gnutls28, openldap, binutils, coreutils, libgcrypt20, jansson, sqlite3, gcc-12, gnupg2).
-- **Docs:** [ISSUES_AND_SOLUTIONS.md](docs/ISSUES_AND_SOLUTIONS.md) — developer reference for config show, chat timeout, generate/embed 500 (fixes and verification). BACKEND_REPO.md links to it.
+- **Docs:** [ISSUES_AND_SOLUTIONS.md](docs/archive/maintainer/ISSUES_AND_SOLUTIONS.md) — developer reference for config show, chat timeout, generate/embed 500 (fixes and verification). BACKEND_REPO.md links to it.
 
 ## [v1.4.38] - 2026-03-12
 
@@ -500,7 +506,7 @@ Releases are created automatically on push to `main` (see `.github/workflows/aut
 - **CLI:** `bleu config show` now works (fixed Click routing: config group uses `@click.pass_context` so "show" is dispatched as subcommand instead of extra argument).
 
 ### Documentation
-- **bleujs.org alignment:** Added [BLEUJS_ORG_REVIEW_2026-03.md](docs/BLEUJS_ORG_REVIEW_2026-03.md) with review of site vs repo claims and copy-paste block for website team (version, BLEUJS_API_KEY, one-line pitch).
+- **bleujs.org alignment:** Added [BLEUJS_ORG_REVIEW_2026-03.md](docs/archive/maintainer/BLEUJS_ORG_REVIEW_2026-03.md) with review of site vs repo claims and copy-paste block for website team (version, BLEUJS_API_KEY, one-line pitch).
 
 ### Changed
 - Version set to 1.4.31 for release.

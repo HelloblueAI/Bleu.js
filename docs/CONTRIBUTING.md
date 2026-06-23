@@ -190,7 +190,9 @@ pip install -e ".[ci]"               # before running the full test suite
 pip install -r requirements-dev.txt  # black, pytest, mypy, etc.
 ```
 
-**Poetry (optional):** If you use Poetry, `poetry install --extras all` works. If Poetry fails, see [Poetry: what to use from now on](POETRY_FIX.md) or stick with `pip install -e ".[all]"`.
+**Poetry (optional):** If you use Poetry, `poetry install --extras all` works. If Poetry fails, see [Poetry: what to use from now on](archive/maintainer/POETRY_FIX.md) or stick with `pip install -e ".[all]"`.
+
+**Maintainer / ops docs:** Historical handoffs and runbooks live in [docs/archive/maintainer/](archive/maintainer/). They are not part of the contributor onboarding path.
 
 **Backend API:** The Node/Worker handler is in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). You do **not** need it for daily `bleu chat` against the hosted API.
 

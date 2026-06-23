@@ -433,7 +433,7 @@ with open(model_path, 'rb') as f:
 
 - **[Contributing Guide](./docs/CONTRIBUTING.md)** - Complete guide for contributors
 - **[Contributor Guide](./docs/CONTRIBUTOR_GUIDE.md)** - Quick start for new contributors
-- **[Poetry: what to use from now on](docs/POETRY_FIX.md)** - Use `pipx run poetry` if `poetry` is broken; commands and fixes
+- **[Poetry: what to use from now on](docs/archive/maintainer/POETRY_FIX.md)** - Use `pipx run poetry` if `poetry` is broken; commands and fixes
 - **[Onboarding Guide](./docs/ONBOARDING.md)** - Get started in 10 minutes
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards
 
@@ -995,7 +995,7 @@ Thank you to all contributors who help make Bleu.js better!
 
 ## Development Setup
 
-**Poetry (what to use from now on):** This repo uses Poetry. If `poetry` fails with `PoetryCoreException` or `InvalidRequirement`, use Poetry via pipx for all commands: `pipx run poetry install --extras all`, `pipx run poetry lock`, `pipx run poetry run pytest`, etc. Full list and fixes: [Poetry: what to use from now on](docs/POETRY_FIX.md).
+**Poetry (what to use from now on):** This repo uses Poetry. If `poetry` fails with `PoetryCoreException` or `InvalidRequirement`, use Poetry via pipx for all commands: `pipx run poetry install --extras all`, `pipx run poetry lock`, `pipx run poetry run pytest`, etc. Full list and fixes: [Poetry: what to use from now on](docs/archive/maintainer/POETRY_FIX.md). Prefer `pip install -e ".[all]"` when Poetry is unavailable.
 
 ### Running the Development Server
 

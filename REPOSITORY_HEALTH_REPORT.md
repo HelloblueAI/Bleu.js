@@ -235,7 +235,7 @@ The Bleu.js repository is **production-ready** with strong architecture, compreh
 - ✅ [Contributing Guide](docs/CONTRIBUTING.md) - Full contributor docs
 - ✅ [Contributor Guide](docs/CONTRIBUTOR_GUIDE.md) - Quick start (5 min)
 - ✅ [Onboarding Guide](docs/ONBOARDING.md) - New developer setup (10 min)
-- ✅ [Poetry Fix Guide](docs/POETRY_FIX.md) - Dependency management
+- ✅ [Poetry Fix Guide](docs/archive/maintainer/POETRY_FIX.md) - Dependency management (maintainer archive)
 - ✅ [Code of Conduct](CODE_OF_CONDUCT.md) - Community standards
 
 **Product Documentation:**
