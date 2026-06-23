@@ -28,6 +28,7 @@
 
 ### Documentation
 - **OSS cleanup (PR 1):** Move maintainer handoffs and ops runbooks to `docs/archive/maintainer/`; refresh `docs/archive/README.md`; update contributor doc links.
+- **OSS scorecard (PR 5–6):** Add `OSS_SCORECARD.md` (honest 87/100 snapshot); supersede stale `REPOSITORY_HEALTH_REPORT.md`; add `docs/SECURITY_TAB_HYGIENE.md` runbook.
 - **OSS cleanup (PR 2):** Slim README (~1,100 → ~180 lines); extract content to `docs/PLATFORM_OVERVIEW.md`, `docs/ACHIEVEMENTS.md`, `docs/PERFORMANCE.md`, and archived Docker Compose reference.
 - **OSS cleanup (PR 3–4):** Add `IP_AND_CONTRIBUTIONS.md`, archive patent/award drafts under `docs/archive/ip/`; PyPI homepage/repository/documentation URLs and `PACKAGE_MAP.md`.
 - **OSS cleanup (PR 7):** Seed good first issues #234–#238; link from `CONTRIBUTOR_GUIDE.md`.
