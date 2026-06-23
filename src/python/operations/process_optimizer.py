@@ -120,9 +120,12 @@ class ProcessOptimizer:
         )
 
     def _invalidate_graph_cache(self) -> None:
-        """Clear graph-derived caches after the process graph changes."""
+        """Clear graph- and workflow-derived caches after the process graph changes."""
         self._cached_critical_path = None
         self.bottleneck_cache.clear()
+        self._last_process_data = None
+        self._cached_resource_analysis = None
+        self._cached_quality_issues = None
 
     def _get_critical_path(self) -> list[str]:
         """Return the critical path, cached until the graph is rebuilt."""
