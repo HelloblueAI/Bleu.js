@@ -1,6 +1,6 @@
 # OSS Scorecard — Bleu.js
 
-**OSS health:** **91/100** (2026-06-23)
+**OSS health:** **87/100** (2026-06-23)
 **Package version:** `1.5.40` ([`pyproject.toml`](pyproject.toml), [`src/bleujs/__init__.py`](src/bleujs/__init__.py))
 **Repository:** [HelloblueAI/Bleu.js](https://github.com/HelloblueAI/Bleu.js)
 
@@ -19,7 +19,7 @@ Honest snapshot for contributors and maintainers. Not a marketing claim — see 
 | Docs clarity | 15% | 8.5 | 12.8 | Archive taxonomy, slim README, [PACKAGE_MAP](docs/PACKAGE_MAP.md); **53** top-level `docs/*.md` (dedup optional) |
 | Contributor UX | 15% | 9.5 | 14.3 | Issue/PR templates; [CONTRIBUTOR_GUIDE](docs/CONTRIBUTOR_GUIDE.md); 3× `good first issue` + 2× `help wanted` |
 
-**Total:** **91/100** (sum of weighted column)
+**Total:** **87/100** (sum of weighted column; 86.7 before rounding)
 
 ---
 
