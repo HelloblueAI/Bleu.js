@@ -166,7 +166,7 @@ Production **chat / generate / embed** are served by **[bleujs.org](https://bleu
 
 We welcome contributions — [good first issues](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22good+first+issue%22), docs, and tests.
 
-[Contributing guide](docs/CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Discussions](https://github.com/HelloblueAI/Bleu.js/discussions)
+[Contributing guide](docs/CONTRIBUTING.md) · [Maintainers](MAINTAINERS.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Discussions](https://github.com/HelloblueAI/Bleu.js/discussions)
 
 **Support:** support@helloblue.ai · **Security:** security@helloblue.ai (use [SECURITY.md](SECURITY.md), not public issues)
 
@@ -174,4 +174,4 @@ We welcome contributions — [good first issues](https://github.com/HelloblueAI/
 
 ## License
 
-Bleu.js is licensed under the [MIT License](LICENSE). Maintained by [Helloblue Inc.](https://helloblue.ai)
+Bleu.js is licensed under the [MIT License](LICENSE). Maintained by [Helloblue Inc.](https://helloblue.ai) — see [MAINTAINERS.md](MAINTAINERS.md).
