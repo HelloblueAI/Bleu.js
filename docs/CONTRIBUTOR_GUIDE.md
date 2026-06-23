@@ -6,18 +6,17 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 
 ### 1. Find Something to Work On
 
-**Good First Issues:**
+**Good First Issues (open now):**
 
-- 🔍 Look for issues labeled `good first issue` or `help wanted` (maintainers aim to keep 3–5 such issues labeled for new contributors)
-- 📝 Fix typos in documentation
-- 🧪 Add missing tests
-- 📚 Improve examples
-- 🐛 Fix small bugs
+| Issue | Topic |
+|-------|--------|
+| [#234](https://github.com/HelloblueAI/Bleu.js/issues/234) | Unit tests for `BleuAPIClient` timeout handling |
+| [#235](https://github.com/HelloblueAI/Bleu.js/issues/235) | Onboarding links in `examples/README.md` |
+| [#236](https://github.com/HelloblueAI/Bleu.js/issues/236) | Document `[server]` env vars in `INSTALLATION.md` |
+| [#237](https://github.com/HelloblueAI/Bleu.js/issues/237) | Markdown link check in CI (`help wanted`) |
+| [#238](https://github.com/HelloblueAI/Bleu.js/issues/238) | OpenAPI chat response examples (`help wanted`) |
 
-**Where to Look:**
-
-- [GitHub Issues](https://github.com/HelloblueAI/Bleu.js/issues)
-- Filter by: `good first issue`, `help wanted`, `beginner-friendly`
+Also browse [all good first issues](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22good+first+issue%22) or [help wanted](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22help+wanted%22).
 
 ### 2. Fork and Clone
 
