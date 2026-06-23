@@ -41,6 +41,16 @@ For license and IP expectations when you contribute, see [IP and contributions](
 - Focus on constructive feedback
 - Celebrate diverse perspectives
 
+### Commit attribution (project policy)
+
+What most companies do — and what we follow:
+
+- **PR authors** use their own GitHub account. Merged work is credited to **you**, not to automation bots.
+- **Maintainers squash-merge** PRs so `main` history shows the contributor (or maintainer) as the merge author.
+- **Do not** push to shared branches as `cursoragent`, `cursor[bot]`, or other tool accounts. Use Cursor locally, but **commit and open PRs under your identity**.
+- **AI-assisted work** is fine; you own the PR. Optional: `Co-authored-by: Name <email>` in the commit message if you want to credit a tool.
+- **Official team list:** [MAINTAINERS.md](../MAINTAINERS.md). GitHub’s automatic contributor avatars may still show bots from old commits — that is not our official roster.
+
 ---
 
 ## 🚀 Getting Started
