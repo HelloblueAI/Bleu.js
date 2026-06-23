@@ -16,6 +16,8 @@ Welcome! This guide will help you make your first contribution to Bleu.js.
 | [#237](https://github.com/HelloblueAI/Bleu.js/issues/237) | Markdown link check in CI (`help wanted`) |
 | [#238](https://github.com/HelloblueAI/Bleu.js/issues/238) | OpenAPI chat response examples (`help wanted`) |
 
+Issues **#234**, **#235**, and **#236** are [pinned](https://github.com/HelloblueAI/Bleu.js/issues) at the top of the Issues tab as the best entry points for new contributors.
+
 Also browse [all good first issues](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22good+first+issue%22) or [help wanted](https://github.com/HelloblueAI/Bleu.js/issues?q=is%3Aopen+label%3A%22help+wanted%22).
 
 ### 2. Fork and Clone
@@ -64,6 +66,8 @@ git push origin main
 # Create PR on GitHub
 # We'll help you through it!
 ```
+
+In the PR description, include **`Closes #234`** (replace with your issue number) so GitHub closes the issue automatically when the PR merges.
 
 ---
 
@@ -259,6 +263,7 @@ flake8 src/
 2. **Check style** - Run linting tools
 3. **Update docs** - Keep documentation current
 4. **Write clear PR** - Good description helps review
+5. **Link the issue** - Use `Closes #NNN` in the PR body when your work addresses an open issue
 
 ---
 
