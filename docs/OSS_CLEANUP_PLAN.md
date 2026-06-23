@@ -290,9 +290,9 @@ One paragraph in `CONTRIBUTING.md`: “**Canonical package is `bleu-js` at repo 
 
 ---
 
-## PR 7 — Good first issues + contributor funnel (Bleu.js, GitHub UI)
+## PR 7 — Good first issues + contributor funnel (Bleu.js) ✅ *Done 2026-06-23*
 
-**Branch:** N/A — GitHub labels + 3–5 issues
+**Branch:** N/A — GitHub labels + issues
 **Can run in parallel with PR 1–2**
 
 ### Create labels
@@ -315,8 +315,9 @@ Reference them from `CONTRIBUTOR_GUIDE.md` (already mentions 3–5 issues).
 
 ### Acceptance criteria
 
-- [ ] ≥3 open `good first issue` at all times
-- [ ] Each issue has “Expected outcome” + “How to verify”
+- [x] ≥3 open `good first issue` at all times ([#234](https://github.com/HelloblueAI/Bleu.js/issues/234), [#235](https://github.com/HelloblueAI/Bleu.js/issues/235), [#236](https://github.com/HelloblueAI/Bleu.js/issues/236))
+- [x] Each issue has “Expected outcome” + “How to verify”
+- [x] `CONTRIBUTOR_GUIDE.md` links to starter issues
 
 ---
 
