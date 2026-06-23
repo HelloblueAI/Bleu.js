@@ -164,9 +164,9 @@ Update every hit. Prefer links to **public** docs (`BLEUJS_ORG_CLAIMS_ALIGNMENT.
 
 ---
 
-## PR 3 — IP clarity for patent / award drafts (Bleu.js)
+## PR 3 — IP clarity for patent / award drafts (Bleu.js) ✅ *Done 2026-06-23*
 
-**Branch:** `oss-cleanup/pr-3-ip-notice`
+**Branch:** `oss-cleanup/pr-3-ip-notice` (combined with PR 4 in `oss-cleanup/pr-3-4-ip-pypi`)
 **Risk:** Low (docs only; legal clarity)
 
 ### What
@@ -198,15 +198,15 @@ Link from `CONTRIBUTING.md` (one line). Do **not** link from README hero.
 
 ### Acceptance criteria
 
-- [ ] No `patent_application.md` under `src/` (avoid implying shipped product includes patent spec)
-- [ ] `CONTRIBUTING.md` links to `IP_AND_CONTRIBUTIONS.md`
-- [ ] CI unchanged
+- [x] No `patent_application.md` under `src/bleu_ai/docs/` (moved to `docs/archive/ip/`)
+- [x] `CONTRIBUTING.md` links to `IP_AND_CONTRIBUTIONS.md`
+- [x] CI unchanged
 
 ---
 
-## PR 4 — PyPI metadata + package map (Bleu.js)
+## PR 4 — PyPI metadata + package map (Bleu.js) ✅ *Done 2026-06-23*
 
-**Branch:** `oss-cleanup/pr-4-pypi-metadata`
+**Branch:** `oss-cleanup/pr-4-pypi-metadata` (combined with PR 3 in `oss-cleanup/pr-3-4-ip-pypi`)
 **Risk:** Low
 
 ### `pyproject.toml` — add under `[tool.poetry]`
@@ -231,9 +231,9 @@ One paragraph in `CONTRIBUTING.md`: “**Canonical package is `bleu-js` at repo 
 
 ### Acceptance criteria
 
-- [ ] `poetry build` succeeds
-- [ ] Next PyPI release shows Homepage + Repository links
-- [ ] `PACKAGE_MAP.md` linked from CONTRIBUTOR_GUIDE
+- [x] `poetry build` succeeds
+- [x] PyPI metadata fields added (visible on next release)
+- [x] `PACKAGE_MAP.md` linked from CONTRIBUTOR_GUIDE
 
 ---
 

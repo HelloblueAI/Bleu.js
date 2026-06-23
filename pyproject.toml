@@ -11,6 +11,9 @@ description = "Advanced AI and Quantum Computing Framework"
 authors = ["Bleujs Team <support@helloblue.ai>"]
 readme = "README.md"
 license = "MIT"
+homepage = "https://bleujs.org"
+repository = "https://github.com/HelloblueAI/Bleu.js"
+documentation = "https://github.com/HelloblueAI/Bleu.js/blob/main/docs/GET_STARTED.md"
 packages = [{include = "bleujs", from = "src"}]
 classifiers = [
     "Development Status :: 4 - Beta",

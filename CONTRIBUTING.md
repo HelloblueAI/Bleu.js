@@ -13,6 +13,8 @@ We welcome contributions. The full guide is in the docs:
 Quick links:
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
+- [IP and contributions](docs/IP_AND_CONTRIBUTIONS.md)
+- [Package map](docs/PACKAGE_MAP.md) — canonical `bleu-js` vs other repo trees
 - [Repositories and sync](docs/REPOSITORIES.md) (where to contribute: SDK vs backend)
 - [Security policy](SECURITY.md)
 - [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes)

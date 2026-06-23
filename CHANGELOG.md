@@ -29,6 +29,7 @@
 ### Documentation
 - **OSS cleanup (PR 1):** Move maintainer handoffs and ops runbooks to `docs/archive/maintainer/`; refresh `docs/archive/README.md`; update contributor doc links.
 - **OSS cleanup (PR 2):** Slim README (~1,100 → ~180 lines); extract content to `docs/PLATFORM_OVERVIEW.md`, `docs/ACHIEVEMENTS.md`, `docs/PERFORMANCE.md`, and archived Docker Compose reference.
+- **OSS cleanup (PR 3–4):** Add `IP_AND_CONTRIBUTIONS.md`, archive patent/award drafts under `docs/archive/ip/`; PyPI homepage/repository/documentation URLs and `PACKAGE_MAP.md`.
 
 ### Removed
 - **Bleu OS** — Removed `bleu-os/` tree, `bleu-os.yml` and `docker-publish.yml` workflows, and Docker Hub publish path. Railway and self-host use the root [Dockerfile](Dockerfile) with [deploy/requirements-server.txt](deploy/requirements-server.txt). The `bleuos/bleu-os` images on Docker Hub are retired (no longer built from this repo).
