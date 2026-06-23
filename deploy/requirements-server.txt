@@ -2,7 +2,7 @@ aiofiles>=24.1,<26.0
 aiohttp>=3.13.3
 alembic==1.18.4
 boto3>=1.24.0
-cryptography>=46.0.5,<49.0.0
+cryptography>=46.0.5,<50.0.0
 # Server deps for product app (src.main). Used by root Dockerfile (Railway/self-host).
 fastapi>=0.116.1,<0.137.0
 filelock>=3.20.3
