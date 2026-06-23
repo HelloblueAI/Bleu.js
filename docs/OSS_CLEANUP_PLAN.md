@@ -38,7 +38,7 @@ gh run list --limit 3
 | `README.md` lines | ~1,101 | ≤280 | **176** ✅ |
 | Top-level `docs/*.md` count | ~56 | ≤25 “public” + archive index |
 | Public docs linking internal handoffs | TBD | 0 |
-| `REPOSITORY_HEALTH_REPORT.md` version | 1.5.15 (stale) | matches `pyproject.toml` |
+| `REPOSITORY_HEALTH_REPORT.md` version | 1.5.15 (stale) | matches `pyproject.toml` | **OSS_SCORECARD.md** ✅ |
 | Backend issue templates | 0 | 3 |
 | PyPI project URLs | missing | homepage + repository + docs |
 | Labeled `good first issue` | TBD | ≥3 |
@@ -237,7 +237,7 @@ One paragraph in `CONTRIBUTING.md`: “**Canonical package is `bleu-js` at repo 
 
 ---
 
-## PR 5 — Refresh health report + OSS scorecard (Bleu.js)
+## PR 5 — Refresh health report + OSS scorecard (Bleu.js) ✅ *Done 2026-06-23*
 
 **Branch:** `oss-cleanup/pr-5-health-scorecard`
 **Risk:** Low
@@ -261,13 +261,13 @@ One paragraph in `CONTRIBUTING.md`: “**Canonical package is `bleu-js` at repo 
 
 ### Acceptance criteria
 
-- [ ] Version matches `src/bleujs/__init__.py` and `pyproject.toml`
-- [ ] No claim of “perfect” — actionable gaps listed
-- [ ] `REPOSITORY_HEALTH_REPORT.md` redirects: “See OSS_SCORECARD.md”
+- [x] Version matches `src/bleujs/__init__.py` and `pyproject.toml`
+- [x] No claim of “perfect” — actionable gaps listed
+- [x] `REPOSITORY_HEALTH_REPORT.md` redirects: “See OSS_SCORECARD.md”
 
 ---
 
-## PR 6 — Security tab cleanup runbook (Bleu.js, maintainer PR)
+## PR 6 — Security tab cleanup runbook (Bleu.js, maintainer PR) ✅ *Done 2026-06-23*
 
 **Branch:** `oss-cleanup/pr-6-dependabot-cleanup`
 **Risk:** Low (scripts + docs; optional script execution by maintainer)
@@ -284,9 +284,9 @@ One paragraph in `CONTRIBUTING.md`: “**Canonical package is `bleu-js` at repo 
 
 ### Acceptance criteria
 
-- [ ] GitHub Security → Dependabot open alerts &lt; 50 (or documented exceptions)
-- [ ] No new high/critical unmitigated in default `pip install bleu-js` tree
-- [ ] `./scripts/check-security.sh` passes locally
+- [x] GitHub Security → Dependabot open alerts &lt; 50 (~30 as of 2026-06-23)
+- [x] No new high/critical unmitigated in default `pip install bleu-js` tree (verify via `./scripts/check-security.sh`)
+- [x] `./scripts/check-security.sh` documented in [SECURITY_TAB_HYGIENE.md](SECURITY_TAB_HYGIENE.md)
 
 ---
 

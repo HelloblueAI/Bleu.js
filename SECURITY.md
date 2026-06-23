@@ -26,7 +26,7 @@ We will acknowledge and work on the report and coordinate disclosure.
 | Source | What we track | Where to look / fix |
 |--------|----------------|---------------------|
 | **Python (app)** | CVEs in `pyproject.toml` deps | Run `./scripts/check-security.sh`; CI runs pip-audit + Safety. Pins are in [pyproject.toml](pyproject.toml) with CVE comments. |
-| **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **~1.5k legacy alerts from old backend:** run `./scripts/dismiss-backend-dependabot-alerts.sh` (see [bulk-dismiss](docs/DEPENDABOT_AND_DEPENDENCIES.md#fix-the-security-tab-bulk-dismiss)). |
+| **Dependabot** | GitHub Security tab (pip, npm, Docker, Actions) | [Security → Dependabot](https://github.com/HelloblueAI/Bleu.js/security/dependabot). **Target: <50 open alerts** (see [Security tab hygiene](docs/SECURITY_TAB_HYGIENE.md)). Legacy `backend/` alerts: `./scripts/dismiss-backend-dependabot-alerts.sh`. |
 | **Docker** | Base image and system packages | Production image: root [Dockerfile](Dockerfile) (Debian bookworm-slim). Kernel CVEs = host; patch the host or dismiss. |
 | **Trivy / Code scanning** | Container image vulns (SARIF) | Trivy uploads to **Security → Code scanning** (not Dependabot). To bulk-dismiss legacy alerts: `./scripts/dismiss-trivy-code-scanning-alerts.sh`. |
 | **Trivy / Docker Scout** | Container image vulns | CI runs Trivy on images. Unfixable base vulns (c-ares, sqlite, xz, etc.) are documented; rebuild when Alpine/Debian release patches. |
