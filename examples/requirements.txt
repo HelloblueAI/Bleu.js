@@ -44,7 +44,7 @@ pillow>=10.0.0
 plotly>=6.8.0
 
 # Data processing
-polars>=1.41.2
+polars>=1.42.0
 pre-commit>=3.3.0
 
 # Monitoring and logging
