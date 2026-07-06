@@ -1,6 +1,6 @@
 aiofiles>=24.1,<26.0
 aiohttp>=3.13.3
-alembic==1.18.4
+alembic==1.18.5
 boto3>=1.24.0
 cryptography>=46.0.5,<50.0.0
 # Server deps for product app (src.main). Used by root Dockerfile (Railway/self-host).
