@@ -3,8 +3,15 @@
  * and response shapes expected by CLI/SDK (no timeout, no 500).
  * Run: npm run test:api
  */
-// Do not inherit shell API keys — authorizeRequest reads process.env when env is {}.
-for (const name of ["BLEU_API_KEYS", "BLEU_API_KEY", "API_KEYS", "API_KEY"]) {
+// Isolated test env: handler reads process.env when Worker env is {}.
+for (const name of [
+  "BLEU_API_KEYS",
+  "BLEU_API_KEY",
+  "API_KEYS",
+  "API_KEY",
+  "NODE_ENV",
+  "ENV",
+]) {
   delete process.env[name];
 }
 

@@ -99,10 +99,10 @@ function getCorsHeaders(request, env = {}) {
   return BASE_CORS_HEADERS;
 }
 
-const MAX_JSON_BODY_BYTES = getNumericEnvValue(
-  "MAX_JSON_BODY_BYTES",
-  1024 * 1024,
-);
+const MAX_JSON_BODY_BYTES =
+  getNumericEnvValue("MAX_JSON_BODY_BYTES", 0) ||
+  getNumericEnvValue("MAX_REQUEST_BODY_BYTES", 0) ||
+  1024 * 1024;
 const MAX_EMBED_INPUTS = getNumericEnvValue("MAX_EMBED_INPUTS", 128);
 const MAX_EMBED_TEXT_CHARS = getNumericEnvValue("MAX_EMBED_TEXT_CHARS", 8192);
 

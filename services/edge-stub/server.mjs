@@ -8,7 +8,9 @@ import handler from "./index.mjs";
 
 const PORT = Number(process.env.PORT) || 4003;
 const HOST = process.env.HOST || "127.0.0.1";
-const MAX_REQUEST_BODY_BYTES = Number(process.env.MAX_REQUEST_BODY_BYTES) || 1024 * 1024;
+const MAX_REQUEST_BODY_BYTES =
+  Number(process.env.MAX_JSON_BODY_BYTES ?? process.env.MAX_REQUEST_BODY_BYTES) ||
+  1024 * 1024;
 const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS) || 15_000;
 const fetchHandler = handler?.default?.fetch ?? handler?.fetch;
 
