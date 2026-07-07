@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Contract check: openapi.yaml paths section defines routes the edge stub implements."""
+
 from __future__ import annotations
 
 import sys
