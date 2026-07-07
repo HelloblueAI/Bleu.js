@@ -32,9 +32,22 @@ function getEnvValue(env = {}, names = []) {
   return undefined;
 }
 
-function getNumericEnvValue(name, fallback) {
-  const value = Number(getProcessEnvValue(name));
+function getNumericEnvValue(name, fallback, env = {}) {
+  const raw = getEnvValue(env, [name]);
+  const value = Number(raw);
   return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function getLimits(env = {}) {
+  const maxJsonBodyBytes =
+    getNumericEnvValue("MAX_JSON_BODY_BYTES", 0, env) ||
+    getNumericEnvValue("MAX_REQUEST_BODY_BYTES", 0, env) ||
+    1024 * 1024;
+  return {
+    maxJsonBodyBytes,
+    maxEmbedInputs: getNumericEnvValue("MAX_EMBED_INPUTS", 128, env),
+    maxEmbedTextChars: getNumericEnvValue("MAX_EMBED_TEXT_CHARS", 8192, env),
+  };
 }
 
 function isProductionEnv(env = {}) {
@@ -98,13 +111,6 @@ function getCorsHeaders(request, env = {}) {
 
   return BASE_CORS_HEADERS;
 }
-
-const MAX_JSON_BODY_BYTES =
-  getNumericEnvValue("MAX_JSON_BODY_BYTES", 0) ||
-  getNumericEnvValue("MAX_REQUEST_BODY_BYTES", 0) ||
-  1024 * 1024;
-const MAX_EMBED_INPUTS = getNumericEnvValue("MAX_EMBED_INPUTS", 128);
-const MAX_EMBED_TEXT_CHARS = getNumericEnvValue("MAX_EMBED_TEXT_CHARS", 8192);
 
 const DEFAULT_MODELS = [
   { id: "bleu-1", object: "model" },
@@ -206,9 +212,12 @@ function authorizeRequest(request, env) {
   }
 }
 
-async function parseJson(request) {
+async function parseJson(request, limits) {
   const contentLength = Number(request.headers.get("content-length"));
-  if (Number.isFinite(contentLength) && contentLength > MAX_JSON_BODY_BYTES) {
+  if (
+    Number.isFinite(contentLength) &&
+    contentLength > limits.maxJsonBodyBytes
+  ) {
     throw new ApiError(413, "REQUEST_TOO_LARGE", "Request body too large");
   }
 
@@ -217,7 +226,7 @@ async function parseJson(request) {
     return {};
   }
 
-  if (new TextEncoder().encode(text).length > MAX_JSON_BODY_BYTES) {
+  if (new TextEncoder().encode(text).length > limits.maxJsonBodyBytes) {
     throw new ApiError(413, "REQUEST_TOO_LARGE", "Request body too large");
   }
 
@@ -245,6 +254,7 @@ export default {
     const path = url.pathname;
     const method = request.method;
     const corsHeaders = getCorsHeaders(request, env);
+    const limits = getLimits(env);
 
     if (method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders });
@@ -278,7 +288,7 @@ export default {
       }
 
       if (method === "POST" && path === "/api/v1/chat") {
-        const body = await parseJson(request);
+        const body = await parseJson(request, limits);
         const rawMessages = body?.messages;
         const messages = Array.isArray(rawMessages) ? rawMessages : [];
         const lastUser = messages
@@ -303,7 +313,7 @@ export default {
       }
 
       if (method === "POST" && path === "/api/v1/generate") {
-        const body = await parseJson(request);
+        const body = await parseJson(request, limits);
         const prompt = typeof body?.prompt === "string" ? body.prompt : "";
         const text =
           prompt.length > 0
@@ -324,24 +334,24 @@ export default {
       }
 
       if (method === "POST" && path === "/api/v1/embed") {
-        const body = await parseJson(request);
+        const body = await parseJson(request, limits);
         const input = body?.input ?? body?.inputs ?? body?.texts;
         const raw = Array.isArray(input) ? input : [input ?? ""];
-        if (raw.length > MAX_EMBED_INPUTS) {
+        if (raw.length > limits.maxEmbedInputs) {
           throw new ApiError(
             400,
             "TOO_MANY_INPUTS",
-            `Embedding input is limited to ${MAX_EMBED_INPUTS} item(s)`,
+            `Embedding input is limited to ${limits.maxEmbedInputs} item(s)`,
           );
         }
         const texts = raw.map((t) =>
           typeof t === "string" ? t : String(t ?? ""),
         );
-        if (texts.some((text) => text.length > MAX_EMBED_TEXT_CHARS)) {
+        if (texts.some((text) => text.length > limits.maxEmbedTextChars)) {
           throw new ApiError(
             400,
             "INPUT_TOO_LONG",
-            `Embedding text is limited to ${MAX_EMBED_TEXT_CHARS} character(s)`,
+            `Embedding text is limited to ${limits.maxEmbedTextChars} character(s)`,
           );
         }
         const dim = 384;
