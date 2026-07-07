@@ -48,3 +48,7 @@ python examples/quick_start.py
 ---
 
 **First time?** Use [Get started](../docs/GET_STARTED.md) for install → API key → first command.
+
+For API-focused examples, see the [API Client Guide](../docs/API_CLIENT_GUIDE.md).
+
+Want to make your first PR? Start with the [Contributor Guide](../docs/CONTRIBUTOR_GUIDE.md).
