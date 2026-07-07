@@ -1,0 +1,15 @@
+{
+  "name": "@bleujs/edge-stub",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OpenAPI contract stub for local dev and CI (not production AI)",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "test": "node tests/smoke.mjs && node tests/api.mjs && node tests/contract.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
