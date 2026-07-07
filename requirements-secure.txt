@@ -6,7 +6,7 @@ argon2-cffi>=25.1.0
 bandit>=1.8.6
 bcrypt>=5.0.0
 black>=23.0.0
-cirq>=1.2.0
+cirq>=1.7.0
 
 # Additional security utilities
 click>=8.2.1

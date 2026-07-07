@@ -3,7 +3,7 @@
 # See requirements.txt / pyproject.toml extras for canonical installs.
 
 aiohttp>=3.9.3
-alembic==1.18.4
+alembic==1.18.5
 aws-lambda-powertools>=3.31.0
 
 # AWS

@@ -2,7 +2,7 @@ alembic>=1.15.2
 bandit>=1.7.0
 bcrypt>=5.0.0
 black>=24.1.1
-cirq==1.6.1
+cirq==1.7.0
 fastapi>=0.115.12
 flake8>=6.1.0
 httpx>=0.23.0,<0.24.0
@@ -21,7 +21,7 @@ pytest-asyncio>=0.26.0
 pytest-cov>=4.1.0
 pytest-xdist>=3.8.0
 python-multipart>=0.0.27
-qiskit==2.4.2
+qiskit==2.5.0
 qiskit-aer==0.17.2
 sqlalchemy>=2.0.40
 torch>=2.2.0
