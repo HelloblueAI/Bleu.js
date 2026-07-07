@@ -5,10 +5,10 @@ name: Validate OpenAPI
 on:
   push:
     branches: [main, staging]
-    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md']
+    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md', 'services/edge-stub/**']
   pull_request:
     branches: [main, staging]
-    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md']
+    paths: ['docs/api/**', 'docs/API_CLIENT_GUIDE.md', 'services/edge-stub/**']
 
 permissions:
   contents: read
@@ -45,3 +45,11 @@ jobs:
                   op_ids.append(oid)
           print('OpenAPI spec valid (YAML + structure + operationIds unique)')
           "
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - name: Install PyYAML for contract test
+        run: pip install pyyaml
+      - name: Edge stub contract and API smoke tests
+        run: npm test
+        working-directory: services/edge-stub

@@ -1,5 +1,5 @@
 # Bleu.js API – OpenAPI 3.0
-# Single source of truth for the API contract. Keep in sync with the backend (Bleujs.-backend).
+# Single source of truth for the API contract. Align edge stub, bleujs.org, and SDK.
 # See: docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes
 
 openapi: 3.0.3

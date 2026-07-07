@@ -1,66 +1,46 @@
-# Bleu.js project: repositories and sync
+# Repositories and sync
 
-The **Bleu.js project** is split across two repositories so each stays focused, secure, and easy to maintain. This document is the single source of truth for how the pieces fit together and how we keep them in sync.
+The **Bleu.js project** spans two active repositories plus the live product site.
 
 ## Repositories
 
 | Repository | Purpose | Primary audience |
 |------------|---------|------------------|
-| **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, demos, product app (bleujs.org surface), Railway Docker image | Users, SDK/CLI contributors, doc contributors |
-| **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** | Node edge stub (contract compliance), Python `/predict` (XGBoost FastAPI) | Backend contributors, DevOps |
+| **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** | Python SDK, CLI, docs, product app, edge API stub (`services/edge-stub`) | Users, SDK/CLI contributors, doc contributors |
+| **[bleujs.org](https://github.com/HelloblueAI/bleujs.org)** | Production site, Next.js API routes, ML engine (`ml_engine/`) on Railway | Web, API, and ML contributors |
 
-The backend repo’s canonical name is **Bleujs.-backend** (with the dot); URL: `https://github.com/HelloblueAI/Bleujs.-backend`.
+**Archived (2026-07):** [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) — stub and contract tests moved to `services/edge-stub/` in this repo. Production never depended on it.
 
 ## How they work together
 
 ```
 Users / SDK / CLI  →  api.bleujs.org  →  bleujs.org (Next.js) — chat / generate / embed
                           ↑
-                    This repo (Bleu.js): SDK, CLI, docs, product app
+                    This repo: SDK, CLI, docs, OpenAPI contract
 
-ML clients  →  Bleujs.-backend (Python FastAPI) — POST /predict
-Local / CI  →  Bleujs.-backend (Node index.mjs) — stub + contract tests
+ML inference       →  bleujs.org ml_engine (Railway) — POST /predict
+Local / CI stub    →  this repo services/edge-stub — contract tests only
 ```
 
-- **This repo (Bleu.js):** Users install `bleu-js`, use the CLI and SDK, and read the docs. The product app surface is documented here; the live site is **bleujs.org**.
-- **Backend repo:** **Production chat/generate/embed → bleujs.org.** **`/predict` → Python FastAPI** in Bleujs.-backend. **Node handler → edge stub + contract compliance** (local dev, CI, optional Workers). See [Who serves the API](WHO_SERVES_THE_API.md) and the [backend README](https://github.com/HelloblueAI/Bleujs.-backend#who-serves-what-in-production).
+- **This repo (Bleu.js):** Install `bleu-js`, use the CLI/SDK, maintain [openapi.yaml](api/openapi.yaml), run edge-stub tests in CI.
+- **bleujs.org:** Production AI and ML. See [Who serves the API](WHO_SERVES_THE_API.md).
 
-## Keeping client and backend in sync
+## Keeping client and server in sync
 
-We keep behavior consistent across repos via a **documented API contract**:
-
-- **Single source of truth:** [API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) in this repo.
-- **Endpoints:** e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`.
-- **Request/response shapes:** The table in the link above defines what clients send and what backends should return. When you change the API, update that doc and then align both the SDK (this repo) and the backend (Bleujs.-backend) to it.
-
-The backend README links to this contract so backend contributors stay aligned. The **machine-readable** contract is [docs/api/openapi.yaml](api/openapi.yaml); when you change the API, update that spec and the doc table, then align both repos. Backend API changes are noted in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md). **Runbook:** [Changing the API](CHANGING_THE_API.md) — step-by-step so both repos stay in sync and we ship faster.
-
-**Version compatibility:** The SDK (this repo) and the backend ([Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)) are versioned independently. Use an SDK version that is compatible with the backend API you deploy; check the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) for API changes when upgrading either side. We aim to keep current SDK (e.g. 1.4.x) working with current backend (e.g. 1.1.x); when we introduce breaking API changes we document them in both CHANGELOGs and may bump a path (e.g. `/api/v2`).
+- **Single source of truth:** [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes) and [openapi.yaml](api/openapi.yaml) in **this repo**.
+- **Runbook:** [Changing the API](CHANGING_THE_API.md) — update spec → edge stub (if needed) → bleujs.org → SDK.
 
 ## Where to contribute
 
 | You want to… | Repo | Links |
 |--------------|------|--------|
-| Fix or extend the SDK, CLI, or docs | [Bleu.js](https://github.com/HelloblueAI/Bleu.js) | [CONTRIBUTING](../CONTRIBUTING.md), [Contributor guide](CONTRIBUTOR_GUIDE.md) |
-| Fix or extend the API server, inference, or backend services | [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) | Backend [README](https://github.com/HelloblueAI/Bleujs.-backend#readme), [Bleu.js CONTRIBUTING](https://github.com/HelloblueAI/Bleu.js/blob/main/CONTRIBUTING.md) |
-| Report a security issue | Either | [SECURITY.md](../SECURITY.md) (Bleu.js), [Backend SECURITY](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/SECURITY.md) |
-| Propose a change that touches both | Open an issue in both or start in the repo that owns the contract (usually Bleu.js for API shape) | — |
-
-## Why two repos?
-
-- **Clear scope:** One repo = one product surface (SDK, CLI, docs). Backend = API and services. Same pattern as many API-first and platform projects.
-- **Security and dependency hygiene:** Fewer manifests in one place, so Dependabot and security alerts stay manageable. See [Dependabot and dependencies](DEPENDABOT_AND_DEPENDENCIES.md) and [Backend repo](BACKEND_REPO.md).
-- **Contributor experience:** Contributors know where to open issues and PRs; backend and SDK can evolve at their own pace.
-
-## Accelerating the flow
-
-- **Change the API in one place:** Update [openapi.yaml](api/openapi.yaml) first; CI validates it. Then backend and SDK follow. See [Changing the API](CHANGING_THE_API.md).
-- **Backend contributors:** After changing routes or responses, update the spec in the main repo (or open a PR there), add a backend CHANGELOG entry, and run `npm test`.
-- **Single checklist:** The runbook above keeps contract → backend → client in order so we stay ahead of teams that don’t document the flow.
+| SDK, CLI, docs, OpenAPI, edge stub | [Bleu.js](https://github.com/HelloblueAI/Bleu.js) | [CONTRIBUTING](../CONTRIBUTING.md) |
+| Production API, website, ML engine | [bleujs.org](https://github.com/HelloblueAI/bleujs.org) | That repo’s CONTRIBUTING |
+| Report a security issue | Bleu.js or bleujs.org | [SECURITY.md](../SECURITY.md) |
 
 ## More
 
-- **Backend details (export, setup, deploy):** [BACKEND_REPO.md](BACKEND_REPO.md)
-- **Backend release notes:** [Bleujs.-backend CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md)
-- **Product architecture (bleujs.org app):** [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md)
-- **Evaluating Bleu.js / award submission:** [Evaluation and awards](EVALUATION_AND_AWARDS.md)
+- **Archived backend repo:** [BACKEND_REPO.md](BACKEND_REPO.md)
+- **Who serves the live API:** [WHO_SERVES_THE_API.md](WHO_SERVES_THE_API.md)
+- **Deployment:** [DEPLOYMENT_PRACTICES.md](DEPLOYMENT_PRACTICES.md)
+- **Product architecture:** [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md)

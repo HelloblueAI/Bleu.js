@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Archived [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend); moved OpenAPI edge stub and contract tests to `services/edge-stub/`. Production API and ML remain in [bleujs.org](https://github.com/HelloblueAI/bleujs.org). See [BACKEND_REPO.md](docs/BACKEND_REPO.md).
+
 ## [v1.5.40] - 2026-06-03
 
 ### 🎉 Automatic Release

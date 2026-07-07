@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Export backend/ for a new repo. Run from Bleu.js repo root. Requires backend/ on disk.
-set -e
+# DEPRECATED: Bleujs.-backend was archived July 2026. Edge stub lives in services/edge-stub/.
+echo "Deprecated: HelloblueAI/Bleujs.-backend is archived."
+echo "Use services/edge-stub/ in the Bleu.js repo instead. See docs/BACKEND_REPO.md"
+exit 1
+
+# Legacy export script (disabled):
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BACKEND_SRC="${REPO_ROOT}/backend"
 EXPORT_DIR="${REPO_ROOT}/../Bleu.js-backend-export"
