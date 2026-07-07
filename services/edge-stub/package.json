@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
-    "test": "node tests/smoke.mjs && node tests/api.mjs && node tests/contract.mjs"
+    "test": "node tests/smoke.mjs && node tests/api.mjs && python3 tests/contract.py"
   },
   "engines": {
     "node": ">=20.0.0"

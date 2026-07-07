@@ -3,6 +3,11 @@
  * and response shapes expected by CLI/SDK (no timeout, no 500).
  * Run: npm run test:api
  */
+// Do not inherit shell API keys — authorizeRequest reads process.env when env is {}.
+for (const name of ["BLEU_API_KEYS", "BLEU_API_KEY", "API_KEYS", "API_KEY"]) {
+  delete process.env[name];
+}
+
 const base = await import("../index.mjs");
 const handler = base.default?.fetch ?? base.fetch;
 if (typeof handler !== "function") {
