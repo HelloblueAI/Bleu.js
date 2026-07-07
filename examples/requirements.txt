@@ -14,7 +14,7 @@ bcrypt>=5.0.0
 black>=23.0.0
 # Core Bleu.js dependencies
 bleujs>=1.1.4
-cirq>=1.2.0
+cirq>=1.7.0
 
 # Utilities
 click>=8.1.0
@@ -37,7 +37,7 @@ mypy>=1.5.0
 numpy>=1.24.0
 
 # Computer vision dependencies
-opencv-python>=4.13.0.92
+opencv-python>=5.0.0.93
 pandas>=2.0.0
 pennylane>=0.32.0
 pillow>=10.0.0
