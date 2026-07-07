@@ -13,8 +13,8 @@ Official maintainers for [Bleu.js](https://github.com/HelloblueAI/Bleu.js). This
 
 | Repo | Maintainers |
 |------|-------------|
-| [Bleu.js](https://github.com/HelloblueAI/Bleu.js) (SDK, CLI, docs) | This file |
-| [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) | Same team — see [REPOSITORIES.md](docs/REPOSITORIES.md) |
+| [Bleu.js](https://github.com/HelloblueAI/Bleu.js) (SDK, CLI, docs, edge stub) | This file |
+| [bleujs.org](https://github.com/HelloblueAI/bleujs.org) (production site + ML) | Same team — see [REPOSITORIES.md](docs/REPOSITORIES.md) |
 
 ## GitHub contributor graph
 

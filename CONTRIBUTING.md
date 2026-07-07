@@ -6,7 +6,7 @@ We welcome contributions. The full guide is in the docs:
 
 **[→ Contributing guide (setup, PR process, coding standards)](docs/CONTRIBUTING.md)**
 
-**Backend:** The Node/Express API lives in a [separate repo](docs/BACKEND_REPO.md). For backend-only changes, open issues and PRs in [HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). See [Repositories and sync](docs/REPOSITORIES.md) for how both repos fit together.
+**Edge API stub:** Local/CI OpenAPI stub lives in [`services/edge-stub/`](services/edge-stub/). Production API is [bleujs.org](https://github.com/HelloblueAI/bleujs.org). See [Repositories and sync](docs/REPOSITORIES.md).
 
 **Develop from source:** clone → `python -m venv .venv` → `pip install -e .` → set `BLEUJS_API_KEY` in `.env` → `bleu chat "Hello"`. Details: [Development setup](docs/CONTRIBUTING.md#-development-setup).
 
@@ -19,7 +19,7 @@ Quick links:
 - [Repositories and sync](docs/REPOSITORIES.md) (where to contribute: SDK vs backend)
 - [Security policy](SECURITY.md)
 - [API contract and response shapes](docs/API_CLIENT_GUIDE.md#api-contract-and-response-shapes)
-- [Changing the API](docs/CHANGING_THE_API.md) — when your change affects the API, follow this runbook so both repos stay in sync.
+- [Changing the API](docs/CHANGING_THE_API.md) — when your change affects the API, follow this runbook (spec → edge stub → bleujs.org → SDK).
 - [Bug report](.github/ISSUE_TEMPLATE/bug_report.md) · [Feature request](.github/ISSUE_TEMPLATE/feature_request.md)
 
 **Internal docs:** Maintainer-only docs (release instructions, org checklist) are in `docs/internal/` and are not in the public repo; see [docs/internal/README.md](docs/internal/README.md).

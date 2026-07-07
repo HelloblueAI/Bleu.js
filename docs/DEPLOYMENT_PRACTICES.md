@@ -16,24 +16,25 @@ Short assessment of how our Railway + Docker setup lines up with common “big t
 
 So on port, health, single process, non-root, and CI/CD flow we’re aligned with common practice.
 
-## Current architecture (two deployment targets)
+## Current architecture
 
-1. **Bleu.js repo → Railway (bleujs-production)**
-   - Builds the root **[Dockerfile](../Dockerfile)** (see `railway.json`).
-   - Runs the **full product app** (`uvicorn src.main:app` on `$PORT`).
-   - **Result:** Serves the same app as bleujs.org (dashboard + API from `src.main`). Health: `GET /health`. Set `DATABASE_URL` (and other app settings) in Railway.
+1. **bleujs.org → Railway (`bleujs-production.up.railway.app`)**
+   - Runs **`ml_engine/server.py`** — production `POST /predict` (XGBoost).
+   - Deploy via `bleujs.org` (`scripts/railway_build.sh` / `railway_start.sh`).
 
-2. **Bleujs.-backend repo**
-   - Builds its own Dockerfile.
-   - Runs **predict_api** (FastAPI with `/`, `/predict`).
-   - **Result:** Dedicated prediction API; can be deployed as a separate service (e.g. second Railway service or separate URL).
+2. **bleujs.org → Vercel**
+   - Next.js app — production `chat` / `generate` / `embed` via `api.bleujs.org`.
 
-So: **bleujs-production** serves the full product app; the prediction API remains a separate service when used.
+3. **Bleu.js repo (optional self-host)**
+   - Root **Dockerfile** can run `src.main:app` (product app) on Railway or elsewhere.
+   - **`services/edge-stub/`** — local/CI OpenAPI stub only; not production.
+
+See [Repositories and sync](REPOSITORIES.md) and [Who serves the API](WHO_SERVES_THE_API.md).
 
 ## How “big tech” usually does it
 
 - **One URL, one app:** The public URL (e.g. bleujs.org / bleujs-production) serves the **actual product** (dashboard + API from `src.main:app`), not a minimal stub.
-- **Optional separate services:** Heavy or specialized workloads (e.g. ML inference) often run in a separate service (e.g. Bleujs.-backend for `/predict`), with the main app proxying or calling it. We already have that split in repos; we can keep it.
+- **Optional separate services:** ML inference runs in **bleujs.org `ml_engine`** on Railway; the main Next.js app calls it via `BLEUJS_API_URL`.
 - **Containers:** One primary process per container. We use uvicorn as the main process.
 
 ## Product app on Railway

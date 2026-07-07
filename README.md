@@ -27,7 +27,7 @@ Bleu.js combines classical machine learning with optional quantum computing.
 | **Who it's for** | ML engineers, researchers, and developers building cloud APIs or CLI tools |
 | **Status** | Beta — [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md) |
 | **Security** | No secrets in repo — [SECURITY.md](SECURITY.md) |
-| **Repos** | This SDK + [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) — [map](docs/REPOSITORIES.md) |
+| **Repos** | This SDK + [bleujs.org](https://github.com/HelloblueAI/bleujs.org) — [map](docs/REPOSITORIES.md) |
 
 ---
 

@@ -1,41 +1,38 @@
 # Changing the API (runbook)
 
-When you add or change endpoints, request/response shapes, or the public API in any way, follow this flow so both the **Bleu.js** repo (SDK, docs) and the **Bleujs.-backend** repo stay in sync and we ship faster.
+When you add or change endpoints, request/response shapes, or the public API, follow this flow so **Bleu.js** (SDK, contract), **bleujs.org** (production), and the edge stub stay aligned.
 
 ## 1. Update the contract (Bleu.js repo)
 
-- **Edit [docs/api/openapi.yaml](api/openapi.yaml)**
-  Add or change paths, requestBody, responses, and components so the spec is the single source of truth. CI will validate this file.
+- **Edit [docs/api/openapi.yaml](api/openapi.yaml)** — paths, requestBody, responses, components. CI validates this file and runs edge-stub tests.
 
-- **Update the doc table**
-  In [API Client Guide – API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes), keep the markdown table in line with the spec (for humans and search).
+- **Update the doc table** in [API Client Guide – API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes).
 
-- **If the change is breaking**
-  Prefer a new path (e.g. `/api/v2/...`) or a new optional field instead of changing existing behavior. If you must break, document it in the main [CHANGELOG](../CHANGELOG.md) and in the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md).
+- **If the change is breaking:** Prefer `/api/v2/...` or new optional fields. Document in the main [CHANGELOG](../CHANGELOG.md).
 
-## 2. Implement in backend (Bleujs.-backend repo)
+## 2. Edge stub (Bleu.js — local / CI only)
 
-- Implement or update routes and handlers to match the spec.
-- Run `npm test` (typecheck + smoke + contract) and `npm run lint`.
-- Add an entry to the backend [CHANGELOG](https://github.com/HelloblueAI/Bleujs.-backend/blob/main/CHANGELOG.md) describing the API change (for deployers and SDK maintainers).
+- Update [`services/edge-stub/index.mjs`](../services/edge-stub/index.mjs) if the stub should reflect new routes.
+- Run `npm test` in `services/edge-stub/`.
 
-## 3. Implement in SDK / CLI (Bleu.js repo)
+## 3. Production (bleujs.org)
 
-- Update the Python client, CLI, or playground to use the new or changed API (same URLs, request/response shapes as in the spec).
-- Add or update tests. Mention the change in the main [CHANGELOG](../CHANGELOG.md) if it affects users.
+- Implement routes in the **bleujs.org** Next.js app (and ML engine if `/predict` changes).
+- Deploy via that repo’s normal Vercel / Railway flow.
 
-## 4. Compatibility
+## 4. SDK / CLI (Bleu.js repo)
 
-- **SDK and backend are versioned independently.** When you change the API, note in the backend CHANGELOG which backend version includes the change. Users should use an SDK version that matches the backend they deploy; we document this in [Repositories and sync](REPOSITORIES.md#keeping-client-and-backend-in-sync).
+- Update Python client, CLI, or playground to match the spec.
+- Add tests; update [CHANGELOG](../CHANGELOG.md) if user-facing.
 
 ## Quick checklist
 
 | Step | Repo | Action |
 |------|------|--------|
 | 1a | Bleu.js | Update `docs/api/openapi.yaml` |
-| 1b | Bleu.js | Update API contract table in API_CLIENT_GUIDE.md |
-| 2a | Bleujs.-backend | Implement/update routes; run `npm test` and lint |
-| 2b | Bleujs.-backend | Add CHANGELOG entry for the API change |
-| 3 | Bleu.js | Update SDK/CLI/playground; tests; CHANGELOG if user-facing |
+| 1b | Bleu.js | Update contract table in API_CLIENT_GUIDE.md |
+| 2 | Bleu.js | Update `services/edge-stub/`; `npm test` |
+| 3 | bleujs.org | Implement production routes; deploy |
+| 4 | Bleu.js | Update SDK/CLI; tests; CHANGELOG |
 
-This runbook keeps the two repos aligned and speeds up iteration: contract first, then backend, then client.
+See [Repositories and sync](REPOSITORIES.md).
