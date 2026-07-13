@@ -14,7 +14,7 @@ click>=8.2.1
 # Core security dependencies
 cryptography>=45.0.6
 # Use dask instead of ray for distributed computing (more secure)
-dask[complete]>=2026.6.0
+dask[complete]>=2026.7.0
 
 # Web security
 fastapi>=0.104.1
