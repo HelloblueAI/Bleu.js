@@ -1,61 +1,19 @@
-# Auto-assign configuration for Bleu.js project
-# This file configures automatic assignment of pull requests and reviewers
+# Auto-assign configuration for kentaro-m/auto-assign-action
+# https://github.com/kentaro-m/auto-assign-action
 
-# List of users to assign to pull requests
-assignees:
-  - helloblueai
+# Set to true to add reviewers to pull requests
+addReviewers: true
 
-# List of users to request reviews from
+# Assign the PR author
+addAssignees: author
+
+# GitHub usernames (must be users with write access, not orgs)
 reviewers:
-  - helloblueai
+  - pejmantheory
 
-# Number of reviewers to request (0 = all reviewers)
-reviewers_count: 1
+# Number of reviewers to request (0 = all)
+numberOfReviewers: 1
 
-# Set to true if you want to add the author to the assignees list
-add_author: false
-
-# Set to true if you want to skip the auto-assign for draft pull requests
-skip_draft: true
-
-# List of labels to add to pull requests
-labels:
-  - "needs-review"
-  - "ci/cd"
-
-# List of keywords that will trigger auto-assign
-keywords:
-  - "urgent"
-  - "hotfix"
-  - "security"
-  - "critical"
-
-# List of file patterns that will trigger auto-assign
-file_patterns:
-  - "src/quantum/**"
-  - "src/ml/**"
-  - "tests/**"
-  - "docs/**"
-  - ".github/workflows/**"
-
-# List of branches that will trigger auto-assign
-branches:
-  - "main"
-  - "develop"
-  - "staging"
-
-# Set to true if you want to add reviewers based on file changes
-add_reviewers_based_on_files: true
-
-# Map of file patterns to reviewers
-file_reviewers:
-  "src/quantum/**":
-    - helloblueai
-  "src/ml/**":
-    - helloblueai
-  "tests/**":
-    - helloblueai
-  "docs/**":
-    - helloblueai
-  ".github/workflows/**":
-    - helloblueai
+# Skip PRs whose title includes these keywords
+skipKeywords:
+  - wip
