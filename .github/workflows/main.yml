@@ -52,15 +52,15 @@ jobs:
   # ============================================================================
   auto-assign:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    # Skip Dependabot PRs even when a human merges main (actor != dependabot).
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login != 'dependabot[bot]' &&
+      !startsWith(github.head_ref, 'dependabot/')
     permissions:
       pull-requests: write
     steps:
-      - name: Skip on Dependabot PRs
-        if: github.actor == 'dependabot[bot]'
-        run: echo "Skipping auto-assign for Dependabot PR."
       - uses: kentaro-m/auto-assign-action@v2.0.2
-        if: github.actor != 'dependabot[bot]'
         with:
           configuration-path: .github/auto-assign.yml
 
