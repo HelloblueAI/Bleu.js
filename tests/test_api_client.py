@@ -308,6 +308,63 @@ class TestTextGeneration:
         assert isinstance(response, GenerationResponse)
         assert response.text == "Just the generated text"
 
+    @patch("httpx.Client.request")
+    def test_generate_openai_style_choices_response(self, mock_request, client):
+        """Test generate when API returns choices[].message.content without top-level text."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "gen_123",
+                "object": "text_completion",
+                "created": 1234567890,
+                "model": "bleujs-xgboost-v1",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Soft rain on glass—a quiet street.",
+                        },
+                        "index": 0,
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 6,
+                    "completion_tokens": 12,
+                    "total_tokens": 18,
+                },
+            },
+        )
+        response = client.generate("Write a haiku about rain")
+        assert isinstance(response, GenerationResponse)
+        assert response.text == "Soft rain on glass—a quiet street."
+        assert response.finish_reason == "stop"
+        assert response.model == "bleujs-xgboost-v1"
+
+    @patch("httpx.Client.request")
+    def test_generate_prefers_top_level_text_over_choices(self, mock_request, client):
+        """Top-level text wins when both text and choices are present."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "gen_456",
+                "object": "text_completion",
+                "created": 1234567890,
+                "model": "bleu-gen-v1",
+                "text": "Canonical text field",
+                "choices": [
+                    {
+                        "message": {"role": "assistant", "content": "Ignored choice"},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "finish_reason": "length",
+            },
+        )
+        response = client.generate("Prompt")
+        assert response.text == "Canonical text field"
+        assert response.finish_reason == "length"
+
 
 class TestEmbeddings:
     """Test embeddings functionality"""
