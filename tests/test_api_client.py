@@ -365,6 +365,48 @@ class TestTextGeneration:
         assert response.text == "Canonical text field"
         assert response.finish_reason == "length"
 
+    @patch("httpx.Client.request")
+    def test_generate_choices_legacy_text_field(self, mock_request, client):
+        """Fall back to choices[0].text when message.content is absent."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "gen_legacy",
+                "object": "text_completion",
+                "created": 1234567890,
+                "model": "bleu-gen-v1",
+                "choices": [
+                    {
+                        "text": "Legacy completion text",
+                        "index": 0,
+                        "finish_reason": "stop",
+                    }
+                ],
+            },
+        )
+        response = client.generate("Prompt")
+        assert isinstance(response, GenerationResponse)
+        assert response.text == "Legacy completion text"
+        assert response.finish_reason == "stop"
+
+    @patch("httpx.Client.request")
+    def test_generate_empty_when_no_usable_text(self, mock_request, client):
+        """Non-string top-level text with empty choices normalizes to empty string."""
+        mock_request.return_value = Mock(
+            status_code=200,
+            json=lambda: {
+                "id": "gen_empty",
+                "object": "text_completion",
+                "created": 1234567890,
+                "model": "bleu-gen-v1",
+                "text": None,
+                "choices": [],
+            },
+        )
+        response = client.generate("Prompt")
+        assert isinstance(response, GenerationResponse)
+        assert response.text == ""
+
 
 class TestEmbeddings:
     """Test embeddings functionality"""
