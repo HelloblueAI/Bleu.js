@@ -188,7 +188,8 @@ def normalize_generate_response(raw: Any) -> Dict[str, Any]:
     """
     Normalize generate API response to the shape expected by GenerationResponse.
 
-    Handles: dict with "text", bare string, list (first element), or None.
+    Handles: dict with "text", OpenAI-style choices[].message.content /
+    choices[].text, bare string, list (first element), or None.
     """
     if raw is None:
         logger.debug("Generate response was None; normalizing to empty text.")
@@ -235,14 +236,42 @@ def normalize_generate_response(raw: Any) -> Dict[str, Any]:
             "usage": None,
             "finish_reason": None,
         }
+
+    text = raw.get("text")
+    finish_reason = raw.get("finish_reason")
+    if not isinstance(text, str) or not text:
+        choices = raw.get("choices") or []
+        if isinstance(choices, list) and choices:
+            first = choices[0] if isinstance(choices[0], dict) else None
+            if first is not None:
+                message = (
+                    first.get("message")
+                    if isinstance(first.get("message"), dict)
+                    else {}
+                )
+                content = message.get("content") if message else None
+                choice_text = first.get("text")
+                if isinstance(content, str) and content:
+                    text = content
+                    logger.debug(
+                        "Generate response used choices[0].message.content; normalizing."
+                    )
+                elif isinstance(choice_text, str) and choice_text:
+                    text = choice_text
+                    logger.debug("Generate response used choices[0].text; normalizing.")
+                if finish_reason is None and first.get("finish_reason") is not None:
+                    finish_reason = first.get("finish_reason")
+        if not isinstance(text, str):
+            text = ""
+
     return {
         "id": raw.get("id", ""),
         "object": raw.get("object", "text.completion"),
         "created": raw.get("created", 0),
         "model": raw.get("model", ""),
-        "text": raw.get("text", ""),
+        "text": text,
         "usage": raw.get("usage"),
-        "finish_reason": raw.get("finish_reason"),
+        "finish_reason": finish_reason,
     }
 
 

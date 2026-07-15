@@ -231,7 +231,8 @@ jobs:
   lint:
     name: 🧹 Code Quality & Linting
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Poetry install regularly exceeds 10m on cold runners; keep headroom for flake8/black.
+    timeout-minutes: 20
 
     steps:
       - name: Free Disk Space
