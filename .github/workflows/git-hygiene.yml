@@ -1,0 +1,43 @@
+name: Git hygiene
+
+on:
+  pull_request:
+    branches: [main, staging]
+
+permissions:
+  contents: read
+
+jobs:
+  no-large-files:
+    name: Reject large added files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail if PR adds files larger than 500 KiB
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          max_bytes=$((500 * 1024))
+          mapfile -t files < <(git diff --name-only --diff-filter=A "$BASE_SHA"..."$HEAD_SHA")
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No newly added files."
+            exit 0
+          fi
+          failed=0
+          for f in "${files[@]}"; do
+            [ -f "$f" ] || continue
+            size=$(wc -c <"$f")
+            if [ "$size" -gt "$max_bytes" ]; then
+              echo "::error file=$f::Added file is ${size} bytes (limit ${max_bytes}). Keep binaries out of git or use Git LFS intentionally."
+              failed=1
+            fi
+          done
+          if [ "$failed" -ne 0 ]; then
+            exit 1
+          fi
+          echo "All newly added files are within the 500 KiB limit."

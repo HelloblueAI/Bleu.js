@@ -9,6 +9,8 @@ repos:
       - id: check-yaml
         exclude: ^(deploy/|cloudformation/|bluejs\.org/|mkdocs\.yml)
       - id: check-added-large-files
+        # Keep binaries / installers / pack artifacts out of git (default is 500).
+        args: [--maxkb=500]
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: check-docstring-first
