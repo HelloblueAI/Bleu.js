@@ -22,4 +22,4 @@ pytest-cov>=6.1.1
 # Documentation and packaging
 readme_renderer>=45.0
 safety>=3.8.1
-twine>=6.2.0
+twine>=7.0.0
