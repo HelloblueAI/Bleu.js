@@ -270,7 +270,8 @@ jobs:
 
       - name: Install dependencies
         # Use --extras ci (all minus gputil) to avoid gputil install querying repo "python/" dir → permission denied
-        run: poetry install --no-interaction --no-root --extras ci
+        # --with dev provides black/isort/flake8/mypy/bandit for the lint step
+        run: poetry install --no-interaction --no-root --extras ci --with dev
 
       - name: Run linting tools
         run: |
