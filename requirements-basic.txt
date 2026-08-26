@@ -8,7 +8,7 @@ aws-lambda-powertools>=3.31.1
 
 # AWS
 boto3>=1.24.0
-cryptography>=42.0.5
+cryptography>=50.0.0
 
 # Web framework
 fastapi==0.141.1
