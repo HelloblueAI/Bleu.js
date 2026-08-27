@@ -15,7 +15,6 @@ RUN apt-get update && apt-get upgrade -y && \
     ca-certificates \
     bash \
     python3 \
-    python3-venv \
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g 1000 app \
@@ -24,7 +23,7 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
     python3 /tmp/get-pip.py --break-system-packages && \
     pip3 install --no-cache-dir --break-system-packages --upgrade \
-    "pip>=25.3" "setuptools>=78.1.1" "urllib3>=2.6.3" "wheel>=0.46.3" && \
+    "pip>=25.3" "setuptools>=83.0.0" "urllib3>=2.6.3" "wheel>=0.46.3" && \
     rm -f /tmp/get-pip.py
 
 WORKDIR /app
@@ -36,10 +35,24 @@ COPY src/ /app/src/
 COPY main.py README.md /app/
 
 RUN pip3 install --no-cache-dir --break-system-packages \
-    "cryptography>=46.0.5" "urllib3>=2.6.3" && \
+    "cryptography>=50.0.0" "msgpack>=1.2.1" "urllib3>=2.6.3" && \
     pip3 install --no-cache-dir --break-system-packages -r /app/requirements-server.txt && \
     (pip3 install --no-cache-dir --break-system-packages -e /app 2>/dev/null || \
-     pip3 install --no-cache-dir --break-system-packages bleu-js 2>/dev/null || true)
+     pip3 install --no-cache-dir --break-system-packages bleu-js 2>/dev/null || true) && \
+    # Re-assert security floors after dependency resolution.
+    pip3 install --no-cache-dir --break-system-packages --upgrade \
+    "setuptools>=83.0.0" "cryptography>=50.0.0" "msgpack>=1.2.1" && \
+    # Runtime image does not need pip. Removing it clears Trivy hits on pip's
+    # vendored msgpack 1.1.2 and bom.cdx.json setuptools 70.3.0 (GHSA-6v7p /
+    # CVE-2025-47273 / CVE-2026-59890), which are not the app's installed pkgs.
+    rm -rf /usr/local/lib/python3.*/dist-packages/pip \
+           /usr/local/lib/python3.*/dist-packages/pip-*.dist-info \
+           /usr/local/bin/pip /usr/local/bin/pip3 \
+           /root/.cache/pip && \
+    apt-get update && \
+    apt-get purge -y python3-pip-whl python3-setuptools-whl && \
+    apt-get autoremove -y && \
+    rm -rf /usr/share/python-wheels /var/lib/apt/lists/*
 
 RUN chown -R app:app /app
 
