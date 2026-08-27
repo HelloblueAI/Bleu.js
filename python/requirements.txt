@@ -1,7 +1,7 @@
 aiohttp>=3.8.0
 asyncio>=4.0.0
 catboost>=1.2.10
-cryptography>=44.0.1
+cryptography>=50.0.0
 joblib>=1.5.3
 lightgbm>=4.7.0
 lime>=0.2.0.1
