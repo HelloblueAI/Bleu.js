@@ -162,21 +162,6 @@ class DependencyManager:
             print("❌ Failed to install requirements")
             return False
 
-    def generate_requirements_lock(self) -> bool:
-        """Generate a requirements.lock file with exact versions"""
-        print("🔒 Generating requirements.lock file...")
-
-        code, stdout, _ = self.run_command("pip freeze")
-        if code == 0:
-            lock_file = self.project_root / "requirements.lock"
-            with open(lock_file, "w") as f:
-                f.write(stdout)
-            print("✅ requirements.lock generated successfully")
-            return True
-        else:
-            print("❌ Failed to generate lock file")
-            return False
-
     def analyze_dependencies(self) -> Dict:
         """Comprehensive dependency analysis"""
         print("🔍 Analyzing dependencies...")
@@ -286,10 +271,7 @@ class DependencyManager:
             status = "✅" if success else "❌"
             print(f"  {status} {package} → {version}")
 
-        # 4. Generate lock file
-        self.generate_requirements_lock()
-
-        # 5. Final analysis
+        # 4. Final analysis
         print("\n🔍 Final dependency check...")
         final_analysis = self.analyze_dependencies()
         self.print_analysis_report(final_analysis)
