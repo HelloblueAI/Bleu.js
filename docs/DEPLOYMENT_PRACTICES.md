@@ -16,26 +16,26 @@ Generic guidance for running the open-source Bleu.js app yourself. Hosted Hellob
 
 From the repository root:
 
+Generate a secret for each key. Do not reuse the placeholder text from `.env.example`. The app rejects those placeholders when `ENV_NAME` is `production` or `staging`.
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
 ```bash
 docker build -t bleu-js:local .
 docker run --rm -p 8000:8000 \
   -e PORT=8000 \
   -e ENV_NAME=production \
-  -e SECRET_KEY="replace-with-a-random-string-at-least-32-chars" \
-  -e JWT_SECRET_KEY="replace-with-a-different-random-string-32" \
-  -e JWT_SECRET="replace-with-another-random-string-32chars" \
-  -e ENCRYPTION_KEY="replace-with-another-random-string-32ch" \
+  -e SECRET_KEY \
+  -e JWT_SECRET_KEY \
+  -e JWT_SECRET \
+  -e ENCRYPTION_KEY \
   -e DATABASE_URL="sqlite:///./bleujs.db" \
   bleu-js:local
 ```
 
-Then open `http://localhost:8000/health`.
-
-Generate secrets with:
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
+Export `SECRET_KEY`, `JWT_SECRET_KEY`, `JWT_SECRET`, and `ENCRYPTION_KEY` in the shell before that command. Then open `http://localhost:8000/health`.
 
 ## Configuration
 

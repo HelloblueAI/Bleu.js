@@ -156,19 +156,25 @@ class Settings(BaseSettings):
             "dev-jwt-secret-key-change-in-production-12345",
             "dev-jwt-secret-change-in-production-12345",
             "dev-encryption-key-change-in-production-12345",
+            "replace-with-a-random-string-at-least-32-chars",
+            "replace-with-a-different-random-string-32",
+            "replace-with-another-random-string-32chars",
+            "replace-with-another-random-string-32ch",
             "test_jwt_secret_key",
             "dev_jwt_secret_key_123",
             "dev_encryption_key_123",
         ]
         if self.ENV_NAME.lower() in ("production", "staging"):
-            if self.SECRET_KEY in weak_secrets:
-                raise ValueError(
-                    "SECRET_KEY must be set to a strong value in production"
-                )
-            if self.JWT_SECRET_KEY in weak_secrets:
-                raise ValueError(
-                    "JWT_SECRET_KEY must be set to a strong value in production"
-                )
+            for name in (
+                "SECRET_KEY",
+                "JWT_SECRET_KEY",
+                "JWT_SECRET",
+                "ENCRYPTION_KEY",
+            ):
+                if getattr(self, name) in weak_secrets:
+                    raise ValueError(
+                        f"{name} must be set to a strong value in production"
+                    )
         return self
 
     @field_validator("ALLOWED_HOSTS", mode="before")
