@@ -1,6 +1,6 @@
 # Docker Scout Vulnerability Analysis
 
-> **Note (2026-06):** The **Bleu OS** distribution (`bleu-os/`, `bleuos/bleu-os` on Docker Hub) was removed from this repo. Railway and self-host use the root [Dockerfile](../Dockerfile). Historical Scout notes below refer to the retired images.
+> **Note (2026-06):** The **Bleu OS** distribution (`bleu-os/`, `bleuos/bleu-os` on Docker Hub) was removed from this repo. Self-host uses the root [Dockerfile](../Dockerfile). Historical Scout notes below refer to the retired images.
 
 **See also:** [SECURITY.md](../SECURITY.md) — known vulnerabilities table and one-page fix checklist.
 

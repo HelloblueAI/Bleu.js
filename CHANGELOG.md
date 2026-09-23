@@ -10,7 +10,7 @@
 ## Unreleased
 
 ### Changed
-- Archived [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend); moved OpenAPI edge stub and contract tests to `services/edge-stub/`. Production API and ML remain in [bleujs.org](https://github.com/HelloblueAI/bleujs.org). See [BACKEND_REPO.md](docs/BACKEND_REPO.md).
+- Moved the OpenAPI edge stub and contract tests to `services/edge-stub/`. See [BACKEND_REPO.md](docs/BACKEND_REPO.md).
 
 ## [v1.5.40] - 2026-06-03
 
@@ -47,7 +47,7 @@
 - **Governance:** `MAINTAINERS.md`, professional `CONTRIBUTORS.md`, commit attribution policy; clarify GitHub bot avatars vs official team.
 
 ### Removed
-- **Bleu OS** — Removed `bleu-os/` tree, `bleu-os.yml` and `docker-publish.yml` workflows, and Docker Hub publish path. Railway and self-host use the root [Dockerfile](Dockerfile) with [deploy/requirements-server.txt](deploy/requirements-server.txt). The `bleuos/bleu-os` images on Docker Hub are retired (no longer built from this repo).
+- **Bleu OS** — Removed `bleu-os/` tree, `bleu-os.yml` and `docker-publish.yml` workflows, and Docker Hub publish path. Self-host uses the root [Dockerfile](Dockerfile) with [deploy/requirements-server.txt](deploy/requirements-server.txt). The `bleuos/bleu-os` images on Docker Hub are retired (no longer built from this repo).
 
 ## [v1.5.37] - 2026-06-02
 

@@ -44,4 +44,4 @@ pip install bleu-js
 python -c "from bleujs.api_client import BleuAPIClient; print(BleuAPIClient(api_key='...').list_models())"
 ```
 
-**Backend repo:** [HelloblueAI/Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). See [BACKEND_REPO.md](BACKEND_REPO.md) and [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md) for contract alignment.
+**Contract:** [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md) and [openapi.yaml](api/openapi.yaml).

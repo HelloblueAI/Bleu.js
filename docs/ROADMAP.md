@@ -14,15 +14,15 @@ Bleu.js is a quantum-enhanced AI platform: cloud API, CLI, and Python SDK. This 
 | Bleu CLI           | ✅ Complete      | `bleu` / `bleujs` (e.g. `bleu chat`, `bleu generate`, `bleu health`)                                                             |
 | Quantum            | ✅ In place      | Teleportation, IBM runtime, quantum-enhanced features                                                                             |
 | ML Pipeline        | ✅ Complete      | XGBoost, LLaMA, model management, hybrid training                                                                                 |
-| Development & docs | ✅ In place      | Testing, API reference, [API Client Guide](API_CLIENT_GUIDE.md), [Repositories and sync](REPOSITORIES.md)                |
-| Backend            | ✅ Separate repo | Node/Express backend in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend); see [BACKEND_REPO.md](BACKEND_REPO.md) |
+| Development & docs | ✅ In place      | Testing, API reference, [API Client Guide](API_CLIENT_GUIDE.md), [this repository](REPOSITORIES.md) |
+| API contract       | ✅ In this repo  | [openapi.yaml](api/openapi.yaml) and the edge stub in `services/edge-stub/` |
 
 ### Recent additions (2025–2026)
 
 - API playground ([api_playground.html](../api_playground.html)), live demo, CLI extensions
 - Quantum teleportation and IBM runtime integration
 - Security: auth/JWT fix, optional CSRF, secret validation, Safety Scan in CI, hardened Docker/CSP
-- Repo hygiene: backend moved to separate repo, Dependabot scope tightened, CONTRIBUTING/SUPPORT/CODEOWNERS
+- Repo hygiene: Dependabot scope tightened, CONTRIBUTING/SUPPORT/CODEOWNERS
 
 ## Development Roadmap
 

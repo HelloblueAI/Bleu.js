@@ -237,8 +237,8 @@ class Settings(BaseSettings):
     # API settings
     API_KEY: SecretStr = Field(default="dev_api_key")
     API_SECRET: SecretStr = Field(default="dev_api_secret")
-    TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
-    ENTERPRISE_TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
+    TEST_API_KEY: str = "test-api-key"
+    ENTERPRISE_TEST_API_KEY: str = "test-enterprise-api-key"
     TEST_API_HOST: str = "localhost"
     TEST_API_PORT: int = 8000
 
@@ -272,7 +272,7 @@ class Settings(BaseSettings):
     QUANTUM_SERVICE_URL: str = Field(
         default="",
         alias="QUANTUM_SERVICE_URL",
-        description="Optional BleuJS/quantum backend URL for health and predictions",
+        description="Optional external quantum service URL for health checks",
     )
     ENABLE_QUANTUM: bool = True
 
@@ -280,7 +280,7 @@ class Settings(BaseSettings):
     BLEUJS_BACKEND_URL: str = Field(
         default="",
         alias="BLEUJS_BACKEND_URL",
-        description="BleuJS AI backend URL (e.g. Railway predict API). Empty = skip.",
+        description="Optional upstream inference URL. Empty = skip.",
     )
     OPENAI_API_KEY: SecretStr | None = Field(default=None, alias="OPENAI_API_KEY")
     ANTHROPIC_API_KEY: SecretStr | None = Field(default=None, alias="ANTHROPIC_API_KEY")

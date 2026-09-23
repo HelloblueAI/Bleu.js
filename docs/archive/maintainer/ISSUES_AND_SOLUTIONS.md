@@ -16,27 +16,27 @@ Copy-paste reference for the four main issues and how they were fixed.
 ## ISSUE 2: Chat times out / no response
 
 - **Symptom:** `bleu chat "Hello, world!"` and Python `client.chat([...])` never return; they time out (e.g. 30–40s).
-- **Cause:** The API (served by **bleujs.org**, not by Bleu.js) did not respond in time.
-- **Solution (fixed on bleujs.org):** Chat has a 20s timeout; if the backend does not respond in time we return 503 with a clear message instead of hanging. See [Who serves the API](WHO_SERVES_THE_API.md).
-- **Status:** Fixed on **bleujs.org** (Next.js/Vercel). No changes required in the Bleu.js repo.
+- **Cause:** The hosted API did not respond in time. This repository only contains the client.
+- **Solution:** The hosted API now returns an error the client can surface, instead of hanging. See [API client and contract](../../WHO_SERVES_THE_API.md).
+- **Status:** Fixed on the hosted API. No changes required in this repository for the client.
 
 ---
 
 ## ISSUE 3: Generate returns 500 Internal Server Error
 
 - **Symptom:** `bleu generate "..."` and `client.generate(...)` return: `API Error: {'success': False, 'error': 'Internal Server Error', 'code': 'INTERNAL_ERROR'}`
-- **Cause:** The API (bleujs.org) was returning HTTP 500 for generate errors.
-- **Solution (fixed on bleujs.org):** Errors from the AI layer now return 503 (and are logged); response includes a top-level `"text"` field. See [Who serves the API](WHO_SERVES_THE_API.md).
-- **Status:** Fixed on **bleujs.org**. No changes required in the Bleu.js repo.
+- **Cause:** The hosted API returned HTTP 500 for generate errors.
+- **Solution:** Clients should accept a top-level `text` field, as documented in the API contract.
+- **Status:** Fixed on the hosted API. No changes required in this repository for the client.
 
 ---
 
 ## ISSUE 4: Embed returns 500 Internal Server Error
 
 - **Symptom:** `bleu embed "Hello world" "Goodbye world"` and `client.embed([...])` return the same 500 INTERNAL_ERROR.
-- **Cause:** The API (bleujs.org) was returning HTTP 500 for embed.
-- **Solution (fixed on bleujs.org):** 503 and logging instead of 500; fallback embedding provider when primary fails so we can still return 200 with embeddings when possible. See [Who serves the API](WHO_SERVES_THE_API.md).
-- **Status:** Fixed on **bleujs.org**. No changes required in the Bleu.js repo.
+- **Cause:** The hosted API returned HTTP 500 for embed.
+- **Solution:** Use the response shape in the API contract. No client change is required for the fix.
+- **Status:** Fixed on the hosted API. No changes required in this repository for the client.
 
 ---
 
@@ -63,4 +63,4 @@ client.embed(["x", "y"])                                # returns embeddings, no
 ```
 
 - **SDK/CLI:** Fixed in this repo; `pip install -U bleu-js` gets the latest.
-- **Live API:** Served by **bleujs.org** (Next.js on Vercel). Chat/generate/embed fixes were deployed there. Bleu.js only calls the API; it does not serve it. See [Who serves the API](WHO_SERVES_THE_API.md) and [BACKEND_REPO.md](BACKEND_REPO.md).
+- **Live API:** The SDK and CLI call `https://api.bleujs.org`. See [API client and contract](../../WHO_SERVES_THE_API.md).

@@ -1,4 +1,4 @@
-# Bleu.js product app (bleujs.org) — Railway and self-host.
+# Bleu.js app image for self-hosting.
 # Replaces the former bleu-os image: same app on $PORT, without the ML/quantum stack image.
 
 FROM debian:bookworm-slim
