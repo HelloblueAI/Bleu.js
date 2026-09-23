@@ -156,19 +156,25 @@ class Settings(BaseSettings):
             "dev-jwt-secret-key-change-in-production-12345",
             "dev-jwt-secret-change-in-production-12345",
             "dev-encryption-key-change-in-production-12345",
+            "replace-with-a-random-string-at-least-32-chars",
+            "replace-with-a-different-random-string-32",
+            "replace-with-another-random-string-32chars",
+            "replace-with-another-random-string-32ch",
             "test_jwt_secret_key",
             "dev_jwt_secret_key_123",
             "dev_encryption_key_123",
         ]
         if self.ENV_NAME.lower() in ("production", "staging"):
-            if self.SECRET_KEY in weak_secrets:
-                raise ValueError(
-                    "SECRET_KEY must be set to a strong value in production"
-                )
-            if self.JWT_SECRET_KEY in weak_secrets:
-                raise ValueError(
-                    "JWT_SECRET_KEY must be set to a strong value in production"
-                )
+            for name in (
+                "SECRET_KEY",
+                "JWT_SECRET_KEY",
+                "JWT_SECRET",
+                "ENCRYPTION_KEY",
+            ):
+                if getattr(self, name) in weak_secrets:
+                    raise ValueError(
+                        f"{name} must be set to a strong value in production"
+                    )
         return self
 
     @field_validator("ALLOWED_HOSTS", mode="before")
@@ -237,8 +243,8 @@ class Settings(BaseSettings):
     # API settings
     API_KEY: SecretStr = Field(default="dev_api_key")
     API_SECRET: SecretStr = Field(default="dev_api_secret")
-    TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
-    ENTERPRISE_TEST_API_KEY: str = "JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR"
+    TEST_API_KEY: str = "test-api-key"
+    ENTERPRISE_TEST_API_KEY: str = "test-enterprise-api-key"
     TEST_API_HOST: str = "localhost"
     TEST_API_PORT: int = 8000
 
@@ -272,7 +278,7 @@ class Settings(BaseSettings):
     QUANTUM_SERVICE_URL: str = Field(
         default="",
         alias="QUANTUM_SERVICE_URL",
-        description="Optional BleuJS/quantum backend URL for health and predictions",
+        description="Optional external quantum service URL for health checks",
     )
     ENABLE_QUANTUM: bool = True
 
@@ -280,7 +286,7 @@ class Settings(BaseSettings):
     BLEUJS_BACKEND_URL: str = Field(
         default="",
         alias="BLEUJS_BACKEND_URL",
-        description="BleuJS AI backend URL (e.g. Railway predict API). Empty = skip.",
+        description="Optional upstream inference URL. Empty = skip.",
     )
     OPENAI_API_KEY: SecretStr | None = Field(default=None, alias="OPENAI_API_KEY")
     ANTHROPIC_API_KEY: SecretStr | None = Field(default=None, alias="ANTHROPIC_API_KEY")

@@ -1,4 +1,4 @@
-# OSS Cleanup Plan — Bleu.js + Bleujs.-backend
+# OSS cleanup plan — Bleu.js
 
 **Goal:** Move from “strong OSS foundation” (~85/100) to “reference-grade OSS” (~95/100) without breaking installs, CI, or external links.
 
@@ -13,8 +13,7 @@
 
 | Repo | Local path | GitHub |
 |------|------------|--------|
-| Main SDK | `Bleu.js` | `HelloblueAI/Bleu.js` |
-| Backend | `Bleu.js-backend-export` | `HelloblueAI/Bleujs.-backend` |
+| This repository | `Bleu.js` | `HelloblueAI/Bleu.js` |
 
 **Suggested branch prefix:** `oss-cleanup/pr-N-short-name`
 
@@ -66,7 +65,6 @@ Introduce a clear **three-tier** docs model and move maintainer/ops docs out of 
 ### Move to `docs/archive/maintainer/` (recommended — stays in git, clearly labeled) ✅
 
 ```
-docs/archive/maintainer/MESSAGE_FOR_BLEUJS_ORG_DEVELOPER.md
 docs/archive/maintainer/BLEUJS_ORG_HANDOFF_2026-03-v1.4.16.md
 docs/archive/maintainer/BLEUJS_ORG_UPDATE_HANDOFF_2026-03.md
 docs/archive/maintainer/BLEUJS_ORG_REVIEW_2026-03.md
@@ -321,44 +319,9 @@ Reference them from `CONTRIBUTOR_GUIDE.md` (already mentions 3–5 issues).
 
 ---
 
-## PR 8 — Backend OSS polish (Bleujs.-backend)
+## PR 8 — Removed
 
-**Branch:** `oss-cleanup/pr-8-backend-templates`
-**Repo:** `Bleu.js-backend-export`
-
-### 8a — Issue templates
-
-Add `.github/ISSUE_TEMPLATE/` (mirror main repo style):
-
-- `bug_report.md` — steps, expected, version (`npm run` / `predict_api.py`)
-- `feature_request.md` — API contract impact yes/no
-- `config.yml` — link to main repo for SDK issues
-
-### 8b — `.elasticbeanstalk/` hygiene
-
-- Add to `.gitignore`: `.elasticbeanstalk/saved_configs/` (local backups)
-- Keep `.elasticbeanstalk/config.yml` if team uses EB CLI, **or** move deploy docs to `docs/DEPLOY_ELASTIC_BEANSTALK.md` and gitignore entire `.elasticbeanstalk/`
-
-### 8c — Experimental `src/` clarity
-
-Add `src/README.md`:
-
-```markdown
-# Legacy / experimental services
-
-Not wired into `index.mjs` or `predict_api.py`. Do not deploy.
-Production paths: `index.mjs` (stub), `predict_api.py` (ML).
-```
-
-### 8d — Cross-link cleanup plan
-
-One line in backend `README.md` → main repo `docs/OSS_CLEANUP_PLAN.md`
-
-### Acceptance criteria
-
-- [ ] `npm test` passes
-- [ ] New issue template visible on GitHub “New issue”
-- [ ] README “What’s in this repo” unchanged in meaning
+Private service work is not part of this public repository.
 
 ---
 

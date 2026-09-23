@@ -27,7 +27,7 @@ Bleu.js combines classical machine learning with optional quantum computing.
 | **Who it's for** | ML engineers, researchers, and developers building cloud APIs or CLI tools |
 | **Status** | Beta — [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md) |
 | **Security** | No secrets in repo — [SECURITY.md](SECURITY.md) |
-| **Repos** | This SDK + [bleujs.org](https://github.com/HelloblueAI/bleujs.org) — [map](docs/REPOSITORIES.md) |
+| **API** | Hosted API at `https://api.bleujs.org` — [contract](docs/api/openapi.yaml) |
 
 ---
 
@@ -139,7 +139,7 @@ Both `bleu` and `bleujs` command names work. **Full CLI/SDK docs:** [API Client 
 | Architecture & features | [PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) · [Platform overview](docs/PLATFORM_OVERVIEW.md) |
 | Quantum / ML examples | [examples/](examples/) · [Quantum teleportation](docs/QUANTUM_TELEPORTATION.md) |
 | Benchmarks | [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) · [PERFORMANCE.md](docs/PERFORMANCE.md) |
-| Change the API (both repos) | [CHANGING_THE_API.md](docs/CHANGING_THE_API.md) |
+| Change the API | [CHANGING_THE_API.md](docs/CHANGING_THE_API.md) |
 | Contribute | [CONTRIBUTING.md](docs/CONTRIBUTING.md) · [Contributor guide](docs/CONTRIBUTOR_GUIDE.md) |
 | Security & deployment | [SECURITY.md](SECURITY.md) · [DEPLOYMENT_PRACTICES.md](docs/DEPLOYMENT_PRACTICES.md) |
 | FAQ | [USER_CONCERNS_AND_FAQ.md](docs/USER_CONCERNS_AND_FAQ.md) |
@@ -158,7 +158,7 @@ flowchart LR
     C --> F[api.bleujs.org]
 ```
 
-Production **chat / generate / embed** are served by **[bleujs.org](https://bleujs.org)**. Details: [Who serves the API](docs/WHO_SERVES_THE_API.md) · [Product philosophy](docs/PRODUCT_PHILOSOPHY.md).
+The SDK and CLI call the hosted API at `https://api.bleujs.org`. Contract: [openapi.yaml](docs/api/openapi.yaml) · [API client notes](docs/WHO_SERVES_THE_API.md) · [Product philosophy](docs/PRODUCT_PHILOSOPHY.md).
 
 ---
 

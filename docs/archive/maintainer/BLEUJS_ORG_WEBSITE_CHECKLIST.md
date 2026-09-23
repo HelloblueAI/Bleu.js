@@ -6,23 +6,21 @@ Use this checklist when updating the live site [bleujs.org](https://bleujs.org) 
 
 ## 1. Developers / Docs / API
 
-- [ ] **API base URL** — The SDK and API docs use `https://api.bleujs.org` for API traffic. Ensure Cloudflare, docs, and examples use the same base URL as the deployed backend (Bleujs.-backend when deployed).
+- [ ] **API base URL** — The SDK and API docs use `https://api.bleujs.org`. Keep public docs and examples on that base URL.
 - [ ] **API endpoints** — Match the [API contract](API_CLIENT_GUIDE.md#api-contract-and-response-shapes): e.g. `POST /api/v1/chat`, `POST /api/v1/generate`, `POST /api/v1/embed`, `GET /api/v1/models`, `GET /health`. Machine-readable spec: [docs/api/openapi.yaml](api/openapi.yaml).
 - [ ] **Link to SDK/docs** — Point to the [Bleu.js repo](https://github.com/HelloblueAI/Bleu.js) for SDK, CLI, and [API Client Guide](API_CLIENT_GUIDE.md). Optional: link to [Get started](GET_STARTED.md) (e.g. on GitHub).
 
 ## 2. Open source / Contribute
 
-- [ ] **Two repos** — If you have a “Contribute” or “Open source” section, mention that the project has two repos: **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** (SDK, CLI, docs) and **[Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend)** (API server). Link to [Repositories and sync](REPOSITORIES.md) for details.
-- [ ] **Where to contribute** — SDK/docs/CLI → Bleu.js repo; API server/backend → Bleujs.-backend repo. Link to [CONTRIBUTING](https://github.com/HelloblueAI/Bleu.js/blob/main/CONTRIBUTING.md). For API changes, the [Changing the API runbook](CHANGING_THE_API.md) applies (contract → backend → client).
+- [ ] **Open source** — Point contributors at **[Bleu.js](https://github.com/HelloblueAI/Bleu.js)** and [CONTRIBUTING](https://github.com/HelloblueAI/Bleu.js/blob/main/CONTRIBUTING.md). API shape changes follow [Changing the API](CHANGING_THE_API.md).
 
 ## 3. Evaluation / Awards (optional)
 
 - [ ] If you mention awards or evaluations, add a link to the **[Evaluation and awards](EVALUATION_AND_AWARDS.md)** one-pager (e.g. `https://github.com/HelloblueAI/Bleu.js/blob/main/docs/EVALUATION_AND_AWARDS.md`) so committees have a single entry point.
 
-## 4. Infrastructure / deployment
+## 4. Public API
 
-- [ ] **Backend deployment** — bleujs.org (or your API host) should point at the deployed **Bleujs.-backend** app (Node/Express). See [BACKEND_REPO.md](BACKEND_REPO.md) and the backend [README](https://github.com/HelloblueAI/Bleujs.-backend#readme).
-- [ ] **CORS** — If the website (e.g. dashboard or a separate frontend) calls the API from a different origin, ensure the backend allows that origin in CORS (no `*` in production).
+- [ ] Public examples use `https://api.bleujs.org` and the paths in [openapi.yaml](api/openapi.yaml). Do not publish internal hostnames or deploy steps.
 
 ## 5. Copy / links that often need a refresh
 
@@ -36,4 +34,4 @@ Use this checklist when updating the live site [bleujs.org](https://bleujs.org) 
 
 ---
 
-**Summary:** Align the website with: (1) API base URL and endpoints matching the contract (and [openapi.yaml](api/openapi.yaml)), (2) “Contribute” / open source mentioning both repos and CONTRIBUTING, (3) deployment pointing at Bleujs.-backend, and (4) optional link to Evaluation and awards.
+**Summary:** Align public pages with the API base URL, the OpenAPI contract, and this repository’s contributing guide.

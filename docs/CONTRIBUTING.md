@@ -206,7 +206,7 @@ pip install -r requirements-dev.txt  # black, pytest, mypy, etc.
 
 **Maintainer / ops docs:** Historical handoffs and runbooks live in [docs/archive/maintainer/](archive/maintainer/). They are not part of the contributor onboarding path.
 
-**Backend API:** The Node/Worker handler is in [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend). You do **not** need it for daily `bleu chat` against the hosted API.
+**Hosted API:** `bleu chat` calls `https://api.bleujs.org` when `BLEUJS_API_KEY` is set. You do not need another repository for that.
 
 #### 4. Verify installation
 

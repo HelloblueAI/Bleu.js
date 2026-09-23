@@ -841,14 +841,12 @@ docker-compose logs -f
 docker-compose up -d --build <service-name>
 ```
 
-### Production Mode
+### Self-host the Python app
+
+`docker-compose.prod.yml` is a generic single-container example. It is not a capacity plan. See [DEPLOYMENT_PRACTICES.md](DEPLOYMENT_PRACTICES.md).
 
 ```bash
-# Start in production mode
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-
-# Scale workers
-docker-compose up -d --scale worker=3
+docker compose -f docker-compose.prod.yml up --build
 ```
 
 ### Environment Variables

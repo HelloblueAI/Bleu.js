@@ -24,7 +24,7 @@ async def _try_bleujs_backend(
     temperature: float,
     max_tokens: int,
 ) -> Optional[str]:
-    """Try BleuJS backend (e.g. Railway predict API or product /api/v1/chat). Returns content or None."""
+    """Try an optional upstream inference URL. Returns content or None."""
     settings = get_settings()
     url = (getattr(settings, "BLEUJS_BACKEND_URL", None) or "").strip()
     if not url:

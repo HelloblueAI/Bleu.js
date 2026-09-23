@@ -55,27 +55,9 @@ REST API endpoints for ML services:
 - `GET /api/v1/models` - List available models
 - `GET /api/v1/models/health` - Health check
 
-### 4. **Deployment Configuration**
+### 4. **Self-host**
 
-**Railway Deployment** (`railway.json`):
-```json
-{
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile"
-  },
-  "deploy": {
-    "restartPolicyType": "ON_FAILURE",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 300
-  }
-}
-```
-
-**Cost & Performance:**
-- ~$5/month on Railway
-- 200-500ms latency (as stated in Slack context)
-- CPU-based XGBoost (no GPU required)
+The root `Dockerfile` runs the app and exposes `GET /health`. See [docs/DEPLOYMENT_PRACTICES.md](docs/DEPLOYMENT_PRACTICES.md). XGBoost inference in this repo is CPU-based.
 
 ---
 
@@ -182,25 +164,9 @@ Comprehensive tests for:
 
 ---
 
-## Deployment Analysis
+## Self-host
 
-### **Current Setup (Railway)**
-
-**Pros:**
-- ✅ Simple deployment with Dockerfile
-- ✅ Auto-restart on failure
-- ✅ Health check monitoring
-- ✅ Low cost (~$5/month)
-- ✅ Good latency (200-500ms)
-- ✅ XGBoost works well on CPU
-
-**When to Consider RunPod (from Slack context):**
-- ❌ Not currently needed (XGBoost is CPU-optimized)
-- ✅ Consider if:
-  - Adding deep learning models (transformers, LLMs)
-  - Need GPU acceleration for PyTorch/TensorFlow
-  - Require serverless auto-scaling
-  - Want to reduce Replicate costs at scale
+The root Dockerfile runs the app and serves `GET /health`. XGBoost in this repo is CPU-oriented. See [docs/DEPLOYMENT_PRACTICES.md](docs/DEPLOYMENT_PRACTICES.md).
 
 ---
 
@@ -212,7 +178,7 @@ The current implementation is **production-ready** and working properly:
 1. ✅ XGBoost is properly installed and configured
 2. ✅ Models are trained and saved
 3. ✅ API endpoints are functional
-4. ✅ Railway deployment is active
+4. ✅ The container image is documented for self-hosting
 5. ✅ Tests are passing
 
 ### **Future Enhancements (Optional)**
@@ -229,7 +195,7 @@ The current implementation is **production-ready** and working properly:
 2. ✅ Signature verification implemented
 3. ✅ Audit logging enabled
 4. ⚠️ Ensure encryption keys are stored in environment variables (not in code)
-5. ⚠️ Verify Railway secrets are properly configured
+5. ⚠️ Keep encryption keys in environment variables, not in the image
 
 ---
 
@@ -237,12 +203,8 @@ The current implementation is **production-ready** and working properly:
 
 | Feature | Bleu.js | b01.beta |
 |---------|---------|----------|
-| **ML Backend** | Railway + XGBoost | - |
-| **LLM Inference** | Custom + XGBoost | Groq + Ollama |
-| **Media Generation** | - | Replicate API |
-| **Database** | PostgreSQL | Supabase |
-| **Cost** | ~$5/month | Near-zero |
-| **GPU Usage** | Optional (CPU optimized) | Via Replicate |
+| **ML** | XGBoost in this repo | - |
+| **GPU Usage** | Optional (CPU-oriented) | - |
 | **Quantum Features** | ✅ Yes | ❌ No |
 | **ML Training** | ✅ Yes | ❌ No |
 
@@ -258,7 +220,7 @@ The Bleu.js ML infrastructure is:
 1. ✅ Properly installed and configured
 2. ✅ Production-ready with comprehensive error handling
 3. ✅ Well-tested with unit tests
-4. ✅ Deployed on Railway successfully
+4. ✅ Container image exposes `GET /health`
 5. ✅ Enhanced with quantum computing features
 6. ✅ Secured with encryption and audit logging
 7. ✅ Optimized for performance
@@ -268,15 +230,12 @@ The Bleu.js ML infrastructure is:
 **NO** ❌ (Not currently needed)
 
 Reasons:
-- XGBoost works efficiently on CPU
-- Railway is cost-effective for current workload
-- No GPU-intensive models in production
-- Current latency (200-500ms) is acceptable
+- XGBoost in this repository runs on CPU
+- GPU hosting is optional and outside this document
 
-**Consider RunPod only if:**
-- You add transformer/LLM models requiring GPU
-- You need serverless auto-scaling
-- Railway costs become prohibitive at scale
+**Consider a GPU host only if:**
+- You add models that require a GPU
+- You need different scaling than a single container
 
 ---
 
@@ -284,9 +243,9 @@ Reasons:
 
 1. ✅ **No immediate action required** - System is working properly
 2. 📊 **Optional**: Run benchmarks to measure quantum enhancement benefits
-3. 🔐 **Verify**: Railway secrets are properly configured for encryption keys
+3. 🔐 **Verify**: encryption keys come from the environment, not from the repository
 4. 📈 **Monitor**: Add application monitoring (MLflow, DataDog, etc.)
-5. 🧪 **Test**: Run integration tests against Railway deployment
+5. 🧪 **Test**: Run the unit tests in this repository
 
 ---
 
