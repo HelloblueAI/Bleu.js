@@ -8,19 +8,18 @@ from pydantic import BaseSettings, Field
 class APIConfig(BaseSettings):
     """API configuration settings."""
 
-    # AWS API Gateway settings
+    # Public API. Set BLEUJS_API_KEY in the environment for a real key.
     base_url: str = Field(
-        default="https://mozxitsnsh.execute-api.us-west-2.amazonaws.com/prod",
+        default="https://api.bleujs.org",
         description="Base URL for the API",
     )
     api_key: str = Field(
-        default="JeF8N9VobS6OlgTFiAuba99hRX47e70R9b5ivnBR",
+        default="",
         description="API key for authentication",
     )
 
-    # AWS SSO settings
-    aws_region: str = Field(default="us-west-2", description="AWS region")
-    aws_profile: str = Field(default="Bleujs-SSO", description="AWS SSO profile name")
+    aws_region: str = Field(default="us-east-1", description="AWS region")
+    aws_profile: str = Field(default="", description="AWS profile name")
 
     # API endpoints
     endpoints = {"root": "/api", "predict": "/api/ai/predict", "health": "/health"}
