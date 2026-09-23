@@ -3,7 +3,7 @@
 # See requirements.txt / pyproject.toml extras for canonical installs.
 
 aiohttp>=3.9.3
-alembic==1.19.1
+alembic==1.20.0
 
 # AWS
 boto3>=1.24.0
@@ -24,8 +24,8 @@ requests>=2.32.4
 scikit-learn>=1.2.2
 
 # Database
-sqlalchemy==2.0.52
+sqlalchemy==2.0.54
 
 # Security
 urllib3>=2.6.3  # Fixed CVE-2026-21441 (decompression-bomb safeguard bypass)
-uvicorn==0.52.4
+uvicorn==0.53.0

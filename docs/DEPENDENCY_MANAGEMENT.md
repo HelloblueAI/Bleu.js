@@ -112,11 +112,9 @@ python3 scripts/dependency_manager.py --clean
 "requests>=2.32.4",
 ```
 
-### 2. Dependency Lock File
+### 2. Canonical pins
 
-- **requirements.lock**: Generated automatically with exact versions
-- **Reproducible builds**: Ensures consistent environments
-- **Security auditing**: Easy to scan for vulnerabilities
+Install from `pyproject.toml`. There is no committed lock file. CI and Dependabot do not use a `pip freeze` snapshot.
 
 ### 3. Automated Security Scanning
 
