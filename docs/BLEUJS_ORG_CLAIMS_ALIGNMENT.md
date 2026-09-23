@@ -58,7 +58,7 @@ Machine-readable: [docs/api/openapi.yaml](api/openapi.yaml).
 - **Get API key / sign up:** https://bleujs.org (e.g. /dashboard or sign-up)
 - **Docs:** https://bleujs.org/docs (if you host them) or GitHub: [Bleu.js docs](https://github.com/HelloblueAI/Bleu.js/tree/main/docs)
 - **Repo (SDK, CLI, docs):** https://github.com/HelloblueAI/Bleu.js
-- **Backend repo:** https://github.com/HelloblueAI/Bleujs.-backend
+- **Hosted API:** https://api.bleujs.org
 - **OpenAPI spec:** https://github.com/HelloblueAI/Bleu.js/blob/main/docs/api/openapi.yaml
 
 ---

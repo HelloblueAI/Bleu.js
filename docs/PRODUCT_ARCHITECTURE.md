@@ -1,57 +1,42 @@
-# Product architecture — HelloBlue Inc.
+# Product architecture
 
-**One product surface.** This doc defines what is the shipped product vs internal/legacy.
+This repository is the open-source Bleu.js SDK, CLI, API contract, and optional self-hosted app.
 
-## The product (bleujs.org / PyPI)
+## What is in this repo
 
-| Component         | Purpose                                                | Entry / location                                   |
-| ----------------- | ------------------------------------------------------ | -------------------------------------------------- |
-| **Cloud API**     | Chat, generate, embed, models, subscriptions, API keys | Served by **`src/main.py`** (FastAPI app)          |
-| **Web dashboard** | Sign up, login, usage, subscriptions, API keys         | Same app — routes and templates under `src/`       |
-| **Python SDK**    | `BleuAPIClient`, `AsyncBleuAPIClient`                  | `src/bleujs/api_client/`, PyPI `bleu-js`           |
-| **Bleu CLI**      | `bleu` / `bleujs` (e.g. `bleu chat`, `bleu health`)   | `src/bleujs/cli.py`, PyPI `bleu-js`                |
-| **PyPI package**  | Install and upgrades                                   | `bleu-js` with extras `[api]`, `[ml]`, `[quantum]` |
+| Component | Purpose | Location |
+| --------- | ------- | -------- |
+| **Python SDK** | `BleuAPIClient`, `AsyncBleuAPIClient` | `src/bleujs/api_client/`, PyPI `bleu-js` |
+| **Bleu CLI** | `bleu` / `bleujs` (for example `bleu chat`, `bleu health`) | `src/bleujs/cli.py`, PyPI `bleu-js` |
+| **API contract** | Public request and response shapes | `docs/api/openapi.yaml` |
+| **Edge stub** | Local and CI stand-in for the contract | `services/edge-stub/` |
+| **Self-hosted app** | Optional FastAPI app (dashboard and API routes) | `src/main.py` |
+| **PyPI package** | Install and extras | `bleu-js` with `[api]`, `[ml]`, `[quantum]` |
 
-**Canonical app for the product:** `src/main.py`. This is what runs at bleujs.org (dashboard, auth, subscription, AI routes).
+The SDK and CLI call `https://api.bleujs.org` unless `BLEUJS_BASE_URL` is set. That hostname is the public API. This repository does not describe how the hosted service is deployed.
 
-## Single entry point from repo root
-
-**Run the product app:** From repo root, `python main.py` (or `python -m uvicorn src.main:app --reload`). Root `main.py` runs the product app by default. For the legacy ML/internal backend only, set `BLEUJS_LEGACY_BACKEND=1` before running `python main.py`.
-
-## Other apps (internal / legacy / alternate)
-
-- **`src/python/backend/main.py`** — Internal/ML FastAPI app (different config, router). Not the bleujs.org product app; use only if you need this stack.
-- **`src/api/main.py`**, **`src/api/application.py`** — Alternate API mounts; product routes are wired through `src/main.py`.
-- **Backend repo** — Node/Express backend lives in a [separate repo](BACKEND_REPO.md); inference/ML services. Not in this repo.
-
-Use **`python main.py`** or **`src/main.py`** for the public product (dashboard + API).
-
-**Stubs / optional modules:** Some modules (e.g. quantum, ML, automation) are optional or stubs; the product surface is the Cloud API, SDK, and CLI. Install extras `[api]`, `[ml]`, `[quantum]` as needed; see [INSTALLATION](INSTALLATION.md).
-
-## Quantum & ML in the product
-
-- **Product:** The cloud API (bleujs.org) and SDK expose quantum-enhanced and ML capabilities as part of the paid offering (e.g. models, features). That is the shipped product.
-- **R&D / optional:** The repo also contains quantum and ML libraries (e.g. teleportation, quantum_ml, error correction) used for research or advanced installs. They are part of the PyPI extras `[ml]` and `[quantum]`; the main revenue surface is the **API + subscriptions** at bleujs.org.
-
-## Run the product app locally
+## Run the self-hosted app
 
 ```bash
-# From repo root. Install deps first: poetry install  OR  pip install -e ".[server]"
+# From the repo root. Install deps first: poetry install  OR  pip install -e ".[server]"
 python main.py
 # Or with reload: BLEUJS_RELOAD=1 python main.py
-# Or via uvicorn: python -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+# Or via uvicorn: python -m uvicorn src.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Then open `http://localhost:8000` (dashboard, docs at `/docs`). Set env (e.g. `.env`) for `SECRET_KEY`, `DATABASE_URL`, etc.; see [SECURITY](../SECURITY.md) and `.env.example`.
+Then open `http://localhost:8000` (docs at `/docs`). Copy `.env.example` to `.env` and set `SECRET_KEY` and `DATABASE_URL`. See [SECURITY](../SECURITY.md).
 
-## Docs that matter for the product
+`python main.py` runs `src/main.py`. Set `BLEUJS_LEGACY_BACKEND=1` only if you intentionally want the older in-repo ML entry point.
 
-- [README](../README.md) — Quick start, SDK, CLI, install
-- [Platform overview](PLATFORM_OVERVIEW.md) — Features, architecture diagrams, local dev
+## Quantum and ML libraries
+
+Quantum and ML modules are optional extras (`[ml]`, `[quantum]`). They are part of the open-source package. They are not a map of the hosted service.
+
+## Docs for contributors
+
+- [README](../README.md) — install, SDK, and CLI
+- [Platform overview](PLATFORM_OVERVIEW.md) — features and local development
 - [API Client Guide](API_CLIENT_GUIDE.md) — SDK and API contract
-- [Installation](INSTALLATION.md) — Install and deploy
-- [SECURITY](../SECURITY.md) — Reporting, deployment checklist
-- [ROADMAP](ROADMAP.md) — Status and roadmap
-- [Repositories and sync](REPOSITORIES.md) — How the two repos work together
-
-Older or one-off docs are in [docs/archive/](archive/) for reference.
+- [Installation](INSTALLATION.md) — install and self-host
+- [Changing the API](CHANGING_THE_API.md) — how to change the public contract
+- [SECURITY](../SECURITY.md) — reporting vulnerabilities

@@ -193,7 +193,7 @@ python examples/quick_start.py
 **Scripts:**
 ```bash
 cd scripts/                # Utility scripts
-bash scripts/setup.sh
+# utility scripts; see scripts/README.md
 ```
 
 ## 🔄 Maintenance

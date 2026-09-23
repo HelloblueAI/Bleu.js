@@ -9,7 +9,7 @@ Reference: **1 week ago** = `6be01416` → **now** = `HEAD`.
 
 | Change | Before | After |
 |--------|--------|-------|
-| **Backend in repo** | `backend/` tracked (Node + Python, many manifests) | **Stopped tracking** `backend/` (still in `.gitignore`); lives in separate repo [Bleujs.-backend](https://github.com/HelloblueAI/Bleujs.-backend) |
+| **Backend in repo** | `backend/` tracked (Node + Python, many manifests) | **Stopped tracking** `backend/` (still in `.gitignore`). The public contract stays in this repo. |
 | **Dependabot scope** | Scanned root + backend → ~1500 alerts | Scans only root pip, collaboration-tools npm, Docker, GitHub Actions → manageable alerts |
 | **New docs** | — | `docs/BACKEND_REPO.md`, `docs/DEPENDABOT_AND_DEPENDENCIES.md`, `scripts/export-backend-repo.sh` |
 | **Backend files** | Present in tree | **Removed from git** (30+ files: Dockerfile, package.json, inference, predict_api, services, models, etc.) |

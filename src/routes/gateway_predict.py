@@ -1,7 +1,7 @@
 """
 Bleujs.org gateway contract: POST /predict (10 numeric features → prediction + confidence).
 
-Lightweight and dependency-free (no numpy/xgboost) so Railway cold starts stay fast.
+Lightweight and dependency-free (no numpy/xgboost) so process start stays small.
 """
 
 from __future__ import annotations

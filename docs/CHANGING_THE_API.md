@@ -1,38 +1,32 @@
-# Changing the API (runbook)
+# Changing the API
 
-When you add or change endpoints, request/response shapes, or the public API, follow this flow so **Bleu.js** (SDK, contract), **bleujs.org** (production), and the edge stub stay aligned.
+When you add or change public endpoints or request/response shapes, update the contract in this repository so the SDK, CLI, docs, and edge stub stay aligned.
 
-## 1. Update the contract (Bleu.js repo)
+## 1. Update the contract
 
-- **Edit [docs/api/openapi.yaml](api/openapi.yaml)** — paths, requestBody, responses, components. CI validates this file and runs edge-stub tests.
+- Edit [docs/api/openapi.yaml](api/openapi.yaml) — paths, request bodies, responses, and components. CI validates this file and runs the edge-stub tests.
+- Update the table in [API Client Guide – API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes).
+- For a breaking change, prefer `/api/v2/...` or new optional fields. Document the change in [CHANGELOG](../CHANGELOG.md).
 
-- **Update the doc table** in [API Client Guide – API contract and response shapes](API_CLIENT_GUIDE.md#api-contract-and-response-shapes).
+## 2. Edge stub (local and CI)
 
-- **If the change is breaking:** Prefer `/api/v2/...` or new optional fields. Document in the main [CHANGELOG](../CHANGELOG.md).
-
-## 2. Edge stub (Bleu.js — local / CI only)
-
-- Update [`services/edge-stub/index.mjs`](../services/edge-stub/index.mjs) if the stub should reflect new routes.
+- Update [`services/edge-stub/index.mjs`](../services/edge-stub/index.mjs) when the stub should reflect the new routes.
 - Run `npm test` in `services/edge-stub/`.
 
-## 3. Production (bleujs.org)
+The edge stub is for local development and contract tests. It is not a deployment of the hosted API.
 
-- Implement routes in the **bleujs.org** Next.js app (and ML engine if `/predict` changes).
-- Deploy via that repo’s normal Vercel / Railway flow.
+## 3. SDK and CLI
 
-## 4. SDK / CLI (Bleu.js repo)
+- Update the Python client, CLI, or examples to match the spec.
+- Add tests, and update [CHANGELOG](../CHANGELOG.md) when the change is user-facing.
 
-- Update Python client, CLI, or playground to match the spec.
-- Add tests; update [CHANGELOG](../CHANGELOG.md) if user-facing.
+## Checklist
 
-## Quick checklist
+| Step | Action |
+|------|--------|
+| 1a | Update `docs/api/openapi.yaml` |
+| 1b | Update the contract table in API_CLIENT_GUIDE.md |
+| 2 | Update `services/edge-stub/` and run `npm test` |
+| 3 | Update the SDK or CLI, tests, and CHANGELOG |
 
-| Step | Repo | Action |
-|------|------|--------|
-| 1a | Bleu.js | Update `docs/api/openapi.yaml` |
-| 1b | Bleu.js | Update contract table in API_CLIENT_GUIDE.md |
-| 2 | Bleu.js | Update `services/edge-stub/`; `npm test` |
-| 3 | bleujs.org | Implement production routes; deploy |
-| 4 | Bleu.js | Update SDK/CLI; tests; CHANGELOG |
-
-See [Repositories and sync](REPOSITORIES.md).
+The public base URL for the hosted API is `https://api.bleujs.org`. Self-hosted servers should implement the same OpenAPI contract if they want the SDK to work unchanged.

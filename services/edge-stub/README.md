@@ -2,7 +2,7 @@
 
 OpenAPI-shaped stub for `POST /api/v1/chat`, `/generate`, `/embed`, and related routes.
 
-**Not production.** Live AI is served by [bleujs.org](https://github.com/HelloblueAI/bleujs.org) (Next.js + `ml_engine` on Railway). See [Who serves the API](../../docs/WHO_SERVES_THE_API.md).
+**Not the hosted API.** This process is a local and CI stand-in for the OpenAPI contract. See [API client and contract](../../docs/WHO_SERVES_THE_API.md).
 
 ## Local dev
 

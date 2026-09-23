@@ -15,7 +15,7 @@
 3. **Training Pipeline** at `src/ml/train_xgboost.py`
 4. **API Routes** integrated at `src/routes/ai_models.py`
 5. **Comprehensive Tests** at `tests/test_ml_modules.py`
-6. **Railway Deployment** configured in `railway.json`
+6. **Container image** via the root `Dockerfile` (`GET /health`)
 
 ### 🏗️ **Architecture**
 
@@ -29,12 +29,9 @@ Bleu.js ML Stack:
 └── FastAPI (REST API)
 ```
 
-### 💰 **Deployment**
+### Deployment
 
-- **Platform**: Railway
-- **Cost**: ~$5/month
-- **Latency**: 200-500ms
-- **Performance**: Working properly on CPU (no GPU needed)
+Self-host with the root Dockerfile. See [docs/DEPLOYMENT_PRACTICES.md](docs/DEPLOYMENT_PRACTICES.md). XGBoost in this repo is CPU-oriented.
 
 ---
 
@@ -48,7 +45,7 @@ Bleu.js ML Stack:
 | `src/routes/ai_models.py` | ✅ 412 lines | REST API endpoints |
 | `tests/test_ml_modules.py` | ✅ 333 lines | Comprehensive test suite |
 | `requirements.txt` | ✅ 63 lines | All ML dependencies listed |
-| `railway.json` | ✅ | Deployment configuration |
+| `Dockerfile` | ✅ | Self-host image |
 | `models/` | ✅ | Contains trained model artifacts |
 
 ---
@@ -97,16 +94,12 @@ Bleu.js ML Stack:
 **NO** ❌ (Not needed for Bleu.js)
 
 **Reasons:**
-- XGBoost is CPU-optimized (no GPU required)
-- Railway is cost-effective ($5/month)
-- Current latency is good (200-500ms)
-- No deep learning models requiring GPU
+- XGBoost in this repository is CPU-oriented
+- A GPU host is optional
 
-**Consider RunPod only if you:**
-- Add transformer/LLM models
-- Need GPU acceleration
-- Require serverless auto-scaling
-- Experience Railway cost/scaling issues
+**Consider a GPU host only if you:**
+- Add models that need a GPU
+- Need different scaling than a single container
 
 ---
 
@@ -119,7 +112,7 @@ The system is working properly. Here are optional improvements:
 2. **Benchmarking**: Measure quantum enhancement benefits
 3. **CI/CD**: Automated testing on PR creation
 4. **Model Registry**: Version control for models
-5. **Security**: Verify Railway secrets are configured
+5. **Security**: Keep secrets in the environment, not in the repository
 
 ---
 
@@ -137,7 +130,7 @@ I've created two reference documents in your workspace:
 1. ✅ **Bleu.js ML is production-ready**
 2. ✅ **XGBoost is properly configured**
 3. ✅ **Tests are comprehensive**
-4. ✅ **Railway deployment is active**
+4. ✅ **Self-host image is the root Dockerfile**
 5. ✅ **No issues found**
 6. ❌ **RunPod not needed** for current use case
 
@@ -146,22 +139,22 @@ I've created two reference documents in your workspace:
 ## 📞 Summary for Slack
 
 > **Bleu.js Analysis Complete** ✅
-> 
+>
 > The Bleu.js repository has a fully functional ML/XGBoost implementation:
 > - XGBoost 3.0.3 with quantum-enhanced features
-> - Deployed on Railway (~$5/month, 200-500ms latency)
+> - Self-host with the root Dockerfile; see docs/DEPLOYMENT_PRACTICES.md
 > - Comprehensive test suite (all passing)
 > - Production-ready with security & monitoring
-> 
+>
 > **RunPod Status**: ❌ Not needed
 > - XGBoost runs efficiently on CPU
-> - Railway is cost-effective for current workload
+> - XGBoost in this repository runs on CPU
 > - No GPU requirements
-> 
+>
 > **Recommendation**: No action required. System working properly.
 
 ---
 
-**Analysis Date**: May 16, 2026  
-**Repository**: https://github.com/HelloblueAI/Bleu.js  
+**Analysis Date**: May 16, 2026
+**Repository**: https://github.com/HelloblueAI/Bleu.js
 **Status**: ✅ All Systems Operational

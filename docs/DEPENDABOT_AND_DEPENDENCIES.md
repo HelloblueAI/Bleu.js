@@ -9,7 +9,7 @@ This doc explains how we keep Dependabot and security alerts under control so we
 
 ## What we do
 
-1. **Backend is not in the repo.** The `backend/` directory is in `.gitignore` and is **not** tracked. **Do not re-add `backend/` to this repo;** use the [separate backend repo](BACKEND_REPO.md) for the Node/Express backend. That avoids npm and pip manifests under `backend/` from being scanned. The canonical place for the backend is a **separate repo**—see [Backend repo](BACKEND_REPO.md). You can export it once with `scripts/export-backend-repo.sh`.
+1. **Do not re-add a `backend/` tree.** That directory is gitignored. The OpenAPI stub lives in `services/edge-stub/`. Keeping it there avoids a second npm and pip manifest set in this repo.
 2. **Only these are scanned for updates:**
    - **Pip:** Root only (`/`) — `pyproject.toml` (and lockfile if present). Other `requirements*.txt` in the repo are for CI or reference; we don't add extra pip scan directories.
    - **npm:** `collaboration-tools/` only. No root or other `package.json` in the repo.

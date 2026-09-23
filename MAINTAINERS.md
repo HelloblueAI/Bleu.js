@@ -14,7 +14,7 @@ Official maintainers for [Bleu.js](https://github.com/HelloblueAI/Bleu.js). This
 | Repo | Maintainers |
 |------|-------------|
 | [Bleu.js](https://github.com/HelloblueAI/Bleu.js) (SDK, CLI, docs, edge stub) | This file |
-| [bleujs.org](https://github.com/HelloblueAI/bleujs.org) (production site + ML) | Same team — see [REPOSITORIES.md](docs/REPOSITORIES.md) |
+| Hosted API (`https://api.bleujs.org`) | Same team — client contract is in this repo |
 
 ## GitHub contributor graph
 

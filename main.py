@@ -51,7 +51,7 @@ def _run_legacy_backend() -> None:
         sys.exit(1)
 
 
-# Export for: uvicorn main:app (Railway and other platforms that expect main:app)
+# Export for: uvicorn main:app (platforms that expect main:app)
 try:
     from src.main import app  # noqa: E402
 except ImportError:

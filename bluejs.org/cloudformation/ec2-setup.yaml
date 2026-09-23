@@ -9,6 +9,12 @@ Parameters:
   KeyName:
     Type: String
     Description: Name of an existing EC2 KeyPair
+  AmiId:
+    Type: AWS::EC2::Image::Id
+    Description: AMI to launch (choose one for your region)
+  AdminCIDR:
+    Type: String
+    Description: CIDR allowed to reach SSH (for example 203.0.113.10/32)
 
 Resources:
   BleujsSecurityGroup:
@@ -19,7 +25,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 10.0.0.0/8
+          CidrIp: !Ref AdminCIDR
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
@@ -29,14 +35,14 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
-      ImageId: ami-0c55b159cbfafe1f0
+      ImageId: !Ref AmiId
       KeyName: !Ref KeyName
       SecurityGroupIds: [!Ref BleujsSecurityGroup]
       UserData: !Base64 |
         #!/bin/bash
         yum update -y
         yum install -y git nodejs npm
-        git clone https://github.com/pejmanhaghighatnia/Bleu.js.git
+        git clone https://github.com/HelloblueAI/Bleu.js.git
         cd Bleu.js
         npm install
         npm start
