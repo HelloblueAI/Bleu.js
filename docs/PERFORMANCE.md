@@ -1,10 +1,10 @@
-# Performance metrics
+# Previously published performance claims
 
-_Targets and benchmarks; actual results depend on workload and environment._
+These figures were published earlier as product claims. This repository does not include a reproducible benchmark that produces them. They are not the current performance of `bleu-js` or `https://api.bleujs.org`.
 
-[← Back to README](../README.md) · Vision benchmarks: [ACHIEVEMENTS.md](ACHIEVEMENTS.md)
+[← Back to README](../README.md) · Related: [ACHIEVEMENTS.md](ACHIEVEMENTS.md)
 
-## Core performance
+## Previously published figures
 
 - Processing Speed: up to 10x faster than traditional AI with quantum acceleration
 - Accuracy: up to 93.6% in code-analysis workloads with continuous improvement

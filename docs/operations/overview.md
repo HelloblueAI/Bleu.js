@@ -1,5 +1,9 @@
 # Operational Efficiency & Business Process Optimization
 
+This page is older product copy. It is not the supported `pip install bleu-js` guide. Start at [GET_STARTED.md](../GET_STARTED.md).
+
+
+
 BleuJS provides comprehensive tools and frameworks for optimizing business operations, automating workflows, and improving overall operational efficiency. Our platform combines advanced analytics, process automation, and intelligent optimization to help businesses scale effectively.
 
 ## Core Operational Capabilities

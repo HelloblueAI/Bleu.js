@@ -1,5 +1,9 @@
 # Machine Learning with BleuJS
 
+This page is older product copy. It is not the supported `pip install bleu-js` guide. Start at [GET_STARTED.md](../GET_STARTED.md).
+
+
+
 BleuJS provides a comprehensive suite of machine learning tools and algorithms, combining classical ML, quantum computing, and hybrid approaches. This guide covers the various ML capabilities and how to use them effectively.
 
 ## Available ML Models

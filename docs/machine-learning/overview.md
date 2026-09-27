@@ -1,5 +1,9 @@
 # Machine Learning Overview
 
+This page is older product copy. It is not the supported `pip install bleu-js` guide. Start at [GET_STARTED.md](../GET_STARTED.md).
+
+
+
 BleuJS provides a comprehensive machine learning ecosystem that combines classical ML algorithms, quantum computing, and hybrid approaches. Our system is designed to leverage the best of both worlds, using quantum computing where it provides advantages and classical methods where they are more efficient.
 
 ## Core ML Components
