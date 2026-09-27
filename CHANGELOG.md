@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.5.177] - 2026-09-26
+
+### Changed
+- Publish the current README to PyPI. It describes the API client and CLI, and it records that Bleu OS and the old benchmark figures are historical.
+
 ## [v1.5.42] - 2026-07-16
 
 ### 🎉 Automatic Release
