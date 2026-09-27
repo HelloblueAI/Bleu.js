@@ -1,10 +1,10 @@
-# Quantum-enhanced vision achievements
+# Previously published vision figures
 
-_Vision and quantum benchmarks for specific workloads. For platform-level targets, see [PERFORMANCE.md](PERFORMANCE.md)._
+These figures were published earlier as product claims. This repository does not include a reproducible benchmark that produces them. They are not the current performance of `bleu-js` or `https://api.bleujs.org`.
 
-[← Back to README](../README.md)
+[← Back to README](../README.md) · Related: [PERFORMANCE.md](PERFORMANCE.md)
 
-## State-of-the-art performance metrics
+## Previously published figures
 
 - **Detection Accuracy**: 18.90% confidence with 2.82% uncertainty
 - **Processing Speed**: 23.73ms inference time
@@ -16,7 +16,7 @@ _Vision and quantum benchmarks for specific workloads. For platform-level target
 ## Quantum performance metrics
 
 ```mermaid
-pie title Current vs Target Performance
+pie title Previously published ratios
     "Qubit Stability (95.6%)" : 95.6
     "Quantum Advantage (78.0%)" : 78.0
     "Energy Efficiency (95.6%)" : 95.6

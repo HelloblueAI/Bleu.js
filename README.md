@@ -20,6 +20,8 @@
 
 Bleu.js combines classical machine learning with optional quantum computing.
 
+Bleu OS was removed from this project. Older PyPI release pages that describe Bleu OS, including “the world’s first OS” and speed claims, are historical.
+
 **Efficient by default, powerful by choice.** `pip install bleu-js` ships the **API client + CLI** only (no torch/shap/numba). Add `[ml]`, `[quantum]`, `[deep]`, or `[all]` when you need heavier stacks.
 
 | | |
@@ -138,7 +140,7 @@ Both `bleu` and `bleujs` command names work. **Full CLI/SDK docs:** [API Client 
 | API reference | [API_REFERENCE.md](docs/API_REFERENCE.md) |
 | Architecture & features | [PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) · [Platform overview](docs/PLATFORM_OVERVIEW.md) |
 | Quantum / ML examples | [examples/](examples/) · [Quantum teleportation](docs/QUANTUM_TELEPORTATION.md) |
-| Benchmarks | [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) · [PERFORMANCE.md](docs/PERFORMANCE.md) |
+| Older published claims | [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) · [PERFORMANCE.md](docs/PERFORMANCE.md) — not current benchmarks |
 | Change the API | [CHANGING_THE_API.md](docs/CHANGING_THE_API.md) |
 | Contribute | [CONTRIBUTING.md](docs/CONTRIBUTING.md) · [Contributor guide](docs/CONTRIBUTOR_GUIDE.md) |
 | Security & deployment | [SECURITY.md](SECURITY.md) · [DEPLOYMENT_PRACTICES.md](docs/DEPLOYMENT_PRACTICES.md) |
