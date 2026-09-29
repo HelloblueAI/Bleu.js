@@ -1,8 +1,8 @@
 # Bleu.js
 
-**Quantum-enhanced AI platform: cloud API, CLI, and Python SDK.** [bleujs.org](https://bleujs.org) — *Get your first API call in under two minutes.*
+**Open-source SDK, CLI, and API contract, with an optional self-hosted app.** [bleujs.org](https://bleujs.org) — *Get your first API call in under two minutes.*
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11–3.13](https://img.shields.io/badge/python-3.11%E2%80%933.13-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 [![Status: Beta](https://img.shields.io/badge/Status-Beta-yellow.svg)]()
 [![CI/CD](https://img.shields.io/github/actions/workflow/status/HelloblueAI/Bleu.js/main.yml?logo=github-actions&label=CI)](https://github.com/HelloblueAI/Bleu.js/actions)
@@ -18,11 +18,9 @@
   </a>
 </div>
 
-Bleu.js combines classical machine learning with optional quantum computing.
+`pip install bleu-js` installs the Python SDK and CLI. They call the public hosted API at `https://api.bleujs.org`. Machine learning, quantum computing, and deep learning are optional extras (`[ml]`, `[quantum]`, `[deep]`), not the default install. `[server]` runs the optional self-hosted app.
 
 Bleu OS was removed from this project. Older PyPI release pages that describe Bleu OS, including “the world’s first OS” and speed claims, are historical.
-
-**Efficient by default, powerful by choice.** `pip install bleu-js` ships the **API client + CLI** only (no torch/shap/numba). Add `[ml]`, `[quantum]`, `[deep]`, or `[all]` when you need heavier stacks.
 
 | | |
 |---|---|
@@ -35,7 +33,7 @@ Bleu OS was removed from this project. Older PyPI release pages that describe Bl
 
 ## Get started in 60 seconds
 
-**1. Install** (Python 3.11+):
+**1. Install** (Python 3.11, 3.12, or 3.13):
 
 ```bash
 pip install bleu-js
@@ -72,6 +70,7 @@ print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
 ```bash
 git clone https://github.com/HelloblueAI/Bleu.js.git && cd Bleu.js
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+# Python 3.11, 3.12, or 3.13
 pip install -e .
 cp .env.example .env   # set BLEUJS_API_KEY
 bleu chat "Hello"
