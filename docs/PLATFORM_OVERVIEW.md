@@ -1,198 +1,68 @@
 # Platform overview
 
-Key features, architecture diagrams, and local development notes. For the product app and bleujs.org, see [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md).
+What this repository contains today. The public hosted API is `https://api.bleujs.org`. This file does not describe how that service is deployed.
 
 [← Back to README](../README.md)
 
-## Key features
+## What ships
+
+| Piece | What it is | Where |
+| ----- | ---------- | ----- |
+| Python SDK | `BleuAPIClient` and `AsyncBleuAPIClient` call the hosted API | `src/bleujs/api_client/` |
+| CLI | `bleu` and `bleujs` | `src/bleujs/cli.py` |
+| API contract | Public request and response shapes | `docs/api/openapi.yaml` |
+| Edge stub | Local and CI stand-in for the contract | `services/edge-stub/` |
+| Self-hosted app | Optional FastAPI app | `src/main.py`, extra `[server]` |
+| Optional ML | `HybridTrainer` | `src/bleujs/ml.py`, extra `[ml]` |
+| Optional quantum | `QuantumFeatureExtractor` and `bleu quantum teleport` | `src/bleujs/quantum.py`, `src/bleujs/teleportation.py`, extra `[quantum]` |
+
+`pip install bleu-js` is the SDK and CLI only. ML, quantum, deep learning, and the self-hosted app are extras. They are not the hosted API.
+
+See [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md).
+
+## How the SDK and CLI call the API
 
 ```mermaid
-flowchart TB
-    subgraph Users
-        U1[CLI]
-        U2[Python SDK]
-        U3[Cloud API]
-    end
-    subgraph Bleu["Bleu.js core"]
-        Q[Quantum]
-        M[ML pipeline]
-        A[API client]
-    end
-    U1 --> A
-    U2 --> Q
-    U2 --> M
-    U2 --> A
-    U3 --> A
-    Q --> T[Teleportation]
-    Q --> F[Feature extraction]
-    M --> X[XGBoost / Hybrid]
+flowchart LR
+    CLI["bleu / bleujs"] --> Client["BleuAPIClient"]
+    SDK["Python SDK"] --> Client
+    Client --> API["https://api.bleujs.org"]
 ```
-
-- **Quantum computing integration** — optional Qiskit/PennyLane stack via `[quantum]`
-- **Multi-modal AI processing** — cross-domain learning capabilities
-- **Performance optimization** — real-time monitoring and workflow analysis
-- **Cloud-first API** — `api.bleujs.org` with Python SDK and CLI
-
-See [PRODUCT_PHILOSOPHY.md](PRODUCT_PHILOSOPHY.md) for positioning principles.
-
-## Pre-trained models (Hugging Face)
-
-[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Models-yellow?style=flat-square&logo=huggingface)](https://huggingface.co/helloblueai)
-
-- **[Bleu.js XGBoost Classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier)** — quantum-enhanced XGBoost with scaler and model card
 
 ```python
-from huggingface_hub import hf_hub_download
-import pickle
+from bleujs.api_client import BleuAPIClient
 
-model_path = hf_hub_download(
-    repo_id="helloblueai/bleu-xgboost-classifier",
-    filename="xgboost_model_latest.pkl",
-)
-with open(model_path, "rb") as f:
-    model = pickle.load(f)
+client = BleuAPIClient()  # reads BLEUJS_API_KEY; base URL is https://api.bleujs.org
+print(client.chat([{"role": "user", "content": "Say hello."}]).content)
 ```
-
-## Local `BleuJS` quick start
-
-Requires optional extras — see [INSTALLATION.md](INSTALLATION.md).
-
-```python
-from bleujs import BleuJS
-
-bleu = BleuJS(
-    quantum_mode=True,
-    model_path="models/quantum_xgboost.pkl",
-    device="cuda",
-)
-results = bleu.process(
-    input_data="your_data",
-    quantum_features=True,
-    attention_mechanism="quantum",
-)
-```
-
-## Code examples
-
-### Quantum feature extraction
-
-```python
-from bleujs.quantum import QuantumFeatureExtractor
-
-extractor = QuantumFeatureExtractor(num_qubits=4, entanglement_type="full")
-features = extractor.extract(data=your_data, use_entanglement=True)
-```
-
-### Quantum teleportation
-
-See [QUANTUM_TELEPORTATION.md](QUANTUM_TELEPORTATION.md).
 
 ```bash
-pip install -e ".[quantum]"
-bleu quantum teleport --theta 0.9 --shots 1024
+export BLEUJS_API_KEY=bleujs_sk_...
+bleu chat "Say hello."
+bleu health
 ```
 
-### Hybrid model training
+Set `BLEUJS_BASE_URL` only when the client should call a host other than `https://api.bleujs.org`.
 
-```python
-from bleujs.ml import HybridTrainer
+## Optional local modules
 
-trainer = HybridTrainer(model_type="xgboost", quantum_components=True)
-model = trainer.train(X_train=X_train, y_train=y_train, quantum_features=True)
-```
+These run in the environment where the extra is installed. They are not a description of the hosted service.
 
-More: [examples/README.md](../examples/README.md)
+**ML** (`pip install "bleu-js[ml]"`): `HybridTrainer` in `src/bleujs/ml.py` fits an XGBoost classifier when XGBoost is installed. Otherwise it fits a scikit-learn random forest, or a small local fallback if neither library is installed.
+
+**Quantum** (`pip install "bleu-js[quantum]"`): `QuantumFeatureExtractor` in `src/bleujs/quantum.py` encodes input into a Qiskit or PennyLane circuit and returns the resulting feature array. `bleu quantum teleport` runs the circuit in `src/bleujs/teleportation.py` (simulator, or IBM Quantum when `QISKIT_IBM_TOKEN` is set).
+
+**Self-hosted app** (`pip install -e ".[server]"` from a clone): `python main.py` starts `src/main.py`. Copy [`.env.example`](../.env.example) to `.env` and set `SECRET_KEY` and `DATABASE_URL`. See [INSTALLATION.md](INSTALLATION.md) and [SECURITY.md](../SECURITY.md).
 
 ## Development
 
-- **Tests:** `pytest tests/ -q` (use `pip install -e ".[ci]"` for CI parity)
-- **Version:** `bleu version` or `from bleujs import __version__`
-- **SDK errors:** `BleuAPIError`, `RateLimitError`, `AuthenticationError` from `bleujs`
-- **Contribute:** [CONTRIBUTING.md](CONTRIBUTING.md)
+- Python 3.11, 3.12, or 3.13 (`requires-python` in `pyproject.toml` is `>=3.11,<3.14`)
+- SDK and CLI: `pip install -e .`
+- Tests: `pip install -e ".[ci]"` and `pip install -r requirements-dev.txt`, then `pytest tests/ -q`
+- Version: `bleu version` or `from bleujs import __version__`
+- SDK errors: `BleuAPIError`, `RateLimitError`, and `AuthenticationError` from `bleujs.api_client`
+- Contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## Reliability
+## CI
 
-When dependencies are unavailable, the API returns **503 Service Unavailable**. SDK users should catch `BleuAPIError` and `RateLimitError`. Self-hosted app middleware uses `ServiceUnavailable` and `RateLimitExceeded` from `src`.
-
-## CI/CD
-
-GitHub Actions runs tests, Black/isort/flake8/mypy, and security scans (Bandit, Safety, pip-audit). See [`.github/workflows/main.yml`](../.github/workflows/main.yml).
-
-## System architecture
-
-```mermaid
-graph TB
-    subgraph Frontend
-        UI[User Interface]
-        API[API Client]
-    end
-    subgraph Backend
-        QE[Quantum Engine]
-        ML[ML Pipeline]
-        DB[(Database)]
-    end
-    subgraph Quantum Processing
-        QC[Quantum Core]
-        QA[Quantum Attention]
-        QF[Quantum Features]
-    end
-    UI --> API
-    API --> QE
-    API --> ML
-    QE --> QC
-    QC --> QA
-    QC --> QF
-    ML --> DB
-    QE --> DB
-```
-
-## Data flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Frontend
-    participant QuantumEngine
-    participant MLPipeline
-    participant Database
-    User->>Frontend: Submit Data
-    Frontend->>QuantumEngine: Process Request
-    QuantumEngine->>QuantumEngine: Quantum Feature Extraction
-    QuantumEngine->>MLPipeline: Enhanced Features
-    MLPipeline->>Database: Store Results
-    Database-->>Frontend: Return Results
-    Frontend-->>User: Display Results
-```
-
-## Model architecture
-
-```mermaid
-graph LR
-    subgraph Input
-        I[Input Data]
-        F[Feature Extraction]
-    end
-    subgraph Quantum Layer
-        Q[Quantum Processing]
-        A[Attention Mechanism]
-        E[Entanglement]
-    end
-    subgraph Classical Layer
-        C[Classical Processing]
-        N[Neural Network]
-        X[XGBoost]
-    end
-    subgraph Output
-        O[Output]
-        P[Post-processing]
-    end
-    I --> F
-    F --> Q
-    Q --> A
-    A --> E
-    E --> C
-    C --> N
-    N --> X
-    X --> P
-    P --> O
-```
+[`.github/workflows/main.yml`](../.github/workflows/main.yml) runs the test suite, Black, isort, flake8, mypy, Bandit, Safety, and pip-audit.
