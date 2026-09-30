@@ -148,7 +148,7 @@ def format_error(error: Exception) -> str:
 @click.pass_context
 def cli(ctx, debug: bool):
     """
-    Bleu CLI – quantum-enhanced AI from the command line.
+    Bleu.js developer CLI for the Bleu.js API and SDK.
 
     Get your first response in under two minutes:
       pip install bleu-js
