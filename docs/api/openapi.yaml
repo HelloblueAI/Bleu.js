@@ -5,7 +5,7 @@
 openapi: 3.0.3
 info:
   title: Bleu.js API
-  description: Quantum-enhanced AI platform – chat, generate, embed. Used by the Bleu.js SDK and CLI.
+  description: Bleu.js API for chat, text generation, and embeddings. Used by the Bleu.js SDK and CLI.
   version: "1.0"
   contact:
     name: Bleu.js
@@ -63,13 +63,29 @@ paths:
                     onboarding / context. Omit for legacy behavior.
       responses:
         "200":
-          description: OpenAI-style or flat content
+          description: OpenAI-style choices or a flat content field. The default API response spreads choices at the top level.
           content:
             application/json:
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/ChatResponseOpenAI"
                   - $ref: "#/components/schemas/ChatResponseFlat"
+              examples:
+                openai:
+                  summary: OpenAI-style choices
+                  value:
+                    id: chat_example
+                    object: chat.completion
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: Hello. How can I help?
+                        finish_reason: stop
+                flat:
+                  summary: Flat content
+                  value:
+                    content: Hello. How can I help?
 
   /api/v1/generate:
     post:

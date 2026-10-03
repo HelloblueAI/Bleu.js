@@ -54,27 +54,37 @@ jobs:
           import sys
           from bleujs.api_client import BleuAPIClient
 
-          # Cloudflare managed challenge can return HTML to non-browser clients.
-          # Keep SDK packaging/import smoke strict, but mark this known infra blocker as warning.
           challenge_markers = (
-              "Just a moment...",
+              "Just a moment",
               "Enable JavaScript and cookies to continue",
               "challenges.cloudflare.com",
               "__cf_chl_",
+              "cf-mitigated",
           )
 
-          client = BleuAPIClient(api_key=os.environ["BLEUJS_API_KEY"])
+          def fail_if_challenge(payload) -> None:
+              text = payload if isinstance(payload, str) else str(payload)
+              lowered = text.lower()
+              if "<html" in lowered or any(marker.lower() in lowered for marker in challenge_markers):
+                  print("FAIL: API returned a Cloudflare challenge or HTML instead of JSON.")
+                  print(text[:500])
+                  sys.exit(1)
+
+          client = BleuAPIClient(api_key=os.environ["BLEUJS_API_KEY"], timeout=30)
           try:
-              print("health:", client.health())
-              print("models:", client.list_models())
+              health = client.health()
+              models = client.list_models()
           except Exception as exc:
-              message = str(exc)
-              if any(marker in message for marker in challenge_markers):
-                  print(
-                      "::warning::Live API request blocked by Cloudflare managed challenge. "
-                      "Configure a WAF bypass for CI/non-browser API traffic to "
-                      "api.bleujs.org (/health, /api/v1/*)."
-                  )
-                  sys.exit(0)
-              raise
+              fail_if_challenge(str(exc))
+              print(f"FAIL: live API request failed: {exc}")
+              sys.exit(1)
+
+          fail_if_challenge(health)
+          fail_if_challenge(models)
+          if not isinstance(health, dict) or "status" not in health:
+              print("FAIL: health response is missing the expected schema.")
+              print(health)
+              sys.exit(1)
+          print("health:", health)
+          print("models:", models)
           PY
