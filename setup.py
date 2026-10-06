@@ -33,8 +33,8 @@ setup(
     author="Bleujs Team",
     author_email="support@helloblue.ai",
     description=(
-        "A state-of-the-art quantum-enhanced vision system with "
-        "advanced AI capabilities"
+        "Python API client and CLI for the Bleu.js API, "
+        "with optional ML and quantum extras"
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -42,7 +42,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",

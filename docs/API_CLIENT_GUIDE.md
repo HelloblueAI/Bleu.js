@@ -352,7 +352,7 @@ models = client.list_models()
 
 **Machine-readable spec:** [openapi.yaml](api/openapi.yaml) is the single source of truth for the API. The SDK, CLI, and any compatible server should follow this spec.
 
-**API versioning:** We use `/api/v1` for the current API. We avoid breaking changes within v1; non-breaking changes (new optional fields, new endpoints) may be added. When we introduce breaking changes, we will add a new path (e.g. `/api/v2`) and document the migration. See [CHANGELOG](../CHANGELOG.md).
+**API versioning:** The canonical prefix is `/api/v1` (`https://api.bleujs.org/api/v1/*`). `/v1/*` is only a compatibility alias. We avoid breaking changes within v1; non-breaking changes (new optional fields, new endpoints) may be added. When we introduce breaking changes, we will add a new path (e.g. `/api/v2`) and document the migration. See [CHANGELOG](../CHANGELOG.md).
 
 **Changing the API?** Follow [Changing the API](CHANGING_THE_API.md) so the spec, edge stub, and SDK stay aligned.
 

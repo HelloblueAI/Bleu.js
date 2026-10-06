@@ -65,27 +65,6 @@ jobs:
           configuration-path: .github/auto-assign.yml
 
   # ============================================================================
-  # VERSION BUMP (main branch only)
-  # ============================================================================
-  version-bump:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DEFAULT_BUMP: patch
-          RELEASE_BRANCHES: main
-
-  # ============================================================================
   # SECURITY & COMPLIANCE SCAN
   # ============================================================================
   security-scan:

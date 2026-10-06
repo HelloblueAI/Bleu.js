@@ -1,8 +1,8 @@
 """
-Bleu.js - Quantum-Enhanced AI Platform
-=======================================
+Bleu.js
+=======
 
-A state-of-the-art quantum-enhanced vision system with advanced AI capabilities.
+Open-source SDK, CLI, and API contract, with optional ML and quantum modules.
 
 Basic Usage:
     >>> from bleujs import BleuJS

@@ -157,21 +157,41 @@ jobs:
           git push origin main || echo "Nothing to push"
 
       - name: Create and push tag
+        id: tag
         run: |
+          set -euo pipefail
           NEW_VERSION="${{ steps.new-version.outputs.version }}"
           TAG="v$NEW_VERSION"
           OLD_VERSION="${{ steps.get-version.outputs.current }}"
+          echo "created=false" >> "$GITHUB_OUTPUT"
 
-          # Check if tag already exists on remote (exit 0 = exists, exit 2 = not found)
+          if [ "$NEW_VERSION" = "1.5.177" ]; then
+            echo "❌ Refusing to tag or release 1.5.177 again"
+            exit 1
+          fi
+
           if git ls-remote --exit-code origin "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "⚠️ Tag $TAG already exists on remote, skipping tag creation and push"
+            echo "⚠️ Tag $TAG already exists on remote. Not creating it and not starting a release."
             exit 0
           fi
 
           TAG_MSG="Release $TAG: Automatic version bump from $OLD_VERSION to $NEW_VERSION. All version files updated. Installation: pip install bleu-js==$NEW_VERSION"
           git tag -a "$TAG" -m "$TAG_MSG"
           git push origin "$TAG"
+          echo "created=true" >> "$GITHUB_OUTPUT"
           echo "✅ Created and pushed tag $TAG"
+
+      - name: Start the release workflow for this tag
+        if: steps.tag.outputs.created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          gh workflow run "🚀 Release Management" --ref "v${NEW_VERSION}" \
+            -f version="${NEW_VERSION}" \
+            -f release_type="${{ steps.bump-type.outputs.type }}" \
+            -f dry_run=false
 
       - name: Summary
         run: |
@@ -186,7 +206,4 @@ jobs:
           echo "✅ CHANGELOG.md updated" >> $GITHUB_STEP_SUMMARY
           echo "✅ Git tag created and pushed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🚀 The release workflow will now automatically:" >> $GITHUB_STEP_SUMMARY
-          echo "   - Build packages" >> $GITHUB_STEP_SUMMARY
-          echo "   - Publish to PyPI" >> $GITHUB_STEP_SUMMARY
-          echo "   - Create GitHub release" >> $GITHUB_STEP_SUMMARY
+          echo "A new tag starts Release Management. An existing tag is not rebuilt or republished." >> $GITHUB_STEP_SUMMARY

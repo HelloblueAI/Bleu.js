@@ -5,7 +5,9 @@
 openapi: 3.0.3
 info:
   title: Bleu.js API
-  description: Bleu.js API for chat, text generation, and embeddings. Used by the Bleu.js SDK and CLI.
+  description: |
+    Bleu.js API for chat, text generation, and embeddings. Used by the Bleu.js SDK and CLI.
+    Canonical paths are `/api/v1/*` on `https://api.bleujs.org`. `/v1/*` is a compatibility alias only and is not a path in this document.
   version: "1.0"
   contact:
     name: Bleu.js
@@ -13,7 +15,7 @@ info:
 
 servers:
   - url: https://api.bleujs.org
-    description: Production API
+    description: Production API. Canonical paths are /api/v1/*. /v1/* is a compatibility alias and is not listed here.
   - url: http://localhost:4003
     description: Local / development
 
