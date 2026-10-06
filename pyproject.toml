@@ -2,7 +2,7 @@
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-# Push to main (non-docs) triggers auto-release then Release Management.
+# A new tag starts Release Management. An existing PyPI or GitHub release is not republished.
 
 [tool.poetry]
 name = "bleu-js"

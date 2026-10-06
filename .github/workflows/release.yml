@@ -4,11 +4,9 @@ on:
   push:
     tags:
       - 'v*'
-  # Tag pushes from GITHUB_TOKEN do not trigger workflows; run after auto-release instead.
-  workflow_run:
-    workflows: ["🚀 Automatic Version Bump & Release"]
-    types: [completed]
-    branches: [main]
+  # Do not run after other workflows finish on main. A GITHUB_TOKEN tag push
+  # does not trigger this workflow; auto-release.yml starts it with
+  # `gh workflow run` only after it creates a new tag.
   workflow_dispatch:
     inputs:
       version:
@@ -48,9 +46,9 @@ jobs:
     name: ✅ Pre-Release Validation
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     outputs:
       version: ${{ steps.get-version.outputs.version }}
+      sha: ${{ steps.get-version.outputs.sha }}
       is-prerelease: ${{ steps.get-version.outputs.is-prerelease }}
 
     steps:
@@ -71,11 +69,23 @@ jobs:
         run: |
           echo "🔧 Windows runner - disk cleanup not needed"
 
+      - name: Resolve release tag
+        id: release-tag
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+            [[ "$VERSION" == v* ]] || VERSION="v${VERSION}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Checkout Repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+          ref: refs/tags/${{ steps.release-tag.outputs.version }}
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -97,17 +107,15 @@ jobs:
       - name: Get version information
         id: get-version
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            VERSION="${{ github.event.inputs.version }}"
-            [[ "$VERSION" != v* ]] && VERSION="v${VERSION}"
-          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
-            VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
-            VERSION="v${VERSION}"
-          else
-            VERSION="${GITHUB_REF#refs/tags/}"
+          VERSION="${{ steps.release-tag.outputs.version }}"
+          TAG_SHA="$(git rev-parse "refs/tags/${VERSION}^{}")"
+          HEAD_SHA="$(git rev-parse HEAD)"
+          if [ "$TAG_SHA" != "$HEAD_SHA" ]; then
+            echo "❌ Checkout is $HEAD_SHA but $VERSION points at $TAG_SHA"
+            exit 1
           fi
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
           if [[ "$VERSION" == *"-"* ]]; then
             echo "is-prerelease=true" >> $GITHUB_OUTPUT
@@ -126,6 +134,12 @@ jobs:
             exit 1
           fi
           echo "✅ Version format is valid"
+          FILE_VER="$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')"
+          if [ "v${FILE_VER}" != "$VERSION" ]; then
+            echo "❌ Tag $VERSION does not match pyproject.toml version $FILE_VER"
+            exit 1
+          fi
+          echo "✅ Tag matches pyproject.toml"
 
       - name: Check for uncommitted changes
         run: |
@@ -155,47 +169,49 @@ jobs:
           fi
           echo "✅ Changelog entry found"
 
+      - name: Refuse an existing or frozen release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.get-version.outputs.version }}"
+          BARE="${VERSION#v}"
+          if [ "$BARE" = "1.5.177" ]; then
+            echo "❌ Refusing to rebuild, retag, or republish 1.5.177"
+            exit 1
+          fi
+          CODE="$(curl -sS -o /dev/null -w "%{http_code}" "https://pypi.org/pypi/bleu-js/${BARE}/json")"
+          if [ "$CODE" = "200" ]; then
+            echo "❌ bleu-js ${BARE} already exists on PyPI. Refusing to publish."
+            exit 1
+          fi
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "❌ GitHub release $VERSION already exists. Refusing to replace its files."
+            exit 1
+          fi
+          echo "✅ $VERSION is not on PyPI or GitHub"
+
   # ============================================================================
   # BUILD & PACKAGE
   # ============================================================================
   build:
     name: 🏗️ Build Packages
     needs: [validate]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.11', '3.12', '3.13']
 
     steps:
-      - name: Free Disk Space (Linux/macOS)
-        if: matrix.os != 'windows-latest'
-        run: |
-          echo "🔧 Freeing up disk space..."
-          sudo rm -rf /usr/share/dotnet || true
-          sudo rm -rf /usr/local/lib/android || true
-          sudo rm -rf /opt/ghc || true
-          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
-          docker system prune -af --volumes || true
-          df -h
-        shell: bash
-
-      - name: Free Disk Space (Windows)
-        if: matrix.os == 'windows-latest'
-        run: echo "🔧 Windows runner - disk cleanup not needed"
-
-      - name: Checkout Repository
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.validate.outputs.sha }}
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -204,17 +220,18 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Build package (no dependencies needed)
+      - name: Build package once
         run: |
-          # poetry build doesn't require installing dependencies
           poetry --version
           poetry build --format wheel
           poetry build --format sdist
+          cd dist
+          sha256sum ./*.whl ./*.tar.gz | tee SHA256SUMS
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: python-packages-${{ matrix.os }}-${{ matrix.python-version }}
+          name: python-packages-ubuntu-latest-3.11
           path: dist/
           retention-days: 30
 
@@ -223,15 +240,16 @@ jobs:
   # ============================================================================
   test-packages:
     name: 🧪 Test Built Packages
-    needs: [build]
+    needs: [validate, build]
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Only run when the full matrix completed successfully; otherwise ubuntu-3.11 artifacts may be missing.
     if: ${{ !cancelled() && needs.build.result == 'success' }}
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.validate.outputs.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -288,17 +306,19 @@ jobs:
   publish-pypi:
     name: 📦 Publish to PyPI
     # Require build success so artifacts exist; still allow publish if tests failed but packages built.
-    needs: [build, test-packages]
+    needs: [validate, build, test-packages]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: |
-      always() &&
       needs.build.result == 'success' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'))
+      needs.test-packages.result == 'success' &&
+      (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true'))
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.validate.outputs.sha }}
 
       - name: Download build artifacts
         id: pypi-artifacts
@@ -325,12 +345,13 @@ jobs:
             exit 1
           fi
           ls -laR "$DL" || true
-          mapfile -t pkgs < <(find "$DL" \( -name '*.whl' -o -name '*.tar.gz' \) | sort -u)
-          if [ "${#pkgs[@]}" -eq 0 ]; then
+          cd "$DL"
+          if ! compgen -G "*.whl" >/dev/null || ! compgen -G "*.tar.gz" >/dev/null; then
             echo "No .whl or sdist under $DL"
             exit 1
           fi
-          python -m twine upload --skip-existing "${pkgs[@]}"
+          sha256sum -c SHA256SUMS
+          python -m twine upload ./*.whl ./*.tar.gz
 
   # ============================================================================
   # CREATE GITHUB RELEASE
@@ -340,15 +361,16 @@ jobs:
     needs: [publish-pypi, validate]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
+    if: ${{ needs.publish-pypi.result == 'success' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true')) }}
     permissions:
       contents: write  # Required to create GitHub Release (fixes "Resource not accessible by integration")
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          ref: ${{ needs.validate.outputs.sha }}
 
       - name: Download build artifacts
         id: release-artifacts
@@ -388,16 +410,84 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IS_PRERELEASE: ${{ needs.validate.outputs.is-prerelease }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.validate.outputs.version }}"
+          DL="${{ steps.release-artifacts.outputs.download-path }}"
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "❌ GitHub release $VERSION already exists. Refusing to replace its files."
+            exit 1
+          fi
+          cd "$DL"
+          sha256sum -c SHA256SUMS
+          args=(release create "$VERSION" ./*.whl ./*.tar.gz
+            --target "${{ needs.validate.outputs.sha }}"
+            --title "Release $VERSION"
+            --notes-file "$GITHUB_WORKSPACE/release-notes.md")
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            args+=(--prerelease)
+          fi
+          gh "${args[@]}"
+
+  # ============================================================================
+  # CONFIRM PYPI AND GITHUB RECEIVED THE SAME FILES
+  # ============================================================================
+  verify-artifacts:
+    name: 🔐 Compare PyPI and GitHub hashes
+    needs: [validate, publish-pypi, create-release]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ needs.publish-pypi.result == 'success' && needs.create-release.result == 'success' }}
+
+    steps:
+      - name: Download the single build
+        uses: actions/download-artifact@v8
         with:
-          tag_name: ${{ needs.validate.outputs.version }}
-          name: Release ${{ needs.validate.outputs.version }}
-          body: ${{ steps.release-notes.outputs.notes }}
-          files: |
-            dist/**/*.whl
-            dist/**/*.tar.gz
-          draft: false
-          prerelease: ${{ needs.validate.outputs.is-prerelease }}
+          name: python-packages-ubuntu-latest-3.11
+          path: dist
+
+      - name: Compare SHA-256 hashes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.validate.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum -c SHA256SUMS
+          BARE="${VERSION#v}"
+          export BARE
+          python3 << 'PY'
+          import json, os, pathlib, time, urllib.request
+          expected = {}
+          for line in pathlib.Path("SHA256SUMS").read_text().splitlines():
+              digest, name = line.split()
+              expected[pathlib.Path(name).name] = digest
+          url = f"https://pypi.org/pypi/bleu-js/{os.environ['BARE']}/json"
+          data = None
+          for _ in range(12):
+              try:
+                  with urllib.request.urlopen(url, timeout=30) as resp:
+                      data = json.load(resp)
+                  break
+              except Exception:
+                  time.sleep(10)
+          if data is None:
+              raise SystemExit(f"PyPI has no bleu-js {os.environ['BARE']} yet")
+          seen = {item["filename"]: item["digests"]["sha256"] for item in data["urls"]}
+          for name, digest in expected.items():
+              if seen.get(name) != digest:
+                  raise SystemExit(f"PyPI hash mismatch for {name}: {seen.get(name)} != {digest}")
+          print("PyPI SHA-256 hashes match the build")
+          PY
+          mkdir -p "$RUNNER_TEMP/gh-release"
+          gh release download "$VERSION" --dir "$RUNNER_TEMP/gh-release" --clobber
+          cp SHA256SUMS "$RUNNER_TEMP/gh-release/SHA256SUMS"
+          sha256sum -c SHA256SUMS --quiet
+          (cd "$RUNNER_TEMP/gh-release" && sha256sum -c SHA256SUMS)
+          echo "GitHub release SHA-256 hashes match the build"
 
   # ============================================================================
   # DOCKER IMAGES
@@ -408,11 +498,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     continue-on-error: true
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true') }}
+    if: ${{ needs.publish-pypi.result == 'success' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true')) }}
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.validate.outputs.sha }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4

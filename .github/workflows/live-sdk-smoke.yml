@@ -52,7 +52,15 @@ jobs:
           python - <<'PY'
           import os
           import sys
+
+          import httpx
           from bleujs.api_client import BleuAPIClient
+          from bleujs.api_client.constants import (
+              DEFAULT_BASE_URL,
+              ENDPOINT_CHAT,
+              ENDPOINT_EMBED,
+              ENDPOINT_GENERATE,
+          )
 
           challenge_markers = (
               "Just a moment",
@@ -70,21 +78,87 @@ jobs:
                   print(text[:500])
                   sys.exit(1)
 
-          client = BleuAPIClient(api_key=os.environ["BLEUJS_API_KEY"], timeout=30)
+          api_key = os.environ["BLEUJS_API_KEY"]
+
+          def redact(value) -> str:
+              return str(value).replace(api_key, "[redacted]")
+
+          def post_json(endpoint: str, payload: dict) -> dict:
+              response = httpx.post(
+                  DEFAULT_BASE_URL.rstrip("/") + endpoint,
+                  headers={"Authorization": f"Bearer {api_key}", "Accept": "application/json"},
+                  json=payload,
+                  timeout=20,
+              )
+              if response.status_code != 200:
+                  print(f"FAIL: {endpoint} returned HTTP {response.status_code}")
+                  fail_if_challenge(redact(response.text[:300]))
+                  sys.exit(1)
+              if "json" not in response.headers.get("content-type", "").lower():
+                  print(f"FAIL: {endpoint} did not return JSON")
+                  fail_if_challenge(redact(response.text[:300]))
+                  sys.exit(1)
+              if not response.content:
+                  print(f"FAIL: {endpoint} returned an empty body")
+                  sys.exit(1)
+              try:
+                  body = response.json()
+              except Exception:
+                  print(f"FAIL: {endpoint} body is not valid JSON")
+                  sys.exit(1)
+              fail_if_challenge(redact(body))
+              return body
+
+          try:
+              post_json(ENDPOINT_CHAT, {"messages": [{"role": "user", "content": "Say hi"}], "max_tokens": 8})
+              post_json(ENDPOINT_GENERATE, {"prompt": "Say hi", "max_tokens": 8})
+              post_json(ENDPOINT_EMBED, {"input": ["hi"]})
+          except httpx.TimeoutException:
+              print("FAIL: live API request timed out")
+              sys.exit(1)
+          except Exception as exc:
+              fail_if_challenge(redact(exc))
+              print(f"FAIL: live API request failed: {redact(exc)}")
+              sys.exit(1)
+
+          client = BleuAPIClient(api_key=api_key, timeout=20)
           try:
               health = client.health()
               models = client.list_models()
+              chat = client.chat(
+                  [{"role": "user", "content": "Say hi"}],
+                  max_tokens=8,
+              )
+              generated = client.generate("Say hi", max_tokens=8)
+              embedded = client.embed(["hi"])
           except Exception as exc:
-              fail_if_challenge(str(exc))
-              print(f"FAIL: live API request failed: {exc}")
+              fail_if_challenge(redact(exc))
+              print(f"FAIL: live API request failed: {redact(exc)}")
               sys.exit(1)
 
-          fail_if_challenge(health)
-          fail_if_challenge(models)
+          fail_if_challenge(redact(health))
+          fail_if_challenge(redact(models))
+          fail_if_challenge(redact(chat))
+          fail_if_challenge(redact(generated))
+          fail_if_challenge(redact(embedded))
           if not isinstance(health, dict) or "status" not in health:
               print("FAIL: health response is missing the expected schema.")
-              print(health)
               sys.exit(1)
-          print("health:", health)
-          print("models:", models)
+          if not getattr(chat, "id", None) or not getattr(chat, "model", None) or not chat.choices:
+              print("FAIL: chat response is missing id, model, or choices.")
+              sys.exit(1)
+          if not isinstance(chat.content, str) or not chat.content.strip():
+              print("FAIL: chat response has no content.")
+              sys.exit(1)
+          if not generated.id or not generated.model or not isinstance(generated.text, str) or not generated.text.strip():
+              print("FAIL: generate response is missing id, model, or text.")
+              sys.exit(1)
+          if not embedded.model or not embedded.data or not embedded.embeddings or not embedded.embeddings[0]:
+              print("FAIL: embed response is missing model, data, or embeddings.")
+              sys.exit(1)
+          print("health status:", health.get("status"))
+          print("models type:", type(models).__name__)
+          print("chat id prefix:", str(chat.id)[:8], "content length:", len(chat.content))
+          print("generate id prefix:", str(generated.id)[:8], "text length:", len(generated.text))
+          print("embed dimensions:", len(embedded.embeddings[0]))
           PY

@@ -1,12 +1,13 @@
 # Bleu.js ML/XGBoost Analysis Report
+
+**Historical note (October 2026):** This is a May 16, 2026 code review. It is not a current benchmark, and it is not evidence that the SDK or the hosted API is a quantum-enhanced platform or production-certified. The published model is [helloblueai/bleu-xgboost-classifier](https://huggingface.co/helloblueai/bleu-xgboost-classifier), a classical Covertype classifier. Quantum modules remain optional extras.
+
 **Generated:** May 16, 2026
 **Repository:** https://github.com/HelloblueAI/Bleu.js
 
 ## Executive Summary
 
-✅ **The Bleu.js ML and XGBoost implementation is properly configured and functional**
-
-The repository contains a sophisticated ML infrastructure with XGBoost at its core, enhanced with quantum computing features, security layers, and performance optimization. Based on code analysis, the implementation appears well-architected and production-ready.
+The repository contains ML code with an optional XGBoost trainer, optional quantum helpers, and security-related modules. This review describes those files. It does not measure production performance.
 
 ---
 
