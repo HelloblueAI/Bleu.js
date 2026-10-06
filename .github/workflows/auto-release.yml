@@ -25,6 +25,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   auto-version-bump:
@@ -184,6 +185,7 @@ jobs:
       - name: Start the release workflow for this tag
         if: steps.tag.outputs.created == 'true'
         env:
+          # actions: write is required. contents: write cannot dispatch a workflow.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
