@@ -1,15 +1,8 @@
 name: 🚀 Automatic Version Bump & Release
 
+# Version bumps, tags, and release dispatch are manual. A push or merge to
+# main does not run this workflow.
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-      - '.github/*.md'
-      - 'LICENSE'
-      - 'CHANGELOG.md'
   workflow_dispatch:
     inputs:
       bump_type:
@@ -21,77 +14,53 @@ on:
           - patch
           - minor
           - major
+      publish:
+        description: 'Create the tag and start Release Management. Leave this off to preview the version only.'
+        required: true
+        default: false
+        type: boolean
+      confirm_version:
+        description: 'Exact proposed version to publish, such as 1.5.178. Required when publish is enabled.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+  contents: read
 
 jobs:
-  auto-version-bump:
-    name: 🔄 Auto Bump Version & Release
+  propose:
+    name: Show the proposed version
     runs-on: ubuntu-latest
-    # Skip when maintainers ship a hand-bumped version (avoids 1.5.1 → 1.5.2). Tag vX.Y.Z + release workflow publishes PyPI.
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && !(github.event.head_commit && contains(github.event.head_commit.message, '[skip auto-version]')))
-
+    outputs:
+      current: ${{ steps.calc.outputs.current }}
+      version: ${{ steps.calc.outputs.version }}
+      bump: ${{ steps.calc.outputs.bump }}
+      tag_exists: ${{ steps.calc.outputs.tag_exists }}
     steps:
-      - name: Free Disk Space
-        run: |
-          echo "🔧 Freeing up disk space..."
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          docker system prune -af --volumes || true
-          df -h
-
-      - name: Checkout Repository
+      - name: Checkout main
         uses: actions/checkout@v7
         with:
+          ref: main
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
-
-      - name: Get current version
-        id: get-version
+      - name: Calculate the proposed version
+        id: calc
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
         run: |
+          set -euo pipefail
           CURRENT_VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
-          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-          echo "Current version: $CURRENT_VERSION"
+          case "$BUMP_TYPE" in
+            patch|minor|major) ;;
+            *)
+              echo "Unsupported bump type: $BUMP_TYPE"
+              exit 1
+              ;;
+          esac
 
-      - name: Determine bump type
-        id: bump-type
-        run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            BUMP_TYPE="${{ github.event.inputs.bump_type }}"
-          else
-            # Auto-detect from commit messages
-            COMMIT_MSG=$(git log -1 --pretty=%B)
-            if echo "$COMMIT_MSG" | grep -qiE "^(feat|feature|major)"; then
-              BUMP_TYPE="minor"
-            elif echo "$COMMIT_MSG" | grep -qiE "^(fix|bugfix|patch)"; then
-              BUMP_TYPE="patch"
-            else
-              BUMP_TYPE="patch"  # Default to patch
-            fi
-          fi
-          echo "type=$BUMP_TYPE" >> $GITHUB_OUTPUT
-          echo "Bump type: $BUMP_TYPE"
-
-      - name: Calculate new version
-        id: new-version
-        run: |
-          CURRENT="${{ steps.get-version.outputs.current }}"
-          BUMP="${{ steps.bump-type.outputs.type }}"
-
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
-
-          case "$BUMP" in
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          case "$BUMP_TYPE" in
             major)
               MAJOR=$((MAJOR + 1))
               MINOR=0
@@ -105,107 +74,205 @@ jobs:
               PATCH=$((PATCH + 1))
               ;;
           esac
-
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "New version: $NEW_VERSION"
+          TAG="v$NEW_VERSION"
+
+          if git ls-remote --exit-code origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            TAG_EXISTS=true
+          else
+            TAG_EXISTS=false
+          fi
+
+          echo "current=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "bump=$BUMP_TYPE" >> "$GITHUB_OUTPUT"
+          echo "tag_exists=$TAG_EXISTS" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Proposed version"
+            echo ""
+            echo "**Current version:** $CURRENT_VERSION"
+            echo "**Proposed version:** $NEW_VERSION"
+            echo "**Bump type:** $BUMP_TYPE"
+            echo "**Tag:** $TAG"
+            echo "**Tag already exists:** $TAG_EXISTS"
+            echo ""
+            echo "This step does not change the version, create a tag, or publish a release."
+            echo "To publish, run this workflow again from main with publish enabled and confirm_version set to \`$NEW_VERSION\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$NEW_VERSION" = "1.5.177" ]; then
+            echo "Refusing to propose 1.5.177. That version is already published."
+            exit 1
+          fi
+
+  publish:
+    name: Bump, tag, and start the release
+    needs: propose
+    if: github.event.inputs.publish == 'true'
+    permissions:
+      contents: write
+      actions: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the proposed version
+        env:
+          CONFIRM_VERSION: ${{ github.event.inputs.confirm_version }}
+          PROPOSED_VERSION: ${{ needs.propose.outputs.version }}
+          TAG_EXISTS: ${{ needs.propose.outputs.tag_exists }}
+        run: |
+          set -euo pipefail
+          if [ "$PROPOSED_VERSION" = "1.5.177" ]; then
+            echo "Refusing to tag or release 1.5.177 again."
+            exit 1
+          fi
+          if [ "$CONFIRM_VERSION" != "$PROPOSED_VERSION" ]; then
+            echo "Refusing to publish. The proposed version is $PROPOSED_VERSION."
+            echo "Run the workflow again with confirm_version set to that exact value."
+            exit 1
+          fi
+          if [ "$TAG_EXISTS" = "true" ]; then
+            echo "Refusing to publish. Tag v$PROPOSED_VERSION already exists, so no tag or release was created."
+            exit 1
+          fi
+          echo "Confirmed proposed version $PROPOSED_VERSION."
+
+      - name: Free Disk Space
+        run: |
+          echo "🔧 Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune -af --volumes || true
+          df -h
+
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
 
       - name: Update version in pyproject.toml
+        env:
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
+          OLD_VERSION: ${{ needs.propose.outputs.current }}
         run: |
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          set -euo pipefail
+          CURRENT_VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          if [ "$CURRENT_VERSION" != "$OLD_VERSION" ]; then
+            echo "Refusing to publish. main is $CURRENT_VERSION, but this run proposed a bump from $OLD_VERSION."
+            exit 1
+          fi
           sed -i "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
-          echo "✅ Updated pyproject.toml to $NEW_VERSION"
-
-      # setup.py reads version from src/bleujs/__init__.py (single source of truth); no sed needed
+          echo "Updated pyproject.toml to $NEW_VERSION"
 
       - name: Update version in __init__.py files
+        env:
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
         run: |
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          set -euo pipefail
           find src -name "__init__.py" -type f -exec sed -i "s/__version__ = \"[^\"]*\"/__version__ = \"$NEW_VERSION\"/" {} \;
-          find src -name "__init__.py" -type f -exec grep -l "__version__" {} \; | xargs -I {} sh -c 'echo "✅ Updated {} to $NEW_VERSION"'
-          echo "✅ Updated all __init__.py files to $NEW_VERSION"
+          find src -name "__init__.py" -type f -exec grep -l "__version__" {} \; | xargs -I {} sh -c 'echo "Updated {} to $NEW_VERSION"'
+          echo "Updated all __init__.py files to $NEW_VERSION"
 
       - name: Update CHANGELOG.md
+        env:
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
+          OLD_VERSION: ${{ needs.propose.outputs.current }}
         run: |
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
+          set -euo pipefail
           DATE=$(date +%Y-%m-%d)
-          OLD_VERSION="${{ steps.get-version.outputs.current }}"
           if [ -f CHANGELOG.md ]; then
             {
               echo ""
               echo "## [v$NEW_VERSION] - $DATE"
               echo ""
-              echo "### 🎉 Automatic Release"
-              echo "- Version bumped automatically from $OLD_VERSION to $NEW_VERSION"
+              echo "### Release"
+              echo "- Version bumped from $OLD_VERSION to $NEW_VERSION"
               echo "- See commit history for changes"
               echo ""
             } > /tmp/changelog_entry.txt
             sed -i "/^# Changelog/r /tmp/changelog_entry.txt" CHANGELOG.md
-            echo "✅ Updated CHANGELOG.md"
+            echo "Updated CHANGELOG.md"
           else
-            echo "⚠️ CHANGELOG.md not found, skipping"
+            echo "CHANGELOG.md not found, skipping"
           fi
 
       - name: Commit version updates
+        env:
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Explicitly add only version files, excluding workflow files
           git add pyproject.toml src/**/__init__.py CHANGELOG.md
-          # Ensure no workflow files are staged
           git reset .github/workflows/ || true
-          git commit -m "chore: Bump version to ${{ steps.new-version.outputs.version }} [skip ci]" || echo "No changes to commit"
-          git push origin main || echo "Nothing to push"
+          git commit -m "chore: Bump version to ${NEW_VERSION} [skip ci]"
+          git push origin main
 
       - name: Create and push tag
         id: tag
+        env:
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
+          OLD_VERSION: ${{ needs.propose.outputs.current }}
         run: |
           set -euo pipefail
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
           TAG="v$NEW_VERSION"
-          OLD_VERSION="${{ steps.get-version.outputs.current }}"
           echo "created=false" >> "$GITHUB_OUTPUT"
 
           if [ "$NEW_VERSION" = "1.5.177" ]; then
-            echo "❌ Refusing to tag or release 1.5.177 again"
+            echo "Refusing to tag or release 1.5.177 again."
             exit 1
           fi
 
           if git ls-remote --exit-code origin "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "⚠️ Tag $TAG already exists on remote. Not creating it and not starting a release."
-            exit 0
+            echo "Tag $TAG already exists on remote. Not creating it and not starting a release."
+            exit 1
           fi
 
-          TAG_MSG="Release $TAG: Automatic version bump from $OLD_VERSION to $NEW_VERSION. All version files updated. Installation: pip install bleu-js==$NEW_VERSION"
+          TAG_MSG="Release $TAG: Version bump from $OLD_VERSION to $NEW_VERSION. Installation: pip install bleu-js==$NEW_VERSION"
           git tag -a "$TAG" -m "$TAG_MSG"
           git push origin "$TAG"
           echo "created=true" >> "$GITHUB_OUTPUT"
-          echo "✅ Created and pushed tag $TAG"
+          echo "Created and pushed tag $TAG"
 
       - name: Start the release workflow for this tag
         if: steps.tag.outputs.created == 'true'
         env:
           # actions: write is required. contents: write cannot dispatch a workflow.
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
+          RELEASE_TYPE: ${{ needs.propose.outputs.bump }}
         run: |
           set -euo pipefail
-          NEW_VERSION="${{ steps.new-version.outputs.version }}"
           gh workflow run "🚀 Release Management" --ref "v${NEW_VERSION}" \
             -f version="${NEW_VERSION}" \
-            -f release_type="${{ steps.bump-type.outputs.type }}" \
+            -f release_type="${RELEASE_TYPE}" \
             -f dry_run=false
 
       - name: Summary
+        env:
+          OLD_VERSION: ${{ needs.propose.outputs.current }}
+          NEW_VERSION: ${{ needs.propose.outputs.version }}
+          BUMP_TYPE: ${{ needs.propose.outputs.bump }}
         run: |
-          echo "## 🎉 Automatic Version Bump Complete" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Previous Version:** ${{ steps.get-version.outputs.current }}" >> $GITHUB_STEP_SUMMARY
-          echo "**New Version:** ${{ steps.new-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Bump Type:** ${{ steps.bump-type.outputs.type }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Tag:** v${{ steps.new-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ All version files updated" >> $GITHUB_STEP_SUMMARY
-          echo "✅ CHANGELOG.md updated" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Git tag created and pushed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "A new tag starts Release Management. An existing tag is not rebuilt or republished." >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Version bump started"
+            echo ""
+            echo "**Previous version:** $OLD_VERSION"
+            echo "**Published version:** $NEW_VERSION"
+            echo "**Bump type:** $BUMP_TYPE"
+            echo "**Tag:** v$NEW_VERSION"
+            echo ""
+            echo "The version files were updated and the tag was pushed."
+            echo "Release Management builds once from that tag and compares PyPI and GitHub SHA-256 hashes."
+            echo "An existing tag or the already published 1.5.177 release is refused."
+          } >> "$GITHUB_STEP_SUMMARY"
