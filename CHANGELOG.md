@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.5.178] - 2026-10-13
+
+### Changed
+- Publish the current README. PyPI will describe Bleu.js as an open-source SDK, CLI, and API contract, with an optional self-hosted app.
+- Release Management publishes only from a new tag. A merge to main does not bump the version or create a release. Publishing 1.5.177 again is refused.
+- Live SDK Smoke calls chat, generate, and embed on https://api.bleujs.org/api/v1/* and fails on a Cloudflare challenge.
+- The repository OpenAPI document states that /api/v1/* is canonical and /v1/* is a compatibility alias.
+- CLI help matches the SDK and API. Windows console status text no longer depends on characters the legacy Windows console cannot encode.
+- The optional teleportation module is described as a demonstration, not as the product.
+
 ## [v1.5.177] - 2026-09-26
 
 ### Changed

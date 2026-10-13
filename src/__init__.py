@@ -1,6 +1,5 @@
 """
-Bleu.js - A state-of-the-art quantum-enhanced vision system with
-advanced AI capabilities
+Optional self-hosted Bleu.js app. The public SDK and CLI use https://api.bleujs.org.
 """
 
 import warnings

@@ -4,7 +4,7 @@ Bleu.js compatibility package.
 Open-source SDK and API client, with optional ML and quantum modules.
 """
 
-__version__ = "1.5.177"
+__version__ = "1.5.178"
 
 # Optional API client import
 try:
