@@ -6,6 +6,7 @@ When run under pytest, sys.argv contains pytest's options; we isolate the CLI
 by patching sys.argv during invoke so the runner doesn't see them.
 """
 
+import io
 import os
 import sys
 from pathlib import Path
@@ -22,7 +23,9 @@ except ImportError:
     CLICK_AVAILABLE = False
 
 if CLICK_AVAILABLE:
-    from src.bleujs.cli import cli
+    import src.bleujs.cli as cli_module
+
+    cli = cli_module.cli
 
 
 def _invoke_isolated(runner, cli_obj, args):
@@ -39,6 +42,11 @@ def _invoke_isolated(runner, cli_obj, args):
 def _call_config_show(env_override=None):
     """Retained for backwards-compatibility; prefer in-process invoke in tests."""
     raise RuntimeError("Use _invoke_isolated with CliRunner in tests")
+
+
+def _cp1252_stream():
+    """Return a writable text stream that cannot encode emoji."""
+    return io.TextIOWrapper(io.BytesIO(), encoding="cp1252")
 
 
 @pytest.fixture
@@ -139,8 +147,72 @@ class TestCLIConfig:
         assert "set" in result.output
 
 
+@pytest.mark.skipif(not CLICK_AVAILABLE, reason="click not installed")
+class TestCLIEncoding:
+    """Test Windows-style narrow console encodings."""
+
+    def test_reconfigure_output_streams_sets_utf8_replace(self, monkeypatch):
+        """Startup stream setup switches compatible streams to UTF-8."""
+        stdout = _cp1252_stream()
+        stderr = _cp1252_stream()
+
+        monkeypatch.setattr(sys, "stdout", stdout)
+        monkeypatch.setattr(sys, "stderr", stderr)
+
+        cli_module.reconfigure_output_streams()
+
+        assert stdout.encoding.lower().replace("_", "-") == "utf-8"
+        assert stdout.errors == "replace"
+        assert stderr.encoding.lower().replace("_", "-") == "utf-8"
+        assert stderr.errors == "replace"
+
+    def test_status_symbol_falls_back_for_cp1252_stream(self):
+        """Emoji-like status symbols fall back before cp1252 can crash."""
+        stream = _cp1252_stream()
+
+        assert cli_module.status_symbol("ok", stream=stream) == "[OK]"
+        assert cli_module.status_symbol("error", stream=stream) == "[x]"
+        assert cli_module.status_text("ok", "done", stream=stream) == "[OK] done"
+
+    def test_click_runner_prints_ascii_fallback_for_cp1252_stream(
+        self, runner, monkeypatch
+    ):
+        """CliRunner uses fallback text when the target stream is cp1252."""
+        stdout = _cp1252_stream()
+        stderr = _cp1252_stream()
+
+        def cp1252_output_stream(err=False):
+            return stderr if err else stdout
+
+        monkeypatch.setattr(cli_module, "_output_stream", cp1252_output_stream)
+
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            config_dir = os.path.join(tmp, ".bleujs")
+            os.makedirs(config_dir, exist_ok=True)
+            config_file = os.path.join(config_dir, "config.json")
+            with open(config_file, "w") as f:
+                json.dump({}, f)
+            with (
+                patch("src.bleujs.cli.CONFIG_DIR", Path(config_dir)),
+                patch("src.bleujs.cli.CONFIG_FILE", Path(config_file)),
+            ):
+                result = _invoke_isolated(
+                    runner,
+                    cli,
+                    ["config", "set", "base-url", "https://api.example.test"],
+                )
+
+        assert result.exception is None
+        assert result.exit_code == 0, result.output
+        assert "[OK] Set base_url = https://api.example.test" in result.output
+        assert "✅" not in result.output
+
+
 class TestCLIHealthNoKey:
-    """Test bleu health when API key is not set (must exit non-zero and show message)."""
+    """Test bleu health when API key is not set."""
 
     def test_health_without_key_exit_nonzero(self, runner, no_api_key):
         """Without API key, bleu health exits non-zero and mentions API key."""
