@@ -1,7 +1,7 @@
 """
 Quantum teleportation circuits for Bleu.js.
 
-Part of the Bleu.js quantum-enhanced AI platform. Implements the standard
+Optional quantum-teleportation demonstration module for Bleu.js. Implements the standard
 three-qubit teleportation protocol: transfer a qubit state using entanglement
 plus classical communication (IBM's definition). This is quantum *information*
 transfer—not matter or object teleportation.

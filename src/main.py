@@ -37,8 +37,8 @@ BLEUJS_VERSION = get_version()
 app = FastAPI(
     title="Bleu.js API",
     description=(
-        "A state-of-the-art quantum-enhanced vision system "
-        "with advanced AI capabilities"
+        "Optional self-hosted Bleu.js app. The public SDK and CLI talk to "
+        "https://api.bleujs.org."
     ),
     version=BLEUJS_VERSION,
 )
