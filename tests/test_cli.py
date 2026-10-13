@@ -14,6 +14,10 @@ from unittest.mock import patch
 
 import pytest
 
+PACKAGE_SRC = Path(__file__).resolve().parents[1] / "src"
+if str(PACKAGE_SRC) not in sys.path:
+    sys.path.insert(0, str(PACKAGE_SRC))
+
 try:
     import click
     from click.testing import CliRunner
@@ -23,7 +27,7 @@ except ImportError:
     CLICK_AVAILABLE = False
 
 if CLICK_AVAILABLE:
-    import src.bleujs.cli as cli_module
+    import bleujs.cli as cli_module
 
     cli = cli_module.cli
 
@@ -62,7 +66,7 @@ def no_api_key(monkeypatch):
     """Ensure BLEUJS_API_KEY is unset for tests that expect no key."""
     monkeypatch.delenv("BLEUJS_API_KEY", raising=False)
     # Also clear config so get_api_key() returns None
-    with patch("src.bleujs.cli.get_config", return_value={}):
+    with patch("bleujs.cli.get_config", return_value={}):
         yield
 
 
@@ -86,7 +90,7 @@ class TestCLIConfig:
 
     def test_config_show_exit_0(self, runner):
         """bleu config show runs without error (no 'unexpected extra argument')."""
-        with patch("src.bleujs.cli.get_config", return_value={}):
+        with patch("bleujs.cli.get_config", return_value={}):
             result = _invoke_isolated(runner, cli, ["config", "show"])
             out = result.output
             assert result.exit_code == 0, out
@@ -120,8 +124,8 @@ class TestCLIConfig:
                     f,
                 )
             with (
-                patch("src.bleujs.cli.CONFIG_DIR", Path(config_dir)),
-                patch("src.bleujs.cli.CONFIG_FILE", Path(config_file)),
+                patch("bleujs.cli.CONFIG_DIR", Path(config_dir)),
+                patch("bleujs.cli.CONFIG_FILE", Path(config_file)),
             ):
                 result = _invoke_isolated(runner, cli, ["config", "show"])
                 out = result.output
@@ -134,7 +138,7 @@ class TestCLIConfig:
 
     def test_config_get_empty(self, runner):
         """bleu config get with no key shows all (same as show)."""
-        with patch("src.bleujs.cli.get_config", return_value={}):
+        with patch("bleujs.cli.get_config", return_value={}):
             result = runner.invoke(cli, ["config", "get"])
         assert result.exit_code == 0
 
@@ -196,8 +200,8 @@ class TestCLIEncoding:
             with open(config_file, "w") as f:
                 json.dump({}, f)
             with (
-                patch("src.bleujs.cli.CONFIG_DIR", Path(config_dir)),
-                patch("src.bleujs.cli.CONFIG_FILE", Path(config_file)),
+                patch("bleujs.cli.CONFIG_DIR", Path(config_dir)),
+                patch("bleujs.cli.CONFIG_FILE", Path(config_file)),
             ):
                 result = _invoke_isolated(
                     runner,
