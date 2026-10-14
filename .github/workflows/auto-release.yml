@@ -31,7 +31,7 @@ permissions:
 jobs:
   propose:
     name: Show the proposed version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       current: ${{ steps.calc.outputs.current }}
       version: ${{ steps.calc.outputs.version }}
@@ -113,7 +113,7 @@ jobs:
     permissions:
       contents: write
       actions: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Require the proposed version
         env:

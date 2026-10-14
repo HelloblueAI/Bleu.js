@@ -15,7 +15,7 @@ concurrency:
 jobs:
   pypi-sdk-smoke:
     name: PyPI SDK live API smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       BLEUJS_API_KEY: ${{ secrets.BLEUJS_API_KEY || secrets.BLEUJS_PYTHON }}
