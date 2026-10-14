@@ -44,7 +44,7 @@ jobs:
   # ============================================================================
   validate:
     name: ✅ Pre-Release Validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
       version: ${{ steps.get-version.outputs.version }}
@@ -197,7 +197,7 @@ jobs:
   build:
     name: 🏗️ Build Packages
     needs: [validate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -231,7 +231,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: python-packages-ubuntu-latest-3.11
+          name: python-packages-ubuntu-24.04-3.11
           path: dist/
           retention-days: 30
 
@@ -241,7 +241,7 @@ jobs:
   test-packages:
     name: 🧪 Test Built Packages
     needs: [validate, build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     if: ${{ !cancelled() && needs.build.result == 'success' }}
 
@@ -261,7 +261,7 @@ jobs:
         id: test-artifacts
         uses: actions/download-artifact@v8
         with:
-          name: python-packages-ubuntu-latest-3.11
+          name: python-packages-ubuntu-24.04-3.11
           path: dist
 
       - name: Test package installation
@@ -307,7 +307,7 @@ jobs:
     name: 📦 Publish to PyPI
     # Require build success so artifacts exist; still allow publish if tests failed but packages built.
     needs: [validate, build, test-packages]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: |
       needs.build.result == 'success' &&
@@ -324,7 +324,7 @@ jobs:
         id: pypi-artifacts
         uses: actions/download-artifact@v8
         with:
-          name: python-packages-ubuntu-latest-3.11
+          name: python-packages-ubuntu-24.04-3.11
           path: dist
 
       - name: Install twine
@@ -359,7 +359,7 @@ jobs:
   create-release:
     name: 🏷️ Create GitHub Release
     needs: [publish-pypi, validate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: ${{ needs.publish-pypi.result == 'success' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true')) }}
     permissions:
@@ -376,7 +376,7 @@ jobs:
         id: release-artifacts
         uses: actions/download-artifact@v8
         with:
-          name: python-packages-ubuntu-latest-3.11
+          name: python-packages-ubuntu-24.04-3.11
           path: dist
 
       - name: Generate release notes
@@ -438,20 +438,26 @@ jobs:
   verify-artifacts:
     name: 🔐 Compare PyPI and GitHub hashes
     needs: [validate, publish-pypi, create-release]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: ${{ needs.publish-pypi.result == 'success' && needs.create-release.result == 'success' }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
       - name: Download the single build
         uses: actions/download-artifact@v8
         with:
-          name: python-packages-ubuntu-latest-3.11
+          name: python-packages-ubuntu-24.04-3.11
           path: dist
 
       - name: Compare SHA-256 hashes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.validate.outputs.version }}
         run: |
           set -euo pipefail
@@ -495,7 +501,7 @@ jobs:
   docker:
     name: 🐳 Build Docker Images
     needs: [publish-pypi, validate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
     if: ${{ needs.publish-pypi.result == 'success' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run != 'true')) }}
@@ -534,7 +540,7 @@ jobs:
     name: 📢 Release Notifications
     # Must list validate (for outputs) and publish-pypi (so this job runs when publish fails/skipped graph allows).
     needs: [validate, publish-pypi]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
 

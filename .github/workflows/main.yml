@@ -51,7 +51,7 @@ jobs:
   # AUTO-ASSIGNMENT (PRs only)
   # ============================================================================
   auto-assign:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Skip Dependabot PRs even when a human merges main (actor != dependabot).
     if: >
       github.event_name == 'pull_request' &&
@@ -69,7 +69,7 @@ jobs:
   # ============================================================================
   security-scan:
     name: 🔒 Security & Compliance Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
       security-status: ${{ steps.security-check.outputs.status }}
@@ -209,7 +209,7 @@ jobs:
   # ============================================================================
   lint:
     name: 🧹 Code Quality & Linting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -272,7 +272,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         python-version: [3.11]
         include:
           - python-version: 3.11
@@ -389,7 +389,7 @@ jobs:
   pipeline-summary:
     name: 📢 Pipeline Status Summary
     needs: [lint, test, security-scan]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
     steps:
       - name: Generate Pipeline Summary
@@ -397,7 +397,7 @@ jobs:
           echo "## 🚀 Bleu.js CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **OS**: ubuntu-latest" >> $GITHUB_STEP_SUMMARY
+          echo "- **OS**: ubuntu-24.04" >> $GITHUB_STEP_SUMMARY
           echo "- **Python**: ${{ env.PYTHON_VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Coverage**: Generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

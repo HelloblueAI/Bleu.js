@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   welcome:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.actor != 'dependabot[bot]'
     steps:
       - name: Welcome First Issue
