@@ -27,6 +27,7 @@ Requires: pip install 'bleu-js[quantum]'
 
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -90,6 +91,48 @@ def build_teleportation_circuit(theta: float = 1.234) -> "QuantumCircuit":
     return qc
 
 
+def teleported_bit_counts(counts: dict[str, int]) -> dict[str, int]:
+    """Collapse raw counts onto Bob's output bit.
+
+    Aer and the IBM extractor use ``out m1 m0`` keys, with ``out`` on the
+    left. A one-bit key is already that output.
+    """
+    totals = {"0": 0, "1": 0}
+    for key, shots in counts.items():
+        token = str(key).strip().split()[0] if str(key).strip() else ""
+        bit = token[0] if token else ""
+        if bit in totals:
+            totals[bit] += int(shots)
+    return totals
+
+
+def z_basis_agreement(theta: float, counts: dict[str, int]) -> dict[str, float | int]:
+    """Compare Bob's Z counts with the ideal Ry(theta)|0> probabilities.
+
+    This is the Hellinger fidelity of the measured bit distribution, not a
+    full state tomography.
+    """
+    bits = teleported_bit_counts(counts)
+    total = bits["0"] + bits["1"]
+    if total == 0:
+        raise ValueError("Teleportation counts did not include an output bit")
+    empirical_p1 = bits["1"] / total
+    empirical_p0 = bits["0"] / total
+    ideal_p1 = math.sin(theta / 2.0) ** 2
+    ideal_p0 = 1.0 - ideal_p1
+    fidelity = (
+        math.sqrt(ideal_p0 * empirical_p0) + math.sqrt(ideal_p1 * empirical_p1)
+    ) ** 2
+    return {
+        "shots": total,
+        "p0": empirical_p0,
+        "p1": empirical_p1,
+        "ideal_p0": ideal_p0,
+        "ideal_p1": ideal_p1,
+        "hellinger_fidelity": fidelity,
+    }
+
+
 def run_teleportation_simulator(
     theta: float = 1.234,
     shots: int = 2048,
@@ -140,7 +183,8 @@ def teleportation_fidelity_report(
         shots: Shots per circuit.
 
     Returns:
-        dict with keys: thetas, results (list of counts per theta), circuits (list of circuits).
+        dict with keys: thetas, results (list of counts per theta), circuits,
+        and outcomes (Hellinger fidelity of Bob's output bit versus Ry(theta)|0>).
 
     Example:
         >>> from bleujs.teleportation import teleportation_fidelity_report
@@ -152,8 +196,15 @@ def teleportation_fidelity_report(
         thetas = [0.0, 0.5, 1.0, 1.234, 1.57]
     results = []
     circuits = []
+    outcomes = []
     for theta in thetas:
         out = run_teleportation_simulator(theta=theta, shots=shots)
         results.append(out["counts"])
         circuits.append(out["circuit"])
-    return {"thetas": thetas, "results": results, "circuits": circuits}
+        outcomes.append({"theta": theta, **z_basis_agreement(theta, out["counts"])})
+    return {
+        "thetas": thetas,
+        "results": results,
+        "circuits": circuits,
+        "outcomes": outcomes,
+    }

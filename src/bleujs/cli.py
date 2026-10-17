@@ -751,11 +751,16 @@ def quantum_teleport(
             )
             click.echo(f"   {e}", err=True)
             sys.exit(1)
-        if not os.environ.get("QISKIT_IBM_TOKEN"):
+        from .ibm_runtime import ibm_token_from_env
+
+        if not ibm_token_from_env():
             click.echo(
                 status_text(
                     "error",
-                    "QISKIT_IBM_TOKEN not set. Get a token at https://quantum.ibm.com",
+                    (
+                        "QISKIT_IBM_TOKEN or IBM_QUANTUM_API_TOKEN is not set. "
+                        "Get a token at https://quantum.ibm.com"
+                    ),
                     err=True,
                 ),
                 err=True,
@@ -770,6 +775,7 @@ def quantum_teleport(
                             "backend": out["backend"],
                             "job_id": out["job_id"],
                             "counts": out.get("counts"),
+                            "outcome": out.get("outcome"),
                         },
                         indent=2,
                     )
