@@ -2,9 +2,11 @@
 
 import pytest
 
-qiskit = pytest.importorskip("qiskit")
+qiskit = pytest.importorskip("qiskit", exc_type=ImportError)
 aer = pytest.importorskip(
-    "qiskit_aer", reason="qiskit-aer required for teleportation tests"
+    "qiskit_aer",
+    reason="qiskit-aer required for teleportation tests",
+    exc_type=ImportError,
 )
 
 
@@ -42,3 +44,5 @@ def test_teleportation_fidelity_report():
     assert report["thetas"] == [0.0, 1.0]
     assert len(report["results"]) == 2
     assert len(report["circuits"]) == 2
+    assert report["outcomes"][0]["theta"] == 0.0
+    assert report["outcomes"][0]["hellinger_fidelity"] > 0.9

@@ -5,7 +5,7 @@ Test quantum core modules
 import numpy as np
 import pytest
 
-pytest.importorskip("qiskit")
+pytest.importorskip("qiskit", exc_type=ImportError)
 from src.quantum.core.quantum_circuit import QuantumCircuit
 from src.quantum.error_correction.syndrome import SyndromeDetector, SyndromeMeasurement
 from src.quantum_py.core.quantum_gate import QuantumGate
