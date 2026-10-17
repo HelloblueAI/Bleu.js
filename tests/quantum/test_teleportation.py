@@ -2,9 +2,11 @@
 
 import pytest
 
-qiskit = pytest.importorskip("qiskit")
+qiskit = pytest.importorskip("qiskit", exc_type=ImportError)
 aer = pytest.importorskip(
-    "qiskit_aer", reason="qiskit-aer required for teleportation tests"
+    "qiskit_aer",
+    reason="qiskit-aer required for teleportation tests",
+    exc_type=ImportError,
 )
 
 
