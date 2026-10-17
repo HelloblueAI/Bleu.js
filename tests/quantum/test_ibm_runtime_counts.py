@@ -1,13 +1,18 @@
 """Teleportation count readout and IBM backend selection. No live IBM calls."""
 
 import math
+import sys
+import types
 
 import pytest
 
 from bleujs.ibm_runtime import (
+    IBM_QUANTUM_PLATFORM_CHANNEL,
+    LEGACY_IBM_QUANTUM_CHANNEL,
     _counts_from_data,
     _extract_counts_from_primitive_result,
     ibm_token_from_env,
+    open_runtime_service,
     runtime_job_id,
     select_teleportation_backend,
     supports_dynamic_circuits,
@@ -114,3 +119,46 @@ def test_token_accepts_either_env_name(monkeypatch):
     assert ibm_token_from_env() is None
     monkeypatch.setenv("IBM_QUANTUM_API_TOKEN", "  platform-token  ")
     assert ibm_token_from_env() == "platform-token"
+
+
+def test_runtime_service_falls_back_when_platform_channel_is_unknown(monkeypatch):
+    calls = []
+
+    class InvalidAccountError(Exception):
+        pass
+
+    class FakeRuntimeService:
+        def __init__(self, *, channel, **kwargs):
+            calls.append((channel, kwargs))
+            if channel == IBM_QUANTUM_PLATFORM_CHANNEL:
+                raise InvalidAccountError(
+                    f"Channel {IBM_QUANTUM_PLATFORM_CHANNEL} is not supported"
+                )
+            self.channel = channel
+            self.kwargs = kwargs
+
+    fake_runtime = types.SimpleNamespace(QiskitRuntimeService=FakeRuntimeService)
+    monkeypatch.setitem(sys.modules, "qiskit_ibm_runtime", fake_runtime)
+
+    service = open_runtime_service("token", "instance")
+
+    assert service.channel == LEGACY_IBM_QUANTUM_CHANNEL
+    assert calls == [
+        (IBM_QUANTUM_PLATFORM_CHANNEL, {"token": "token", "instance": "instance"}),
+        (LEGACY_IBM_QUANTUM_CHANNEL, {"token": "token", "instance": "instance"}),
+    ]
+
+
+def test_runtime_service_keeps_non_channel_account_errors(monkeypatch):
+    class InvalidAccountError(Exception):
+        pass
+
+    class FakeRuntimeService:
+        def __init__(self, *, channel, **kwargs):
+            raise InvalidAccountError("Invalid IBM Quantum token")
+
+    fake_runtime = types.SimpleNamespace(QiskitRuntimeService=FakeRuntimeService)
+    monkeypatch.setitem(sys.modules, "qiskit_ibm_runtime", fake_runtime)
+
+    with pytest.raises(InvalidAccountError, match="Invalid IBM Quantum token"):
+        open_runtime_service("bad-token")

@@ -85,11 +85,21 @@ def open_runtime_service(token: str, instance: str | None = None) -> Any:
         kwargs["instance"] = instance
     try:
         return QiskitRuntimeService(channel=IBM_QUANTUM_PLATFORM_CHANNEL, **kwargs)
-    except (TypeError, ValueError) as exc:
-        text = str(exc).lower()
-        if "channel" not in text and IBM_QUANTUM_PLATFORM_CHANNEL not in text:
+    except Exception as exc:
+        if not _is_unsupported_platform_channel_error(exc):
             raise
         return QiskitRuntimeService(channel=LEGACY_IBM_QUANTUM_CHANNEL, **kwargs)
+
+
+def _is_unsupported_platform_channel_error(exc: Exception) -> bool:
+    """Return True for old runtimes rejecting the new IBM platform channel."""
+    recoverable_types = {"InvalidAccountError", "IBMInputValueError"}
+    if not isinstance(exc, (TypeError, ValueError)) and (
+        type(exc).__name__ not in recoverable_types
+    ):
+        return False
+    text = str(exc).lower()
+    return "channel" in text or IBM_QUANTUM_PLATFORM_CHANNEL in text
 
 
 def runtime_job_id(job: Any) -> str:
