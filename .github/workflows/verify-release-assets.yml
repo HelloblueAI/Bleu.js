@@ -1,0 +1,86 @@
+name: Verify published release assets
+
+# Compare the published PyPI wheel and sdist with the same files on the
+# GitHub release. This workflow does not build, tag, or upload anything.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Published version to compare, without a leading v'
+        required: true
+        default: '1.5.178'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Compare PyPI and GitHub release files
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Compare matching package files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          python3 - << 'PY'
+          import hashlib, json, os, pathlib, urllib.request
+          version = os.environ["VERSION"].removeprefix("v")
+          if not version or "/" in version or ".." in version:
+              raise SystemExit("Refusing version value")
+          dest = pathlib.Path("release-verify")
+          dest.mkdir()
+          with urllib.request.urlopen(
+              f"https://pypi.org/pypi/bleu-js/{version}/json", timeout=30
+          ) as response:
+              meta = json.load(response)
+          files = [
+              item for item in meta["urls"]
+              if item["packagetype"] in {"bdist_wheel", "sdist"}
+          ]
+          if len(files) != 2:
+              raise SystemExit(f"Expected one wheel and one sdist, found {len(files)}")
+          for item in files:
+              target = dest / f"pypi-{item['filename']}"
+              urllib.request.urlretrieve(item["url"], target)
+              digest = hashlib.sha256(target.read_bytes()).hexdigest()
+              if digest != item["digests"]["sha256"]:
+                  raise SystemExit(f"Downloaded PyPI file {item['filename']} does not match its published digest")
+              print(f"pypi {item['packagetype']} {item['filename']} {digest}")
+          PY
+          TAG="v${VERSION#v}"
+          mkdir -p release-verify/github
+          gh release download "$TAG" --dir release-verify/github --clobber
+          python3 - << 'PY'
+          import hashlib, os, pathlib
+          root = pathlib.Path("release-verify")
+          mismatches = []
+          compared = 0
+          for pypi_file in sorted(root.glob("pypi-*")):
+              name = pypi_file.name.removeprefix("pypi-")
+              github_file = root / "github" / name
+              if not github_file.is_file():
+                  raise SystemExit(f"GitHub release is missing {name}")
+              pypi_digest = hashlib.sha256(pypi_file.read_bytes()).hexdigest()
+              github_digest = hashlib.sha256(github_file.read_bytes()).hexdigest()
+              compared += 1
+              print(f"{name}")
+              print(f"  pypi   {pypi_digest}")
+              print(f"  github {github_digest}")
+              if pypi_digest != github_digest or pypi_file.stat().st_size != github_file.stat().st_size:
+                  mismatches.append(name)
+          if compared != 2:
+              raise SystemExit(f"Compared {compared} files; expected the wheel and the sdist")
+          if mismatches:
+              raise SystemExit("Published bytes differ: " + ", ".join(mismatches))
+          print("Wheel matches wheel and sdist matches sdist. No files were uploaded.")
+          PY
