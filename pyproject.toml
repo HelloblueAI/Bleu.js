@@ -246,7 +246,7 @@ ruff = ">=0.14.8,<0.18.0"
 bandit = "^1.7.0"
 types-pyyaml = "^6.0.12.20250516"
 types-aiofiles = "^25.1.0.20251011"
-virtualenv = ">=20.36.1"
+virtualenv = ">=21.14.13"
 
 [tool.poetry.scripts]
 # Use package-relative path (bleujs.cli:main) so the installed script works after pip install.
