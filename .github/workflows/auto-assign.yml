@@ -7,7 +7,15 @@ on:
 jobs:
   run:
     runs-on: ubuntu-24.04
-    if: github.actor != 'dependabot[bot]'
+    # Fork PR tokens are read-only, so attempting to assign them fails with
+    # "Resource not accessible by integration". Keep issue and same-repo PR
+    # assignment active while avoiding noisy red checks on external PRs.
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      (
+        github.event_name == 'issues' ||
+        github.event.pull_request.head.repo.full_name == github.repository
+      )
     permissions:
       issues: write
       pull-requests: write
