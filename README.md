@@ -1,5 +1,7 @@
 # Bleu.js
 
+**UW students:** [UW Student Projects: Start Here](https://github.com/HelloblueAI/.github/blob/main/profile/UW-STUDENT-PROJECTS.md). Claim one listed issue. GPU tasks stay closed until access is confirmed.
+
 **Open-source SDK, CLI, and API contract, with an optional self-hosted app.** [bleujs.org](https://bleujs.org) — *Get your first API call in under two minutes.*
 
 [![Python 3.11–3.13](https://img.shields.io/badge/python-3.11%E2%80%933.13-blue.svg)](https://www.python.org/downloads/)
