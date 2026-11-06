@@ -1,148 +1,92 @@
-# Bleu.js API Documentation
+# Bleu.js hosted API
 
-## 🚀 Quick Start
+This page describes the current Developer API surface used by the SDK and CLI.
+For request and response details, use the machine-readable
+[OpenAPI contract](api/openapi.yaml) and the [API Client Guide](API_CLIENT_GUIDE.md).
+
+For how the Developer API differs from website assistants, local utilities, and
+test stubs, see [API, assistants, and local utilities](WHO_SERVES_THE_API.md).
+
+## Base URL and authentication
+
+- Base URL: `https://api.bleujs.org`
+- Canonical path prefix: `/api/v1`
+- Auth header: `Authorization: Bearer <BLEUJS_API_KEY>`
+- Python SDK: pass `api_key=...` or set `BLEUJS_API_KEY`
+- CLI: set `BLEUJS_API_KEY` or run `bleu config set api-key <key>`
+
+Do not use the old `api.bleujs.com` examples or `/v1/*` paths from historical
+notes. Current examples should use `https://api.bleujs.org/api/v1/*`.
+
+## Current endpoints
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/health` | `GET` | API health check |
+| `/api/v1/chat` | `POST` | Chat completion |
+| `/api/v1/generate` | `POST` | Text generation |
+| `/api/v1/embed` | `POST` | Text embeddings |
+| `/api/v1/models` | `GET` | List models |
+
+## Quick start with curl
 
 ```bash
-# Basic API Request Example
-curl -X GET 'https://api.bleujs.com/v1/endpoint' \
-  -H 'Authorization: Bearer YOUR_API_KEY'
+export BLEUJS_API_KEY="bleujs_sk_your_key_here"
+
+curl https://api.bleujs.org/api/v1/chat \
+  -H "Authorization: Bearer $BLEUJS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [{"role": "user", "content": "Say hello in one word."}],
+    "max_tokens": 50
+  }'
 ```
 
-## 📦 Subscription Tiers
-
-### Basic Plan ($29/month)
-
-- 100 API calls per month
-- Standard API access
-- Basic support via email
-- Rate limit: 10 requests/minute
-
-### Enterprise Plan ($499/month)
-
-- 5000 API calls per month
-- Priority API access
-- 24/7 dedicated support
-- Custom solutions
-- Rate limit: 100 requests/minute
-- Advanced analytics
-
-## 🔑 Authentication
-
-All API requests require authentication using an API key in the Authorization header:
-
-```bash
-Authorization: Bearer YOUR_API_KEY
-```
-
-## 📚 API Endpoints
-
-### Authentication Endpoints
-
-#### Generate API Key
-
-```http
-POST /v1/auth/api-key
-```
-
-#### Validate API Key
-
-```http
-GET /v1/auth/validate
-```
-
-### Subscription Endpoints
-
-#### Get Available Plans
-
-```http
-GET /v1/subscriptions/plans
-```
-
-#### Subscribe to a Plan
-
-```http
-POST /v1/subscriptions/subscribe
-```
-
-#### Get Usage Statistics
-
-```http
-GET /v1/subscriptions/usage
-```
-
-### Core API Endpoints
-
-[Document your main API endpoints here]
-
-## 💳 Billing & Usage
-
-- Billing occurs monthly
-- Usage is calculated based on API calls
-- Overage charges apply beyond plan limits
-- Enterprise customers can request custom billing arrangements
-
-## 📊 Rate Limits & Quotas
-
-- Rate limits are enforced per API key
-- Quota resets occur at the start of each billing cycle
-- Rate limit headers are included in API responses
-
-## 🔐 Security
-
-- All API requests must use HTTPS
-- API keys should never be shared
-- Rotate API keys regularly
-- IP whitelisting available for Enterprise plans
-
-## 📖 Code Examples
-
-### Python
+## Python SDK
 
 ```python
-import requests
+from bleujs.api_client import BleuAPIClient
 
-API_KEY = 'your_api_key'
-BASE_URL = 'https://api.bleujs.com/v1'
-
-headers = {
-    'Authorization': f'Bearer {API_KEY}',
-    'Content-Type': 'application/json'
-}
-
-# Example API call
-response = requests.get(f'{BASE_URL}/endpoint', headers=headers)
-print(response.json())
+client = BleuAPIClient()  # reads BLEUJS_API_KEY
+response = client.chat([{"role": "user", "content": "Hello!"}])
+print(response.content)
 ```
 
-### JavaScript
+To avoid an environment variable, pass the key directly:
+
+```python
+client = BleuAPIClient(api_key="bleujs_sk_...")
+```
+
+## JavaScript / TypeScript
 
 ```javascript
-const API_KEY = "your_api_key";
-const BASE_URL = "https://api.bleujs.com/v1";
+const res = await fetch("https://api.bleujs.org/api/v1/chat", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.BLEUJS_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    messages: [{ role: "user", content: "Hello!" }],
+    max_tokens: 50,
+  }),
+});
 
-async function makeApiCall() {
-  const response = await fetch(`${BASE_URL}/endpoint`, {
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  console.log(data);
-}
+const data = await res.json();
+console.log(data.choices?.[0]?.message?.content);
 ```
 
-## 🆘 Support
+## What this page does not define
 
-- Email: support@bleujs.com
-- Enterprise Support: enterprise@bleujs.com
-- Documentation: docs.bleujs.com
-- Status Page: status.bleujs.com
+- Pricing, trial, allowance, rate-limit, or payment terms. Use
+  [bleujs.org/pricing](https://bleujs.org/pricing) for current public terms.
+- Website assistant setup or widget limits. Use
+  [bleujs.org/enterprise-ai-agents](https://bleujs.org/enterprise-ai-agents).
+- Self-hosted server deployment. See [INSTALLATION.md](INSTALLATION.md).
 
-## 📝 Changelog
+## Historical content
 
-### v1.0.0 (2024-03-30)
-
-- Initial API release
-- Basic and Enterprise subscription tiers
-- Core API functionality
+Older revisions of this page mentioned `api.bleujs.com`, placeholder
+`/v1/endpoint` examples, and Basic/Enterprise plan numbers. Treat those as
+historical notes only; they are not the current Developer API contract.

@@ -45,7 +45,8 @@ pip install bleu-js
 
 ```bash
 export BLEUJS_API_KEY="bleujs_sk_your_key_here"
-# or: bleu config set api-key bleujs_sk_your_key_here
+# for CLI-only use, you can also run:
+# bleu config set api-key bleujs_sk_your_key_here
 ```
 
 **3. Run:**
@@ -60,6 +61,10 @@ Or in Python:
 from bleujs.api_client import BleuAPIClient
 print(BleuAPIClient().chat([{"role": "user", "content": "Say hello."}]).content)
 ```
+
+`BleuAPIClient()` reads `BLEUJS_API_KEY`; the `bleu config` file is used by the
+CLI. To avoid an environment variable in Python, pass
+`BleuAPIClient(api_key="bleujs_sk_...")`.
 
 **4. Verify** (optional): `bleu version` or `bleujs version` · `bleu health` or `bleujs health`
 

@@ -1,5 +1,12 @@
 # Bleu.js Technical Documentation
 
+> **Historical architecture notes.** This page is retained for older design
+> context and may mention components that are not part of the current hosted
+> Developer API. For current API auth, base URL, website assistant, local utility,
+> and test-stub boundaries, see
+> [API, assistants, and local utilities](WHO_SERVES_THE_API.md). Do not use this
+> page for pricing, rate limits, billing, entitlement, or deployment claims.
+
 ## Table of Contents
 
 1. [Architecture Overview](#architecture-overview)
@@ -101,20 +108,31 @@ async def train(self, features: np.ndarray, labels: np.ndarray):
 
 ## API Architecture
 
-### Endpoints
+### Current hosted Developer API
 
-- `/v1/auth/*` - Authentication endpoints
-- `/v1/subscriptions/*` - Subscription management
-- `/v1/quantum/*` - Quantum processing endpoints
-- `/v1/ml/*` - Machine learning endpoints
+- Base URL: `https://api.bleujs.org`
+- Auth: `Authorization: Bearer <BLEUJS_API_KEY>`
+- Canonical paths: `/api/v1/chat`, `/api/v1/generate`, `/api/v1/embed`,
+  `/api/v1/models`, plus `/health`
+- API contract: [docs/api/openapi.yaml](api/openapi.yaml)
 
-### Rate Limiting
+Website assistants are configured on bleujs.org and are not the same surface as
+the Developer API. Optional local utilities such as `BleuJS().process(...)`,
+`bleu-js[ml]`, and `bleu-js[quantum]` can run without a hosted API key because
+they do not call the hosted chat/generate/embed API.
 
-- Basic Plan: 10 requests/minute
-- Enterprise Plan: 100 requests/minute
-- Custom limits for enterprise customers
+### Historical endpoint notes
 
-### Authentication
+The older `/v1/auth/*`, `/v1/subscriptions/*`, `/v1/quantum/*`, and `/v1/ml/*`
+bullets that appeared here were design notes for the app/server direction, not
+the current public SDK contract. Use [API.md](API.md), [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md),
+and the OpenAPI spec for current client-facing paths.
+
+### Historical authentication sketch
+
+The following snippet is retained as an old self-hosted app sketch. Hosted
+Developer API keys are created in the bleujs.org dashboard and sent as bearer
+tokens by the SDK/CLI.
 
 ```python
 @router.post("/auth/api-key")
