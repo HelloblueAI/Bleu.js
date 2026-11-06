@@ -2,6 +2,14 @@
 
 Complete API reference for Bleu.js Python package.
 
+The package has two different surfaces:
+
+- Local utilities such as `BleuJS().process(...)`, optional ML, and optional
+  quantum modules can run without a hosted API key.
+- `BleuAPIClient` and API CLI commands call the hosted Developer API at
+  `https://api.bleujs.org` and require `BLEUJS_API_KEY` or an explicit
+  `api_key=...`. See [API, assistants, and local utilities](WHO_SERVES_THE_API.md).
+
 ---
 
 ## Table of Contents
@@ -378,19 +386,21 @@ Client for Bleu.js cloud API.
 
 ```python
 BleuAPIClient(
-    api_key: str,
+    api_key: Optional[str] = None,
     base_url: str = "https://api.bleujs.org",
-    timeout: float = 30.0,
-    **kwargs
+    timeout: Union[float, tuple] = 60.0,
+    max_retries: int = 3,
+    retry_on_rate_limit: bool = True
 )
 ```
 
 **Parameters:**
 
-- `api_key` (str): API key for authentication
+- `api_key` (str, optional): API key for authentication. If omitted, the client reads `BLEUJS_API_KEY`.
 - `base_url` (str): Base URL for API (default: "https://api.bleujs.org")
-- `timeout` (float): Request timeout in seconds (default: 30.0)
-- `**kwargs`: Additional client options
+- `timeout` (float or tuple): Read timeout in seconds, or `(connect, read)` seconds (default: 60.0 with a 5.0 second connect timeout)
+- `max_retries` (int): Maximum retry attempts for network/timeout errors and retryable API responses
+- `retry_on_rate_limit` (bool): Retry `429`/`503` responses with backoff when true
 
 **Example:**
 
@@ -410,7 +420,10 @@ Send chat completion request.
 ```python
 chat(
     messages: List[Dict[str, str]],
-    model: str = "default",
+    model: str = "bleu-chat-v1",
+    temperature: float = 0.7,
+    max_tokens: Optional[int] = None,
+    session_seed_goal: Optional[str] = None,
     **kwargs
 ) -> ChatCompletionResponse
 ```
@@ -418,7 +431,10 @@ chat(
 **Parameters:**
 
 - `messages`: List of message dictionaries with "role" and "content"
-- `model` (str): Model to use (default: "default")
+- `model` (str): Model to use (default: "bleu-chat-v1")
+- `temperature` (float): Sampling temperature (default: 0.7)
+- `max_tokens` (int, optional): Maximum tokens to generate
+- `session_seed_goal` (str, optional): First-turn onboarding hint, max 500 characters
 - `**kwargs`: Additional request options
 
 **Returns:**
@@ -432,20 +448,24 @@ Generate text from prompt.
 ```python
 generate(
     prompt: str,
-    max_tokens: int = 100,
+    model: str = "bleu-gen-v1",
+    temperature: float = 0.7,
+    max_tokens: int = 256,
     **kwargs
-) -> GenerateResponse
+) -> GenerationResponse
 ```
 
 **Parameters:**
 
 - `prompt` (str): Input prompt
-- `max_tokens` (int): Maximum tokens to generate (default: 100)
+- `model` (str): Model to use (default: "bleu-gen-v1")
+- `temperature` (float): Sampling temperature (default: 0.7)
+- `max_tokens` (int): Maximum tokens to generate (default: 256)
 - `**kwargs`: Additional generation options
 
 **Returns:**
 
-- `GenerateResponse`: Response object with generated text
+- `GenerationResponse`: Response object with generated text
 
 ##### `embed()`
 
@@ -453,31 +473,33 @@ Generate embeddings for text.
 
 ```python
 embed(
-    inputs: List[str],
+    texts: List[str],
+    model: str = "bleu-embed-v1",
     **kwargs
-) -> EmbedResponse
+) -> EmbeddingResponse
 ```
 
 **Parameters:**
 
-- `inputs`: List of text strings to embed
+- `texts`: List of text strings to embed (maximum 100)
+- `model` (str): Model to use (default: "bleu-embed-v1")
 - `**kwargs`: Additional embedding options
 
 **Returns:**
 
-- `EmbedResponse`: Response object with embeddings array
+- `EmbeddingResponse`: Response object with embeddings array
 
 ##### `list_models()`
 
 List available models.
 
 ```python
-list_models() -> List[Dict[str, Any]]
+list_models() -> List[Model]
 ```
 
 **Returns:**
 
-- List of available model dictionaries
+- List of `Model` objects
 
 ---
 

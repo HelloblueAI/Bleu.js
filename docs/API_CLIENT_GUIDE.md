@@ -26,13 +26,16 @@ Get your API key from [bleujs.org](https://bleujs.org) and set it as an environm
 export BLEUJS_API_KEY="bleujs_sk_your_api_key_here"
 ```
 
-Or pass it directly when creating the client:
+Or pass it directly when creating the Python client:
 
 ```python
 from bleujs.api_client import BleuAPIClient
 
 client = BleuAPIClient(api_key="bleujs_sk_...")
 ```
+
+The CLI also supports `bleu config set api-key <key>`. That config file is read
+by CLI commands; Python code should use `BLEUJS_API_KEY` or `api_key=...`.
 
 ---
 

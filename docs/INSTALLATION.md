@@ -6,8 +6,11 @@ If you only need the **SDK and CLI** to call the Bleu.js API at [bleujs.org](htt
 
 1. **Install:** `pip install bleu-js` (Python 3.11+). This is a **lightweight** install (no torch, shap, numba, or quantum libs); add `[ml]`, `[quantum]`, or `[all]` only if you need them.
 2. **Get an API key** at [bleujs.org](https://bleujs.org)
-3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` or `bleu config set api-key bleujs_sk_...`
+3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` (or `bleu config set api-key bleujs_sk_...` for CLI-only use)
 4. **Run:** `bleu chat "Hello"` or use the SDK in Python
+
+`bleu config` is read by CLI commands. Python code should use `BLEUJS_API_KEY`
+or pass `api_key=...` to `BleuAPIClient`.
 
 **Full walkthrough:** [Get started](GET_STARTED.md). No `.env`, database, or server setup required.
 
@@ -610,10 +613,11 @@ curl http://localhost:8000/health
 After successful installation:
 
 1. **Cloud API users:** [Get started](GET_STARTED.md) · [QUICKSTART](QUICKSTART.md)
-2. **Self-host / dev:** Review [`.env.example`](../.env.example); run `uvicorn src.main:app --reload`
-3. **Explore API (when app running):** http://localhost:8000/docs
-4. **Run tests (contributors):** `pip install -e ".[ci]"` then `pytest --cov=src`
-5. **Docs:** `docs/` directory
+2. **Product surfaces:** [API, assistants, and local utilities](WHO_SERVES_THE_API.md)
+3. **Self-host / dev:** Review [`.env.example`](../.env.example); run `uvicorn src.main:app --reload`
+4. **Explore API (when app running):** http://localhost:8000/docs
+5. **Run tests (contributors):** `pip install -e ".[ci]"` then `pytest --cov=src`
+6. **Docs:** `docs/` directory
 
 ---
 

@@ -12,7 +12,7 @@ Use the Bleu.js API at [bleujs.org](https://bleujs.org) with the SDK or CLI. No 
 
 1. **Install:** `pip install bleu-js`
 2. **Get an API key** at [bleujs.org](https://bleujs.org)
-3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` or `bleu config set api-key bleujs_sk_...`
+3. **Set key:** `export BLEUJS_API_KEY=bleujs_sk_...` (or `bleu config set api-key bleujs_sk_...` for CLI-only use)
 4. **CLI:** `bleu chat "What is quantum computing?"`
 5. **Python:**
 
@@ -62,9 +62,12 @@ pip install 'bleu-js[all]'
 
 ---
 
-## 🎯 Your First Program (local processing, no API key)
+## 🎯 Local utility examples (no hosted API key)
 
-The following uses the **local** BleuJS engine (no API key). For cloud API usage, see the [Cloud API](#-cloud-api-recommended--start-here) section above.
+The following examples use the **local** `BleuJS` utility and optional ML/quantum
+modules. They do not call `https://api.bleujs.org` and do not provide hosted
+chat, generate, embed, or model-listing responses. For hosted API usage, use an
+API key with the [Cloud API](#-cloud-api-recommended--start-here) section above.
 
 ### 1. Basic Usage (Works Immediately)
 
@@ -319,7 +322,7 @@ bleu = BleuJS(device='cpu')
 2. **Full docs:** [README](../README.md) · [Installation](INSTALLATION.md)
 3. **Extras:** Quantum → `pip install 'bleu-js[quantum]'` · ML → `pip install 'bleu-js[ml]'`
 4. **Examples:** `examples/api_client_basic.py` (API) · `examples/quick_start.py` (local)
-5. **Star us:** [HelloblueAI/Bleu.js](https://github.com/HelloblueAI/Bleu.js)
+5. **Product surfaces:** [API, assistants, and local utilities](WHO_SERVES_THE_API.md)
 
 ---
 

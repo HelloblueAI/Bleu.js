@@ -2,7 +2,7 @@
 
 Get from zero to your first API call in under two minutes.
 
-**Flow:** `pip install bleu-js` → get API key at [bleujs.org](https://bleujs.org) → set `BLEUJS_API_KEY` or `bleu config set api-key <key>` → `bleu chat "Hello"` (or `bleujs chat "Hello"`) or use the SDK in Python.
+**Flow:** `pip install bleu-js` → get API key at [bleujs.org](https://bleujs.org) → set `BLEUJS_API_KEY` → `bleu chat "Hello"` (or `bleujs chat "Hello"`) or use the SDK in Python. For CLI-only use, `bleu config set api-key <key>` also works.
 
 ---
 
@@ -44,13 +44,16 @@ This installs the **cloud API client** and **CLI** only (small download, no PyTo
 export BLEUJS_API_KEY="bleujs_sk_your_key_here"
 ```
 
-**Option B – CLI config (good for interactive use):**
+**Option B – CLI config (good for interactive CLI use):**
 
 ```bash
 bleu config set api-key bleujs_sk_your_key_here   # or: bleujs config set api-key ...
 ```
 
-This saves the key in **`~/.bleujs/config.json`** so you don’t need to set the environment variable each time.
+This saves the key in **`~/.bleujs/config.json`** so CLI commands do not need the
+environment variable each time. The Python `BleuAPIClient()` constructor reads
+`BLEUJS_API_KEY` or an explicit `api_key=...`; it does not read the CLI config
+file directly.
 
 ---
 
@@ -67,9 +70,12 @@ bleu chat "Say hello in one word."
 ```python
 from bleujs.api_client import BleuAPIClient
 
-client = BleuAPIClient()  # uses BLEUJS_API_KEY if set
+client = BleuAPIClient()  # reads BLEUJS_API_KEY
 print(client.chat([{"role": "user", "content": "Say hello in one word."}]).content)
 ```
+
+To use Python without an environment variable, pass the key directly:
+`BleuAPIClient(api_key="bleujs_sk_...")`.
 
 If you see a short reply from the model, you’re set.
 
@@ -103,7 +109,7 @@ bleu health    # or: bleujs health
 
 | Issue | Fix |
 |--------|-----|
-| **“API key not found”** | Set `BLEUJS_API_KEY` or run `bleu config set api-key <key>`. Get a key at [bleujs.org](https://bleujs.org). |
+| **“API key not found”** | For CLI commands, set `BLEUJS_API_KEY` or run `bleu config set api-key <key>`. For Python, set `BLEUJS_API_KEY` or pass `api_key=...`. Get a key at [bleujs.org](https://bleujs.org). |
 | **“API client not available”** | Run `pip install bleu-js` (default install includes the client). |
 | **Python &lt; 3.11** | Install Python 3.11+ from [python.org](https://www.python.org/downloads/) or your package manager. |
 
@@ -112,3 +118,6 @@ bleu health    # or: bleujs health
 ## Self-hosting (run your own server)
 
 If you want to run the Bleu.js **app** (API server + dashboard) yourself instead of using bleujs.org, see [INSTALLATION.md](INSTALLATION.md) for clone, `.env`, database, and `uvicorn` setup. Most users only need `pip install bleu-js` and an API key from bleujs.org.
+
+For the full distinction between the hosted Developer API, website assistants,
+local utilities, and the test stub, see [API, assistants, and local utilities](WHO_SERVES_THE_API.md).

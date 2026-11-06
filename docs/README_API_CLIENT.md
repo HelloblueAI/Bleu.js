@@ -1,5 +1,11 @@
 # 🚀 Bleu.js API Client - Now Available!
 
+> **Current docs:** Use [GET_STARTED.md](GET_STARTED.md),
+> [API_CLIENT_GUIDE.md](API_CLIENT_GUIDE.md), and
+> [API, assistants, and local utilities](WHO_SERVES_THE_API.md) for the current
+> hosted API/auth explanation. This page is an older API-client announcement and
+> is retained for historical context.
+
 ## Access the Cloud API from Python
 
 The Bleu.js package now includes a **production-ready API client** to access the cloud API at **api.bleujs.org**.
@@ -56,8 +62,8 @@ print(response.embeddings)
 
 ## 📚 Documentation
 
-- **Quick Start:** [`docs/API_CLIENT_QUICKSTART.md`](docs/API_CLIENT_QUICKSTART.md)
-- **Complete Guide:** [`docs/API_CLIENT_GUIDE.md`](docs/API_CLIENT_GUIDE.md)
+- **Quick Start:** [`API_CLIENT_QUICKSTART.md`](API_CLIENT_QUICKSTART.md)
+- **Complete Guide:** [`API_CLIENT_GUIDE.md`](API_CLIENT_GUIDE.md)
 - **Examples:** `examples/api_client_*.py`
 
 ---
@@ -132,10 +138,10 @@ except RateLimitError:
 pip install bleu-js
 
 # API + ML
-pip install bleu-js[api,ml]
+pip install 'bleu-js[ml]'
 
 # API + Quantum
-pip install bleu-js[api,quantum]
+pip install 'bleu-js[quantum]'
 
 # Everything
 pip install bleu-js[all]
@@ -181,7 +187,7 @@ These are included in the default `pip install bleu-js`.
 
 ```bash
 # Install with dev dependencies
-pip install bleu-js[api,dev]
+pip install -e ".[ci]"
 
 # Run tests
 pytest tests/test_api_client.py -v
@@ -196,9 +202,8 @@ pytest tests/test_api_client.py --cov=bleujs.api_client
 
 See the complete guides:
 
-1. **[Quick Start Guide](docs/API_CLIENT_QUICKSTART.md)** - Get started in 5 minutes
-2. **[Complete API Guide](docs/API_CLIENT_GUIDE.md)** - Full reference and examples
-3. **[Integration Summary](API_CLIENT_INTEGRATION_COMPLETE.md)** - Technical details
+1. **[Quick Start Guide](API_CLIENT_QUICKSTART.md)** - Get started in 5 minutes
+2. **[Complete API Guide](API_CLIENT_GUIDE.md)** - Full reference and examples
 
 ---
 
