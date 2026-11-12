@@ -47,7 +47,5 @@ def test_quick_start_exits_zero_and_prints_completion(tmp_path):
         f"--- stderr ---\n{result.stderr}"
     )
     assert "Quick Start Complete!" in result.stdout, (
-        "Expected 'Quick Start Complete!' in stdout, but got:\n"
-        f"{result.stdout}"
+        "Expected 'Quick Start Complete!' in stdout, but got:\n" f"{result.stdout}"
     )
-
