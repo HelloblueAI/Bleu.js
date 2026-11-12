@@ -77,13 +77,13 @@ You don't need to write code to contribute! Here are many ways to help:
 
 ### 🐛 Bug Reports
 
-- Found a bug? [Open an issue](../../issues/new?template=bug_report.md)
+- Found a bug? [Open an issue](https://github.com/HelloblueAI/Bleu.js/issues/new?template=bug_report.md)
 - Include steps to reproduce
 - Add error messages and environment details
 
 ### ✨ Feature Requests
 
-- Have an idea? [Open an issue](../../issues/new?template=feature_request.md)
+- Have an idea? [Open an issue](https://github.com/HelloblueAI/Bleu.js/issues/new?template=feature_request.md)
 - Describe the use case
 - Explain the benefits
 
@@ -560,6 +560,16 @@ pytest -x
 - **API Reference:** Update `docs/API_REFERENCE.md`
 - **Examples:** Add to `examples/` directory
 - **CHANGELOG.md:** Document all changes
+
+### Markdown links
+
+The [markdown link check](../.github/workflows/markdown-links.yml) runs on pull requests that change `README.md`, `examples/README.md`, or `docs/`. It checks relative file links only, so a slow or unavailable website cannot fail the job. Pages under `docs/archive/` are historical and are not checked. `docs/internal/` is not in the public repository.
+
+Run the same check locally with [lychee](https://github.com/lycheeverse/lychee):
+
+```bash
+lychee --offline --no-progress --exclude-path docs/archive --exclude-path docs/internal README.md docs examples/README.md
+```
 
 ### Documentation Style
 

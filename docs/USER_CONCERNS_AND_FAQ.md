@@ -17,7 +17,7 @@ We recognize that comprehensive documentation is essential. Here's what's availa
 #### Current Documentation
 
 - **Quick Start Guide:** [`docs/QUICKSTART.md`](./QUICKSTART.md)
-- **Installation Guide:** [`docs/INSTALLATION_FOR_USERS.md`](./INSTALLATION_FOR_USERS.md)
+- **Installation Guide:** [`docs/INSTALLATION.md`](./INSTALLATION.md)
 - **API Client Guide:** [`docs/API_CLIENT_GUIDE.md`](./API_CLIENT_GUIDE.md)
 - **Migration Guide:** [`docs/MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md)
 - **User guide:** [README](../README.md) and [API Client Guide](API_CLIENT_GUIDE.md)
