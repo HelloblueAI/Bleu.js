@@ -220,27 +220,38 @@ cp .env.example .env
 nano .env
 ```
 
-**Required Variables:**
+**Self-host (`[server]`) environment variables**
 
-```bash
-# Critical Security (REQUIRED)
-SECRET_KEY=your-generated-secret-key-here
-JWT_SECRET_KEY=your-generated-jwt-secret-key-here
-JWT_SECRET=your-generated-jwt-secret-here
-ENCRYPTION_KEY=your-generated-encryption-key-here
+The names below are the ones in [`.env.example`](../.env.example). Secret handling is described in [SECURITY.md](../SECURITY.md). Do not commit `.env`, and do not put real secret values in this document.
 
-# Database (REQUIRED)
-DATABASE_URL=postgresql://user:password@localhost:5432/bleujs
-DB_PASSWORD=your-database-password
+| Variable | Purpose | Local development | Production or staging |
+| --- | --- | --- | --- |
+| `ENV_NAME` | Runtime mode. `production` and `staging` reject the placeholder secrets. | `development` | `production` or `staging` |
+| `LOG_LEVEL` | Logging verbosity. | `INFO` | `INFO` or `WARNING` |
+| `HOST` | Address the app binds to. | `127.0.0.1` | the address this process should bind |
+| `PORT` | Port the app binds to. | `8000` | the port in front of this process |
+| `DATABASE_URL` | Database for the self-hosted app. | `sqlite:///./bleujs.db` is enough | your database URL |
+| `SECRET_KEY` | Application secret. | the `.env.example` placeholder is accepted | replace the placeholder |
+| `JWT_SECRET_KEY` | Secret for access tokens. | placeholder accepted | replace the placeholder |
+| `JWT_SECRET` | Secret for refresh tokens. | placeholder accepted | replace the placeholder |
+| `ENCRYPTION_KEY` | Secret for encrypted values. | placeholder accepted | replace the placeholder |
+| `JWT_ALGORITHM` | JWT signing algorithm. | `HS256` | `HS256` |
+| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Access-token lifetime, in minutes. | `30` | set for the deployment |
+| `JWT_REFRESH_TOKEN_EXPIRE_DAYS` | Refresh-token lifetime, in days. | `7` | set for the deployment |
+| `CORS_ORIGINS` | Browser origins allowed to call the app. | `http://localhost:3000,http://127.0.0.1:3000` | the real site origins |
+| `ALLOWED_HOSTS` | Hostnames the app accepts. | `localhost,127.0.0.1` | the real hostnames |
 
-# Security (REQUIRED)
-CORS_ORIGINS=https://yourdomain.com
-ALLOWED_HOSTS=yourdomain.com
+These variables are not required to start `uvicorn src.main:app`:
 
-# Optional but Recommended
-REDIS_URL=redis://localhost:6379/0
-APP_ENV=production
-```
+| Variable | Purpose |
+| --- | --- |
+| `REDIS_URL` | Optional cache. |
+| `BLEUJS_API_KEY`, `BLEUJS_BASE_URL` | SDK and CLI settings for calling an API. They do not boot the self-hosted app. |
+| `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` | Optional model providers. |
+| `QISKIT_IBM_TOKEN` | Optional IBM Quantum access for the quantum extras. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Optional account email. |
+
+Generate the four secrets with the command above before setting `ENV_NAME` to `production` or `staging`. The app rejects the placeholder strings from `.env.example` in those modes.
 
 ### 3. Initialize Database
 
