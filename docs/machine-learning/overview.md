@@ -200,7 +200,4 @@ config = QuantumVisionConfig(
 
 ## Next Steps
 
-- Explore [Classical ML](classical.md) for traditional algorithms
-- Learn about [Quantum ML](quantum.md) capabilities
-- Understand [Hybrid Approaches](hybrid.md)
-- Optimize [Performance](optimization.md)
+The pages that used to follow this overview are not part of the current docs. Continue with [Get started](../GET_STARTED.md).

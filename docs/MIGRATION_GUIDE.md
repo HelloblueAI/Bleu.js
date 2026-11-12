@@ -541,7 +541,7 @@ for dep, state in status.items():
 2. **Read Docs:**
    - [QUICKSTART.md](QUICKSTART.md)
    - [README.md](README.md)
-   - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)
+   - [GET_STARTED.md](GET_STARTED.md)
 
 3. **Test Package:**
 

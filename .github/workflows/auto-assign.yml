@@ -3,7 +3,7 @@ on:
   issues:
     types: [opened]
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
 jobs:
   run:
     runs-on: ubuntu-24.04
@@ -20,9 +20,21 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: 'Auto-assign issue'
-        uses: pozil/auto-assign-issue@v4
+      - name: Assign the maintainer unless already assigned
+        uses: actions/github-script@v8
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          assignees: pejmantheory
-          numOfAssignee: 1
+          script: |
+            const login = "pejmantheory";
+            const current = context.payload.pull_request?.assignees
+              || context.payload.issue?.assignees
+              || [];
+            if (current.some((person) => person.login === login)) {
+              core.info(`${login} is already assigned`);
+              return;
+            }
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: [login],
+            });

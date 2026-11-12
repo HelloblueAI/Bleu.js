@@ -1,0 +1,45 @@
+# Check relative links in the public docs. Network URLs are not fetched, so a
+# flaky external site cannot fail a pull request or a release. docs/archive is
+# historical. docs/internal is not part of the public repository.
+#
+# Local run:
+#   lychee --offline --no-progress --exclude-path docs/archive --exclude-path docs/internal README.md docs examples/README.md
+name: Markdown links
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "examples/README.md"
+      - "docs/**"
+      - ".github/workflows/markdown-links.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "examples/README.md"
+      - "docs/**"
+      - ".github/workflows/markdown-links.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  relative-links:
+    name: Check relative markdown links
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check README, docs, and examples README
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          fail: true
+          args: >-
+            --offline
+            --no-progress
+            --exclude-path docs/archive
+            --exclude-path docs/internal
+            README.md
+            docs
+            examples/README.md

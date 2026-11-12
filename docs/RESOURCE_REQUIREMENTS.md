@@ -455,7 +455,7 @@ Do you need quantum-enhanced AI/ML?
 - **User Concerns FAQ:** [`USER_CONCERNS_AND_FAQ.md`](./USER_CONCERNS_AND_FAQ.md)
 - **Dependency Management:** [`DEPENDENCY_MANAGEMENT.md`](./DEPENDENCY_MANAGEMENT.md)
 - **Quick Start:** [`QUICKSTART.md`](./QUICKSTART.md)
-- **Installation Guide:** [`INSTALLATION_FOR_USERS.md`](./INSTALLATION_FOR_USERS.md)
+- **Installation Guide:** [`INSTALLATION.md`](./INSTALLATION.md)
 
 ---
 

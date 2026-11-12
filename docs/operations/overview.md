@@ -194,7 +194,5 @@ config = OperationsConfig(
    ```
 
 ## Next Steps
-- Explore [Detailed Process Analysis](process-analysis.md)
-- Learn about [Automation Capabilities](automation.md)
-- Understand [Resource Optimization](resource-optimization.md)
-- Review [Case Studies](case-studies.md)
+
+The pages that used to follow this overview are not part of the current docs. Continue with [Get started](../GET_STARTED.md).
