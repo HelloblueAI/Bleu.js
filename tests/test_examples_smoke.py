@@ -29,7 +29,15 @@ def test_quick_start_exits_zero_and_prints_completion(tmp_path):
     """
     # Build a clean environment with BLEUJS_API_KEY stripped so the script
     # has no access to any real or test key — it must succeed without one.
+    # CI installs dependencies with --no-root, so the checkout is not on the
+    # interpreter path. Point the child at src/ so `import bleujs` works
+    # from the temporary working directory.
     env = {k: v for k, v in os.environ.items() if k != "BLEUJS_API_KEY"}
+    src = str(REPO_ROOT / "src")
+    existing_pythonpath = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = (
+        src if not existing_pythonpath else os.pathsep.join((src, existing_pythonpath))
+    )
 
     result = subprocess.run(
         [sys.executable, str(QUICK_START)],
