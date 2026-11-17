@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Assign the maintainer unless already assigned
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const login = "pejmantheory";
