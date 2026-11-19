@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.5.179] - 2026-11-19
+### Added
+- API client exceptions expose a first-class `request_id` (from `X-Request-Id` when present, otherwise the error/body payload).
+- Opt-in `client.with_raw_response` / `async_client.with_raw_response` returns `APIResponse` with the parsed payload plus the full response header map (sync and async).
+
+### Changed
+- Documented that `max_retries` is the maximum **total attempts** (default 3), not retries-after-first-failure.
+- Moved the OpenAPI edge stub and contract tests to `services/edge-stub/`. See [BACKEND_REPO.md](docs/BACKEND_REPO.md).
+
 ## [v1.5.178] - 2026-10-13
 
 ### Changed
@@ -21,16 +30,6 @@
 - Version bumped automatically from 1.5.41 to 1.5.42
 - See commit history for changes
 
-
-## Unreleased
-
-### Added
-- API client exceptions expose a first-class `request_id` (from `X-Request-Id` when present, otherwise the error/body payload).
-- Opt-in `client.with_raw_response` / `async_client.with_raw_response` returns `APIResponse` with the parsed payload plus the full response header map (sync and async).
-
-### Changed
-- Documented that `max_retries` is the maximum **total attempts** (default 3), not retries-after-first-failure.
-- Moved the OpenAPI edge stub and contract tests to `services/edge-stub/`. See [BACKEND_REPO.md](docs/BACKEND_REPO.md).
 
 ## [v1.5.40] - 2026-06-03
 
