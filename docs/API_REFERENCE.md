@@ -399,7 +399,7 @@ BleuAPIClient(
 - `api_key` (str, optional): API key for authentication. If omitted, the client reads `BLEUJS_API_KEY`.
 - `base_url` (str): Base URL for API (default: "https://api.bleujs.org")
 - `timeout` (float or tuple): Read timeout in seconds, or `(connect, read)` seconds (default: 60.0 with a 5.0 second connect timeout)
-- `max_retries` (int): Maximum retry attempts for network/timeout errors and retryable API responses
+- `max_retries` (int): Maximum **total attempts** for network/timeout errors and retryable `429`/`503` responses (default: `3`). Not “retries after the first failure.”
 - `retry_on_rate_limit` (bool): Retry `429`/`503` responses with backoff when true
 
 **Example:**
@@ -409,7 +409,13 @@ from bleujs.api_client import BleuAPIClient
 
 client = BleuAPIClient(api_key="bleujs_sk_...")
 response = client.chat([{"role": "user", "content": "Hello!"}])
+
+# Opt-in metadata (headers + request_id); normal methods unchanged
+raw = client.with_raw_response.chat([{"role": "user", "content": "Hello!"}])
+print(raw.request_id, raw.headers.get("x-api-usage"))
 ```
+
+**Errors:** `BleuAPIError` subclasses expose `request_id` (header preferred, then body).
 
 #### Methods
 

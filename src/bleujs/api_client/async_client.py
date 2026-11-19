@@ -56,6 +56,12 @@ from .models import (
     Model,
     ModelListResponse,
 )
+from .response import (
+    APIResponse,
+    AsyncBleuAPIClientWithRawResponse,
+    extract_request_id,
+    normalize_headers,
+)
 
 
 class AsyncBleuAPIClient:
@@ -66,12 +72,18 @@ class AsyncBleuAPIClient:
         async with AsyncBleuAPIClient(api_key="bleujs_sk_...") as client:
             response = await client.chat([{"role": "user", "content": "Hello!"}])
 
+            raw = await client.with_raw_response.chat(
+                [{"role": "user", "content": "Hello!"}]
+            )
+            print(raw.request_id, raw.headers.get("x-ratelimit-remaining"))
+
     Args:
         api_key: Your Bleu.js API key (or set BLEUJS_API_KEY env var)
         base_url: Base URL for API (default from constants)
         timeout: Read timeout in seconds, or (connect_secs, read_secs) tuple
             (default: 60; connect uses 5s). Industry-standard.
-        max_retries: Max retries for network/timeout and 429/503 (default: 3).
+        max_retries: Maximum total attempts for network/timeout and 429/503
+            (default: 3). This is the number of attempts, not retries-after-first.
         retry_on_rate_limit: If True (default), retry on 429/503 with backoff.
     """
 
@@ -122,9 +134,60 @@ class AsyncBleuAPIClient:
             headers=_get_headers_shared(self.api_key, _CLIENT_VERSION),
         )
 
+    @property
+    def with_raw_response(self) -> AsyncBleuAPIClientWithRawResponse:
+        """Opt-in API that returns ``APIResponse`` (data + headers) per call."""
+        return AsyncBleuAPIClientWithRawResponse(self)
+
     def _build_url(self, endpoint: str) -> str:
         """Build full URL from endpoint"""
         return urljoin(self.base_url, endpoint)
+
+    async def _request_result(
+        self,
+        method: str,
+        endpoint: str,
+        data: Optional[Dict[str, Any]] = None,
+        params: Optional[Dict[str, Any]] = None,
+    ) -> APIResponse[Any]:
+        """Make async HTTP request with retries; return body plus metadata."""
+        url = self._build_url(endpoint)
+        last_error = None
+
+        for attempt in range(self.max_retries):
+            try:
+                response = await self._client.request(
+                    method=method,
+                    url=url,
+                    json=data,
+                    params=params,
+                )
+                if response.status_code in (429, 503) and self.retry_on_rate_limit:
+                    if attempt < self.max_retries - 1:
+                        delay = compute_retry_delay(response, attempt)
+                        await asyncio.sleep(delay)
+                        continue
+                body = handle_response(response)
+                headers = normalize_headers(getattr(response, "headers", None))
+                return APIResponse(
+                    data=body,
+                    headers=headers,
+                    status_code=response.status_code,
+                    request_id=extract_request_id(headers=headers, body=body),
+                )
+            except BleuAPIError:
+                raise
+            except httpx.TimeoutException as e:
+                last_error = NetworkError(f"Request timeout: {str(e)}")
+            except httpx.NetworkError as e:
+                last_error = NetworkError(f"Network error: {str(e)}")
+
+            if attempt < self.max_retries - 1:
+                await asyncio.sleep(2**attempt + (random.random() * 0.5))
+
+        if last_error:
+            raise last_error
+        raise NetworkError("Request failed after all retries")
 
     async def _request(
         self,
@@ -149,36 +212,45 @@ class AsyncBleuAPIClient:
             BleuAPIError: On API errors
             NetworkError: On network errors
         """
-        url = self._build_url(endpoint)
-        last_error = None
+        result = await self._request_result(
+            method=method, endpoint=endpoint, data=data, params=params
+        )
+        return result.data
 
-        for attempt in range(self.max_retries):
-            try:
-                response = await self._client.request(
-                    method=method,
-                    url=url,
-                    json=data,
-                    params=params,
-                )
-                if response.status_code in (429, 503) and self.retry_on_rate_limit:
-                    if attempt < self.max_retries - 1:
-                        delay = compute_retry_delay(response, attempt)
-                        await asyncio.sleep(delay)
-                        continue
-                return handle_response(response)
-            except BleuAPIError:
-                raise
-            except httpx.TimeoutException as e:
-                last_error = NetworkError(f"Request timeout: {str(e)}")
-            except httpx.NetworkError as e:
-                last_error = NetworkError(f"Network error: {str(e)}")
+    async def _chat_api_response(
+        self,
+        messages: List[Dict[str, str]],
+        model: str = DEFAULT_MODEL_CHAT,
+        temperature: float = 0.7,
+        max_tokens: Optional[int] = None,
+        session_seed_goal: Optional[str] = None,
+        **kwargs: Any,
+    ) -> APIResponse[ChatCompletionResponse]:
+        chat_messages = [ChatMessage(**msg) for msg in messages]
 
-            if attempt < self.max_retries - 1:
-                await asyncio.sleep(2**attempt + (random.random() * 0.5))
+        req_kwargs = dict(kwargs)
+        if session_seed_goal is not None:
+            req_kwargs["session_seed_goal"] = session_seed_goal
 
-        if last_error:
-            raise last_error
-        raise NetworkError("Request failed after all retries")
+        request = ChatCompletionRequest(
+            messages=chat_messages,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            **req_kwargs,
+        )
+
+        result = await self._request_result(
+            method="POST",
+            endpoint=ENDPOINT_CHAT,
+            data=request.model_dump(exclude_none=True),
+        )
+        return APIResponse(
+            data=build_chat_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     async def chat(
         self,
@@ -212,29 +284,42 @@ class AsyncBleuAPIClient:
             ])
             print(response.content)
         """
-        # Convert dict messages to ChatMessage objects
-        chat_messages = [ChatMessage(**msg) for msg in messages]
-
-        req_kwargs = dict(kwargs)
-        if session_seed_goal is not None:
-            req_kwargs["session_seed_goal"] = session_seed_goal
-
-        # Build request
-        request = ChatCompletionRequest(
-            messages=chat_messages,
+        result = await self._chat_api_response(
+            messages,
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
-            **req_kwargs,
+            session_seed_goal=session_seed_goal,
+            **kwargs,
         )
+        return result.data
 
-        # Make API call
-        response_data = await self._request(
+    async def _generate_api_response(
+        self,
+        prompt: str,
+        model: str = DEFAULT_MODEL_GENERATE,
+        temperature: float = 0.7,
+        max_tokens: int = 256,
+        **kwargs: Any,
+    ) -> APIResponse[GenerationResponse]:
+        request = GenerationRequest(
+            prompt=prompt,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            **kwargs,
+        )
+        result = await self._request_result(
             method="POST",
-            endpoint=ENDPOINT_CHAT,
+            endpoint=ENDPOINT_GENERATE,
             data=request.model_dump(exclude_none=True),
         )
-        return build_chat_response(response_data)
+        return APIResponse(
+            data=build_generate_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     async def generate(
         self,
@@ -261,20 +346,42 @@ class AsyncBleuAPIClient:
             response = await client.generate("Once upon a time")
             print(response.text)
         """
-        request = GenerationRequest(
-            prompt=prompt,
+        result = await self._generate_api_response(
+            prompt,
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
             **kwargs,
         )
+        return result.data
 
-        response_data = await self._request(
+    async def _embed_api_response(
+        self,
+        texts: List[str],
+        model: str = DEFAULT_MODEL_EMBED,
+        **kwargs: Any,
+    ) -> APIResponse[EmbeddingResponse]:
+        if not texts:
+            raise ValidationError("texts list cannot be empty")
+        if len(texts) > 100:
+            raise ValidationError("Maximum 100 texts allowed per request")
+
+        request = EmbeddingRequest(
+            input=texts,
+            model=model,
+            **kwargs,
+        )
+        result = await self._request_result(
             method="POST",
-            endpoint=ENDPOINT_GENERATE,
+            endpoint=ENDPOINT_EMBED,
             data=request.model_dump(exclude_none=True),
         )
-        return build_generate_response(response_data)
+        return APIResponse(
+            data=build_embed_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     async def embed(
         self,
@@ -297,23 +404,11 @@ class AsyncBleuAPIClient:
             response = await client.embed(["Hello world", "Goodbye world"])
             embeddings = response.embeddings
         """
-        if not texts:
-            raise ValidationError("texts list cannot be empty")
-        if len(texts) > 100:
-            raise ValidationError("Maximum 100 texts allowed per request")
+        result = await self._embed_api_response(texts, model=model, **kwargs)
+        return result.data
 
-        request = EmbeddingRequest(
-            input=texts,
-            model=model,
-            **kwargs,
-        )
-
-        response_data = await self._request(
-            method="POST",
-            endpoint=ENDPOINT_EMBED,
-            data=request.model_dump(exclude_none=True),
-        )
-        return build_embed_response(response_data)
+    async def _health_api_response(self) -> APIResponse[Dict[str, Any]]:
+        return await self._request_result(method="GET", endpoint=ENDPOINT_HEALTH)
 
     async def health(self) -> Dict[str, Any]:
         """
@@ -323,7 +418,18 @@ class AsyncBleuAPIClient:
             Health response dict (e.g. status, version). On failure (e.g. 404),
             raises; callers can fall back to list_models() for connectivity check.
         """
-        return await self._request(method="GET", endpoint=ENDPOINT_HEALTH)
+        result = await self._health_api_response()
+        return result.data
+
+    async def _list_models_api_response(self) -> APIResponse[List[Model]]:
+        result = await self._request_result(method="GET", endpoint=ENDPOINT_MODELS)
+        model_list = ModelListResponse(**result.data)
+        return APIResponse(
+            data=model_list.data,
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     async def list_models(self) -> List[Model]:
         """
@@ -337,13 +443,8 @@ class AsyncBleuAPIClient:
             for model in models:
                 print(f"{model.id}: {model.description}")
         """
-        response_data = await self._request(
-            method="GET",
-            endpoint=ENDPOINT_MODELS,
-        )
-
-        model_list = ModelListResponse(**response_data)
-        return model_list.data
+        result = await self._list_models_api_response()
+        return result.data
 
     async def close(self) -> None:
         """Close the HTTP client."""
