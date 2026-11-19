@@ -5,6 +5,7 @@ Exception classes for Bleu.js API Client
 from typing import Any, Dict, Optional
 
 from .constants import DEFAULT_BASE_URL
+from .response import extract_request_id, normalize_headers
 
 
 class BleuAPIError(Exception):
@@ -15,10 +16,12 @@ class BleuAPIError(Exception):
         message: str,
         status_code: Optional[int] = None,
         response: Optional[Dict[str, Any]] = None,
+        request_id: Optional[str] = None,
     ):
         self.message = message
         self.status_code = status_code
         self.response = response
+        self.request_id = request_id
         super().__init__(self.message)
 
     def __str__(self) -> str:
@@ -60,6 +63,8 @@ class RateLimitError(BleuAPIError):
     Attributes:
         retry_after: Suggested seconds to wait before retry (from Retry-After
             header, if present). None if not provided by the API.
+        request_id: Correlation ID from the ``X-Request-Id`` header when present,
+            otherwise from the error body.
     """
 
     USER_HINT = "Wait a moment and retry; use exponential backoff in scripts."
@@ -70,8 +75,14 @@ class RateLimitError(BleuAPIError):
         status_code: Optional[int] = None,
         response: Optional[Dict[str, Any]] = None,
         retry_after: Optional[float] = None,
+        request_id: Optional[str] = None,
     ):
-        super().__init__(message=message, status_code=status_code, response=response)
+        super().__init__(
+            message=message,
+            status_code=status_code,
+            response=response,
+            request_id=request_id,
+        )
         self.retry_after = retry_after
 
     @property
@@ -158,11 +169,13 @@ def parse_api_error(
     Args:
         status_code: HTTP status code
         response_data: Response body (dict preferred; str/list tolerated)
-        headers: Optional response headers (e.g. for Retry-After on 429)
+        headers: Optional response headers (e.g. for Retry-After on 429,
+            X-Request-Id for correlation)
 
     Returns:
         Appropriate BleuAPIError subclass instance (RateLimitError may have
-        retry_after set from headers).
+        retry_after set from headers). ``request_id`` prefers the response
+        header, then the error/body payload.
     """
     if not isinstance(response_data, dict):
         error_message = str(response_data).strip() if response_data else "Unknown error"
@@ -192,6 +205,9 @@ def parse_api_error(
                     str(response_data)[:500] if response_data else "Unknown error"
                 )
 
+    normalized = normalize_headers(headers)
+    request_id = extract_request_id(headers=normalized, body=response_data)
+
     error_map = {
         400: InvalidRequestError,
         401: AuthenticationError,
@@ -210,9 +226,11 @@ def parse_api_error(
             status_code=status_code,
             response=response_data,
             retry_after=_parse_retry_after(headers),
+            request_id=request_id,
         )
     return error_class(
         message=error_message,
         status_code=status_code,
         response=response_data,
+        request_id=request_id,
     )

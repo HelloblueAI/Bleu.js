@@ -39,6 +39,7 @@ from .models import (
     Model,
     ModelListResponse,
 )
+from .response import APIResponse
 
 # Optional async client import
 try:
@@ -47,6 +48,7 @@ try:
     __all__ = [
         "BleuAPIClient",
         "AsyncBleuAPIClient",
+        "APIResponse",
         "BleuAPIError",
         "AuthenticationError",
         "RateLimitError",
@@ -67,6 +69,7 @@ try:
 except ImportError:
     __all__ = [
         "BleuAPIClient",
+        "APIResponse",
         "BleuAPIError",
         "AuthenticationError",
         "RateLimitError",

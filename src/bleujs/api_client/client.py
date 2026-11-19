@@ -35,7 +35,6 @@ from .constants import (
     DEFAULT_MODEL_CHAT,
     DEFAULT_MODEL_EMBED,
     DEFAULT_MODEL_GENERATE,
-    DEFAULT_READ_TIMEOUT,
     DEFAULT_TIMEOUT,
     ENDPOINT_CHAT,
     ENDPOINT_EMBED,
@@ -56,6 +55,12 @@ from .models import (
     Model,
     ModelListResponse,
 )
+from .response import (
+    APIResponse,
+    BleuAPIClientWithRawResponse,
+    extract_request_id,
+    normalize_headers,
+)
 
 
 class BleuAPIClient:
@@ -66,13 +71,18 @@ class BleuAPIClient:
         client = BleuAPIClient(api_key="bleujs_sk_...")
         response = client.chat([{"role": "user", "content": "Hello!"}])
 
+        # Opt-in: parsed result plus full response headers
+        raw = client.with_raw_response.chat([{"role": "user", "content": "Hello!"}])
+        print(raw.request_id, raw.headers.get("x-api-usage"))
+
     Args:
         api_key: Your Bleu.js API key (or set BLEUJS_API_KEY env var)
         base_url: Base URL for API (default from constants)
         timeout: Read timeout in seconds, or (connect_secs, read_secs) tuple
             (default: 60; connect uses 5s for fast-fail). Industry-standard.
-        max_retries: Max retries for network/timeout and for 429/503 when
-            retry_on_rate_limit is True (default: 3).
+        max_retries: Maximum total attempts for network/timeout errors and for
+            429/503 when retry_on_rate_limit is True (default: 3). This is the
+            number of attempts, not retries-after-first-failure.
         retry_on_rate_limit: If True (default), retry on 429/503 with backoff
             and optional Retry-After header. Set False to fail immediately.
     """
@@ -125,9 +135,64 @@ class BleuAPIClient:
             headers=_get_headers_shared(self.api_key, _CLIENT_VERSION),
         )
 
+    @property
+    def with_raw_response(self) -> BleuAPIClientWithRawResponse:
+        """Opt-in API that returns ``APIResponse`` (data + headers) per call."""
+        return BleuAPIClientWithRawResponse(self)
+
     def _build_url(self, endpoint: str) -> str:
         """Build full URL from endpoint"""
         return urljoin(self.base_url, endpoint)
+
+    def _request_result(
+        self,
+        method: str,
+        endpoint: str,
+        data: Optional[Dict[str, Any]] = None,
+        params: Optional[Dict[str, Any]] = None,
+    ) -> APIResponse[Any]:
+        """
+        Make HTTP request with retries; return body plus response metadata.
+        """
+        url = self._build_url(endpoint)
+        last_error = None
+
+        for attempt in range(self.max_retries):
+            try:
+                response = self._client.request(
+                    method=method,
+                    url=url,
+                    json=data,
+                    params=params,
+                )
+                # Retry 429/503 with backoff when enabled (best-in-market behavior)
+                if response.status_code in (429, 503) and self.retry_on_rate_limit:
+                    if attempt < self.max_retries - 1:
+                        delay = compute_retry_delay(response, attempt)
+                        time.sleep(delay)
+                        continue
+                body = handle_response(response)
+                headers = normalize_headers(getattr(response, "headers", None))
+                return APIResponse(
+                    data=body,
+                    headers=headers,
+                    status_code=response.status_code,
+                    request_id=extract_request_id(headers=headers, body=body),
+                )
+            except BleuAPIError:
+                raise
+            except httpx.TimeoutException as e:
+                last_error = NetworkError(f"Request timeout: {str(e)}")
+            except httpx.NetworkError as e:
+                last_error = NetworkError(f"Network error: {str(e)}")
+
+            # Exponential backoff for network/timeout errors
+            if attempt < self.max_retries - 1:
+                time.sleep(2**attempt + (random.random() * 0.5))
+
+        if last_error:
+            raise last_error
+        raise NetworkError("Request failed after all retries")
 
     def _request(
         self,
@@ -152,38 +217,44 @@ class BleuAPIClient:
             BleuAPIError: On API errors
             NetworkError: On network errors
         """
-        url = self._build_url(endpoint)
-        last_error = None
+        return self._request_result(
+            method=method, endpoint=endpoint, data=data, params=params
+        ).data
 
-        for attempt in range(self.max_retries):
-            try:
-                response = self._client.request(
-                    method=method,
-                    url=url,
-                    json=data,
-                    params=params,
-                )
-                # Retry 429/503 with backoff when enabled (best-in-market behavior)
-                if response.status_code in (429, 503) and self.retry_on_rate_limit:
-                    if attempt < self.max_retries - 1:
-                        delay = compute_retry_delay(response, attempt)
-                        time.sleep(delay)
-                        continue
-                return handle_response(response)
-            except BleuAPIError:
-                raise
-            except httpx.TimeoutException as e:
-                last_error = NetworkError(f"Request timeout: {str(e)}")
-            except httpx.NetworkError as e:
-                last_error = NetworkError(f"Network error: {str(e)}")
+    def _chat_api_response(
+        self,
+        messages: List[Dict[str, str]],
+        model: str = DEFAULT_MODEL_CHAT,
+        temperature: float = 0.7,
+        max_tokens: Optional[int] = None,
+        session_seed_goal: Optional[str] = None,
+        **kwargs: Any,
+    ) -> APIResponse[ChatCompletionResponse]:
+        chat_messages = [ChatMessage(**msg) for msg in messages]
 
-            # Exponential backoff for network/timeout errors
-            if attempt < self.max_retries - 1:
-                time.sleep(2**attempt + (random.random() * 0.5))
+        req_kwargs = dict(kwargs)
+        if session_seed_goal is not None:
+            req_kwargs["session_seed_goal"] = session_seed_goal
 
-        if last_error:
-            raise last_error
-        raise NetworkError("Request failed after all retries")
+        request = ChatCompletionRequest(
+            messages=chat_messages,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            **req_kwargs,
+        )
+
+        result = self._request_result(
+            method="POST",
+            endpoint=ENDPOINT_CHAT,
+            data=request.model_dump(exclude_none=True),
+        )
+        return APIResponse(
+            data=build_chat_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     def chat(
         self,
@@ -217,29 +288,41 @@ class BleuAPIClient:
             ])
             print(response.content)
         """
-        # Convert dict messages to ChatMessage objects
-        chat_messages = [ChatMessage(**msg) for msg in messages]
-
-        req_kwargs = dict(kwargs)
-        if session_seed_goal is not None:
-            req_kwargs["session_seed_goal"] = session_seed_goal
-
-        # Build request
-        request = ChatCompletionRequest(
-            messages=chat_messages,
+        return self._chat_api_response(
+            messages,
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
-            **req_kwargs,
-        )
+            session_seed_goal=session_seed_goal,
+            **kwargs,
+        ).data
 
-        # Make API call
-        response_data = self._request(
+    def _generate_api_response(
+        self,
+        prompt: str,
+        model: str = DEFAULT_MODEL_GENERATE,
+        temperature: float = 0.7,
+        max_tokens: int = 256,
+        **kwargs: Any,
+    ) -> APIResponse[GenerationResponse]:
+        request = GenerationRequest(
+            prompt=prompt,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            **kwargs,
+        )
+        result = self._request_result(
             method="POST",
-            endpoint=ENDPOINT_CHAT,
+            endpoint=ENDPOINT_GENERATE,
             data=request.model_dump(exclude_none=True),
         )
-        return build_chat_response(response_data)
+        return APIResponse(
+            data=build_generate_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     def generate(
         self,
@@ -266,20 +349,41 @@ class BleuAPIClient:
             response = client.generate("Once upon a time")
             print(response.text)
         """
-        request = GenerationRequest(
-            prompt=prompt,
+        return self._generate_api_response(
+            prompt,
             model=model,
             temperature=temperature,
             max_tokens=max_tokens,
             **kwargs,
-        )
+        ).data
 
-        response_data = self._request(
+    def _embed_api_response(
+        self,
+        texts: List[str],
+        model: str = DEFAULT_MODEL_EMBED,
+        **kwargs: Any,
+    ) -> APIResponse[EmbeddingResponse]:
+        if not texts:
+            raise ValidationError("texts list cannot be empty")
+        if len(texts) > 100:
+            raise ValidationError("Maximum 100 texts allowed per request")
+
+        request = EmbeddingRequest(
+            input=texts,
+            model=model,
+            **kwargs,
+        )
+        result = self._request_result(
             method="POST",
-            endpoint=ENDPOINT_GENERATE,
+            endpoint=ENDPOINT_EMBED,
             data=request.model_dump(exclude_none=True),
         )
-        return build_generate_response(response_data)
+        return APIResponse(
+            data=build_embed_response(result.data),
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     def embed(
         self,
@@ -302,23 +406,10 @@ class BleuAPIClient:
             response = client.embed(["Hello world", "Goodbye world"])
             embeddings = response.embeddings
         """
-        if not texts:
-            raise ValidationError("texts list cannot be empty")
-        if len(texts) > 100:
-            raise ValidationError("Maximum 100 texts allowed per request")
+        return self._embed_api_response(texts, model=model, **kwargs).data
 
-        request = EmbeddingRequest(
-            input=texts,
-            model=model,
-            **kwargs,
-        )
-
-        response_data = self._request(
-            method="POST",
-            endpoint=ENDPOINT_EMBED,
-            data=request.model_dump(exclude_none=True),
-        )
-        return build_embed_response(response_data)
+    def _health_api_response(self) -> APIResponse[Dict[str, Any]]:
+        return self._request_result(method="GET", endpoint=ENDPOINT_HEALTH)
 
     def health(self) -> Dict[str, Any]:
         """
@@ -329,7 +420,17 @@ class BleuAPIClient:
             exposes GET /health per the API contract. On failure (e.g. 404),
             raises; callers can fall back to list_models() for connectivity check.
         """
-        return self._request(method="GET", endpoint=ENDPOINT_HEALTH)
+        return self._health_api_response().data
+
+    def _list_models_api_response(self) -> APIResponse[List[Model]]:
+        result = self._request_result(method="GET", endpoint=ENDPOINT_MODELS)
+        model_list = ModelListResponse(**result.data)
+        return APIResponse(
+            data=model_list.data,
+            headers=result.headers,
+            status_code=result.status_code,
+            request_id=result.request_id,
+        )
 
     def list_models(self) -> List[Model]:
         """
@@ -343,13 +444,7 @@ class BleuAPIClient:
             for model in models:
                 print(f"{model.id}: {model.description}")
         """
-        response_data = self._request(
-            method="GET",
-            endpoint=ENDPOINT_MODELS,
-        )
-
-        model_list = ModelListResponse(**response_data)
-        return model_list.data
+        return self._list_models_api_response().data
 
     def close(self) -> None:
         """Close the HTTP client. Prefer using ``with BleuAPIClient(...) as client:``."""

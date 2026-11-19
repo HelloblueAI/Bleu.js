@@ -121,9 +121,38 @@ client = BleuAPIClient(timeout=(5, 120))
 
 ### Retries and rate limits
 
-- **429 / 503:** The client **retries automatically** with exponential backoff and jitter, and honors the `Retry-After` header when the API sends it. This matches industry best practice (e.g. OpenAI, Anthropic).
+- **`max_retries` (default `3`):** Maximum **total attempts** for network/timeout failures and for retryable `429`/`503` responses when `retry_on_rate_limit=True`. Example: `max_retries=3` means up to three tries (`range(3)`), not three retries after a first failure.
+- **429 / 503:** The client **retries automatically** with exponential backoff and jitter, and honors the `Retry-After` header when the API sends it. This matches industry best practice (e.g. OpenAI, Anthropic). Other `4xx` and `500`/`502`/`504` are not retried by the SDK.
 - **RateLimitError:** If you handle it yourself, use `exc.retry_after` (seconds) to wait before retrying.
-- To disable automatic retry on rate limit: `BleuAPIClient(retry_on_rate_limit=False)`.
+- To disable automatic retry on rate limit: `BleuAPIClient(retry_on_rate_limit=False)`. Use `max_retries=1` for a single attempt overall.
+- **Credits / quota:** Retry and billing policy for the hosted API live on the server. The Python SDK does not charge credits itself. On the hosted API, failed (non-2xx) authenticated calls are designed not to keep a reserved credit; successful `2xx` calls do. Prefer disabling retries only if your application needs fail-fast behavior—not because the SDK invents extra charges.
+
+### Request IDs and response headers
+
+API errors expose a first-class `request_id` (from the `X-Request-Id` header when present, otherwise from the error JSON). Successful calls keep returning the same parsed models; use `with_raw_response` when you need headers (rate limit, usage, tokens, or the full header map):
+
+```python
+from bleujs.api_client import BleuAPIClient, AuthenticationError
+
+client = BleuAPIClient(api_key="bleujs_sk_...")
+
+try:
+    response = client.chat([{"role": "user", "content": "Hi"}])
+    print(response.usage)  # token totals in the body when the API sends them
+except AuthenticationError as e:
+    print(e.request_id)  # correlate with support / logs
+    print(e.user_hint)
+
+# Opt-in: same call, plus full response headers (unchanged defaults otherwise)
+raw = client.with_raw_response.chat([{"role": "user", "content": "Hi"}])
+print(raw.data.content)
+print(raw.request_id)
+print(raw.headers.get("x-api-usage"))
+print(raw.headers.get("x-ratelimit-remaining"))
+print(raw.headers.get("x-tokens-total"))
+```
+
+Async: `await client.with_raw_response.chat(...)` on `AsyncBleuAPIClient`.
 
 ### Error handling
 
@@ -135,8 +164,9 @@ from bleujs.api_client import BleuAPIClient, AuthenticationError, RateLimitError
 try:
     response = client.chat([{"role": "user", "content": "Hi"}])
 except AuthenticationError as e:
-    print(e.user_hint)  # e.g. "Get an API key at ..."
+    print(e.request_id, e.user_hint)  # e.g. "Get an API key at ..."
 except RateLimitError as e:
+    print(e.request_id)
     if e.retry_after:
         time.sleep(e.retry_after)
     # retry request
@@ -193,7 +223,7 @@ client = BleuAPIClient(
     api_key="bleujs_sk_...",
     base_url="https://api.bleujs.org",  # Custom base URL
     timeout=30.0,                    # Request timeout (seconds)
-    max_retries=5                    # Max retry attempts
+    max_retries=5                    # Max total attempts (not retries-after-first)
 )
 ```
 
@@ -429,7 +459,7 @@ The client automatically retries failed requests with exponential backoff:
 ```python
 client = BleuAPIClient(
     api_key="bleujs_sk_...",
-    max_retries=3  # Retry up to 3 times
+    max_retries=3  # Up to 3 total attempts
 )
 ```
 
@@ -501,7 +531,7 @@ async with AsyncBleuAPIClient() as client:
 ```python
 client = BleuAPIClient(
     timeout=30.0,      # 30 seconds
-    max_retries=3      # 3 retry attempts
+    max_retries=3      # 3 total attempts
 )
 ```
 
