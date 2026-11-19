@@ -74,12 +74,12 @@ class TestExtractRequestId:
 
     def test_body_top_level_and_meta_fallback(self):
         assert extract_request_id(body={"request_id": "top_id"}) == "top_id"
-        assert (
-            extract_request_id(body={"meta": {"request_id": "meta_id"}}) == "meta_id"
-        )
+        assert extract_request_id(body={"meta": {"request_id": "meta_id"}}) == "meta_id"
 
     def test_missing_ids_returns_none(self):
-        assert extract_request_id(headers={}, body={"error": {"message": "no id"}}) is None
+        assert (
+            extract_request_id(headers={}, body={"error": {"message": "no id"}}) is None
+        )
         assert extract_request_id(headers=None, body=None) is None
 
 
@@ -96,7 +96,13 @@ class TestParseApiErrorRequestId:
     def test_body_fallback(self):
         err = parse_api_error(
             400,
-            {"error": {"message": "bad", "code": "validation_error", "request_id": "b1"}},
+            {
+                "error": {
+                    "message": "bad",
+                    "code": "validation_error",
+                    "request_id": "b1",
+                }
+            },
             headers={},
         )
         assert isinstance(err, InvalidRequestError)
@@ -185,7 +191,9 @@ class TestSyncClientRequestIdAndRaw:
         assert raw.get_header("X-Tokens-Total") == "42"
 
     @patch("httpx.Client.request")
-    def test_with_raw_response_success_body_request_id_fallback(self, mock_request, client):
+    def test_with_raw_response_success_body_request_id_fallback(
+        self, mock_request, client
+    ):
         body = dict(CHAT_OK)
         body["request_id"] = "from_body"
         mock_request.return_value = _resp(200, body, headers={})

@@ -32,9 +32,7 @@ def normalize_headers(headers: Optional[Any]) -> Dict[str, str]:
     if headers is None:
         return {}
     if isinstance(headers, dict):
-        return {
-            str(k).lower(): "" if v is None else str(v) for k, v in headers.items()
-        }
+        return {str(k).lower(): "" if v is None else str(v) for k, v in headers.items()}
     items = getattr(headers, "items", None)
     if not callable(items):
         return {}
